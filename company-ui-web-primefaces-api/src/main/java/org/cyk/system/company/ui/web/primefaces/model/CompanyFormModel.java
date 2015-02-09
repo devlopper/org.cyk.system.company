@@ -5,7 +5,7 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.model.Company;
+import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.model.file.File;
 import org.cyk.utility.common.FileExtensionGroup;
 import org.cyk.utility.common.annotation.user.interfaces.FileExtensions;
