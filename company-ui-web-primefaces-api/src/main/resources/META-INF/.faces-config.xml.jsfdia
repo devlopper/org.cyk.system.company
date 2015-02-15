@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROCESS model-entity="JSFProcess">
+ <PROCESS-ITEM NAME="rules:*" PATH="*" SHAPE="32,17,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:*:0" NAME="item" PATH="*" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="newinvoice::#private#invoice#new.xhtml"
+    NAME="output" PATH="/private/invoice/new.xhtml"
+    TARGET="rules:#private#invoice#new.xhtml" TITLE="newinvoice" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="newpayment::#private#payment#new.xhtml"
+    NAME="output1" PATH="/private/payment/new.xhtml"
+    TARGET="rules:#private#payment#new.xhtml" TITLE="newpayment" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="serviceunitmany::#private#service#unit.xhtml" NAME="output2"
+    PATH="/private/service/unit.xhtml"
+    TARGET="rules:#private#service#unit.xhtml" TITLE="serviceunitmany" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="servicepackagemany::#private#service#package.xhtml"
+    NAME="output3" PATH="/private/service/package.xhtml"
+    TARGET="rules:#private#service#package.xhtml"
+    TITLE="servicepackagemany" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#private#payment#new.xhtml"
+  PATH="/private/payment/new.xhtml" SHAPE="256,177,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#private#invoice#new.xhtml"
+  PATH="/private/invoice/new.xhtml" SHAPE="256,33,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#private#service#package.xhtml"
+  PATH="/private/service/package.xhtml" SHAPE="288,465,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#private#service#unit.xhtml"
+  PATH="/private/service/unit.xhtml" SHAPE="288,353,0,0" model-entity="JSFProcessGroup"/>
+</PROCESS>

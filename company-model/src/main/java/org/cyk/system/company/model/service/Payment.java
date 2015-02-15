@@ -17,12 +17,12 @@ import lombok.Setter;
 import org.cyk.system.root.model.AbstractIdentifiable;
 
 @Getter @Setter @NoArgsConstructor @Entity
-public class Invoice extends AbstractIdentifiable implements Serializable {
+public class Payment extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne
-	private Customer customer;
+	private Invoice invoice;
 	
 	@Column(precision=10,scale=FLOAT_SCALE)
 	private BigDecimal amount;
