@@ -1,9 +1,11 @@
 package org.cyk.system.company.ui.web.primefaces.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +17,7 @@ import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputManyChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputManyPickList;
+import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.cyk.utility.common.annotation.user.interfaces.Text;
 
@@ -30,6 +33,12 @@ public class ServiceCollectionFormModel extends AbstractFormModel<ServiceCollect
 	private String name;
 	
 	@Input(label=@Text(value="model.entity.service")) @InputChoice @InputManyChoice @InputManyPickList
+	@NotNull @Size(min=2)
 	private List<Service> collection;
+	
+	@Input @InputNumber @NotNull
+	private BigDecimal price;
+	
+	
 	
 }

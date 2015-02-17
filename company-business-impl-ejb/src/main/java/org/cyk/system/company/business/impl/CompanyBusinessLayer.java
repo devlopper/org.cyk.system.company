@@ -47,8 +47,17 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	
 	@Override
 	public void createInitialData() {
-		
+		structure();
 	}
+	
+	private void structure(){
+		DivisionType department = new DivisionType(null, "DEPARTMENT", "Department");
+        create(department);
+        
+		ServiceType prestation = new ServiceType(null, "PRESTATION", "Prestation");
+        create(prestation);
+
+    }
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Override

@@ -18,6 +18,7 @@ import org.cyk.system.company.model.service.ServiceCollection;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.ui.web.primefaces.model.CustomerFormModel;
 import org.cyk.system.company.ui.web.primefaces.model.EmployeeFormModel;
+import org.cyk.system.company.ui.web.primefaces.model.ServiceCollectionFormModel;
 import org.cyk.system.root.business.api.BusinessAdapter;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.ui.api.MenuManager;
@@ -42,7 +43,7 @@ public class ContextListener extends AbstractContextListener implements Serializ
 		super.identifiableConfiguration(event);
 		businessClassConfig(Customer.class,CustomerFormModel.class);
 		businessClassConfig(Employee.class,EmployeeFormModel.class);
-		//businessClassConfig(ServiceCollection.class,ServiceCollectionFormModel.class);
+		businessClassConfig(ServiceCollection.class,ServiceCollectionFormModel.class);
 		
 		uiManager.getBusinesslisteners().add(new BusinessAdapter(){
 			private static final long serialVersionUID = 4605368263736933413L;
@@ -64,7 +65,7 @@ public class ContextListener extends AbstractContextListener implements Serializ
 			public <T extends AbstractIdentifiable> Long count(Class<T> dataClass, String filter) {
 				if(Customer.class.equals(dataClass)){
 					return customerBusiness.countAll();
-				}else if(Customer.class.equals(dataClass)){
+				}else if(Employee.class.equals(dataClass)){
 					return employeeBusiness.countAll();
 				}else if(ServiceCollection.class.equals(dataClass)){
 					return serviceCollectionBusiness.countAll();

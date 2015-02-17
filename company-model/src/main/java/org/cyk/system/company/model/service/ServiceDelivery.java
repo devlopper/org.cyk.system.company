@@ -21,5 +21,12 @@ public class ServiceDelivery extends AbstractIdentifiable implements Serializabl
 	
 	@ManyToOne
 	private Invoice invoice;
+
+	public ServiceDelivery(Service service, Invoice invoice) {
+		super();
+		this.service = service;
+		this.invoice = invoice;
+	}
+	
 	
 }

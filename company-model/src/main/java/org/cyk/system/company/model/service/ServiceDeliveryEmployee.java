@@ -22,5 +22,13 @@ public class ServiceDeliveryEmployee extends AbstractIdentifiable implements Ser
 	
 	@ManyToOne
 	private Employee employee;
+
+	public ServiceDeliveryEmployee(ServiceDelivery serviceDelivery,Employee employee) {
+		super();
+		this.serviceDelivery = serviceDelivery;
+		this.employee = employee;
+	}
+	
+	
 	
 }
