@@ -5,7 +5,7 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.model.service.Customer;
+import org.cyk.system.company.model.product.Customer;
 import org.cyk.ui.api.model.AbstractActorFormModel;
 
 @Getter @Setter

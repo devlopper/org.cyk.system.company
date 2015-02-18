@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component"
+      xmlns:kwordz="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.kwordz/component">
+
+    <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
+        <ui:param name="pageController" value="#{saleCrudOnePage}" />
+        <ui:define name="body">
+        	<p:panelGrid id="optionsPanel" columns="7">
+        		<p:outputLabel value="#{uiManager.text('model.entity.customer')}" for="customer" />
+        		<p:selectOneMenu id="customer" value="#{saleCrudOnePage.selectedCustomer}" var="customer"  converter="#{objectConverter}" 
+        			filter="true" filterMatchMode="contains">
+        			<f:selectItems value="#{saleCrudOnePage.customers}" var="c" itemLabel="#{c.person.names}"  />
+        			<p:column><h:outputText value="#{customer.registration.code}" /></p:column>
+		            <p:column><h:outputText value="#{customer.person.names}" /></p:column>
+        		</p:selectOneMenu>
+        		
+        		<p:outputLabel value="#{uiManager.text('model.entity.product')}" for="product" />
+        		<p:selectOneMenu id="product" value="#{saleCrudOnePage.selectedProduct}" var="product" converter="#{objectConverter}" 
+        			filter="true" filterMatchMode="contains" disabled="#{saleCrudOnePage.collectMoney}">
+        			<f:selectItems value="#{saleCrudOnePage.products}"  />
+        			<p:column><h:outputText value="#{product.code}" /></p:column>
+		            <p:column><h:outputText value="#{product.name}" /></p:column>
+        		</p:selectOneMenu>
+        		<p:commandButton value="#{uiManager.text('command.add')}" title="#{uiManager.text('command.add')}" icon="ui-icon-plus" 
+        			action="#{saleCrudOnePage.addProduct}" update="optionsPanel,datatable" disabled="#{saleCrudOnePage.collectMoney}"/>
+        		        		
+        		<p:commandButton id="cashButton" value="#{uiManager.text('command.cash')}" title="#{uiManager.text('command.cash')}" icon="ui-icon-calculator" 
+        			actionListener="#{saleCrudOnePage.cash}" update="optionsPanel,datatable,moneyPanel" 
+        			disabled="#{saleCrudOnePage.identifiable.saledProducts.size()==0 or saleCrudOnePage.collectMoney}" />
+        		
+        		<p:commandButton id="collectButton" value="#{uiManager.text('command.collect')}" title="#{uiManager.text('command.collect')}" icon="ui-icon-cart" 
+        			actionListener="#{saleCrudOnePage.sell}" update="optionsPanel,datatable,moneyPanel" disabled="#{saleCrudOnePage.collectProduct}" 
+        			immediate="true" />		
+        		 		
+        	</p:panelGrid>
+        	
+        	<p:remoteCommand name="refreshFooter" update=":form:datatable:grandtotal"/>
+        	
+        	<p:dataTable id="datatable" value="#{saleCrudOnePage.identifiable.saledProducts}" var="saledProduct" rowIndexVar="index" >
+        		
+        		<p:column headerText="#" width="1%"><h:outputText value="#{index+1}" /></p:column>
+        		<p:column headerText="#{uiManager.text('field.code')}" width="7%"><h:outputText value="#{saledProduct.product.code}" /></p:column>
+        		<p:column headerText="#{uiManager.text('field.name')}"><h:outputText value="#{saledProduct.product.name}" /></p:column>
+        		<p:column headerText="#{uiManager.text('field.price.unit')}" rendered="#{saleCrudOnePage.showQuantityColumn}" width="7%">
+        			<h:outputText value="#{saledProduct.product.price}" />
+        		</p:column>
+        		<p:column headerText="#{uiManager.text('field.quantity')}" rendered="#{saleCrudOnePage.showQuantityColumn}" width="4%">
+        			<pe:inputNumber id="quantity" value="#{saledProduct.quantity}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}" 
+        				minValue="1" decimalPlaces="0" rendered="#{saleCrudOnePage.collectProduct}">
+        				<p:ajax event="change" listener="#{saleCrudOnePage.productQuantityChanged(index)}" process="quantity" update="total,grandtotal" 
+        					oncomplete="refreshFooter();"/>
+        			</pe:inputNumber>
+        			<h:outputText value="#{saledProduct.quantity}" rendered="#{saleCrudOnePage.collectMoney}" />
+        		</p:column>
+        		<p:column headerText="#{uiManager.text('field.price.total')}" width="7%">
+        			<h:outputText id="total" value="#{saledProduct.price}" ></h:outputText>
+        			<f:facet name="footer">
+        				<h:outputText id="grandtotal" value="#{saleCrudOnePage.identifiable.cost}" />
+        			</f:facet>
+        		</p:column>
+        		
+        		<p:column width="7%" rendered="#{saleCrudOnePage.collectProduct}">
+        			<p:commandButton title="#{uiManager.text('command.delete')}" icon="ui-icon-minus" 
+        				action="#{saleCrudOnePage.deleteProduct(index)}" update=":form:optionsPanel,datatable" />
+        		</p:column>
+        		
+        	</p:dataTable>
+        	
+        	<p:outputPanel id="moneyPanel" ><ui:fragment rendered="#{saleCrudOnePage.collectMoney}">
+	        	<p:separator/>
+	        	
+	        	<p:panelGrid id="pg1" columns="3">
+	        		<p:outputLabel value="#{uiManager.text('field.amount.paid')}" for="amountPaid" />
+	        		<pe:inputNumber id="amountPaid" value="#{saleCrudOnePage.payment.amountPaid}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}"
+	        			 >
+	       				<p:ajax event="change" listener="#{saleCrudOnePage.amountPaidChanged}" process="amountPaid" update="pg2" />
+	       			</pe:inputNumber>
+	       			<p:message for="amountPaid" />
+	        	</p:panelGrid>    
+	        	
+	        	<p:outputPanel id="pg2" ><p:panelGrid columns="3" rendered="#{saleCrudOnePage.amountToHand.doubleValue()!=0}">
+	       			<h:outputText value="#{uiManager.text('field.amount.tohand')}"  />
+	       			<h:outputText id="amountRemained" value="#{saleCrudOnePage.amountToHand}"/>
+	       			<h:outputText value=""/>
+	       			
+	       			<p:outputLabel value="#{uiManager.text('field.amount.handed')}" for="amountHanded" />
+	        		<pe:inputNumber id="amountHanded" value="#{saleCrudOnePage.payment.amountHanded}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}"
+	        			>
+	       				<p:ajax event="change" listener="#{saleCrudOnePage.amountHandedChanged}" process="amountHanded" update="pg3" />
+	       			</pe:inputNumber>
+	       			<p:message for="amountHanded" />
+	       			     	
+	        	</p:panelGrid></p:outputPanel>  	
+	        	
+	        	<p:outputPanel id="pg3" ><p:panelGrid columns="3">
+	       			<h:outputText value="#{uiManager.text('field.money.balance')}" />
+	       			<h:outputText id="balance" value="#{saleCrudOnePage.balance}" />
+	       			<h:outputText value="" />	        	
+	        	</p:panelGrid></p:outputPanel>  	
+	        	
+        	</ui:fragment></p:outputPanel>        	
+        </ui:define>
+        
+        <ui:define name="contentMenuBar">
+ 			<cyk:command value="#{saleCrudOnePage.form.submitCommandable}" executeParameter="#{saleCrudOnePage.identifiable}" />
+ 		</ui:define>
+        
+    </ui:decorate>
+ 
+</html>

@@ -2,29 +2,25 @@
 <PROCESS model-entity="JSFProcess">
  <PROCESS-ITEM NAME="rules:*" PATH="*" SHAPE="32,17,0,0" model-entity="JSFProcessGroup">
   <PROCESS-ITEM ID="rules:*:0" NAME="item" PATH="*" model-entity="JSFProcessItem">
-   <PROCESS-ITEM-OUTPUT ID="newinvoice::#private#invoice#new.xhtml"
-    NAME="output" PATH="/private/invoice/new.xhtml"
-    TARGET="rules:#private#invoice#new.xhtml" TITLE="newinvoice" model-entity="JSFProcessItemOutput"/>
-   <PROCESS-ITEM-OUTPUT ID="newpayment::#private#payment#new.xhtml"
-    NAME="output1" PATH="/private/payment/new.xhtml"
-    TARGET="rules:#private#payment#new.xhtml" TITLE="newpayment" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
-    ID="serviceunitmany::#private#service#unit.xhtml" NAME="output2"
-    PATH="/private/service/unit.xhtml"
-    TARGET="rules:#private#service#unit.xhtml" TITLE="serviceunitmany" model-entity="JSFProcessItemOutput"/>
+    ID="productCollectionEditView::#private#productcollection#crudone.xhtml"
+    NAME="output" PATH="/private/productcollection/crudone.xhtml"
+    TARGET="rules:#private#productcollection#crudone.xhtml"
+    TITLE="productCollectionEditView" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="saleEditView::#private#sale#crudone.xhtml"
+    NAME="output1" PATH="/private/sale/crudone.xhtml"
+    TARGET="rules:#private#sale#crudone.xhtml" TITLE="saleEditView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
-    ID="servicepackagemany::#private#service#package.xhtml"
-    NAME="output3" PATH="/private/service/package.xhtml"
-    TARGET="rules:#private#service#package.xhtml"
-    TITLE="servicepackagemany" model-entity="JSFProcessItemOutput"/>
+    ID="paymentEditView::#private#payment#crudone.xhtml" NAME="output2"
+    PATH="/private/payment/crudone.xhtml"
+    TARGET="rules:#private#payment#crudone.xhtml"
+    TITLE="paymentEditView" model-entity="JSFProcessItemOutput"/>
   </PROCESS-ITEM>
  </PROCESS-ITEM>
- <PROCESS-ITEM NAME="rules:#private#payment#new.xhtml"
-  PATH="/private/payment/new.xhtml" SHAPE="256,177,0,0" model-entity="JSFProcessGroup"/>
- <PROCESS-ITEM NAME="rules:#private#invoice#new.xhtml"
-  PATH="/private/invoice/new.xhtml" SHAPE="256,33,0,0" model-entity="JSFProcessGroup"/>
- <PROCESS-ITEM NAME="rules:#private#service#package.xhtml"
-  PATH="/private/service/package.xhtml" SHAPE="288,465,0,0" model-entity="JSFProcessGroup"/>
- <PROCESS-ITEM NAME="rules:#private#service#unit.xhtml"
-  PATH="/private/service/unit.xhtml" SHAPE="288,353,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#private#productcollection#crudone.xhtml"
+  PATH="/private/productcollection/crudone.xhtml" SHAPE="288,353,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#private#payment#crudone.xhtml"
+  PATH="/private/payment/crudone.xhtml" SHAPE="288,241,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#private#sale#crudone.xhtml"
+  PATH="/private/sale/crudone.xhtml" SHAPE="304,33,0,0" model-entity="JSFProcessGroup"/>
 </PROCESS>

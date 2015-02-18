@@ -1,0 +1,41 @@
+package org.cyk.system.company.model.product;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import org.cyk.system.company.model.structure.Division;
+import org.cyk.system.root.model.AbstractEnumeration;
+import org.cyk.utility.common.annotation.ModelBean;
+import org.cyk.utility.common.annotation.ModelBean.CrudInheritanceStrategy;
+import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
+import org.cyk.utility.common.annotation.user.interfaces.Input;
+import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
+import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
+import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
+import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
+
+@Getter @Setter @NoArgsConstructor @Entity 
+@ModelBean(crudStrategy=CrudStrategy.ENUMERATION,crudInheritanceStrategy=CrudInheritanceStrategy.CHILDREN_ONLY)
+public class Product extends AbstractEnumeration implements Serializable  {
+
+	private static final long serialVersionUID = -6128937819261060725L;
+	
+	@ManyToOne
+	@Input @InputChoice @InputOneChoice @InputOneCombo
+	protected Division division;
+	
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
+	@Input @InputNumber
+	protected BigDecimal price;
+	
+	
+}

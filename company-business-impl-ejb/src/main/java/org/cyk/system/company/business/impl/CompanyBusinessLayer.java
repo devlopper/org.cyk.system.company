@@ -6,17 +6,15 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.cyk.system.company.business.api.service.CustomerBusiness;
-import org.cyk.system.company.business.api.service.ServiceBusiness;
-import org.cyk.system.company.business.api.service.ServiceCollectionBusiness;
-import org.cyk.system.company.business.api.service.ServiceTypeBusiness;
+import org.cyk.system.company.business.api.product.CustomerBusiness;
+import org.cyk.system.company.business.api.product.ProductBusiness;
+import org.cyk.system.company.business.api.product.ProductCollectionBusiness;
 import org.cyk.system.company.business.api.structure.DivisionBusiness;
 import org.cyk.system.company.business.api.structure.DivisionTypeBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
-import org.cyk.system.company.model.service.Customer;
-import org.cyk.system.company.model.service.Service;
-import org.cyk.system.company.model.service.ServiceCollection;
-import org.cyk.system.company.model.service.ServiceType;
+import org.cyk.system.company.model.product.Customer;
+import org.cyk.system.company.model.product.Product;
+import org.cyk.system.company.model.product.ProductCollection;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
@@ -33,11 +31,11 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private EmployeeBusiness employeeBusiness;
-	@Inject private ServiceTypeBusiness serviceTypeBusiness;
-	@Inject private ServiceBusiness serviceBusiness;
+	@Inject private ProductBusiness productBusiness;
+	@Inject private ProductCollectionBusiness productCollectionBusiness;
+	
 	@Inject private DivisionTypeBusiness divisionTypeBusiness;
 	@Inject private DivisionBusiness divisionBusiness;
-	@Inject private ServiceCollectionBusiness serviceCollectionBusiness;
 	
 	@Override
 	protected void initialisation() {
@@ -54,9 +52,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		DivisionType department = new DivisionType(null, "DEPARTMENT", "Department");
         create(department);
         
-		ServiceType prestation = new ServiceType(null, "PRESTATION", "Prestation");
-        create(prestation);
-
     }
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -64,11 +59,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
     public void registerTypedBusinessBean(Map<Class<AbstractIdentifiable>, TypedBusiness<AbstractIdentifiable>> beansMap) {
         beansMap.put((Class)Employee.class, (TypedBusiness)employeeBusiness);
         beansMap.put((Class)Customer.class, (TypedBusiness)customerBusiness);
-        beansMap.put((Class)ServiceType.class, (TypedBusiness)serviceTypeBusiness);
-        beansMap.put((Class)Service.class, (TypedBusiness)serviceBusiness);
+        beansMap.put((Class)Product.class, (TypedBusiness)productBusiness);
         beansMap.put((Class)DivisionType.class, (TypedBusiness)divisionTypeBusiness);
         beansMap.put((Class)Division.class, (TypedBusiness)divisionBusiness);
-        beansMap.put((Class)ServiceCollection.class, (TypedBusiness)serviceCollectionBusiness);
+        beansMap.put((Class)ProductCollection.class, (TypedBusiness)productCollectionBusiness);
     }
 
 }

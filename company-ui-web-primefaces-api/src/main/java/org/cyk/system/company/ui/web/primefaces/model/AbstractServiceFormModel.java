@@ -5,18 +5,15 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.model.service.Service;
+import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
-import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
-import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
-import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 
-@Getter @Setter
-public abstract class AbstractServiceFormModel extends AbstractFormModel<Service> implements Serializable {
+@Getter @Setter @Deprecated
+public abstract class AbstractServiceFormModel extends AbstractFormModel<Product> implements Serializable {
 
 	private static final long serialVersionUID = -3328823824725030136L;
 

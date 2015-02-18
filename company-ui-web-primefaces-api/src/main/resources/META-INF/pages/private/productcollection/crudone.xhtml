@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component"
+      xmlns:kwordz="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.kwordz/component">
+
+    <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
+        <ui:param name="pageController" value="#{productCollectionCrudOnePage}" />
+        <ui:define name="body">
+        	<p:panelGrid columns="3">
+        		<p:outputLabel value="#{uiManager.text('field.code')}" for="code"/>
+        		<p:inputText id="code" value="#{productCollectionCrudOnePage.identifiable.code}" required="true" requiredMessage="#{uiManager.textInputValueRequired('field.code')}" />
+        		<p:message for="code" />
+        		
+        		<p:outputLabel value="#{uiManager.text('field.name')}" for="name"/>
+        		<p:inputText id="name" value="#{productCollectionCrudOnePage.identifiable.name}" required="true" requiredMessage="#{uiManager.textInputValueRequired('field.name')}" />
+        		<p:message for="name" />
+        		
+        		<p:outputLabel value="#{uiManager.text('entity.model.product')}" for="picklist"/>
+	        	<p:pickList id="picklist" value="#{productCollectionCrudOnePage.dualListModel}" var="product" required="false" 
+	        		requiredMessage="#{uiManager.textInputValueRequired('entity.model.product')}"
+	                itemValue="#{product}" itemLabel="#{product.name}" showCheckbox="true"
+	                showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="#{objectConverter}" >
+	 
+			        <f:facet name="sourceCaption"><h:outputText value="#{uiManager.text('field.available')}" /></f:facet>
+			        <f:facet name="targetCaption"><h:outputText value="#{uiManager.text('field.selected')}" /></f:facet>
+			 
+			        <p:ajax event="transfer" listener="#{productCollectionCrudOnePage.onTransfer}" process="picklist" update="totalprice" />
+			        
+			        <p:column style="width:15%">
+			            <h:outputText value="#{product.code}" />
+			        </p:column>
+			 
+			        <p:column style="width:70%;">
+			            <h:outputText value="#{product.name}" />
+			        </p:column>
+			        <p:column style="width:15%;">
+			            <h:outputText value="#{product.price}" />
+			        </p:column>
+			    </p:pickList>
+	        	<p:message for="picklist" />
+	        	
+	        	<h:outputText value="#{uiManager.text('field.total')} :" />
+	        	<h:outputText id="totalprice" value="#{productCollectionCrudOnePage.totalPrice}" />
+	        	<h:outputText value="" />
+	        		
+	        	<p:outputLabel value="#{uiManager.text('field.price')}" for="price"/>
+	        	<pe:inputNumber id="price" value="#{productCollectionCrudOnePage.identifiable.price}" 
+	        		required="true" requiredMessage="#{uiManager.textInputValueRequired('field.price')}" 
+	        		emptyValue="zero">
+	        	</pe:inputNumber>
+	        	<p:message for="price" />
+	        </p:panelGrid>
+        	      	
+        </ui:define>
+        
+        <ui:define name="contentMenuBar">
+ 			<cyk:command value="#{productCollectionCrudOnePage.form.submitCommandable}" executeParameter="#{productCollectionCrudOnePage.identifiable}" />
+ 		</ui:define>
+        
+    </ui:decorate>
+ 
+</html>

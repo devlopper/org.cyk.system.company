@@ -7,31 +7,25 @@
 
 	<navigation-rule>
 		<from-view-id>*</from-view-id>
-
-		<navigation-case>
-			<from-outcome>newinvoice</from-outcome>
-			<to-view-id>/private/invoice/new.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
 		
 		<navigation-case>
-			<from-outcome>newpayment</from-outcome>
-			<to-view-id>/private/payment/new.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-		
-		<navigation-case>
-			<from-outcome>serviceunitmany</from-outcome>
-			<to-view-id>/private/service/unit.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-		
-		<navigation-case>
-			<from-outcome>servicepackagemany</from-outcome>
-			<to-view-id>/private/service/package.xhtml</to-view-id>
+			<from-outcome>productCollectionEditView</from-outcome>
+			<to-view-id>/private/productcollection/crudone.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 
+		<navigation-case>
+			<from-outcome>saleEditView</from-outcome>
+			<to-view-id>/private/sale/crudone.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>paymentEditView</from-outcome>
+			<to-view-id>/private/payment/crudone.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
 	</navigation-rule>
 
 </faces-config>

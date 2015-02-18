@@ -7,26 +7,23 @@ import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.annotation.WebListener;
 
-import org.cyk.system.company.business.api.service.CustomerBusiness;
-import org.cyk.system.company.business.api.service.ServiceCollectionBusiness;
+import org.cyk.system.company.business.api.product.CustomerBusiness;
+import org.cyk.system.company.business.api.product.ProductCollectionBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
-import org.cyk.system.company.model.service.Customer;
-import org.cyk.system.company.model.service.Invoice;
-import org.cyk.system.company.model.service.Payment;
-import org.cyk.system.company.model.service.Service;
-import org.cyk.system.company.model.service.ServiceCollection;
+import org.cyk.system.company.model.product.Customer;
+import org.cyk.system.company.model.product.Payment;
+import org.cyk.system.company.model.product.ProductCollection;
+import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.ui.web.primefaces.model.CustomerFormModel;
 import org.cyk.system.company.ui.web.primefaces.model.EmployeeFormModel;
-import org.cyk.system.company.ui.web.primefaces.model.ServiceCollectionFormModel;
+import org.cyk.system.company.ui.web.primefaces.model.ProductCollectionFormModel;
 import org.cyk.system.root.business.api.BusinessAdapter;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.ui.api.MenuManager;
 import org.cyk.ui.api.MenuManager.Type;
 import org.cyk.ui.api.UserSession;
-import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.UIMenu;
-import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.AbstractContextListener;
 
 @WebListener
@@ -36,14 +33,14 @@ public class ContextListener extends AbstractContextListener implements Serializ
 	
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private EmployeeBusiness employeeBusiness;
-	@Inject private ServiceCollectionBusiness serviceCollectionBusiness;
+	@Inject private ProductCollectionBusiness productCollectionBusiness;
 	
 	@Override
 	protected void identifiableConfiguration(ServletContextEvent event) {
 		super.identifiableConfiguration(event);
 		businessClassConfig(Customer.class,CustomerFormModel.class);
 		businessClassConfig(Employee.class,EmployeeFormModel.class);
-		businessClassConfig(ServiceCollection.class,ServiceCollectionFormModel.class);
+		businessClassConfig(ProductCollection.class,ProductCollectionFormModel.class,null);
 		
 		uiManager.getBusinesslisteners().add(new BusinessAdapter(){
 			private static final long serialVersionUID = 4605368263736933413L;
@@ -55,8 +52,8 @@ public class ContextListener extends AbstractContextListener implements Serializ
 					return (Collection<T>) customerBusiness.findAll();
 				}else if(Employee.class.equals(dataClass)){
 					return (Collection<T>) employeeBusiness.findAll();
-				} else if(ServiceCollection.class.equals(dataClass)){
-					return (Collection<T>) serviceCollectionBusiness.findAllWithService();
+				} else if(ProductCollection.class.equals(dataClass)){
+					return (Collection<T>) productCollectionBusiness.findAllWithProduct();
 				} 
 				return super.find(dataClass, first, pageSize, sortField, ascendingOrder, filter);
 			}
@@ -67,8 +64,8 @@ public class ContextListener extends AbstractContextListener implements Serializ
 					return customerBusiness.countAll();
 				}else if(Employee.class.equals(dataClass)){
 					return employeeBusiness.countAll();
-				}else if(ServiceCollection.class.equals(dataClass)){
-					return serviceCollectionBusiness.countAll();
+				}else if(ProductCollection.class.equals(dataClass)){
+					return productCollectionBusiness.countAll();
 				}
 				
 				return super.count(dataClass, filter);
@@ -81,47 +78,22 @@ public class ContextListener extends AbstractContextListener implements Serializ
 	public void menu(UserSession session, UIMenu menu, Type type) {
 		switch(type){
 		case APPLICATION:
-			UICommandable commandable;
 			
 			menu.addCommandable(MenuManager.crudMenu(Employee.class));
 			menu.addCommandable(MenuManager.crudMenu(Customer.class));
-			/*
-			commandable = menu.addCommandable("command.customer", null);
-			commandable.getChildren().add(p=MenuManager.getInstance().crudOne(Customer.class, null));
-			p.setLabel(UIManager.getInstance().text("command.item.add"));
-			commandable.getChildren().add(p=MenuManager.getInstance().crudMany(Customer.class, null));
-			p.setLabel(UIManager.getInstance().text("command.list"));
+			menu.addCommandable(MenuManager.crudMenu(ProductCollection.class));
+			menu.addCommandable(MenuManager.crudMenu(Sale.class));
+			menu.addCommandable(MenuManager.crudMenu(Payment.class));
 			
-			commandable = menu.addCommandable("command.client", null);
-			commandable.getChildren().add(p=MenuManager.getInstance().crudOne(Customer.class, null));
-			p.setLabel(UIManager.getInstance().text("command.item.add"));
-			commandable.getChildren().add(p=MenuManager.getInstance().crudMany(Customer.class, null));
-			p.setLabel(UIManager.getInstance().text("command.list"));
-			*/
-			//commandable.addChild("command.list", null, "",null);
-			/*commandable.addChild("command.search", null, "",null);
-			*/
-			commandable = menu.addCommandable("command.invoice", null);
-			commandable.addChild("command.invoice.new", null, "newinvoice",WebNavigationManager.getInstance().crudOneParameters(Invoice.class));
-			commandable.addChild("command.payment.do", null, "newpayment",WebNavigationManager.getInstance().crudOneParameters(Payment.class));
-			
-			//commandable.getChildren().add(p=MenuManager.getInstance().crudOne(Invoice.class, null));
-			//p.setLabel(UIManager.getInstance().text("command.item.new"));
-			
-			//commandable.getChildren().add(p=MenuManager.getInstance().crudOne(Payment.class, null));
+			//commandable = menu.addCommandable("command.sale", null);
+			//commandable.addChild("command.product.collection.new", null, "crudoneproductcollection",WebNavigationManager.getInstance().crudOneParameters(ProductCollection.class));
+			//commandable.addChild("command.sale.new", null, "crudoneinvoice",WebNavigationManager.getInstance().crudOneParameters(Sale.class));
+			//commandable.addChild("command.payment.new", null, "crudonepayment",WebNavigationManager.getInstance().crudOneParameters(Payment.class));
 						
-			commandable = menu.addCommandable("command.service", null);
-			//commandable.getChildren().add(p=MenuManager.crudMany(Service.class, null));
-			//p.getParameters().add(new Parameter(webManager.getRequestParameterFormModel(), CompanyWebManager.getInstance().getFormModelServiceUnit()));
-			//p.setLabel(UIManager.getInstance().text("command.service.unit"));
+			//commandable = menu.addCommandable("command.service", null);
 			
-			commandable.getChildren().add(MenuManager.crudMany(Service.class, null));
-			commandable.getChildren().add(MenuManager.crudMany(ServiceCollection.class, null));
-			
-			//commandable.addChild("command.service.unit", null, "serviceunitmany",null);
-			//commandable.addChild("command.service.package", null, "servicepackagemany",null);
-			
-			
+			//commandable.getChildren().add(MenuManager.crudMany(Product.class, null));
+			//commandable.getChildren().add(MenuManager.crudMany(ProductCollection.class, null));
 			break;
 		default:break;
 		}	
