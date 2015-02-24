@@ -7,14 +7,18 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.cyk.system.company.business.api.product.CustomerBusiness;
+import org.cyk.system.company.business.api.product.PaymentBusiness;
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.ProductCollectionBusiness;
+import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.structure.DivisionBusiness;
 import org.cyk.system.company.business.api.structure.DivisionTypeBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.model.product.Customer;
+import org.cyk.system.company.model.product.Payment;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCollection;
+import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
@@ -33,6 +37,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private EmployeeBusiness employeeBusiness;
 	@Inject private ProductBusiness productBusiness;
 	@Inject private ProductCollectionBusiness productCollectionBusiness;
+	@Inject private SaleBusiness saleBusiness;
+	@Inject private PaymentBusiness paymentBusiness;
 	
 	@Inject private DivisionTypeBusiness divisionTypeBusiness;
 	@Inject private DivisionBusiness divisionBusiness;
@@ -63,6 +69,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)DivisionType.class, (TypedBusiness)divisionTypeBusiness);
         beansMap.put((Class)Division.class, (TypedBusiness)divisionBusiness);
         beansMap.put((Class)ProductCollection.class, (TypedBusiness)productCollectionBusiness);
+        beansMap.put((Class)Sale.class, (TypedBusiness)saleBusiness);
+        beansMap.put((Class)Payment.class, (TypedBusiness)paymentBusiness);
     }
 
 }

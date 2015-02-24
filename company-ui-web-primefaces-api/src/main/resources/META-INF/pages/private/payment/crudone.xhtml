@@ -12,10 +12,25 @@
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
         <ui:param name="pageController" value="#{paymentCrudOnePage}" />
         <ui:define name="body">
+        	<p:panelGrid columns="2">
+        		<h:outputText value="#{uiManager.text('field.cost')}" />
+        		<h:outputText value="#{paymentCrudOnePage.identifiable.sale.cost}" />
+        		
+        		<h:outputText value="#{uiManager.text('field.balance')}" />
+        		<h:outputText value="#{paymentCrudOnePage.identifiable.sale.balance}" />	
+        	</p:panelGrid>
         	
-        	<h1>Complex Payment Form</h1>
+        	<p:separator/>
+        	
+        	<ui:include src="/org.cyk.ui.web.primefaces.company/include/payment.xhtml">
+        		<ui:param name="controller" value="#{paymentCrudOnePage.paymentController}" />
+        	</ui:include>
         		
         </ui:define>
+        
+        <ui:define name="contentMenuBar">
+ 			<cyk:command value="#{paymentCrudOnePage.form.submitCommandable}" executeParameter="#{paymentCrudOnePage.identifiable}" />
+ 		</ui:define>
     </ui:decorate>
  
 </html>

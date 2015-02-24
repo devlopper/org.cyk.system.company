@@ -21,6 +21,36 @@
 		</navigation-case>
 		
 		<navigation-case>
+			<from-outcome>saleListView</from-outcome>
+			<to-view-id>/private/sale/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>saleNegativeBalanceListView</from-outcome>
+			<to-view-id>/private/sale/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>saleZeroBalanceListView</from-outcome>
+			<to-view-id>/private/sale/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>salePositiveBalanceListView</from-outcome>
+			<to-view-id>/private/sale/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>saleConsultView</from-outcome>
+			<to-view-id>/private/sale/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
 			<from-outcome>paymentEditView</from-outcome>
 			<to-view-id>/private/payment/crudone.xhtml</to-view-id>
 			<redirect />

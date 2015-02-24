@@ -1,0 +1,3 @@
+number of sale by day|week|month|timester|semester|year
+number of sale by product
+number of sale by cashier

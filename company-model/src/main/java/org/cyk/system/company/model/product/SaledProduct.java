@@ -25,20 +25,17 @@ public class SaledProduct extends AbstractIdentifiable implements Serializable {
 	@ManyToOne
 	private Product product;
 	
-	@Column(nullable=false) @NotNull
-	private Integer quantity;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
+	private BigDecimal quantity;
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
 	private BigDecimal price;
 
-	public SaledProduct(Sale sale,Product product,Integer quantity) {
+	public SaledProduct(Sale sale,Product product,BigDecimal quantity) {
 		super();
 		this.sale = sale;
 		this.product = product;
 		this.quantity = quantity;
 	}
-	
-	public BigDecimal getPrice(){
-		return product.getPrice().multiply(new BigDecimal(quantity));
-	}
+
 }

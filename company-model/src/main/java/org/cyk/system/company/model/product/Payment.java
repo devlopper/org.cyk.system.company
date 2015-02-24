@@ -10,34 +10,40 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.cyk.system.root.model.AbstractIdentifiable;
 
-@Getter @Setter @NoArgsConstructor @Entity
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
 public class Payment extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
+	@Column(unique=true)
+	private String identificationNumber;
+	
 	@ManyToOne
 	private Sale sale;
 	
-	/**
-	 * The amount given as input
-	 */
-	@Column(precision=10,scale=FLOAT_SCALE)
-	private BigDecimal amountPaid;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false)
+	private BigDecimal amountIn = BigDecimal.ZERO;
+	
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false)
+	private BigDecimal amountOut = BigDecimal.ZERO;
 	
 	/**
-	 * The amount given back to the hand
+	 * The amount paid
 	 */
-	@Column(precision=10,scale=FLOAT_SCALE)
-	private BigDecimal amountHanded;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false)
+	private BigDecimal amountPaid = BigDecimal.ZERO;
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable=false)
 	private Date date;
+	
 	
 	
 }

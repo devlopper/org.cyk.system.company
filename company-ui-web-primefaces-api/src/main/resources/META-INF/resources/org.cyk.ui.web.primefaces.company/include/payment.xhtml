@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component">
+      
+      	<p:panelGrid id="pg1" columns="3" rendered="#{controller.showIn}">
+      		<p:outputLabel value="#{uiManager.text('field.in')}" for="amountIn" />
+      		<pe:inputNumber id="amountIn" value="#{controller.payment.amountIn}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}">
+     			<p:ajax event="change" listener="#{controller.amountInChanged}" process="amountIn" update="pg2,pg3" />
+     		</pe:inputNumber>
+     		<p:message for="amountIn" />
+      	</p:panelGrid>    
+      	
+      	<p:outputPanel id="pg2" ><p:panelGrid columns="3" rendered="#{controller.showOut}">
+     		<h:outputText value="#{uiManager.text('field.tohand')}" rendered="#{controller.amountToHand.doubleValue()>0}" />
+     		<h:outputText id="amountRemained" value="#{controller.amountToHand}" rendered="#{controller.amountToHand.doubleValue()>0}"/>
+     		<h:outputText value="" rendered="#{controller.amountToHand.doubleValue()>0}"/>
+     			
+     		<p:outputLabel value="#{uiManager.text('field.out')}" for="amountOut" />
+      		<pe:inputNumber id="amountOut" value="#{controller.payment.amountOut}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}">
+     			<p:ajax event="change" listener="#{controller.amountOutChanged}" process="amountOut" update="pg3" />
+     		</pe:inputNumber>
+     		<p:message for="amountOut" />	     	
+      	</p:panelGrid></p:outputPanel>  	
+      	
+      	<p:outputPanel id="pg3" ><p:panelGrid columns="3">
+     		<h:outputText value="#{uiManager.text('field.balance')}" />
+     		<h:outputText id="balance" value="#{controller.balance}" />
+     		<h:outputText value="" />	        	
+      	</p:panelGrid></p:outputPanel>    
+	
+</html>

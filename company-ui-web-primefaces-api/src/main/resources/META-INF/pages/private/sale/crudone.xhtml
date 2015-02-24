@@ -55,7 +55,7 @@
         		<p:column headerText="#{uiManager.text('field.quantity')}" rendered="#{saleCrudOnePage.showQuantityColumn}" width="4%">
         			<pe:inputNumber id="quantity" value="#{saledProduct.quantity}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}" 
         				minValue="1" decimalPlaces="0" rendered="#{saleCrudOnePage.collectProduct}">
-        				<p:ajax event="change" listener="#{saleCrudOnePage.productQuantityChanged(index)}" process="quantity" update="total,grandtotal" 
+        				<p:ajax event="change" listener="#{saleCrudOnePage.productQuantityChanged(saledProduct)}" process="quantity" update="total,grandtotal" 
         					oncomplete="refreshFooter();"/>
         			</pe:inputNumber>
         			<h:outputText value="#{saledProduct.quantity}" rendered="#{saleCrudOnePage.collectMoney}" />
@@ -69,44 +69,16 @@
         		
         		<p:column width="7%" rendered="#{saleCrudOnePage.collectProduct}">
         			<p:commandButton title="#{uiManager.text('command.delete')}" icon="ui-icon-minus" 
-        				action="#{saleCrudOnePage.deleteProduct(index)}" update=":form:optionsPanel,datatable" />
+        				action="#{saleCrudOnePage.deleteProduct(saledProduct)}" update=":form:optionsPanel,datatable" />
         		</p:column>
         		
         	</p:dataTable>
         	
         	<p:outputPanel id="moneyPanel" ><ui:fragment rendered="#{saleCrudOnePage.collectMoney}">
-	        	<p:separator/>
-	        	
-	        	<p:panelGrid id="pg1" columns="3">
-	        		<p:outputLabel value="#{uiManager.text('field.amount.paid')}" for="amountPaid" />
-	        		<pe:inputNumber id="amountPaid" value="#{saleCrudOnePage.payment.amountPaid}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}"
-	        			 >
-	       				<p:ajax event="change" listener="#{saleCrudOnePage.amountPaidChanged}" process="amountPaid" update="pg2" />
-	       			</pe:inputNumber>
-	       			<p:message for="amountPaid" />
-	        	</p:panelGrid>    
-	        	
-	        	<p:outputPanel id="pg2" ><p:panelGrid columns="3" rendered="#{saleCrudOnePage.amountToHand.doubleValue()!=0}">
-	       			<h:outputText value="#{uiManager.text('field.amount.tohand')}"  />
-	       			<h:outputText id="amountRemained" value="#{saleCrudOnePage.amountToHand}"/>
-	       			<h:outputText value=""/>
-	       			
-	       			<p:outputLabel value="#{uiManager.text('field.amount.handed')}" for="amountHanded" />
-	        		<pe:inputNumber id="amountHanded" value="#{saleCrudOnePage.payment.amountHanded}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}"
-	        			>
-	       				<p:ajax event="change" listener="#{saleCrudOnePage.amountHandedChanged}" process="amountHanded" update="pg3" />
-	       			</pe:inputNumber>
-	       			<p:message for="amountHanded" />
-	       			     	
-	        	</p:panelGrid></p:outputPanel>  	
-	        	
-	        	<p:outputPanel id="pg3" ><p:panelGrid columns="3">
-	       			<h:outputText value="#{uiManager.text('field.money.balance')}" />
-	       			<h:outputText id="balance" value="#{saleCrudOnePage.balance}" />
-	       			<h:outputText value="" />	        	
-	        	</p:panelGrid></p:outputPanel>  	
-	        	
-        	</ui:fragment></p:outputPanel>        	
+        		<ui:include src="/org.cyk.ui.web.primefaces.company/include/payment.xhtml">
+        			<ui:param name="controller" value="#{saleCrudOnePage.paymentController}" />
+        		</ui:include>
+        	</ui:fragment></p:outputPanel>      	
         </ui:define>
         
         <ui:define name="contentMenuBar">

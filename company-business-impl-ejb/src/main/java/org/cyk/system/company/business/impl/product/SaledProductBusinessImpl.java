@@ -1,7 +1,6 @@
 package org.cyk.system.company.business.impl.product;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
@@ -21,7 +20,7 @@ public class SaledProductBusinessImpl extends AbstractTypedBusinessService<Saled
 
 	@Override
 	public void process(SaledProduct saledProduct) {
-		saledProduct.setPrice(saledProduct.getProduct().getPrice().multiply(new BigDecimal(saledProduct.getQuantity())));
+		saledProduct.setPrice(saledProduct.getProduct().getPrice().multiply(saledProduct.getQuantity()));
 	}
 	
 }
