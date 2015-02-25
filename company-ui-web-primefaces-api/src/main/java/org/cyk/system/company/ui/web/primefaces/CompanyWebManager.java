@@ -9,10 +9,16 @@ import javax.inject.Singleton;
 
 import lombok.Getter;
 
-import org.cyk.system.company.model.product.BalanceType;
+import org.cyk.system.company.model.payment.BalanceType;
+import org.cyk.system.company.model.payment.CashRegister;
+import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.Customer;
+import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.ProductCollection;
 import org.cyk.system.company.model.product.Sale;
+import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.structure.Division;
+import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.ui.api.MenuManager;
@@ -53,6 +59,11 @@ public class CompanyWebManager extends AbstractWebManager implements Serializabl
 	@Override
 	public Collection<Class<? extends AbstractIdentifiable>> parameterMenuItemClasses(UserSession userSession) {
 		Collection<Class<? extends AbstractIdentifiable>> collection = new ArrayList<>();
+		collection.add(DivisionType.class);
+		collection.add(Division.class);
+		
+		collection.add(IntangibleProduct.class);
+		collection.add(TangibleProduct.class);
 		collection.add(ProductCollection.class);
 		
 		return collection;
@@ -68,6 +79,7 @@ public class CompanyWebManager extends AbstractWebManager implements Serializabl
 		hr.addChild(c = MenuManager.crudOne(Customer.class, null));
 		c.setLabel(UIManager.getInstance().text("command.customer.new"));
 		hr.addChild(c = MenuManager.crudMany(Customer.class, null));
+		hr.addChild(c = MenuManager.crudMany(Cashier.class, null));
 		collection.add(hr);
 		
 		UICommandable sale = UIProvider.getInstance().createCommandable("command.sale", null);
@@ -77,6 +89,7 @@ public class CompanyWebManager extends AbstractWebManager implements Serializabl
 		sale.addChild("command.sale.negativebalance", null, "saleNegativeBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterNegativeBalance)));
 		sale.addChild("command.sale.zerobalance", null, "saleZeroBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterZeroBalance)));
 		sale.addChild("command.sale.positivebalance", null, "salePositiveBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterPositiveBalance)));
+		sale.addChild(c = MenuManager.crudMany(CashRegister.class, null));
 		collection.add(sale);
 		
 		return collection;

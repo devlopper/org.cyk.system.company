@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.model.product.BalanceType;
+import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.persistence.api.product.SaleDao;

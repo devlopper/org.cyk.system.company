@@ -8,6 +8,7 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.root.model.search.AbstractFieldValueSearchCriteriaSet;
 import org.cyk.system.root.model.search.DateSearchCriteria;
 

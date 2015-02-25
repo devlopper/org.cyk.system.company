@@ -12,7 +12,7 @@ import lombok.Setter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.product.SaleBusiness;
-import org.cyk.system.company.model.product.BalanceType;
+import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;

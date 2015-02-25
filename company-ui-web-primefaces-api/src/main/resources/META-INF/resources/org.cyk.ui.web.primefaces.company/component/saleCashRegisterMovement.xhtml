@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component">
+
+	<cc:interface componentType="org.cyk.ui.web.primefaces.compositecomponent.SaleCashRegisterMovement">
+		<cc:attribute name="value" required="true" />
+	</cc:interface>
+
+	<cc:implementation>
+
+      	<p:panelGrid id="pg1" columns="3" rendered="#{cc.value.showIn}">
+      		<p:outputLabel value="#{uiManager.text('field.in')}" for="amountIn" />
+      		<pe:inputNumber id="amountIn" value="#{cc.value.amountIn}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}">
+     			<p:ajax event="change" listener="#{cc.value.amountInChanged}" process="amountIn" update="pg2,pg3" />
+     		</pe:inputNumber>
+     		<p:message for="amountIn" />
+      	</p:panelGrid>    
+      	
+      	<p:outputPanel id="pg2" ><p:panelGrid columns="3" rendered="#{cc.value.showOut}">
+     		<h:outputText value="#{uiManager.text('field.tohand')}" rendered="#{cc.value.amountToHand.doubleValue()>0}" />
+     		<h:outputText id="amountRemained" value="#{cc.value.amountToHand}" rendered="#{cc.value.amountToHand.doubleValue()>0}"/>
+     		<h:outputText value="" rendered="#{cc.value.amountToHand.doubleValue()>0}"/>
+     			
+     		<p:outputLabel value="#{uiManager.text('field.out')}" for="amountOut" />
+      		<pe:inputNumber id="amountOut" value="#{cc.value.amountOut}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}">
+     			<p:ajax event="change" listener="#{cc.value.amountOutChanged}" process="amountOut" update="pg3" />
+     		</pe:inputNumber>
+     		<p:message for="amountOut" />	     	
+      	</p:panelGrid></p:outputPanel>  	
+      	
+      	<p:outputPanel id="pg3" ><p:panelGrid columns="3">
+     		<h:outputText value="#{uiManager.text('field.balance')}" />
+     		<h:outputText id="balance" value="#{cc.value.balance}" />
+     		<h:outputText value="" />	        	
+      	</p:panelGrid></p:outputPanel>    
+		
+	</cc:implementation>
+
+</ui:composition>

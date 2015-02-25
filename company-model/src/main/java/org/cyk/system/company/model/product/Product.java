@@ -33,9 +33,25 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	@Input @InputChoice @InputOneChoice @InputOneCombo
 	protected Division division;
 	
+	@ManyToOne
+	@Input @InputChoice @InputOneChoice @InputOneCombo
+	protected ProductCategory category;
+	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
 	@Input @InputNumber
 	protected BigDecimal price;
+
+	public Product(String code, String name, Division division, ProductCategory category,BigDecimal price) {
+		super(code, name, null, null);
+		this.division = division;
+		this.category = category;
+		this.price = price;
+	}
+
+	
+	
+	
+	
 	
 	
 }

@@ -1,4 +1,4 @@
-package org.cyk.system.company.model.product;
+package org.cyk.system.company.model.payment;
 
 public enum BalanceType {
 

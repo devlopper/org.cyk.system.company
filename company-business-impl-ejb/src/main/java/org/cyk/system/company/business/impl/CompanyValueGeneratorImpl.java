@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.cyk.system.company.business.api.CompanyValueGenerator;
-import org.cyk.system.company.model.product.Payment;
+import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.product.Sale;
 
 public class CompanyValueGeneratorImpl implements CompanyValueGenerator,Serializable {
@@ -17,7 +17,7 @@ public class CompanyValueGeneratorImpl implements CompanyValueGenerator,Serializ
 	}
 
 	@Override
-	public String paymentIdentificationNumber(Payment payment) {
+	public String cashRegisterMovementIdentificationNumber(CashRegisterMovement cashRegisterMovement) {
 		return RandomStringUtils.randomNumeric(8);
 	}
 

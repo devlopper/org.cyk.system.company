@@ -10,15 +10,15 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.CompanyValueGenerator;
-import org.cyk.system.company.business.api.product.PaymentBusiness;
+import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.product.SaledProductBusiness;
-import org.cyk.system.company.model.product.Payment;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.Sale;
+import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.model.product.SaledProduct;
-import org.cyk.system.company.persistence.api.product.PaymentDao;
+import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.cyk.system.company.persistence.api.product.SaledProductDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
@@ -30,10 +30,10 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 
 	@Inject private CompanyValueGenerator companyValueGenerator;
 	@Inject private SaledProductBusiness saledProductBusiness;
-	@Inject private PaymentBusiness paymentBusiness;
+	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	
 	@Inject private SaledProductDao saledProductDao;
-	@Inject private PaymentDao paymentDao;
+	@Inject private SaleCashRegisterMovementDao saleCashRegisterMovementDao;
 	
 	@Inject
 	public SaleBusinessImpl(SaleDao dao) {
@@ -82,10 +82,10 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	@Override
-	public void create(Sale sale, Payment payment) {
+	public void create(Sale sale, SaleCashRegisterMovement saleCashRegisterMovement) {
 		create(sale);
-		payment.setSale(sale);
-		paymentBusiness.create(payment);
+		saleCashRegisterMovement.setSale(sale);
+		saleCashRegisterMovementBusiness.create(saleCashRegisterMovement);
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
@@ -134,6 +134,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public void load(Sale sale) {
 		sale.setSaledProducts(saledProductDao.readBySale(sale));
-		sale.setPayments(paymentDao.readBySale(sale));
+		sale.setSaleCashRegisterMovements(saleCashRegisterMovementDao.readBySale(sale));
 	}
 }

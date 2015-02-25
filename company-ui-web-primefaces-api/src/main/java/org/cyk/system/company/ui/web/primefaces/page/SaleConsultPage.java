@@ -12,8 +12,8 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.model.product.Payment;
 import org.cyk.system.company.model.product.Sale;
+import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaledProduct;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.Crud;
@@ -58,7 +58,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		super.afterInitialisation();
 		for(SaledProduct saledProduct : identifiable.getSaledProducts())
 			saledProductsTable.addRow(new ProductDetails(saledProduct));
-		for(Payment payment : identifiable.getPayments())
+		for(SaleCashRegisterMovement payment : identifiable.getSaleCashRegisterMovements())
 			paymentsTable.addRow(new PaymentDetails(payment));
 		
 		saledProductsTable.getColumn("price").setFooter(identifiable.getCost().toString());
@@ -74,7 +74,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 			UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null);
 			contextualMenu.setLabel(contentTitle); 
 			
-			Collection<Parameter> parameters = Arrays.asList(new UICommandable.Parameter(uiManager.getClassParameter(), uiManager.keyFromClass(Payment.class)),
+			Collection<Parameter> parameters = Arrays.asList(new UICommandable.Parameter(uiManager.getClassParameter(), uiManager.keyFromClass(SaleCashRegisterMovement.class)),
 					new UICommandable.Parameter(uiManager.getCrudParameter(), uiManager.getCrudCreateParameter())
 			,new UICommandable.Parameter(uiManager.keyFromClass(Sale.class), identifiable.getIdentifier()));
 			Collection<Parameter> p;
@@ -132,13 +132,12 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		private static final long serialVersionUID = -6341285110719947720L;
 		
 		@Input @InputText
-		private String in,out,paid,date;
+		private String identifier,paid,date;
 		
-		public PaymentDetails(Payment payment) {
-			this.in = payment.getAmountIn().toString();
-			this.out = payment.getAmountOut().toString();
-			this.paid = payment.getAmountPaid().toString();
-			this.date = uiManager.formatDate(payment.getDate(), Boolean.TRUE);
+		public PaymentDetails(SaleCashRegisterMovement payment) {
+			this.identifier = payment.getCashRegisterMovement().getIdentificationNumber();
+			this.paid = payment.getCashRegisterMovement().getAmount().toString();
+			this.date = uiManager.formatDate(payment.getCashRegisterMovement().getDate(), Boolean.TRUE);
 		}
 	}
 	

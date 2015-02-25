@@ -8,7 +8,7 @@
       xmlns:pe="http://primefaces.org/ui/extensions"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component"
-      xmlns:kwordz="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.kwordz/component">
+      xmlns:company="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.company/component">
 
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
         <ui:param name="pageController" value="#{saleCrudOnePage}" />
@@ -38,7 +38,9 @@
         		
         		<p:commandButton id="collectButton" value="#{uiManager.text('command.collect')}" title="#{uiManager.text('command.collect')}" icon="ui-icon-cart" 
         			actionListener="#{saleCrudOnePage.sell}" update="optionsPanel,datatable,moneyPanel" disabled="#{saleCrudOnePage.collectProduct}" 
-        			immediate="true" />		
+        			immediate="true" />	
+        			
+        		<!--h:outputText value="#{saleCrudOnePage.cashRegisterController.cashier.e}" /-->	
         		 		
         	</p:panelGrid>
         	
@@ -75,9 +77,7 @@
         	</p:dataTable>
         	
         	<p:outputPanel id="moneyPanel" ><ui:fragment rendered="#{saleCrudOnePage.collectMoney}">
-        		<ui:include src="/org.cyk.ui.web.primefaces.company/include/payment.xhtml">
-        			<ui:param name="controller" value="#{saleCrudOnePage.paymentController}" />
-        		</ui:include>
+        		<company:saleCashRegisterMovement value="#{saleCrudOnePage.cashRegisterController}" />
         	</ui:fragment></p:outputPanel>      	
         </ui:define>
         

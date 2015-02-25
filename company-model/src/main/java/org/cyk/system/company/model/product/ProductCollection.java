@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import org.cyk.system.company.model.structure.Division;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
@@ -32,6 +33,10 @@ public class ProductCollection extends Product implements Serializable  {
 	@Input(label=@Text(value="model.entity.product")) @InputChoice @InputManyChoice @InputManyPickList
 	@Size(min=2)
 	private Collection<Product> collection = new ArrayList<Product>();
+	
+	public ProductCollection(String code, String name, Division division,ProductCategory category, BigDecimal price) {
+		super(code, name, division, category, price);
+	}
 	
 	public BigDecimal getTotalPrice(){
 		BigDecimal sum = BigDecimal.ZERO;

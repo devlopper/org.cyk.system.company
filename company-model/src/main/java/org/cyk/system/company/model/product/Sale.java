@@ -45,7 +45,8 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	private BigDecimal balance;
 	
 	/**/
+	
 	@Transient private Collection<SaledProduct> saledProducts = new ArrayList<>();
 	
-	@Transient private Collection<Payment> payments = new ArrayList<>();
+	@Transient private Collection<SaleCashRegisterMovement> saleCashRegisterMovements = new ArrayList<>();
 }
