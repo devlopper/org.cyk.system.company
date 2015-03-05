@@ -9,6 +9,8 @@ import org.cyk.system.root.persistence.api.TypedDao;
 
 public interface SaleDao extends TypedDao<Sale> {
 
+	//Collection<Sale> readByPeriod(Period period);
+	
 	Collection<Sale> readByCriteria(SaleSearchCriteria criteria);
     
 	Long countByCriteria(SaleSearchCriteria criteria);

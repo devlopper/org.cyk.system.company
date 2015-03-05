@@ -29,12 +29,10 @@ public class PaymentBusinessIT extends AbstractBusinessIT {
     protected void populate() {
     	cashRegister1 = new CashRegister();
     	cashRegister1.setCode("CASHIER001");
-    	cashRegister1.setName("Cashier001");
     	create(cashRegister1);
     	
     	cashRegisterLimited = new CashRegister();
     	cashRegisterLimited.setCode("CASHIER002");
-    	cashRegisterLimited.setName("Cashier002");
     	cashRegisterLimited.setMinimumBalance(new BigDecimal("0"));
     	cashRegisterLimited.setMaximumBalance(new BigDecimal("1000000"));
     	create(cashRegisterLimited);

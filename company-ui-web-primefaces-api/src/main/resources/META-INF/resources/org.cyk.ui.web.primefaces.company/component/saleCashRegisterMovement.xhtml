@@ -16,7 +16,7 @@
 
       	<p:panelGrid id="pg1" columns="3" rendered="#{cc.value.showIn}">
       		<p:outputLabel value="#{uiManager.text('field.in')}" for="amountIn" />
-      		<pe:inputNumber id="amountIn" value="#{cc.value.amountIn}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}">
+      		<pe:inputNumber id="amountIn" value="#{cc.value.saleCashRegisterMovement.amountIn}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}">
      			<p:ajax event="change" listener="#{cc.value.amountInChanged}" process="amountIn" update="pg2,pg3" />
      		</pe:inputNumber>
      		<p:message for="amountIn" />
@@ -28,7 +28,7 @@
      		<h:outputText value="" rendered="#{cc.value.amountToHand.doubleValue()>0}"/>
      			
      		<p:outputLabel value="#{uiManager.text('field.out')}" for="amountOut" />
-      		<pe:inputNumber id="amountOut" value="#{cc.value.amountOut}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}">
+      		<pe:inputNumber id="amountOut" value="#{cc.value.saleCashRegisterMovement.amountOut}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}">
      			<p:ajax event="change" listener="#{cc.value.amountOutChanged}" process="amountOut" update="pg3" />
      		</pe:inputNumber>
      		<p:message for="amountOut" />	     	

@@ -54,11 +54,22 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 				return balance.subtract(movement.getCashRegisterMovement().getAmount());
 			else
 				return balance.add(movement.getCashRegisterMovement().getAmount().abs());
+		//System.out.println("SaleCashRegisterMovementBusinessImpl.computeBalance() : "+balance);
 		return balance.subtract(movement.getCashRegisterMovement().getAmount());
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<SaleCashRegisterMovement> findBySale(Sale sale) {
 		return dao.readBySale(sale);
+	}
+	
+	@Override
+	public void in(SaleCashRegisterMovement saleCashRegisterMovement) {
+		saleCashRegisterMovement.getCashRegisterMovement().setAmount(saleCashRegisterMovement.getAmountIn().subtract(saleCashRegisterMovement.getAmountOut()));
+	}
+	
+	@Override
+	public void out(SaleCashRegisterMovement saleCashRegisterMovement) {
+		saleCashRegisterMovement.getCashRegisterMovement().setAmount(saleCashRegisterMovement.getAmountIn().subtract(saleCashRegisterMovement.getAmountOut()));
 	}
 }

@@ -49,7 +49,8 @@ public class CompanyWebManager extends AbstractWebManager implements Serializabl
 	@Override
 	protected void initialisation() {
 		INSTANCE = this;
-		super.initialisation();
+		super.initialisation();  
+		//lan
 	}
 		
 	public static CompanyWebManager getInstance() {
@@ -91,6 +92,16 @@ public class CompanyWebManager extends AbstractWebManager implements Serializabl
 		sale.addChild("command.sale.positivebalance", null, "salePositiveBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterPositiveBalance)));
 		sale.addChild(c = MenuManager.crudMany(CashRegister.class, null));
 		collection.add(sale);
+		
+		UICommandable statistics = UIProvider.getInstance().createCommandable("command.statistics", null);
+		statistics.addChild("company.command.statistics.sale.daily", null, "saleStatisticsPeriodly", null);
+		/*
+		statistics.addChild("company.command.statistics.sale.weekly", null, "saleStatisticsPeriodly", null);
+		statistics.addChild("company.command.statistics.sale.monthly", null, "saleStatisticsPeriodly", null);
+		statistics.addChild("company.command.statistics.sale.productly", null, "saleStatisticsProductly", null);
+		statistics.addChild("company.command.statistics.sale.cashierly", null, "saleStatisticsCashierly", null);
+		*/
+		collection.add(statistics);
 		
 		return collection;
 	}

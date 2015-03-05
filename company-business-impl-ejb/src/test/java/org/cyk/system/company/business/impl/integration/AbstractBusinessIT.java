@@ -1,8 +1,14 @@
 package org.cyk.system.company.business.impl.integration;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import net.sf.jasperreports.view.JasperViewer;
+
+import org.apache.commons.io.IOUtils;
 import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.impl.BusinessIntegrationTestHelper;
 import org.cyk.system.root.business.impl.validation.AbstractValidator;
@@ -10,6 +16,7 @@ import org.cyk.system.root.business.impl.validation.DefaultValidator;
 import org.cyk.system.root.business.impl.validation.ExceptionUtils;
 import org.cyk.system.root.business.impl.validation.ValidatorMap;
 import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.file.report.AbstractReport;
 import org.cyk.system.root.persistence.impl.GenericDaoImpl;
 import org.cyk.utility.common.test.AbstractIntegrationTestJpaBased;
 import org.cyk.utility.common.test.ArchiveBuilder;
@@ -72,6 +79,33 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
         if(!Boolean.TRUE.equals(validator.isSuccess()))
             System.out.println(validator.getMessagesAsString());
         
+    }
+    
+    protected void jasperViewer(final byte[] bytes){
+    	Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				JasperViewer jasperViewer;
+				try {
+					jasperViewer = new JasperViewer(new ByteArrayInputStream(bytes),Boolean.TRUE);
+					
+					jasperViewer.setVisible(true);
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+    	
+    	thread.run();
+    }
+    
+    protected void writeReport(AbstractReport<?> report){
+    	try {
+			IOUtils.write(report.getBytes(), new FileOutputStream( System.getProperty("user.dir")+"/target/"+report.getFileName()+"."+report.getFileExtension()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
     
     public static Archive<?> createRootDeployment() {

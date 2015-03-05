@@ -28,6 +28,30 @@
     NAME="output5" PATH="/private/sale/list.xhtml"
     TARGET="rules:#private#sale#list.xhtml"
     TITLE="salePositiveBalanceListView" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="saleConsultView::#private#sale#consult.xhtml" NAME="output6"
+    PATH="/private/sale/consult.xhtml"
+    TARGET="rules:#private#sale#consult.xhtml" TITLE="saleConsultView" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="saleStatisticsPeriodly::#private#sale#statistics#periodly.xhtml"
+    NAME="output7" PATH="/private/sale/statistics/periodly.xhtml"
+    TARGET="rules:#private#sale#statistics#periodly.xhtml"
+    TITLE="saleStatisticsPeriodly" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="saleStatisticsProductly::#private#sale#statistics#productly.xhtml"
+    NAME="output10" PATH="/private/sale/statistics/productly.xhtml"
+    TARGET="rules:#private#sale#statistics#productly.xhtml"
+    TITLE="saleStatisticsProductly" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="saleStatisticsCashierly::#private#sale#statistics#cashierly.xhtml"
+    NAME="output11" PATH="/private/sale/statistics/cashierly.xhtml"
+    TARGET="rules:#private#sale#statistics#cashierly.xhtml"
+    TITLE="saleStatisticsCashierly" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="paymentEditView::#private#payment#crudone.xhtml" NAME="output12"
+    PATH="/private/payment/crudone.xhtml"
+    TARGET="rules:#private#payment#crudone.xhtml"
+    TITLE="paymentEditView" model-entity="JSFProcessItemOutput"/>
   </PROCESS-ITEM>
  </PROCESS-ITEM>
  <PROCESS-ITEM NAME="rules:#private#productcollection#crudone.xhtml"
@@ -40,4 +64,10 @@
   PATH="/private/sale/list.xhtml" SHAPE="272,209,0,0" model-entity="JSFProcessGroup"/>
  <PROCESS-ITEM NAME="rules:#private#sale#consult.xhtml"
   PATH="/private/sale/consult.xhtml" SHAPE="288,577,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#private#sale#statistics#cashierly.xhtml"
+  PATH="/private/sale/statistics/cashierly.xhtml" SHAPE="304,1393,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#private#sale#statistics#productly.xhtml"
+  PATH="/private/sale/statistics/productly.xhtml" SHAPE="304,1281,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#private#sale#statistics#periodly.xhtml"
+  PATH="/private/sale/statistics/periodly.xhtml" SHAPE="304,865,0,0" model-entity="JSFProcessGroup"/>
 </PROCESS>

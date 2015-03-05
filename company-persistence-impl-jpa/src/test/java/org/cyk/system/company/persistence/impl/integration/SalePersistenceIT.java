@@ -6,7 +6,6 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Sale;
-import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -54,28 +53,31 @@ public class SalePersistenceIT extends AbstractPersistenceIT {
 	}
 	
 	public Sale sell(String quantity,String in,String out,String paid,Boolean soldOut){
+		/*
 		BigDecimal inb = new BigDecimal(in),outb=new BigDecimal(out);
 		BigDecimal cost = new BigDecimal(quantity).multiply(product.getPrice());
 		
     	Sale sale = null;//new Sale(null,cost,new Date(),soldOut,null);
     	create(sale);
-    	
+    	*/
     	/*
     	create(new SaledProduct(sale, product, new BigDecimal("1")));
     	create(new Payment(sale,inb,outb,new BigDecimal(paid),new Date()));
     	*/
     	
-    	pay(sale, in, out, paid, soldOut);
-    	return sale;
+    	//pay(sale, in, out, paid, soldOut);
+    	//return sale;
+		return null;
     }
 	
+	/*
 	public SaleCashRegisterMovement pay(Sale sale,String in,String out,String paid,Boolean soldOut){
 		//sale.setSoldOut(soldOut);
 		BigDecimal inb = new BigDecimal(in),outb=new BigDecimal(out);
 		SaleCashRegisterMovement payment = null;//new Payment(sale,inb,outb,new BigDecimal(paid),new Date());
     	create(payment);
     	return payment;
-    }
+    }*/
 					
 	// CRUD 
 	

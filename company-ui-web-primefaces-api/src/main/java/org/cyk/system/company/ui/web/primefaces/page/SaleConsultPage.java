@@ -7,11 +7,13 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import lombok.Getter;
 import lombok.Setter;
 
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaledProduct;
@@ -19,7 +21,9 @@ import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.ui.api.UIProvider;
 import org.cyk.ui.api.command.UICommandable;
+import org.cyk.ui.api.command.UICommandable.CommandRequestType;
 import org.cyk.ui.api.command.UICommandable.Parameter;
+import org.cyk.ui.api.command.UICommandable.ViewType;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
@@ -31,6 +35,8 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
+	@Inject private CompanyBusinessLayer companyBusinessLayer;
+	@Inject private CompanyWebManager companyWebManager;
 	//@Inject private SaleBusiness saleBusiness;
 	private FormOneData<SaleDetails> saleDetails;
 	private Table<ProductDetails> saledProductsTable;
@@ -70,10 +76,11 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 	@Override
 	protected Collection<UICommandable> contextualCommandables() {
 		Integer balance = identifiable.getBalance().compareTo(BigDecimal.ZERO);
+		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null);
+		contextualMenu.setLabel(contentTitle); 
+		
 		if(balance!=0){
-			UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null);
-			contextualMenu.setLabel(contentTitle); 
-			
+				
 			Collection<Parameter> parameters = Arrays.asList(new UICommandable.Parameter(uiManager.getClassParameter(), uiManager.keyFromClass(SaleCashRegisterMovement.class)),
 					new UICommandable.Parameter(uiManager.getCrudParameter(), uiManager.getCrudCreateParameter())
 			,new UICommandable.Parameter(uiManager.keyFromClass(Sale.class), identifiable.getIdentifier()));
@@ -89,9 +96,17 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 						CompanyWebManager.getInstance().getRequestParameterPayback() ));
 				contextualMenu.addChild("command.payback", null, "paymentEditView", p);	
 			}
-			return Arrays.asList(contextualMenu);
+		
 		}
-		return null;
+		
+		UICommandable printReceipt = UIProvider.getInstance().createCommandable("command.see.receipt", null);
+		printReceipt.setCommandRequestType(CommandRequestType.UI_VIEW);
+		printReceipt.setViewType(ViewType.TOOLS_REPORT);
+		printReceipt.getParameters().addAll(navigationManager.reportParameters(identifiable, companyBusinessLayer.getReportPointOfSale(),Boolean.FALSE));
+		
+		contextualMenu.getChildren().add(printReceipt);
+		
+		return Arrays.asList(contextualMenu);
 	}
 	
 	/**/

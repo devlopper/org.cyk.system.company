@@ -51,6 +51,24 @@
 		</navigation-case>
 		
 		<navigation-case>
+			<from-outcome>saleStatisticsPeriodly</from-outcome>
+			<to-view-id>/private/sale/statistics/periodly.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+				
+		<navigation-case>
+			<from-outcome>saleStatisticsProductly</from-outcome>
+			<to-view-id>/private/sale/statistics/productly.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>saleStatisticsCashierly</from-outcome>
+			<to-view-id>/private/sale/statistics/cashierly.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
 			<from-outcome>paymentEditView</from-outcome>
 			<to-view-id>/private/payment/crudone.xhtml</to-view-id>
 			<redirect />

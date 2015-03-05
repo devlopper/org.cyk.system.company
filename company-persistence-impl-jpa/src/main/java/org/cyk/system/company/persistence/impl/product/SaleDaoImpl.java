@@ -32,7 +32,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	//		READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT+READ_BY_CRITERIA_WHERE_BALANCE_FORMAT+ORDER_BY_FORMAT;
 	
 	private String readAllSortedByDate,readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,sumBalanceByCriteria,
-		sumCostByCriteria/*,readByCriteriaWithBalanceDateAscendingOrder,readByCriteriaWithBalanceDateDescendingOrder,sumBalanceByCriteriaWithBalance*/;
+		sumCostByCriteria/*,readByPeriod,readByCriteriaWithBalanceDateAscendingOrder,readByCriteriaWithBalanceDateDescendingOrder,sumBalanceByCriteriaWithBalance*/;
 	
 	@Override
     protected void namedQueriesInitialisation() {
@@ -45,6 +45,8 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
         registerNamedQuery(readByCriteriaDateAscendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "sale.date ASC") );
         registerNamedQuery(readByCriteriaDateDescendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "sale.date DESC") );
         
+        //registerNamedQuery(readByPeriod,"SELECT sale FROM Sale sale WHERE sale.date BETWEEN :fromDate AND :toDate");
+        
         //registerNamedQuery(readByCriteriaWithBalanceDateAscendingOrder,String.format(READ_BY_CRITERIA_WITHBALANCE_ORDERED_FORMAT, "sale.date ASC") );
         //registerNamedQuery(readByCriteriaWithBalanceDateDescendingOrder,String.format(READ_BY_CRITERIA_WITHBALANCE_ORDERED_FORMAT, "sale.date DESC") );
         
@@ -56,7 +58,12 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	public Collection<Sale> readAll() {
 		return namedQuery(readAllSortedByDate).resultMany();
 	}
-	
+	/*
+	@Override
+	public Collection<Sale> readByPeriod(Period period) {
+		return namedQuery(readByPeriod).resultMany();
+	}
+	*/
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Sale> readByCriteria(SaleSearchCriteria searchCriteria) {

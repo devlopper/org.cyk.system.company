@@ -11,10 +11,9 @@ public interface SaleCashRegisterMovementBusiness extends TypedBusiness<SaleCash
 
 	Collection<SaleCashRegisterMovement> findBySale(Sale sale);
 
-	/*
-	void in(SaleCashRegisterMovement payment);
-	void out(SaleCashRegisterMovement payment);
-	*/
+	void in(SaleCashRegisterMovement saleCashRegisterMovement);
+	void out(SaleCashRegisterMovement saleCashRegisterMovement);
+	
 	
 	//SaleCashRegisterMovement create(SaleCashRegisterMovement payment,Boolean payback);
 	
