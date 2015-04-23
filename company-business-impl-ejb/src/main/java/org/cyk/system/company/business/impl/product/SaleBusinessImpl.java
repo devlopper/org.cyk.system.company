@@ -3,6 +3,9 @@ package org.cyk.system.company.business.impl.product;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -11,20 +14,25 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyValueGenerator;
+import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
+import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.product.SaledProductBusiness;
+import org.cyk.system.company.business.api.product.SaleProductBusiness;
+import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.product.Product;
+import org.cyk.system.company.model.product.ProductEmployee;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
+import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleProductReport;
 import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
-import org.cyk.system.company.model.product.SaledProduct;
 import org.cyk.system.company.model.structure.Company;
+import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.product.SaleDao;
-import org.cyk.system.company.persistence.api.product.SaledProductDao;
+import org.cyk.system.company.persistence.api.product.SaleProductDao;
 import org.cyk.system.root.business.api.chart.CartesianModel;
 import org.cyk.system.root.business.api.chart.Series;
 import org.cyk.system.root.business.api.chart.SeriesItem;
@@ -49,15 +57,17 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	public static Boolean AUTO_SET_SALE_DATE = Boolean.TRUE;
 	
 	@Inject private CompanyValueGenerator companyValueGenerator;
-	@Inject private SaledProductBusiness saledProductBusiness;
+	@Inject private SaleProductBusiness saleProductBusiness;
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	@Inject private JasperReportBusinessImpl reportBusiness;
 	@Inject private LanguageBusiness languageBusiness;
 	@Inject private FileBusiness fileBusiness;
 	@Inject private ContactCollectionBusiness contactCollectionBusiness;
-	@Inject private TimeBusiness timeBusiness;
+	@Inject private ProductBusiness productBusiness;
+	@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
 	
-	@Inject private SaledProductDao saledProductDao;
+	@Inject private AccountingPeriodDao accountingPeriodDao;
+	@Inject private SaleProductDao saleProductDao;
 	@Inject private SaleCashRegisterMovementDao saleCashRegisterMovementDao;
 	
 	@Inject
@@ -66,46 +76,71 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public SaledProduct selectProduct(Sale sale, Product product) {
-		SaledProduct saledProduct = new SaledProduct(sale, product, new BigDecimal("1"));
-		saledProductBusiness.process(saledProduct);
-		sale.getSaledProducts().add(saledProduct);
-		sale.setCost(sale.getCost().add(saledProduct.getPrice()));
-		return saledProduct;
+	public SaleProduct selectProduct(Sale sale, Product product) {
+		SaleProduct saleProduct = new SaleProduct(sale, product, new BigDecimal("1"));
+		saleProductBusiness.process(saleProduct);
+		sale.getSaleProducts().add(saleProduct);
+		sale.setCost(sale.getCost().add(saleProduct.getPrice()));
+		return saleProduct;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public void unselectProduct(Sale sale, SaledProduct saledProduct) {
-		sale.getSaledProducts().remove(saledProduct);
-		sale.setCost(sale.getCost().subtract(saledProduct.getPrice()));
+	public void unselectProduct(Sale sale, SaleProduct saleProduct) {
+		if(sale.getSaleProducts() instanceof List<?>){
+			List<SaleProduct> list = (List<SaleProduct>) sale.getSaleProducts();
+			for(int i=0;i<list.size();){
+				if(list.get(i)==saleProduct){
+					list.remove(i);
+					break;
+				}else
+					i++;
+			}
+		}
+		sale.setCost(sale.getCost().subtract(saleProduct.getPrice()));
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public void quantifyProduct(Sale sale, SaledProduct saledProduct) {
-		saledProductBusiness.process(saledProduct);
+	public void quantifyProduct(Sale sale, SaleProduct saleProduct) {
+		saleProductBusiness.process(saleProduct);
 		sale.setCost(BigDecimal.ZERO);
-		for(SaledProduct saleProduct : sale.getSaledProducts())
-			sale.setCost( sale.getCost().add(saleProduct.getPrice() ));
+		for(SaleProduct lSaleProduct : sale.getSaleProducts())
+			sale.setCost( sale.getCost().add(lSaleProduct.getPrice() ));
 	}
 	
 	@Override
 	public Sale create(Sale sale) {
+		exceptionUtils().exception(sale.getAccountingPeriod()==null, "exception.sale.accountingperiodmissing");
+		productBusiness.consume(sale.getSaleProducts());
+		
 		BigDecimal total = BigDecimal.ZERO;
-		for(SaledProduct saleProduct : sale.getSaledProducts())
+		for(SaleProduct saleProduct : sale.getSaleProducts())
 			total = total.add(saleProduct.getPrice());
 		exceptionUtils().exception(!total.equals(sale.getCost()), "validation.sale.cost.sum");
 		
+		AccountingPeriod accountingPeriod = sale.getAccountingPeriod();
+		accountingPeriod.getSalesResults().setCount(sale.getAccountingPeriod().getSalesResults().getCount().add(BigDecimal.ONE));
+		
 		if(Boolean.TRUE.equals(AUTO_SET_SALE_DATE))
-			sale.setDate(universalTimeCoordinated());
+			if(sale.getDate()==null)
+				sale.setDate(universalTimeCoordinated());
 		sale.setIdentificationNumber(companyValueGenerator.saleIdentificationNumber(sale));
-		sale.setBalance(sale.getCost());
-		sale.setValueAddedTax(sale.getCost().multiply(sale.getCashier().getCashRegister().getCompany().getValueAddedTaxRate()));
+		
+		for(SaleProduct saleProduct : sale.getSaleProducts()){	
+			sale.setValueAddedTax(sale.getValueAddedTax().add(saleProduct.getValueAddedTax()));
+			sale.setTurnover(sale.getTurnover().add(saleProduct.getTurnover()));
+			sale.setBalance(sale.getBalance().add(saleProduct.getPrice()));
+		}
+		
+		accountingPeriod.getSalesResults().setTurnover(accountingPeriod.getSalesResults().getTurnover().add(sale.getTurnover()));
 		
 		sale = super.create(sale);
-		for(SaledProduct saledProduct : sale.getSaledProducts()){
-			saledProduct.setSale(sale);
-			genericDao.create(saledProduct);
+		for(SaleProduct saleProduct : sale.getSaleProducts()){
+			saleProduct.setSale(sale);
+			genericDao.create(saleProduct);
 		}
+		
+		accountingPeriodProductBusiness.consume(sale.getAccountingPeriod(), sale.getSaleProducts());
+		accountingPeriodDao.update(accountingPeriod);
 		return sale;
 	}
 	
@@ -115,33 +150,32 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		saleCashRegisterMovement.setSale(sale);
 		saleCashRegisterMovementBusiness.create(saleCashRegisterMovement);
 		//create report
-		Company company = saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getCompany();
+		Company company = saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getOwnedCompany().getCompany();
 		BigDecimal numberOfProducts = BigDecimal.ZERO;
-		for(SaledProduct sp : sale.getSaledProducts())
+		for(SaleProduct sp : sale.getSaleProducts())
 			numberOfProducts = numberOfProducts.add(sp.getQuantity());
 		SaleReport saleReport = new SaleReport(sale.getIdentificationNumber(),saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getCode(),
-				DATE_TIME_LONG_FORMAT.format(sale.getDate()),numberOfProducts.toString()+"",sale.getCost().toString(),
+				timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN),numberBusiness.format(numberOfProducts)+"",numberBusiness.format(sale.getCost()),
 				languageBusiness.findText("company.report.pointofsale.welcome"),languageBusiness.findText("company.report.pointofsale.goodbye"));
-		saleReport.getCompany().setName(company.getName());
+		saleReport.getAccountingPeriod().getCompany().setName(company.getName());
 		contactCollectionBusiness.load(company.getContactCollection());
-		saleReport.getCompany().getContact().setPhoneNumbers(StringUtils.join(company.getContactCollection().getPhoneNumbers()," - "));
+		saleReport.getAccountingPeriod().getCompany().getContact().setPhoneNumbers(StringUtils.join(company.getContactCollection().getPhoneNumbers()," - "));
 		saleReport.getCustomer().setRegistrationCode(sale.getCustomer()==null?"":sale.getCustomer().getRegistration().getCode());
-		saleReport.getSaleCashRegisterMovement().setAmountDue(sale.getCost().toString());
-		saleReport.getSaleCashRegisterMovement().setAmountIn(saleCashRegisterMovement.getAmountIn().toString());
-		saleReport.getSaleCashRegisterMovement().setAmountToOut(saleCashRegisterMovement.getAmountIn().subtract(sale.getCost()).toString());
-		saleReport.getSaleCashRegisterMovement().setAmountOut(saleCashRegisterMovement.getAmountOut().toString());
-		saleReport.getSaleCashRegisterMovement().setVatRate(company.getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2).toString()+"%");
-		saleReport.getSaleCashRegisterMovement().setVatAmount(sale.getValueAddedTax().toString());
-		saleReport.getSaleCashRegisterMovement().setAmountDueNoTaxes(sale.getCost().subtract(sale.getValueAddedTax()).toString());
+		saleReport.getSaleCashRegisterMovement().setAmountDue(numberBusiness.format(sale.getCost()));
+		saleReport.getSaleCashRegisterMovement().setAmountIn(numberBusiness.format(saleCashRegisterMovement.getAmountIn()));
+		saleReport.getSaleCashRegisterMovement().setAmountToOut(numberBusiness.format(saleCashRegisterMovement.getAmountIn().subtract(sale.getCost())));
+		saleReport.getSaleCashRegisterMovement().setAmountOut(numberBusiness.format(saleCashRegisterMovement.getAmountOut()));
+		saleReport.getSaleCashRegisterMovement().setVatRate(numberBusiness.format(sale.getAccountingPeriod().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
+		saleReport.getSaleCashRegisterMovement().setVatAmount(numberBusiness.format(sale.getValueAddedTax().setScale(2)));
+		saleReport.getSaleCashRegisterMovement().setAmountDueNoTaxes(numberBusiness.format(sale.getCost().subtract(sale.getValueAddedTax()).setScale(2)));
 		
-		for(SaledProduct sp : sale.getSaledProducts()){
-			SaleProductReport spr = new SaleProductReport(saleReport,sp.getProduct().getCode(),sp.getProduct().getName(),sp.getProduct().getPrice().toString(),
-					sp.getQuantity().toString(),sp.getPrice().toString());
-			saleReport.getSaledProducts().add(spr);
+		for(SaleProduct sp : sale.getSaleProducts()){
+			SaleProductReport spr = new SaleProductReport(saleReport,sp.getProduct().getCode(),sp.getProduct().getName(),numberBusiness.format(sp.getProduct().getPrice()),
+					numberBusiness.format(sp.getQuantity()),numberBusiness.format(sp.getPrice()));
+			saleReport.getSaleProducts().add(spr);
 		}
 		
-		Report<SaleReport> report = createReport(sale, saleReport,saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getCompany().getPointOfSaleReportFile(),
-				"pdf");
+		Report<SaleReport> report = createReport(sale, saleReport,sale.getAccountingPeriod().getPointOfSaleReportFile(),"pdf");
 		
 		sale.setReport(new File());
 		sale.getReport().setBytes(report.getBytes());
@@ -191,6 +225,12 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		return dao.sumCostByCriteria(criteria);
 	}
 	
+	@Override
+	public BigDecimal sumValueAddedTaxByCriteria(SaleSearchCriteria criteria) {
+		criteriaDefaultValues(criteria);
+		return dao.sumValueAddedTaxByCriteria(criteria);
+	}
+	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public BigDecimal sumBalanceByCriteria(SaleSearchCriteria criteria) {
 		criteriaDefaultValues(criteria);
@@ -209,7 +249,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public void load(Sale sale) {
-		sale.setSaledProducts(saledProductDao.readBySale(sale));
+		sale.setSaleProducts(saleProductDao.readBySale(sale));
 		sale.setSaleCashRegisterMovements(saleCashRegisterMovementDao.readBySale(sale));
 	}
 
@@ -218,15 +258,32 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		return createReport(sales.iterator().next(), null, null,DEFAULT_POINT_OF_SALE_REPORT_EXTENSION);//TODO many receipt print must be handled
 	}
 	
+	@Override
+	public void updateDelivery(Sale sale,Collection<ProductEmployee> productEmployees) {
+		for(ProductEmployee productEmployee : productEmployees)
+			sale.getPerformers().add(productEmployee);
+		
+		Set<ProductEmployee> delete = new HashSet<>();
+		for(ProductEmployee productEmployee : sale.getPerformers())
+			if( !productEmployees.contains(productEmployee) )
+				delete.add(productEmployee);
+		
+		for(ProductEmployee productEmployee : delete)
+			sale.getPerformers().remove(productEmployee);
+		
+		update(sale);	
+	}
+	
 	/**/
 	
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public CartesianModel findTurnOverStatistics(SaleSearchCriteria saleSearchCriteria,TimeDivisionType timeDivisionType) {
 		Collection<Sale> sales = findByCriteria(saleSearchCriteria);
 		if(sales.isEmpty())
 			return null;
 		Period searchPeriod = new Period(saleSearchCriteria.getFromDateSearchCriteria().getValue(), 
 				saleSearchCriteria.getToDateSearchCriteria().getValue());
+		
 		String spl = languageBusiness.findText("field.from.date")+" "+DATE_SHORT_FORMAT.format(searchPeriod.getFromDate())+" "
 				+languageBusiness.findText("field.to.date")+"  "+DATE_SHORT_FORMAT.format(searchPeriod.getToDate());
 		
@@ -253,7 +310,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		return cartesianModel;
 	}
 	
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public CartesianModel findCountStatistics(SaleSearchCriteria saleSearchCriteria,TimeDivisionType timeDivisionType) {
 		Collection<Sale> sales = findByCriteria(saleSearchCriteria);
 		if(sales.isEmpty())

@@ -32,12 +32,13 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	//		READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT+READ_BY_CRITERIA_WHERE_BALANCE_FORMAT+ORDER_BY_FORMAT;
 	
 	private String readAllSortedByDate,readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,sumBalanceByCriteria,
-		sumCostByCriteria/*,readByPeriod,readByCriteriaWithBalanceDateAscendingOrder,readByCriteriaWithBalanceDateDescendingOrder,sumBalanceByCriteriaWithBalance*/;
+		sumCostByCriteria,sumValueAddedTaxByCriteria/*,readByPeriod,readByCriteriaWithBalanceDateAscendingOrder,readByCriteriaWithBalanceDateDescendingOrder,sumBalanceByCriteriaWithBalance*/;
 	
 	@Override
     protected void namedQueriesInitialisation() {
     	super.namedQueriesInitialisation();
     	registerNamedQuery(sumCostByCriteria,"SELECT SUM(sale.cost) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT);
+    	registerNamedQuery(sumValueAddedTaxByCriteria,"SELECT SUM(sale.valueAddedTax) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT);
     	registerNamedQuery(sumBalanceByCriteria,"SELECT SUM(sale.balance) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT);
     	//registerNamedQuery(sumBalanceByCriteriaWithBalance,"SELECT SUM(sale.balance) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT+READ_BY_CRITERIA_WHERE_BALANCE_FORMAT);
     	registerNamedQuery(readAllSortedByDate,READ_BY_CRITERIA_SELECT_FORMAT+" ORDER BY sale.date DESC");
@@ -88,6 +89,13 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	@Override
 	public BigDecimal sumCostByCriteria(SaleSearchCriteria criteria) {
 		QueryWrapper<?> queryWrapper = namedQuery(sumCostByCriteria, BigDecimal.class).nullValue(BigDecimal.ZERO);
+		applyCriteriaParameters(queryWrapper, criteria);
+		return (BigDecimal) queryWrapper.resultOne();
+	}
+	
+	@Override
+	public BigDecimal sumValueAddedTaxByCriteria(SaleSearchCriteria criteria) {
+		QueryWrapper<?> queryWrapper = namedQuery(sumValueAddedTaxByCriteria, BigDecimal.class).nullValue(BigDecimal.ZERO);
 		applyCriteriaParameters(queryWrapper, criteria);
 		return (BigDecimal) queryWrapper.resultOne();
 	}

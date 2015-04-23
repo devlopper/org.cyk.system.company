@@ -22,12 +22,18 @@ public class SaleSearchCriteria extends AbstractFieldValueSearchCriteriaSet impl
 	private Boolean computeBalance=Boolean.TRUE;
 	
 	public SaleSearchCriteria(){
-		this(null,null);
+		this(null,null,null);
 	}
 	
 	public SaleSearchCriteria(Date fromDate,Date toDate) {
+		this(fromDate,toDate,null);
+	}
+	
+	public SaleSearchCriteria(Date fromDate,Date toDate,BalanceType balanceType) {
 		this.fromDateSearchCriteria = new DateSearchCriteria(fromDate);
 		this.toDateSearchCriteria = new DateSearchCriteria(toDate);
+		if(balanceType!=null)
+			this.balanceTypes.add(balanceType);
 	}
 	
 }

@@ -8,8 +8,8 @@ import lombok.Getter;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.persistence.api.GenericDao;
 import org.cyk.system.root.persistence.impl.AbstractPersistenceService;
-import org.cyk.utility.common.test.AbstractIntegrationTestJpaBased;
-import org.cyk.utility.common.test.TestMethod;
+import org.cyk.utility.test.AbstractIntegrationTestJpaBased;
+import org.cyk.utility.test.TestMethod;
 import org.jboss.shrinkwrap.api.Archive;
 
 /**

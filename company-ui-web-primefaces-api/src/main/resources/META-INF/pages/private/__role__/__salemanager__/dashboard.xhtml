@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component"
+      xmlns:kwordz="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.kwordz/component">
+
+    <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
+        <ui:param name="pageController" value="#{saleDashBoardPage}" />
+        
+        <ui:define name="westContent">
+ 			<cyk:tree value="#{saleDashBoardPage.productTable.tree}" />
+ 			<ui:include src="#{defaultDesktopLayoutManager.westInclude}" />
+ 		</ui:define>
+        
+        <ui:define name="body">
+        	<!--
+        	<table><tr style="vertical-align: center;">
+        		<td><cyk:formOneData value="#{saleDashBoardPage.filterForm}"/></td>
+        		<td><cyk:command value="#{saleDashBoardPage.filterForm.submitCommandable}" executeParameter="#{saleDashBoardPage.filterForm.data}" /> </td>
+        	</tr> </table>
+        	
+        	<p:separator/>
+        	-->
+        	<table>
+        		<tr style="vertical-align: top;">
+        			<td style="width: 50%;">
+        				<cyk:formOneData value="#{saleDashBoardPage.salesResultsDetails}"/>
+        				
+        				<!--cyk:table value="#{saleDashBoardPage.cashRegisterTable}"/-->
+        				
+        				<cyk:table value="#{saleDashBoardPage.productTable}"/>
+        			</td>
+        			<td>
+        				<ui:fragment rendered="#{saleDashBoardPage.turnoverBarChartModel!=null}" >
+							<p:chart type="bar" model="#{saleDashBoardPage.turnoverBarChartModel}"  />
+		 					<p:chart type="bar" model="#{saleDashBoardPage.countBarChartModel}" />
+						</ui:fragment>
+        				
+        			</td>
+        		</tr>
+        	</table>
+        	
+        	
+        	
+        	
+        		
+        </ui:define>
+        
+        
+    </ui:decorate>
+ 
+</html>

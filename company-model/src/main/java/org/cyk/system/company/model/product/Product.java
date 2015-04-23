@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
@@ -18,12 +20,14 @@ import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudInheritanceStrategy;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
+import org.cyk.utility.common.annotation.user.interfaces.InputBooleanCheck;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 
 @Getter @Setter @NoArgsConstructor @Entity 
+@Inheritance(strategy=InheritanceType.JOINED)
 @ModelBean(crudStrategy=CrudStrategy.ENUMERATION,crudInheritanceStrategy=CrudInheritanceStrategy.CHILDREN_ONLY)
 public class Product extends AbstractEnumeration implements Serializable  {
 
@@ -40,6 +44,18 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
 	@Input @InputNumber
 	protected BigDecimal price;
+	
+	@Column(nullable=false) @NotNull
+	@Input @InputBooleanCheck
+	protected Boolean salable = Boolean.TRUE;
+	
+	/*
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
+	protected BigDecimal usedCount = BigDecimal.ZERO;
+	
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
+	protected BigDecimal turnover = BigDecimal.ZERO;
+	*/
 
 	public Product(String code, String name, Division division, ProductCategory category,BigDecimal price) {
 		super(code, name, null, null);
@@ -48,10 +64,4 @@ public class Product extends AbstractEnumeration implements Serializable  {
 		this.price = price;
 	}
 
-	
-	
-	
-	
-	
-	
 }

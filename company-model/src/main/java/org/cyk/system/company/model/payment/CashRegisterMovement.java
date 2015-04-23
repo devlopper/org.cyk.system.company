@@ -40,5 +40,7 @@ public class CashRegisterMovement extends AbstractIdentifiable implements Serial
 		super();
 		this.cashRegister = cashRegister;
 	}
+	
+	
 		
 }

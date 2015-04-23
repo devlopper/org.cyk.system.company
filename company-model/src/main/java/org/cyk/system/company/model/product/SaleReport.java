@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.cyk.system.company.model.structure.CompanyReport;
+import org.cyk.system.company.model.accounting.AccountingPeriodReport;
 import org.cyk.system.root.model.party.person.ActorReport;
 import org.cyk.utility.common.generator.AbstractGeneratable;
 
@@ -21,12 +21,12 @@ public class SaleReport extends AbstractGeneratable<SaleReport> implements Seria
 
 	private String identifier,cashRegisterIdentifier,date,numberOfProducts,cost,welcomeMessage,goodByeMessage;
 	
-	private CompanyReport company = new CompanyReport();
+	private AccountingPeriodReport accountingPeriod = new AccountingPeriodReport();
 	private ActorReport cashier = new ActorReport();
 	private ActorReport customer = new ActorReport();
 	private SaleCashRegisterMovementReport saleCashRegisterMovement = new SaleCashRegisterMovementReport();
 	
-	private Collection<SaleProductReport> saledProducts = new ArrayList<>();
+	private Collection<SaleProductReport> saleProducts = new ArrayList<>();
 
 	public SaleReport(String identifier, String cashRegisterIdentifier,
 			String date, String numberOfProducts, String cost,
@@ -52,7 +52,7 @@ public class SaleReport extends AbstractGeneratable<SaleReport> implements Seria
 		welcomeMessage="Welcome";
 		goodByeMessage="Good bye";
 		
-		company.generate();
+		accountingPeriod.generate();
 		cashier.generate();
 		customer.generate();
 		saleCashRegisterMovement.generate();
@@ -60,7 +60,7 @@ public class SaleReport extends AbstractGeneratable<SaleReport> implements Seria
 			SaleProductReport sp = new SaleProductReport();
 			sp.generate();
 			sp.setSaleReport(this);
-			saledProducts.add(sp);
+			saleProducts.add(sp);
 		}
 		
 	}

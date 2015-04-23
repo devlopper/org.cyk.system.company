@@ -7,72 +7,118 @@
 
 	<navigation-rule>
 		<from-view-id>*</from-view-id>
-		
+		<!-- Stock Manager -->
 		<navigation-case>
 			<from-outcome>productCollectionEditView</from-outcome>
-			<to-view-id>/private/productcollection/crudone.xhtml</to-view-id>
+			<to-view-id>/private/__role__/__stockmanager__/editoneproductcollection.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
-
 		<navigation-case>
-			<from-outcome>saleEditView</from-outcome>
-			<to-view-id>/private/sale/crudone.xhtml</to-view-id>
+			<from-outcome>tangibleProductStockInView</from-outcome>
+			<to-view-id>/private/__role__/__stockmanager__/stockmovement.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>tangibleProductStockOutView</from-outcome>
+			<to-view-id>/private/__role__/__stockmanager__/stockmovement.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>tangibleProductStockMovementCrudManyView</from-outcome>
+			<to-view-id>/private/__role__/__stockmanager__/stockmovement.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<!--navigation-case>
+			<from-outcome>tangibleProductInventoryListView</from-outcome>
+			<to-view-id>/private/__role__/__stockmanager__/tangibleproduct/inventorylist.xhtml</to-view-id>
+			<redirect />
+		</navigation-case-->
+		<navigation-case>
+			<from-outcome>tangibleProductInventoryEditView</from-outcome>
+			<to-view-id>/private/__role__/__stockmanager__/inventoryedit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>tangibleProductQuantityInUseUpdateManyView</from-outcome>
+			<to-view-id>/private/__role__/__stockmanager__/quantityinuseedit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>stockDashBoardView</from-outcome>
+			<to-view-id>/private/__role__/__stockmanager__/dashboard.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		
+		<!-- Sale Manager -->
+		<navigation-case>
+			<from-outcome>saleDashBoardView</from-outcome>
+			<to-view-id>/private/__role__/__salemanager__/dashboard.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>saleEditView</from-outcome>
+			<to-view-id>/private/__role__/__salemanager__/crudone.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 		<navigation-case>
 			<from-outcome>saleListView</from-outcome>
-			<to-view-id>/private/sale/list.xhtml</to-view-id>
+			<to-view-id>/private/__role__/__salemanager__/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>saleDeliveryDetailsView</from-outcome>
+			<to-view-id>/private/__role__/__salemanager__/deliverydetails.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		
 		<navigation-case>
 			<from-outcome>saleNegativeBalanceListView</from-outcome>
-			<to-view-id>/private/sale/list.xhtml</to-view-id>
+			<to-view-id>/private/__role__/__salemanager__/list.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		
 		<navigation-case>
 			<from-outcome>saleZeroBalanceListView</from-outcome>
-			<to-view-id>/private/sale/list.xhtml</to-view-id>
+			<to-view-id>/private/__role__/__salemanager__/list.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		
 		<navigation-case>
 			<from-outcome>salePositiveBalanceListView</from-outcome>
-			<to-view-id>/private/sale/list.xhtml</to-view-id>
+			<to-view-id>/private/__role__/__salemanager__/list.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		
 		<navigation-case>
 			<from-outcome>saleConsultView</from-outcome>
-			<to-view-id>/private/sale/consult.xhtml</to-view-id>
+			<to-view-id>/private/__role__/__salemanager__/consult.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		
 		<navigation-case>
 			<from-outcome>saleStatisticsPeriodly</from-outcome>
-			<to-view-id>/private/sale/statistics/periodly.xhtml</to-view-id>
+			<to-view-id>/private/__role__/__salemanager__/statistics/periodly.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 				
 		<navigation-case>
 			<from-outcome>saleStatisticsProductly</from-outcome>
-			<to-view-id>/private/sale/statistics/productly.xhtml</to-view-id>
+			<to-view-id>/private/__role__/__salemanager__/statistics/productly.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		
 		<navigation-case>
 			<from-outcome>saleStatisticsCashierly</from-outcome>
-			<to-view-id>/private/sale/statistics/cashierly.xhtml</to-view-id>
+			<to-view-id>/private/__role__/__salemanager__/statistics/cashierly.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>paymentEditView</from-outcome>
+			<to-view-id>/private/__role__/__salemanager__/createcashmovement.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		
-		<navigation-case>
-			<from-outcome>paymentEditView</from-outcome>
-			<to-view-id>/private/payment/crudone.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
+		<!-- Human Resources Manager -->
 		
 	</navigation-rule>
 

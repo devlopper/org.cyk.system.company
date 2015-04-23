@@ -95,8 +95,8 @@
 	<field name="customer" class="org.cyk.system.root.model.party.person.ActorReport">
 		<fieldDescription><![CDATA[customer]]></fieldDescription>
 	</field>
-	<field name="saledProducts" class="java.util.Collection">
-		<fieldDescription><![CDATA[saledProducts]]></fieldDescription>
+	<field name="saleProducts" class="java.util.Collection">
+		<fieldDescription><![CDATA[saleProducts]]></fieldDescription>
 	</field>
 	<field name="saleCashRegisterMovement" class="org.cyk.system.company.model.product.SaleCashRegisterMovementReport">
 		<fieldDescription><![CDATA[saleCashRegisterMovement]]></fieldDescription>
@@ -113,8 +113,8 @@
 	<field name="cashRegisterIdentifier" class="java.lang.String">
 		<fieldDescription><![CDATA[cashRegisterIdentifier]]></fieldDescription>
 	</field>
-	<field name="company" class="org.cyk.system.company.model.structure.CompanyReport">
-		<fieldDescription><![CDATA[company]]></fieldDescription>
+	<field name="accountingPeriod" class="org.cyk.system.company.model.accounting.AccountingPeriodReport">
+		<fieldDescription><![CDATA[accountingPeriod]]></fieldDescription>
 	</field>
 	<field name="numberOfProducts" class="java.lang.String">
 		<fieldDescription><![CDATA[numberOfProducts]]></fieldDescription>
@@ -131,7 +131,7 @@
 					<textElement>
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{company}.getName()]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{accountingPeriod}.getCompany().getName()]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="51" y="20" width="119" height="11" uuid="defc0059-f3ce-4ccc-93df-b6f3f65b1c89"/>
@@ -198,7 +198,7 @@
 				<reportElement key="table 1" x="0" y="2" width="170" height="50" uuid="f8e03627-9fee-4f32-8772-9c9919e56d70"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="SaleProductDS" uuid="8a1800d6-a750-43c0-af31-706e437970fc">
-						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{saledProducts})]]></dataSourceExpression>
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{saleProducts})]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="40" uuid="46d8261b-854a-4333-a7fe-b48437e45e62">
 						<jr:columnFooter height="18" rowSpan="1"/>
@@ -301,21 +301,27 @@
 				<text><![CDATA[A rendre                    : ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="44" width="78" height="11" uuid="e14d4281-c293-46ed-ac53-04873efb3959"/>
+				<reportElement x="0" y="44" width="78" height="11" uuid="e14d4281-c293-46ed-ac53-04873efb3959">
+					<printWhenExpression><![CDATA[$F{accountingPeriod}.getCompany().getValueAddedTaxCollected()]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Taux TVA                  :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="54" width="78" height="11" uuid="99b8a044-ffe2-4913-b613-d6719ad18a9a"/>
+				<reportElement x="0" y="54" width="78" height="11" uuid="99b8a044-ffe2-4913-b613-d6719ad18a9a">
+					<printWhenExpression><![CDATA[$F{accountingPeriod}.getCompany().getValueAddedTaxCollected()]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Montant HT              :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="64" width="78" height="11" uuid="784fb099-e6a6-431c-b2a8-fd66cc205ef7"/>
+				<reportElement x="0" y="64" width="78" height="11" uuid="784fb099-e6a6-431c-b2a8-fd66cc205ef7">
+					<printWhenExpression><![CDATA[$F{accountingPeriod}.getCompany().getValueAddedTaxCollected()]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -333,7 +339,7 @@
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Telephone : "+$F{company}.getContact().getPhoneNumbers()]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Telephone : "+$F{accountingPeriod}.getCompany().getContact().getPhoneNumbers()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="78" y="0" width="112" height="15" uuid="a8bef0f8-aa52-4950-92e9-d3938240214d"/>
@@ -357,21 +363,27 @@
 				<textFieldExpression><![CDATA[$F{saleCashRegisterMovement}.getAmountToOut()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="78" y="44" width="112" height="11" uuid="6edccc7d-160c-4d64-a82e-97f935033674"/>
+				<reportElement x="78" y="44" width="112" height="11" uuid="6edccc7d-160c-4d64-a82e-97f935033674">
+					<printWhenExpression><![CDATA[$F{accountingPeriod}.getCompany().getValueAddedTaxCollected()]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{saleCashRegisterMovement}.getVatRate()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="78" y="54" width="112" height="11" uuid="052133b2-ab84-4c4d-be0c-4484ab8b8497"/>
+				<reportElement x="78" y="54" width="112" height="11" uuid="052133b2-ab84-4c4d-be0c-4484ab8b8497">
+					<printWhenExpression><![CDATA[$F{accountingPeriod}.getCompany().getValueAddedTaxCollected()]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{saleCashRegisterMovement}.getAmountDueNoTaxes()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="78" y="64" width="112" height="11" uuid="3087d2c0-b82b-456a-9609-39a873b572aa"/>
+				<reportElement x="78" y="64" width="112" height="11" uuid="3087d2c0-b82b-456a-9609-39a873b572aa">
+					<printWhenExpression><![CDATA[$F{accountingPeriod}.getCompany().getValueAddedTaxCollected()]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right">
 					<font size="8"/>
 				</textElement>

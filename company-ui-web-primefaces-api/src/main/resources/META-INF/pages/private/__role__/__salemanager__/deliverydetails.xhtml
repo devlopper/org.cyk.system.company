@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component">
+
+    <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
+ 		<ui:param name="pageController" value="#{saleDeliveryPage}" />
+ 		<ui:define name="body">
+ 			<p:dataTable id="datatable" value="#{saleDeliveryPage.assignments}" var="assignment" rowIndexVar="index">
+ 				<p:column headerText="#" width="2%">
+ 					<h:outputText value="#{index+1}" />
+ 					<f:facet name="footer">
+ 						<p:commandButton icon="ui-icon-plus" title="#{uiManager.text('command.add')}" type="button" onclick="PF('productDialog').show();" />
+ 					</f:facet>
+ 				</p:column>
+ 				<p:column headerText="#{uiManager.text('field.product')}">
+ 					<h:outputText value="#{assignment.productEmployee.product.name}" />
+ 				</p:column>
+ 				<p:column headerText="#{uiManager.text('field.deliveredBy')}">
+ 					<p:selectOneMenu value="#{assignment.productEmployee.employee}" converter="#{objectConverter}">
+ 						<f:selectItems value="#{saleDeliveryPage.employeesItems}" />
+ 					</p:selectOneMenu>
+ 				</p:column>
+ 				<p:column headerText="#{uiManager.text('field.comments')}">
+ 					<p:inputTextarea value="#{assignment.productEmployee.comments}" />
+ 				</p:column>
+ 				<p:column headerText="" width="3%">
+ 					<p:commandButton icon="ui-icon-minus" title="#{uiManager.text('delete')}" action="#{saleDeliveryPage.deleteProductEmployee(index)}" 
+ 						immediate="true" process="@this" update="datatable,:form:dialog"/>
+ 				</p:column>
+ 			</p:dataTable>	
+ 			
+ 			<p:dialog id="dialog" header="#{uiManager.text('field.product')}" widgetVar="productDialog"  >
+			    <p:dataList value="#{saleDeliveryPage.products}" var="product" rowIndexVar="pindex">
+			    	<p:panelGrid columns="2">
+			    		<!--h:outputText value="#{product.code} - #{product.name}" /-->
+			    		<p:commandLink value="#{product.code} - #{product.name}" action="#{saleDeliveryPage.addProductEmployee(pindex)}" 
+			    			oncomplete="PF('productDialog').hide();" immediate="true" update=":form:datatable,:form:dialog" />
+			    	</p:panelGrid>
+			    	
+			    </p:dataList>
+			</p:dialog>   
+ 			
+ 		</ui:define>
+ 		
+ 		<ui:define name="contentMenuBar">
+ 			<cyk:command value="#{saleDeliveryPage.form.submitCommandable}" executeParameter="#{saleDeliveryPage.identifiable}" />
+ 		</ui:define>
+ 		
+ 	</ui:decorate>
+ 
+</html>

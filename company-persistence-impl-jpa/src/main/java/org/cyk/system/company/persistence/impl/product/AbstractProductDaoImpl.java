@@ -1,6 +1,9 @@
 package org.cyk.system.company.persistence.impl.product;
 
+import java.util.Collection;
+
 import org.cyk.system.company.model.product.Product;
+import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.persistence.api.product.AbstractProductDao;
 import org.cyk.system.root.persistence.impl.AbstractEnumerationDaoImpl;
 
@@ -8,4 +11,23 @@ public abstract class AbstractProductDaoImpl<PRODUCT extends Product> extends Ab
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
+	protected String readBySalable,readByCategory;
+	
+	@Override
+	protected void namedQueriesInitialisation() {
+		super.namedQueriesInitialisation();
+		registerNamedQuery(readBySalable, _select().where("salable"));
+		registerNamedQuery(readByCategory, _select().where("category"));
+	}
+	
+	@Override
+	public Collection<PRODUCT> readBySalable(Boolean salable) {
+		return namedQuery(readBySalable).parameter("salable", salable).resultMany();
+	}
+	
+	@Override
+	public Collection<PRODUCT> readByCategory(ProductCategory category) {
+		return namedQuery(readByCategory).parameter("category", category).resultMany();
+	}
+	
 }

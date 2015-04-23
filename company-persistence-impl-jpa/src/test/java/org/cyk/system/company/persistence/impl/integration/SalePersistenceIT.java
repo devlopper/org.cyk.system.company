@@ -61,7 +61,7 @@ public class SalePersistenceIT extends AbstractPersistenceIT {
     	create(sale);
     	*/
     	/*
-    	create(new SaledProduct(sale, product, new BigDecimal("1")));
+    	create(new SaleProduct(sale, product, new BigDecimal("1")));
     	create(new Payment(sale,inb,outb,new BigDecimal(paid),new Date()));
     	*/
     	

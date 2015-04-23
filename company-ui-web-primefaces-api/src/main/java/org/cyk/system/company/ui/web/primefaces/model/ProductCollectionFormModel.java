@@ -32,7 +32,7 @@ public class ProductCollectionFormModel extends AbstractFormModel<ProductCollect
 	@Input @InputText @NotNull
 	private String name;
 	
-	@Input(label=@Text(value="model.entity.service")) @InputChoice @InputManyChoice @InputManyPickList
+	@Input(label=@Text(value="model.entity.intangibleProduct")) @InputChoice @InputManyChoice @InputManyPickList
 	@NotNull @Size(min=2)
 	private List<Product> collection;
 	

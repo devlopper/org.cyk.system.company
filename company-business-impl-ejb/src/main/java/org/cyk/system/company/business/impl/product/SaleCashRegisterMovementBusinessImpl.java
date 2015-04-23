@@ -48,13 +48,12 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public BigDecimal computeBalance(SaleCashRegisterMovement movement) {
-		BigDecimal balance = movement.getSale().getBalance()==null?movement.getSale().getCost():movement.getSale().getBalance();
+		BigDecimal balance = movement.getSale().getIdentifier()==null/*movement.getSale().getBalance()==null*/?movement.getSale().getCost():movement.getSale().getBalance();
 		if(movement.getCashRegisterMovement().getAmount().signum()==-1)//withdraw
 			if(balance.signum()==1)
 				return balance.subtract(movement.getCashRegisterMovement().getAmount());
 			else
 				return balance.add(movement.getCashRegisterMovement().getAmount().abs());
-		//System.out.println("SaleCashRegisterMovementBusinessImpl.computeBalance() : "+balance);
 		return balance.subtract(movement.getCashRegisterMovement().getAmount());
 	}
 	
@@ -63,12 +62,12 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		return dao.readBySale(sale);
 	}
 	
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public void in(SaleCashRegisterMovement saleCashRegisterMovement) {
 		saleCashRegisterMovement.getCashRegisterMovement().setAmount(saleCashRegisterMovement.getAmountIn().subtract(saleCashRegisterMovement.getAmountOut()));
 	}
 	
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public void out(SaleCashRegisterMovement saleCashRegisterMovement) {
 		saleCashRegisterMovement.getCashRegisterMovement().setAmount(saleCashRegisterMovement.getAmountIn().subtract(saleCashRegisterMovement.getAmountOut()));
 	}

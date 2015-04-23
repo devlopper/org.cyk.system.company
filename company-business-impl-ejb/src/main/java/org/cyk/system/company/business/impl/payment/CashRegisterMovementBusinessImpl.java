@@ -28,6 +28,7 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	@Override
 	public void deposit(CashRegisterMovement movement) {
 		exceptionUtils().exception(movement.getAmount().signum()<=0, "validtion.cashregister.deposit.invalid");
+		
 		movement.getCashRegister().setBalance(movement.getCashRegister().getBalance().add(movement.getAmount()));
 		exceptionUtils().exception(
 				movement.getCashRegister().getMaximumBalance()!=null && movement.getCashRegister().getBalance().compareTo(movement.getCashRegister().getMaximumBalance())==1, 

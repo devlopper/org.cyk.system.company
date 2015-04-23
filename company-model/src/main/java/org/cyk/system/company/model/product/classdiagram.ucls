@@ -32,8 +32,8 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="org.cyk.system.company.model.product.SaledProduct" project="company-model" 
-    file="/company-model/src/main/java/org/cyk/system/company/model/product/SaledProduct.java" binary="false" 
+  <class id="4" language="java" name="org.cyk.system.company.model.product.SaleProduct" project="company-model" 
+    file="/company-model/src/main/java/org/cyk/system/company/model/product/SaleProduct.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="59" width="106" x="263" y="104"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" accessors="true" 
@@ -62,8 +62,8 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="7" language="java" name="org.cyk.system.company.model.product.SaledProductEmployee" project="company-model" 
-    file="/company-model/src/main/java/org/cyk/system/company/model/product/SaledProductEmployee.java" binary="false" 
+  <class id="7" language="java" name="org.cyk.system.company.model.product.ProductEmployee" project="company-model" 
+    file="/company-model/src/main/java/org/cyk/system/company/model/product/ProductEmployee.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="27" width="140" x="332" y="37"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" accessors="true" 
@@ -93,36 +93,36 @@
     </display>  
   </class>  
   <association id="10">    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="11" name="employee"/>      
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="11" name="customer"/>      
       <multiplicity id="12" minimum="0" maximum="1"/>    
     </end>    
-    <end type="TARGET" refId="6" navigable="true"/>    
+    <end type="TARGET" refId="3" navigable="true"/>    
     <display labels="false" multiplicity="true"/>  
   </association>  
   <association id="13">    
-    <bendpoint x="418" y="203"/>    
-    <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="14" name="division"/>      
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="14" name="sale"/>      
       <multiplicity id="15" minimum="0" maximum="1"/>    
     </end>    
-    <end type="TARGET" refId="8" navigable="true"/>    
+    <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="false" multiplicity="true"/>  
   </association>  
   <association id="16">    
-    <end type="SOURCE" refId="9" navigable="false">      
-      <attribute id="17" name="saledProducts"/>      
-      <multiplicity id="18" minimum="0" maximum="2147483647"/>    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="17" name="product"/>      
+      <multiplicity id="18" minimum="0" maximum="1"/>    
     </end>    
-    <end type="TARGET" refId="4" navigable="true"/>    
+    <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="false" multiplicity="true"/>  
   </association>  
   <association id="19">    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="20" name="sale"/>      
+    <bendpoint x="418" y="203"/>    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="20" name="division"/>      
       <multiplicity id="21" minimum="0" maximum="1"/>    
     </end>    
-    <end type="TARGET" refId="9" navigable="true"/>    
+    <end type="TARGET" refId="8" navigable="true"/>    
     <display labels="false" multiplicity="true"/>  
   </association>  
   <association id="22">    
@@ -133,48 +133,32 @@
     <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="false" multiplicity="true"/>  
   </association>  
-  <generalization id="25">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="1"/>  
-  </generalization>  
-  <association id="26">    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="27" name="saledProduct"/>      
-      <multiplicity id="28" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="4" navigable="true"/>    
-    <display labels="false" multiplicity="true"/>  
-  </association>  
-  <association id="29">    
-    <end type="SOURCE" refId="2" navigable="false">      
-      <attribute id="30" name="sale"/>      
-      <multiplicity id="31" minimum="0" maximum="1"/>    
+  <association id="25">    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="26" name="sale"/>      
+      <multiplicity id="27" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="false" multiplicity="true"/>  
   </association>  
+  <association id="28">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="29" name="employee"/>      
+      <multiplicity id="30" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="6" navigable="true"/>    
+    <display labels="false" multiplicity="true"/>  
+  </association>  
+  <generalization id="31">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="1"/>  
+  </generalization>  
   <association id="32">    
-    <end type="SOURCE" refId="9" navigable="false">      
-      <attribute id="33" name="customer"/>      
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="33" name="division"/>      
       <multiplicity id="34" minimum="0" maximum="1"/>    
     </end>    
-    <end type="TARGET" refId="3" navigable="true"/>    
-    <display labels="false" multiplicity="true"/>  
-  </association>  
-  <association id="35">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="36" name="division"/>      
-      <multiplicity id="37" minimum="0" maximum="1"/>    
-    </end>    
     <end type="TARGET" refId="8" navigable="true"/>    
-    <display labels="false" multiplicity="true"/>  
-  </association>  
-  <association id="38">    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="39" name="product"/>      
-      <multiplicity id="40" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="false" multiplicity="true"/>  
   </association>  
   <classifier-display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" 

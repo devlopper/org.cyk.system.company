@@ -5,11 +5,11 @@ import java.math.BigDecimal;
 
 import javax.persistence.Entity;
 
-import org.cyk.system.company.model.structure.Division;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import org.cyk.system.company.model.structure.Division;
 
 @Getter @Setter @NoArgsConstructor @Entity 
 public class IntangibleProduct extends Product implements Serializable  {

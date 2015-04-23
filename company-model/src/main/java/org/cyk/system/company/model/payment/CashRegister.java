@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.model.structure.Company;
+import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
@@ -38,7 +38,7 @@ public class CashRegister extends AbstractIdentifiable implements Serializable {
 	@InputChoice
 	@InputOneChoice
 	@InputOneCombo
-	private Company company;
+	private OwnedCompany ownedCompany;
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
 	private BigDecimal balance = BigDecimal.ZERO;
@@ -52,5 +52,15 @@ public class CashRegister extends AbstractIdentifiable implements Serializable {
 	@Input
 	@InputNumber
 	private BigDecimal maximumBalance;
+	
+	@Override
+	public String getUiString() {
+		return code;
+	}
+	
+	@Override
+	public String toString() {
+		return code;
+	}
 	
 }

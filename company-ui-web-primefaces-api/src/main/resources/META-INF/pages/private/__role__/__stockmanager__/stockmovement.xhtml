@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component"
+      xmlns:kwordz="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.kwordz/component">
+
+    <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
+        <ui:param name="pageController" value="#{tangibleProductStockMovementCrudManyPage}" />
+        <ui:define name="body">
+        	
+        	<p:panelGrid id="productsPanel" columns="3">
+        		<p:outputLabel value="#{uiManager.text('model.entity.product')}" for="product" />
+        		<p:selectOneMenu id="product" value="#{tangibleProductStockMovementCrudManyPage.selectedTangibleProduct}" var="product" converter="#{objectConverter}" 
+        			filter="true" filterMatchMode="contains">
+        			<f:selectItems value="#{tangibleProductStockMovementCrudManyPage.tangibleProducts}"  />
+        			<p:column><h:outputText value="#{product.code}" /></p:column>
+		            <p:column><h:outputText value="#{product.name}" /></p:column>
+        		</p:selectOneMenu>
+        		<p:commandButton value="#{uiManager.text('command.add')}" title="#{uiManager.text('command.add')}" icon="ui-icon-plus" 
+        			action="#{tangibleProductStockMovementCrudManyPage.add}" update="productsPanel,datatable"/>
+        		        		 		
+        	</p:panelGrid>
+        	
+        	<p:separator/>
+        	
+        	<p:dataTable id="datatable" value="#{tangibleProductStockMovementCrudManyPage.selectedList}" var="movement" rowIndexVar="index" >
+        		<p:column headerText="#" width="1%"><h:outputText value="#{index+1}" /></p:column>
+        		<p:column headerText="#{uiManager.text('field.code')}" width="7%"><h:outputText value="#{movement.tangibleProduct.code}" /></p:column>
+        		<p:column headerText="#{uiManager.text('field.name')}"><h:outputText value="#{movement.tangibleProduct.name}" /></p:column>
+        		<p:column headerText="#{uiManager.text('field.stock.current')}"><h:outputText value="#{movement.tangibleProduct.stockQuantity}" /></p:column>
+        		<p:column headerText="#{uiManager.text('field.in')}/#{uiManager.text('field.out')}" width="15%">
+        			<pe:inputNumber id="quantity" value="#{movement.quantity}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}">
+        			</pe:inputNumber> 
+        		</p:column>  
+        		
+        		<p:column width="7%">
+        			<p:commandButton title="#{uiManager.text('command.delete')}" icon="ui-icon-minus" 
+        				action="#{tangibleProductStockMovementCrudManyPage.remove(movement)}" update=":form:productsPanel,datatable" />
+        		</p:column>
+        		  		
+        	</p:dataTable>
+        		
+        </ui:define>
+        
+        <ui:define name="contentMenuBar">
+ 			<cyk:command value="#{tangibleProductStockMovementCrudManyPage.submitCommandable}" />
+ 		</ui:define>
+    </ui:decorate>
+ 
+</html>

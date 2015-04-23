@@ -9,8 +9,11 @@ import javax.persistence.EntityManager;
 import net.sf.jasperreports.view.JasperViewer;
 
 import org.apache.commons.io.IOUtils;
+import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.root.business.api.GenericBusiness;
+import org.cyk.system.root.business.api.party.ApplicationBusiness;
 import org.cyk.system.root.business.impl.BusinessIntegrationTestHelper;
+import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.validation.AbstractValidator;
 import org.cyk.system.root.business.impl.validation.DefaultValidator;
 import org.cyk.system.root.business.impl.validation.ExceptionUtils;
@@ -18,20 +21,29 @@ import org.cyk.system.root.business.impl.validation.ValidatorMap;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.report.AbstractReport;
 import org.cyk.system.root.persistence.impl.GenericDaoImpl;
-import org.cyk.utility.common.test.AbstractIntegrationTestJpaBased;
-import org.cyk.utility.common.test.ArchiveBuilder;
+import org.cyk.utility.test.AbstractIntegrationTestJpaBased;
+import org.cyk.utility.test.ArchiveBuilder;
 import org.jboss.shrinkwrap.api.Archive;
 
 public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased {
 
 	private static final long serialVersionUID = -5752455124275831171L;
+	
+	@Inject protected ApplicationBusiness applicationBusiness;
 	@Inject protected ExceptionUtils exceptionUtils;
 	@Inject protected DefaultValidator defaultValidator;
 	@Inject private GenericDaoImpl g;
 	@Inject protected GenericBusiness genericBusiness;
-	
+	@Inject protected ProductDao productDao;
+
 	@Inject protected ValidatorMap validatorMap;// = ValidatorMap.getInstance();
     
+	//protected Installation installation;
+	
+	protected void fakeInstallation(){
+    	applicationBusiness.install(RootBusinessLayer.fakeInstallation());
+    }
+	
     @Override
     public EntityManager getEntityManager() {
         return g.getEntityManager();
@@ -46,6 +58,11 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
         delete();    
         finds();
         businesses();
+    }
+    
+    @Override
+    protected void populate() {
+    	
     }
     
 	protected abstract void finds();

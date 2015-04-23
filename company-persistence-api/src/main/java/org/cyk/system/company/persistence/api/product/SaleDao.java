@@ -18,4 +18,6 @@ public interface SaleDao extends TypedDao<Sale> {
 	BigDecimal sumCostByCriteria(SaleSearchCriteria criteria);
 	
 	BigDecimal sumBalanceByCriteria(SaleSearchCriteria criteria);
+
+	BigDecimal sumValueAddedTaxByCriteria(SaleSearchCriteria criteria);
 }

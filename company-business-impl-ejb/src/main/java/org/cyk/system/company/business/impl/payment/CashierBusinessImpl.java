@@ -11,6 +11,7 @@ import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.model.party.person.Person;
 
 public class CashierBusinessImpl extends AbstractTypedBusinessService<Cashier, CashierDao> implements CashierBusiness,Serializable {
 
@@ -24,6 +25,11 @@ public class CashierBusinessImpl extends AbstractTypedBusinessService<Cashier, C
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Cashier findByEmployee(Employee employee) {
 		return dao.readByEmployee(employee);
+	}
+
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public Cashier findByPerson(Person person) {
+		return dao.readByPerson(person);
 	}
 	
 }

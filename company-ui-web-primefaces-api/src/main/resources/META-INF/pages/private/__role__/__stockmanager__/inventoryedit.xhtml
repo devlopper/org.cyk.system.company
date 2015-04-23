@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component"
+      xmlns:kwordz="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.kwordz/component">
+
+    <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
+        <ui:param name="pageController" value="#{tangibleProductInventoryCrudOnePage}" />
+        <ui:define name="body">
+        	<p:dataTable id="datatable" value="#{tangibleProductInventoryCrudOnePage.details}" var="detail" rowIndexVar="index" >
+        		<p:column headerText="#" width="1%"><h:outputText value="#{index+1}" /></p:column>
+        		<p:column headerText="#{uiManager.text('field.code')}" width="7%"><h:outputText value="#{detail.tangibleProduct.code}" /></p:column>
+        		<p:column headerText="#{uiManager.text('field.name')}"><h:outputText value="#{detail.tangibleProduct.name}" /></p:column>
+        		
+        		<p:column headerText="#{uiManager.text('field.quantity')}" width="15%">
+        			<pe:inputNumber id="quantity" value="#{detail.quantity}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}" 
+        				minValue="0" decimalPlaces="0" rendered="#{tangibleProductInventoryCrudOnePage.form.editable}">
+        			</pe:inputNumber> 
+        			<h:outputText value="#{detail.quantity}" rendered="#{not tangibleProductInventoryCrudOnePage.form.editable}"/>
+        		</p:column>    		
+        	</p:dataTable>
+        	<!--
+        	<h:outputText value="#{uiManager.text('field.comments')}" />
+        	<p:inputText value="#{tangibleProductInventoryCrudOnePage.identifiable.comments}"  />
+   			-->
+        </ui:define>
+        
+        <ui:define name="contentMenuBar">
+ 			<cyk:command value="#{tangibleProductInventoryCrudOnePage.form.submitCommandable}" executeParameter="#{tangibleProductInventoryCrudOnePage.identifiable}" />
+ 		</ui:define>
+
+    </ui:decorate>
+ 
+</html>
