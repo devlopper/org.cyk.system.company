@@ -1,0 +1,37 @@
+.highestNumberOfSales{
+	background: #66FF00;
+}
+
+.lowestNumberOfSales{
+	background: #FF887A;
+}
+.sale-dashboard-count-piechart-td{
+	width: 250px;
+}
+/*
+.sale-dashboard-count-barchart-td{
+	width: 450px;
+	height: 100px !important;
+}
+
+.sale-dashboard-count-barchart-td{
+	height: 100px !important;
+}*/
+
+/**/
+
+.sale-dashboard-count-piechart{
+	width: 350px;height: 250px;
+}
+
+.sale-dashboard-count-barchart{
+	width: 95%;height: 250px;
+}
+
+.sale-dashboard-turnover-piechart{
+	width: 350px;height: 250px;
+}
+
+.sale-dashboard-turnover-barchart{
+	width: 95%;height: 250px;
+}

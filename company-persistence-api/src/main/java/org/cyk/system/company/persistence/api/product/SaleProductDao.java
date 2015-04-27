@@ -10,4 +10,6 @@ public interface SaleProductDao extends TypedDao<SaleProduct> {
 
 	Collection<SaleProduct> readBySale(Sale sale);
 
+	Collection<SaleProduct> readBySales(Collection<Sale> sales);
+
 }

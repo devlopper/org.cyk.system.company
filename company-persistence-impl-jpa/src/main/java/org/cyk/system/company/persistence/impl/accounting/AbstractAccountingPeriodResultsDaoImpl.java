@@ -9,12 +9,12 @@ import javax.persistence.NoResultException;
 import org.cyk.system.company.model.accounting.AbstractAccountingPeriodResults;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.persistence.api.accounting.AbstractAccountingPeriodResultsDao;
-import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.AbstractEnumeration;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 
-public abstract class AbstractAccountingPeriodResultsDaoImpl<RESULTS extends AbstractAccountingPeriodResults<PRODUCT>,PRODUCT extends AbstractIdentifiable> extends AbstractTypedDao<RESULTS> implements AbstractAccountingPeriodResultsDao<RESULTS,PRODUCT>, Serializable {
+public abstract class AbstractAccountingPeriodResultsDaoImpl<RESULTS extends AbstractAccountingPeriodResults<PRODUCT>,PRODUCT extends AbstractEnumeration> extends AbstractTypedDao<RESULTS> implements AbstractAccountingPeriodResultsDao<RESULTS,PRODUCT>, Serializable {
 
 	private static final long serialVersionUID = 7904009035909460023L;
 
@@ -22,13 +22,14 @@ public abstract class AbstractAccountingPeriodResultsDaoImpl<RESULTS extends Abs
 			"SELECT record.salesResults.count FROM %s record WHERE record.accountingPeriod = :accountingPeriod AND record.entity.identifier IN :identifiers "
 			+ "ORDER BY record.salesResults.count %s";
 	
-	protected String readByAccountingPeriodByProduct,readByAccountingPeriod;
+	protected String readByAccountingPeriodByProduct,readByAccountingPeriod,readByAccountingPeriodByProducts;
 	protected String readHighestNumberOfSales,readLowestNumberOfSales,readByAccountingPeriodByProductCategoriesByNumberOfSales;
 	
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
 		registerNamedQuery(readByAccountingPeriodByProduct, _select().where("accountingPeriod").and("entity"));
+		registerNamedQuery(readByAccountingPeriodByProducts, _select().whereIdentifierIn("entity").and("accountingPeriod").orderBy("salesResults.count", Boolean.FALSE));
 		registerNamedQuery(readByAccountingPeriod, _select().where("accountingPeriod"));
 		
 		registerNamedQuery(readHighestNumberOfSales, String.format(SELECT_NUMBER_OF_SALES_FORMAT ,clazz.getSimpleName(),"DESC"));
@@ -41,6 +42,11 @@ public abstract class AbstractAccountingPeriodResultsDaoImpl<RESULTS extends Abs
 	public RESULTS readByAccountingPeriodByProduct(AccountingPeriod accountingPeriod, PRODUCT product) {
 		return namedQuery(readByAccountingPeriodByProduct).ignoreThrowable(NoResultException.class)
 				.parameter("accountingPeriod", accountingPeriod).parameter("entity", product).resultOne();
+	}
+	
+	@Override
+	public Collection<RESULTS> readByAccountingPeriodByProducts(AccountingPeriod accountingPeriod, Collection<PRODUCT> products) {
+		return namedQuery(readByAccountingPeriodByProducts).parameterIdentifiers(products).parameter("accountingPeriod", accountingPeriod).resultMany();
 	}
 
 	@Override

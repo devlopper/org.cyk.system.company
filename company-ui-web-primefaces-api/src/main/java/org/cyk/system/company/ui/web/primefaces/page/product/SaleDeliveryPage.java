@@ -50,6 +50,7 @@ public class SaleDeliveryPage extends AbstractBusinessEntityFormOnePage<Sale> im
 			assignments.add(new Assignment(productEmployee));
 		employeesItems = webManager.buildSelectItems(Employee.class); 
 		products = new ArrayList<>(productBusiness.findToDelivery(identifiable));
+		
 	}
 	
 	@Override

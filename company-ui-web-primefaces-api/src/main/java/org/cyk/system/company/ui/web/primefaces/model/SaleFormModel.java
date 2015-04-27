@@ -12,6 +12,7 @@ import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.utility.common.annotation.user.interfaces.Binding;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputCalendar;
+import org.cyk.utility.common.annotation.user.interfaces.InputCalendar.Format;
 import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 
@@ -26,7 +27,7 @@ public class SaleFormModel extends AbstractFormModel<Sale> implements Serializab
 	@Input @InputNumber
 	private BigDecimal cost;
 	
-	@Input @InputCalendar
+	@Input @InputCalendar(format=Format.DATETIME_SHORT)
 	private Date date;
 	
 	@Input @InputNumber

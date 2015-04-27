@@ -11,17 +11,23 @@ public class SaleProductDaoImpl extends AbstractTypedDao<SaleProduct> implements
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	private String readBySale;
+	private String readBySale,readBySales;
 	
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
 		registerNamedQuery(readBySale, _select().where("sale"));
+		registerNamedQuery(readBySales, _select().whereIdentifierIn("sale"));
 	}
 	
 	@Override
 	public Collection<SaleProduct> readBySale(Sale sale) {
 		return namedQuery(readBySale).parameter("sale", sale).resultMany();
+	}
+
+	@Override
+	public Collection<SaleProduct> readBySales(Collection<Sale> sales) {
+		return namedQuery(readBySales).parameterIdentifiers(sales).resultMany();
 	}
 
 }

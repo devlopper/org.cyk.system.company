@@ -35,7 +35,11 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 	@Inject protected SaleBusiness saleBusiness;
 	
 	protected BalanceType balanceType;
+	
+	public AbstractSaleListPage() {
 		
+	}
+	
 	@Override
 	protected void initialisation() {
 		super.initialisation();
@@ -44,8 +48,10 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 			balanceType=BalanceType.valueOf(bt);
 		else
 			balanceType = null;
-		table.setShowToolBar(Boolean.FALSE); // TODO enable this when report done
+		
+		table.setShowHeader(Boolean.FALSE);
 		table.setShowFooter(Boolean.TRUE);
+		
 		((Commandable)table.getAddRowCommandable()).getButton().setRendered(Boolean.FALSE);
 		table.getTableListeners().add(new TableAdapter<Row<Object>, Column, Object, String, Cell, String>(){
 			@Override
@@ -64,21 +70,16 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 				}
 			}
 		});
-		
-		showGraphics = Boolean.TRUE;
 	}
 	
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
 
-		table.setShowEditColumn(Boolean.FALSE);
-		table.setShowOpenCommand(Boolean.TRUE);
+		table.setShowEditColumn(Boolean.FALSE);		
+		
 		((Commandable)table.getOpenRowCommandable()).getButton().setRendered(Boolean.TRUE);
 		((Commandable)table.getRemoveRowCommandable()).getButton().setRendered(Boolean.FALSE);
-		
-		table.setShowToolBar(Boolean.TRUE);
-		table.setShowFooter(Boolean.TRUE);
 		
 		table.getOpenRowCommandable().getCommand().getCommandListeners().add(new CommandAdapter(){
 			private static final long serialVersionUID = 1120566504648934547L;
@@ -90,6 +91,14 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 						new Object[]{webManager.getRequestParameterIdentifiable(),sale.getIdentifier().toString()});
 			}
 		});
+		
+		table.setShowToolBar(Boolean.FALSE); // TODO enable this when report done
+	}
+	
+	@Override
+	protected void rowAdded(Row<Object> row) {
+		super.rowAdded(row);
+		row.setOpenable(Boolean.TRUE);
 	}
 	
 	@Override
@@ -114,9 +123,12 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 		criteria.getBalanceTypes().clear();
 		if(balanceType!=null)
 			criteria.getBalanceTypes().add(balanceType);
-		table.getColumn("cost").setFooter(saleBusiness.sumCostByCriteria(criteria).toString());
+		
+		criteria.getReadConfig().setFirstResultIndex(queryFirst);
+		criteria.getReadConfig().setMaximumResultCount(20l);
+		table.getColumn("cost").setFooter(numberBusiness.format(saleBusiness.sumCostByCriteria(criteria)));
 		if(!BalanceType.ZERO.equals(balanceType)){
-			table.getColumn("balance").setFooter(saleBusiness.sumBalanceByCriteria(criteria).toString());
+			table.getColumn("balance").setFooter(numberBusiness.format(saleBusiness.sumBalanceByCriteria(criteria)));
 		}
 		return saleBusiness.findByCriteria(criteria);
 	}

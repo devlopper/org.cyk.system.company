@@ -19,40 +19,43 @@
  		</ui:define>
         
         <ui:define name="body">
-        	<!--
-        	<table><tr style="vertical-align: center;">
-        		<td><cyk:formOneData value="#{saleDashBoardPage.filterForm}"/></td>
-        		<td><cyk:command value="#{saleDashBoardPage.filterForm.submitCommandable}" executeParameter="#{saleDashBoardPage.filterForm.data}" /> </td>
-        	</tr> </table>
+        	<link type="text/css" rel="stylesheet" href="#{request.contextPath}/javax.faces.resource/css/common.css.jsf?ln=org.cyk.ui.web.primefaces.company" />
+        	<ui:fragment rendered="#{saleDashBoardPage.salesFound}" >
+        		<div class="ui-state-highlight"><cyk:formOneData value="#{saleDashBoardPage.salesResultsDetails}"/></div>
+
+	        	<table class="dashboard-graphics-table" border="0" cellpadding="0" cellspacing="0">
+	        		<tr class="dashboard-graphics-table-row">
+	        			<td class="dashboard-graphics-table-column-label dashboard-graphics-table-column-label-vertical ui-state-default">
+	        				<div class="vertical-text"><h:outputText value="#{uiManager.text('field.number.of.sales')}" /> </div> 
+	        			</td>
+	        			<td class="sale-dashboard-count-piechart-td">
+	        				<p:chart type="pie" model="#{saleDashBoardPage.countPieChartModel}" styleClass="sale-dashboard-count-piechart"/>
+	        			</td>
+	        			<td class="sale-dashboard-count-barchart-td">
+	        				<p:chart type="bar" model="#{saleDashBoardPage.countBarChartModel}" styleClass="sale-dashboard-count-barchart"/>
+	        			</td>
+	        		</tr>
+	        		<tr class="dashboard-graphics-table-row">
+	        			<td class="dashboard-graphics-table-column-label dashboard-graphics-table-column-label-vertical ui-state-default">
+	        				<div class="vertical-text"><h:outputText value="#{uiManager.text('field.turnover')}" /></div>
+	        			</td>
+	        			<td class="sale-dashboard-turnover-piechart-td">
+	        				<p:chart type="pie" model="#{saleDashBoardPage.turnoverPieChartModel}" styleClass="sale-dashboard-turnover-piechart" />
+	        			</td>
+	        			<td class="sale-dashboard-turnover-barchart-td">
+	        				<p:chart type="bar" model="#{saleDashBoardPage.turnoverBarChartModel}" styleClass="sale-dashboard-turnover-barchart"/>
+	        			</td>
+	        		</tr>
+	        	</table>     
+	        	<cyk:table value="#{saleDashBoardPage.productTable}"/>
+	        	   	
+        	</ui:fragment>
         	
-        	<p:separator/>
-        	-->
-        	<table>
-        		<tr style="vertical-align: top;">
-        			<td style="width: 50%;">
-        				<cyk:formOneData value="#{saleDashBoardPage.salesResultsDetails}"/>
-        				
-        				<!--cyk:table value="#{saleDashBoardPage.cashRegisterTable}"/-->
-        				
-        				<cyk:table value="#{saleDashBoardPage.productTable}"/>
-        			</td>
-        			<td>
-        				<ui:fragment rendered="#{saleDashBoardPage.turnoverBarChartModel!=null}" >
-							<p:chart type="bar" model="#{saleDashBoardPage.turnoverBarChartModel}"  />
-		 					<p:chart type="bar" model="#{saleDashBoardPage.countBarChartModel}" />
-						</ui:fragment>
-        				
-        			</td>
-        		</tr>
-        	</table>
-        	
-        	
-        	
-        	
-        		
+        	<ui:fragment rendered="#{not saleDashBoardPage.salesFound}" >
+        		<h:outputText value="#{uiManager.text('company.sale.empty')}" />
+        	</ui:fragment>
+
         </ui:define>
-        
-        
     </ui:decorate>
  
 </html>

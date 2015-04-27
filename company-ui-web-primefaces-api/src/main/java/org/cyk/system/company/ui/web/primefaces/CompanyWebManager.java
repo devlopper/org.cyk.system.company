@@ -37,9 +37,11 @@ import org.cyk.system.root.business.api.BusinessAdapter;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.AbstractUserSession;
+import org.cyk.ui.api.UIManager;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.UICommandable.IconType;
 import org.cyk.ui.api.command.menu.SystemMenu;
+import org.cyk.ui.api.model.ActorConsultFormModel;
 import org.cyk.ui.web.api.AbstractWebManager;
 import org.cyk.ui.web.api.security.shiro.WebEnvironmentAdapter;
 import org.cyk.ui.web.api.security.shiro.WebEnvironmentAdapter.SecuredUrlProvider;
@@ -92,6 +94,9 @@ public class CompanyWebManager extends AbstractWebManager implements Serializabl
 		businessEntityInfos(TangibleProductStockMovement.class).setUiEditViewId(null);
 		businessEntityInfos(TangibleProductStockMovement.class).setUiListViewId(null);
 		
+		UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Employee.class, ActorConsultFormModel.class);
+		UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Customer.class, ActorConsultFormModel.class);
+		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Actor.class, ActorConsultFormModel.class);
 		
 		uiManager.getBusinesslisteners().add(new BusinessAdapter(){
 			private static final long serialVersionUID = 4605368263736933413L;
@@ -189,12 +194,14 @@ public class CompanyWebManager extends AbstractWebManager implements Serializabl
 				sale.addChild(c = menuManager.crudOne(Sale.class, IconType.ACTION_ADD));
 				c.setLabel(uiManager.text("command.sale.new"));
 			}
-			sale.addChild("dashboard", null, outcomeSaleDashBoard, null);
+			UICommandable dashboard = sale.addChild("dashboard", null, outcomeSaleDashBoard, null);
 			sale.addChild("command.sale.listall", null, "saleListView", null);
 			sale.addChild("command.sale.negativebalance", null, "saleNegativeBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterNegativeBalance)));
 			sale.addChild("command.sale.zerobalance", null, "saleZeroBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterZeroBalance)));
 			sale.addChild("command.sale.positivebalance", null, "salePositiveBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterPositiveBalance)));
 			systemMenu.getBusinesses().add(sale); 
+			
+			systemMenu.getMobileBusinesses().add(dashboard); 
 		}
 		
 		if(userSession.hasRole(CompanyBusinessLayer.getInstance().getRoleStockManagerCode())){
@@ -212,4 +219,5 @@ public class CompanyWebManager extends AbstractWebManager implements Serializabl
 		return systemMenu;
 	}
 
+	
 }

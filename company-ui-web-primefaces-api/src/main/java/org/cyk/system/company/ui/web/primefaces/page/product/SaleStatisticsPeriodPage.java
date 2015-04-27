@@ -48,8 +48,8 @@ public class SaleStatisticsPeriodPage extends AbstractChartPage implements Seria
 		dt.setMillisOfDay(DateTimeConstants.MILLIS_PER_DAY-1);
 		
 		saleSearchCriteria.getToDateSearchCriteria().setValue(dt.toDate());
-		turnoverBarChartModel = chartManager.barModel(saleBusiness.findTurnOverStatistics(saleSearchCriteria, selectedTimeDivisionType));
-        countBarChartModel = chartManager.barModel(saleBusiness.findCountStatistics(saleSearchCriteria, selectedTimeDivisionType));
+		//turnoverBarChartModel = chartManager.barModel(saleBusiness.findTurnOverStatistics(saleSearchCriteria, selectedTimeDivisionType));
+        //countBarChartModel = chartManager.barModel(saleBusiness.findCountStatistics(saleSearchCriteria, selectedTimeDivisionType));
 	}
 	 
 }

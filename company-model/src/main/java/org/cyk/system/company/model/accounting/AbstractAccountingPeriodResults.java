@@ -19,16 +19,6 @@ public abstract class AbstractAccountingPeriodResults<ENTITY extends AbstractIde
 
 	@ManyToOne protected AccountingPeriod accountingPeriod;
 	@ManyToOne protected ENTITY entity;
-	/*
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
-	protected BigDecimal numberOfSales = BigDecimal.ZERO;
-	
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
-	protected BigDecimal turnover = BigDecimal.ZERO;
-	
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
-	protected BigDecimal valueAddedTaxes = BigDecimal.ZERO;
-	*/
 	
 	@Embedded protected SalesResults salesResults = new SalesResults();
 	

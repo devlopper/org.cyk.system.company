@@ -61,7 +61,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		configureDetailsTable(productTable, "model.entity.product");
 		
 		productExecutionTable = (Table<ProductExecutionDetails>) createTable(ProductExecutionDetails.class, null, null);
-		configureDetailsTable(productExecutionTable, "executiondetails");
+		configureDetailsTable(productExecutionTable, /*"executiondetails"*/null);
 		
 		paymentTable = (Table<PaymentDetails>) createTable(PaymentDetails.class, null, null);
 		configureDetailsTable(paymentTable, "model.entity.payment");
@@ -80,8 +80,8 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		for(SaleCashRegisterMovement payment : identifiable.getSaleCashRegisterMovements())
 			paymentTable.addRow(new PaymentDetails(payment));
 		
-		productTable.getColumn("price").setFooter(identifiable.getCost().toString());
-		paymentTable.getColumn("paid").setFooter(identifiable.getCost().subtract(identifiable.getBalance()).toString());	
+		productTable.getColumn("price").setFooter(numberBusiness.format(identifiable.getCost()));
+		paymentTable.getColumn("paid").setFooter(numberBusiness.format(identifiable.getCost().subtract(identifiable.getBalance())));	
 	}
 	
 	@Override
@@ -137,10 +137,10 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		
 		public SaleDetails(Sale sale) {
 			this.identifier = sale.getIdentificationNumber();
-			this.cost = sale.getCost().toString();
-			this.balance = sale.getBalance().toString();
+			this.cost = numberBusiness.format(sale.getCost());
+			this.balance = numberBusiness.format(sale.getBalance());
 			this.customer = sale.getCustomer()==null?"":sale.getCustomer().getPerson().getNames();
-			this.date = uiManager.formatDate(sale.getDate(),Boolean.TRUE);
+			this.date = timeBusiness.formatDateTime(sale.getDate());
 		}
 	}
 	
@@ -153,9 +153,9 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		
 		public ProductDetails(SaleProduct saleProduct) {
 			this.name = saleProduct.getProduct().getCode()+" - "+saleProduct.getProduct().getName();
-			this.unitPrice = saleProduct.getProduct().getPrice().toString();
-			this.quantity = saleProduct.getQuantity().toString();
-			this.price = saleProduct.getPrice().toString();
+			this.unitPrice = numberBusiness.format(saleProduct.getProduct().getPrice());
+			this.quantity = numberBusiness.format(saleProduct.getQuantity());
+			this.price = numberBusiness.format(saleProduct.getPrice());
 		}
 	}
 	
@@ -182,8 +182,8 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		
 		public PaymentDetails(SaleCashRegisterMovement payment) {
 			this.identifier = payment.getCashRegisterMovement().getIdentificationNumber();
-			this.paid = payment.getCashRegisterMovement().getAmount().toString();
-			this.date = uiManager.formatDate(payment.getCashRegisterMovement().getDate(), Boolean.TRUE);
+			this.paid = numberBusiness.format(payment.getCashRegisterMovement().getAmount());
+			this.date = timeBusiness.formatDateTime(payment.getCashRegisterMovement().getDate());
 		}
 	}
 	

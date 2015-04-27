@@ -76,6 +76,15 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     protected void businesses() {
     	fakeInstallation();
     	
+    	Collection<ProductCategory> pproductCategories = new ArrayList<>();
+    	pproductCategories.add(productCategoryBusiness.find("EC"));
+    	pproductCategories.add(productCategoryBusiness.find("BT"));
+    	
+    	//Assert.assertFalse(productCategoryBusiness.isAtLeastOneAncestorOf(pproductCategories, productCategoryBusiness.find("EC")));
+    	//Assert.assertFalse(productCategoryBusiness.isAtLeastOneAncestorOf(pproductCategories, productCategoryBusiness.find("BT")));
+    	
+    	Assert.assertTrue(productCategoryBusiness.isAtLeastOneAncestorOf(pproductCategories, productCategoryBusiness.find("OG")));
+    	
     	cashier = cashierDao.readAll().iterator().next();
     	accountingPeriod = accountingPeriodBusiness.findCurrent();
     	

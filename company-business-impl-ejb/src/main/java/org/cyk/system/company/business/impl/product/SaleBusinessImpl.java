@@ -33,9 +33,6 @@ import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.cyk.system.company.persistence.api.product.SaleProductDao;
-import org.cyk.system.root.business.api.chart.CartesianModel;
-import org.cyk.system.root.business.api.chart.Series;
-import org.cyk.system.root.business.api.chart.SeriesItem;
 import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.api.geography.ContactCollectionBusiness;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
@@ -44,8 +41,6 @@ import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.file.JasperReportBusinessImpl;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.file.report.Report;
-import org.cyk.system.root.model.time.Period;
-import org.cyk.system.root.model.time.TimeDivisionType;
 
 @Stateless
 public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao> implements SaleBusiness,Serializable {
@@ -76,12 +71,17 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public SaleProduct selectProduct(Sale sale, Product product) {
-		SaleProduct saleProduct = new SaleProduct(sale, product, new BigDecimal("1"));
+	public SaleProduct selectProduct(Sale sale, Product product,BigDecimal quantity) {
+		SaleProduct saleProduct = new SaleProduct(sale, product, quantity);
 		saleProductBusiness.process(saleProduct);
 		sale.getSaleProducts().add(saleProduct);
 		sale.setCost(sale.getCost().add(saleProduct.getPrice()));
 		return saleProduct;
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public SaleProduct selectProduct(Sale sale, Product product) {
+		return selectProduct(sale, product, BigDecimal.ONE);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
@@ -204,7 +204,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		/*if(criteria.getFromDateSearchCriteria().getValue()==null || criteria.getToDateSearchCriteria().getValue()==null)
 			sales = findAll();
 		*/
-		
+		getPersistenceService().getDataReadConfig().set(criteria.getReadConfig());
 		criteriaDefaultValues(criteria);
 		return dao.readByCriteria(criteria);
 	}
@@ -275,72 +275,78 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	/**/
-	
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public CartesianModel findTurnOverStatistics(SaleSearchCriteria saleSearchCriteria,TimeDivisionType timeDivisionType) {
+	/*
+	private CartesianModel salesCartesianModel(SaleSearchCriteria saleSearchCriteria,TimeDivisionType timeDivisionType
+			,CartesianModelListener<Sale> cartesianModelListener,String nameId,String yAxisLabelId){
 		Collection<Sale> sales = findByCriteria(saleSearchCriteria);
 		if(sales.isEmpty())
 			return null;
-		Period searchPeriod = new Period(saleSearchCriteria.getFromDateSearchCriteria().getValue(), 
-				saleSearchCriteria.getToDateSearchCriteria().getValue());
+		Period searchPeriod = new Period(saleSearchCriteria.getFromDateSearchCriteria().getValue(), saleSearchCriteria.getToDateSearchCriteria().getValue());
 		
 		String spl = languageBusiness.findText("field.from.date")+" "+DATE_SHORT_FORMAT.format(searchPeriod.getFromDate())+" "
 				+languageBusiness.findText("field.to.date")+"  "+DATE_SHORT_FORMAT.format(searchPeriod.getToDate());
 		
-		CartesianModel cartesianModel = new CartesianModel(languageBusiness.findText("turnover")+" - "+spl,languageBusiness.findText("date"),
-				languageBusiness.findText("amount"));
-		Series amountOfSaleSeries = cartesianModel.addSeries(languageBusiness.findText("turnover"));
-		
+		CartesianModel cartesianModel = new CartesianModel(languageBusiness.findText(nameId)+" - "+spl,timeDivisionType.getName(),languageBusiness.findText(yAxisLabelId));
+		cartesianModel.getXAxis().setTickAngle(45);
+		Series ySeries = cartesianModel.addSeries(languageBusiness.findText(nameId));
 		
 		if(sales.isEmpty())
 			return cartesianModel;
 		Collection<Period> periods = timeBusiness.findPeriods(searchPeriod, timeDivisionType,Boolean.TRUE) ;
 		
 		for(Period period : periods){
-			BigDecimal amountOfSale = BigDecimal.ZERO;
 			String x = timeBusiness.formatPeriod(period, timeDivisionType);
+			BigDecimal y = BigDecimal.ZERO;
 			for(Sale sale : sales)
-				if(timeBusiness.between(period, sale.getDate(), Boolean.FALSE, Boolean.FALSE)){
-					amountOfSale = amountOfSale.add(sale.getCost());
-				}
-			if(amountOfSale.compareTo(BigDecimal.ZERO)>0){
-				amountOfSaleSeries.getItems().add(new SeriesItem(x, amountOfSale));
-			}
+				if(timeBusiness.between(period, sale.getDate(), Boolean.FALSE, Boolean.FALSE))
+					y = y.add(cartesianModelListener.y(sale));
+				
+			if(!Boolean.TRUE.equals(cartesianModelListener.skipY(y)))
+				ySeries.getItems().add(new SeriesItem(x, y));
+			
 		}
 		return cartesianModel;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public CartesianModel findCountStatistics(SaleSearchCriteria saleSearchCriteria,TimeDivisionType timeDivisionType) {
-		Collection<Sale> sales = findByCriteria(saleSearchCriteria);
-		if(sales.isEmpty())
-			return null;
-		Period searchPeriod = new Period(saleSearchCriteria.getFromDateSearchCriteria().getValue(), 
-				saleSearchCriteria.getToDateSearchCriteria().getValue());
-		String spl = languageBusiness.findText("field.from.date")+" "+DATE_SHORT_FORMAT.format(searchPeriod.getFromDate())+" "
-				+languageBusiness.findText("field.to.date")+"  "+DATE_SHORT_FORMAT.format(searchPeriod.getToDate());
-		
-		CartesianModel cartesianModel = new CartesianModel(languageBusiness.findText("salecount")+" - "+spl,languageBusiness.findText("date"),
-				languageBusiness.findText("count"));
-		Series numberOfSaleSeries = cartesianModel.addSeries(languageBusiness.findText("salecount"));	
-		
-		
-		Collection<Period> periods = timeBusiness.findPeriods(new Period(saleSearchCriteria.getFromDateSearchCriteria().getValue(), 
-				saleSearchCriteria.getToDateSearchCriteria().getValue()), timeDivisionType,Boolean.TRUE) ;
-		
-		for(Period period : periods){
-			Integer numberOfSale = 0;
-			String x = timeBusiness.formatPeriod(period, timeDivisionType);
-			for(Sale sale : sales)
-				if(timeBusiness.between(period, sale.getDate(), Boolean.FALSE, Boolean.FALSE)){
-					numberOfSale++;
-				}
-			if(numberOfSale>0){
-				numberOfSaleSeries.getItems().add(new SeriesItem(x, numberOfSale));
+	public CartesianModel findTurnOverStatistics(SaleSearchCriteria saleSearchCriteria,TimeDivisionType timeDivisionType) {		
+		return salesCartesianModel(saleSearchCriteria,timeDivisionType,new CartesianModelListener<Sale>() {
+			@Override
+			public BigDecimal y(Sale sale) {
+				return sale.getTurnover();
 			}
-		}
-		
-		return cartesianModel;
+			
+			@Override
+			public Boolean skipY(BigDecimal y) {
+				return Boolean.FALSE;
+			}
+			
+		},"turnover","amount");
 	}
 	
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public CartesianModel findCountStatistics(SaleSearchCriteria saleSearchCriteria,TimeDivisionType timeDivisionType) {
+		return salesCartesianModel(saleSearchCriteria,timeDivisionType,new CartesianModelListener<Sale>() {
+			@Override
+			public BigDecimal y(Sale sale) {
+				return BigDecimal.ONE;
+			}
+			
+			@Override
+			public Boolean skipY(BigDecimal y) {
+				return Boolean.FALSE;
+			}
+			
+		},"field.number.of.sales","count");
+	}
+	*/
+
+	/*
+	@Override
+	public CartesianModel findNumberOfSalesCartesianModel(SaleSearchCriteria saleSearchCriteria) {
+		CartesianModel cartesianModel = new CartesianModel(languageBusiness.findText("field.number.of.sales"),"","");
+		Collection<AccountingPeriodProductCategory>
+		return cartesianModel;
+	}*/
+		
 }

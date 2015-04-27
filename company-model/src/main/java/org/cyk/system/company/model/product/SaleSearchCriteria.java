@@ -27,6 +27,7 @@ public class SaleSearchCriteria extends AbstractFieldValueSearchCriteriaSet impl
 	
 	public SaleSearchCriteria(Date fromDate,Date toDate) {
 		this(fromDate,toDate,null);
+		fromDateSearchCriteria.setAscendingOrdered(Boolean.TRUE);
 	}
 	
 	public SaleSearchCriteria(Date fromDate,Date toDate,BalanceType balanceType) {
