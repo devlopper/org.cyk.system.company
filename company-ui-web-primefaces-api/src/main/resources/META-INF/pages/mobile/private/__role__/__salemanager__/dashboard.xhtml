@@ -16,33 +16,34 @@
  			<ui:decorate template="/org.cyk.ui.web.primefaces/template/page/mobile/page.xhtml">
  				<ui:param name="pageId" value="menu" />
  				<ui:define name="content">
- 					<p:separator/>
-		    		<p:chart type="pie" model="#{saleDashBoardPage.countPieChartModel}"  />
-		    		<p:chart type="bar" model="#{saleDashBoardPage.countBarChartModel}" />
-		    		<p:separator/>
-		    		<p:chart type="pie" model="#{saleDashBoardPage.turnoverPieChartModel}"  />
-		    		<p:chart type="bar" model="#{saleDashBoardPage.turnoverBarChartModel}"  />
+ 					<div class="ui-state-highlight"><cyk:formOneData value="#{saleDashBoardPage.salesResultsDetails}"/></div>
+ 					<p:tabView activeIndex="1" >
+ 						<p:tab title="#{uiManager.text('model.entity.productCategory')}" >
+ 							<cyk:tree value="#{saleDashBoardPage.productTable.tree}" />
+ 						</p:tab>
+ 						<p:tab title="#{uiManager.text('graphic')}" >
+				    		<p:chart type="pie" model="#{saleDashBoardPage.countPieChartModel}"  />
+				    		<p:chart type="bar" model="#{saleDashBoardPage.countBarChartModel}" />
+				    		<p:separator/>
+				    		<p:chart type="pie" model="#{saleDashBoardPage.turnoverPieChartModel}"  />
+				    		<p:chart type="bar" model="#{saleDashBoardPage.turnoverBarChartModel}"  />
+ 						</p:tab>
+ 						<p:tab title="#{uiManager.text('table')}" >
+ 							<cyk:table value="#{saleDashBoardPage.productTable}">
+ 								<div class="#{row.cascadeStyleSheet.clazz}">
+									<h2><h:outputText value="#{row.data.name}" /></h2>
+							        <p >
+							        	<h:outputText value="#{row.data.numberOfSales}" />
+							        	<p:spacer width="5" /> <h:outputText value="|" /> <p:spacer width="5" />
+							        	<h:outputText value="#{row.data.turnover}" />
+							        </p>
+ 								</div>
+ 							</cyk:table>
+ 						</p:tab>
+ 					</p:tabView>
  				</ui:define>	
- 			</ui:decorate>
- 			
- 			<!--ui:decorate template="/org.cyk.ui.web.primefaces/template/page/mobile/page.xhtml">
- 				<ui:param name="pageId" value="details" />
- 				<ui:param name="backPageId" value="list" />
- 				<ui:define name="content">
-		    		
- 				</ui:define>	
- 			</ui:decorate--> 		 			
+ 			</ui:decorate>		 			
  		</ui:define>
  	</ui:decorate>
-
-    <!--ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
-        <ui:param name="pageController" value="#{saleDashBoardPage}" />
-        
-        <ui:define name="westContent">
- 			<cyk:tree value="#{saleDashBoardPage.productTable.tree}" />
- 			<ui:include src="#{defaultDesktopLayoutManager.westInclude}" />
- 		</ui:define>
-        
-    </ui:decorate-->
  
 </html>

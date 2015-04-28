@@ -42,14 +42,14 @@ import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.UICommandable.IconType;
 import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.api.model.ActorConsultFormModel;
-import org.cyk.ui.web.api.AbstractWebManager;
 import org.cyk.ui.web.api.security.shiro.WebEnvironmentAdapter;
 import org.cyk.ui.web.api.security.shiro.WebEnvironmentAdapter.SecuredUrlProvider;
+import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER) @Getter
-public class CompanyWebManager extends AbstractWebManager implements Serializable {
+public class CompanyWebManager extends AbstractPrimefacesManager implements Serializable {
 
 	private static final long serialVersionUID = 7231721191071228908L;
 
@@ -79,6 +79,7 @@ public class CompanyWebManager extends AbstractWebManager implements Serializabl
 	protected void initialisation() {
 		INSTANCE = this;
 		super.initialisation();  
+		identifier = "company";
 		languageBusiness.registerResourceBundle("org.cyk.system.company.ui.resources.ui", getClass().getClassLoader());
 		
 		businessClassConfig(Customer.class,CustomerFormModel.class);

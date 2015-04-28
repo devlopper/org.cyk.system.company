@@ -155,62 +155,10 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 	protected void afterInitialisation() {
 		super.afterInitialisation();
 		
-		//Set<ProductDetails> set = new LinkedHashSet<>();
-		String highestNumberOfSales=null,lowestNumberOfSales=null;
-		if(productCategories!=null && !productCategories.isEmpty()){
-			/*
-			for(AccountingPeriodProductCategory accountingPeriodProductCategory : accountingPeriodProductCategoryBusiness.findHighestNumberOfSales(accountingPeriod, productCategories))
-				set.add(new ProductDetails(accountingPeriodProductCategory));
-			for(AccountingPeriodProductCategory accountingPeriodProductCategory : accountingPeriodProductCategoryBusiness.findLowestNumberOfSales(accountingPeriod, productCategories))
-				set.add(new ProductDetails(accountingPeriodProductCategory));
-			*/
-			/*
-			Collection<AccountingPeriodProductCategory> resultsCollection = accountingPeriodProductCategoryBusiness.findByAccountingPeriodByProducts(accountingPeriod, productCategories);
-			lowestNumberOfSales = numberBusiness.format(accountingPeriodProductCategoryBusiness.findLowestNumberOfSalesValue(resultsCollection));
-			highestNumberOfSales = numberBusiness.format(accountingPeriodProductCategoryBusiness.findHighestNumberOfSalesValue(resultsCollection));
-			for(AccountingPeriodProductCategory accountingPeriodProductCategory : resultsCollection)
-				productDetailsCollection.add(new ProductDetails(accountingPeriodProductCategory));
-			countPieModel = accountingPeriodProductCategoryBusiness.findNumberOfSalesPieModel(resultsCollection);
-			turnoverPieModel = accountingPeriodProductCategoryBusiness.findTurnoverPieModel(resultsCollection);
-			*/
+		if(productCategories!=null && !productCategories.isEmpty())
 			productDetails(ProductCategory.class, AccountingPeriodProductCategory.class, accountingPeriodProductCategoryBusiness, productCategories);
-		}
-		
-		if(products!=null && !products.isEmpty()){
-			/*
-			for(AccountingPeriodProduct accountingPeriodProduct : accountingPeriodProductBusiness.findHighestNumberOfSales(accountingPeriod, products))
-				set.add(new ProductDetails(accountingPeriodProduct));
-			for(AccountingPeriodProduct accountingPeriodProduct : accountingPeriodProductBusiness.findLowestNumberOfSales(accountingPeriod, products))
-				set.add(new ProductDetails(accountingPeriodProduct));
-			*/
-			/*
-			Collection<AccountingPeriodProduct> resultsCollection = accountingPeriodProductBusiness.findByAccountingPeriodByProducts(accountingPeriod, products);
-			lowestNumberOfSales = numberBusiness.format(accountingPeriodProductBusiness.findLowestNumberOfSalesValue(resultsCollection));
-			highestNumberOfSales = numberBusiness.format(accountingPeriodProductBusiness.findHighestNumberOfSalesValue(resultsCollection));
-			for(AccountingPeriodProduct accountingPeriodProduct : resultsCollection)
-				productDetailsCollection.add(new ProductDetails(accountingPeriodProduct));
-			countPieModel = accountingPeriodProductBusiness.findNumberOfSalesPieModel(resultsCollection);
-			turnoverPieModel = accountingPeriodProductBusiness.findTurnoverPieModel(resultsCollection);
-			*/
+		else
 			productDetails(Product.class, AccountingPeriodProduct.class, accountingPeriodProductBusiness, products);
-		}
-		
-		//productDetailsCollection = new ArrayList<>(set);
-		/*
-		productTable = createDetailsTable(ProductDetails.class, productDetailsCollection, "model.entity.product");	
-		for(Row<ProductDetails> row : productTable.getRows())
-			if(row.getData().getNumberOfSales().equals(highestNumberOfSales))
-				row.getCascadeStyleSheet().addClass("highestNumberOfSales");
-			else if(row.getData().getNumberOfSales().equals(lowestNumberOfSales))
-				row.getCascadeStyleSheet().addClass("lowestNumberOfSales");
-				
-		productTable.setTree(new Tree());
-		productTable.getTree().setDynamic(Boolean.FALSE);
-		((Tree)productTable.getTree()).build(ProductCategory.class,productCategoryBusiness.findHierarchies(),productCategory,CompanyWebManager.getInstance().getOutcomeSaleDashBoard());
-		
-		countPieChartModel = chartManager.pieModel(countPieModel);
-		turnoverPieChartModel = chartManager.pieModel(turnoverPieModel);
-		*/
 	}
 	
 	private <PRODUCT extends AbstractEnumeration,RESULTS extends AbstractAccountingPeriodResults<PRODUCT>> void productDetails(Class<PRODUCT> productClass,Class<RESULTS> resultsClass,AbstractAccountingPeriodResultsBusiness<RESULTS, PRODUCT> business
@@ -219,6 +167,14 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 		Collection<RESULTS> resultsCollection = business.findByAccountingPeriodByProducts(accountingPeriod, products);
 		lowestNumberOfSales = numberBusiness.format(business.findLowestNumberOfSalesValue(resultsCollection));
 		highestNumberOfSales = numberBusiness.format(business.findHighestNumberOfSalesValue(resultsCollection));
+		
+		/*
+		for(AccountingPeriodProduct accountingPeriodProduct : accountingPeriodProductBusiness.findHighestNumberOfSales(accountingPeriod, products))
+			set.add(new ProductDetails(accountingPeriodProduct));
+		for(AccountingPeriodProduct accountingPeriodProduct : accountingPeriodProductBusiness.findLowestNumberOfSales(accountingPeriod, products))
+			set.add(new ProductDetails(accountingPeriodProduct));
+		*/
+		
 		for(RESULTS results : resultsCollection)
 			productDetailsCollection.add(new ProductDetails(results));
 		//System.out.println("SaleDashBoardPage.productDetails() "+business.findNumberOfSalesPieModel(resultsCollection));
@@ -253,8 +209,23 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 		
 	/**/
 	
+	public PieChartModel getCountPieChartModel(){
+		return countPieChartModel;
+	}
+	public PieChartModel getTurnoverPieChartModel(){
+		return turnoverPieChartModel;
+	}
+	public BarChartModel getCountBarChartModel(){
+		return countBarChartModel;
+	}
+	public BarChartModel getTurnoverBarChartModel(){
+		return turnoverBarChartModel;
+	}
+	
+	/**/
+	
 	@Getter @Setter @AllArgsConstructor
-	private class SalesResultsDetails implements Serializable {
+	public class SalesResultsDetails implements Serializable {
 		private static final long serialVersionUID = -1498269103849317057L;
 		@Input @InputText private String turnover,valueAddedTaxes;
 		public SalesResultsDetails(SalesResults salesResults) {
@@ -264,7 +235,7 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 	}
 	
 	@Getter @Setter @EqualsAndHashCode(callSuper=false,of={"code"})
-	private class ProductDetails implements Serializable {
+	public class ProductDetails implements Serializable {
 		private static final long serialVersionUID = -1498269103849317057L;
 		@Input @InputText private String code,name,numberOfSales,turnover;
 		public ProductDetails(AbstractAccountingPeriodResults<?> product) {
