@@ -7,6 +7,35 @@
 
 	<navigation-rule>
 		<from-view-id>*</from-view-id>
+		<!-- Manager -->
+		<navigation-case>
+			<from-outcome>ownedCompanyCrudOne</from-outcome>
+			<to-view-id>/private/__role__/__manager__/ownedcompanycrudone.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<!-- Production manager -->
+		<navigation-case>
+			<from-outcome>productionPlanModelEditView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/editoneproductionplanmodel.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>productionPlanModelListView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/productionplanmodellist.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>productionEditView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/editoneproduction.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>productionListView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/productionlist.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
 		<!-- Stock Manager -->
 		<navigation-case>
 			<from-outcome>productCollectionEditView</from-outcome>
@@ -28,14 +57,24 @@
 			<to-view-id>/private/__role__/__stockmanager__/stockmovement.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
-		<!--navigation-case>
-			<from-outcome>tangibleProductInventoryListView</from-outcome>
-			<to-view-id>/private/__role__/__stockmanager__/tangibleproduct/inventorylist.xhtml</to-view-id>
+		<navigation-case>
+			<from-outcome>tangibleProductStockMovementList</from-outcome>
+			<to-view-id>/private/__role__/__stockmanager__/tangibleproductstockmovementlist.xhtml</to-view-id>
 			<redirect />
-		</navigation-case-->
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>tangibleProductInventoryListView</from-outcome>
+			<to-view-id>/private/__role__/__stockmanager__/inventorylist.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 		<navigation-case>
 			<from-outcome>tangibleProductInventoryEditView</from-outcome>
 			<to-view-id>/private/__role__/__stockmanager__/inventoryedit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>tangibleProductInventoryConsultView</from-outcome>
+			<to-view-id>/private/__role__/__stockmanager__/inventoryconsult.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		<navigation-case>
@@ -68,6 +107,34 @@
 		<navigation-case>
 			<from-outcome>saleDeliveryDetailsView</from-outcome>
 			<to-view-id>/private/__role__/__salemanager__/deliverydetails.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>saleStockInputEditView</from-outcome>
+			<to-view-id>/private/__role__/__salemanager__/salestockinputedit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>saleStockInputListView</from-outcome>
+			<to-view-id>/private/__role__/__salemanager__/salestockinputlist.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>saleStockInputConsultView</from-outcome>
+			<to-view-id>/private/__role__/__salemanager__/salestockinputconsult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>saleStockOutputEditView</from-outcome>
+			<to-view-id>/private/__role__/__salemanager__/salestockoutputedit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>credenceView</from-outcome>
+			<to-view-id>/private/__role__/__salemanager__/credence.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		

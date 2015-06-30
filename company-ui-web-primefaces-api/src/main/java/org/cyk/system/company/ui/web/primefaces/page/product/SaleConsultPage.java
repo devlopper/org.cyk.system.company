@@ -1,11 +1,13 @@
 package org.cyk.system.company.ui.web.primefaces.page.product;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,11 +28,17 @@ import org.cyk.ui.api.command.UICommandable.CommandRequestType;
 import org.cyk.ui.api.command.UICommandable.IconType;
 import org.cyk.ui.api.command.UICommandable.Parameter;
 import org.cyk.ui.api.command.UICommandable.ViewType;
+import org.cyk.ui.api.data.collector.form.ControlSet;
 import org.cyk.ui.web.primefaces.Table;
+import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
+import org.primefaces.extensions.model.dynaform.DynaFormControl;
+import org.primefaces.extensions.model.dynaform.DynaFormLabel;
+import org.primefaces.extensions.model.dynaform.DynaFormModel;
+import org.primefaces.extensions.model.dynaform.DynaFormRow;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serializable {
@@ -39,7 +47,6 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
 	@Inject private CompanyWebManager companyWebManager;
-	//@Inject private SaleBusiness saleBusiness;
 	
 	private FormOneData<SaleDetails> saleDetails;
 	private Table<ProductDetails> productTable;
@@ -56,6 +63,19 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		
 		saleDetails = (FormOneData<SaleDetails>) createFormOneData(new SaleDetails(identifiable), Crud.READ);
 		configureDetailsForm(saleDetails);
+		saleDetails.setControlSetListener(new ControlSetAdapter<SaleDetails>(){
+			@Override
+			public String fiedLabel(
+					ControlSet<SaleDetails, DynaFormModel, DynaFormRow, DynaFormLabel, DynaFormControl, SelectItem> controlSet,
+					Field field) {
+				if(field.getName().equals("balance"))
+					if(identifiable.getBalance().signum()==1)
+						return text("field.reminder.to.pay");
+					else if(identifiable.getBalance().signum()==-1)
+						return text("field.amount.to.payback");
+				return super.fiedLabel(controlSet, field);
+			}
+		}); 
 		
 		productTable = (Table<ProductDetails>) createTable(ProductDetails.class, null, null);
 		configureDetailsTable(productTable, "model.entity.product");
@@ -81,7 +101,8 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 			paymentTable.addRow(new PaymentDetails(payment));
 		
 		productTable.getColumn("price").setFooter(numberBusiness.format(identifiable.getCost()));
-		paymentTable.getColumn("paid").setFooter(numberBusiness.format(identifiable.getCost().subtract(identifiable.getBalance())));	
+		paymentTable.getColumn("paid").setFooter(numberBusiness.format(identifiable.getCost().subtract(identifiable.getBalance())));
+		
 	}
 	
 	@Override
@@ -89,25 +110,20 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		Integer balance = identifiable.getBalance().compareTo(BigDecimal.ZERO);
 		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null);
 		contextualMenu.setLabel(contentTitle); 
-		
 		if(balance!=0){
 				
 			Collection<Parameter> parameters = Arrays.asList(new UICommandable.Parameter(uiManager.getClassParameter(), uiManager.keyFromClass(SaleCashRegisterMovement.class)),
-					new UICommandable.Parameter(uiManager.getCrudParameter(), uiManager.getCrudCreateParameter())
+					new Parameter(uiManager.getCrudParameter(), uiManager.getCrudCreateParameter())
 			,new UICommandable.Parameter(uiManager.keyFromClass(Sale.class), identifiable.getIdentifier()));
-			Collection<Parameter> p;
+			Collection<Parameter> p  = new ArrayList<>(parameters);
+			p.add(new Parameter(webManager.getRequestParameterPreviousUrl(), url));
 			if(balance>0){
-				p = new ArrayList<>(parameters);
-				p.add(new UICommandable.Parameter(CompanyWebManager.getInstance().getRequestParameterPaymentType(), 
-						CompanyWebManager.getInstance().getRequestParameterPay() ));
+				p.add(new Parameter(CompanyWebManager.getInstance().getRequestParameterPaymentType(), CompanyWebManager.getInstance().getRequestParameterPay() ));
 				contextualMenu.addChild("command.pay", null, "paymentEditView", p);	
 			}else{
-				p = new ArrayList<>(parameters);
-				p.add(new UICommandable.Parameter(CompanyWebManager.getInstance().getRequestParameterPaymentType(), 
-						CompanyWebManager.getInstance().getRequestParameterPayback() ));
+				p.add(new Parameter(CompanyWebManager.getInstance().getRequestParameterPaymentType(), CompanyWebManager.getInstance().getRequestParameterPayback() ));
 				contextualMenu.addChild("command.payback", null, "paymentEditView", p);	
 			}
-		
 		}
 		
 		editExecutionDetails = UIProvider.getInstance().createCommandable("command.edit.executiondetails", IconType.ACTION_EDIT);
@@ -138,7 +154,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		public SaleDetails(Sale sale) {
 			this.identifier = sale.getIdentificationNumber();
 			this.cost = numberBusiness.format(sale.getCost());
-			this.balance = numberBusiness.format(sale.getBalance());
+			this.balance = numberBusiness.format(sale.getBalance().abs());
 			this.customer = sale.getCustomer()==null?"":sale.getCustomer().getPerson().getNames();
 			this.date = timeBusiness.formatDateTime(sale.getDate());
 		}
@@ -153,7 +169,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		
 		public ProductDetails(SaleProduct saleProduct) {
 			this.name = saleProduct.getProduct().getCode()+" - "+saleProduct.getProduct().getName();
-			this.unitPrice = numberBusiness.format(saleProduct.getProduct().getPrice());
+			this.unitPrice = saleProduct.getProduct().getPrice()==null?"":numberBusiness.format(saleProduct.getProduct().getPrice());
 			this.quantity = numberBusiness.format(saleProduct.getQuantity());
 			this.price = numberBusiness.format(saleProduct.getPrice());
 		}

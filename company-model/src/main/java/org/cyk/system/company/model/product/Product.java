@@ -34,14 +34,14 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	private static final long serialVersionUID = -6128937819261060725L;
 	
 	@ManyToOne
-	@Input @InputChoice @InputOneChoice @InputOneCombo
+	//@Input @InputChoice @InputOneChoice @InputOneCombo
 	protected Division division;
 	
 	@ManyToOne
 	@Input @InputChoice @InputOneChoice @InputOneCombo
 	protected ProductCategory category;
 	
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
+	@Column(precision=10,scale=FLOAT_SCALE/*,nullable=false*/) /*@NotNull*/
 	@Input @InputNumber
 	protected BigDecimal price;
 	
@@ -49,14 +49,6 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	@Input @InputBooleanCheck
 	protected Boolean salable = Boolean.TRUE;
 	
-	/*
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
-	protected BigDecimal usedCount = BigDecimal.ZERO;
-	
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
-	protected BigDecimal turnover = BigDecimal.ZERO;
-	*/
-
 	public Product(String code, String name, Division division, ProductCategory category,BigDecimal price) {
 		super(code, name, null, null);
 		this.division = division;

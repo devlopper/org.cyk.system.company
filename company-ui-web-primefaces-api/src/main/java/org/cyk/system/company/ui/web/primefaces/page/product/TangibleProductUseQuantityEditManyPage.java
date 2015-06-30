@@ -1,6 +1,7 @@
 package org.cyk.system.company.ui.web.primefaces.page.product;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,8 +13,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.ui.api.command.CommandAdapter;
 import org.cyk.ui.api.command.UICommand;
+import org.cyk.ui.api.command.UICommandable;
 
 @Named @ViewScoped @Getter @Setter
 public class TangibleProductUseQuantityEditManyPage extends AbstractTangibleProductStockManyPage<TangibleProductUseQuantityMovement> implements Serializable {
@@ -36,6 +39,11 @@ public class TangibleProductUseQuantityEditManyPage extends AbstractTangibleProd
 	}
 	
 	@Override
+	protected Collection<UICommandable> contextualCommandables() {
+		return CompanyWebManager.getInstance().stockContextCommandables(getUserSession());
+	}
+	
+	@Override
 	protected TangibleProductUseQuantityMovement detail(TangibleProduct tangibleProduct) {
 		return new TangibleProductUseQuantityMovement(tangibleProduct);
 	}
@@ -53,6 +61,21 @@ public class TangibleProductUseQuantityEditManyPage extends AbstractTangibleProd
 			d.apply();
 		}
 		tangibleProductBusiness.update(collection);
+	}
+
+	@Override
+	protected String __succeedOutcome__() {
+		return CompanyWebManager.getInstance().getOutcomeStockDashBoard();
+	}
+
+	@Override
+	public BigDecimal maxValue(TangibleProductUseQuantityMovement detail) {
+		return null;
+	}
+
+	@Override
+	public BigDecimal minValue(TangibleProductUseQuantityMovement detail) {
+		return detail.getTangibleProduct().getUseQuantity().negate();
 	}
 	
 	

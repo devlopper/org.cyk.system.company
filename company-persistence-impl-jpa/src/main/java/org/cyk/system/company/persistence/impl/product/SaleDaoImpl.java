@@ -3,8 +3,11 @@ package org.cyk.system.company.persistence.impl.product;
 import java.math.BigDecimal;
 import java.util.Collection;
 
+import javax.persistence.NoResultException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.model.payment.BalanceType;
+import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.persistence.api.product.SaleDao;
@@ -32,7 +35,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	//		READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT+READ_BY_CRITERIA_WHERE_BALANCE_FORMAT+ORDER_BY_FORMAT;
 	
 	private String readAllSortedByDate,readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,sumBalanceByCriteria,
-		sumCostByCriteria,sumValueAddedTaxByCriteria/*,readByPeriod,readByCriteriaWithBalanceDateAscendingOrder,readByCriteriaWithBalanceDateDescendingOrder,sumBalanceByCriteriaWithBalance*/;
+		sumCostByCriteria,sumValueAddedTaxByCriteria,sumBalanceByCustomer,readByIdentificationNumber;
 	
 	@Override
     protected void namedQueriesInitialisation() {
@@ -40,12 +43,13 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
     	registerNamedQuery(sumCostByCriteria,"SELECT SUM(sale.cost) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT);
     	registerNamedQuery(sumValueAddedTaxByCriteria,"SELECT SUM(sale.valueAddedTax) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT);
     	registerNamedQuery(sumBalanceByCriteria,"SELECT SUM(sale.balance) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT);
+    	registerNamedQuery(sumBalanceByCustomer,"SELECT SUM(sale.balance) FROM Sale sale WHERE sale.customer.identifier = :customerId");
     	//registerNamedQuery(sumBalanceByCriteriaWithBalance,"SELECT SUM(sale.balance) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT+READ_BY_CRITERIA_WHERE_BALANCE_FORMAT);
     	registerNamedQuery(readAllSortedByDate,READ_BY_CRITERIA_SELECT_FORMAT+" ORDER BY sale.date ASC");
     	registerNamedQuery(readByCriteria,READ_BY_CRITERIA_NOTORDERED_FORMAT+" ORDER BY sale.date ASC");
         registerNamedQuery(readByCriteriaDateAscendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "sale.date ASC") );
         registerNamedQuery(readByCriteriaDateDescendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "sale.date DESC") );
-        
+        registerNamedQuery(readByIdentificationNumber, _select().where("identificationNumber"));
         //registerNamedQuery(readByPeriod,"SELECT sale FROM Sale sale WHERE sale.date BETWEEN :fromDate AND :toDate");
         
         //registerNamedQuery(readByCriteriaWithBalanceDateAscendingOrder,String.format(READ_BY_CRITERIA_WITHBALANCE_ORDERED_FORMAT, "sale.date ASC") );
@@ -128,6 +132,32 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 		}
 		queryWrapper.parameter("minBalance",minBalance);
 		queryWrapper.parameter("maxBalance",maxBalance);
+	}
+
+	@Override
+	public BigDecimal sumBalanceByCustomer(Customer customer) {
+		return namedQuery(sumBalanceByCustomer, BigDecimal.class).parameter("customerId", customer.getIdentifier()).nullValue(BigDecimal.ZERO).resultOne();
+	}
+	/*
+	@Override
+	public Collection<Sale> readByCustomer(Customer customer,
+			Collection<BalanceType> balanceTypes) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public Long countByCustomer(Customer customer,
+			Collection<BalanceType> balanceTypes) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	*/
+
+	@Override
+	public Sale readByIdentificationNumber(String identificationNumber) {
+		return namedQuery(readByIdentificationNumber).parameter("identificationNumber", identificationNumber)
+				.ignoreThrowable(NoResultException.class).resultOne();
 	}
 	
 	

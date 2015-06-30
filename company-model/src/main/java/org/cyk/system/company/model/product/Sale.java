@@ -55,6 +55,9 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.MERGE,orphanRemoval=true)
 	private Set<ProductEmployee> performers = new HashSet<>();
 	
+	@Column(length=1024*1)
+	private String comments;
+	
 	/**/
 	
 	@Transient private Collection<SaleProduct> saleProducts = new ArrayList<>();

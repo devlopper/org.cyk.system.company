@@ -36,6 +36,7 @@ import org.cyk.system.company.model.accounting.SalesResults;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
+import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
@@ -84,7 +85,6 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 	private Collection<Product> products;
 	private Boolean salesFound;
 	
-	private PieModel countPieModel,turnoverPieModel;
 	private List<ProductDetails> productDetailsCollection = new ArrayList<>();
 		
 	@Override
@@ -125,18 +125,19 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 					productCategories.add((ProductCategory) o);
 			}
 		}
+		Collection<Sale> sales = saleBusiness.findByCriteria(saleSearchCriteria);
 		
-		Collection<SaleProduct> saleProducts = saleProductBusiness.findBySalesByCategories(saleBusiness.findByCriteria(saleSearchCriteria), productCategory==null?productCategories:Arrays.asList(productCategory));
+		Collection<SaleProduct> saleProducts = saleProductBusiness.findBySalesByCategories(sales, productCategory==null?productCategories:Arrays.asList(productCategory));
+		
 		if(saleProducts.isEmpty()){
 			
 		}else{
 			salesFound = Boolean.TRUE;
 			SalesResultsCartesianModelParameters salesResultsCartesianModelParameters = new SalesResultsCartesianModelParameters(accountingPeriod.getPeriod(), 
 					saleProducts, productCategory==null?productCategories:Arrays.asList(productCategory), selectedTimeDivisionType);
-			
 			turnoverBarChartModel = chartManager.barModel(configureCartesianModel(saleProductBusiness.findCartesianModelTurnOver(salesResultsCartesianModelParameters)));
 	        countBarChartModel = chartManager.barModel(configureCartesianModel(saleProductBusiness.findCartesianModelCount(salesResultsCartesianModelParameters)));
-	
+	        
 			salesResultsDetails = (FormOneData<SalesResultsDetails>) createFormOneData(new SalesResultsDetails(salesResults), Crud.READ);
 			configureDetailsForm(salesResultsDetails);
 			salesResultsDetails.setControlSetListener(new ControlSetAdapter<SalesResultsDetails>(){
@@ -148,13 +149,11 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 				}
 			}); 
 		}
-		
 	}
 	
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
-		
 		if(productCategories!=null && !productCategories.isEmpty())
 			productDetails(ProductCategory.class, AccountingPeriodProductCategory.class, accountingPeriodProductCategoryBusiness, productCategories);
 		else
@@ -163,6 +162,7 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 	
 	private <PRODUCT extends AbstractEnumeration,RESULTS extends AbstractAccountingPeriodResults<PRODUCT>> void productDetails(Class<PRODUCT> productClass,Class<RESULTS> resultsClass,AbstractAccountingPeriodResultsBusiness<RESULTS, PRODUCT> business
 			,Collection<PRODUCT> products){
+		PieModel countPieModel,turnoverPieModel;
 		String highestNumberOfSales=null,lowestNumberOfSales=null;
 		Collection<RESULTS> resultsCollection = business.findByAccountingPeriodByProducts(accountingPeriod, products);
 		lowestNumberOfSales = numberBusiness.format(business.findLowestNumberOfSalesValue(resultsCollection));

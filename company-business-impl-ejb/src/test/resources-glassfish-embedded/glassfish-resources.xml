@@ -4,30 +4,25 @@
     "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
 <resources>
 
-    <!--jdbc-connection-pool 
-    	name="ArquillianEmbeddedDerbyPool" 
-    	res-type="javax.sql.DataSource"
-        datasource-classname="org.apache.derby.jdbc.EmbeddedDataSource" 
-        is-isolation-level-guaranteed="false">
-        <property name="databaseName" value="target/databases/derby"/>
-        <property name="createDatabase" value="create"/>
-    </jdbc-connection-pool-->
-    
-    <jdbc-connection-pool is-isolation-level-guaranteed="false" name="ArquillianHsqlPool" driver-classname="org.hsqldb.jdbcDriver"
-   		res-type="java.sql.Driver">
-   		<!--
-   		<property name="serverName" value="localhost" />
-   		<property name="PortNumber" value="9001" />
-    	<property name="User" value="sa" />
-    	<property name="Password" value="" />
-    	-->
-    	<property name="URL" value="jdbc:hsqldb:mem:hsql" />
-        
-    </jdbc-connection-pool>
+	<!-- JDBC -->
+    <!-- Test -->
    
-    <jdbc-resource 
-    	pool-name="ArquillianHsqlPool" 
-    	jndi-name="jdbc/arquillian" />
+    <jdbc-connection-pool is-isolation-level-guaranteed="false" name="ArquillianHsqlPool" driver-classname="org.hsqldb.jdbcDriver" res-type="java.sql.Driver">
+    	<property name="URL" value="jdbc:hsqldb:mem:hsql" />
+    </jdbc-connection-pool>
+    
+    <!-- Live -->
+    <!--
+    <jdbc-connection-pool datasource-classname="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" res-type="javax.sql.DataSource" name="ArquillianHsqlPool">
+      <property name="servername" value="localhost"></property>
+      <property name="databasename" value="cyk_company_db"></property>
+      <property name="user" value="root"></property>
+      <property name="password" value="root"></property>
+      <property name="URL" value="jdbc:mysql://localhost:3306/cyk_company_db"></property>
+    </jdbc-connection-pool>
+    -->
+    <jdbc-resource pool-name="ArquillianHsqlPool" jndi-name="jdbc/arquillian" />
+    
     	
     <mail-resource host="smtp.gmail.com" jndi-name="mail/cyk_root" from="kycdev@gmail.com" user="kycdev@gmail.com">
       <property name="mail.smtp.socketFactory.port" value="465"></property>

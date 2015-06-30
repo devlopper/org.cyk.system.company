@@ -19,8 +19,5 @@ public class SaleQueryFormModel implements Serializable {
 	
 	@Input @InputCalendar
 	private Date toDate;
-	/*
-	@Input @InputChoice @InputManyChoice @InputManyButton
-	private List<BalanceType> balanceTypes;
-	*/
+	
 }

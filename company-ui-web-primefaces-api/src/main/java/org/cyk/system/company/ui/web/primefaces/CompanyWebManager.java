@@ -1,7 +1,7 @@
 package org.cyk.system.company.ui.web.primefaces;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.inject.Inject;
@@ -15,6 +15,8 @@ import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.api.product.ProductCollectionBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
+import org.cyk.system.company.business.api.production.ProductionBusiness;
+import org.cyk.system.company.business.api.production.ProductionPlanModelBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.BalanceType;
@@ -22,11 +24,14 @@ import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.IntangibleProduct;
+import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.ProductCollection;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
+import org.cyk.system.company.model.production.Production;
+import org.cyk.system.company.model.production.ProductionPlanModel;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
@@ -41,16 +46,17 @@ import org.cyk.ui.api.UIManager;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.UICommandable.IconType;
 import org.cyk.ui.api.command.menu.SystemMenu;
-import org.cyk.ui.api.model.ActorConsultFormModel;
+import org.cyk.ui.api.model.party.ActorConsultFormModel;
 import org.cyk.ui.web.api.security.shiro.WebEnvironmentAdapter;
 import org.cyk.ui.web.api.security.shiro.WebEnvironmentAdapter.SecuredUrlProvider;
 import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 
-@Singleton @Deployment(initialisationType=InitialisationType.EAGER) @Getter
+@Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyWebManager.DEPLOYMENT_ORDER) @Getter
 public class CompanyWebManager extends AbstractPrimefacesManager implements Serializable {
 
+	public static final int DEPLOYMENT_ORDER = CompanyBusinessLayer.DEPLOYMENT_ORDER+1;
 	private static final long serialVersionUID = 7231721191071228908L;
 
 	private static CompanyWebManager INSTANCE;
@@ -65,7 +71,9 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	
 	private final String outcomeEditSaleDeliveryDetails = "saleDeliveryDetailsView";
 	private final String outcomeStockDashBoard = "stockDashBoardView";
+	private final String outcomeTangibleProductStockMovementList = "tangibleProductStockMovementList";
 	private final String outcomeSaleDashBoard = "saleDashBoardView";
+	private final String outcomeCredence = "credenceView";
 	
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private EmployeeBusiness employeeBusiness;
@@ -74,6 +82,8 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private CashRegisterBusiness cashRegisterBusiness;
 	@Inject private CashierBusiness cashierBusiness;
+	@Inject private ProductionBusiness productionBusiness;
+		@Inject private ProductionPlanModelBusiness productionPlanModelBusiness;
 	
 	@Override
 	protected void initialisation() {
@@ -89,15 +99,14 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		businessClassConfig(ProductCollection.class,ProductCollectionFormModel.class,null);
 		businessEntityInfos(ProductCollection.class).setUiListViewId(null);
 		
-		businessEntityInfos(TangibleProductInventory.class).setUiListViewId(null);
-		businessEntityInfos(TangibleProductInventory.class).setUiConsultViewId("tangibleProductInventoryEditView");
+		businessEntityInfos(TangibleProductInventory.class).setUiListViewId("tangibleProductInventoryListView");
+		businessEntityInfos(TangibleProductInventory.class).setUiConsultViewId("tangibleProductInventoryConsultView");
 		
-		businessEntityInfos(TangibleProductStockMovement.class).setUiEditViewId(null);
-		businessEntityInfos(TangibleProductStockMovement.class).setUiListViewId(null);
+		businessEntityInfos(TangibleProductStockMovement.class).setUiEditViewId("tangibleProductStockMovementCrudManyView");
+		businessEntityInfos(TangibleProductStockMovement.class).setUiListViewId(outcomeTangibleProductStockMovementList);
 		
 		UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Employee.class, ActorConsultFormModel.class);
 		UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Customer.class, ActorConsultFormModel.class);
-		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Actor.class, ActorConsultFormModel.class);
 		
 		uiManager.getBusinesslisteners().add(new BusinessAdapter(){
 			private static final long serialVersionUID = 4605368263736933413L;
@@ -117,7 +126,11 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 					return (Collection<T>) tangibleProductStockMovementBusiness.findAll();
 				} else if(CashRegister.class.equals(dataClass)){
 					return (Collection<T>) cashRegisterBusiness.findAll();
-				}        
+				} else if(ProductionPlanModel.class.equals(dataClass)){
+					return (Collection<T>) productionPlanModelBusiness.findAll();
+				} else if(Production.class.equals(dataClass)){
+					return (Collection<T>) productionBusiness.findAll();
+				}               
 				return super.find(dataClass, first, pageSize, sortField, ascendingOrder, filter);
 			}
 			
@@ -126,7 +139,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 				if(Customer.class.equals(dataClass)){
 					return customerBusiness.countAll();
 				}else if(Employee.class.equals(dataClass)){
-					return employeeBusiness.countAll();
+					return employeeBusiness.countAll();	
 				}else if(ProductCollection.class.equals(dataClass)){
 					return productCollectionBusiness.countAll();
 				}else if(TangibleProductInventory.class.equals(dataClass)){
@@ -135,6 +148,10 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 					return tangibleProductStockMovementBusiness.countAll();
 				} else if(CashRegister.class.equals(dataClass)){
 					return cashRegisterBusiness.countAll();
+				} else if(ProductionPlanModel.class.equals(dataClass)){
+					return productionPlanModelBusiness.countAll();
+				} else if(Production.class.equals(dataClass)){
+					return productionBusiness.countAll();
 				} 
 				
 				return super.count(dataClass, filter);
@@ -148,6 +165,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 				roleFolder("__salemanager__", CompanyBusinessLayer.getInstance().getRoleSaleManagerCode());
 				roleFolder("__stockmanager__", CompanyBusinessLayer.getInstance().getRoleStockManagerCode());
 				roleFolder("__humanresourcesmanager__", CompanyBusinessLayer.getInstance().getRoleHumanResourcesManagerCode());
+				roleFolder("__productionmanager__", CompanyBusinessLayer.getInstance().getRoleProductionManagerCode());
 			}
 		});
 	}
@@ -162,13 +180,16 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		if(userSession.getUser() instanceof Person){
 			cashier = cashierBusiness.findByPerson((Person) userSession.getUser());
 		}
-		SystemMenu systemMenu = new SystemMenu();UICommandable c;
+		SystemMenu systemMenu = new SystemMenu();
 		UICommandable group = uiProvider.createCommandable("department", null);
 		group.addChild(menuManager.crudMany(DivisionType.class, null));	
 		group.addChild(menuManager.crudMany(Division.class, null));	
+		group.addChild(menuManager.crudMany(Division.class, null));	
+		group.addChild("command.ownedcompany", null, "ownedCompanyCrudOne", null);
 		systemMenu.getReferenceEntities().add(group);
 		
 		group = uiProvider.createCommandable("product", null);
+		group.addChild(menuManager.crudMany(ProductCategory.class, null));
 		group.addChild(menuManager.crudMany(IntangibleProduct.class, null));	
 		group.addChild(menuManager.crudMany(TangibleProduct.class, null));	
 		group.addChild(menuManager.crudMany(ProductCollection.class, null));
@@ -181,43 +202,80 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		/**/
 		if(userSession.hasRole(CompanyBusinessLayer.getInstance().getRoleHumanResourcesManagerCode())){
 			UICommandable hr = uiProvider.createCommandable("command.humanresources", IconType.PERSON);
-			hr.addChild(c = menuManager.crudMany(Employee.class, null));
+			hr.addChild(menuManager.crudMany(Employee.class, null));
 			//hr.addChild(c = menuManager.crudOne(Customer.class, null));
 			//c.setLabel(uiManager.text("command.customer.new"));
-			hr.addChild(c = menuManager.crudMany(Customer.class, null));
-			hr.addChild(c = menuManager.crudMany(Cashier.class, null));
+			if(userSession.hasRole(CompanyBusinessLayer.getInstance().getRoleCustomerManagerCode())){
+				hr.addChild(menuManager.crudMany(Customer.class, null));
+			}
+			hr.addChild(menuManager.crudMany(Cashier.class, null));
 			systemMenu.getBusinesses().add(hr);
 		}
 		
+		addBusinessMenu(systemMenu,saleCommandables(userSession,systemMenu.getMobileBusinesses(), cashier)); 
+		addBusinessMenu(systemMenu,stockCommandables(userSession));
+		addBusinessMenu(systemMenu,goodsDepositCommandables(userSession, systemMenu.getMobileBusinesses(), cashier));
+		
+		return systemMenu;
+	}
+	
+	public UICommandable saleCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables,Cashier cashier){
+		UICommandable sale = uiProvider.createCommandable("command.sale", null);
 		if(userSession.hasRole(CompanyBusinessLayer.getInstance().getRoleSaleManagerCode())){
-			UICommandable sale = uiProvider.createCommandable("command.sale", null);
+			UICommandable c;
 			if(cashier!=null){
-				sale.addChild(c = menuManager.crudOne(Sale.class, IconType.ACTION_ADD));
+				sale.getChildren().add(c = menuManager.crudOne(Sale.class, IconType.ACTION_ADD));
 				c.setLabel(uiManager.text("command.sale.new"));
+				
 			}
-			UICommandable dashboard = sale.addChild("dashboard", null, outcomeSaleDashBoard, null);
-			sale.addChild("command.sale.listall", null, "saleListView", null);
+			
+			sale.getChildren().add(c = uiProvider.createCommandable("dashboard", null, outcomeSaleDashBoard));
+			mobileCommandables.add(c); 
+			sale.getChildren().add(uiProvider.createCommandable("command.sale.listall", null, "saleListView"));
+			sale.getChildren().add(uiProvider.createCommandable("field.credence", null, outcomeCredence));
+			
+			sale.getChildren().add(uiProvider.createCommandable("command.list", null, "saleStockInputListView"));
+			
+			sale.getChildren().add(uiProvider.createCommandable("prod", null, "productionListView"));
+			sale.getChildren().add(uiProvider.createCommandable("prodPlan", null, "productionPlanModelListView"));
+			
+			/*
 			sale.addChild("command.sale.negativebalance", null, "saleNegativeBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterNegativeBalance)));
 			sale.addChild("command.sale.zerobalance", null, "saleZeroBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterZeroBalance)));
 			sale.addChild("command.sale.positivebalance", null, "salePositiveBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterPositiveBalance)));
-			systemMenu.getBusinesses().add(sale); 
-			
-			systemMenu.getMobileBusinesses().add(dashboard); 
+			*/
 		}
 		
+		return sale;
+	}
+	
+	public UICommandable stockCommandables(AbstractUserSession userSession){
+		UICommandable stock = uiProvider.createCommandable("command.stock", null);
 		if(userSession.hasRole(CompanyBusinessLayer.getInstance().getRoleStockManagerCode())){
-			UICommandable stock = uiProvider.createCommandable("command.stock", null);
-			//stock.addChild("command.provision", null, "tangibleProductStockInView", null);
-			//stock.addChild(menuManager.crudMany(TangibleProductStockMovement.class, null));
-			stock.addChild("dashboard", null, "stockDashBoardView", null);
-			stock.addChild("model.entity.tangibleProductStockMovement", null, "tangibleProductStockMovementCrudManyView", null);
-			stock.addChild("command.quantityinuse", null, "tangibleProductQuantityInUseUpdateManyView", null);
-			//stock.addChild("command.inventory", null, "tangibleProductInventoryView", null);
-			stock.addChild(menuManager.crudMany(TangibleProductInventory.class, null));
-			systemMenu.getBusinesses().add(stock);
+			stock.getChildren().addAll(stockContextCommandables(userSession));
 		}
-			
-		return systemMenu;
+		return stock;
+	}
+	
+	public Collection<UICommandable> stockContextCommandables(AbstractUserSession userSession){
+		Collection<UICommandable> commandables = new ArrayList<>();
+		commandables.add(uiProvider.createCommandable("dashboard", null, "stockDashBoardView"));
+		commandables.add(menuManager.crudMany(TangibleProductStockMovement.class, null));
+		commandables.add(uiProvider.createCommandable("command.quantityinuse", null, "tangibleProductQuantityInUseUpdateManyView"));
+		commandables.add(menuManager.crudMany(TangibleProductInventory.class, null));
+		return commandables;
+	}
+	
+	public UICommandable goodsDepositCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables,Cashier cashier){
+		UICommandable goods = null;
+		if(userSession.hasRole(CompanyBusinessLayer.getInstance().getRoleSaleManagerCode())){
+			goods = uiProvider.createCommandable("goods", null);
+			if(cashier!=null){
+				goods.getChildren().add(uiProvider.createCommandable("command.deposit", null, "saleStockInputEditView"));
+			}
+			goods.getChildren().add(uiProvider.createCommandable("command.list", null, "saleStockInputListView"));	
+		}
+		return goods;
 	}
 
 	

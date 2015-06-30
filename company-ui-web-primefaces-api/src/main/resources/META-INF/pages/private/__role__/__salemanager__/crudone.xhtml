@@ -13,7 +13,7 @@
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
         <ui:param name="pageController" value="#{saleCrudOnePage}" />
         <ui:define name="body">
-        	<p:panelGrid id="optionsPanel" columns="7">
+        	<p:panelGrid id="optionsPanel" columns="9">
         		<p:outputLabel value="#{uiManager.text('model.entity.customer')}" for="customer" />
         		<p:selectOneMenu id="customer" value="#{saleCrudOnePage.selectedCustomer}" var="customer"  converter="#{objectConverter}" 
         			filter="true" filterMatchMode="contains">
@@ -22,6 +22,7 @@
 		            <p:column><h:outputText value="#{customer.person.names}" /></p:column>
         		</p:selectOneMenu>
         		
+        		<!--
         		<p:outputLabel value="#{uiManager.text('model.entity.product')}" for="product" />
         		<p:selectOneMenu id="product" value="#{saleCrudOnePage.selectedProduct}" var="product" converter="#{objectConverter}" 
         			filter="true" filterMatchMode="contains" disabled="#{saleCrudOnePage.collectMoney}">
@@ -31,6 +32,27 @@
         		</p:selectOneMenu>
         		<p:commandButton value="#{uiManager.text('command.add')}" title="#{uiManager.text('command.add')}" icon="ui-icon-plus" 
         			action="#{saleCrudOnePage.addProduct}" update="optionsPanel,datatable" disabled="#{saleCrudOnePage.collectMoney}"/>
+        		-->
+        		
+        		<p:outputLabel value="#{uiManager.text('model.entity.intangibleProduct')}" for="intangibleProduct" />
+        		<p:selectOneMenu id="intangibleProduct" value="#{saleCrudOnePage.selectedIntangibleProduct}" var="intangibleProduct" converter="#{objectConverter}" 
+        			filter="true" filterMatchMode="contains" disabled="#{saleCrudOnePage.collectMoney}">
+        			<f:selectItems value="#{saleCrudOnePage.intangibleProducts}"  />
+        			<p:column><h:outputText value="#{intangibleProduct.code}" /></p:column>
+		            <p:column><h:outputText value="#{intangibleProduct.name}" /></p:column>
+        		</p:selectOneMenu>
+        		<p:commandButton value="#{uiManager.text('command.add')}" title="#{uiManager.text('command.add')}" icon="ui-icon-plus" 
+        			action="#{saleCrudOnePage.addProduct(1)}" update="optionsPanel,datatable" disabled="#{saleCrudOnePage.collectMoney}"/>
+        		
+        		<p:outputLabel value="#{uiManager.text('model.entity.tangibleProduct')}" for="tangibleProduct" />
+        		<p:selectOneMenu id="tangibleProduct" value="#{saleCrudOnePage.selectedTangibleProduct}" var="tangibleProduct" converter="#{objectConverter}" 
+        			filter="true" filterMatchMode="contains" disabled="#{saleCrudOnePage.collectMoney}">
+        			<f:selectItems value="#{saleCrudOnePage.tangibleProducts}"  />
+        			<p:column><h:outputText value="#{tangibleProduct.code}" /></p:column>
+		            <p:column><h:outputText value="#{tangibleProduct.name}" /></p:column>
+        		</p:selectOneMenu>
+        		<p:commandButton value="#{uiManager.text('command.add')}" title="#{uiManager.text('command.add')}" icon="ui-icon-plus" 
+        			action="#{saleCrudOnePage.addProduct(2)}" update="optionsPanel,datatable" disabled="#{saleCrudOnePage.collectMoney}"/>
         		        		
         		<p:commandButton id="cashButton" value="#{uiManager.text('command.cash')}" title="#{uiManager.text('command.cash')}" icon="ui-icon-calculator" 
         			actionListener="#{saleCrudOnePage.cash}" update="optionsPanel,datatable,moneyPanel" 
@@ -63,7 +85,11 @@
         			<h:outputText value="#{saleProduct.quantity}" rendered="#{saleCrudOnePage.collectMoney}" />
         		</p:column>
         		<p:column headerText="#{uiManager.text('field.price.total')}" width="7%">
-        			<h:outputText id="total" value="#{saleProduct.price}" ></h:outputText>
+        			<h:outputText id="total" value="#{saleProduct.price}" rendered="#{saleProduct.product.price!=null}" />
+        			<pe:inputNumber id="totalInput" value="#{saleProduct.price}" required="true" requiredMessage="#{uiManager.text('input.value.required')}" 
+        				minValue="1" decimalPlaces="0" rendered="#{saleProduct.product.price==null}">
+        				<p:ajax event="change" listener="#{saleCrudOnePage.productQuantityChanged(saleProduct)}" process="totalInput" update="grandtotal" oncomplete="refreshFooter();"/>
+        			</pe:inputNumber>
         			<f:facet name="footer">
         				<h:outputText id="grandtotal" value="#{saleCrudOnePage.identifiable.cost}" />
         			</f:facet>

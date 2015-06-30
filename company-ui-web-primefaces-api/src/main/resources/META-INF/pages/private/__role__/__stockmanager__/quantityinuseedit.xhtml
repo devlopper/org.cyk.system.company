@@ -35,7 +35,9 @@
         		<p:column headerText="#{uiManager.text('field.name')}"><h:outputText value="#{movement.tangibleProduct.name}" /></p:column>
         		<p:column headerText="#{uiManager.text('field.quantity.current')}"><h:outputText value="#{movement.tempUseQuantity}" /></p:column>
         		<p:column headerText="#{uiManager.text('field.in')}/#{uiManager.text('field.out')}" width="15%">
-        			<pe:inputNumber id="quantity" value="#{movement.addUseQuantity}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}" >
+        			<pe:inputNumber id="quantity" value="#{movement.addUseQuantity}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}" 
+        				minValue="#{tangibleProductUseQuantityEditManyPage.minValue(movement)}" 
+        				maxValue="#{tangibleProductUseQuantityEditManyPage.maxValue(movement)}" >
         			</pe:inputNumber> 
         		</p:column>  
         		

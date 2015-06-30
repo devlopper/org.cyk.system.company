@@ -11,10 +11,6 @@ import lombok.Setter;
 
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.root.model.pattern.tree.DataTreeType;
-import org.cyk.utility.common.annotation.user.interfaces.Input;
-import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
-import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
-import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 
 @Getter @Setter @NoArgsConstructor @Entity 
 public class ProductCategory extends DataTreeType implements Serializable  {
@@ -22,7 +18,7 @@ public class ProductCategory extends DataTreeType implements Serializable  {
 	private static final long serialVersionUID = -6128937819261060725L;
 	
 	@ManyToOne
-	@Input @InputChoice @InputOneChoice @InputOneCombo
+	//@Input @InputChoice @InputOneChoice @InputOneCombo
 	protected Division division;
 	
 	public ProductCategory(DataTreeType parent, String code,String label) {

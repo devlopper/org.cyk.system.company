@@ -18,4 +18,5 @@ public interface SaleCashRegisterMovementBusiness extends TypedBusiness<SaleCash
 	//SaleCashRegisterMovement create(SaleCashRegisterMovement payment,Boolean payback);
 	
 	BigDecimal computeBalance(SaleCashRegisterMovement payment);
+	
 }

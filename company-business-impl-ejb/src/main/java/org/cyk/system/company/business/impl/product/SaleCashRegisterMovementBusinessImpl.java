@@ -11,8 +11,10 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
+import org.cyk.system.company.persistence.api.product.CustomerDao;
 import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
@@ -23,6 +25,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	private static final long serialVersionUID = -7830673760640348717L;
 
 	@Inject private SaleDao saleDao;
+	@Inject private CustomerDao customerDao;
 	@Inject private CashRegisterMovementBusiness cashRegisterMovementBusiness;
 
 	@Inject
@@ -32,8 +35,10 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 
 	@Override
 	public SaleCashRegisterMovement create(SaleCashRegisterMovement saleCashRegisterMovement) {
-		Integer soldOut = BigDecimal.ZERO.compareTo(saleCashRegisterMovement.getSale().getBalance());
-		Boolean deposit = saleCashRegisterMovement.getCashRegisterMovement().getAmount().signum()==1;
+		Sale sale = saleCashRegisterMovement.getSale();
+		Customer customer = sale.getCustomer();
+		Integer soldOut = BigDecimal.ZERO.compareTo(sale.getBalance());
+		Boolean deposit = saleCashRegisterMovement.getCashRegisterMovement().getAmount().signum()>=0;
 		if(Boolean.TRUE.equals(deposit)){
 			exceptionUtils().exception(soldOut>=0, "validtion.sale.soldout.yes");
 			cashRegisterMovementBusiness.deposit(saleCashRegisterMovement.getCashRegisterMovement());
@@ -41,8 +46,20 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			exceptionUtils().exception(soldOut<0, "validtion.sale.soldout.no");
 			cashRegisterMovementBusiness.withdraw(saleCashRegisterMovement.getCashRegisterMovement());
 		}
-		saleCashRegisterMovement.getSale().setBalance(saleCashRegisterMovement.getSale().getBalance().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
-		saleDao.update(saleCashRegisterMovement.getSale());
+		sale.setBalance(sale.getBalance().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
+		saleDao.update(sale);
+		
+		if(customer!=null){
+			Boolean firstSaleCashRegisterMovement = dao.countBySale(sale)==0;
+			if(firstSaleCashRegisterMovement){
+				customer.setBalance(customer.getBalance().add(sale.getBalance()));
+			}else{
+				customer.setBalance(customer.getBalance().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
+			}
+			customerDao.update(customer);
+			sale.getCustomer().setBalance(customer.getBalance());
+		}
+		
 		return super.create(saleCashRegisterMovement);
 	}
 	

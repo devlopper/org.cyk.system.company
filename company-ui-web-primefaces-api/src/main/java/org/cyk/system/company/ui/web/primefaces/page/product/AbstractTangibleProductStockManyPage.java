@@ -1,6 +1,7 @@
 package org.cyk.system.company.ui.web.primefaces.page.product;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,6 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.ui.api.UIProvider;
 import org.cyk.ui.api.command.CommandAdapter;
 import org.cyk.ui.api.command.UICommand;
@@ -44,7 +44,7 @@ public abstract class AbstractTangibleProductStockManyPage<DETAIL> extends Abstr
 			}
 			@Override
 			public Object succeed(UICommand command, Object parameter) {
-				navigationManager.redirectTo(CompanyWebManager.getInstance().getOutcomeStockDashBoard());
+				navigationManager.redirectTo(__succeedOutcome__());
 				return super.succeed(command, parameter);
 			}
 		});	
@@ -53,6 +53,9 @@ public abstract class AbstractTangibleProductStockManyPage<DETAIL> extends Abstr
 	protected abstract DETAIL detail(TangibleProduct tangibleProduct);
 	protected abstract TangibleProduct tangibleProduct(DETAIL detail);
 	protected abstract void __serve__(List<DETAIL> details);
+	public abstract BigDecimal maxValue(DETAIL detail);
+	public abstract BigDecimal minValue(DETAIL detail);
+	protected abstract String __succeedOutcome__();
 	
 	public void add(){
 		if(selectedTangibleProduct==null)

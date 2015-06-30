@@ -7,6 +7,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.payment.CashierBusiness;
+import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
@@ -30,6 +31,11 @@ public class CashierBusinessImpl extends AbstractTypedBusinessService<Cashier, C
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Cashier findByPerson(Person person) {
 		return dao.readByPerson(person);
+	}
+
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public Cashier findByCashRegister(CashRegister cashRegister) {
+		return dao.readByCashRegister(cashRegister);
 	}
 	
 }

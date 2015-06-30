@@ -12,7 +12,7 @@ public class SaleCashRegisterMovementDaoImpl extends AbstractTypedDao<SaleCashRe
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	private String readBySale,sumAmount;
+	private String readBySale,countBySale,sumAmount;
 	
 	@Override
 	protected void namedQueriesInitialisation() {
@@ -25,10 +25,17 @@ public class SaleCashRegisterMovementDaoImpl extends AbstractTypedDao<SaleCashRe
 	public Collection<SaleCashRegisterMovement> readBySale(Sale sale) {
 		return namedQuery(readBySale).parameter("sale", sale).resultMany();
 	}
+	 
+	@Override
+	public Long countBySale(Sale sale) {
+		return countNamedQuery(countBySale).parameter("sale", sale).resultOne();
+	}
 
 	@Override
 	public BigDecimal sumAmount(Sale sale) { 
 		return namedQuery(sumAmount,BigDecimal.class).parameter("sale", sale).nullValue(BigDecimal.ZERO).resultOne();
 	}
+
+	
 
 }

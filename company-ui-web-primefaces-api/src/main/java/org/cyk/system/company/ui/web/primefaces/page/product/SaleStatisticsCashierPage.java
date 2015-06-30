@@ -9,11 +9,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.model.product.SaleSearchCriteria;
-import org.cyk.system.company.ui.web.primefaces.model.SaleFormModel;
+import org.cyk.system.company.ui.web.primefaces.model.SaleQueryResultFormModel;
 import org.cyk.system.company.ui.web.primefaces.model.SaleQueryFormModel;
 
 @Named @ViewScoped @Getter @Setter
-public class SaleStatisticsCashierPage extends AbstractSaleListPage<SaleQueryFormModel, SaleFormModel> implements Serializable {
+public class SaleStatisticsCashierPage extends AbstractSaleListPage<SaleQueryFormModel, SaleQueryResultFormModel> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
@@ -23,8 +23,8 @@ public class SaleStatisticsCashierPage extends AbstractSaleListPage<SaleQueryFor
 	}
 
 	@Override
-	protected Class<SaleFormModel> __resultClass__() {
-		return SaleFormModel.class;
+	protected Class<SaleQueryResultFormModel> __resultClass__() {
+		return SaleQueryResultFormModel.class;
 	}
 
 	@Override

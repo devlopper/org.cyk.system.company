@@ -22,17 +22,10 @@ public class SaleCashRegisterMovement extends AbstractIdentifiable implements Se
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @NotNull
-	private Sale sale;
-	
-	@OneToOne @NotNull
-	private CashRegisterMovement cashRegisterMovement;
-	
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false)
-	private BigDecimal amountIn = BigDecimal.ZERO;
-	
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false)
-	private BigDecimal amountOut = BigDecimal.ZERO;
+	@ManyToOne @NotNull private Sale sale;
+	@OneToOne @NotNull private CashRegisterMovement cashRegisterMovement;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) private BigDecimal amountIn = BigDecimal.ZERO;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) private BigDecimal amountOut = BigDecimal.ZERO;
 
 	public SaleCashRegisterMovement(Sale sale,CashRegisterMovement cashRegisterMovement) {
 		super();

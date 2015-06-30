@@ -18,5 +18,5 @@ public class CompanyBusinessImpl extends AbstractPartyBusinessImpl<Company, Comp
 	public CompanyBusinessImpl(CompanyDao dao) {
 		super(dao);
 	}
-
+	
 }

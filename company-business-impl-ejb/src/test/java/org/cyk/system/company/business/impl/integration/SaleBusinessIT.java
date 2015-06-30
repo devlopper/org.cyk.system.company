@@ -10,6 +10,7 @@ import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodProductCategoryBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
+import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.ProductCategoryBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness;
@@ -21,12 +22,15 @@ import org.cyk.system.company.model.accounting.AccountingPeriodProductCategory;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.Cashier;
+import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
+import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.model.pattern.tree.AbstractDataTreeNode;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
@@ -43,6 +47,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     } 
     
     @Inject private SaleBusiness saleBusiness;
+    @Inject private CustomerBusiness customerBusiness;
     @Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
     @Inject private CashRegisterBusiness cashRegisterBusiness;
     @Inject private ProductBusiness productBusiness;
@@ -57,24 +62,34 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     //private IntangibleProduct product;
     private CashRegister cashRegister1,cashRegisterLimited;
     private AccountingPeriod accountingPeriod;
+    private Customer customer1,customer2;
     
     private Cashier cashier;
             
     public void oneFullPayment(){
-    	Sale sale = nextSale(1,1,8,0,new String[]{"iprod3","6","tprod1","2"});
-    	payment(sale, "10000","1000","10000.00");
+    	Sale sale = nextSale(customer1,1,1,8,0,new String[]{"iprod3","6","tprod1","2"});
+    	System.out.println("SaleBusinessIT.oneFullPayment() : "+sale.getCost());
+    	payment(sale, "10000","1000","10000.00","0");
     }
     
     public void manyPayments(){
-    	Sale sale = nextSale(1,1,8,0,new String[]{"iprod3","4","tprod1","2"});
-    	payment(sale, "5000","3000","15000.00");
-    	payment(sale, "2000","1000","17000.00");
-    	payment(sale, "2000","-1000","19000.00");
+    	Sale sale = nextSale(customer2,1,1,8,0,new String[]{"iprod3","4","tprod1","2"});
+    	payment(sale, "5000","3000","15000.00","0");
+    	payment(sale, "2000","1000","17000.00","0");
+    	payment(sale, "2000","-1000","19000.00","0");
     }
     
     @Override
     protected void businesses() {
     	fakeInstallation();
+    	
+    	customer1 = new Customer();
+    	customer1.setPerson(RootRandomDataProvider.getInstance().person(Boolean.TRUE, RootBusinessLayer.getInstance().getCountryCoteDivoire(), RootBusinessLayer.getInstance().getLandPhoneNumberType()));
+    	customerBusiness.create(customer1); 
+    	
+    	customer2 = new Customer();
+    	customer2.setPerson(RootRandomDataProvider.getInstance().person(Boolean.TRUE, RootBusinessLayer.getInstance().getCountryCoteDivoire(), RootBusinessLayer.getInstance().getLandPhoneNumberType()));
+    	customerBusiness.create(customer2); 
     	
     	Collection<ProductCategory> pproductCategories = new ArrayList<>();
     	pproductCategories.add(productCategoryBusiness.find("EC"));
@@ -100,33 +115,33 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	cashRegisterLimited.setOwnedCompany(ownedCompanyBusiness.findDefaultOwnedCompany());
     	create(cashRegisterLimited);
     	
-    	Sale sale = nextSale(1,1,8,0,new String[]{"iprod3","6","tprod1","2"});
-    	payment(sale, "10000","1000","10000.00");
+    	Sale sale = nextSale(customerBusiness.find(customer1.getIdentifier()),1,1,8,0,new String[]{"iprod3","6","tprod1","2"});
+    	payment(sale, "10000","1000","10000.00","1000");
     	assertProductResults(new String[]{"iprod3","6","9000","tprod1","2","2000"});
     	assertProductCategoryResults(new String[]{"SC","8","11000","EP","0","0","MASS","0","0","EC","8","11000"});
     	assertProductCategoryResults(new String[]{"OG","0","0","CF","0","0","BT","0","0"});
     	assertHighestAndLowestProductCategory(new String[]{"SC","EP","MASS"}, "8",new String[]{"SC"},"0", new String[]{"EP","MASS"});
     	
-    	sale = nextSale(1,1,8,30,new String[]{"iprod3","4","tprod1","2"});
-    	payment(sale, "5000","3000","15000.00");
-    	payment(sale, "2000","1000","17000.00");
-    	payment(sale, "2000","-1000","19000.00");
+    	sale = nextSale(customerBusiness.find(customer1.getIdentifier()),1,1,8,30,new String[]{"iprod3","4","tprod1","2"});
+    	payment(sale, "5000","3000","15000.00","4000");
+    	payment(sale, "2000","1000","17000.00","2000");
+    	payment(sale, "2000","-1000","19000.00","0");
     	assertProductResults(new String[]{"iprod3","10","15000","tprod1","4","4000"});
     	assertProductCategoryResults(new String[]{"SC","14","19000","EP","0","0","MASS","0","0","EC","14","19000"});
     	assertProductCategoryResults(new String[]{"OG","0","0","CF","0","0","BT","0","0"});
     	
-    	sale = nextSale(1,1,8,30,new String[]{"iprod1","2","iprod2","1","tprod2","5","tprod3","3"});
-    	payment(sale, "11000","0","30000.00");
+    	sale = nextSale(customer2,1,1,8,30,new String[]{"iprod1","2","iprod2","1","tprod2","5","tprod3","3"});
+    	payment(sale, "11000","0","30000.00","0");
     	
     	
-    	sale = nextSale(1,1,9,30,new String[]{"iprod4","2","iprod5","1","iprod6","3","tprod4","1","tprod5","2","tprod6","1"});
-    	payment(sale, "10000","0","40000.00");
+    	sale = nextSale(customerBusiness.find(customer1.getIdentifier()),1,1,9,30,new String[]{"iprod4","2","iprod5","1","iprod6","3","tprod4","1","tprod5","2","tprod6","1"});
+    	payment(sale, "10000","0","40000.00","0");
     	
-    	sale = nextSale(1,2,9,30,new String[]{"iprod7","1","iprod8","1","iprod9","1","tprod7","1","tprod8","3","tprod9","1"});
-    	payment(sale, "8000","0","48000.00");
+    	sale = nextSale(customerBusiness.find(customer1.getIdentifier()),1,2,9,30,new String[]{"iprod7","1","iprod8","1","iprod9","1","tprod7","1","tprod8","3","tprod9","1"});
+    	payment(sale, "8000","0","48000.00","0");
     	
-    	sale = nextSale(13,2,9,30,new String[]{"iprod10","1","iprod11","3","iprod12","2","tprod10","4","tprod11","1","tprod12","2"});
-    	payment(sale, "13000","0","61000.00");
+    	sale = nextSale(customerBusiness.find(customer1.getIdentifier()),13,2,9,30,new String[]{"iprod10","1","iprod11","3","iprod12","2","tprod10","4","tprod11","1","tprod12","2"});
+    	payment(sale, "13000","0","61000.00","0");
     	
     	Collection<ProductCategory> productCategories = productCategoryBusiness.findHierarchies();
     	
@@ -135,6 +150,8 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	for(ProductCategory productCategory : productCategories){
     		System.out.println("I - "+accountingPeriodProductCategoryBusiness.findByAccountingPeriodByProduct(accountingPeriod, productCategory));
     		Collection<ProductCategory> productCategories2 = new ArrayList<>();
+    		if(productCategory.getChildren()==null)
+    			continue;
     		for(AbstractDataTreeNode child : productCategory.getChildren()){
     			productCategories2.add((ProductCategory) child);
     			System.out.println("\tII - "+accountingPeriodProductCategoryBusiness.findByAccountingPeriodByProduct(accountingPeriod, (ProductCategory) child));
@@ -151,7 +168,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	}
     }
 
-    private void payment(Sale sale,String in,String out,String amount,String balance,String totalBalance){
+    private void payment(Sale sale,String in,String out,String amount,String balance,String totalBalance,String clientBalance){
     	SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement();
     	saleCashRegisterMovement.setSale(sale); 
     	saleCashRegisterMovement.setAmountIn(new BigDecimal(in==null?amount:in));
@@ -167,11 +184,12 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	
     	Assert.assertEquals("Balance",new BigDecimal(balance), sale.getBalance());
     	Assert.assertEquals("Total Balance",new BigDecimal(totalBalance), cashRegisterBusiness.sumBalance());
-    		
+    	if(sale.getCustomer()!=null)
+    		Assert.assertEquals("Client Balance",new BigDecimal(clientBalance), sale.getCustomer().getBalance());	
     }
     
-    private void payment(Sale sale,String amount,String balance,String totalBalance){
-    	payment(sale, null, null, amount, balance, totalBalance);
+    private void payment(Sale sale,String amount,String balance,String totalBalance,String clientBalance){
+    	payment(sale, null, null, amount, balance, totalBalance,clientBalance);
     }
     
     private void assertProductResults(String values[]){
@@ -213,8 +231,9 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	
     }
     
-    private Sale nextSale(Integer day,Integer month,Integer hour,Integer minute,String[] products){
+    private Sale nextSale(Customer customer,Integer day,Integer month,Integer hour,Integer minute,String[] products){
     	Sale sale = new Sale();
+    	sale.setCustomer(customer);
     	sale.setCashier(cashier);
     	sale.setAccountingPeriod(accountingPeriod);
     	if(day!=null)
@@ -234,7 +253,9 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	for(int i=0;i<products.length;i+=2){
     		SaleProduct saleProduct = saleBusiness.selectProduct(sale, productDao.read(products[i]));
     		saleProduct.setQuantity(new BigDecimal(products[i+1]));
-    		saleBusiness.quantifyProduct(sale, saleProduct);
+    		//debug(saleProduct);
+    		//debug(saleProduct.getProduct());
+    		saleBusiness.applyChange(sale, saleProduct);
     	}
     		
     }

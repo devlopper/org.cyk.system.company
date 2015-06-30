@@ -10,6 +10,7 @@ import org.cyk.system.root.persistence.api.TypedDao;
 public interface SaleCashRegisterMovementDao extends TypedDao<SaleCashRegisterMovement> {
 
 	Collection<SaleCashRegisterMovement> readBySale(Sale sale);
+	Long countBySale(Sale sale);
 	
 	BigDecimal sumAmount(Sale sale);
 

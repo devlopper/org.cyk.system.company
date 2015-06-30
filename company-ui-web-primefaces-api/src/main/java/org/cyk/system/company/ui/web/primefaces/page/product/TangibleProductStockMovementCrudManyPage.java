@@ -14,6 +14,7 @@ import lombok.Setter;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
+import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 
 @Named @ViewScoped @Getter @Setter
 public class TangibleProductStockMovementCrudManyPage extends AbstractTangibleProductStockManyPage<TangibleProductStockMovement> implements Serializable {
@@ -41,5 +42,20 @@ public class TangibleProductStockMovementCrudManyPage extends AbstractTangiblePr
 	@Override
 	protected void __serve__(List<TangibleProductStockMovement> details) {
 		tangibleProductStockMovementBusiness.create(details);
+	}
+	
+	
+	
+	public BigDecimal maxValue(TangibleProductStockMovement tangibleProductStockMovement){
+		return null;
+	}
+	
+	public BigDecimal minValue(TangibleProductStockMovement tangibleProductStockMovement){
+		return tangibleProductStockMovement.getTangibleProduct().getStockQuantity().negate();
+	}
+
+	@Override
+	protected String __succeedOutcome__() {
+		return CompanyWebManager.getInstance().getOutcomeTangibleProductStockMovementList();
 	}
 }

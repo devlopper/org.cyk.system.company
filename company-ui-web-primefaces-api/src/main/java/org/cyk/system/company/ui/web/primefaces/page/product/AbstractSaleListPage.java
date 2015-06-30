@@ -12,11 +12,13 @@ import lombok.Setter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.product.SaleBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.company.ui.web.primefaces.model.SaleFormModel;
+import org.cyk.system.company.ui.web.primefaces.model.SaleQueryResultFormModel;
+import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.ui.api.command.CommandAdapter;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.model.table.Cell;
@@ -35,10 +37,6 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 	@Inject protected SaleBusiness saleBusiness;
 	
 	protected BalanceType balanceType;
-	
-	public AbstractSaleListPage() {
-		
-	}
 	
 	@Override
 	protected void initialisation() {
@@ -86,13 +84,17 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 			@Override
 			public void serve(UICommand command, Object parameter) {
 				@SuppressWarnings("unchecked")
-				Sale sale = ((Row<SaleFormModel>)parameter).getData().getIdentifiable();
+				Sale sale = ((Row<SaleQueryResultFormModel>)parameter).getData().getIdentifiable();
 				WebNavigationManager.getInstance().redirectTo(businessEntityInfos.getUiConsultViewId(), 
 						new Object[]{webManager.getRequestParameterIdentifiable(),sale.getIdentifier().toString()});
 			}
 		});
 		
-		table.setShowToolBar(Boolean.FALSE); // TODO enable this when report done
+		table.setShowToolBar(Boolean.TRUE);
+		
+		table.setShowEditColumn(Boolean.FALSE);
+		table.setShowAddRemoveColumn(Boolean.FALSE);
+		table.getPrintCommandable().setRendered(Boolean.TRUE);
 	}
 	
 	@Override
@@ -130,6 +132,11 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 		if(!BalanceType.ZERO.equals(balanceType)){
 			table.getColumn("balance").setFooter(numberBusiness.format(saleBusiness.sumBalanceByCriteria(criteria)));
 		}
+		debug(criteria.getFromDateSearchCriteria());
+		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterFromDate(),criteria.getFromDateSearchCriteria().getPreparedValue().getTime());
+		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterToDate(),criteria.getToDateSearchCriteria().getPreparedValue().getTime());
+		if(balanceType!=null)
+			table.getPrintCommandable().setParameter(CompanyBusinessLayer.getInstance().getParameterBalanceType(),balanceType.name());
 		return saleBusiness.findByCriteria(criteria);
 	}
 	

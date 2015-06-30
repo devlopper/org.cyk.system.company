@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
+import org.cyk.system.company.model.product.TangibleProductStockMovementSearchCriteria;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.product.TangibleProductStockMovementDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
@@ -27,7 +28,8 @@ public class TangibleProductStockMovementBusinessImpl extends AbstractTypedBusin
 	
 	@Override
 	public TangibleProductStockMovement create(TangibleProductStockMovement tangibleProductStockMovement) {
-		tangibleProductStockMovement.setDate(universalTimeCoordinated());
+		if(tangibleProductStockMovement.getDate()==null)
+			tangibleProductStockMovement.setDate(universalTimeCoordinated());
 		updateStock(tangibleProductStockMovement);
 		return super.create(tangibleProductStockMovement);
 	}
@@ -55,6 +57,15 @@ public class TangibleProductStockMovementBusinessImpl extends AbstractTypedBusin
 		productDao.update(tangibleProductStockMovement.getTangibleProduct());
 	}
 
-	
+	@Override
+	public Collection<TangibleProductStockMovement> findByCriteria(TangibleProductStockMovementSearchCriteria criteria) {
+		getPersistenceService().getDataReadConfig().set(criteria.getReadConfig());
+		return dao.readByCriteria(criteria);
+	}
+
+	@Override
+	public Long countByCriteria(TangibleProductStockMovementSearchCriteria criteria) {
+		return dao.countByCriteria(criteria);
+	}
 	
 }

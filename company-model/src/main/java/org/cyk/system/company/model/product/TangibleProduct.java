@@ -20,6 +20,8 @@ public class TangibleProduct extends Product implements Serializable  {
 
 	private static final long serialVersionUID = -6128937819261060725L;
 	
+	public static final String SALE_STOCK = "STOCK_GOODS";
+	
 	/* Stock */
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull

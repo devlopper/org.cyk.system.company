@@ -55,16 +55,25 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 
 	@Override
 	public void process(SaleProduct saleProduct) {
-		saleProduct.setPrice(saleProduct.getProduct().getPrice().multiply(saleProduct.getQuantity()).subtract(saleProduct.getReduction()));
-		AccountingPeriod accountingPeriod = saleProduct.getSale().getAccountingPeriod();
-		if(Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost())){
-			BigDecimal divider = BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate());
-			saleProduct.setValueAddedTax(saleProduct.getPrice().divide(divider).subtract(saleProduct.getPrice()));
-			saleProduct.setTurnover(saleProduct.getPrice().subtract(saleProduct.getValueAddedTax()));
+		if(saleProduct.getProduct().getPrice()==null){
+			;
 		}else{
-			saleProduct.setValueAddedTax(accountingPeriod.getValueAddedTaxRate().multiply(saleProduct.getPrice()));
-			saleProduct.setTurnover(saleProduct.getPrice());
-			//TODO price should be updated????
+			saleProduct.setPrice(saleProduct.getProduct().getPrice().multiply(saleProduct.getQuantity()).subtract(saleProduct.getReduction()));	
+		}
+		
+		if(saleProduct.getPrice()==null){
+			return;
+		}else{
+			AccountingPeriod accountingPeriod = saleProduct.getSale().getAccountingPeriod();
+			if(Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost())){
+				BigDecimal divider = BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate());
+				saleProduct.setValueAddedTax(saleProduct.getPrice().divide(divider).subtract(saleProduct.getPrice()));
+				saleProduct.setTurnover(saleProduct.getPrice().subtract(saleProduct.getValueAddedTax()));
+			}else{
+				saleProduct.setValueAddedTax(accountingPeriod.getValueAddedTaxRate().multiply(saleProduct.getPrice()));
+				saleProduct.setTurnover(saleProduct.getPrice());
+				//TODO price should be updated????
+			}
 		}
 	}
 	

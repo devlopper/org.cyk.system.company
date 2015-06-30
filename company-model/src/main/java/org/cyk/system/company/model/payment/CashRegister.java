@@ -15,6 +15,8 @@ import lombok.Setter;
 
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.utility.common.annotation.ModelBean;
+import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
@@ -22,7 +24,7 @@ import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.ENUMERATION)
 public class CashRegister extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
@@ -34,10 +36,7 @@ public class CashRegister extends AbstractIdentifiable implements Serializable {
 	protected String code;
 	
 	@ManyToOne @NotNull
-	@Input
-	@InputChoice
-	@InputOneChoice
-	@InputOneCombo
+	@Input @InputChoice @InputOneChoice @InputOneCombo
 	private OwnedCompany ownedCompany;
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull

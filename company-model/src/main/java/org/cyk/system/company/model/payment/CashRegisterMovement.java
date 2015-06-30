@@ -23,19 +23,11 @@ public class CashRegisterMovement extends AbstractIdentifiable implements Serial
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@Column(unique=true) @NotNull
-	private String identificationNumber;
+	@Column(unique=true) @NotNull private String identificationNumber;
+	@ManyToOne @NotNull private CashRegister cashRegister;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amount = BigDecimal.ZERO;
+	@Temporal(TemporalType.TIMESTAMP) @Column(nullable=false) @NotNull private Date date;
 	
-	@ManyToOne @NotNull
-	private CashRegister cashRegister;
-	
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
-	private BigDecimal amount = BigDecimal.ZERO;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable=false) @NotNull
-	private Date date;
-
 	public CashRegisterMovement(CashRegister cashRegister) {
 		super();
 		this.cashRegister = cashRegister;

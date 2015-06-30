@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component"
+      xmlns:kwordz="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.kwordz/component">
+
+    <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
+        <ui:param name="pageController" value="#{productionCrudOnePage}" />
+        <ui:define name="body">
+        	<cyk:formOneData value="#{productionCrudOnePage.form}"/>
+        	<p:separator/>
+        	<p:dataTable value="#{productionCrudOnePage.inputs}" var="productionInput" rowIndexVar="ri" >
+        		<p:column headerText="#{uiManager.text('model.entity.tangibleProduct')}">
+        			<h:outputText value="#{productionInput.tangibleProduct}" />
+        		</p:column>
+        		
+        		<p:columns value="#{productionCrudOnePage.metrics}" var="productionMetric" headerText="#{productionMetric.metric}" columnIndexVar="ci">
+        			<pe:inputNumber value="#{productionCrudOnePage.productionInputs[ri][ci].metricValue.value}" minValue="0" />
+        		</p:columns>
+        		
+        	</p:dataTable>	
+        	
+        	<!--cyk:itemCollection id="qwerty" value="#{customPrivateIndexPage.personCollection}">
+	        	<p:column headerText="col1" >
+	        	
+	        	</p:column>
+	        </cyk:itemCollection-->
+        		
+        </ui:define>
+        
+        <ui:define name="contentMenuBar">
+ 			<cyk:command value="#{productionCrudOnePage.form.submitCommandable}" executeParameter="#{productionCrudOnePage.form.data}" />
+ 		</ui:define>
+        
+    </ui:decorate>
+ 
+</html>

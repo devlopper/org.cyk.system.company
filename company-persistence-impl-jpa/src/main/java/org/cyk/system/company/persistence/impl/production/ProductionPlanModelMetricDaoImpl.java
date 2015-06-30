@@ -1,0 +1,29 @@
+package org.cyk.system.company.persistence.impl.production;
+
+import java.util.Collection;
+
+import org.cyk.system.company.model.production.ProductionPlanModel;
+import org.cyk.system.company.model.production.ProductionPlanModelMetric;
+import org.cyk.system.company.persistence.api.production.ProductionPlanModelMetricDao;
+import org.cyk.system.root.persistence.impl.AbstractTypedDao;
+
+public class ProductionPlanModelMetricDaoImpl extends AbstractTypedDao<ProductionPlanModelMetric> implements ProductionPlanModelMetricDao {
+
+	private static final long serialVersionUID = 6920278182318788380L;
+
+	private String readByProductionPlanModel;
+	
+	@Override
+	protected void namedQueriesInitialisation() {
+		super.namedQueriesInitialisation();
+		registerNamedQuery(readByProductionPlanModel, _select().where("productionPlanModel"));
+	}
+	
+	@Override
+	public Collection<ProductionPlanModelMetric> readByProductionPlanModel(ProductionPlanModel productionPlanModel) {
+		return namedQuery(readByProductionPlanModel).parameter("productionPlanModel", productionPlanModel).resultMany();
+	}
+
+	
+	
+}

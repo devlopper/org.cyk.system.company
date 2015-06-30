@@ -15,7 +15,7 @@
         <ui:define name="body">
         	
         	<p:panelGrid id="productsPanel" columns="3">
-        		<p:outputLabel value="#{uiManager.text('model.entity.product')}" for="product" />
+        		<p:outputLabel value="#{uiManager.text('model.entity.tangibleProduct')}" for="product" />
         		<p:selectOneMenu id="product" value="#{tangibleProductStockMovementCrudManyPage.selectedTangibleProduct}" var="product" converter="#{objectConverter}" 
         			filter="true" filterMatchMode="contains">
         			<f:selectItems value="#{tangibleProductStockMovementCrudManyPage.tangibleProducts}"  />
@@ -35,7 +35,10 @@
         		<p:column headerText="#{uiManager.text('field.name')}"><h:outputText value="#{movement.tangibleProduct.name}" /></p:column>
         		<p:column headerText="#{uiManager.text('field.stock.current')}"><h:outputText value="#{movement.tangibleProduct.stockQuantity}" /></p:column>
         		<p:column headerText="#{uiManager.text('field.in')}/#{uiManager.text('field.out')}" width="15%">
-        			<pe:inputNumber id="quantity" value="#{movement.quantity}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}">
+        			<pe:inputNumber id="quantity" value="#{movement.quantity}" maxlength="5" 
+        				minValue="#{tangibleProductStockMovementCrudManyPage.minValue(movement)}" 
+        				maxValue="#{tangibleProductStockMovementCrudManyPage.maxValue(movement)}" 
+        				required="true" requiredMessage="#{uiManager.text('input.value.required')}">
         			</pe:inputNumber> 
         		</p:column>  
         		

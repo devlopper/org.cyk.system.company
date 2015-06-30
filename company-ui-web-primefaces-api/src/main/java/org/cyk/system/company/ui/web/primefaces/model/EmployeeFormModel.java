@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.model.structure.Employee;
-import org.cyk.ui.api.model.AbstractActorFormModel;
+import org.cyk.ui.api.model.party.AbstractActorFormModel;
 
 @Getter @Setter
 public class EmployeeFormModel extends AbstractActorFormModel<Employee> implements Serializable {
