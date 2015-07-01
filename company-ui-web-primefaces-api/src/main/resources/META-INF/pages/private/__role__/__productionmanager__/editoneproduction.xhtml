@@ -20,8 +20,8 @@
         			<h:outputText value="#{productionInput.tangibleProduct}" />
         		</p:column>
         		
-        		<p:columns value="#{productionCrudOnePage.metrics}" var="productionMetric" headerText="#{productionMetric.metric}" columnIndexVar="ci">
-        			<pe:inputNumber value="#{productionCrudOnePage.productionInputs[ri][ci].metricValue.value}" minValue="0" />
+        		<p:columns value="#{productionCrudOnePage.metrics}" var="productionMetric" headerText="#{productionMetric.inputName}" columnIndexVar="ci">
+        			<pe:inputNumber value="#{productionCrudOnePage.productionInputAt(ri,rj).value}" minValue="0" />
         		</p:columns>
         		
         	</p:dataTable>	

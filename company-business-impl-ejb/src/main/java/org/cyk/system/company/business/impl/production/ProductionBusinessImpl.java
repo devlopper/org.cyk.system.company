@@ -29,8 +29,8 @@ public class ProductionBusinessImpl extends AbstractTypedBusinessService<Product
 		production.setCreationDate(universalTimeCoordinated());
 		//exceptionUtils().exception(production.getPeriod().getToDate().before(production.getCreationDate()), "baddates");
 		super.create(production);
-		for(ProductionInput input : production.getInputs()){
-			input.setProduction(production);
+		for(ProductionInput input : production.getCells()){
+			input.setSpreadSheet(production);
 			productionInputDao.create(input);
 		}
 		return production;
@@ -38,7 +38,7 @@ public class ProductionBusinessImpl extends AbstractTypedBusinessService<Product
 	
 	@Override
 	public Production update(Production production) {
-		for(ProductionInput input : production.getInputs())
+		for(ProductionInput input : production.getCells())
 			productionInputDao.update(input);
 		return super.update(production);
 	}
@@ -53,7 +53,7 @@ public class ProductionBusinessImpl extends AbstractTypedBusinessService<Product
 	@Override
 	public void load(Production production) {
 		super.load(production);
-		production.setInputs(productionInputDao.readByProduction(production));
+		production.setCells(productionInputDao.readByProduction(production));
 	}
 	
 }

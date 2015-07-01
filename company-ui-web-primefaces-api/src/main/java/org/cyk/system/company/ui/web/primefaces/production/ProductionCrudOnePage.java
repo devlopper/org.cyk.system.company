@@ -39,6 +39,7 @@ public class ProductionCrudOnePage extends AbstractCrudOnePage<Production> imple
 	private ProductionPlanModel selectedProductionPlanModel;
 	private List<ProductionPlanModelInput> inputs;
 	private List<ProductionPlanModelMetric> metrics;
+	private List<ProductionInput> cells;
 	private ProductionInput[][] productionInputs;
 	
 	//private ItemCollection<PersonDetails> personCollection = new ItemCollection<>("qwerty",PersonDetails.class);
@@ -50,22 +51,27 @@ public class ProductionCrudOnePage extends AbstractCrudOnePage<Production> imple
 		if(!productionPlanModels.isEmpty())
 			selectedProductionPlanModel = productionPlanModels.get(0);
 		productionPlanModelBusiness.load(selectedProductionPlanModel);
-		inputs = new ArrayList<ProductionPlanModelInput>(selectedProductionPlanModel.getInputs());
-		metrics = new ArrayList<ProductionPlanModelMetric>(selectedProductionPlanModel.getMetrics());
+		inputs = new ArrayList<ProductionPlanModelInput>(selectedProductionPlanModel.getRows());
+		metrics = new ArrayList<ProductionPlanModelMetric>(selectedProductionPlanModel.getColumns());
 		
 		productionInputs = new ProductionInput[inputs.size()][metrics.size()];
 		int i=0,j=0;
 		for(ProductionPlanModelInput input : inputs){
 			for(ProductionPlanModelMetric productionPlanModelMetric : metrics){
-				ProductionInput productionInput = new ProductionInput(input);
-				productionInput.getMetricValue().setMetric(productionPlanModelMetric.getMetric());
-				identifiable.getInputs().add(productionInput);
+				ProductionInput productionInput = new ProductionInput(input,productionPlanModelMetric);
+				//productionInput.getMetricValue().setInput(productionPlanModelMetric.getInputName());
+				identifiable.getCells().add(productionInput);
 				productionInputs[i][j++] = productionInput;
 			}
 			i++;
 			j=0;
 		}
+		cells = new ArrayList<ProductionInput>(identifiable.getCells());
 		//personCollection.setLabel("Details de personnes");
+	}
+	
+	public ProductionInput productionInputAt(Integer row,Integer column){
+		return cells.get(row*metrics.size()+column);
 	}
 	
 	@Override

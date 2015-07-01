@@ -236,8 +236,8 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 			
 			sale.getChildren().add(uiProvider.createCommandable("command.list", null, "saleStockInputListView"));
 			
-			sale.getChildren().add(uiProvider.createCommandable("prod", null, "productionListView"));
-			sale.getChildren().add(uiProvider.createCommandable("prodPlan", null, "productionPlanModelListView"));
+			sale.getChildren().add(uiProvider.createCommandable("prod", null, "productionConsultView"));
+			//sale.getChildren().add(uiProvider.createCommandable("prodPlan", null, "productionPlanModelListView"));
 			
 			/*
 			sale.addChild("command.sale.negativebalance", null, "saleNegativeBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterNegativeBalance)));

@@ -1,39 +1,34 @@
 package org.cyk.system.company.model.production;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
-import javax.persistence.Embedded;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.root.model.AbstractIdentifiable;
-import org.cyk.system.root.model.mathematics.MetricValue;
+import org.cyk.system.root.model.userinterface.spreadsheet.AbstractSpreadSheetCell;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
-public class ProductionInput extends AbstractIdentifiable implements Serializable {
+@Getter @Setter @Entity
+public class ProductionInput extends AbstractSpreadSheetCell<Production, ProductionPlanModelInput, ProductionPlanModelMetric, BigDecimal> implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @NotNull
-	private Production production;
-	
-	@ManyToOne @NotNull
-	private ProductionPlanModelInput productionPlanModelInput;
-	
-	@Embedded
-	private MetricValue metricValue = new MetricValue();
+	public ProductionInput() {}
 
-	public ProductionInput(ProductionPlanModelInput productionPlanModelInput) {
-		super();
-		this.productionPlanModelInput = productionPlanModelInput;
+	public ProductionInput(Production spreadSheet) {
+		super(spreadSheet);
+	}
+
+	public ProductionInput(ProductionPlanModelInput row, ProductionPlanModelMetric column) {
+		super(row, column);
 	}
 	
-	
+	@Override @Column(precision=10,scale=FLOAT_SCALE,nullable=false)
+	public BigDecimal getValue() {
+		return super.getValue();
+	}
 }
 

@@ -35,6 +35,11 @@
 			<to-view-id>/private/__role__/__productionmanager__/productionlist.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>productionConsultView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/consultproduction.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 		
 		<!-- Stock Manager -->
 		<navigation-case>

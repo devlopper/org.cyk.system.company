@@ -16,12 +16,12 @@ public class ProductionInputDaoImpl extends AbstractTypedDao<ProductionInput> im
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
-		registerNamedQuery(readByProduction, _select().where("production"));
+		registerNamedQuery(readByProduction, _select().where("spreadSheet"));
 	}
 	
 	@Override
 	public Collection<ProductionInput> readByProduction(Production production) {
-		return namedQuery(readByProduction).parameter("production", production).resultMany();
+		return namedQuery(readByProduction).parameter("spreadSheet", production).resultMany();
 	}
 
 	

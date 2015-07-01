@@ -97,7 +97,6 @@ import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParamete
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFileConfiguration;
 import org.cyk.system.root.model.geography.PhoneNumber;
-import org.cyk.system.root.model.mathematics.Metric;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.search.DefaultSearchCriteria;
 import org.cyk.system.root.model.security.Credentials;
@@ -106,6 +105,7 @@ import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
+import org.cyk.utility.common.generator.RandomDataProvider;
 import org.joda.time.DateTime;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER)
@@ -559,20 +559,31 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
     /* bakery */    
     
     private void bakeryFakeTransaction(){
-    	ProductionPlanModel productionPlanModel = new ProductionPlanModel();
-    	productionPlanModel.setCode("PPM1");
-    	productionPlanModel.setName("Production de pain");
-    	productionPlanModel.getInputs().add(new ProductionPlanModelInput(fakeTangibleProduct("F", "Farine", null, null)));
-    	productionPlanModel.getInputs().add(new ProductionPlanModelInput(fakeTangibleProduct("L", "Levure", null, null)));
-    	productionPlanModel.getInputs().add(new ProductionPlanModelInput(fakeTangibleProduct("A", "Ameliorant", null, null)));
+    	ProductionPlanModel productionPlanModel = new ProductionPlanModel("PPM1","Production de pain");
+    	productionPlanModel.setTimeDivisionType(RootBusinessLayer.getInstance().getTimeDivisionTypeDay());
+    	productionPlanModel.getRows().add(new ProductionPlanModelInput(fakeTangibleProduct("F", "Farine", null, null)));
+    	productionPlanModel.getRows().add(new ProductionPlanModelInput(fakeTangibleProduct("L", "Levure", null, null)));
+    	productionPlanModel.getRows().add(new ProductionPlanModelInput(fakeTangibleProduct("A", "Ameliorant", null, null)));
     	
-    	productionPlanModel.getMetrics().add(new ProductionPlanModelMetric(createMetric("PLANNED", "Planned Quantity")));
-    	productionPlanModel.getMetrics().add(new ProductionPlanModelMetric(createMetric("FACTORED", "Factored Quantity")));
-    	productionPlanModel.getMetrics().add(new ProductionPlanModelMetric(createMetric("UNUSED", "Unused Quantity")));
+    	productionPlanModel.getColumns().add(new ProductionPlanModelMetric(inputName("PLANNED", "Planned Quantity")));
+    	productionPlanModel.getColumns().add(new ProductionPlanModelMetric(inputName("FACTORED", "Factored Quantity")));
+    	productionPlanModel.getColumns().add(new ProductionPlanModelMetric(inputName("UNUSED", "Unused Quantity")));
     	
     	productionPlanModelBusiness.create(productionPlanModel);
     	
-    	
+		productionPlanModelBusiness.load(productionPlanModel);
+    	Production production = new Production();
+    	production.getPeriod().setFromDate(new Date());
+    	production.getPeriod().setToDate(production.getPeriod().getFromDate());
+    	for(ProductionPlanModelInput input : productionPlanModel.getRows()){
+			for(ProductionPlanModelMetric productionPlanModelMetric : productionPlanModel.getColumns()){
+				ProductionInput productionInput = new ProductionInput(input,productionPlanModelMetric);
+				//productionInput.getMetricValue().setInput(productionPlanModelMetric.getInputName());
+				production.getCells().add(productionInput);
+				productionInput.setValue(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 9999)));
+			}
+		}
+    	productionBusiness.create(production);
     }
     
 }

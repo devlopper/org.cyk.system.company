@@ -30,40 +30,44 @@ public class ProductionPlanModelBusinessImpl extends AbstractTypedBusinessServic
 	@Override
 	public ProductionPlanModel create(ProductionPlanModel productionPlanModel) {
 		super.create(productionPlanModel);
-		for(ProductionPlanModelInput input : productionPlanModel.getInputs()){
-			input.setProductionPlanModel(productionPlanModel);
-			productionPlanModelInputDao.create(input);
+		Integer index = 0;
+		for(ProductionPlanModelInput row : productionPlanModel.getRows()){
+			row.setTemplate(productionPlanModel);
+			row.setIndex(index++);
+			productionPlanModelInputDao.create(row);
 		}
-		for(ProductionPlanModelMetric metric : productionPlanModel.getMetrics()){
-			metric.setProductionPlanModel(productionPlanModel);
-			productionPlanModelMetricDao.create(metric);
+		index = 0;
+		for(ProductionPlanModelMetric column : productionPlanModel.getColumns()){
+			column.setTemplate(productionPlanModel);
+			column.setIndex(index++);
+			productionPlanModelMetricDao.create(column);
 		}
 		return productionPlanModel;
 	}
 	
 	@Override
 	public ProductionPlanModel update(ProductionPlanModel productionPlanModel) {
-		for(ProductionPlanModelInput input : productionPlanModel.getInputs())
-			productionPlanModelInputDao.update(input);
-		for(ProductionPlanModelMetric metric : productionPlanModel.getMetrics())
-			productionPlanModelMetricDao.update(metric);
+		for(ProductionPlanModelInput row : productionPlanModel.getRows())
+			productionPlanModelInputDao.update(row);
+		for(ProductionPlanModelMetric column : productionPlanModel.getColumns())
+			productionPlanModelMetricDao.update(column);
 		return super.update(productionPlanModel);
 	}
 	
 	@Override
 	public ProductionPlanModel delete(ProductionPlanModel productionPlanModel) {
-		for(ProductionPlanModelInput input : productionPlanModelInputDao.readByProductionPlanModel(productionPlanModel))
-			productionPlanModelInputDao.delete(input);
-		for(ProductionPlanModelMetric metric : productionPlanModelMetricDao.readByProductionPlanModel(productionPlanModel))
-			productionPlanModelMetricDao.delete(metric);
+		for(ProductionPlanModelInput row : productionPlanModelInputDao.readByProductionPlanModel(productionPlanModel))
+			productionPlanModelInputDao.delete(row);
+		for(ProductionPlanModelMetric column : productionPlanModelMetricDao.readByProductionPlanModel(productionPlanModel))
+			productionPlanModelMetricDao.delete(column);
 		return super.delete(productionPlanModel);
 	}
 	
 	@Override
 	public void load(ProductionPlanModel productionPlanModel) {
 		super.load(productionPlanModel);
-		productionPlanModel.setInputs(productionPlanModelInputDao.readByProductionPlanModel(productionPlanModel));
-		productionPlanModel.setMetrics(productionPlanModelMetricDao.readByProductionPlanModel(productionPlanModel));
+		productionPlanModel.setRows(productionPlanModelInputDao.readByProductionPlanModel(productionPlanModel));
+		productionPlanModel.setColumns(productionPlanModelMetricDao.readByProductionPlanModel(productionPlanModel));
 	}
 	
 }

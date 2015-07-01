@@ -16,12 +16,12 @@ public class ProductionPlanModelMetricDaoImpl extends AbstractTypedDao<Productio
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
-		registerNamedQuery(readByProductionPlanModel, _select().where("productionPlanModel"));
+		registerNamedQuery(readByProductionPlanModel, _select().where("template"));
 	}
 	
 	@Override
 	public Collection<ProductionPlanModelMetric> readByProductionPlanModel(ProductionPlanModel productionPlanModel) {
-		return namedQuery(readByProductionPlanModel).parameter("productionPlanModel", productionPlanModel).resultMany();
+		return namedQuery(readByProductionPlanModel).parameter("template", productionPlanModel).resultMany();
 	}
 
 	
