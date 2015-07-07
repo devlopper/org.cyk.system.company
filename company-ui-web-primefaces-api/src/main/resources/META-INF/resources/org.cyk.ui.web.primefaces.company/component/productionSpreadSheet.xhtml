@@ -20,8 +20,8 @@
        		</p:column>
        		
        		<p:columns value="#{cc.value.columns}" var="column" headerText="#{column.inputName}" columnIndexVar="ci">
-       			<pe:inputNumber value="#{cc.value.cell(ri,rj).value}" minValue="0" rendered="#{cc.value.editable}" />
-       			<h:outputText value="#{cc.value.cellText(ri,rj)}" rendered="#{not cc.value.editable}" />
+       			<pe:inputNumber value="#{cc.value.cell(ri,ci).value}" minValue="0" rendered="#{cc.value.editable}" />
+       			<h:outputText value="#{cc.value.cellText(ri,ci)}" rendered="#{not cc.value.editable}" />
        		</p:columns>
        		
        	</p:dataTable>	

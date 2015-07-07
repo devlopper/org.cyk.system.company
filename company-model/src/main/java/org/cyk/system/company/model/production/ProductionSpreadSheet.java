@@ -12,7 +12,7 @@ import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 
 @Getter @Setter @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS)
-public class Production extends AbstractSpreadSheet<ProductionPlanModel,ProductionPlanModelInput,ProductionPlanModelMetric,ProductionInput> implements Serializable {
+public class ProductionSpreadSheet extends AbstractSpreadSheet<ProductionSpreadSheetTemplate,ProductionSpreadSheetTemplateRow,ProductionSpreadSheetTemplateColumn,ProductionSpreadSheetCell> implements Serializable {
 
 	private static final long serialVersionUID = -625974035216780560L;
 	

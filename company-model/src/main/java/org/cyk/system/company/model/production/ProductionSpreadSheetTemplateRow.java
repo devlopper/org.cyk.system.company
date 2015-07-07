@@ -14,14 +14,14 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.root.model.userinterface.spreadsheet.AbstractSpreadSheetTemplateRow;
 
 @Getter @Setter @NoArgsConstructor @Entity
-public class ProductionPlanModelInput extends AbstractSpreadSheetTemplateRow<ProductionPlanModel> implements Serializable {
+public class ProductionSpreadSheetTemplateRow extends AbstractSpreadSheetTemplateRow<ProductionSpreadSheetTemplate> implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne @NotNull
 	private TangibleProduct tangibleProduct;
 
-	public ProductionPlanModelInput(TangibleProduct tangibleProduct) {
+	public ProductionSpreadSheetTemplateRow(TangibleProduct tangibleProduct) {
 		super();
 		this.tangibleProduct = tangibleProduct;
 	}

@@ -31,6 +31,12 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 
 	void create(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement);
 	
+	/**
+	 * Close the sale and compute all the calculated data
+	 * @param sale
+	 */
+	void done(Sale sale);
+	
 	Collection<Sale> findByCriteria(SaleSearchCriteria criteria);
 	Long countByCriteria(SaleSearchCriteria criteria);
 	

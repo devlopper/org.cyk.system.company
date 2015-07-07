@@ -8,11 +8,11 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.model.production.ProductionPlanModel;
+import org.cyk.system.company.model.production.ProductionSpreadSheetTemplate;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
 
 @Named @ViewScoped @Getter @Setter
-public class ProductionPlanModelCrudOnePage extends AbstractCrudOnePage<ProductionPlanModel> implements Serializable {
+public class ProductionPlanModelCrudOnePage extends AbstractCrudOnePage<ProductionSpreadSheetTemplate> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 

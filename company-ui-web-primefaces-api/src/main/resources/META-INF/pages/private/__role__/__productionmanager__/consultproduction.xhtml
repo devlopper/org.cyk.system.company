@@ -8,14 +8,14 @@
       xmlns:pe="http://primefaces.org/ui/extensions"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component"
-      xmlns:kwordz="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.kwordz/component">
+      xmlns:company="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.company/component">
 
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
         <ui:param name="pageController" value="#{productionConsultPage}" />
         <ui:define name="body">
         	<p:tabView value="#{productionConsultPage.productionSpreadSheetControllers}" var="productionSpreadSheetController" >
-        		<p:tab title="#{productionSpreadSheetController.production.creationDate}" >
-        			<cyk:productionSpreadSheet value="#{productionSpreadSheetController.production}" />
+        		<p:tab title="#{productionSpreadSheetController.title}" >
+        			<company:productionSpreadSheet value="#{productionSpreadSheetController}" />
         		</p:tab>
         	</p:tabView>
 

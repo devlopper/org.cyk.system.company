@@ -14,12 +14,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.production.ProductionPlanModelBusiness;
-import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ProductionInput;
-import org.cyk.system.company.model.production.ProductionPlanModel;
-import org.cyk.system.company.model.production.ProductionPlanModelInput;
-import org.cyk.system.company.model.production.ProductionPlanModelMetric;
+import org.cyk.system.company.business.api.production.ProductionSpreadSheetTemplateBusiness;
+import org.cyk.system.company.model.production.ProductionSpreadSheet;
+import org.cyk.system.company.model.production.ProductionSpreadSheetCell;
+import org.cyk.system.company.model.production.ProductionSpreadSheetTemplate;
+import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateRow;
+import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateColumn;
+import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadSheetController;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
@@ -28,50 +29,36 @@ import org.cyk.utility.common.annotation.user.interfaces.InputCalendar;
 import org.cyk.utility.common.annotation.user.interfaces.InputCalendar.Format;
 
 @Named @ViewScoped @Getter @Setter
-public class ProductionCrudOnePage extends AbstractCrudOnePage<Production> implements Serializable {
+public class ProductionCrudOnePage extends AbstractCrudOnePage<ProductionSpreadSheet> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
 	@Inject
-	private ProductionPlanModelBusiness productionPlanModelBusiness;
+	private ProductionSpreadSheetTemplateBusiness productionPlanModelBusiness;
 	
-	private List<ProductionPlanModel> productionPlanModels;	
-	private ProductionPlanModel selectedProductionPlanModel;
-	private List<ProductionPlanModelInput> inputs;
-	private List<ProductionPlanModelMetric> metrics;
-	private List<ProductionInput> cells;
-	private ProductionInput[][] productionInputs;
-	
-	//private ItemCollection<PersonDetails> personCollection = new ItemCollection<>("qwerty",PersonDetails.class);
+	private List<ProductionSpreadSheetTemplate> productionPlanModels;	
+	private ProductionSpreadSheetTemplate selectedProductionPlanModel;
+	private ProductionSpreadSheetController productionSpreadSheetController;
 	
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		productionPlanModels = new ArrayList<ProductionPlanModel>(productionPlanModelBusiness.findAll());
+		productionPlanModels = new ArrayList<ProductionSpreadSheetTemplate>(productionPlanModelBusiness.findAll());
 		if(!productionPlanModels.isEmpty())
 			selectedProductionPlanModel = productionPlanModels.get(0);
 		productionPlanModelBusiness.load(selectedProductionPlanModel);
-		inputs = new ArrayList<ProductionPlanModelInput>(selectedProductionPlanModel.getRows());
-		metrics = new ArrayList<ProductionPlanModelMetric>(selectedProductionPlanModel.getColumns());
 		
-		productionInputs = new ProductionInput[inputs.size()][metrics.size()];
-		int i=0,j=0;
-		for(ProductionPlanModelInput input : inputs){
-			for(ProductionPlanModelMetric productionPlanModelMetric : metrics){
-				ProductionInput productionInput = new ProductionInput(input,productionPlanModelMetric);
-				//productionInput.getMetricValue().setInput(productionPlanModelMetric.getInputName());
-				identifiable.getCells().add(productionInput);
-				productionInputs[i][j++] = productionInput;
-			}
-			i++;
-			j=0;
+		productionSpreadSheetController = new ProductionSpreadSheetController(identifiable, new ArrayList<ProductionSpreadSheetTemplateRow>(selectedProductionPlanModel.getRows()),
+				new ArrayList<ProductionSpreadSheetTemplateColumn>(selectedProductionPlanModel.getColumns()), null);
+		
+		productionSpreadSheetController.setEditable(form.getEditable());
+		for(ProductionSpreadSheetTemplateRow input : productionSpreadSheetController.getRows()){
+			for(ProductionSpreadSheetTemplateColumn productionPlanModelMetric : productionSpreadSheetController.getColumns())
+				identifiable.getCells().add(new ProductionSpreadSheetCell(input,productionPlanModelMetric));
+			
 		}
-		cells = new ArrayList<ProductionInput>(identifiable.getCells());
-		//personCollection.setLabel("Details de personnes");
-	}
-	
-	public ProductionInput productionInputAt(Integer row,Integer column){
-		return cells.get(row*metrics.size()+column);
+		productionSpreadSheetController.setCells(new ArrayList<ProductionSpreadSheetCell>(identifiable.getCells()));
+		
 	}
 	
 	@Override
@@ -83,7 +70,7 @@ public class ProductionCrudOnePage extends AbstractCrudOnePage<Production> imple
 	
 	@Override
 	protected BusinessEntityInfos fetchBusinessEntityInfos() {
-		return uiManager.businessEntityInfos(Production.class);
+		return uiManager.businessEntityInfos(ProductionSpreadSheet.class);
 	}
 	
 	@Override
@@ -93,7 +80,7 @@ public class ProductionCrudOnePage extends AbstractCrudOnePage<Production> imple
 			
 	/**/
 	@Getter @Setter @AllArgsConstructor @NoArgsConstructor
-	public static class FormModel extends AbstractFormModel<Production> implements Serializable {
+	public static class FormModel extends AbstractFormModel<ProductionSpreadSheet> implements Serializable {
 
 		private static final long serialVersionUID = -731657715703646576L;
 		
@@ -101,18 +88,5 @@ public class ProductionCrudOnePage extends AbstractCrudOnePage<Production> imple
 		private Date date;
 		
 	}
-	
-	/*
-	@Getter @Setter @AllArgsConstructor @NoArgsConstructor
-	public static class PersonDetails {
-		
-		@Input @InputText
-		private String names;
-		
-		@Input @InputText
-		private String dateOfBirth;
-		
-	}
-	*/
 	
 }

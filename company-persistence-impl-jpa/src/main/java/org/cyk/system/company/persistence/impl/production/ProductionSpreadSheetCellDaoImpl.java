@@ -2,12 +2,12 @@ package org.cyk.system.company.persistence.impl.production;
 
 import java.util.Collection;
 
-import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ProductionInput;
-import org.cyk.system.company.persistence.api.production.ProductionInputDao;
+import org.cyk.system.company.model.production.ProductionSpreadSheet;
+import org.cyk.system.company.model.production.ProductionSpreadSheetCell;
+import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetCellDao;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 
-public class ProductionInputDaoImpl extends AbstractTypedDao<ProductionInput> implements ProductionInputDao {
+public class ProductionSpreadSheetCellDaoImpl extends AbstractTypedDao<ProductionSpreadSheetCell> implements ProductionSpreadSheetCellDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
@@ -20,7 +20,7 @@ public class ProductionInputDaoImpl extends AbstractTypedDao<ProductionInput> im
 	}
 	
 	@Override
-	public Collection<ProductionInput> readByProduction(Production production) {
+	public Collection<ProductionSpreadSheetCell> readByProductionSpreadSheet(ProductionSpreadSheet production) {
 		return namedQuery(readByProduction).parameter("spreadSheet", production).resultMany();
 	}
 

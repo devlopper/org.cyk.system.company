@@ -162,14 +162,22 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 				sale.setDate(universalTimeCoordinated());
 		sale.setIdentificationNumber(companyValueGenerator.saleIdentificationNumber(sale));
 		
+		if(Boolean.TRUE.equals(sale.getDoneOnCreate()))
+			done(sale);
+		/*
 		for(SaleProduct saleProduct : sale.getSaleProducts()){	
 			sale.setValueAddedTax(sale.getValueAddedTax().add(saleProduct.getValueAddedTax()));
+			//FIXME is it necessary since it is updated later???
 			sale.setTurnover(sale.getTurnover().add(saleProduct.getTurnover()));
 			sale.setBalance(sale.getBalance().add(saleProduct.getPrice()));
 		}
 		
-		accountingPeriod.getSalesResults().setTurnover(accountingPeriod.getSalesResults().getTurnover().add(sale.getTurnover()));
+		sale.setCost(sale.getCost().add(sale.getCommission()));
+		sale.setBalance(sale.getCost());
+		sale.setTurnover(sale.getCost());
 		
+		accountingPeriod.getSalesResults().setTurnover(accountingPeriod.getSalesResults().getTurnover().add(sale.getTurnover()));
+		*/
 		sale = super.create(sale);
 		for(SaleProduct saleProduct : sale.getSaleProducts()){
 			saleProduct.setSale(sale);
@@ -179,6 +187,24 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		accountingPeriodProductBusiness.consume(sale.getAccountingPeriod(), sale.getSaleProducts());
 		accountingPeriodDao.update(accountingPeriod);
 		return sale;
+	}
+	
+	@Override
+	public void done(Sale sale) {
+		exceptionUtils().exception(Boolean.TRUE.equals(sale.getDone()), "exception.sale.isdone");
+		for(SaleProduct saleProduct : sale.getSaleProducts()){	
+			sale.setValueAddedTax(sale.getValueAddedTax().add(saleProduct.getValueAddedTax()));
+			//FIXME is it necessary since it is updated later???
+			sale.setTurnover(sale.getTurnover().add(saleProduct.getTurnover()));
+			sale.setBalance(sale.getBalance().add(saleProduct.getPrice()));
+		}
+		
+		sale.setCost(sale.getCost().add(sale.getCommission()));
+		sale.setBalance(sale.getCost());
+		sale.setTurnover(sale.getCost());
+		
+		sale.getAccountingPeriod().getSalesResults().setTurnover(sale.getAccountingPeriod().getSalesResults().getTurnover().add(sale.getTurnover()));
+		sale.setDone(Boolean.TRUE);
 	}
 	
 	@Override
@@ -196,6 +222,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 				languageBusiness.findText("company.report.pointofsale.welcome"),languageBusiness.findText("company.report.pointofsale.goodbye"));
 		saleReport.getAccountingPeriod().getCompany().setName(company.getName());
 		contactCollectionBusiness.load(company.getContactCollection());
+		
 		saleReport.getAccountingPeriod().getCompany().getContact().setPhoneNumbers(StringUtils.join(company.getContactCollection().getPhoneNumbers()," - "));
 		saleReport.getCustomer().setRegistrationCode(sale.getCustomer()==null?"":sale.getCustomer().getRegistration().getCode());
 		saleReport.getSaleCashRegisterMovement().setAmountDue(numberBusiness.format(sale.getCost()));

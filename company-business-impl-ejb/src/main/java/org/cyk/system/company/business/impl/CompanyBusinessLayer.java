@@ -30,10 +30,10 @@ import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
-import org.cyk.system.company.business.api.production.ProductionBusiness;
-import org.cyk.system.company.business.api.production.ProductionInputBusiness;
-import org.cyk.system.company.business.api.production.ProductionPlanModelBusiness;
-import org.cyk.system.company.business.api.production.ProductionPlanModelInputBusiness;
+import org.cyk.system.company.business.api.production.ProductionSpreadSheetBusiness;
+import org.cyk.system.company.business.api.production.ProductionSpreadSheetCellBusiness;
+import org.cyk.system.company.business.api.production.ProductionSpreadSheetTemplateBusiness;
+import org.cyk.system.company.business.api.production.ProductionSpreadSheetTemplateRowBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
 import org.cyk.system.company.business.api.structure.DivisionBusiness;
 import org.cyk.system.company.business.api.structure.DivisionTypeBusiness;
@@ -66,11 +66,11 @@ import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductInventoryDetail;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.product.TangibleProductStockMovementSearchCriteria;
-import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ProductionInput;
-import org.cyk.system.company.model.production.ProductionPlanModel;
-import org.cyk.system.company.model.production.ProductionPlanModelInput;
-import org.cyk.system.company.model.production.ProductionPlanModelMetric;
+import org.cyk.system.company.model.production.ProductionSpreadSheet;
+import org.cyk.system.company.model.production.ProductionSpreadSheetCell;
+import org.cyk.system.company.model.production.ProductionSpreadSheetTemplate;
+import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateRow;
+import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateColumn;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
@@ -84,6 +84,7 @@ import org.cyk.system.root.business.api.security.RoleBusiness;
 import org.cyk.system.root.business.api.security.UserAccountBusiness;
 import org.cyk.system.root.business.impl.AbstractBusinessLayer;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.business.impl.file.report.DefaultReportBasedOnDynamicBuilder;
 import org.cyk.system.root.business.impl.file.report.ReportBasedOnDynamicBuilderAdapter;
 import org.cyk.system.root.business.impl.file.report.jasper.DefaultJasperReportBasedOnDynamicBuilder;
@@ -142,10 +143,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private TangibleProductInventoryBusiness tangibleProductInventoryBusiness;
 	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
-	@Inject private ProductionBusiness productionBusiness;
-	@Inject private ProductionInputBusiness productionInputBusiness;
-	@Inject private ProductionPlanModelBusiness productionPlanModelBusiness;
-	@Inject private ProductionPlanModelInputBusiness productionPlanModelInputBusiness;
+	@Inject private ProductionSpreadSheetBusiness productionBusiness;
+	@Inject private ProductionSpreadSheetCellBusiness productionInputBusiness;
+	@Inject private ProductionSpreadSheetTemplateBusiness productionPlanModelBusiness;
+	@Inject private ProductionSpreadSheetTemplateRowBusiness productionPlanModelInputBusiness;
 	//@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
 	//@Inject private AccountingPeriodProductCategoryBusiness accountingPeriodProductCategoryBusiness;
 	@Inject private UserAccountBusiness userAccountBusiness;
@@ -330,12 +331,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			e.printStackTrace();
 		}
 		company.getContactCollection().setPhoneNumbers(new ArrayList<PhoneNumber>());
-		PhoneNumber pn = new PhoneNumber();
-		pn.setCollection(company.getContactCollection());
-		pn.setNumber("00000000");
-		pn.setCountry(RootBusinessLayer.getInstance().getCountryCoteDivoire());
-		pn.setType(RootBusinessLayer.getInstance().getLandPhoneNumberType());
-		company.getContactCollection().getPhoneNumbers().add(pn);
+		RootRandomDataProvider.getInstance().phoneNumber(company.getContactCollection());
+		//PhoneNumber pn = new PhoneNumber();
+		//pn.setCollection(company.getContactCollection());
+		//pn.setNumber("22441213");
+		//pn.setCountry(RootBusinessLayer.getInstance().getCountryCoteDivoire());
+		//pn.setType(RootBusinessLayer.getInstance().getLandPhoneNumberType());
+		//company.getContactCollection().getPhoneNumbers().add(pn);
 		companyBusiness.create(company);
 		
 		OwnedCompany ownedCompany = new OwnedCompany();
@@ -404,10 +406,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)Company.class, (TypedBusiness)companyBusiness);
         beansMap.put((Class)SaleStockInput.class, (TypedBusiness)saleStockInputBusiness);
         beansMap.put((Class)SaleStockOutput.class, (TypedBusiness)saleStockOutputBusiness);
-        beansMap.put((Class)Production.class, (TypedBusiness)productionBusiness);
-        beansMap.put((Class)ProductionInput.class, (TypedBusiness)productionInputBusiness);
-        beansMap.put((Class)ProductionPlanModel.class, (TypedBusiness)productionPlanModelBusiness);
-        beansMap.put((Class)ProductionPlanModelInput.class, (TypedBusiness)productionPlanModelInputBusiness);
+        beansMap.put((Class)ProductionSpreadSheet.class, (TypedBusiness)productionBusiness);
+        beansMap.put((Class)ProductionSpreadSheetCell.class, (TypedBusiness)productionInputBusiness);
+        beansMap.put((Class)ProductionSpreadSheetTemplate.class, (TypedBusiness)productionPlanModelBusiness);
+        beansMap.put((Class)ProductionSpreadSheetTemplateRow.class, (TypedBusiness)productionPlanModelInputBusiness);
     }
 	
 	/**/
@@ -486,7 +488,11 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         userAccountBusiness.create(new UserAccount(employee.getPerson(), new Credentials("zadi", "123"),null,roles));
         create(new Cashier(employee,cashRegister));
         
-        bakeryFakeTransaction();
+        Company company = companyBusiness.find().one();
+        company.setManager(employee.getPerson());
+        companyBusiness.update(company);
+        
+        //bakeryFakeTransaction();
         
 	}
 	
@@ -559,25 +565,31 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
     /* bakery */    
     
     private void bakeryFakeTransaction(){
-    	ProductionPlanModel productionPlanModel = new ProductionPlanModel("PPM1","Production de pain");
+    	ProductionSpreadSheetTemplate productionPlanModel = new ProductionSpreadSheetTemplate("PPM1","Production de pain");
     	productionPlanModel.setTimeDivisionType(RootBusinessLayer.getInstance().getTimeDivisionTypeDay());
-    	productionPlanModel.getRows().add(new ProductionPlanModelInput(fakeTangibleProduct("F", "Farine", null, null)));
-    	productionPlanModel.getRows().add(new ProductionPlanModelInput(fakeTangibleProduct("L", "Levure", null, null)));
-    	productionPlanModel.getRows().add(new ProductionPlanModelInput(fakeTangibleProduct("A", "Ameliorant", null, null)));
+    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("F", "Farine", null, null)));
+    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("L", "Levure", null, null)));
+    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("A", "Ameliorant", null, null)));
+    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("B", "Bois", null, null)));
+    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("G", "Gaz", null, null)));
+    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("C", "Carburant", null, null)));
+    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("GA", "Glace alimentaire", null, null)));
+    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("PV", "Pain vendable", null, null)));
+    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("PNV", "Pain non vendu", null, null)));
     	
-    	productionPlanModel.getColumns().add(new ProductionPlanModelMetric(inputName("PLANNED", "Planned Quantity")));
-    	productionPlanModel.getColumns().add(new ProductionPlanModelMetric(inputName("FACTORED", "Factored Quantity")));
-    	productionPlanModel.getColumns().add(new ProductionPlanModelMetric(inputName("UNUSED", "Unused Quantity")));
+    	productionPlanModel.getColumns().add(new ProductionSpreadSheetTemplateColumn(inputName("PLANNED", "Planned Quantity")));
+    	productionPlanModel.getColumns().add(new ProductionSpreadSheetTemplateColumn(inputName("FACTORED", "Factored Quantity")));
+    	productionPlanModel.getColumns().add(new ProductionSpreadSheetTemplateColumn(inputName("UNUSED", "Unused Quantity")));
     	
     	productionPlanModelBusiness.create(productionPlanModel);
     	
 		productionPlanModelBusiness.load(productionPlanModel);
-    	Production production = new Production();
+    	ProductionSpreadSheet production = new ProductionSpreadSheet();
     	production.getPeriod().setFromDate(new Date());
     	production.getPeriod().setToDate(production.getPeriod().getFromDate());
-    	for(ProductionPlanModelInput input : productionPlanModel.getRows()){
-			for(ProductionPlanModelMetric productionPlanModelMetric : productionPlanModel.getColumns()){
-				ProductionInput productionInput = new ProductionInput(input,productionPlanModelMetric);
+    	for(ProductionSpreadSheetTemplateRow input : productionPlanModel.getRows()){
+			for(ProductionSpreadSheetTemplateColumn productionPlanModelMetric : productionPlanModel.getColumns()){
+				ProductionSpreadSheetCell productionInput = new ProductionSpreadSheetCell(input,productionPlanModelMetric);
 				//productionInput.getMetricValue().setInput(productionPlanModelMetric.getInputName());
 				production.getCells().add(productionInput);
 				productionInput.setValue(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 9999)));

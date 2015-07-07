@@ -5,9 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Getter;
 
 import org.cyk.system.root.model.party.person.AbstractActor;
 

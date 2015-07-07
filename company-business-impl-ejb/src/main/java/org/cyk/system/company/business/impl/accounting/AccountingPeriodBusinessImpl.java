@@ -1,6 +1,7 @@
 package org.cyk.system.company.business.impl.accounting;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,12 +86,25 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 	public BigDecimal computeTurnover(Sale sale) {
 		return computeTurnover(sale.getCost(), sale.getValueAddedTax());
 	}
+	*/
 
 	@Override
-	public BigDecimal computeValueAddedTax(BigDecimal cost) {
-		return cost.multiply(findCurrent().getValueAddedTaxRate());
+	public BigDecimal computeValueAddedTax(AccountingPeriod accountingPeriod,BigDecimal amount) {
+		//System.out.println(amount+" / ("+BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate())+"-"+amount+")");
+		return Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost())?
+			amount.divide(BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate())).subtract(amount)
+			:accountingPeriod.getValueAddedTaxRate().multiply(amount);
 	}
 	
+	@Override
+	public BigDecimal computeTurnover(AccountingPeriod accountingPeriod,BigDecimal amount,BigDecimal valueAddedTax) {
+		return Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost())?amount.subtract(valueAddedTax)
+				:amount;
+	}
+	
+	
+	
+	/*
 	@Override
 	public void process(SaleProduct saleProduct) {
 		saleProduct.setValueAddedTax(computeValueAddedTax(saleProduct.getPrice()));

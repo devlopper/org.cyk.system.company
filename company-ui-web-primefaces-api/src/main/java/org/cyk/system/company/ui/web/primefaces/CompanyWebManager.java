@@ -15,8 +15,8 @@ import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.api.product.ProductCollectionBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
-import org.cyk.system.company.business.api.production.ProductionBusiness;
-import org.cyk.system.company.business.api.production.ProductionPlanModelBusiness;
+import org.cyk.system.company.business.api.production.ProductionSpreadSheetBusiness;
+import org.cyk.system.company.business.api.production.ProductionSpreadSheetTemplateBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.BalanceType;
@@ -30,8 +30,8 @@ import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
-import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ProductionPlanModel;
+import org.cyk.system.company.model.production.ProductionSpreadSheet;
+import org.cyk.system.company.model.production.ProductionSpreadSheetTemplate;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
@@ -82,8 +82,8 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private CashRegisterBusiness cashRegisterBusiness;
 	@Inject private CashierBusiness cashierBusiness;
-	@Inject private ProductionBusiness productionBusiness;
-		@Inject private ProductionPlanModelBusiness productionPlanModelBusiness;
+	@Inject private ProductionSpreadSheetBusiness productionBusiness;
+		@Inject private ProductionSpreadSheetTemplateBusiness productionPlanModelBusiness;
 	
 	@Override
 	protected void initialisation() {
@@ -126,9 +126,9 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 					return (Collection<T>) tangibleProductStockMovementBusiness.findAll();
 				} else if(CashRegister.class.equals(dataClass)){
 					return (Collection<T>) cashRegisterBusiness.findAll();
-				} else if(ProductionPlanModel.class.equals(dataClass)){
+				} else if(ProductionSpreadSheetTemplate.class.equals(dataClass)){
 					return (Collection<T>) productionPlanModelBusiness.findAll();
-				} else if(Production.class.equals(dataClass)){
+				} else if(ProductionSpreadSheet.class.equals(dataClass)){
 					return (Collection<T>) productionBusiness.findAll();
 				}               
 				return super.find(dataClass, first, pageSize, sortField, ascendingOrder, filter);
@@ -148,9 +148,9 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 					return tangibleProductStockMovementBusiness.countAll();
 				} else if(CashRegister.class.equals(dataClass)){
 					return cashRegisterBusiness.countAll();
-				} else if(ProductionPlanModel.class.equals(dataClass)){
+				} else if(ProductionSpreadSheetTemplate.class.equals(dataClass)){
 					return productionPlanModelBusiness.countAll();
-				} else if(Production.class.equals(dataClass)){
+				} else if(ProductionSpreadSheet.class.equals(dataClass)){
 					return productionBusiness.countAll();
 				} 
 				
@@ -263,6 +263,13 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		commandables.add(menuManager.crudMany(TangibleProductStockMovement.class, null));
 		commandables.add(uiProvider.createCommandable("command.quantityinuse", null, "tangibleProductQuantityInUseUpdateManyView"));
 		commandables.add(menuManager.crudMany(TangibleProductInventory.class, null));
+		return commandables;
+	}
+	
+	public Collection<UICommandable> productionContextCommandables(AbstractUserSession userSession){
+		Collection<UICommandable> commandables = new ArrayList<>();
+		//commandables.add(uiProvider.createCommandable("dashboard", null, "productionDashBoardView"));
+		commandables.add(menuManager.crudOne(ProductionSpreadSheet.class, null));
 		return commandables;
 	}
 	

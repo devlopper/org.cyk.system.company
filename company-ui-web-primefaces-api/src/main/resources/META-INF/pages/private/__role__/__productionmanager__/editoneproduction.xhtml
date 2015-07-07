@@ -8,30 +8,14 @@
       xmlns:pe="http://primefaces.org/ui/extensions"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component"
-      xmlns:kwordz="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.kwordz/component">
+      xmlns:company="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.company/component">
 
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
         <ui:param name="pageController" value="#{productionCrudOnePage}" />
         <ui:define name="body">
         	<cyk:formOneData value="#{productionCrudOnePage.form}"/>
         	<p:separator/>
-        	<p:dataTable value="#{productionCrudOnePage.inputs}" var="productionInput" rowIndexVar="ri" >
-        		<p:column headerText="#{uiManager.text('model.entity.tangibleProduct')}">
-        			<h:outputText value="#{productionInput.tangibleProduct}" />
-        		</p:column>
-        		
-        		<p:columns value="#{productionCrudOnePage.metrics}" var="productionMetric" headerText="#{productionMetric.inputName}" columnIndexVar="ci">
-        			<pe:inputNumber value="#{productionCrudOnePage.productionInputAt(ri,rj).value}" minValue="0" />
-        		</p:columns>
-        		
-        	</p:dataTable>	
-        	
-        	<!--cyk:itemCollection id="qwerty" value="#{customPrivateIndexPage.personCollection}">
-	        	<p:column headerText="col1" >
-	        	
-	        	</p:column>
-	        </cyk:itemCollection-->
-        		
+        	<company:productionSpreadSheet value="#{productionCrudOnePage.productionSpreadSheetController}" />        		
         </ui:define>
         
         <ui:define name="contentMenuBar">

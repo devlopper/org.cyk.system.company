@@ -7,9 +7,9 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.product.ProductCategoryBusiness;
 import org.cyk.system.company.business.api.product.SaleProductBusiness;
-import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleProduct;
@@ -28,6 +28,7 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 
 	@Inject private LanguageBusiness languageBusiness;
 	@Inject private ProductCategoryBusiness productCategoryBusiness;
+	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
 	
 	@Inject
 	public SaleProductBusinessImpl(SaleProductDao dao) {
@@ -64,6 +65,7 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 		if(saleProduct.getPrice()==null){
 			return;
 		}else{
+			/*
 			AccountingPeriod accountingPeriod = saleProduct.getSale().getAccountingPeriod();
 			if(Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost())){
 				BigDecimal divider = BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate());
@@ -74,6 +76,19 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 				saleProduct.setTurnover(saleProduct.getPrice());
 				//TODO price should be updated????
 			}
+			*/
+			if(saleProduct.getValueAddedTax()==null)
+				saleProduct.setValueAddedTax(accountingPeriodBusiness.computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getPrice()));
+			saleProduct.setTurnover(accountingPeriodBusiness.computeTurnover(saleProduct.getSale().getAccountingPeriod(), saleProduct.getPrice(), 
+					saleProduct.getValueAddedTax()));
+			
+			if(Boolean.TRUE.equals(saleProduct.getSale().getAccountingPeriod().getValueAddedTaxIncludedInCost())){
+				
+			}else{
+				//TODO price should be updated????
+				saleProduct.setPrice(saleProduct.getPrice().add(saleProduct.getValueAddedTax()));				
+			}
+			
 		}
 	}
 	

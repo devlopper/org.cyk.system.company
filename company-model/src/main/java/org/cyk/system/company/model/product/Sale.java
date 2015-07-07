@@ -42,13 +42,17 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	@Column(unique=true) private String identificationNumber;
 	@ManyToOne @NotNull private Cashier cashier;
 	@ManyToOne private Customer customer;
+	@Column private String externalCustomerIdentifier;//This value is used to link to another system (Example : Accounting System)
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal cost = BigDecimal.ZERO;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal commission = BigDecimal.ZERO;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal valueAddedTax = BigDecimal.ZERO;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal turnover = BigDecimal.ZERO;
 	
 	@Temporal(TemporalType.TIMESTAMP) @Column(nullable=false) @NotNull private Date date;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal balance = BigDecimal.ZERO;
+	
+	@Column(nullable=false) @NotNull private Boolean done;
 	
 	@OneToOne private File report;
 	
@@ -60,7 +64,8 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	/**/
 	
+	@Transient private Boolean doneOnCreate = Boolean.TRUE;
 	@Transient private Collection<SaleProduct> saleProducts = new ArrayList<>();
-	
 	@Transient private Collection<SaleCashRegisterMovement> saleCashRegisterMovements = new ArrayList<>();
+	
 }
