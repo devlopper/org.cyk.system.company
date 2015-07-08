@@ -52,7 +52,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP) @Column(nullable=false) @NotNull private Date date;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal balance = BigDecimal.ZERO;
 	
-	@Column(nullable=false) @NotNull private Boolean done;
+	@Column(nullable=false) @NotNull private Boolean done = Boolean.FALSE;
 	
 	@OneToOne private File report;
 	
@@ -64,7 +64,8 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	/**/
 	
-	@Transient private Boolean doneOnCreate = Boolean.TRUE;
+	@Transient private Boolean completed = Boolean.TRUE;
+	@Transient private Boolean autoComputeValueAddedTax;
 	@Transient private Collection<SaleProduct> saleProducts = new ArrayList<>();
 	@Transient private Collection<SaleCashRegisterMovement> saleCashRegisterMovements = new ArrayList<>();
 	

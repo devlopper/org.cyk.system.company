@@ -77,11 +77,19 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 				//TODO price should be updated????
 			}
 			*/
-			if(saleProduct.getValueAddedTax()==null)
-				saleProduct.setValueAddedTax(accountingPeriodBusiness.computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getPrice()));
-			saleProduct.setTurnover(accountingPeriodBusiness.computeTurnover(saleProduct.getSale().getAccountingPeriod(), saleProduct.getPrice(), 
-					saleProduct.getValueAddedTax()));
-			
+			if(Boolean.TRUE.equals(saleProduct.getSale().getCompleted())){
+				//if(saleProduct.getValueAddedTax()==null)
+				if(Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax()))
+					saleProduct.setValueAddedTax(accountingPeriodBusiness.computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getPrice()));
+				else if(saleProduct.getValueAddedTax()==null)
+					saleProduct.setValueAddedTax(BigDecimal.ZERO);
+				saleProduct.setTurnover(accountingPeriodBusiness.computeTurnover(saleProduct.getSale().getAccountingPeriod(), saleProduct.getPrice(),saleProduct.getValueAddedTax()));
+			}else{
+				if(saleProduct.getValueAddedTax()==null){
+					saleProduct.setValueAddedTax(BigDecimal.ZERO);
+					saleProduct.setTurnover(BigDecimal.ZERO);
+				}
+			}
 			if(Boolean.TRUE.equals(saleProduct.getSale().getAccountingPeriod().getValueAddedTaxIncludedInCost())){
 				
 			}else{

@@ -1,7 +1,6 @@
 package org.cyk.system.company.business.impl.integration;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 import javax.inject.Inject;
 
@@ -81,25 +80,33 @@ public class SaleStockInputBusinessIT extends AbstractBusinessIT {
     	Employee employee = employeeBusiness.find().one();
     	Cashier cashier = cashierBusiness.findByEmployee(employee);
     	SaleStockInput saleStockInput = saleStockInputBusiness.newInstance(cashier.getEmployee().getPerson());
+    	saleStockInput.getSale().setCompleted(Boolean.FALSE);
     	saleStockInput.getTangibleProductStockMovement().setQuantity(new BigDecimal("3"));
     	SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement(saleStockInput.getSale(), new CashRegisterMovement(cashier.getCashRegister()));
     	SaleProduct saleProduct = saleStockInput.getSale().getSaleProducts().iterator().next();
     	saleProduct.setPrice(new BigDecimal("1000"));
     	saleProduct.setQuantity(new BigDecimal("1"));
     	saleBusiness.applyChange(saleStockInput.getSale(), saleProduct);
-    	saleStockInput.getSale().setCommission(new BigDecimal("200"));
     	saleStockInput.getSale().setCustomer(customer1);
+    	//saleStockInput.getSale().setValueAddedTax(new BigDecimal("0"));
+    	saleStockInput.getSale().setCommission(new BigDecimal("0"));
     	
     	saleCashRegisterMovement.getCashRegisterMovement().setAmount(new BigDecimal("0"));
     	saleCashRegisterMovement.setAmountIn(new BigDecimal("0"));
     	
     	//debug(saleStockInput);
     	saleStockInputBusiness.create(saleStockInput,saleCashRegisterMovement);
+    	Assert.assertEquals("Balance",new BigDecimal("0").doubleValue()+"", saleStockInput.getSale().getBalance().doubleValue()+"");
+    	//writeReport(saleBusiness.findReport(Arrays.asList(saleStockInput.getSale())));
+    	//debug(saleStockInput.getSale());
     	
+    	//saleStockInput.getSale().setValueAddedTax(new BigDecimal("31.8"));
+    	saleStockInput.getSale().setAutoComputeValueAddedTax(Boolean.TRUE);
+    	saleStockInput.getSale().setCommission(new BigDecimal("200"));
+    	saleStockInput.getSale().setCompleted(Boolean.TRUE);
+    	saleBusiness.complete(saleStockInput.getSale());
     	Assert.assertEquals("Balance",new BigDecimal("1231.8").doubleValue()+"", saleStockInput.getSale().getBalance().doubleValue()+"");
-    	
-    	writeReport(saleBusiness.findReport(Arrays.asList(saleStockInput.getSale())));
-    	
+    	//writeReport(saleBusiness.findReport(Arrays.asList(saleStockInput.getSale())));
     	//debug(saleStockInput.getSale());
     }
     

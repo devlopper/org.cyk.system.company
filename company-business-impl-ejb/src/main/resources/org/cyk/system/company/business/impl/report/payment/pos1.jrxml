@@ -119,6 +119,9 @@
 	<field name="numberOfProducts" class="java.lang.String">
 		<fieldDescription><![CDATA[numberOfProducts]]></fieldDescription>
 	</field>
+	<field name="done" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[done]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -134,7 +137,9 @@
 					<textFieldExpression><![CDATA[$F{accountingPeriod}.getCompany().getName()]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="51" y="20" width="119" height="11" uuid="defc0059-f3ce-4ccc-93df-b6f3f65b1c89"/>
+					<reportElement x="51" y="20" width="119" height="11" uuid="defc0059-f3ce-4ccc-93df-b6f3f65b1c89">
+						<printWhenExpression><![CDATA[$F{cashRegisterIdentifier}!=null]]></printWhenExpression>
+					</reportElement>
 					<textElement>
 						<font size="8"/>
 					</textElement>
@@ -155,14 +160,18 @@
 					<textFieldExpression><![CDATA[$F{identifier}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="51" y="40" width="119" height="11" uuid="fabf5b93-84b2-4692-8909-0bf7ea3c2667"/>
+					<reportElement x="51" y="40" width="119" height="11" uuid="fabf5b93-84b2-4692-8909-0bf7ea3c2667">
+						<printWhenExpression><![CDATA[$F{customer}.getRegistrationCode()!=null]]></printWhenExpression>
+					</reportElement>
 					<textElement>
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{customer}.getRegistrationCode()]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="0" y="20" width="51" height="11" uuid="2503371f-3b3a-42db-96dd-ca52706e4333"/>
+					<reportElement x="0" y="20" width="51" height="11" uuid="2503371f-3b3a-42db-96dd-ca52706e4333">
+						<printWhenExpression><![CDATA[$F{cashRegisterIdentifier}!=null]]></printWhenExpression>
+					</reportElement>
 					<textElement>
 						<font size="8"/>
 					</textElement>
@@ -183,7 +192,9 @@
 					<text><![CDATA[Numero : ]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="0" y="40" width="51" height="11" uuid="1a147c35-1cce-4d5e-abab-dfe0d6821f44"/>
+					<reportElement x="0" y="40" width="51" height="11" uuid="1a147c35-1cce-4d5e-abab-dfe0d6821f44">
+						<printWhenExpression><![CDATA[$F{customer}.getRegistrationCode()!=null]]></printWhenExpression>
+					</reportElement>
 					<textElement>
 						<font size="8"/>
 					</textElement>
@@ -195,7 +206,7 @@
 	<detail>
 		<band height="53" splitType="Stretch">
 			<componentElement>
-				<reportElement key="table 1" x="0" y="2" width="170" height="50" uuid="f8e03627-9fee-4f32-8772-9c9919e56d70"/>
+				<reportElement key="table 1" x="0" y="2" width="190" height="50" uuid="f8e03627-9fee-4f32-8772-9c9919e56d70"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="SaleProductDS" uuid="8a1800d6-a750-43c0-af31-706e437970fc">
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{saleProducts})]]></dataSourceExpression>
@@ -287,14 +298,18 @@
 				<text><![CDATA[Montant a payer : ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="14" width="78" height="11" uuid="c513ce24-fdd4-411f-b17a-e0846d65b246"/>
+				<reportElement x="0" y="14" width="78" height="11" uuid="c513ce24-fdd4-411f-b17a-e0846d65b246">
+					<printWhenExpression><![CDATA[$F{saleCashRegisterMovement}.getAmountIn()!=null]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Especes                   : ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="24" width="78" height="11" uuid="e2e90e73-5525-4c8b-afa9-843a255e7452"/>
+				<reportElement x="0" y="24" width="78" height="11" uuid="e2e90e73-5525-4c8b-afa9-843a255e7452">
+					<printWhenExpression><![CDATA[$F{saleCashRegisterMovement}.getAmountToOut()!=null]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -302,7 +317,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="44" width="78" height="11" uuid="e14d4281-c293-46ed-ac53-04873efb3959">
-					<printWhenExpression><![CDATA[$F{accountingPeriod}.getCompany().getValueAddedTaxCollected()]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{saleCashRegisterMovement}.getVatRate()!=null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font size="8"/>
@@ -311,7 +326,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="54" width="78" height="11" uuid="99b8a044-ffe2-4913-b613-d6719ad18a9a">
-					<printWhenExpression><![CDATA[$F{accountingPeriod}.getCompany().getValueAddedTaxCollected()]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{saleCashRegisterMovement}.getAmountDueNoTaxes()!=null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font size="8"/>
@@ -320,7 +335,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="64" width="78" height="11" uuid="784fb099-e6a6-431c-b2a8-fd66cc205ef7">
-					<printWhenExpression><![CDATA[$F{accountingPeriod}.getCompany().getValueAddedTaxCollected()]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{saleCashRegisterMovement}.getVatAmount()!=null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font size="8"/>
@@ -349,14 +364,18 @@
 				<textFieldExpression><![CDATA[$F{cost}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="78" y="14" width="112" height="11" uuid="4506868c-3be6-46f5-9e62-426b8eeff486"/>
+				<reportElement x="78" y="14" width="112" height="11" uuid="4506868c-3be6-46f5-9e62-426b8eeff486">
+					<printWhenExpression><![CDATA[$F{saleCashRegisterMovement}.getAmountIn()!=null]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{saleCashRegisterMovement}.getAmountIn()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="78" y="24" width="112" height="11" uuid="5fe3a30f-4208-448d-af79-e0f5ad101452"/>
+				<reportElement x="78" y="24" width="112" height="11" uuid="5fe3a30f-4208-448d-af79-e0f5ad101452">
+					<printWhenExpression><![CDATA[$F{saleCashRegisterMovement}.getAmountToOut()!=null]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right">
 					<font size="8"/>
 				</textElement>
@@ -364,7 +383,7 @@
 			</textField>
 			<textField>
 				<reportElement x="78" y="44" width="112" height="11" uuid="6edccc7d-160c-4d64-a82e-97f935033674">
-					<printWhenExpression><![CDATA[$F{accountingPeriod}.getCompany().getValueAddedTaxCollected()]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{saleCashRegisterMovement}.getVatRate()!=null]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right">
 					<font size="8"/>
@@ -373,7 +392,7 @@
 			</textField>
 			<textField>
 				<reportElement x="78" y="54" width="112" height="11" uuid="052133b2-ab84-4c4d-be0c-4484ab8b8497">
-					<printWhenExpression><![CDATA[$F{accountingPeriod}.getCompany().getValueAddedTaxCollected()]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{saleCashRegisterMovement}.getAmountDueNoTaxes()!=null]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right">
 					<font size="8"/>

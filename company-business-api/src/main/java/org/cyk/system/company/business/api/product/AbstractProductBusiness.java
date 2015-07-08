@@ -11,7 +11,9 @@ import org.cyk.system.root.business.api.AbstractEnumerationBusiness;
 public interface AbstractProductBusiness<PRODUCT extends Product> extends AbstractEnumerationBusiness<PRODUCT> {
 
 	PRODUCT create(PRODUCT product,OwnedCompany ownedCompany);
-	
+	/**
+     * Compute and store data
+     */
 	void consume(Collection<SaleProduct> saleProducts);
 	Collection<PRODUCT> findBySalable(Boolean salable);
 	

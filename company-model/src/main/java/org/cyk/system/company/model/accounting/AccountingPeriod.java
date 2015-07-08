@@ -25,6 +25,7 @@ public class AccountingPeriod extends AbstractIdentifiablePeriod implements Seri
 	@ManyToOne @NotNull private OwnedCompany ownedCompany;
 	
 	@ManyToOne private File pointOfSaleReportFile;
+	@Column(nullable=false) @NotNull private Boolean showPointOfSaleReportCashier = Boolean.FALSE;
 	
 	/**
 	 * Zero means no taxes are collected

@@ -81,6 +81,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		Sale sale = new Sale();
 		sale.setAccountingPeriod(accountingPeriodBusiness.findCurrent());
 		sale.setCashier(cashierBusiness.findByPerson(person));
+		sale.setAutoComputeValueAddedTax(sale.getAccountingPeriod().getValueAddedTaxRate().signum()!=0);
 		exceptionUtils().exception(sale.getCashier()==null, "exception.sale.cashier.null");
 		return sale;
 	}
@@ -118,121 +119,162 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public void applyChange(Sale sale, SaleProduct saleProduct) {
 		saleProductBusiness.process(saleProduct);
+		updateCost(sale);
+	}
+	
+	private void updateCost(Sale sale){
 		sale.setCost(BigDecimal.ZERO);
 		for(SaleProduct lSaleProduct : sale.getSaleProducts())
 			sale.setCost( sale.getCost().add(lSaleProduct.getPrice() ));
 	}
 	
-	/*
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public void quantifyProduct(Sale sale, SaleProduct saleProduct) {
-		saleProductBusiness.process(saleProduct);
-		updateSaleCost(sale);
-	}
-	
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public void priceProduct(Sale sale, SaleProduct saleProduct) {
-		saleProductBusiness.process(saleProduct);
-		updateSaleCost(sale);
-	}
-	
-	private void updateSaleCost(Sale sale){
-		sale.setCost(BigDecimal.ZERO);
-		for(SaleProduct lSaleProduct : sale.getSaleProducts())
-			sale.setCost( sale.getCost().add(lSaleProduct.getPrice() ));
-	}
-	*/
 	@Override
 	public Sale create(Sale sale) {
-		exceptionUtils().exception(sale.getAccountingPeriod()==null, "exception.sale.accountingperiodmissing");
-		productBusiness.consume(sale.getSaleProducts());
+		if(Boolean.TRUE.equals(AUTO_SET_SALE_DATE))
+			if(sale.getDate()==null)
+				sale.setDate(universalTimeCoordinated());
+		sale.setIdentificationNumber(companyValueGenerator.saleIdentificationNumber(sale));
 		
+		exceptionUtils().exception(sale.getAccountingPeriod()==null, "exception.sale.accountingperiodmissing");
+		
+		if(Boolean.TRUE.equals(sale.getCompleted())){
+			save(sale,Boolean.TRUE);
+			/*
+			productBusiness.consume(sale.getSaleProducts());
+			BigDecimal total = BigDecimal.ZERO;
+			for(SaleProduct saleProduct : sale.getSaleProducts()){
+				exceptionUtils().exception(saleProduct.getPrice()==null, "exception.sale.product.price.null");
+				total = total.add(saleProduct.getPrice());
+			}
+			exceptionUtils().exception(!total.equals(sale.getCost()), "validation.sale.cost.sum");
+			
+			AccountingPeriod accountingPeriod = sale.getAccountingPeriod();
+			accountingPeriod.getSalesResults().setCount(sale.getAccountingPeriod().getSalesResults().getCount().add(BigDecimal.ONE));
+			
+			for(SaleProduct saleProduct : sale.getSaleProducts()){	
+				sale.setValueAddedTax(sale.getValueAddedTax().add(saleProduct.getValueAddedTax()));
+				//FIXME is it necessary since it is updated later???
+				sale.setTurnover(sale.getTurnover().add(saleProduct.getTurnover()));
+				sale.setBalance(sale.getBalance().add(saleProduct.getPrice()));
+			}
+			
+			sale.setCost(sale.getCost().add(sale.getCommission()));
+			sale.setBalance(sale.getCost());
+			sale.setTurnover(sale.getCost());
+			
+			accountingPeriod.getSalesResults().setTurnover(accountingPeriod.getSalesResults().getTurnover().add(sale.getTurnover()));
+			
+			sale = super.create(sale);
+			for(SaleProduct saleProduct : sale.getSaleProducts()){
+				saleProduct.setSale(sale);
+				genericDao.create(saleProduct);
+			}
+			
+			accountingPeriodProductBusiness.consume(sale.getAccountingPeriod(), sale.getSaleProducts());
+			accountingPeriodDao.update(accountingPeriod);
+			*/
+		}else{
+			sale = super.create(sale);
+			for(SaleProduct saleProduct : sale.getSaleProducts()){
+				saleProduct.setSale(sale);
+				genericDao.create(saleProduct);
+			}
+		}
+		
+		return sale;
+	}
+	
+	private void save(Sale sale,Boolean creation){
+		exceptionUtils().exception(Boolean.TRUE.equals(sale.getDone()), "exception.sale.done.already");
+		
+		if(Boolean.TRUE.equals(creation)){
+			
+		}else{
+			for(SaleProduct saleProduct : sale.getSaleProducts()){
+				saleProductBusiness.process(saleProduct);
+				
+			}
+			updateCost(sale);
+		}
+		productBusiness.consume(sale.getSaleProducts());
 		BigDecimal total = BigDecimal.ZERO;
 		for(SaleProduct saleProduct : sale.getSaleProducts()){
 			exceptionUtils().exception(saleProduct.getPrice()==null, "exception.sale.product.price.null");
 			total = total.add(saleProduct.getPrice());
 		}
 		exceptionUtils().exception(!total.equals(sale.getCost()), "validation.sale.cost.sum");
-		
-		AccountingPeriod accountingPeriod = sale.getAccountingPeriod();
-		accountingPeriod.getSalesResults().setCount(sale.getAccountingPeriod().getSalesResults().getCount().add(BigDecimal.ONE));
-		
-		if(Boolean.TRUE.equals(AUTO_SET_SALE_DATE))
-			if(sale.getDate()==null)
-				sale.setDate(universalTimeCoordinated());
-		sale.setIdentificationNumber(companyValueGenerator.saleIdentificationNumber(sale));
-		
-		if(Boolean.TRUE.equals(sale.getDoneOnCreate()))
-			done(sale);
-		/*
-		for(SaleProduct saleProduct : sale.getSaleProducts()){	
-			sale.setValueAddedTax(sale.getValueAddedTax().add(saleProduct.getValueAddedTax()));
-			//FIXME is it necessary since it is updated later???
-			sale.setTurnover(sale.getTurnover().add(saleProduct.getTurnover()));
-			sale.setBalance(sale.getBalance().add(saleProduct.getPrice()));
+	
+		if(Boolean.TRUE.equals(sale.getCompleted())){
+			AccountingPeriod accountingPeriod = sale.getAccountingPeriod();
+			accountingPeriod.getSalesResults().setCount(sale.getAccountingPeriod().getSalesResults().getCount().add(BigDecimal.ONE));
+			accountingPeriod.getSalesResults().setTurnover(accountingPeriod.getSalesResults().getTurnover().add(sale.getTurnover()));
+			accountingPeriodDao.update(accountingPeriod);
+			
+			for(SaleProduct saleProduct : sale.getSaleProducts()){
+				sale.setValueAddedTax(sale.getValueAddedTax().add(saleProduct.getValueAddedTax()));
+				//FIXME is it necessary since it is updated later???
+				sale.setTurnover(sale.getTurnover().add(saleProduct.getTurnover()));
+				sale.setBalance(sale.getBalance().add(saleProduct.getPrice()));
+			}
+			sale.setCost(sale.getCost().add(sale.getCommission()));
+			sale.setBalance(sale.getCost());
+			sale.setTurnover(sale.getCost());
+		}else{
+			sale.setValueAddedTax(BigDecimal.ZERO);
+			sale.setTurnover(BigDecimal.ZERO);
+			sale.setBalance(BigDecimal.ZERO);
 		}
-		
-		sale.setCost(sale.getCost().add(sale.getCommission()));
-		sale.setBalance(sale.getCost());
-		sale.setTurnover(sale.getCost());
-		
-		accountingPeriod.getSalesResults().setTurnover(accountingPeriod.getSalesResults().getTurnover().add(sale.getTurnover()));
-		*/
-		sale = super.create(sale);
+
+		sale.setDone(sale.getCompleted());
+		if(Boolean.TRUE.equals(creation))
+			sale = super.create(sale);
+		else
+			sale = super.update(sale);
 		for(SaleProduct saleProduct : sale.getSaleProducts()){
 			saleProduct.setSale(sale);
-			genericDao.create(saleProduct);
+			if(Boolean.TRUE.equals(creation)){
+				genericDao.create(saleProduct);
+			}else
+				genericDao.update(saleProduct);
 		}
 		
 		accountingPeriodProductBusiness.consume(sale.getAccountingPeriod(), sale.getSaleProducts());
-		accountingPeriodDao.update(accountingPeriod);
-		return sale;
-	}
-	
-	@Override
-	public void done(Sale sale) {
-		exceptionUtils().exception(Boolean.TRUE.equals(sale.getDone()), "exception.sale.isdone");
-		for(SaleProduct saleProduct : sale.getSaleProducts()){	
-			sale.setValueAddedTax(sale.getValueAddedTax().add(saleProduct.getValueAddedTax()));
-			//FIXME is it necessary since it is updated later???
-			sale.setTurnover(sale.getTurnover().add(saleProduct.getTurnover()));
-			sale.setBalance(sale.getBalance().add(saleProduct.getPrice()));
-		}
 		
-		sale.setCost(sale.getCost().add(sale.getCommission()));
-		sale.setBalance(sale.getCost());
-		sale.setTurnover(sale.getCost());
-		
-		sale.getAccountingPeriod().getSalesResults().setTurnover(sale.getAccountingPeriod().getSalesResults().getTurnover().add(sale.getTurnover()));
-		sale.setDone(Boolean.TRUE);
 	}
 	
 	@Override
 	public void create(Sale sale, SaleCashRegisterMovement saleCashRegisterMovement) {
 		create(sale);
 		saleCashRegisterMovement.setSale(sale);
-		saleCashRegisterMovementBusiness.create(saleCashRegisterMovement);
+		if(Boolean.TRUE.equals(sale.getDone())){
+			saleCashRegisterMovementBusiness.create(saleCashRegisterMovement);
+		}
 		//create report
 		Company company = saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getOwnedCompany().getCompany();
 		BigDecimal numberOfProducts = BigDecimal.ZERO;
 		for(SaleProduct sp : sale.getSaleProducts())
 			numberOfProducts = numberOfProducts.add(sp.getQuantity());
-		SaleReport saleReport = new SaleReport(sale.getIdentificationNumber(),saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getCode(),
+		SaleReport saleReport = new SaleReport(sale.getIdentificationNumber(),
+				Boolean.TRUE.equals(sale.getAccountingPeriod().getShowPointOfSaleReportCashier())?saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getCode():null,
 				timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN),numberBusiness.format(numberOfProducts)+"",numberBusiness.format(sale.getCost()),
 				languageBusiness.findText("company.report.pointofsale.welcome"),languageBusiness.findText("company.report.pointofsale.goodbye"));
 		saleReport.getAccountingPeriod().getCompany().setName(company.getName());
+		saleReport.setDone(sale.getDone());
 		contactCollectionBusiness.load(company.getContactCollection());
 		
 		saleReport.getAccountingPeriod().getCompany().getContact().setPhoneNumbers(StringUtils.join(company.getContactCollection().getPhoneNumbers()," - "));
 		saleReport.getCustomer().setRegistrationCode(sale.getCustomer()==null?"":sale.getCustomer().getRegistration().getCode());
 		saleReport.getSaleCashRegisterMovement().setAmountDue(numberBusiness.format(sale.getCost()));
-		saleReport.getSaleCashRegisterMovement().setAmountIn(numberBusiness.format(saleCashRegisterMovement.getAmountIn()));
-		saleReport.getSaleCashRegisterMovement().setAmountToOut(numberBusiness.format(saleCashRegisterMovement.getAmountIn().subtract(sale.getCost())));
-		saleReport.getSaleCashRegisterMovement().setAmountOut(numberBusiness.format(saleCashRegisterMovement.getAmountOut()));
-		saleReport.getSaleCashRegisterMovement().setVatRate(numberBusiness.format(sale.getAccountingPeriod().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
-		saleReport.getSaleCashRegisterMovement().setVatAmount(numberBusiness.format(sale.getValueAddedTax().setScale(2)));
-		saleReport.getSaleCashRegisterMovement().setAmountDueNoTaxes(numberBusiness.format(sale.getCost().subtract(sale.getValueAddedTax()).setScale(2)));
-		
+		if(Boolean.TRUE.equals(sale.getDone())){
+			saleReport.getSaleCashRegisterMovement().setAmountIn(numberBusiness.format(saleCashRegisterMovement.getAmountIn()));
+			saleReport.getSaleCashRegisterMovement().setAmountToOut(numberBusiness.format(saleCashRegisterMovement.getAmountIn().subtract(sale.getCost())));
+			saleReport.getSaleCashRegisterMovement().setAmountOut(numberBusiness.format(saleCashRegisterMovement.getAmountOut()));
+			if(sale.getValueAddedTax()!=null && sale.getValueAddedTax().signum()!=0){
+				saleReport.getSaleCashRegisterMovement().setVatRate(numberBusiness.format(sale.getAccountingPeriod().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
+				saleReport.getSaleCashRegisterMovement().setVatAmount(numberBusiness.format(sale.getValueAddedTax().setScale(2)));
+				saleReport.getSaleCashRegisterMovement().setAmountDueNoTaxes(numberBusiness.format(sale.getCost().subtract(sale.getValueAddedTax()).setScale(2)));
+			}
+		}
 		for(SaleProduct sp : sale.getSaleProducts()){
 			SaleProductReport spr = new SaleProductReport(saleReport,sp.getProduct().getCode(),sp.getProduct().getName(),
 					sp.getProduct().getPrice()==null?"":numberBusiness.format(sp.getProduct().getPrice()),
@@ -241,11 +283,20 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		}
 		
 		ReportBasedOnTemplateFile<SaleReport> report = createReport(sale, saleReport,sale.getAccountingPeriod().getPointOfSaleReportFile(),"pdf");
-		
-		sale.setReport(new File());
+		if(sale.getReport()==null)
+			sale.setReport(new File());
 		sale.getReport().setBytes(report.getBytes());
 		sale.getReport().setExtension(report.getFileExtension());
-		fileBusiness.create(sale.getReport());
+		if(sale.getReport()==null)
+			fileBusiness.create(sale.getReport());
+		else
+			fileBusiness.update(sale.getReport());
+		update(sale);
+	}
+	
+	@Override
+	public void complete(Sale sale) {
+		save(sale, Boolean.FALSE);
 		update(sale);
 	}
 	

@@ -19,7 +19,20 @@ public class SampleData implements Serializable {
 	}
 	
 	public static Collection<SaleReport> createSaleReports(){
-		return RandomDataProvider.generate(SaleReport.class, 1);
+		Collection<SaleReport> collection = RandomDataProvider.generate(SaleReport.class, 3);
+		int i = 0;
+		for(SaleReport saleReport : collection)
+			switch(i++){
+			case 0:
+				saleReport.setDone(Boolean.FALSE);
+				break;
+			case 1:
+				saleReport.getSaleCashRegisterMovement().setVatRate(null);
+				break;
+			case 2:
+				break;
+			}	
+		return collection;
 	}
 	
 	public static void main(String[] args) {

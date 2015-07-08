@@ -121,7 +121,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     
     protected void writeReport(AbstractReport<?> report){
     	try {
-			IOUtils.write(report.getBytes(), new FileOutputStream( System.getProperty("user.dir")+"/target/"+report.getFileName()+"."+report.getFileExtension()));
+			IOUtils.write(report.getBytes(), new FileOutputStream( System.getProperty("user.dir")+"/target/"+report.getFileName()+System.currentTimeMillis()+"."+report.getFileExtension()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

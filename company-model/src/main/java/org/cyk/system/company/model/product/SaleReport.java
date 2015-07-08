@@ -20,6 +20,7 @@ public class SaleReport extends AbstractGeneratable<SaleReport> implements Seria
 	private static final long serialVersionUID = 7332510774063666925L;
 
 	private String identifier,cashRegisterIdentifier,date,numberOfProducts,cost,welcomeMessage,goodByeMessage;
+	private Boolean done;
 	
 	private AccountingPeriodReport accountingPeriod = new AccountingPeriodReport();
 	private ActorReport cashier = new ActorReport();
