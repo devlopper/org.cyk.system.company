@@ -15,6 +15,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
@@ -26,6 +27,8 @@ import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
+import org.cyk.system.company.model.product.SaleProduct;
+import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductInventoryDetail;
@@ -49,6 +52,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
 	@Inject private TangibleProductDao tangibleProductDao;
 	@Inject private SaleBusiness saleBusiness;
+	@Inject private SaleStockInputBusiness saleStockInputBusiness;
 	@Inject private AccountingPeriodDao accountingPeriodDao;
 	@Inject private CashierDao cashierDao;
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
@@ -118,6 +122,34 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 		
 		for(int i=0;i<stock;i++){
 			createTangibleProductStockMovement(tangibleProducts,randomDataProvider.randomDate(lastSaleDate, accountingPeriod.getPeriod().getToDate()));
+		}
+	}
+	
+	public void createSaleStockInput(Integer count){
+		AccountingPeriod accountingPeriod = accountingPeriodDao.select().one();
+		Cashier cashier = cashierDao.select().one();
+		for(int i=0;i<count;i++){
+			SaleStockInput saleStockInput = saleStockInputBusiness.newInstance(cashier.getEmployee().getPerson());
+			Sale sale = saleStockInput.getSale();
+			sale.setCustomer(rootRandomDataProvider.oneFromDatabase(Customer.class));
+			sale.setDate(date(accountingPeriod));
+			
+			sale.setExternalCustomerIdentifier(randomDataProvider.randomWord(5, 5));
+			sale.setAutoComputeValueAddedTax(Boolean.TRUE);
+			sale.setComments(randomDataProvider.randomText(5, 5, 5, 5));
+
+			saleStockInput.getTangibleProductStockMovement().setQuantity(new BigDecimal(randomDataProvider.randomInt(1, 10)));
+			SaleProduct saleProduct = sale.getSaleProducts().iterator().next();
+			saleProduct.setPrice(new BigDecimal(randomDataProvider.randomInt(10000, 1000000)));
+			sale.setCommission(new BigDecimal(randomDataProvider.randomInt(0, saleProduct.getPrice().intValue())));
+			saleBusiness.applyChange(sale, saleProduct);
+			
+			SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement(sale,new CashRegisterMovement(sale.getCashier().getCashRegister()));
+			saleCashRegisterMovement.setAmountIn(new BigDecimal(randomDataProvider.randomPositiveInt(sale.getCost().intValue())*1.3));
+			saleCashRegisterMovement.setAmountIn(saleCashRegisterMovement.getAmountIn().round(new MathContext(0, RoundingMode.DOWN)));
+			saleCashRegisterMovementBusiness.in(saleCashRegisterMovement);
+			
+			saleStockInputBusiness.create(saleStockInput, saleCashRegisterMovement);
 		}
 	}
 	

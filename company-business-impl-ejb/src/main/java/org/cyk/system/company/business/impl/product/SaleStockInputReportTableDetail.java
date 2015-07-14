@@ -20,6 +20,7 @@ public class SaleStockInputReportTableDetail implements Serializable {
 	@Input @ReportColumn private String cost;
 	@Input @ReportColumn private String date;
 	@Input @ReportColumn private String numberOfGoods;
+	@Input @ReportColumn private String remainingNumberOfGoods;
 	@Input @ReportColumn private String balance;
 	
 	public SaleStockInputReportTableDetail(SaleStockInput saleStockInput) {
@@ -29,6 +30,7 @@ public class SaleStockInputReportTableDetail implements Serializable {
 		cost = RootBusinessLayer.getInstance().getNumberBusiness().format(saleStockInput.getSale().getCost());
 		balance = RootBusinessLayer.getInstance().getNumberBusiness().format(saleStockInput.getSale().getBalance());
 		numberOfGoods = RootBusinessLayer.getInstance().getNumberBusiness().format(saleStockInput.getTangibleProductStockMovement().getQuantity());
+		remainingNumberOfGoods = RootBusinessLayer.getInstance().getNumberBusiness().format(saleStockInput.getRemainingNumberOfGoods());
 		date = RootBusinessLayer.getInstance().getTimeBusiness().formatDateTime(saleStockInput.getSale().getDate());
 	}
 	

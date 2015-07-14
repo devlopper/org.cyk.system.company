@@ -48,6 +48,8 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 		table.setShowFooter(Boolean.FALSE);
 		table.setShowToolBar(Boolean.TRUE);
 		table.setIdentifiableClass(Customer.class);
+		table.getPrintCommandable().addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), 
+				CompanyBusinessLayer.getInstance().getParameterCustomerReportBalance());
 		table.getPrintCommandable().addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType(), balanceType);
 	}
 	

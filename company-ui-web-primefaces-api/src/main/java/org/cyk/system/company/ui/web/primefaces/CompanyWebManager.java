@@ -74,6 +74,8 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	private final String outcomeTangibleProductStockMovementList = "tangibleProductStockMovementList";
 	private final String outcomeSaleDashBoard = "saleDashBoardView";
 	private final String outcomeCustomerBalance = "customerBalanceView";
+	private final String outcomeCustomerSaleStock = "customerSaleStockView";
+	private final String outcomeSaleStockInStock = "saleStockInStockView";
 	
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private EmployeeBusiness employeeBusiness;
@@ -243,9 +245,19 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 			mobileCommandables.add(c); 
 			sale.getChildren().add(uiProvider.createCommandable("command.sale.listall", null, "saleListView"));
 			sale.getChildren().add(c = uiProvider.createCommandable("field.credence", null, outcomeCustomerBalance));
+			c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), CompanyBusinessLayer.getInstance().getParameterCustomerReportBalance());
 			c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType(), CompanyBusinessLayer.getInstance().getParameterCustomerBalanceCredence());
+			
 			sale.getChildren().add(c = uiProvider.createCommandable("company.command.customer.balance", null, outcomeCustomerBalance));
+			c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), CompanyBusinessLayer.getInstance().getParameterCustomerReportBalance());
 			c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType(), CompanyBusinessLayer.getInstance().getParameterCustomerBalanceAll());
+			
+			sale.getChildren().add(c = uiProvider.createCommandable("company.command.customer.salestock", null, outcomeCustomerSaleStock));
+			c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), CompanyBusinessLayer.getInstance().getParameterCustomerReportSaleStock());
+			
+			sale.getChildren().add(c = uiProvider.createCommandable("company.command.salestock.instock", null, outcomeSaleStockInStock));
+			c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), CompanyBusinessLayer.getInstance().getParameterCustomerReportSaleStock());
+			
 			sale.getChildren().add(uiProvider.createCommandable("command.list", null, "saleStockInputListView"));
 			
 			sale.getChildren().add(uiProvider.createCommandable("prod", null, "productionConsultView"));

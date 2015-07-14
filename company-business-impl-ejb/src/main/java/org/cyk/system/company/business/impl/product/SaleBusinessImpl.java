@@ -156,6 +156,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 				genericDao.create(saleProduct);
 			}
 		}
+		//notifyCrudDone(Crud.CREATE, sale);
 		logDebugSale("Sale created succesfully",sale);
 		return sale;
 	}
@@ -202,6 +203,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			
 			Customer customer = sale.getCustomer();
 			if(customer!=null){
+				customer.setSaleCount(customer.getSaleCount().add(BigDecimal.ONE));
 				customer.setTurnover(customer.getTurnover().add(sale.getTurnover()));
 				customerDao.update(customer);
 			}

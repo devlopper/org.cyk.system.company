@@ -1,7 +1,6 @@
 package org.cyk.system.company.ui.web.primefaces.page.product;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -13,19 +12,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.business.api.product.CustomerBusiness;
-import org.cyk.system.company.business.impl.product.CredenceReportTableDetails;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.product.CustomerBalanceReportTableDetails;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.page.AbstractPrimefacesPage;
 
 @Named @ViewScoped @Getter @Setter
-public class CredencePage extends AbstractPrimefacesPage implements Serializable {
+public class CustomerSaleStockPage extends AbstractPrimefacesPage implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
 	@Inject private CustomerBusiness customerBusiness;
 	
-	private Table<CredenceReportTableDetails> table;
+	private Table<CustomerBalanceReportTableDetails> table;
 	
 	@Override
 	protected void initialisation() {
@@ -36,16 +36,16 @@ public class CredencePage extends AbstractPrimefacesPage implements Serializable
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
-		Collection<CredenceReportTableDetails> details = new ArrayList<>();
-		for(Customer customer : customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO))
-			details.add(new CredenceReportTableDetails(customer));
-		table = createDetailsTable(CredenceReportTableDetails.class, details, "model.entity.customer");	
-		//table.setReportIdentifier(CompanyBusinessLayer.getInstance().getReportCredence());
-		table.setTitle(null);
+		Collection<CustomerBalanceReportTableDetails> details = new ArrayList<>();
+		for(Customer customer : customerBusiness.findAll())
+			details.add(new CustomerBalanceReportTableDetails(customer));
+		table = createDetailsTable(CustomerBalanceReportTableDetails.class, details, "");	
 		table.setShowHeader(Boolean.FALSE);
 		table.setShowFooter(Boolean.FALSE);
 		table.setShowToolBar(Boolean.TRUE);
 		table.setIdentifiableClass(Customer.class);
+		table.getPrintCommandable().addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), 
+				CompanyBusinessLayer.getInstance().getParameterCustomerReportSaleStock());
 	}
 	
 }

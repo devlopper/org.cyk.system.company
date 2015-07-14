@@ -60,6 +60,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			
 			if(Boolean.TRUE.equals(deposit)){
 				customer.setPaid(customer.getPaid().add(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
+				customer.setPaymentCount(customer.getPaymentCount().add(BigDecimal.ONE));
 			}else{
 				//TODO something to be done??? I do not know
 			}
@@ -68,6 +69,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			sale.getCustomer().setTurnover(customer.getTurnover());// Because of live object in test case
 			sale.getCustomer().setPaid(customer.getPaid());
 			sale.getCustomer().setBalance(customer.getBalance());
+			sale.getCustomer().setPaymentCount(customer.getPaymentCount());
 		}
 		logDebug("Sale cash register movement created successfully. I={} O={} A={} CT={} CP={} CB={}",saleCashRegisterMovement.getAmountIn(),
 				saleCashRegisterMovement.getAmountOut(),saleCashRegisterMovement.getCashRegisterMovement().getAmount(),customer==null?"":customer.getTurnover()

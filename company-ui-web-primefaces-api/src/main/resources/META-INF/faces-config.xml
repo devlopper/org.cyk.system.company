@@ -142,6 +142,16 @@
 			<to-view-id>/private/__role__/__salemanager__/customerbalance.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>customerSaleStockView</from-outcome>
+			<to-view-id>/private/__role__/__salemanager__/customersalestock.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>saleStockInStockView</from-outcome>
+			<to-view-id>/private/__role__/__salemanager__/salestockinstock.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 		
 		<navigation-case>
 			<from-outcome>saleNegativeBalanceListView</from-outcome>

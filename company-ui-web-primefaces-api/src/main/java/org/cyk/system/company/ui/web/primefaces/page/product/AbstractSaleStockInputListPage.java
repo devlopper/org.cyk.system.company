@@ -11,10 +11,10 @@ import lombok.Setter;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleStockInput;
+import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.ui.web.primefaces.model.SaleStockInputQueryResultFormModel;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.search.DefaultQueryFormModel;
-import org.cyk.system.root.model.search.DefaultSearchCriteria;
 import org.cyk.ui.api.command.CommandAdapter;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.model.table.Row;
@@ -93,7 +93,7 @@ public abstract class AbstractSaleStockInputListPage extends AbstractBusinessQue
 
 	@Override
 	protected Collection<SaleStockInput> __query__() {
-		DefaultSearchCriteria criteria = searchCriteria();
+		SaleStockInputSearchCriteria criteria = searchCriteria();
 		
 		criteria.getReadConfig().setFirstResultIndex(queryFirst);
 		criteria.getReadConfig().setMaximumResultCount(20l);
@@ -110,13 +110,13 @@ public abstract class AbstractSaleStockInputListPage extends AbstractBusinessQue
 	
 	@Override
 	protected Long __count__() {
-		DefaultSearchCriteria criteria = searchCriteria();
+		SaleStockInputSearchCriteria criteria = searchCriteria();
 		
 		return saleStockInputBusiness.countByCriteria(criteria);
 	}
 
-	protected DefaultSearchCriteria searchCriteria(){
-		DefaultSearchCriteria searchCriteria = new DefaultSearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
+	protected SaleStockInputSearchCriteria searchCriteria(){
+		SaleStockInputSearchCriteria searchCriteria = new SaleStockInputSearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
 		searchCriteria.getIdentifierStringSearchCriteria().setValue(form.getData().getIdentifier());
 		return searchCriteria;
 	}

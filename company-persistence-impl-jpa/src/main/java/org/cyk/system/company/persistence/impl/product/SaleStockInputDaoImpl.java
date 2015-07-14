@@ -9,9 +9,10 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleStockInput;
+import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.cyk.system.company.persistence.api.product.SaleStockInputDao;
-import org.cyk.system.root.model.search.DefaultSearchCriteria;
+import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
 
@@ -20,7 +21,7 @@ public class SaleStockInputDaoImpl extends AbstractTypedDao<SaleStockInput> impl
 	private static final long serialVersionUID = 6920278182318788380L;
 
 	private static final String READ_BY_CRITERIA_SELECT_FORMAT = "SELECT ssi FROM SaleStockInput ssi ";
-	private static final String READ_BY_CRITERIA_WHERE_FORMAT = "WHERE ssi.sale.date BETWEEN :fromDate AND :toDate ";
+	private static final String READ_BY_CRITERIA_WHERE_FORMAT = "WHERE ssi.sale.date BETWEEN :fromDate AND :toDate AND ssi.remainingNumberOfGoods >= :minimumRemainingGoods ";
 	
 	private static final String READ_BY_CRITERIA_NOTORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT;
 	private static final String READ_BY_CRITERIA_ORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT+ORDER_BY_FORMAT;
@@ -44,7 +45,7 @@ public class SaleStockInputDaoImpl extends AbstractTypedDao<SaleStockInput> impl
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<SaleStockInput> readByCriteria(DefaultSearchCriteria searchCriteria) {
+	public Collection<SaleStockInput> readByCriteria(SaleStockInputSearchCriteria searchCriteria) {
 		if(StringUtils.isNotBlank(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue())){
 			Sale sale = saleDao.readByIdentificationNumber(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue());
 			if(sale==null)
@@ -64,9 +65,16 @@ public class SaleStockInputDaoImpl extends AbstractTypedDao<SaleStockInput> impl
 		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		return (Collection<SaleStockInput>) queryWrapper.resultMany();
 	}
+	
+	@Override
+	protected void applyPeriodSearchCriteriaParameters(QueryWrapper<?> queryWrapper,AbstractPeriodSearchCriteria searchCriteria) {
+		super.applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
+		SaleStockInputSearchCriteria saleStockInputSearchCriteria = (SaleStockInputSearchCriteria) searchCriteria;
+		queryWrapper.parameter("minimumRemainingGoods", saleStockInputSearchCriteria.getMinimumRemainingGoodsCount());
+	}
 
 	@Override
-	public Long countByCriteria(DefaultSearchCriteria searchCriteria) {
+	public Long countByCriteria(SaleStockInputSearchCriteria searchCriteria) {
 		if(StringUtils.isNotBlank(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue())){
 			return readBySale(saleDao.readByIdentificationNumber(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue()))==null?0l:1l;
 		}

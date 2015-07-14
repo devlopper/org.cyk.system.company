@@ -18,6 +18,7 @@ import org.cyk.system.company.business.api.product.TangibleProductStockMovementB
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleStockInput;
+import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.persistence.api.product.SaleStockInputDao;
@@ -28,7 +29,6 @@ import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.event.Event;
 import org.cyk.system.root.model.event.EventParticipation;
 import org.cyk.system.root.model.party.person.Person;
-import org.cyk.system.root.model.search.DefaultSearchCriteria;
 import org.cyk.system.root.model.time.Period;
 import org.joda.time.DateTime;
 
@@ -82,13 +82,13 @@ public class SaleStockInputBusinessImpl extends AbstractTypedBusinessService<Sal
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Collection<SaleStockInput> findByCriteria(DefaultSearchCriteria criteria) {
+	public Collection<SaleStockInput> findByCriteria(SaleStockInputSearchCriteria criteria) {
 		prepareFindByCriteria(criteria);
 		return dao.readByCriteria(criteria);
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Long countByCriteria(DefaultSearchCriteria criteria) {
+	public Long countByCriteria(SaleStockInputSearchCriteria criteria) {
 		return dao.countByCriteria(criteria);
 	}
 	

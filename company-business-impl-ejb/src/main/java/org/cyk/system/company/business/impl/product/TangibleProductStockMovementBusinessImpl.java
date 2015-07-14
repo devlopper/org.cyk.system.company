@@ -32,6 +32,7 @@ public class TangibleProductStockMovementBusinessImpl extends AbstractTypedBusin
 		if(tangibleProductStockMovement.getDate()==null)
 			tangibleProductStockMovement.setDate(universalTimeCoordinated());
 		updateStock(tangibleProductStockMovement);
+		//notifyCrudDone(Crud.CREATE, tangibleProductStockMovement);
 		logDebug("Tangible product stock movement created successfully. Product={} Q={}",tangibleProductStockMovement.getTangibleProduct().getCode(),
 				tangibleProductStockMovement.getQuantity());
 		return super.create(tangibleProductStockMovement);

@@ -2,6 +2,7 @@ package org.cyk.system.company.business.impl;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +61,7 @@ import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.model.product.SaleStockInput;
+import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
@@ -124,9 +126,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			,roleCustomerManagerCode = "CUSTOMERMANAGER",roleProductionManagerCode="PRODUCTIONMANAGER";
 	@Getter private final String reportPointOfSale = "pos";
 	@Getter private final String reportStockDashboard = "rsdb";
+	@Getter private final String parameterCustomerReportType = "crt";
+	@Getter private final String parameterCustomerReportBalance = "crb";
+	@Getter private final String parameterCustomerReportSaleStock = "crss";
 	@Getter private final String parameterCustomerBalanceType = "cbt";
 	@Getter private final String parameterCustomerBalanceAll = "cball";
 	@Getter private final String parameterCustomerBalanceCredence = "cbcred";
+	@Getter private final String parameterMinimumRemainingNumberOfGoods = "mrnog";
 	@Getter private final String parameterBalanceType = "bt";
 	
 	@Getter private DivisionType departmentDivisiontype;
@@ -249,8 +255,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			public Collection<? extends AbstractIdentifiable> identifiables(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
 				Date fromDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterFromDate())[0]));
 				Date toDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterToDate())[0]));
-				DefaultSearchCriteria searchCriteria = new DefaultSearchCriteria(fromDate,toDate);
-				
+				BigDecimal hasRemaingGoods = new BigDecimal(parameters.getExtendedParameterMap().get(parameterMinimumRemainingNumberOfGoods)[0]);
+				SaleStockInputSearchCriteria searchCriteria = new SaleStockInputSearchCriteria(fromDate,toDate,hasRemaingGoods);
 				return saleStockInputBusiness.findByCriteria(searchCriteria);
 			}
 		});
@@ -289,36 +295,39 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			}
 			@Override
 			public Collection<? extends AbstractIdentifiable> identifiables(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
-				Collection<? extends AbstractIdentifiable> collection;
-				if(parameterCustomerBalanceAll.equals(parameters.getExtendedParameterMap().get(parameterCustomerBalanceType)[0])){
-					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.customer.balance.title"));
+				Collection<? extends AbstractIdentifiable> collection = null;
+				String reportType = parameters.getExtendedParameterMap().get(parameterCustomerReportType)[0];
+				if(parameterCustomerReportBalance.equals(reportType)){
+					if(parameterCustomerBalanceAll.equals(parameters.getExtendedParameterMap().get(parameterCustomerBalanceType)[0])){
+						parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.customer.balance.title"));
+						parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
+							private static final long serialVersionUID = -1279948056976719107L;
+							public Boolean ignoreField(Field field) {return !(field.getName().equals("registrationCode") || field.getName().equals("names") || 
+									field.getName().equals("paid") || field.getName().equals("turnover") || field.getName().equals("balance"));};
+				        });
+						collection = customerBusiness.findAll();
+					}else{
+						parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.credence.title"));
+						parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
+							private static final long serialVersionUID = -1279948056976719107L;
+							public Boolean ignoreField(Field field) {return !(field.getName().equals("registrationCode") || field.getName().equals("names") || 
+									field.getName().equals("balance"));};
+				        });
+						collection = customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
+					}
+				}else if(parameterCustomerReportSaleStock.equals(reportType)){
+					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.customer.salestock.title"));
+					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
+						private static final long serialVersionUID = -1279948056976719107L;
+						public Boolean ignoreField(Field field) {return !(field.getName().equals("registrationCode") || field.getName().equals("names") || 
+								field.getName().equals("saleStockInputCount") || field.getName().equals("saleStockOutputCount"));};
+			        });
 					collection = customerBusiness.findAll();
-				}else{
-					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.credence.title"));
-					collection = customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
 				}
 				return collection;
 			}
 		});
-        /*
-        ReportBasedOnDynamicBuilderListener.IDENTIFIABLE_CONFIGURATIONS.add(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
-        		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),Customer.class,CredenceReportTableDetails.class) {
-			private static final long serialVersionUID = -1966207854828857772L;
-			@Override
-			public Object model(AbstractIdentifiable identifiable) {
-				return new CredenceReportTableDetails((Customer) identifiable);
-			}
-			@Override
-			public Boolean useCustomIdentifiableCollection() {
-				return Boolean.TRUE;
-			}
-			@Override
-			public Collection<? extends AbstractIdentifiable> identifiables(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
-				parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.credence.title"));
-				return customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
-			}
-		});
-		*/
+        
 		registerReportConfiguration(new ReportBasedOnTemplateFileConfiguration<Sale, ReportBasedOnTemplateFile<SaleReport>>(reportPointOfSale) {
 			@SuppressWarnings("unchecked")
 			@Override

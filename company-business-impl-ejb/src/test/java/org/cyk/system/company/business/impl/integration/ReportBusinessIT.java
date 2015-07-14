@@ -8,13 +8,14 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyRandomDataProvider;
-import org.cyk.system.company.business.impl.product.CredenceReportTableDetails;
 import org.cyk.system.company.business.impl.product.CustomerBalanceReportTableDetails;
 import org.cyk.system.company.business.impl.product.SaleReportTableDetail;
+import org.cyk.system.company.business.impl.product.SaleStockInputReportTableDetail;
 import org.cyk.system.company.business.impl.product.TangibleProductInventoryReportTableDetails;
 import org.cyk.system.company.business.impl.product.TangibleProductStockMovementLineReport;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Sale;
+import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
@@ -44,17 +45,10 @@ public class ReportBusinessIT extends AbstractBusinessIT {
     	rootRandomDataProvider = RootRandomDataProvider.getInstance();
     	rootRandomDataProvider.createActor(Customer.class, 100);
     	companyRandomDataProvider.createSale(100);
-        //companyRandomDataProvider.createTangibleProductStockMovement(100);
-        //companyRandomDataProvider.createTangibleProductInventory(100);
+    	companyRandomDataProvider.createSaleStockInput(10);
+    	companyRandomDataProvider.createTangibleProductStockMovement(0);
+        companyRandomDataProvider.createTangibleProductInventory(0);
         
-        /*
-        Collection<Class<?>> classes = new ArrayList<>();
-        classes.add(EventType.class);
-        classes.add(TimeDivisionType.class);
-        for(Class<?> clazz : classes){
-        	rootTestHelper.reportBasedOnDynamicBuilderParameters(clazz);
-        }*/
-        /*
         ReportBasedOnDynamicBuilderParameters<TangibleProductStockMovementLineReport> tpsmlrParameters = new ReportBasedOnDynamicBuilderParameters<>();
         tpsmlrParameters.setIdentifiableClass(TangibleProductStockMovement.class);
         tpsmlrParameters.setModelClass(TangibleProductStockMovementLineReport.class);
@@ -77,11 +71,13 @@ public class ReportBusinessIT extends AbstractBusinessIT {
 	        tpiParameters.addParameter(tangibleProductInventoryEntityInfos.getIdentifier(), tangibleProductInventory.getIdentifier());
 	        rootTestHelper.reportBasedOnDynamicBuilderParameters(tpiParameters);
         }
-        */
+        
         
         ReportBasedOnDynamicBuilderParameters<CustomerBalanceReportTableDetails> customerBalanceParameters = new ReportBasedOnDynamicBuilderParameters<>();
         customerBalanceParameters.setIdentifiableClass(Customer.class);
         customerBalanceParameters.setModelClass(CustomerBalanceReportTableDetails.class);
+        customerBalanceParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), 
+        		CompanyBusinessLayer.getInstance().getParameterCustomerReportBalance());
         customerBalanceParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType(), 
         		CompanyBusinessLayer.getInstance().getParameterCustomerBalanceAll());
         rootTestHelper.reportBasedOnDynamicBuilderParameters(customerBalanceParameters);
@@ -89,11 +85,26 @@ public class ReportBusinessIT extends AbstractBusinessIT {
         ReportBasedOnDynamicBuilderParameters<CustomerBalanceReportTableDetails> credenceParameters = new ReportBasedOnDynamicBuilderParameters<>();
         credenceParameters.setIdentifiableClass(Customer.class);
         credenceParameters.setModelClass(CustomerBalanceReportTableDetails.class);
+        credenceParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), 
+        		CompanyBusinessLayer.getInstance().getParameterCustomerReportBalance());
         credenceParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType(), 
         		CompanyBusinessLayer.getInstance().getParameterCustomerBalanceCredence());
         rootTestHelper.reportBasedOnDynamicBuilderParameters(credenceParameters);
         
+        ReportBasedOnDynamicBuilderParameters<CustomerBalanceReportTableDetails> customerSaleStockParameters = new ReportBasedOnDynamicBuilderParameters<>();
+        customerSaleStockParameters.setIdentifiableClass(Customer.class);
+        customerSaleStockParameters.setModelClass(CustomerBalanceReportTableDetails.class);
+        customerSaleStockParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), 
+        		CompanyBusinessLayer.getInstance().getParameterCustomerReportSaleStock());
+        rootTestHelper.reportBasedOnDynamicBuilderParameters(customerSaleStockParameters);
         
+        ReportBasedOnDynamicBuilderParameters<SaleStockInputReportTableDetail> saleStockInputParameters = new ReportBasedOnDynamicBuilderParameters<>();
+        saleStockInputParameters.setIdentifiableClass(SaleStockInput.class);
+        saleStockInputParameters.setModelClass(SaleStockInputReportTableDetail.class);
+        saleStockInputParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterMinimumRemainingNumberOfGoods(), "0");
+        rootTestHelper.addReportParameterFromDate(saleStockInputParameters, DateUtils.addDays(new Date(), -1000));
+        rootTestHelper.addReportParameterToDate(saleStockInputParameters, DateUtils.addDays(new Date(), 1000));
+        rootTestHelper.reportBasedOnDynamicBuilderParameters(saleStockInputParameters);
     }
     
     @Override protected void finds() {}
