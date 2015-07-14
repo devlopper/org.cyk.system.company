@@ -52,16 +52,19 @@ public class SaleStockInputBusinessImpl extends AbstractTypedBusinessService<Sal
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public SaleStockInput newInstance(Person person) {
+		logDebug("Instanciate sale stock input");
 		SaleStockInput saleStockInput = new SaleStockInput();
 		saleStockInput.setSale(saleBusiness.newInstance(person));
 		saleStockInput.setTangibleProductStockMovement(new TangibleProductStockMovement());
 		saleStockInput.getTangibleProductStockMovement().setTangibleProduct(tangibleProductBusiness.find(TangibleProduct.SALE_STOCK));
 		saleBusiness.selectProduct(saleStockInput.getSale(), intangibleProductBusiness.find(IntangibleProduct.SALE_STOCK));
+		logDebug("Sale stock input instanciate");
 		return saleStockInput;
 	}
 
 	@Override
 	public void create(SaleStockInput saleStockInput,SaleCashRegisterMovement saleCashRegisterMovement) {
+		logDebug("Create sale stock input");
 		saleBusiness.create(saleStockInput.getSale(), saleCashRegisterMovement);
 		saleStockInput.getTangibleProductStockMovement().setDate(saleStockInput.getSale().getDate());
 		saleStockInput.setRemainingNumberOfGoods(saleStockInput.getTangibleProductStockMovement().getQuantity());
@@ -80,7 +83,7 @@ public class SaleStockInputBusinessImpl extends AbstractTypedBusinessService<Sal
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<SaleStockInput> findByCriteria(DefaultSearchCriteria criteria) {
-		getPersistenceService().getDataReadConfig().set(criteria.getReadConfig());
+		prepareFindByCriteria(criteria);
 		return dao.readByCriteria(criteria);
 	}
 
@@ -93,6 +96,7 @@ public class SaleStockInputBusinessImpl extends AbstractTypedBusinessService<Sal
 	public void load(SaleStockInput saleStockInput) {
 		super.load(saleStockInput);
 		saleStockInput.setSaleStockOutputs(saleStockOutputDao.readBySaleStockInput(saleStockInput));
+		saleBusiness.load(saleStockInput.getSale());
 	}
 
 }

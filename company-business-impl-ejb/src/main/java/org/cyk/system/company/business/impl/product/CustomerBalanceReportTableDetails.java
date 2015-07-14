@@ -14,17 +14,21 @@ import org.cyk.utility.common.annotation.user.interfaces.style.Alignment;
 import org.cyk.utility.common.annotation.user.interfaces.style.Alignment.Horizontal;
 import org.cyk.utility.common.annotation.user.interfaces.style.Style;
 
-@Getter @Setter @Deprecated
-public class CredenceReportTableDetails implements Serializable {
+@Getter @Setter
+public class CustomerBalanceReportTableDetails implements Serializable {
 	private static final long serialVersionUID = -6341285110719947720L;
 	
 	@Input @InputText private String registrationCode;
 	@Input @InputText private String names;
+	@Input @InputText @ReportColumn(style=@Style(alignment=@Alignment(horizontal=Horizontal.RIGHT))) private String turnover;
+	@Input @InputText @ReportColumn(style=@Style(alignment=@Alignment(horizontal=Horizontal.RIGHT))) private String paid;
 	@Input @InputText @ReportColumn(style=@Style(alignment=@Alignment(horizontal=Horizontal.RIGHT))) private String balance;
 	
-	public CredenceReportTableDetails(Customer customer) {
+	public CustomerBalanceReportTableDetails(Customer customer) {
 		this.registrationCode = customer.getRegistration().getCode();
 		this.names = customer.getPerson().getNames();
+		this.turnover = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getTurnover());
+		this.paid = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getPaid());
 		this.balance = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getBalance());
 	}
 }

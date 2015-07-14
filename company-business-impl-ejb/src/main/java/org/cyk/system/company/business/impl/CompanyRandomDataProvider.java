@@ -22,6 +22,7 @@ import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.Customer;
+import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
@@ -56,6 +57,8 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 
 	public void createTangibleProductStockMovement(List<TangibleProduct> tangibleProducts,Date date){
 		TangibleProduct tangibleProduct = (TangibleProduct)randomDataProvider.randomFromList(tangibleProducts);
+		if(tangibleProduct.getCode().equals(TangibleProduct.SALE_STOCK))
+			return;
 		Integer quantity;
 		do{
 			quantity = randomDataProvider.randomInt(-10, 10);
@@ -86,14 +89,20 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 		Date lastSaleDate = null;
 		int stock = randomDataProvider.randomInt(0, count*2);
 		for(int i=0;i<count;i++){
-			Sale sale = new Sale();
-			sale.setAccountingPeriod(accountingPeriod);
+			Sale sale = saleBusiness.newInstance(cashier.getEmployee().getPerson());
+			//sale.setAccountingPeriod(accountingPeriod);
 			sale.setCustomer(rootRandomDataProvider.oneFromDatabase(Customer.class));
-			sale.setCashier(cashier);
+			//sale.setCashier(cashier);
 			sale.setDate(date(accountingPeriod));
 			lastSaleDate = sale.getDate();
-			for(int pc=0;pc<RandomDataProvider.getInstance().randomInt(1, 10);pc++)
-				saleBusiness.selectProduct(sale, (Product)randomDataProvider.randomFromList(products), new BigDecimal(randomDataProvider.randomInt(1, 10)));
+			for(int pc=0;pc<RandomDataProvider.getInstance().randomInt(1, 10);pc++){
+				Product product = (Product)randomDataProvider.randomFromList(products);
+				if(product.getCode().equals(TangibleProduct.SALE_STOCK))
+					continue;
+				if(product.getCode().equals(IntangibleProduct.SALE_STOCK))
+					product.setPrice(new BigDecimal(randomDataProvider.randomInt(100000, 500000)));
+				saleBusiness.selectProduct(sale, product, new BigDecimal(randomDataProvider.randomInt(1, 10)));
+			}
 				
 			SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement(sale,new CashRegisterMovement(sale.getCashier().getCashRegister()));
 			saleCashRegisterMovement.setAmountIn(new BigDecimal(randomDataProvider.randomPositiveInt(sale.getCost().intValue())*1.3));

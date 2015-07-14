@@ -42,22 +42,17 @@ public class SaleStockOutputDaoImpl extends AbstractTypedDao<SaleStockOutput> im
 		}else
 			queryName = readByCriteriaDateAscendingOrder;
 		QueryWrapper<?> queryWrapper = namedQuery(queryName);
-		applyCriteriaParameters(queryWrapper, searchCriteria);
+		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		return (Collection<SaleStockOutput>) queryWrapper.resultMany();
 	}
 
 	@Override
 	public Long countByCriteria(DefaultSearchCriteria searchCriteria) {
 		QueryWrapper<?> queryWrapper = countNamedQuery(countByCriteria);
-		applyCriteriaParameters(queryWrapper, searchCriteria);
+		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		return (Long) queryWrapper.resultOne();
 	}	
 	
-	protected void applyCriteriaParameters(QueryWrapper<?> queryWrapper,DefaultSearchCriteria searchCriteria){
-		queryWrapper.parameter("fromDate",searchCriteria.getFromDateSearchCriteria().getPreparedValue());
-		queryWrapper.parameter("toDate",searchCriteria.getToDateSearchCriteria().getPreparedValue());
-	}
-
 	@Override
 	public Collection<SaleStockOutput> readBySaleStockInput(SaleStockInput saleStockInput) {
 		return namedQuery(readBySaleStockInput).parameter("saleStockInput", saleStockInput).resultMany();

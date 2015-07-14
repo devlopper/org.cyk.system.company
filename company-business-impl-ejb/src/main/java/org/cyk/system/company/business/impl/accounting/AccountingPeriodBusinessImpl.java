@@ -2,6 +2,7 @@ package org.cyk.system.company.business.impl.accounting;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,44 +73,26 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 		return findPrevious(ownedCompanyBusiness.findDefaultOwnedCompany());
 	}
 	
-	/*
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public BigDecimal computeTurnover(BigDecimal cost, BigDecimal valueAddedTax) {
-		AccountingPeriod accountingPeriod = findCurrent();
-		if(Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()))
-			return cost.subtract(valueAddedTax);
-		else
-			return cost;
-	}
-	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public BigDecimal computeTurnover(Sale sale) {
-		return computeTurnover(sale.getCost(), sale.getValueAddedTax());
-	}
-	*/
-
 	@Override
 	public BigDecimal computeValueAddedTax(AccountingPeriod accountingPeriod,BigDecimal amount) {
-		//System.out.println(amount+" / ("+BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate())+"-"+amount+")");
-		return Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost())?
-			amount.divide(BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate())).subtract(amount)
-			:accountingPeriod.getValueAddedTaxRate().multiply(amount);
+		BigDecimal vat;
+		if(Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()))
+			vat = amount.divide(BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate()),RoundingMode.DOWN).subtract(amount);
+		else
+			vat = accountingPeriod.getValueAddedTaxRate().multiply(amount);
+		logDebug("VAT of amount {} is {}. (VAT included in amount ? {})", amount,vat);
+		return vat;
 	}
 	
 	@Override
 	public BigDecimal computeTurnover(AccountingPeriod accountingPeriod,BigDecimal amount,BigDecimal valueAddedTax) {
-		return Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost())?amount.subtract(valueAddedTax)
-				:amount;
+		BigDecimal turnover;
+		if(Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()))
+			turnover = amount.subtract(valueAddedTax);
+		else
+			turnover = amount;
+		logDebug("Turnover of amount {} is {}. (VAT included in amount ? {})", amount,turnover);
+		return turnover;
 	}
 	
-	
-	
-	/*
-	@Override
-	public void process(SaleProduct saleProduct) {
-		saleProduct.setValueAddedTax(computeValueAddedTax(saleProduct.getPrice()));
-		saleProduct.setTurnover(computeTurnover(saleProduct.getPrice(), saleProduct.getValueAddedTax()));
-	}
-	*/
-
 }

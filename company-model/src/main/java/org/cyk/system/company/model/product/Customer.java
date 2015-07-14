@@ -18,6 +18,8 @@ public class Customer extends AbstractActor implements Serializable {
 
 	private static final long serialVersionUID = 1371797411549893368L;
 
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal turnover = BigDecimal.ZERO;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal paid = BigDecimal.ZERO;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal balance = BigDecimal.ZERO;
 	
 }

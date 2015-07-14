@@ -39,115 +39,127 @@
     TARGET="rules:#private#__role__#__productionmanager__#consultproduction.xhtml"
     TITLE="productionConsultView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
-    ID="tangibleProductStockOutView::#private#__role__#__stockmanager__#stockmovement.xhtml"
+    ID="productCollectionEditView::#private#__role__#__stockmanager__#editoneproductcollection.xhtml"
     NAME="output6"
+    PATH="/private/__role__/__stockmanager__/editoneproductcollection.xhtml"
+    TARGET="rules:#private#__role__#__stockmanager__#editoneproductcollection.xhtml"
+    TITLE="productCollectionEditView" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="tangibleProductStockInView::#private#__role__#__stockmanager__#stockmovement.xhtml"
+    NAME="output7"
+    PATH="/private/__role__/__stockmanager__/stockmovement.xhtml"
+    TARGET="rules:#private#__role__#__stockmanager__#stockmovement.xhtml"
+    TITLE="tangibleProductStockInView" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="tangibleProductStockOutView::#private#__role__#__stockmanager__#stockmovement.xhtml"
+    NAME="output8"
     PATH="/private/__role__/__stockmanager__/stockmovement.xhtml"
     TARGET="rules:#private#__role__#__stockmanager__#stockmovement.xhtml"
     TITLE="tangibleProductStockOutView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
     ID="tangibleProductStockMovementCrudManyView::#private#__role__#__stockmanager__#stockmovement.xhtml"
-    NAME="output7"
+    NAME="output9"
     PATH="/private/__role__/__stockmanager__/stockmovement.xhtml"
     TARGET="rules:#private#__role__#__stockmanager__#stockmovement.xhtml"
     TITLE="tangibleProductStockMovementCrudManyView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
     ID="tangibleProductStockMovementList::#private#__role__#__stockmanager__#tangibleproductstockmovementlist.xhtml"
-    NAME="output8"
+    NAME="output10"
     PATH="/private/__role__/__stockmanager__/tangibleproductstockmovementlist.xhtml"
     TARGET="rules:#private#__role__#__stockmanager__#tangibleproductstockmovementlist.xhtml"
     TITLE="tangibleProductStockMovementList" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
     ID="tangibleProductInventoryListView::#private#__role__#__stockmanager__#inventorylist.xhtml"
-    NAME="output9"
+    NAME="output11"
     PATH="/private/__role__/__stockmanager__/inventorylist.xhtml"
     TARGET="rules:#private#__role__#__stockmanager__#inventorylist.xhtml"
     TITLE="tangibleProductInventoryListView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
-    ID="tangibleProductInventoryEditView::#private#__role__#__stockmanager__#inventoryedit.xhtml"
-    NAME="output10"
-    PATH="/private/__role__/__stockmanager__/inventoryedit.xhtml"
-    TARGET="rules:#private#__role__#__stockmanager__#inventoryedit.xhtml"
-    TITLE="tangibleProductInventoryEditView" model-entity="JSFProcessItemOutput"/>
+    ID="tangibleProductQuantityInUseUpdateManyView::#private#__role__#__stockmanager__#quantityinuseedit.xhtml"
+    NAME="output12"
+    PATH="/private/__role__/__stockmanager__/quantityinuseedit.xhtml"
+    TARGET="rules:#private#__role__#__stockmanager__#quantityinuseedit.xhtml"
+    TITLE="tangibleProductQuantityInUseUpdateManyView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
-    ID="tangibleProductInventoryConsultView::#private#__role__#__stockmanager__#inventoryconsult.xhtml"
-    NAME="output11"
-    PATH="/private/__role__/__stockmanager__/inventoryconsult.xhtml"
-    TARGET="rules:#private#__role__#__stockmanager__#inventoryconsult.xhtml"
-    TITLE="tangibleProductInventoryConsultView" model-entity="JSFProcessItemOutput"/>
+    ID="stockDashBoardView::#private#__role__#__stockmanager__#dashboard.xhtml"
+    NAME="output13"
+    PATH="/private/__role__/__stockmanager__/dashboard.xhtml"
+    TARGET="rules:#private#__role__#__stockmanager__#dashboard.xhtml"
+    TITLE="stockDashBoardView" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="saleDashBoardView::#private#__role__#__salemanager__#dashboard.xhtml"
+    NAME="output14"
+    PATH="/private/__role__/__salemanager__/dashboard.xhtml"
+    TARGET="rules:#private#__role__#__salemanager__#dashboard.xhtml"
+    TITLE="saleDashBoardView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
     ID="saleEditView::#private#__role__#__salemanager__#crudone.xhtml"
-    NAME="output12"
+    NAME="output15"
     PATH="/private/__role__/__salemanager__/crudone.xhtml"
     TARGET="rules:#private#__role__#__salemanager__#crudone.xhtml"
     TITLE="saleEditView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
     ID="saleListView::#private#__role__#__salemanager__#list.xhtml"
-    NAME="output13" PATH="/private/__role__/__salemanager__/list.xhtml"
+    NAME="output16" PATH="/private/__role__/__salemanager__/list.xhtml"
     TARGET="rules:#private#__role__#__salemanager__#list.xhtml"
     TITLE="saleListView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
     ID="saleDeliveryDetailsView::#private#__role__#__salemanager__#deliverydetails.xhtml"
-    NAME="output14"
+    NAME="output17"
     PATH="/private/__role__/__salemanager__/deliverydetails.xhtml"
     TARGET="rules:#private#__role__#__salemanager__#deliverydetails.xhtml"
     TITLE="saleDeliveryDetailsView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
     ID="saleStockInputEditView::#private#__role__#__salemanager__#salestockinputedit.xhtml"
-    NAME="output15"
+    NAME="output18"
     PATH="/private/__role__/__salemanager__/salestockinputedit.xhtml"
     TARGET="rules:#private#__role__#__salemanager__#salestockinputedit.xhtml"
     TITLE="saleStockInputEditView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
     ID="saleStockInputListView::#private#__role__#__salemanager__#salestockinputlist.xhtml"
-    NAME="output16"
+    NAME="output19"
     PATH="/private/__role__/__salemanager__/salestockinputlist.xhtml"
     TARGET="rules:#private#__role__#__salemanager__#salestockinputlist.xhtml"
     TITLE="saleStockInputListView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
     ID="saleStockInputConsultView::#private#__role__#__salemanager__#salestockinputconsult.xhtml"
-    NAME="output17"
+    NAME="output20"
     PATH="/private/__role__/__salemanager__/salestockinputconsult.xhtml"
     TARGET="rules:#private#__role__#__salemanager__#salestockinputconsult.xhtml"
     TITLE="saleStockInputConsultView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
-    ID="saleStockOutputEditView::#private#__role__#__salemanager__#salestockoutputedit.xhtml"
-    NAME="output18"
-    PATH="/private/__role__/__salemanager__/salestockoutputedit.xhtml"
-    TARGET="rules:#private#__role__#__salemanager__#salestockoutputedit.xhtml"
-    TITLE="saleStockOutputEditView" model-entity="JSFProcessItemOutput"/>
-   <PROCESS-ITEM-OUTPUT
     ID="saleNegativeBalanceListView::#private#__role__#__salemanager__#list.xhtml"
-    NAME="output19" PATH="/private/__role__/__salemanager__/list.xhtml"
+    NAME="output21" PATH="/private/__role__/__salemanager__/list.xhtml"
     TARGET="rules:#private#__role__#__salemanager__#list.xhtml"
     TITLE="saleNegativeBalanceListView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
     ID="saleZeroBalanceListView::#private#__role__#__salemanager__#list.xhtml"
-    NAME="output20" PATH="/private/__role__/__salemanager__/list.xhtml"
+    NAME="output22" PATH="/private/__role__/__salemanager__/list.xhtml"
     TARGET="rules:#private#__role__#__salemanager__#list.xhtml"
     TITLE="saleZeroBalanceListView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
     ID="salePositiveBalanceListView::#private#__role__#__salemanager__#list.xhtml"
-    NAME="output21" PATH="/private/__role__/__salemanager__/list.xhtml"
+    NAME="output23" PATH="/private/__role__/__salemanager__/list.xhtml"
     TARGET="rules:#private#__role__#__salemanager__#list.xhtml"
     TITLE="salePositiveBalanceListView" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
-    ID="saleConsultView::#private#__role__#__salemanager__#consult.xhtml"
-    NAME="output22"
-    PATH="/private/__role__/__salemanager__/consult.xhtml"
-    TARGET="rules:#private#__role__#__salemanager__#consult.xhtml"
-    TITLE="saleConsultView" model-entity="JSFProcessItemOutput"/>
-   <PROCESS-ITEM-OUTPUT
-    ID="saleStatisticsPeriodly::#private#__role__#__salemanager__#statistics#periodly.xhtml"
-    NAME="output23"
-    PATH="/private/__role__/__salemanager__/statistics/periodly.xhtml"
-    TARGET="rules:#private#__role__#__salemanager__#statistics#periodly.xhtml"
-    TITLE="saleStatisticsPeriodly" model-entity="JSFProcessItemOutput"/>
+    ID="saleStatisticsProductly::#private#__role__#__salemanager__#statistics#productly.xhtml"
+    NAME="output24"
+    PATH="/private/__role__/__salemanager__/statistics/productly.xhtml"
+    TARGET="rules:#private#__role__#__salemanager__#statistics#productly.xhtml"
+    TITLE="saleStatisticsProductly" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
     ID="saleStatisticsCashierly::#private#__role__#__salemanager__#statistics#cashierly.xhtml"
-    NAME="output24"
+    NAME="output25"
     PATH="/private/__role__/__salemanager__/statistics/cashierly.xhtml"
     TARGET="rules:#private#__role__#__salemanager__#statistics#cashierly.xhtml"
     TITLE="saleStatisticsCashierly" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="paymentEditView::#private#__role__#__salemanager__#createcashmovement.xhtml"
+    NAME="output26"
+    PATH="/private/__role__/__salemanager__/createcashmovement.xhtml"
+    TARGET="rules:#private#__role__#__salemanager__#createcashmovement.xhtml"
+    TITLE="paymentEditView" model-entity="JSFProcessItemOutput"/>
   </PROCESS-ITEM>
  </PROCESS-ITEM>
  <PROCESS-ITEM
@@ -222,10 +234,6 @@
   PATH="/private/__role__/__stockmanager__/inventoryconsult.xhtml"
   SHAPE="304,689,0,0" model-entity="JSFProcessGroup"/>
  <PROCESS-ITEM
-  NAME="rules:#private#__role__#__salemanager__#credence.xhtml"
-  PATH="/private/__role__/__salemanager__/credence.xhtml"
-  SHAPE="304,721,0,0" model-entity="JSFProcessGroup"/>
- <PROCESS-ITEM
   NAME="rules:#private#__role__#__salemanager__#salestockinputedit.xhtml"
   PATH="/private/__role__/__salemanager__/salestockinputedit.xhtml"
   SHAPE="304,721,0,0" model-entity="JSFProcessGroup"/>
@@ -261,4 +269,8 @@
   NAME="rules:#private#__role__#__productionmanager__#consultproduction.xhtml"
   PATH="/private/__role__/__productionmanager__/consultproduction.xhtml"
   SHAPE="304,913,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM
+  NAME="rules:#private#__role__#__salemanager__#customerbalance.xhtml"
+  PATH="/private/__role__/__salemanager__/customerbalance.xhtml"
+  SHAPE="304,945,0,0" model-entity="JSFProcessGroup"/>
 </PROCESS>

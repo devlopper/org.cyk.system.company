@@ -73,7 +73,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	private final String outcomeStockDashBoard = "stockDashBoardView";
 	private final String outcomeTangibleProductStockMovementList = "tangibleProductStockMovementList";
 	private final String outcomeSaleDashBoard = "saleDashBoardView";
-	private final String outcomeCredence = "credenceView";
+	private final String outcomeCustomerBalance = "customerBalanceView";
 	
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private EmployeeBusiness employeeBusiness;
@@ -200,23 +200,33 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		systemMenu.getReferenceEntities().add(group);
 		
 		/**/
-		if(userSession.hasRole(CompanyBusinessLayer.getInstance().getRoleHumanResourcesManagerCode())){
-			UICommandable hr = uiProvider.createCommandable("command.humanresources", IconType.PERSON);
-			hr.addChild(menuManager.crudMany(Employee.class, null));
-			//hr.addChild(c = menuManager.crudOne(Customer.class, null));
-			//c.setLabel(uiManager.text("command.customer.new"));
-			if(userSession.hasRole(CompanyBusinessLayer.getInstance().getRoleCustomerManagerCode())){
-				hr.addChild(menuManager.crudMany(Customer.class, null));
-			}
-			hr.addChild(menuManager.crudMany(Cashier.class, null));
-			systemMenu.getBusinesses().add(hr);
-		}
 		
+		addBusinessMenu(systemMenu,humanResourcesManagerCommandables(userSession,systemMenu.getMobileBusinesses())); 
+		addBusinessMenu(systemMenu,customerManagerCommandables(userSession,systemMenu.getMobileBusinesses())); 
 		addBusinessMenu(systemMenu,saleCommandables(userSession,systemMenu.getMobileBusinesses(), cashier)); 
 		addBusinessMenu(systemMenu,stockCommandables(userSession));
 		addBusinessMenu(systemMenu,goodsDepositCommandables(userSession, systemMenu.getMobileBusinesses(), cashier));
 		
 		return systemMenu;
+	}
+	
+	public UICommandable humanResourcesManagerCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables){
+		UICommandable hr = null;
+		if(userSession.hasRole(CompanyBusinessLayer.getInstance().getRoleCustomerManagerCode())){
+			hr = uiProvider.createCommandable("command.humanresources", null);
+			hr.addChild(menuManager.crudMany(Employee.class, null));
+			hr.addChild(menuManager.crudMany(Cashier.class, null));
+		}
+		return hr;
+	}
+	
+	public UICommandable customerManagerCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables){
+		UICommandable customer = null;
+		if(userSession.hasRole(CompanyBusinessLayer.getInstance().getRoleCustomerManagerCode())){
+			customer = uiProvider.createCommandable("customer", IconType.PERSON);
+			customer.addChild(menuManager.crudMany(Customer.class, null));
+		}
+		return customer;
 	}
 	
 	public UICommandable saleCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables,Cashier cashier){
@@ -232,8 +242,10 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 			sale.getChildren().add(c = uiProvider.createCommandable("dashboard", null, outcomeSaleDashBoard));
 			mobileCommandables.add(c); 
 			sale.getChildren().add(uiProvider.createCommandable("command.sale.listall", null, "saleListView"));
-			sale.getChildren().add(uiProvider.createCommandable("field.credence", null, outcomeCredence));
-			
+			sale.getChildren().add(c = uiProvider.createCommandable("field.credence", null, outcomeCustomerBalance));
+			c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType(), CompanyBusinessLayer.getInstance().getParameterCustomerBalanceCredence());
+			sale.getChildren().add(c = uiProvider.createCommandable("company.command.customer.balance", null, outcomeCustomerBalance));
+			c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType(), CompanyBusinessLayer.getInstance().getParameterCustomerBalanceAll());
 			sale.getChildren().add(uiProvider.createCommandable("command.list", null, "saleStockInputListView"));
 			
 			sale.getChildren().add(uiProvider.createCommandable("prod", null, "productionConsultView"));
@@ -284,6 +296,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		}
 		return goods;
 	}
-
 	
+	/**/
+		
 }

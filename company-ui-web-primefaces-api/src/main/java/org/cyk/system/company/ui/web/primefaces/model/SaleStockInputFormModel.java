@@ -8,13 +8,12 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
-import org.cyk.utility.common.annotation.user.interfaces.InputBooleanButton;
+import org.cyk.utility.common.annotation.user.interfaces.InputBooleanCheck;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
@@ -26,8 +25,6 @@ import org.cyk.utility.common.annotation.user.interfaces.InputTextarea;
 public class SaleStockInputFormModel extends AbstractFormModel<SaleStockInput> implements Serializable {
 
 	private static final long serialVersionUID = -7403076234556118486L;
-	
-	private AccountingPeriodBusiness accountingPeriodBusiness;
 	
 	@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private Customer customer;
 	
@@ -44,7 +41,7 @@ public class SaleStockInputFormModel extends AbstractFormModel<SaleStockInput> i
 	@Input @InputNumber @NotNull //@Size(min=0,max=Integer.MAX_VALUE)
 	private BigDecimal commission;
 	
-	@Input @InputBooleanButton @NotNull //@Size(min=0,max=Integer.MAX_VALUE)
+	@Input @InputBooleanCheck @NotNull //@Size(min=0,max=Integer.MAX_VALUE)
 	private Boolean valueAddedTaxable;
 	
 	@Input @InputTextarea @NotNull
@@ -59,24 +56,23 @@ public class SaleStockInputFormModel extends AbstractFormModel<SaleStockInput> i
 		this.quantity = identifiable.getTangibleProductStockMovement().getQuantity();
 		this.commission = identifiable.getSale().getCommission();
 		this.valueAddedTaxable = BigDecimal.ZERO.compareTo(identifiable.getSale().getValueAddedTax()) != 0;
+		this.comments = identifiable.getSale().getComments();
 	}
 	
 	@Override
 	public void write() {
 		super.write();
+		
 		identifiable.getSale().setCustomer(customer);
 		identifiable.getSale().setExternalCustomerIdentifier(externalCustomerIdentifier);
-		if(Boolean.TRUE.equals(commissionInPercentage))
-			identifiable.getSale().setCommission(identifiable.getSale().getCost().multiply(commission));
-		else
+		identifiable.getSale().setAutoComputeValueAddedTax(valueAddedTaxable);
+		identifiable.getSale().setComments(comments);
+		if(Boolean.TRUE.equals(commissionInPercentage)){
+			identifiable.getSale().setCommission(numberBusiness.computePercentage(identifiable.getSale().getCost(),commission));
+		}else
 			identifiable.getSale().setCommission(commission);
 		identifiable.getTangibleProductStockMovement().setQuantity(quantity);
 		SaleProduct saleProduct = identifiable.getSale().getSaleProducts().iterator().next();
 		saleProduct.setPrice(price);
-		
-		if(Boolean.TRUE.equals(valueAddedTaxable))
-			saleProduct.setValueAddedTax(accountingPeriodBusiness.computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getPrice()));
-		else
-			saleProduct.setValueAddedTax(BigDecimal.ZERO);
 	}
 }

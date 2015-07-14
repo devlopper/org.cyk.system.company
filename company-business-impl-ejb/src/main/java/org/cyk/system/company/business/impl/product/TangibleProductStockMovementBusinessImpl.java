@@ -28,16 +28,13 @@ public class TangibleProductStockMovementBusinessImpl extends AbstractTypedBusin
 	
 	@Override
 	public TangibleProductStockMovement create(TangibleProductStockMovement tangibleProductStockMovement) {
+		logDebug("Create tangible product stock movement");
 		if(tangibleProductStockMovement.getDate()==null)
 			tangibleProductStockMovement.setDate(universalTimeCoordinated());
 		updateStock(tangibleProductStockMovement);
+		logDebug("Tangible product stock movement created successfully. Product={} Q={}",tangibleProductStockMovement.getTangibleProduct().getCode(),
+				tangibleProductStockMovement.getQuantity());
 		return super.create(tangibleProductStockMovement);
-	}
-	
-	@Override
-	public void create(Collection<TangibleProductStockMovement> movements) {
-		for(TangibleProductStockMovement movement : movements)
-			create(movement);
 	}
 	
 	@Override
@@ -59,7 +56,7 @@ public class TangibleProductStockMovementBusinessImpl extends AbstractTypedBusin
 
 	@Override
 	public Collection<TangibleProductStockMovement> findByCriteria(TangibleProductStockMovementSearchCriteria criteria) {
-		getPersistenceService().getDataReadConfig().set(criteria.getReadConfig());
+		prepareFindByCriteria(criteria);
 		return dao.readByCriteria(criteria);
 	}
 

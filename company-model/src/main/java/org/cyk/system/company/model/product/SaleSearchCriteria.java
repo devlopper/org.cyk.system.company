@@ -18,6 +18,8 @@ public class SaleSearchCriteria extends AbstractPeriodSearchCriteria implements 
 
 	private Collection<BalanceType> balanceTypes = new ArrayList<>();
 	//private Boolean computeBalance=Boolean.TRUE;
+	private Collection<Customer> customers = new ArrayList<>();
+	private Boolean done = Boolean.TRUE;
 	
 	public SaleSearchCriteria(){
 		this(null,null,null);

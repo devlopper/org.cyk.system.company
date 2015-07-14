@@ -39,22 +39,15 @@ public class ProductionSpreadSheetDaoImpl extends AbstractTypedDao<ProductionSpr
 		}else
 			queryName = readByCriteriaDateAscendingOrder;
 		QueryWrapper<?> queryWrapper = namedQuery(queryName);
-		applyCriteriaParameters(queryWrapper, searchCriteria);
+		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		return (Collection<ProductionSpreadSheet>) queryWrapper.resultMany();
 	}
 
 	@Override
 	public Long countByCriteria(ProductionSpreadSheetSearchCriteria searchCriteria) {
 		QueryWrapper<?> queryWrapper = countNamedQuery(countByCriteria);
-		applyCriteriaParameters(queryWrapper, searchCriteria);
+		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		return (Long) queryWrapper.resultOne();
-	}
-	
-	protected void applyCriteriaParameters(QueryWrapper<?> queryWrapper,ProductionSpreadSheetSearchCriteria searchCriteria){
-		queryWrapper.parameter("fromDate",searchCriteria.getFromDateSearchCriteria().getPreparedValue());
-		queryWrapper.parameter("toDate",searchCriteria.getToDateSearchCriteria().getPreparedValue());
-	}
-
-	
+	}	
 	
 }

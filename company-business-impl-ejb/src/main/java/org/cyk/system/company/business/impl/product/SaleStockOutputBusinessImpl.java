@@ -74,7 +74,7 @@ public class SaleStockOutputBusinessImpl extends AbstractTypedBusinessService<Sa
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<SaleStockOutput> findByCriteria(DefaultSearchCriteria criteria) {
-		getPersistenceService().getDataReadConfig().set(criteria.getReadConfig());
+		prepareFindByCriteria(criteria);
 		return dao.readByCriteria(criteria);
 	}
 

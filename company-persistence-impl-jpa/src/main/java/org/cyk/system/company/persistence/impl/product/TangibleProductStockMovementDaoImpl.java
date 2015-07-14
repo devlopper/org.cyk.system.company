@@ -23,8 +23,8 @@ public class TangibleProductStockMovementDaoImpl extends AbstractTypedDao<Tangib
 	@Override
     protected void namedQueriesInitialisation() {
     	super.namedQueriesInitialisation();
-    	registerNamedQuery(readAllSortedByDate,READ_BY_CRITERIA_SELECT_FORMAT+" ORDER BY tpsm.date ASC");
-    	registerNamedQuery(readByCriteria,READ_BY_CRITERIA_NOTORDERED_FORMAT+" ORDER BY tpsm.date ASC");
+    	registerNamedQuery(readAllSortedByDate,_select().orderBy("date", Boolean.TRUE) /*READ_BY_CRITERIA_SELECT_FORMAT+" ORDER BY tpsm.date ASC"*/);
+    	registerNamedQuery(readByCriteria, READ_BY_CRITERIA_NOTORDERED_FORMAT+" ORDER BY tpsm.date ASC");
         registerNamedQuery(readByCriteriaDateAscendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "tpsm.date ASC") );
         registerNamedQuery(readByCriteriaDateDescendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "tpsm.date DESC") );
     }
@@ -39,20 +39,17 @@ public class TangibleProductStockMovementDaoImpl extends AbstractTypedDao<Tangib
 		}else
 			queryName = readByCriteriaDateAscendingOrder;
 		QueryWrapper<?> queryWrapper = namedQuery(queryName);
-		applyCriteriaParameters(queryWrapper, searchCriteria);
+		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		return (Collection<TangibleProductStockMovement>) queryWrapper.resultMany();
 	}
 
 	@Override
 	public Long countByCriteria(TangibleProductStockMovementSearchCriteria searchCriteria) {
 		QueryWrapper<?> queryWrapper = countNamedQuery(countByCriteria);
-		applyCriteriaParameters(queryWrapper, searchCriteria);
+		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		return (Long) queryWrapper.resultOne();
 	}	
 	
-	protected void applyCriteriaParameters(QueryWrapper<?> queryWrapper,TangibleProductStockMovementSearchCriteria searchCriteria){
-		queryWrapper.parameter("fromDate",searchCriteria.getFromDateSearchCriteria().getPreparedValue());
-		queryWrapper.parameter("toDate",searchCriteria.getToDateSearchCriteria().getPreparedValue());
-	}
+
 	
 }

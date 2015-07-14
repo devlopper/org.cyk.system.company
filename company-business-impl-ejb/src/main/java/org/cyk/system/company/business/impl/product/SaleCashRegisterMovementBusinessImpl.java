@@ -35,6 +35,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 
 	@Override
 	public SaleCashRegisterMovement create(SaleCashRegisterMovement saleCashRegisterMovement) {
+		logDebug("Create sale cash register movement");
 		Sale sale = saleCashRegisterMovement.getSale();
 		Customer customer = sale.getCustomer();
 		Integer soldOut = BigDecimal.ZERO.compareTo(sale.getBalance());
@@ -56,10 +57,21 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			}else{
 				customer.setBalance(customer.getBalance().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
 			}
+			
+			if(Boolean.TRUE.equals(deposit)){
+				customer.setPaid(customer.getPaid().add(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
+			}else{
+				//TODO something to be done??? I do not know
+			}
+			
 			customerDao.update(customer);
+			sale.getCustomer().setTurnover(customer.getTurnover());// Because of live object in test case
+			sale.getCustomer().setPaid(customer.getPaid());
 			sale.getCustomer().setBalance(customer.getBalance());
 		}
-		
+		logDebug("Sale cash register movement created successfully. I={} O={} A={} CT={} CP={} CB={}",saleCashRegisterMovement.getAmountIn(),
+				saleCashRegisterMovement.getAmountOut(),saleCashRegisterMovement.getCashRegisterMovement().getAmount(),customer==null?"":customer.getTurnover()
+						,customer==null?"":customer.getPaid(),customer==null?"":customer.getPaid());
 		return super.create(saleCashRegisterMovement);
 	}
 	

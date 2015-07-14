@@ -14,7 +14,7 @@ import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.ui.web.primefaces.model.SaleStockOutputFormModel;
-import org.cyk.system.company.ui.web.primefaces.page.product.SaleStockInputConsultPage.Details;
+import org.cyk.system.company.ui.web.primefaces.page.product.AbstractSaleStockInputConsultPage.Details;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.model.AbstractIdentifiable;

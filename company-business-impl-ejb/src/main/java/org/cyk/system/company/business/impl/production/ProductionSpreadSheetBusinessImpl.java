@@ -62,7 +62,7 @@ public class ProductionSpreadSheetBusinessImpl extends AbstractTypedBusinessServ
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<ProductionSpreadSheet> findByCriteria(ProductionSpreadSheetSearchCriteria searchCriteria) {
-		getPersistenceService().getDataReadConfig().set(searchCriteria.getReadConfig());
+		prepareFindByCriteria(searchCriteria);
 		return dao.readByCriteria(searchCriteria);
 	}
 

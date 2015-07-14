@@ -138,8 +138,8 @@
 		</navigation-case>
 		
 		<navigation-case>
-			<from-outcome>credenceView</from-outcome>
-			<to-view-id>/private/__role__/__salemanager__/credence.xhtml</to-view-id>
+			<from-outcome>customerBalanceView</from-outcome>
+			<to-view-id>/private/__role__/__salemanager__/customerbalance.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		

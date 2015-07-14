@@ -1,0 +1,2 @@
+applyCriteriaParameters MUST BE CHANGED TO applyPeriodSearchCriteriaParameters
+add between method in QueryStringBuilder

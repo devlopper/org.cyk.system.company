@@ -39,7 +39,7 @@ import org.cyk.system.company.business.api.structure.DivisionBusiness;
 import org.cyk.system.company.business.api.structure.DivisionTypeBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
-import org.cyk.system.company.business.impl.product.CredenceReportTableDetails;
+import org.cyk.system.company.business.impl.product.CustomerBalanceReportTableDetails;
 import org.cyk.system.company.business.impl.product.SaleReportTableDetail;
 import org.cyk.system.company.business.impl.product.SaleStockInputReportTableDetail;
 import org.cyk.system.company.business.impl.product.StockDashBoardReportTableDetails;
@@ -69,8 +69,8 @@ import org.cyk.system.company.model.product.TangibleProductStockMovementSearchCr
 import org.cyk.system.company.model.production.ProductionSpreadSheet;
 import org.cyk.system.company.model.production.ProductionSpreadSheetCell;
 import org.cyk.system.company.model.production.ProductionSpreadSheetTemplate;
-import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateRow;
 import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateColumn;
+import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateRow;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
@@ -97,7 +97,10 @@ import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderListener
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParameters;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFileConfiguration;
+import org.cyk.system.root.model.generator.ValueGenerator;
+import org.cyk.system.root.model.generator.ValueGenerator.GenerateMethod;
 import org.cyk.system.root.model.geography.PhoneNumber;
+import org.cyk.system.root.model.party.person.AbstractActor;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.search.DefaultSearchCriteria;
 import org.cyk.system.root.model.security.Credentials;
@@ -121,6 +124,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			,roleCustomerManagerCode = "CUSTOMERMANAGER",roleProductionManagerCode="PRODUCTIONMANAGER";
 	@Getter private final String reportPointOfSale = "pos";
 	@Getter private final String reportStockDashboard = "rsdb";
+	@Getter private final String parameterCustomerBalanceType = "cbt";
+	@Getter private final String parameterCustomerBalanceAll = "cball";
+	@Getter private final String parameterCustomerBalanceCredence = "cbcred";
 	@Getter private final String parameterBalanceType = "bt";
 	
 	@Getter private DivisionType departmentDivisiontype;
@@ -166,6 +172,17 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		registerResourceBundle("org.cyk.system.company.model.resources.entity", getClass().getClassLoader());
 		registerResourceBundle("org.cyk.system.company.model.resources.message", getClass().getClassLoader());
 		registerResourceBundle("org.cyk.system.company.business.impl.resources.message", getClass().getClassLoader());
+		
+		@SuppressWarnings("unchecked")
+		ValueGenerator<AbstractActor,String> actorRegistrationCodeGenerator = (ValueGenerator<AbstractActor, String>) 
+				RootBusinessLayer.getInstance().getApplicationBusiness().findValueGenerator(ValueGenerator.ACTOR_REGISTRATION_CODE_IDENTIFIER);
+		
+		actorRegistrationCodeGenerator.setMethod(new GenerateMethod<AbstractActor, String>() {
+				@Override
+				public String execute(AbstractActor actor) {
+					return "COMP-"+System.currentTimeMillis();
+				}
+			});
 		
 		ReportBasedOnDynamicBuilderListener.GLOBALS.add(new ReportBasedOnDynamicBuilderAdapter(){
         	@Override
@@ -260,6 +277,31 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		});
         
         ReportBasedOnDynamicBuilderListener.IDENTIFIABLE_CONFIGURATIONS.add(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
+        		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),Customer.class,CustomerBalanceReportTableDetails.class) {
+			private static final long serialVersionUID = -1966207854828857772L;
+			@Override
+			public Object model(AbstractIdentifiable identifiable) {
+				return new CustomerBalanceReportTableDetails((Customer) identifiable);
+			}
+			@Override
+			public Boolean useCustomIdentifiableCollection() {
+				return Boolean.TRUE;
+			}
+			@Override
+			public Collection<? extends AbstractIdentifiable> identifiables(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
+				Collection<? extends AbstractIdentifiable> collection;
+				if(parameterCustomerBalanceAll.equals(parameters.getExtendedParameterMap().get(parameterCustomerBalanceType)[0])){
+					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.customer.balance.title"));
+					collection = customerBusiness.findAll();
+				}else{
+					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.credence.title"));
+					collection = customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
+				}
+				return collection;
+			}
+		});
+        /*
+        ReportBasedOnDynamicBuilderListener.IDENTIFIABLE_CONFIGURATIONS.add(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
         		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),Customer.class,CredenceReportTableDetails.class) {
 			private static final long serialVersionUID = -1966207854828857772L;
 			@Override
@@ -276,7 +318,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 				return customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
 			}
 		});
-		
+		*/
 		registerReportConfiguration(new ReportBasedOnTemplateFileConfiguration<Sale, ReportBasedOnTemplateFile<SaleReport>>(reportPointOfSale) {
 			@SuppressWarnings("unchecked")
 			@Override
@@ -431,14 +473,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	
 	protected void fakeTransactions(){
 		
-		/*
-		ProductCategory productCategoryCoiffure = productCategory(null, "COIFFURE", "Coiffure");
-        ProductCategory productCategoryEsthetique = productCategory(null, "ESTHETIQUE", "Esthetique");
-        ProductCategory productCategoryOnglerie = productCategory(null, "ONGLERIE", "Onglerie");
-        ProductCategory productCategoryMassage = productCategory(null, "MASSAGE", "Massage");
-		*/
-		
-        ProductCategory productCategoryEntretienCoprs = productCategory(null, "EC", "Entretien du corps");
+		ProductCategory productCategoryEntretienCoprs = productCategory(null, "EC", "Entretien du corps");
         ProductCategory productCategoryBeaute = productCategory(null, "BT", "Beaute");
         
         ProductCategory productCategorySoindDuCorps = productCategory(productCategoryEntretienCoprs, "SC", "Soin du coprs");
@@ -463,22 +498,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         products(productCategoryCoiffure,new String[]{"Tissage","1000","Tresse","1000","Champoing","1000"}
     	,new String[]{"Meche naturelle","1000","Meche synthetique","1000","RemiAir","1000"});
         
-        //ProductCategory pc = productCategory(null, "MM", "Marchandise");
-        //products(pc,new String[]{"Depot marchandise",""},null);
-        
-        /*
-        IntangibleProduct ip1 = fakeIntangibleProduct("iprod01","Soin de visage",productCategory2,new BigDecimal("1000"));
-        //create(new IntangibleProductDetails(ip1, tp1,tp4));
-        fakeIntangibleProduct("iprod02","Tissage",productCategory3,new BigDecimal("3000")));
-        fakeIntangibleProduct("iprod03","Pedicure",productCategory1,new BigDecimal("1500")));
-        IntangibleProduct ip4 = fakeIntangibleProduct("iprod04","Manicure",dept3,productCategory1,new BigDecimal("1000")));
-        
-        ProductCollection pc = new ProductCollection("pack01", "Mains-Pieds", dept3, null, new BigDecimal("2000"));
-        pc.getCollection().add(ip1);
-        pc.getCollection().add(ip4);
-        productBusiness.create(pc);
-        */
-        
         Employee employee = new Employee();
         employee.setPerson(new Person());
         employee.getPerson().setName("Zadi");
@@ -499,8 +518,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	
 	private TangibleProduct fakeTangibleProduct(String code,String name, ProductCategory productCategory, String cost){
 		TangibleProduct t = new TangibleProduct(code,name,null,productCategory,cost==null?null:new BigDecimal(cost));
-		t.setUseQuantity(new BigDecimal("1000"));
-		t.setStockQuantity(new BigDecimal("1000"));
+		t.setUseQuantity(new BigDecimal("100000"));
+		t.setStockQuantity(new BigDecimal("100000"));
 		tangibleProductBusiness.create(t);
 		return t;
 	}
