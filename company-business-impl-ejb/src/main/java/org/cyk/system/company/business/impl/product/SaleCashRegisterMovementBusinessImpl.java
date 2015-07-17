@@ -51,12 +51,12 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		saleDao.update(sale);
 		
 		if(customer!=null){
-			Boolean firstSaleCashRegisterMovement = dao.countBySale(sale)==0;
+			/*Boolean firstSaleCashRegisterMovement = dao.countBySale(sale)==0;
 			if(firstSaleCashRegisterMovement){
 				customer.setBalance(customer.getBalance().add(sale.getBalance()));
-			}else{
+			}else{*/
 				customer.setBalance(customer.getBalance().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
-			}
+			//}
 			
 			if(Boolean.TRUE.equals(deposit)){
 				customer.setPaid(customer.getPaid().add(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));

@@ -1,6 +1,7 @@
 package org.cyk.system.company.ui.web.primefaces.page.product;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,8 +17,12 @@ import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.product.CustomerBalanceReportTableDetails;
 import org.cyk.system.company.model.product.Customer;
+import org.cyk.ui.api.model.table.Cell;
+import org.cyk.ui.api.model.table.Column;
+import org.cyk.ui.api.model.table.Row;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.page.AbstractPrimefacesPage;
+import org.cyk.utility.common.model.table.TableAdapter;
 
 @Named @ViewScoped @Getter @Setter
 public class CustomerBalancePage extends AbstractPrimefacesPage implements Serializable {
@@ -31,7 +36,7 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		contentTitle = text("field.credence");
+		
 	}
 	
 	@Override
@@ -39,11 +44,20 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 		super.afterInitialisation();
 		Collection<CustomerBalanceReportTableDetails> details = new ArrayList<>();
 		String balanceType = requestParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType());
-		Collection<Customer> customers = CompanyBusinessLayer.getInstance().getParameterCustomerBalanceAll()
-				.equals(balanceType)?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
+		final Boolean all = CompanyBusinessLayer.getInstance().getParameterCustomerBalanceAll().equals(balanceType);
+		contentTitle = all?text("company.command.customer.balance"):text("field.credence");
+		Collection<Customer> customers = all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
 		for(Customer customer : customers)
 			details.add(new CustomerBalanceReportTableDetails(customer));
-		table = createDetailsTable(CustomerBalanceReportTableDetails.class, details, "");	
+		TableAdapter<Row<CustomerBalanceReportTableDetails>, Column, CustomerBalanceReportTableDetails, String, Cell, String> listener;
+		listener = new TableAdapter<Row<CustomerBalanceReportTableDetails>, Column, CustomerBalanceReportTableDetails, String, Cell, String>(){
+			@Override
+			public Boolean ignore(Field field) {
+				return all?CompanyBusinessLayer.getInstance().reportCustomerBalanceFieldIgnored(field):
+					CompanyBusinessLayer.getInstance().reportCustomerCredenceFieldIgnored(field);
+			}
+		};
+		table = createDetailsTable(CustomerBalanceReportTableDetails.class, details, listener, "");	
 		table.setShowHeader(Boolean.FALSE);
 		table.setShowFooter(Boolean.FALSE);
 		table.setShowToolBar(Boolean.TRUE);

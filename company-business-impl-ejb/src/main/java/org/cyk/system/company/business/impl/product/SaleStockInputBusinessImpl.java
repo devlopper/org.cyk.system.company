@@ -1,6 +1,7 @@
 package org.cyk.system.company.business.impl.product;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 
@@ -15,12 +16,14 @@ import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
+import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
+import org.cyk.system.company.persistence.api.product.CustomerDao;
 import org.cyk.system.company.persistence.api.product.SaleStockInputDao;
 import org.cyk.system.company.persistence.api.product.SaleStockOutputDao;
 import org.cyk.system.root.business.api.event.EventBusiness;
@@ -44,6 +47,7 @@ public class SaleStockInputBusinessImpl extends AbstractTypedBusinessService<Sal
 	@Inject private CashierBusiness cashierBusiness;
 	@Inject private EventBusiness eventBusiness;
 	@Inject private SaleStockOutputDao saleStockOutputDao;
+	@Inject private CustomerDao customerDao;
 	
 	@Inject
 	public SaleStockInputBusinessImpl(SaleStockInputDao dao) {
@@ -58,7 +62,7 @@ public class SaleStockInputBusinessImpl extends AbstractTypedBusinessService<Sal
 		saleStockInput.setTangibleProductStockMovement(new TangibleProductStockMovement());
 		saleStockInput.getTangibleProductStockMovement().setTangibleProduct(tangibleProductBusiness.find(TangibleProduct.SALE_STOCK));
 		saleBusiness.selectProduct(saleStockInput.getSale(), intangibleProductBusiness.find(IntangibleProduct.SALE_STOCK));
-		logDebug("Sale stock input instanciate");
+		logDebug("Sale stock input instanciated");
 		return saleStockInput;
 	}
 
@@ -78,6 +82,13 @@ public class SaleStockInputBusinessImpl extends AbstractTypedBusinessService<Sal
 		event.getEventParticipations().add(new EventParticipation(saleStockInput.getSale().getCustomer().getPerson()));
 		eventBusiness.create(event);
 		saleStockInput.setEvent(event);
+		
+		if(saleStockInput.getSale().getCustomer()!=null){
+			Customer customer = saleStockInput.getSale().getCustomer();
+			customer.setSaleStockInputCount(customer.getSaleStockInputCount().add(BigDecimal.ONE));
+			customerDao.update(customer);
+		}
+		
 		create(saleStockInput);
 	}
 

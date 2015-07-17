@@ -35,7 +35,13 @@ public abstract class AbstractSaleStockInputListPage extends AbstractBusinessQue
 		table.setShowHeader(Boolean.FALSE);
 		table.setShowFooter(Boolean.FALSE);
 		((Commandable)table.getAddRowCommandable()).getButton().setRendered(Boolean.FALSE);
-		
+		/*
+		String minimumRemainingGoodsCount = requestParameter(CompanyWebManager.getInstance().getRequestParameterQuantity());
+		if(StringUtils.isNotBlank(minimumRemainingGoodsCount))
+			this.minimumRemainingGoodsCount = new BigDecimal(minimumRemainingGoodsCount);
+		else
+			this.minimumRemainingGoodsCount = BigDecimal.ZERO;
+			*/
 	}
 	
 	@Override

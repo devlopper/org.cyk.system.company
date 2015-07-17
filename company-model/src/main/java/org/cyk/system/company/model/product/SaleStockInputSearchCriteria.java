@@ -15,13 +15,14 @@ public class SaleStockInputSearchCriteria extends DefaultSearchCriteria implemen
 	private static final long serialVersionUID = 6796076474234170332L;
 
 	private BigDecimal minimumRemainingGoodsCount = BigDecimal.ZERO;
+	private Boolean done = Boolean.TRUE;
 	
 	public SaleStockInputSearchCriteria(){
-		this(null,null,null);
+		this(null,null,BigDecimal.ZERO);
 	}
 	
 	public SaleStockInputSearchCriteria(Date fromDate,Date toDate) {
-		this(fromDate,toDate,null);
+		this(fromDate,toDate,BigDecimal.ZERO);
 	}
 	
 	public SaleStockInputSearchCriteria(Date fromDate,Date toDate,BigDecimal minimumRemainingGoodsCount) {

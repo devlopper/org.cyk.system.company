@@ -15,11 +15,13 @@ import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
+import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
+import org.cyk.system.company.persistence.api.product.CustomerDao;
 import org.cyk.system.company.persistence.api.product.SaleStockInputDao;
 import org.cyk.system.company.persistence.api.product.SaleStockOutputDao;
 import org.cyk.system.root.business.api.event.EventBusiness;
@@ -39,6 +41,7 @@ public class SaleStockOutputBusinessImpl extends AbstractTypedBusinessService<Sa
 	@Inject private CashierBusiness cashierBusiness;
 	@Inject private EventBusiness eventBusiness;
 	@Inject private SaleStockInputDao saleStockInputDao;
+	@Inject private CustomerDao customerDao;
 	
 	@Inject
 	public SaleStockOutputBusinessImpl(SaleStockOutputDao dao) {
@@ -61,6 +64,12 @@ public class SaleStockOutputBusinessImpl extends AbstractTypedBusinessService<Sa
 		saleStockOutput.getSaleStockInput().setRemainingNumberOfGoods(
 				saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().add(saleStockOutput.getTangibleProductStockMovement().getQuantity()));
 		saleStockInputDao.update(saleStockOutput.getSaleStockInput());
+		
+		if(saleStockOutput.getSaleStockInput().getSale().getCustomer()!=null){
+			Customer customer = saleStockOutput.getSaleStockInput().getSale().getCustomer();
+			customer.setSaleStockOutputCount(customer.getSaleStockOutputCount().add(BigDecimal.ONE));
+			customerDao.update(customer);
+		}
 		
 		if(saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().equals(BigDecimal.ZERO)){
 			Event event = saleStockOutput.getSaleStockInput().getEvent();

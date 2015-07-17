@@ -104,7 +104,6 @@ import org.cyk.system.root.model.generator.ValueGenerator.GenerateMethod;
 import org.cyk.system.root.model.geography.PhoneNumber;
 import org.cyk.system.root.model.party.person.AbstractActor;
 import org.cyk.system.root.model.party.person.Person;
-import org.cyk.system.root.model.search.DefaultSearchCriteria;
 import org.cyk.system.root.model.security.Credentials;
 import org.cyk.system.root.model.security.Role;
 import org.cyk.system.root.model.security.UserAccount;
@@ -302,16 +301,14 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 						parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.customer.balance.title"));
 						parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 							private static final long serialVersionUID = -1279948056976719107L;
-							public Boolean ignoreField(Field field) {return !(field.getName().equals("registrationCode") || field.getName().equals("names") || 
-									field.getName().equals("paid") || field.getName().equals("turnover") || field.getName().equals("balance"));};
+							public Boolean ignoreField(Field field) {return reportCustomerBalanceFieldIgnored(field);};
 				        });
 						collection = customerBusiness.findAll();
 					}else{
 						parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.credence.title"));
 						parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 							private static final long serialVersionUID = -1279948056976719107L;
-							public Boolean ignoreField(Field field) {return !(field.getName().equals("registrationCode") || field.getName().equals("names") || 
-									field.getName().equals("balance"));};
+							public Boolean ignoreField(Field field) {return reportCustomerCredenceFieldIgnored(field);};
 				        });
 						collection = customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
 					}
@@ -319,8 +316,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.customer.salestock.title"));
 					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 						private static final long serialVersionUID = -1279948056976719107L;
-						public Boolean ignoreField(Field field) {return !(field.getName().equals("registrationCode") || field.getName().equals("names") || 
-								field.getName().equals("saleStockInputCount") || field.getName().equals("saleStockOutputCount"));};
+						public Boolean ignoreField(Field field) {return reportCustomerSaleStockFieldIgnored(field);};
 			        });
 					collection = customerBusiness.findAll();
 				}
@@ -349,10 +345,22 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		        parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultJasperReportBasedOnDynamicBuilder());
 				return (ReportBasedOnDynamicBuilder<StockDashBoardReportTableDetails>) reportBusiness.build(parameters);
 			}
-		});
-		
+		});	
 	}
 	
+	public Boolean reportCustomerBalanceFieldIgnored(Field field){
+		return !(field.getName().equals("registrationCode") || field.getName().equals("names") || 
+				field.getName().equals("paid") || field.getName().equals("turnover") || field.getName().equals("balance"));
+	}
+	
+	public Boolean reportCustomerCredenceFieldIgnored(Field field){
+		return !(field.getName().equals("registrationCode") || field.getName().equals("names") || field.getName().equals("balance"));
+	}
+	
+	public Boolean reportCustomerSaleStockFieldIgnored(Field field){
+		return !(field.getName().equals("registrationCode") || field.getName().equals("names") || 
+				field.getName().equals("saleStockInputCount") || field.getName().equals("saleStockOutputCount"));
+	}
 	
 	@Override
 	protected void persistData() {

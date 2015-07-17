@@ -205,6 +205,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			if(customer!=null){
 				customer.setSaleCount(customer.getSaleCount().add(BigDecimal.ONE));
 				customer.setTurnover(customer.getTurnover().add(sale.getTurnover()));
+				customer.setBalance(customer.getBalance().add(sale.getBalance()));
 				customerDao.update(customer);
 			}
 		}else{

@@ -14,7 +14,7 @@
 	<groupId>org.cyk.system.company.ui.web.jsf.primefaces</groupId>
 	<artifactId>company-ui-web-primefaces-api</artifactId>
 	<packaging>jar</packaging>
-
+  
 	<repositories>
 		<repository>
 			<id>prime-repo</id>

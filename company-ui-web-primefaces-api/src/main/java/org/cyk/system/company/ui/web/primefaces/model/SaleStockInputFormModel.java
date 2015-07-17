@@ -13,7 +13,7 @@ import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
-import org.cyk.utility.common.annotation.user.interfaces.InputBooleanCheck;
+import org.cyk.utility.common.annotation.user.interfaces.InputBooleanButton;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
@@ -41,7 +41,7 @@ public class SaleStockInputFormModel extends AbstractFormModel<SaleStockInput> i
 	@Input @InputNumber @NotNull //@Size(min=0,max=Integer.MAX_VALUE)
 	private BigDecimal commission;
 	
-	@Input @InputBooleanCheck @NotNull //@Size(min=0,max=Integer.MAX_VALUE)
+	@Input @InputBooleanButton @NotNull //@Size(min=0,max=Integer.MAX_VALUE)
 	private Boolean valueAddedTaxable;
 	
 	@Input @InputTextarea @NotNull

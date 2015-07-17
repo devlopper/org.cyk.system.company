@@ -244,6 +244,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 			sale.getChildren().add(c = uiProvider.createCommandable("dashboard", null, outcomeSaleDashBoard));
 			mobileCommandables.add(c); 
 			sale.getChildren().add(uiProvider.createCommandable("command.sale.listall", null, "saleListView"));
+			
 			sale.getChildren().add(c = uiProvider.createCommandable("field.credence", null, outcomeCustomerBalance));
 			c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), CompanyBusinessLayer.getInstance().getParameterCustomerReportBalance());
 			c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType(), CompanyBusinessLayer.getInstance().getParameterCustomerBalanceCredence());
@@ -271,6 +272,23 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		}
 		
 		return sale;
+	}
+	
+	public void reportCommandables(Collection<UICommandable> collection){
+		UICommandable c;
+		collection.add(c = uiProvider.createCommandable("field.credence", null, outcomeCustomerBalance));
+		c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), CompanyBusinessLayer.getInstance().getParameterCustomerReportBalance());
+		c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType(), CompanyBusinessLayer.getInstance().getParameterCustomerBalanceCredence());
+		
+		collection.add(c = uiProvider.createCommandable("company.command.customer.balance", null, outcomeCustomerBalance));
+		c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), CompanyBusinessLayer.getInstance().getParameterCustomerReportBalance());
+		c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType(), CompanyBusinessLayer.getInstance().getParameterCustomerBalanceAll());
+		
+		collection.add(c = uiProvider.createCommandable("company.command.customer.salestock", null, outcomeCustomerSaleStock));
+		c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), CompanyBusinessLayer.getInstance().getParameterCustomerReportSaleStock());
+		
+		collection.add(c = uiProvider.createCommandable("company.command.salestock.instock", null, outcomeSaleStockInStock));
+		c.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), CompanyBusinessLayer.getInstance().getParameterCustomerReportSaleStock());
 	}
 	
 	public UICommandable stockCommandables(AbstractUserSession userSession){
