@@ -22,8 +22,8 @@ import org.cyk.system.root.business.impl.validation.ValidatorMap;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.report.AbstractReport;
 import org.cyk.system.root.persistence.impl.GenericDaoImpl;
-import org.cyk.utility.test.AbstractIntegrationTestJpaBased;
 import org.cyk.utility.test.ArchiveBuilder;
+import org.cyk.utility.test.integration.AbstractIntegrationTestJpaBased;
 import org.jboss.shrinkwrap.api.Archive;
 
 public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased {
