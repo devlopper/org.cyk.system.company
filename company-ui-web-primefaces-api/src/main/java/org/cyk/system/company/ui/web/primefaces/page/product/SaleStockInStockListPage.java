@@ -9,6 +9,7 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 
 @Named @ViewScoped @Getter @Setter
@@ -20,6 +21,7 @@ public class SaleStockInStockListPage extends AbstractSaleStockInputListPage imp
 	protected void initialisation() {
 		super.initialisation();
 		contentTitle = text("company.command.salestock.instock");
+		table.getPrintCommandable().addParameter(CompanyBusinessLayer.getInstance().getParameterMinimumRemainingNumberOfGoods(), BigDecimal.ONE.intValue());
 	}
 	
 	@Override

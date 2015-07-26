@@ -81,8 +81,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     
     @Override
     protected void businesses() {
-    	fakeInstallation();
-    	
+    	installApplication();
     	customer1 = new Customer();
     	customer1.setPerson(RootRandomDataProvider.getInstance().person(Boolean.TRUE, RootBusinessLayer.getInstance().getCountryCoteDivoire(), RootBusinessLayer.getInstance().getLandPhoneNumberType()));
     	customerBusiness.create(customer1); 

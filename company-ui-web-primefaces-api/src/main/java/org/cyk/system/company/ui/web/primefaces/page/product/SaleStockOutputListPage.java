@@ -7,23 +7,23 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleStockOutput;
+import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.ui.web.primefaces.model.SaleQueryResultFormModel;
 import org.cyk.system.company.ui.web.primefaces.model.SaleStockOutputQueryResultFormModel;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.search.DefaultQueryFormModel;
-import org.cyk.system.root.model.search.DefaultSearchCriteria;
 import org.cyk.ui.api.command.CommandAdapter;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.model.table.Row;
 import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessQueryPage;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleStockOutputListPage extends AbstractBusinessQueryPage<SaleStockOutput, DefaultQueryFormModel, SaleStockOutputQueryResultFormModel> implements Serializable {
@@ -96,7 +96,7 @@ public class SaleStockOutputListPage extends AbstractBusinessQueryPage<SaleStock
 
 	@Override
 	protected Collection<SaleStockOutput> __query__() {
-		DefaultSearchCriteria criteria = searchCriteria();
+		SaleStockOutputSearchCriteria criteria = searchCriteria();
 		
 		criteria.getReadConfig().setFirstResultIndex(queryFirst);
 		criteria.getReadConfig().setMaximumResultCount(20l);
@@ -113,13 +113,13 @@ public class SaleStockOutputListPage extends AbstractBusinessQueryPage<SaleStock
 	
 	@Override
 	protected Long __count__() {
-		DefaultSearchCriteria criteria = searchCriteria();
+		SaleStockOutputSearchCriteria criteria = searchCriteria();
 		
 		return saleStockOutputBusiness.countByCriteria(criteria);
 	}
 
-	protected DefaultSearchCriteria searchCriteria(){
-		DefaultSearchCriteria searchCriteria = new DefaultSearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
+	protected SaleStockOutputSearchCriteria searchCriteria(){
+		SaleStockOutputSearchCriteria searchCriteria = new SaleStockOutputSearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
 		
 		return searchCriteria;
 	}

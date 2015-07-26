@@ -28,7 +28,7 @@ public class SaleStockInputReportTableDetail implements Serializable {
 		if(saleStockInput.getSale().getCustomer()!=null)
 			customer = saleStockInput.getSale().getCustomer().getPerson().getNames();
 		cost = RootBusinessLayer.getInstance().getNumberBusiness().format(saleStockInput.getSale().getCost());
-		balance = RootBusinessLayer.getInstance().getNumberBusiness().format(saleStockInput.getSale().getBalance());
+		balance = RootBusinessLayer.getInstance().getNumberBusiness().format(saleStockInput.getSale().getBalance().getValue());
 		numberOfGoods = RootBusinessLayer.getInstance().getNumberBusiness().format(saleStockInput.getTangibleProductStockMovement().getQuantity());
 		remainingNumberOfGoods = RootBusinessLayer.getInstance().getNumberBusiness().format(saleStockInput.getRemainingNumberOfGoods());
 		date = RootBusinessLayer.getInstance().getTimeBusiness().formatDateTime(saleStockInput.getSale().getDate());

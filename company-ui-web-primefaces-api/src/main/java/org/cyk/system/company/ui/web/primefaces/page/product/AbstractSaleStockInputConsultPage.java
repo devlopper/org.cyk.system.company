@@ -58,7 +58,7 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		for(SaleStockOutput output : identifiable.getSaleStockOutputs())
 			outputsTable.addRow(new OutputDetails(output));
 		
-		outputsTable.getColumn("amount").setFooter(numberBusiness.format(identifiable.getSale().getCost().subtract(identifiable.getSale().getBalance())));
+		outputsTable.getColumn("amount").setFooter(numberBusiness.format(identifiable.getSale().getCost().subtract(identifiable.getSale().getBalance().getValue())));
 		outputsTable.getColumn("numberOfStockGoods").setFooter(numberBusiness.format(identifiable.getTangibleProductStockMovement().getQuantity()
 				.subtract(identifiable.getRemainingNumberOfGoods())));
 		
@@ -66,7 +66,7 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 	
 	@Override
 	protected Collection<UICommandable> contextualCommandables() {
-		Integer balance = identifiable.getSale().getBalance().compareTo(BigDecimal.ZERO);
+		Integer balance = identifiable.getSale().getBalance().getValue().compareTo(BigDecimal.ZERO);
 		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null);
 		contextualMenu.setLabel(contentTitle); 
 		if(Boolean.TRUE.equals(identifiable.getSale().getDone()) && balance!=0){
@@ -100,7 +100,7 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		public Details(SaleStockInput saleStockInput) {
 			this.identifier = saleStockInput.getSale().getIdentificationNumber();
 			this.cost = UIManager.getInstance().getNumberBusiness().format(saleStockInput.getSale().getCost());
-			this.balance = UIManager.getInstance().getNumberBusiness().format(saleStockInput.getSale().getBalance().abs());
+			this.balance = UIManager.getInstance().getNumberBusiness().format(saleStockInput.getSale().getBalance().getValue().abs());
 			this.customer = saleStockInput.getSale().getCustomer()==null?"":saleStockInput.getSale().getCustomer().getPerson().getNames();
 			this.date = UIManager.getInstance().getTimeBusiness().formatDateTime(saleStockInput.getSale().getDate());
 			this.numberOfStockGoods = UIManager.getInstance().getNumberBusiness().format(saleStockInput.getTangibleProductStockMovement().getQuantity());
@@ -108,7 +108,7 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		}
 	}
 	
-@Getter @Setter
+	@Getter @Setter
 	public static class OutputDetails implements Serializable {
 		private static final long serialVersionUID = -1498269103849317057L;
 		

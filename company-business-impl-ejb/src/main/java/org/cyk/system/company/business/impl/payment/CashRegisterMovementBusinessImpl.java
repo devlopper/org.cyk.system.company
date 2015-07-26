@@ -46,7 +46,8 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	}
 	
 	private void doCreate(CashRegisterMovement movement){
-		movement.setDate(universalTimeCoordinated());
+		if(movement.getDate()==null)
+			movement.setDate(universalTimeCoordinated());
 		movement.setIdentificationNumber(companyValueGenerator.cashRegisterMovementIdentificationNumber(movement));
 		cashRegisterDao.update(movement.getCashRegister());
 		dao.create(movement);

@@ -22,7 +22,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	private static final BigDecimal BALANCE_ZERO_MIN=new BigDecimal("-0."+StringUtils.repeat('0', 18)+"1"),BALANCE_ZERO_MAX=new BigDecimal("0."+StringUtils.repeat('0', 18)+"1");
 	
 	private static final String READ_BY_CRITERIA_SELECT_FORMAT = "SELECT sale FROM Sale sale ";
-	private static final String READ_BY_CRITERIA_WHERE_FORMAT = "WHERE sale.date BETWEEN :fromDate AND :toDate AND sale.balance BETWEEN :minBalance AND :maxBalance AND sale.done = :done ";
+	private static final String READ_BY_CRITERIA_WHERE_FORMAT = "WHERE sale.date BETWEEN :fromDate AND :toDate AND sale.balance.value BETWEEN :minBalance AND :maxBalance AND sale.done = :done ";
 	
 	private static final String READ_BY_CRITERIA_NOTORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT;
 	private static final String READ_BY_CRITERIA_ORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT+ORDER_BY_FORMAT;
@@ -42,8 +42,8 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
     	super.namedQueriesInitialisation();
     	registerNamedQuery(sumCostByCriteria,"SELECT SUM(sale.cost) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT);
     	registerNamedQuery(sumValueAddedTaxByCriteria,"SELECT SUM(sale.valueAddedTax) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT);
-    	registerNamedQuery(sumBalanceByCriteria,"SELECT SUM(sale.balance) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT);
-    	registerNamedQuery(sumBalanceByCustomerCriteria,"SELECT SUM(sale.balance) FROM Sale sale WHERE sale.customer.identifier IN :identifiers AND sale.done = :done");
+    	registerNamedQuery(sumBalanceByCriteria,"SELECT SUM(sale.balance.value) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT);
+    	registerNamedQuery(sumBalanceByCustomerCriteria,"SELECT SUM(sale.balance.value) FROM Sale sale WHERE sale.customer.identifier IN :identifiers AND sale.done = :done");
     	//registerNamedQuery(sumBalanceByCriteriaWithBalance,"SELECT SUM(sale.balance) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT+READ_BY_CRITERIA_WHERE_BALANCE_FORMAT);
     	registerNamedQuery(readAllSortedByDate,READ_BY_CRITERIA_SELECT_FORMAT+" ORDER BY sale.date ASC");
     	registerNamedQuery(readByCriteria,READ_BY_CRITERIA_NOTORDERED_FORMAT+" ORDER BY sale.date ASC");

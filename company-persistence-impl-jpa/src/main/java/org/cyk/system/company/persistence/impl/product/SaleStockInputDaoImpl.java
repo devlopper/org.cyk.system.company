@@ -13,10 +13,9 @@ import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.cyk.system.company.persistence.api.product.SaleStockInputDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
-import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
 
-public class SaleStockInputDaoImpl extends AbstractTypedDao<SaleStockInput> implements SaleStockInputDao {
+public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInput,SaleStockInputSearchCriteria> implements SaleStockInputDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
@@ -26,7 +25,7 @@ public class SaleStockInputDaoImpl extends AbstractTypedDao<SaleStockInput> impl
 	private static final String READ_BY_CRITERIA_NOTORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT;
 	private static final String READ_BY_CRITERIA_ORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT+ORDER_BY_FORMAT;
 	
-	private String readAllSortedByDate,readByIdentificationNumber,readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,
+	private String readByIdentificationNumber,readByExternalIdentifier,readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,
 		readBySales;
 	
 	@Inject private SaleDao saleDao;
@@ -34,11 +33,11 @@ public class SaleStockInputDaoImpl extends AbstractTypedDao<SaleStockInput> impl
 	@Override
     protected void namedQueriesInitialisation() {
     	super.namedQueriesInitialisation();
-    	registerNamedQuery(readAllSortedByDate,READ_BY_CRITERIA_SELECT_FORMAT+" ORDER BY ssi.sale.date ASC");
     	registerNamedQuery(readByCriteria,READ_BY_CRITERIA_NOTORDERED_FORMAT+" ORDER BY ssi.sale.date ASC");
         registerNamedQuery(readByCriteriaDateAscendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "ssi.sale.date ASC") );
         registerNamedQuery(readByCriteriaDateDescendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "ssi.sale.date DESC") );
         registerNamedQuery(readByIdentificationNumber,_select().where("sale.identificationNumber","identificationNumber") );
+        registerNamedQuery(readByExternalIdentifier,_select().where("externalIdentifier") );
         registerNamedQuery(readBySales,_select().whereIdentifierIn("sale") );
         
     }
@@ -46,6 +45,10 @@ public class SaleStockInputDaoImpl extends AbstractTypedDao<SaleStockInput> impl
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<SaleStockInput> readByCriteria(SaleStockInputSearchCriteria searchCriteria) {
+		if(StringUtils.isNotBlank(searchCriteria.getExternalIdentifierStringSearchCriteria().getPreparedValue())){
+			return readByExternalIdentifier(searchCriteria.getExternalIdentifierStringSearchCriteria().getPreparedValue());
+		}
+		
 		if(StringUtils.isNotBlank(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue())){
 			Sale sale = saleDao.readByIdentificationNumber(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue());
 			if(sale==null)
@@ -76,6 +79,9 @@ public class SaleStockInputDaoImpl extends AbstractTypedDao<SaleStockInput> impl
 
 	@Override
 	public Long countByCriteria(SaleStockInputSearchCriteria searchCriteria) {
+		if(StringUtils.isNotBlank(searchCriteria.getExternalIdentifierStringSearchCriteria().getPreparedValue())){
+			return countByExternalIdentifier(searchCriteria.getExternalIdentifierStringSearchCriteria().getPreparedValue());
+		}
 		if(StringUtils.isNotBlank(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue())){
 			return readBySale(saleDao.readByIdentificationNumber(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue()))==null?0l:1l;
 		}
@@ -97,6 +103,16 @@ public class SaleStockInputDaoImpl extends AbstractTypedDao<SaleStockInput> impl
 			return null;
 		Collection<SaleStockInput> collection = readBySales(Arrays.asList(sale));
 		return collection.isEmpty()?null:collection.iterator().next();
+	}
+
+	@Override
+	public Collection<SaleStockInput> readByExternalIdentifier(String externalIdentifier) {
+		return namedQuery(readByExternalIdentifier).parameter("externalIdentifier", externalIdentifier).resultMany();
+	}
+
+	@Override
+	public Long countByExternalIdentifier(String externalIdentifier) {
+		return countNamedQuery(readByExternalIdentifier).parameter("externalIdentifier", externalIdentifier).resultOne();
 	}
 	
 }

@@ -11,11 +11,13 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
+import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
@@ -29,6 +31,7 @@ import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleStockInput;
+import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductInventoryDetail;
@@ -58,6 +61,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	@Inject private ProductBusiness productBusiness;
 	@Inject private TangibleProductInventoryBusiness tangibleProductInventoryBusiness;
+	@Inject private SaleStockOutputBusiness saleStockOutputBusiness;
 
 	public void createTangibleProductStockMovement(List<TangibleProduct> tangibleProducts,Date date){
 		TangibleProduct tangibleProduct = (TangibleProduct)randomDataProvider.randomFromList(tangibleProducts);
@@ -130,6 +134,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 		Cashier cashier = cashierDao.select().one();
 		for(int i=0;i<count;i++){
 			SaleStockInput saleStockInput = saleStockInputBusiness.newInstance(cashier.getEmployee().getPerson());
+			saleStockInput.setExternalIdentifier(RandomStringUtils.randomNumeric(3)+RandomStringUtils.randomAlphabetic(1).toUpperCase());
 			Sale sale = saleStockInput.getSale();
 			sale.setCustomer(rootRandomDataProvider.oneFromDatabase(Customer.class));
 			sale.setDate(date(accountingPeriod));
@@ -141,16 +146,34 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 			saleStockInput.getTangibleProductStockMovement().setQuantity(new BigDecimal(randomDataProvider.randomInt(1, 10)));
 			SaleProduct saleProduct = sale.getSaleProducts().iterator().next();
 			saleProduct.setPrice(new BigDecimal(randomDataProvider.randomInt(10000, 1000000)));
-			sale.setCommission(new BigDecimal(randomDataProvider.randomInt(0, saleProduct.getPrice().intValue())));
+			saleProduct.setCommission(new BigDecimal(randomDataProvider.randomInt(0, saleProduct.getPrice().intValue())));
 			saleBusiness.applyChange(sale, saleProduct);
 			
 			SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement(sale,new CashRegisterMovement(sale.getCashier().getCashRegister()));
-			saleCashRegisterMovement.setAmountIn(new BigDecimal(randomDataProvider.randomPositiveInt(sale.getCost().intValue())*1.3));
-			saleCashRegisterMovement.setAmountIn(saleCashRegisterMovement.getAmountIn().round(new MathContext(0, RoundingMode.DOWN)));
-			saleCashRegisterMovementBusiness.in(saleCashRegisterMovement);
-			
+			saleCashRegisterMovement(saleCashRegisterMovement,sale.getCost(),1.3f);
+		
 			saleStockInputBusiness.create(saleStockInput, saleCashRegisterMovement);
+			
+			for(int j=0;j<randomDataProvider.randomInt(1,2);j++){
+				SaleStockOutput saleStockOutput = saleStockOutputBusiness.newInstance(cashier.getEmployee().getPerson(), saleStockInput);
+				saleCashRegisterMovement(saleStockOutput.getSaleCashRegisterMovement(),sale.getBalance().getValue(),1.3f);
+				saleStockOutput.getTangibleProductStockMovement().setQuantity(new BigDecimal(randomDataProvider.randomInt(1, saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().intValue())));
+				saleStockOutputBusiness.create(saleStockOutput);
+				if(sale.getBalance().getValue().signum()<=0)
+					break;
+			}
 		}
+	}
+	
+	private void saleCashRegisterMovement(SaleCashRegisterMovement saleCashRegisterMovement,BigDecimal maxValue,Float ratio){
+		try {
+			saleCashRegisterMovement.setAmountIn(new BigDecimal(randomDataProvider.randomInt(1,maxValue.intValue())*ratio));
+		} catch (Exception e) {
+			System.out.println("ERROR : "+maxValue.intValue());
+			throw new RuntimeException(e);
+		}
+		saleCashRegisterMovement.setAmountIn(saleCashRegisterMovement.getAmountIn().round(new MathContext(0, RoundingMode.DOWN)));
+		saleCashRegisterMovementBusiness.in(saleCashRegisterMovement);
 	}
 	
 	public void createTangibleProductInventory(Integer count){

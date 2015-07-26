@@ -7,7 +7,9 @@ import java.util.Collection;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
+import org.cyk.system.company.model.accounting.StockConfiguration;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.product.TangibleProductStockMovementSearchCriteria;
 import org.cyk.system.company.persistence.api.product.ProductDao;
@@ -20,6 +22,7 @@ public class TangibleProductStockMovementBusinessImpl extends AbstractTypedBusin
 	private static final long serialVersionUID = -7830673760640348717L;
 	
 	@Inject private ProductDao productDao;
+	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
 	
 	@Inject
 	public TangibleProductStockMovementBusinessImpl(TangibleProductStockMovementDao dao) {
@@ -45,7 +48,9 @@ public class TangibleProductStockMovementBusinessImpl extends AbstractTypedBusin
 	}
 	
 	private void updateStock(TangibleProductStockMovement tangibleProductStockMovement){
-		exceptionUtils().exception(tangibleProductStockMovement.getQuantity().signum()==0, "exception.tangibleproductstockmovement.quantity.mustbegreaterthanzero");
+		StockConfiguration stockConfiguration = accountingPeriodBusiness.findCurrent().getStockConfiguration();
+		exceptionUtils().exception(Boolean.FALSE.equals(stockConfiguration.getZeroQuantityAllowed()) && tangibleProductStockMovement.getQuantity().signum()==0, 
+				"exception.tangibleproductstockmovement.quantity.mustbegreaterthanzero");
 		BigDecimal stock = tangibleProductStockMovement.getTangibleProduct().getStockQuantity();
 		if(stock==null)
 			stock = BigDecimal.ZERO;

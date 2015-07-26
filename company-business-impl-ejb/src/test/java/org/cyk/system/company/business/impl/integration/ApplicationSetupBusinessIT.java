@@ -14,7 +14,10 @@ public class ApplicationSetupBusinessIT extends AbstractBusinessIT {
     
     @Override
     protected void businesses() {
-    	fakeInstallation();
+    	installApplication();
+    	//installation.setFaked(Boolean.TRUE);
+    	//applicationBusiness.install(installation);
+    	System.exit(0);
     }
 
     @Override protected void finds() {}

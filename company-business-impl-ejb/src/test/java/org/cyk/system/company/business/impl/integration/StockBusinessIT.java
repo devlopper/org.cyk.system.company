@@ -25,7 +25,7 @@ public class StockBusinessIT extends AbstractBusinessIT {
        
     @Override
     protected void businesses() {
-    	fakeInstallation();
+    	installApplication();
     	assertStockMovement("tprod01", "5", "5");
     	assertStockMovement("tprod01", "9", "14");
     	assertStockMovement("tprod01", "10", "24");

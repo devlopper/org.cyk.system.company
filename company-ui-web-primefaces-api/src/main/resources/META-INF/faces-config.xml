@@ -132,6 +132,12 @@
 		</navigation-case>
 		
 		<navigation-case>
+			<from-outcome>saleStockListView</from-outcome>
+			<to-view-id>/private/__role__/__salemanager__/salestocklist.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
 			<from-outcome>saleStockOutputEditView</from-outcome>
 			<to-view-id>/private/__role__/__salemanager__/salestockoutputedit.xhtml</to-view-id>
 			<redirect />

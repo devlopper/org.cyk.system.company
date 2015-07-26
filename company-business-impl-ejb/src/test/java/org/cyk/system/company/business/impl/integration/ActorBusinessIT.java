@@ -21,7 +21,7 @@ public class ActorBusinessIT extends AbstractBusinessIT {
             
     @Override
     protected void businesses() {
-    	fakeInstallation();
+    	installApplication();
     	
     	Employee employee = new Employee();
     	employee.setPerson(RootRandomDataProvider.getInstance().person());

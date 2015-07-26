@@ -27,7 +27,6 @@ import org.cyk.system.company.persistence.api.product.CustomerDao;
 import org.cyk.system.company.persistence.api.product.SaleStockInputDao;
 import org.cyk.system.company.persistence.api.product.SaleStockOutputDao;
 import org.cyk.system.root.business.api.event.EventBusiness;
-import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.event.Event;
 import org.cyk.system.root.model.event.EventParticipation;
@@ -36,7 +35,7 @@ import org.cyk.system.root.model.time.Period;
 import org.joda.time.DateTime;
 
 @Stateless
-public class SaleStockInputBusinessImpl extends AbstractTypedBusinessService<SaleStockInput, SaleStockInputDao> implements SaleStockInputBusiness,Serializable {
+public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<SaleStockInput, SaleStockInputDao,SaleStockInputSearchCriteria> implements SaleStockInputBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 	

@@ -195,23 +195,23 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 				sale.setValueAddedTax(sale.getValueAddedTax().add(saleProduct.getValueAddedTax()));
 				//FIXME is it necessary since it is updated later???
 				sale.setTurnover(sale.getTurnover().add(saleProduct.getTurnover()));
-				sale.setBalance(sale.getBalance().add(saleProduct.getPrice()));
+				sale.getBalance().setValue(sale.getBalance().getValue().add(saleProduct.getPrice()));
 			}
-			sale.setCost(sale.getCost().add(sale.getCommission()));
-			sale.setBalance(sale.getCost());
+			sale.getBalance().setValue(sale.getCost());
 			sale.setTurnover(sale.getCost());
 			
 			Customer customer = sale.getCustomer();
 			if(customer!=null){
 				customer.setSaleCount(customer.getSaleCount().add(BigDecimal.ONE));
 				customer.setTurnover(customer.getTurnover().add(sale.getTurnover()));
-				customer.setBalance(customer.getBalance().add(sale.getBalance()));
+				customer.setBalance(customer.getBalance().add(sale.getBalance().getValue()));
+				sale.getBalance().setCumul(customer.getBalance());//to keep track of evolution
 				customerDao.update(customer);
 			}
 		}else{
 			sale.setValueAddedTax(BigDecimal.ZERO);
 			sale.setTurnover(BigDecimal.ZERO);
-			sale.setBalance(BigDecimal.ZERO);
+			sale.getBalance().setValue(BigDecimal.ZERO);
 		}
 
 		sale.setDone(sale.getCompleted());
@@ -386,7 +386,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	/**/
 
 	private void logDebugSale(String message,Sale sale){
-		logDebug("{}. (Done={}) C={} B={} C={} VAT={} T={}",message,sale.getDone(),sale.getCost(),sale.getBalance(),sale.getCommission(),
+		logDebug("{}. (Done={}) C={} B={} VAT={} T={}",message,sale.getDone(),sale.getCost(),sale.getBalance(),
 				sale.getValueAddedTax(),sale.getTurnover());
 	}
 }

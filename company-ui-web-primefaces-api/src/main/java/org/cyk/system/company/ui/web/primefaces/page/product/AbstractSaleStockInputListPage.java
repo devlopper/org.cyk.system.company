@@ -5,16 +5,13 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
+import org.cyk.system.company.ui.web.primefaces.model.SaleStockInputQueryFormModel;
 import org.cyk.system.company.ui.web.primefaces.model.SaleStockInputQueryResultFormModel;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
-import org.cyk.system.root.model.search.DefaultQueryFormModel;
 import org.cyk.ui.api.command.CommandAdapter;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.model.table.Row;
@@ -22,8 +19,11 @@ import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessQueryPage;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Getter @Setter
-public abstract class AbstractSaleStockInputListPage extends AbstractBusinessQueryPage<SaleStockInput, DefaultQueryFormModel, SaleStockInputQueryResultFormModel> implements Serializable {
+public abstract class AbstractSaleStockInputListPage extends AbstractBusinessQueryPage<SaleStockInput, SaleStockInputQueryFormModel, SaleStockInputQueryResultFormModel> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
@@ -88,8 +88,8 @@ public abstract class AbstractSaleStockInputListPage extends AbstractBusinessQue
 	}
 	
 	@Override
-	protected Class<DefaultQueryFormModel> __queryClass__() {
-		return DefaultQueryFormModel.class;
+	protected Class<SaleStockInputQueryFormModel> __queryClass__() {
+		return SaleStockInputQueryFormModel.class;
 	}
 
 	@Override

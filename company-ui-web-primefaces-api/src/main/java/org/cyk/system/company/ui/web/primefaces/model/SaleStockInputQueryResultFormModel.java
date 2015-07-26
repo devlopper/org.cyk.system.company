@@ -41,7 +41,7 @@ public class SaleStockInputQueryResultFormModel extends AbstractFormModel<SaleSt
 		this.number = identifiable.getSale().getIdentificationNumber();
 		this.cost = UIManager.getInstance().getNumberBusiness().format(identifiable.getSale().getCost());
 		this.date = UIManager.getInstance().getTimeBusiness().formatDateTime(identifiable.getSale().getDate());
-		this.balance = UIManager.getInstance().getNumberBusiness().format(identifiable.getSale().getBalance());
+		this.balance = UIManager.getInstance().getNumberBusiness().format(identifiable.getSale().getBalance().getValue());
 		this.numberOfGoods = UIManager.getInstance().getNumberBusiness().format(identifiable.getTangibleProductStockMovement().getQuantity());
 		
 		if(identifiable.getSale().getCustomer()!=null)

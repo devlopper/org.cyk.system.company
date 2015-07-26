@@ -8,12 +8,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.root.model.search.DefaultSearchCriteria;
+import org.cyk.system.root.model.search.StringSearchCriteria;
 
 @Getter @Setter
 public class SaleStockInputSearchCriteria extends DefaultSearchCriteria implements Serializable {
 
 	private static final long serialVersionUID = 6796076474234170332L;
 
+	private StringSearchCriteria externalIdentifierStringSearchCriteria = new StringSearchCriteria();
 	private BigDecimal minimumRemainingGoodsCount = BigDecimal.ZERO;
 	private Boolean done = Boolean.TRUE;
 	

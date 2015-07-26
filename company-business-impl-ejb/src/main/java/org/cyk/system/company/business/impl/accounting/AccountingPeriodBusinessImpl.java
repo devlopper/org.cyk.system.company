@@ -77,10 +77,10 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 	public BigDecimal computeValueAddedTax(AccountingPeriod accountingPeriod,BigDecimal amount) {
 		BigDecimal vat;
 		if(Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()))
-			vat = amount.divide(BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate()),RoundingMode.DOWN).subtract(amount);
+			vat = amount.subtract(amount.divide(BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate()),RoundingMode.DOWN));
 		else
 			vat = accountingPeriod.getValueAddedTaxRate().multiply(amount);
-		logDebug("VAT of amount {} is {}. (VAT included in amount ? {})", amount,vat);
+		logDebug("VAT of amount {} is {}. (VAT included in amount ? {})", amount,vat,Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()));
 		return vat;
 	}
 	
@@ -91,7 +91,7 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 			turnover = amount.subtract(valueAddedTax);
 		else
 			turnover = amount;
-		logDebug("Turnover of amount {} is {}. (VAT included in amount ? {})", amount,turnover);
+		logDebug("Turnover of amount {} is {}. (VAT included in amount ? {})", amount,turnover,Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()));
 		return turnover;
 	}
 	

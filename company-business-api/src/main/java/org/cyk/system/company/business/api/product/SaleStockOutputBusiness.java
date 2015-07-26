@@ -4,16 +4,12 @@ import java.util.Collection;
 
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
-import org.cyk.system.root.business.api.TypedBusiness;
+import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
 import org.cyk.system.root.model.party.person.Person;
-import org.cyk.system.root.model.search.DefaultSearchCriteria;
 
-public interface SaleStockOutputBusiness extends TypedBusiness<SaleStockOutput> {
+public interface SaleStockOutputBusiness extends AbstractSaleStockBusiness<SaleStockOutput,SaleStockOutputSearchCriteria> {
 
 	SaleStockOutput newInstance(Person person,SaleStockInput saleStockInput);
-
-	Collection<SaleStockOutput> findByCriteria(DefaultSearchCriteria criteria);
-	Long countByCriteria(DefaultSearchCriteria criteria);
 
 	Collection<SaleStockOutput> findBySaleStockInput(SaleStockInput saleStockInput);
 	

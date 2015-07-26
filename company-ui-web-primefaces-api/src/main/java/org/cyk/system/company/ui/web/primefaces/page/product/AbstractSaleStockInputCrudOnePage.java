@@ -1,11 +1,9 @@
 package org.cyk.system.company.ui.web.primefaces.page.product;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.inject.Inject;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness;
@@ -16,6 +14,7 @@ import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleStockInput;
+import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.model.SaleStockInputFormModel;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.api.Crud;
@@ -23,8 +22,12 @@ import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
+import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
 import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter
 public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOnePage<SaleStockInput> implements Serializable {
@@ -36,6 +39,7 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 	@Inject protected AccountingPeriodBusiness accountingPeriodBusiness;
 	//@Inject private CustomerBusiness customerBusiness;
 	@Inject protected CompanyBusinessLayer companyBusinessLayer;
+	@Inject protected CompanyWebManager companyWebManager;
 	
 	//private List<Customer> customers;
 
@@ -63,8 +67,39 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
+		onComplete(inputRowVisibility("valueAddedTax",Boolean.FALSE));
+		setAjaxListener("price", "change", new String[]{"commission"},new String[]{"totalCost","valueAddedTax"}, BigDecimal.class,new ListenValueMethod<BigDecimal>() {
+			@Override
+			public void execute(BigDecimal value) {
+				updateOutputTotalCost();
+			}
+		});
+		
+		setAjaxListener("commission", "change", new String[]{"price"},new String[]{"totalCost","valueAddedTax"}, BigDecimal.class,new ListenValueMethod<BigDecimal>() {
+			@Override
+			public void execute(BigDecimal value) {
+				updateOutputTotalCost();
+			}
+		});
+		
+		setAjaxListener("valueAddedTaxable", "change", null,null, Boolean.class,new ListenValueMethod<Boolean>() {
+			@Override
+			public void execute(Boolean value) {
+				onComplete(inputRowVisibility("valueAddedTax",value));
+			}
+		});
+		
 		//form.findInputByClassByFieldName(InputNumber.class,"quantity").setMinimum(-5);
 		//form.findInputByClassByFieldName(InputNumber.class,"quantity").setMaximum(150);
+	}
+	
+	private void updateOutputTotalCost(){
+		BigDecimal price = bigDecimalValue("price");
+		BigDecimal commission = bigDecimalValue("commission");
+		BigDecimal totalCost = price.add(numberBusiness.computePercentage(price,commission));
+		setFieldValue("totalCost", totalCost);
+		BigDecimal valueAddedTax = accountingPeriodBusiness.computeValueAddedTax(accountingPeriod, totalCost);
+		setFieldValue("valueAddedTax", valueAddedTax);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -100,11 +135,7 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 	@Override
 	public Object succeed(UICommand command, Object parameter) {
 		super.succeed(command, parameter);
-		String url = null;
-		//url = "http://localhost:8080/company/private/__tools__/report.jsf?clazz=Sale&identifiable=151&fileExtensionParam=pdf&ridp=pos&windowmode=windowmodedialog";
-		url = navigationManager.reportUrl(identifiable.getSale(), companyBusinessLayer.getReportPointOfSale(),uiManager.getPdfParameter(),Boolean.TRUE);
-		messageDialogOkButtonOnClick += "window.open('"+url+"', 'pointofsale"+identifiable.getSale().getIdentifier()+"', 'location=no,menubar=no,titlebar=no,toolbar=no,width=400, height=550');";
-		//System.out.println(messageDialogOkButtonOnClick);
+		messageDialogOkButtonOnClick = javaScriptHelper.add(messageDialogOkButtonOnClick, companyWebManager.javascriptShowPointOfSale(identifiable.getSale()));
 		return null;
 	}
 	

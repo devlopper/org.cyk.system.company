@@ -2,13 +2,29 @@ package org.cyk.system.company.business.impl.integration;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
+import java.util.Date;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import net.sf.jasperreports.view.JasperViewer;
+//import static org.hamcrest.Matchers.*;
+//import static org.hamcrest.MatcherAssert.*;
 
 import org.apache.commons.io.IOUtils;
+import org.cyk.system.company.business.api.CompanyBusinessTestHelper;
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.payment.CashierBusiness;
+import org.cyk.system.company.business.api.product.CustomerBusiness;
+import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
+import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.structure.EmployeeBusiness;
+import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.model.product.Customer;
+import org.cyk.system.company.model.product.SaleCashRegisterMovement;
+import org.cyk.system.company.model.product.SaleStockInput;
+import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.api.party.ApplicationBusiness;
@@ -21,10 +37,13 @@ import org.cyk.system.root.business.impl.validation.ExceptionUtils;
 import org.cyk.system.root.business.impl.validation.ValidatorMap;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.report.AbstractReport;
+import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.persistence.impl.GenericDaoImpl;
 import org.cyk.utility.test.ArchiveBuilder;
 import org.cyk.utility.test.integration.AbstractIntegrationTestJpaBased;
 import org.jboss.shrinkwrap.api.Archive;
+
+import net.sf.jasperreports.view.JasperViewer;
 
 public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased {
 
@@ -39,12 +58,18 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 	@Inject protected RootTestHelper rootTestHelper;
 
 	@Inject protected ValidatorMap validatorMap;// = ValidatorMap.getInstance();
-    
-	//protected Installation installation;
+	@Inject protected RootBusinessLayer rootBusinessLayer;
+	@Inject protected CompanyBusinessLayer companyBusinessLayer;
+	@Inject protected CompanyBusinessTestHelper companyBusinessTestHelper;
 	
-	protected void fakeInstallation(){
-    	applicationBusiness.install(RootBusinessLayer.fakeInstallation());
-    }
+	@Inject protected SaleStockInputBusiness saleStockInputBusiness;
+    @Inject protected SaleStockOutputBusiness saleStockOutputBusiness;
+    @Inject protected SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
+    @Inject protected CustomerBusiness customerBusiness;
+    @Inject protected EmployeeBusiness employeeBusiness;
+    @Inject protected CashierBusiness cashierBusiness;
+    @Inject protected AccountingPeriodBusiness accountingPeriodBusiness;
+    @Inject protected OwnedCompanyBusiness ownedCompanyBusiness;
 	
     @Override
     public EntityManager getEntityManager() {
@@ -67,9 +92,41 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     	
     }
     
-	protected abstract void finds();
-	
-	protected abstract void businesses();
+    protected SaleStockInput drop(Date date,Person person,Customer customer,String cost,String commission,String quantity,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
+    	SaleStockInput saleStockInput = saleStockInputBusiness.newInstance(person);
+    	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person);
+    	companyBusinessTestHelper.set(saleStockInput, customerBusiness.load(customer.getIdentifier()), cost, commission, quantity,date);
+    	companyBusinessTestHelper.set(saleCashRegisterMovement, "0");
+    	saleStockInputBusiness.create(saleStockInput,saleCashRegisterMovement);
+    	
+    	saleStockInput = saleStockInputBusiness.load(saleStockInput.getIdentifier());
+    	assertBigDecimalValue("Cost", expectedCost, saleStockInput.getSale().getCost());
+    	assertBigDecimalValue("VAT", expectedVat, saleStockInput.getSale().getValueAddedTax());
+    	assertBigDecimalValue("Balance", expectedBalance, saleStockInput.getSale().getBalance().getValue());
+    	assertBigDecimalValue("Cumul Balance", expectedCumulBalance, saleStockInput.getSale().getBalance().getCumul());
+    	return saleStockInput;
+    }
+    
+    protected void taking(Date date,Person person,SaleStockInput saleStockInput,String quantity,String paid,String expectedRemainingGoods,String expectedBalance,String expectedCumulBalance){
+    	saleStockInput = saleStockInputBusiness.load(saleStockInput.getIdentifier());
+    	SaleStockOutput saleStockOutput = saleStockOutputBusiness.newInstance(person, saleStockInput);
+    	companyBusinessTestHelper.set(saleStockOutput, quantity);
+    	companyBusinessTestHelper.set(saleStockOutput.getSaleCashRegisterMovement(), paid,date);
+    	saleStockOutputBusiness.create(saleStockOutput);
+    	
+    	saleStockOutput = saleStockOutputBusiness.load(saleStockOutput.getIdentifier());
+    	//Matchers
+    	assertBigDecimalValue("Remaining number of goods", expectedRemainingGoods, saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods());
+    	assertBigDecimalValue("Balance", expectedBalance, saleStockOutput.getSaleStockInput().getSale().getBalance().getValue());
+    	assertBigDecimalValue("Cumul Balance", expectedCumulBalance, saleStockOutput.getSaleCashRegisterMovement().getBalance().getCumul());
+    }
+    
+    protected void finds() {}
+    protected void businesses() {}
+    @Override protected void create() {}
+    @Override protected void delete() {}
+    @Override protected void read() {}
+    @Override protected void update() {}
 	
 	/* Shortcut */
     
@@ -79,6 +136,10 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     
     protected AbstractIdentifiable update(AbstractIdentifiable object){
         return genericBusiness.update(object);
+    }
+    
+    protected void installApplication(){
+    	companyBusinessLayer.installApplication();
     }
     
     protected void validate(Object object){
@@ -133,6 +194,8 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
                     addClasses(BusinessIntegrationTestHelper.classes()).
                     addPackages(Boolean.FALSE, BusinessIntegrationTestHelper.packages()).
                     addPackages(Boolean.TRUE,"org.cyk.system.company") 
+                    .addClasses(RootBusinessLayer.class,CompanyBusinessLayer.class)
+                    
                 ;
     } 
 }

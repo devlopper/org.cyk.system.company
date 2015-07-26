@@ -9,36 +9,32 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
-import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
+import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.persistence.api.product.CustomerDao;
 import org.cyk.system.company.persistence.api.product.SaleStockInputDao;
 import org.cyk.system.company.persistence.api.product.SaleStockOutputDao;
 import org.cyk.system.root.business.api.event.EventBusiness;
-import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.event.Event;
 import org.cyk.system.root.model.party.person.Person;
-import org.cyk.system.root.model.search.DefaultSearchCriteria;
 
 @Stateless
-public class SaleStockOutputBusinessImpl extends AbstractTypedBusinessService<SaleStockOutput, SaleStockOutputDao> implements SaleStockOutputBusiness,Serializable {
+public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<SaleStockOutput, SaleStockOutputDao,SaleStockOutputSearchCriteria> implements SaleStockOutputBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 	
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
 	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
-	@Inject private CashierBusiness cashierBusiness;
 	@Inject private EventBusiness eventBusiness;
 	@Inject private SaleStockInputDao saleStockInputDao;
 	@Inject private CustomerDao customerDao;
@@ -50,19 +46,21 @@ public class SaleStockOutputBusinessImpl extends AbstractTypedBusinessService<Sa
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public SaleStockOutput newInstance(Person person,SaleStockInput saleStockInput) {
-		SaleStockOutput saleStockOutput = new SaleStockOutput(saleStockInput,new SaleCashRegisterMovement(saleStockInput.getSale(), 
-				new CashRegisterMovement(cashierBusiness.findByPerson(person).getCashRegister())),new TangibleProductStockMovement());
+		SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person);
+		SaleStockOutput saleStockOutput = new SaleStockOutput(saleStockInput,saleCashRegisterMovement,new TangibleProductStockMovement());
 		saleStockOutput.getTangibleProductStockMovement().setTangibleProduct(tangibleProductBusiness.find(TangibleProduct.SALE_STOCK));
 		return saleStockOutput;
 	}
 
 	@Override
 	public SaleStockOutput create(SaleStockOutput saleStockOutput) {
+		exceptionUtils().exception(saleStockOutput.getTangibleProductStockMovement().getQuantity().signum()>0, "salestockoutput.quantitymustbenegative");
 		saleCashRegisterMovementBusiness.create(saleStockOutput.getSaleCashRegisterMovement());
 		saleStockOutput.getTangibleProductStockMovement().setDate(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
 		tangibleProductStockMovementBusiness.create(saleStockOutput.getTangibleProductStockMovement());
 		saleStockOutput.getSaleStockInput().setRemainingNumberOfGoods(
 				saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().add(saleStockOutput.getTangibleProductStockMovement().getQuantity()));
+		saleStockOutput.setRemainingNumberOfGoods(saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods());
 		saleStockInputDao.update(saleStockOutput.getSaleStockInput());
 		
 		if(saleStockOutput.getSaleStockInput().getSale().getCustomer()!=null){
@@ -82,17 +80,6 @@ public class SaleStockOutputBusinessImpl extends AbstractTypedBusinessService<Sa
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Collection<SaleStockOutput> findByCriteria(DefaultSearchCriteria criteria) {
-		prepareFindByCriteria(criteria);
-		return dao.readByCriteria(criteria);
-	}
-
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Long countByCriteria(DefaultSearchCriteria criteria) {
-		return dao.countByCriteria(criteria);
-	}
-
-	@Override
 	public Collection<SaleStockOutput> findBySaleStockInput(SaleStockInput saleStockInput) {
 		return dao.readBySaleStockInput(saleStockInput);
 	}

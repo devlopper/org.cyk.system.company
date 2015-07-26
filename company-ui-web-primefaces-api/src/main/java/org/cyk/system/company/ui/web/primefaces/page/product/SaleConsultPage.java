@@ -69,9 +69,9 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 					ControlSet<SaleDetails, DynaFormModel, DynaFormRow, DynaFormLabel, DynaFormControl, SelectItem> controlSet,
 					Field field) {
 				if(field.getName().equals("balance"))
-					if(identifiable.getBalance().signum()==1)
+					if(identifiable.getBalance().getValue().signum()==1)
 						return text("field.reminder.to.pay");
-					else if(identifiable.getBalance().signum()==-1)
+					else if(identifiable.getBalance().getValue().signum()==-1)
 						return text("field.amount.to.payback");
 				return super.fiedLabel(controlSet, field);
 			}
@@ -101,13 +101,13 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 			paymentTable.addRow(new PaymentDetails(payment));
 		
 		productTable.getColumn("price").setFooter(numberBusiness.format(identifiable.getCost()));
-		paymentTable.getColumn("paid").setFooter(numberBusiness.format(identifiable.getCost().subtract(identifiable.getBalance())));
+		paymentTable.getColumn("paid").setFooter(numberBusiness.format(identifiable.getCost().subtract(identifiable.getBalance().getValue())));
 		
 	}
 	
 	@Override
 	protected Collection<UICommandable> contextualCommandables() {
-		Integer balance = identifiable.getBalance().compareTo(BigDecimal.ZERO);
+		Integer balance = identifiable.getBalance().getValue().compareTo(BigDecimal.ZERO);
 		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null);
 		contextualMenu.setLabel(contentTitle); 
 		if(balance!=0){
@@ -154,7 +154,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		public SaleDetails(Sale sale) {
 			this.identifier = sale.getIdentificationNumber();
 			this.cost = numberBusiness.format(sale.getCost());
-			this.balance = numberBusiness.format(sale.getBalance().abs());
+			this.balance = numberBusiness.format(sale.getBalance().getValue().abs());
 			this.customer = sale.getCustomer()==null?"":sale.getCustomer().getPerson().getNames();
 			this.date = timeBusiness.formatDateTime(sale.getDate());
 		}

@@ -4,13 +4,10 @@ import java.util.Collection;
 
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
-import org.cyk.system.root.model.search.DefaultSearchCriteria;
-import org.cyk.system.root.persistence.api.TypedDao;
+import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
 
-public interface SaleStockOutputDao extends TypedDao<SaleStockOutput> {
+public interface SaleStockOutputDao extends AbstractSaleStockDao<SaleStockOutput,SaleStockOutputSearchCriteria> {
 
-	Collection<SaleStockOutput> readByCriteria(DefaultSearchCriteria criteria);
-	Long countByCriteria(DefaultSearchCriteria criteria);
 	Collection<SaleStockOutput> readBySaleStockInput(SaleStockInput saleStockInput);
 	
 }

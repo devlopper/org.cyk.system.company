@@ -81,6 +81,7 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 			*/
 			if(Boolean.TRUE.equals(saleProduct.getSale().getCompleted())){
 				//if(saleProduct.getValueAddedTax()==null)
+				saleProduct.setPrice(saleProduct.getPrice().add(saleProduct.getCommission()));
 				if(Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax())){
 					saleProduct.setValueAddedTax(accountingPeriodBusiness.computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getPrice()));
 				}else if(saleProduct.getValueAddedTax()==null)
