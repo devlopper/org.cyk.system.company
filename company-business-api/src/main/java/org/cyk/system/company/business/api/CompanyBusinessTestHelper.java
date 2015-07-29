@@ -7,7 +7,6 @@ import java.util.Date;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.model.product.Customer;
@@ -33,10 +32,10 @@ public class CompanyBusinessTestHelper extends AbstractBean implements Serializa
 		super.initialisation();
 	}
 	
-	public void set(SaleStockInput saleStockInput,Customer customer,String cost,String commission,String quantity,Date date){
+	public void set(SaleStockInput saleStockInput,Customer customer,String externalIdentifier,String cost,String commission,String quantity,Date date){
     	saleStockInput.getSale().setCompleted(Boolean.TRUE);
     	saleStockInput.getSale().setDate(date);
-    	saleStockInput.setExternalIdentifier(RandomStringUtils.randomNumeric(3)+RandomStringUtils.randomAlphabetic(1).toUpperCase());
+    	saleStockInput.setExternalIdentifier(externalIdentifier);
     	saleStockInput.getTangibleProductStockMovement().setQuantity(new BigDecimal(quantity));
     	SaleProduct saleProduct = saleStockInput.getSale().getSaleProducts().iterator().next();
     	
@@ -47,8 +46,8 @@ public class CompanyBusinessTestHelper extends AbstractBean implements Serializa
     	saleBusiness.applyChange(saleStockInput.getSale(), saleProduct);
     	saleStockInput.getSale().setCustomer(customer);
     }
-	public void set(SaleStockInput saleStockInput,Customer customer,String cost,String commission,String quantity){
-		set(saleStockInput, customer, cost, commission, quantity, null);
+	public void set(SaleStockInput saleStockInput,Customer customer,String externalIdentifier,String cost,String commission,String quantity){
+		set(saleStockInput, customer, externalIdentifier,cost, commission, quantity, null);
 	}
 	
 	public void set(SaleStockOutput saleStockOutput,String quantity,Date date){

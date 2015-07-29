@@ -19,7 +19,7 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS)
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class SaleStock extends AbstractIdentifiable implements Serializable {
+public class SaleStock extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 

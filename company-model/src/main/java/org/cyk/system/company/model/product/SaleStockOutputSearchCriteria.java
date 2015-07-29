@@ -4,13 +4,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class SaleStockOutputSearchCriteria extends AbstractPeriodSearchCriteria implements Serializable {
+public class SaleStockOutputSearchCriteria extends AbstractSaleStockSearchCriteria implements Serializable {
 
 	private static final long serialVersionUID = 6796076474234170332L;
 
@@ -21,7 +19,7 @@ public class SaleStockOutputSearchCriteria extends AbstractPeriodSearchCriteria 
 	}
 	
 	public SaleStockOutputSearchCriteria(Date fromDate,Date toDate,BigDecimal minimumPaid) {
-		super(fromDate,toDate);
+		super(fromDate,toDate,BigDecimal.ZERO);
 		this.minimumPaid = minimumPaid;
 	}
 	

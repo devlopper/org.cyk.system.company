@@ -16,6 +16,7 @@ import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.product.SaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
@@ -64,6 +65,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 	
 	@Inject protected SaleStockInputBusiness saleStockInputBusiness;
     @Inject protected SaleStockOutputBusiness saleStockOutputBusiness;
+    @Inject protected SaleStockBusiness saleStockBusiness;
     @Inject protected SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
     @Inject protected CustomerBusiness customerBusiness;
     @Inject protected EmployeeBusiness employeeBusiness;
@@ -92,10 +94,10 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     	
     }
     
-    protected SaleStockInput drop(Date date,Person person,Customer customer,String cost,String commission,String quantity,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
+    protected SaleStockInput drop(Date date,Person person,Customer customer,String externalIdentifier,String cost,String commission,String quantity,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
     	SaleStockInput saleStockInput = saleStockInputBusiness.newInstance(person);
     	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person);
-    	companyBusinessTestHelper.set(saleStockInput, customerBusiness.load(customer.getIdentifier()), cost, commission, quantity,date);
+    	companyBusinessTestHelper.set(saleStockInput, customerBusiness.load(customer.getIdentifier()),externalIdentifier, cost, commission, quantity,date);
     	companyBusinessTestHelper.set(saleCashRegisterMovement, "0");
     	saleStockInputBusiness.create(saleStockInput,saleCashRegisterMovement);
     	

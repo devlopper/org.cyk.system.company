@@ -20,13 +20,19 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 	private static final long serialVersionUID = 6920278182318788380L;
 
 	private static final String READ_BY_CRITERIA_SELECT_FORMAT = "SELECT ssi FROM SaleStockInput ssi ";
-	private static final String READ_BY_CRITERIA_WHERE_FORMAT = "WHERE ssi.sale.date BETWEEN :fromDate AND :toDate AND ssi.sale.done = :saleDone AND ssi.remainingNumberOfGoods >= :minimumRemainingGoods ";
+	//private static final String READ_BY_CRITERIA_WHERE_FORMAT = "WHERE ssi.sale.date BETWEEN :fromDate AND :toDate AND ssi.sale.done = :saleDone AND ssi.remainingNumberOfGoods >= :minimumRemainingGoods ";
+	
+	//private static final String READ_BY_CRITERIA_WHERE_FORMAT = 
+	//		"WHERE ssi.sale.date BETWEEN :fromDate AND :toDate AND ssi.sale.done = :saleDone AND ssi.remainingNumberOfGoods >= :minimumRemainingGoods ";
+	private static final String READ_BY_CRITERIA_WHERE_FORMAT = 
+			"WHERE ssi.externalIdentifier LIKE :externalIdentifier AND "
+			+ "ssi.sale.date BETWEEN :fromDate AND :toDate AND ssi.sale.done = :saleDone AND ssi.remainingNumberOfGoods >= :minimumRemainingGoods "
+			+ "AND ABS(ssi.tangibleProductStockMovement.quantity) >= :minimumQuantity ";
 	
 	private static final String READ_BY_CRITERIA_NOTORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT;
 	private static final String READ_BY_CRITERIA_ORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT+ORDER_BY_FORMAT;
 	
-	private String readByIdentificationNumber,readByExternalIdentifier,readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,
-		readBySales;
+	private String readByIdentificationNumber,readBySales;
 	
 	@Inject private SaleDao saleDao;
 	
@@ -37,18 +43,12 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
         registerNamedQuery(readByCriteriaDateAscendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "ssi.sale.date ASC") );
         registerNamedQuery(readByCriteriaDateDescendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "ssi.sale.date DESC") );
         registerNamedQuery(readByIdentificationNumber,_select().where("sale.identificationNumber","identificationNumber") );
-        registerNamedQuery(readByExternalIdentifier,_select().where("externalIdentifier") );
         registerNamedQuery(readBySales,_select().whereIdentifierIn("sale") );
         
     }
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<SaleStockInput> readByCriteria(SaleStockInputSearchCriteria searchCriteria) {
-		if(StringUtils.isNotBlank(searchCriteria.getExternalIdentifierStringSearchCriteria().getPreparedValue())){
-			return readByExternalIdentifier(searchCriteria.getExternalIdentifierStringSearchCriteria().getPreparedValue());
-		}
-		
 		if(StringUtils.isNotBlank(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue())){
 			Sale sale = saleDao.readByIdentificationNumber(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue());
 			if(sale==null)
@@ -58,6 +58,8 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 				return new ArrayList<SaleStockInput>();
 			return Arrays.asList(saleStockInput);
 		}
+		return super.readByCriteria(searchCriteria);
+		/*
 		String queryName = null;
 		if(searchCriteria.getFromDateSearchCriteria().getAscendingOrdered()!=null){
 			queryName = Boolean.TRUE.equals(searchCriteria.getFromDateSearchCriteria().getAscendingOrdered())?
@@ -67,28 +69,26 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 		QueryWrapper<?> queryWrapper = namedQuery(queryName);
 		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		return (Collection<SaleStockInput>) queryWrapper.resultMany();
+		*/
 	}
-	
-	@Override
-	protected void applyPeriodSearchCriteriaParameters(QueryWrapper<?> queryWrapper,AbstractPeriodSearchCriteria searchCriteria) {
-		super.applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
-		SaleStockInputSearchCriteria saleStockInputSearchCriteria = (SaleStockInputSearchCriteria) searchCriteria;
-		queryWrapper.parameter("saleDone", saleStockInputSearchCriteria.getDone());
-		queryWrapper.parameter("minimumRemainingGoods", saleStockInputSearchCriteria.getMinimumRemainingGoodsCount());
-	}
-
+	/*
 	@Override
 	public Long countByCriteria(SaleStockInputSearchCriteria searchCriteria) {
-		if(StringUtils.isNotBlank(searchCriteria.getExternalIdentifierStringSearchCriteria().getPreparedValue())){
-			return countByExternalIdentifier(searchCriteria.getExternalIdentifierStringSearchCriteria().getPreparedValue());
-		}
 		if(StringUtils.isNotBlank(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue())){
 			return readBySale(saleDao.readByIdentificationNumber(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue()))==null?0l:1l;
 		}
 		QueryWrapper<?> queryWrapper = countNamedQuery(countByCriteria);
 		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		return (Long) queryWrapper.resultOne();
-	}	
+	}	*/
+	
+	@Override
+	protected void applyPeriodSearchCriteriaParameters(QueryWrapper<?> queryWrapper,AbstractPeriodSearchCriteria searchCriteria) {
+		super.applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
+		SaleStockInputSearchCriteria saleStockInputSearchCriteria = (SaleStockInputSearchCriteria) searchCriteria;
+		
+		queryWrapper.parameter("minimumRemainingGoods", saleStockInputSearchCriteria.getMinimumRemainingGoodsCount());
+	}
 
 	@Override
 	public Collection<SaleStockInput> readBySales(Collection<Sale> sales) {
@@ -104,15 +104,6 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 		Collection<SaleStockInput> collection = readBySales(Arrays.asList(sale));
 		return collection.isEmpty()?null:collection.iterator().next();
 	}
-
-	@Override
-	public Collection<SaleStockInput> readByExternalIdentifier(String externalIdentifier) {
-		return namedQuery(readByExternalIdentifier).parameter("externalIdentifier", externalIdentifier).resultMany();
-	}
-
-	@Override
-	public Long countByExternalIdentifier(String externalIdentifier) {
-		return countNamedQuery(readByExternalIdentifier).parameter("externalIdentifier", externalIdentifier).resultOne();
-	}
+	
 	
 }

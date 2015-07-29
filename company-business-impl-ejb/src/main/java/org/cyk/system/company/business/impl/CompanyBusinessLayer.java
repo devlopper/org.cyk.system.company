@@ -99,10 +99,7 @@ import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderListener
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParameters;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFileConfiguration;
-import org.cyk.system.root.model.generator.ValueGenerator;
-import org.cyk.system.root.model.generator.ValueGenerator.GenerateMethod;
 import org.cyk.system.root.model.geography.PhoneNumber;
-import org.cyk.system.root.model.party.person.AbstractActor;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Credentials;
 import org.cyk.system.root.model.security.Installation;
@@ -136,10 +133,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Getter private final String parameterCustomerBalanceCredence = "cbcred";
 	@Getter private final String parameterMinimumRemainingNumberOfGoods = "mrnog";
 	@Getter private final String parameterBalanceType = "bt";
-	@Getter private final String parameterSaleStockOutputReportType = "crt";
-	@Getter private final String parameterSaleStockOutputReportCashRegister = "ssorcr";
-	@Getter private final String parameterSaleStockOutputReportInventory = "ssori";
-	@Getter private final String parameterSaleStockOutputReportCustomer = "ssorc";
+	@Getter private final String parameterSaleStockReportType = "crt";
+	@Getter private final String parameterSaleStockReportCashRegister = "ssorcr";
+	@Getter private final String parameterSaleStockReportInventory = "ssori";
+	@Getter private final String parameterSaleStockReportCustomer = "ssorc";
 	
 	public static final Integer PRODUCT_POINT_OF_SALE = 1000;
 	public static final Integer PRODUCT_TANGIBLE_SALE_STOCK = 1001;
@@ -185,7 +182,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Getter private IntangibleProduct intangibleProductSaleStock;
 	private CashRegister cashRegister;
 	
-	@Getter private Collection<CompanyBusinessLayerListener> companyBusinessLayerListeners = new ArrayList<>();
+	@Getter private static final Collection<CompanyBusinessLayerListener> COMPANY_BUSINESS_LAYER_LISTENERS = new ArrayList<>();
 	
 	@Override
 	protected void initialisation() {
@@ -194,17 +191,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		registerResourceBundle("org.cyk.system.company.model.resources.entity", getClass().getClassLoader());
 		registerResourceBundle("org.cyk.system.company.model.resources.message", getClass().getClassLoader());
 		registerResourceBundle("org.cyk.system.company.business.impl.resources.message", getClass().getClassLoader());
-		
-		@SuppressWarnings("unchecked")
-		ValueGenerator<AbstractActor,String> actorRegistrationCodeGenerator = (ValueGenerator<AbstractActor, String>) 
-				RootBusinessLayer.getInstance().getApplicationBusiness().findValueGenerator(ValueGenerator.ACTOR_REGISTRATION_CODE_IDENTIFIER);
-		
-		actorRegistrationCodeGenerator.setMethod(new GenerateMethod<AbstractActor, String>() {
-				@Override
-				public String execute(AbstractActor actor) {
-					return "COMP-"+System.currentTimeMillis();
-				}
-			});
 		
 		ReportBasedOnDynamicBuilderListener.GLOBALS.add(new ReportBasedOnDynamicBuilderAdapter(){
         	@Override
@@ -290,12 +276,11 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			}
 			@Override
 			public Collection<? extends AbstractIdentifiable> identifiables(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
-				String reportType = parameters.getExtendedParameterMap().get(parameterSaleStockOutputReportType)[0];
+				String reportType = parameters.getExtendedParameterMap().get(parameterSaleStockReportType)[0];
 				Date fromDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterFromDate())[0]));
 				Date toDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterToDate())[0]));
 				
-				
-				if(parameterSaleStockOutputReportCashRegister.equals(reportType)){
+				if(parameterSaleStockReportCashRegister.equals(reportType)){
 					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestockoutput.cashregister.title"));
 					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 						private static final long serialVersionUID = -1279948056976719107L;
@@ -303,14 +288,14 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			        });
 					SaleStockOutputSearchCriteria searchCriteria = new SaleStockOutputSearchCriteria(fromDate,toDate);
 					return saleStockOutputBusiness.findByCriteria(searchCriteria);
-				}else if(parameterSaleStockOutputReportInventory.equals(reportType)){
+				}else if(parameterSaleStockReportInventory.equals(reportType)){
 					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestockoutput.inventory.title"));
 					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 						private static final long serialVersionUID = -1279948056976719107L;
 						public Boolean ignoreField(Field field) {return SaleStockReportTableRow.inventoryFieldIgnored(field);};
 			        });
 					return saleStockBusiness.findByCriteria(new SaleStockSearchCriteria(fromDate,toDate,BigDecimal.ONE));
-				}else if(parameterSaleStockOutputReportCustomer.equals(reportType)){
+				}else if(parameterSaleStockReportCustomer.equals(reportType)){
 					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestockoutput.customer.title"));
 					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 						private static final long serialVersionUID = -1279948056976719107L;
@@ -433,22 +418,38 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	
 	private void company(){ 
 		File pointOfSaleReportFile = new File();
-		//pointOfSaleReportFile = fileBusiness.process(IOUtils.toByteArray(getClass().getResourceAsStream("/org/cyk/system/company/business/impl/report/payment/pos1.jrxml")),
-		//		"pos1.jrxml");
-		pointOfSaleReportFile = fileBusiness.process(getResourceAsBytes("report/payment/pos1.jrxml"),"pos1.jrxml");
-		//handleObjectToInstall(pointOfSaleReportFile);
-		//fileBusiness.create(pointOfSaleReportFile);
-		for(CompanyBusinessLayerListener listener : companyBusinessLayerListeners)
+		byte[] bytes = null;
+		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS){
+			byte[] value = listener.getCompanyPointOfSaleBytes();
+			if(value!=null)
+				bytes = value;
+		}
+		
+		pointOfSaleReportFile = fileBusiness.process(bytes==null?getResourceAsBytes("report/payment/pos1.jrxml"):bytes,"pointofsale.jrxml");
+		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
 			listener.handlePointOfSaleToInstall(pointOfSaleReportFile);
+		
 		installObject(PRODUCT_POINT_OF_SALE,fileBusiness,pointOfSaleReportFile);
 		
 		Company company = new Company();
 		company.setCode("C01");
-		company.setName("MyCompany");
+		String companyName = null;
+		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS){
+			String value = listener.getCompanyName();
+			if(value!=null)
+				companyName = value;
+		}
+		company.setName(companyName==null?"MyCompany":companyName);
 		//company.setImage(fileBusiness.process(IOUtils.toByteArray(getClass().getResourceAsStream("/org/cyk/system/company/business/impl/image/logo.png")),"image.png"));
-		company.setImage(fileBusiness.process(getResourceAsBytes("image/logo.png"),"image.png"));
+		bytes = null;
+		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS){
+			byte[] value = listener.getCompanyLogoBytes();
+			if(value!=null)
+				bytes = value;
+		}
+		company.setImage(fileBusiness.process(bytes==null?getResourceAsBytes("image/logo.png"):bytes,"companylogo.png"));
 		//fileBusiness.create(company.getImage());
-		for(CompanyBusinessLayerListener listener : companyBusinessLayerListeners)
+		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
 			listener.handleCompanyLogoToInstall(company.getImage());
 		installObject(FILE_COMPANY_LOGO,fileBusiness,company.getImage());
 		company.getContactCollection().setPhoneNumbers(new ArrayList<PhoneNumber>());
@@ -460,7 +461,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		//pn.setType(RootBusinessLayer.getInstance().getLandPhoneNumberType());
 		//company.getContactCollection().getPhoneNumbers().add(pn);
 		//companyBusiness.create(company);
-		for(CompanyBusinessLayerListener listener : companyBusinessLayerListeners)
+		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
 			listener.handleCompanyToInstall(company);
 		installObject(STRUCTURE_COMPANY,companyBusiness,company);
 		
@@ -476,6 +477,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		accountingPeriod.setPointOfSaleReportFile(pointOfSaleReportFile);
 		accountingPeriod.setValueAddedTaxRate(BigDecimal.ZERO);
 		//accountingPeriodBusiness.create(accountingPeriod);
+		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
+			listener.handleAccountingPeriodToInstall(accountingPeriod);
 		installObject(ACCOUNTING_PERIOD,accountingPeriodBusiness,accountingPeriod);
 		
 		cashRegister = create(new CashRegister("CR01",ownedCompany,BigDecimal.ZERO, null, null));
@@ -543,8 +546,12 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Override
 	public Installation buildInstallation() {
 		Installation installation = super.buildInstallation();
-		installation.setFaked(Boolean.TRUE);
+		installation.setFaked(Boolean.FALSE);
 		return installation;
+	}
+	
+	public Collection<CompanyBusinessLayerListener> getCompanyBusinessLayerListeners() {
+		return COMPANY_BUSINESS_LAYER_LISTENERS;
 	}
 	
 	/**/

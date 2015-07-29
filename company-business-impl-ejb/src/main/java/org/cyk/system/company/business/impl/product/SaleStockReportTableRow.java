@@ -24,6 +24,7 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 	@Input @InputText @ReportColumn private String date;
 	
 	@Input @ReportColumn private String number;
+	@Input @ReportColumn private String identifier;
 	@Input @ReportColumn private String saleStockInputExternalIdentifier;
 	
 	@Input @ReportColumn private String customer;
@@ -51,14 +52,18 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 	private void saleStockIntput(SaleStockInput saleStockInput){
 		Sale sale = saleStockInput.getSale();
 		saleStockInputExternalIdentifier = saleStockInput.getExternalIdentifier();
+		identifier = saleStockInput.getSale().getIdentificationNumber();
 		number = sale.getIdentificationNumber();
 		if(sale.getCustomer()!=null)
 			customer = sale.getCustomer().getPerson().getNames();
 		amount = formatNumber(sale.getCost());
-		balance = amount;
+		//balance = amount;
+		balance = formatNumber(saleStockInput.getSale().getBalance().getValue()); 
+		
 		cumulatedBalance = formatNumber(saleStockInput.getSale().getBalance().getCumul());
 		numberOfGoods = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity());
-		remainingNumberOfGoods = numberOfGoods;
+		//remainingNumberOfGoods = numberOfGoods;
+		remainingNumberOfGoods = formatNumber(saleStockInput.getRemainingNumberOfGoods());
 		
 		date = formatDate(saleStockInput.getSale().getDate());
 		
@@ -69,6 +74,7 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		SaleStockInput saleStockInput = saleStockOutput.getSaleStockInput();
 		Sale sale = saleStockInput.getSale();
 		saleStockInputExternalIdentifier = saleStockInput.getExternalIdentifier();
+		identifier = saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getIdentificationNumber();
 		number = sale.getIdentificationNumber();
 		if(sale.getCustomer()!=null)
 			customer = sale.getCustomer().getPerson().getNames();
@@ -104,6 +110,13 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 	public static Boolean customerFieldIgnored(Field field){
 		return !(field.getName().equals("date") || field.getName().equals("customer") || field.getName().equals("saleStockInputExternalIdentifier") || 
 				field.getName().equals("amount") || field.getName().equals("amountPaid") || field.getName().equals("cumulatedBalance"));
+	}
+	
+	public static Boolean inputFieldIgnored(Field field){
+		return !(field.getName().equals("date") || field.getName().equals("customer") || field.getName().equals("identifier") 
+				||field.getName().equals("saleStockInputExternalIdentifier") || 
+				field.getName().equals("numberOfGoods") || field.getName().equals("remainingNumberOfGoods") || field.getName().equals("amount") 
+				|| field.getName().equals("balance"));
 	}
 	
 }

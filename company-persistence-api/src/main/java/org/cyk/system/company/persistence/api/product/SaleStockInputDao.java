@@ -11,6 +11,6 @@ public interface SaleStockInputDao extends AbstractSaleStockDao<SaleStockInput,S
 	Collection<SaleStockInput> readBySales(Collection<Sale> sales);
 	SaleStockInput readBySale(Sale sale);
 	
-	Collection<SaleStockInput> readByExternalIdentifier(String externalIdentifier);
-	Long countByExternalIdentifier(String externalIdentifier);
+	//Collection<SaleStockInput> readByExternalIdentifier(String externalIdentifier);
+	//Long countByExternalIdentifier(String externalIdentifier);
 }

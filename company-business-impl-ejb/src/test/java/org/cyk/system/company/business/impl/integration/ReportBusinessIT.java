@@ -113,21 +113,7 @@ public class ReportBusinessIT extends AbstractBusinessIT {
         rootTestHelper.reportBasedOnDynamicBuilderParameters(saleStockInputParameters);
         */
         
-        ReportBasedOnDynamicBuilderParameters<SaleStockReportTableRow> saleStockOutputCashRegisterParameters = new ReportBasedOnDynamicBuilderParameters<>();
-        saleStockOutputCashRegisterParameters.setIdentifiableClass(SaleStockOutput.class);
-        saleStockOutputCashRegisterParameters.setModelClass(SaleStockReportTableRow.class);
-        saleStockOutputCashRegisterParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterSaleStockOutputReportType(), CompanyBusinessLayer.getInstance().getParameterSaleStockOutputReportCashRegister());
-        rootTestHelper.addReportParameterFromDate(saleStockOutputCashRegisterParameters, DateUtils.addDays(new Date(), -1000));
-        rootTestHelper.addReportParameterToDate(saleStockOutputCashRegisterParameters, DateUtils.addDays(new Date(), 1000));
-        rootTestHelper.reportBasedOnDynamicBuilderParameters(saleStockOutputCashRegisterParameters);
         
-        ReportBasedOnDynamicBuilderParameters<SaleStockReportTableRow> saleStockOutputInventoryParameters = new ReportBasedOnDynamicBuilderParameters<>();
-        saleStockOutputInventoryParameters.setIdentifiableClass(SaleStockOutput.class);
-        saleStockOutputInventoryParameters.setModelClass(SaleStockReportTableRow.class);
-        saleStockOutputInventoryParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterSaleStockOutputReportType(), CompanyBusinessLayer.getInstance().getParameterSaleStockOutputReportInventory());
-        rootTestHelper.addReportParameterFromDate(saleStockOutputInventoryParameters, DateUtils.addDays(new Date(), -1000));
-        rootTestHelper.addReportParameterToDate(saleStockOutputInventoryParameters, DateUtils.addDays(new Date(), 1000));
-        rootTestHelper.reportBasedOnDynamicBuilderParameters(saleStockOutputInventoryParameters);
     }
     
     @Override protected void finds() {}

@@ -22,6 +22,7 @@ import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
+import org.cyk.ui.web.api.AjaxListener;
 import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
 import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
@@ -67,30 +68,43 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
+		ajax();
+		//form.findInputByClassByFieldName(InputNumber.class,"quantity").setMinimum(-5);
+		//form.findInputByClassByFieldName(InputNumber.class,"quantity").setMaximum(150);
+	}
+	
+	protected void ajax(){
 		onComplete(inputRowVisibility("valueAddedTax",Boolean.FALSE));
-		setAjaxListener("price", "change", new String[]{"commission"},new String[]{"totalCost","valueAddedTax"}, BigDecimal.class,new ListenValueMethod<BigDecimal>() {
+		priceAjaxListener();
+		commissionAjaxListener();
+		valueAddedTaxableAjaxListener();
+	}
+	
+	protected AjaxListener priceAjaxListener(){
+		return setAjaxListener("price", "change", new String[]{"commission"},new String[]{"totalCost","valueAddedTax"}, BigDecimal.class,new ListenValueMethod<BigDecimal>() {
 			@Override
 			public void execute(BigDecimal value) {
 				updateOutputTotalCost();
 			}
 		});
-		
-		setAjaxListener("commission", "change", new String[]{"price"},new String[]{"totalCost","valueAddedTax"}, BigDecimal.class,new ListenValueMethod<BigDecimal>() {
+	}
+	
+	protected AjaxListener commissionAjaxListener(){
+		return setAjaxListener("commission", "change", new String[]{"price"},new String[]{"totalCost","valueAddedTax"}, BigDecimal.class,new ListenValueMethod<BigDecimal>() {
 			@Override
 			public void execute(BigDecimal value) {
 				updateOutputTotalCost();
 			}
 		});
-		
-		setAjaxListener("valueAddedTaxable", "change", null,null, Boolean.class,new ListenValueMethod<Boolean>() {
+	}
+	
+	protected AjaxListener valueAddedTaxableAjaxListener(){
+		return setAjaxListener("valueAddedTaxable", "change", null,null, Boolean.class,new ListenValueMethod<Boolean>() {
 			@Override
 			public void execute(Boolean value) {
 				onComplete(inputRowVisibility("valueAddedTax",value));
 			}
 		});
-		
-		//form.findInputByClassByFieldName(InputNumber.class,"quantity").setMinimum(-5);
-		//form.findInputByClassByFieldName(InputNumber.class,"quantity").setMaximum(150);
 	}
 	
 	private void updateOutputTotalCost(){

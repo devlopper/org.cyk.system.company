@@ -1,29 +1,38 @@
 package org.cyk.system.company.ui.web.primefaces.page.product;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
+import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.product.TangibleProductStockMovementSearchCriteria;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.company.ui.web.primefaces.model.TangibleProductStockMovementQueryFormModel;
-import org.cyk.system.company.ui.web.primefaces.model.TangibleProductStockMovementQueryResultFormModel;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.ui.api.command.UICommandable;
+import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessQueryPage;
+import org.cyk.utility.common.annotation.user.interfaces.Input;
+import org.cyk.utility.common.annotation.user.interfaces.InputCalendar;
+import org.cyk.utility.common.annotation.user.interfaces.InputCalendar.Format;
+import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
+import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
+import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
+import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
-public class TangibleProductStockMovementQueryPage extends AbstractBusinessQueryPage<TangibleProductStockMovement, TangibleProductStockMovementQueryFormModel, 
-	TangibleProductStockMovementQueryResultFormModel> implements Serializable {
+public class TangibleProductStockMovementQueryPage extends AbstractBusinessQueryPage<TangibleProductStockMovement, TangibleProductStockMovementQueryPage.TangibleProductStockMovementQueryFormModel, 
+	TangibleProductStockMovementQueryPage.TangibleProductStockMovementQueryResultFormModel> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
@@ -82,5 +91,37 @@ public class TangibleProductStockMovementQueryPage extends AbstractBusinessQuery
 		return TangibleProductStockMovementQueryResultFormModel.class;
 	}
 	
+	/**/
+	
+	@Getter @Setter
+	public class TangibleProductStockMovementQueryFormModel implements Serializable {
+
+		private static final long serialVersionUID = -3328823824725030136L;
+
+		@Input @InputCalendar
+		private Date fromDate;
+		
+		@Input @InputCalendar
+		private Date toDate;
+		
+	}
+	
+	@Getter @Setter
+	public static class TangibleProductStockMovementQueryResultFormModel extends AbstractFormModel<TangibleProductStockMovement> implements Serializable {
+
+		private static final long serialVersionUID = -3328823824725030136L;
+
+		@Input @InputChoice @InputOneChoice @InputOneCombo
+		private TangibleProduct tangibleProduct;
+		
+		@Input @InputCalendar(format=Format.DATETIME_SHORT) private Date date;
+		@Input @InputNumber private BigDecimal quantity;
+		
+		//@Input @InputTextarea
+		private String comments;
+		
+	}
+
+
 	
 }

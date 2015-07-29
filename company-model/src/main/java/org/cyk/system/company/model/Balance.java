@@ -18,7 +18,7 @@ public class Balance extends AbstractModelElement implements Serializable {
 	private static final long serialVersionUID = 4330380476164276099L;
 
 	@Column(name="balance_value",precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal value = BigDecimal.ZERO;
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal cumul;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal cumul = BigDecimal.ZERO;
 	
 	@Override
 	public String getUiString() {

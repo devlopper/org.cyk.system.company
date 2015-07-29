@@ -14,12 +14,15 @@ public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOu
 	private static final long serialVersionUID = 6920278182318788380L;
 
 	private static final String READ_BY_CRITERIA_SELECT_FORMAT = "SELECT sso FROM SaleStockOutput sso ";
-	private static final String READ_BY_CRITERIA_WHERE_FORMAT = "WHERE sso.tangibleProductStockMovement.date BETWEEN :fromDate AND :toDate AND sso.saleCashRegisterMovement.cashRegisterMovement.amount >= :minimumPaid ";
+	private static final String READ_BY_CRITERIA_WHERE_FORMAT = "WHERE sso.tangibleProductStockMovement.date BETWEEN :fromDate AND :toDate"
+			+ " AND sso.saleCashRegisterMovement.cashRegisterMovement.amount >= :minimumPaid "
+			+ "AND ABS(sso.tangibleProductStockMovement.quantity) >= :minimumQuantity AND sso.saleStockInput.externalIdentifier LIKE :externalIdentifier"
+			+ " AND sso.saleStockInput.sale.done = :saleDone ";
 	
 	private static final String READ_BY_CRITERIA_NOTORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT;
 	private static final String READ_BY_CRITERIA_ORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT+ORDER_BY_FORMAT;
 	
-	private String readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,readBySaleStockInput;
+	private String readBySaleStockInput;
 	
 	@Override
     protected void namedQueriesInitialisation() {
@@ -28,7 +31,6 @@ public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOu
         registerNamedQuery(readByCriteriaDateAscendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "sso.tangibleProductStockMovement.date ASC") );
         registerNamedQuery(readByCriteriaDateDescendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "sso.tangibleProductStockMovement.date DESC") );
         registerNamedQuery(readBySaleStockInput,_select().where("saleStockInput"));
-        
     }
 	
 	@Override
@@ -38,27 +40,6 @@ public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOu
 		super.applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Collection<SaleStockOutput> readByCriteria(SaleStockOutputSearchCriteria searchCriteria) {
-		String queryName = null;
-		if(searchCriteria.getFromDateSearchCriteria().getAscendingOrdered()!=null){
-			queryName = Boolean.TRUE.equals(searchCriteria.getFromDateSearchCriteria().getAscendingOrdered())?
-					readByCriteriaDateAscendingOrder:readByCriteriaDateDescendingOrder;
-		}else
-			queryName = readByCriteriaDateAscendingOrder;
-		QueryWrapper<?> queryWrapper = namedQuery(queryName);
-		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
-		return (Collection<SaleStockOutput>) queryWrapper.resultMany();
-	}
-
-	@Override
-	public Long countByCriteria(SaleStockOutputSearchCriteria searchCriteria) {
-		QueryWrapper<?> queryWrapper = countNamedQuery(countByCriteria);
-		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
-		return (Long) queryWrapper.resultOne();
-	}	
-	
 	@Override
 	public Collection<SaleStockOutput> readBySaleStockInput(SaleStockInput saleStockInput) {
 		return namedQuery(readBySaleStockInput).parameter("saleStockInput", saleStockInput).resultMany();

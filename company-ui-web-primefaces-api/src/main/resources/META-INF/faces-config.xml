@@ -138,6 +138,12 @@
 		</navigation-case>
 		
 		<navigation-case>
+			<from-outcome>saleStockOutputListView</from-outcome>
+			<to-view-id>/private/__role__/__salemanager__/salestockoutputlist.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
 			<from-outcome>saleStockOutputEditView</from-outcome>
 			<to-view-id>/private/__role__/__salemanager__/salestockoutputedit.xhtml</to-view-id>
 			<redirect />
