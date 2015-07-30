@@ -21,6 +21,8 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 
 	private static final long serialVersionUID = -3328823824725030136L;
 
+	public static Boolean FIELD_IDENTIFIER_VISIBLE = Boolean.TRUE;
+	
 	@Input @InputText @ReportColumn private String date;
 	
 	@Input @ReportColumn private String number;
@@ -113,10 +115,10 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 	}
 	
 	public static Boolean inputFieldIgnored(Field field){
-		return !(field.getName().equals("date") || field.getName().equals("customer") || field.getName().equals("identifier") 
-				||field.getName().equals("saleStockInputExternalIdentifier") || 
-				field.getName().equals("numberOfGoods") || field.getName().equals("remainingNumberOfGoods") || field.getName().equals("amount") 
-				|| field.getName().equals("balance"));
+		return !(field.getName().equals("date") || field.getName().equals("customer") 
+				|| (Boolean.TRUE.equals(FIELD_IDENTIFIER_VISIBLE) && field.getName().equals("identifier")) 
+				||field.getName().equals("saleStockInputExternalIdentifier") || field.getName().equals("numberOfGoods") || field.getName().equals("remainingNumberOfGoods") 
+				|| field.getName().equals("amount") || field.getName().equals("balance"));
 	}
 	
 }

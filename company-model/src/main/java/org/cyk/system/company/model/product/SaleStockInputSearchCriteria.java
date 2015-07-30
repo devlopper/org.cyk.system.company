@@ -26,5 +26,10 @@ public class SaleStockInputSearchCriteria extends AbstractSaleStockSearchCriteri
 		super(fromDate,toDate,BigDecimal.ZERO);
 		this.minimumRemainingGoodsCount = minimumRemainingGoodsCount;
 	}
+
+	public SaleStockInputSearchCriteria(Date fromDate, Date toDate, Boolean saleDone) {
+		super(fromDate, toDate, saleDone);
+	}
+	
 	
 }

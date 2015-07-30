@@ -17,19 +17,29 @@ public abstract class AbstractSaleStockSearchCriteria extends DefaultSearchCrite
 
 	protected StringSearchCriteria externalIdentifierStringSearchCriteria = new StringSearchCriteria();
 	protected BigDecimal minimumQuantity;
-	protected Boolean done = Boolean.TRUE;
+	protected Boolean done;
 	
 	public AbstractSaleStockSearchCriteria(){
 		this(null,null);
 	}
 	
+	public AbstractSaleStockSearchCriteria(Date fromDate,Date toDate,BigDecimal minimumQuantity,Boolean saleDone) {
+		super(fromDate,toDate);
+		this.minimumQuantity = minimumQuantity;
+		this.done = saleDone;
+	}
+	
 	public AbstractSaleStockSearchCriteria(Date fromDate,Date toDate) {
-		this(fromDate,toDate,BigDecimal.ZERO);
+		this(fromDate,toDate,BigDecimal.ZERO,Boolean.TRUE);
 	}
 	
 	public AbstractSaleStockSearchCriteria(Date fromDate,Date toDate,BigDecimal minimumQuantity) {
-		super(fromDate,toDate);
-		this.minimumQuantity = BigDecimal.ZERO;
+		this(fromDate,toDate,minimumQuantity,Boolean.TRUE);
 	}
+	
+	public AbstractSaleStockSearchCriteria(Date fromDate,Date toDate,Boolean saleDone) {
+		this(fromDate,toDate,BigDecimal.ZERO,Boolean.TRUE);
+	}
+	
 	
 }

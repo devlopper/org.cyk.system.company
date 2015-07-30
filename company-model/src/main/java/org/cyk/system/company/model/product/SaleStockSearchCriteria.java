@@ -24,4 +24,12 @@ public class SaleStockSearchCriteria extends AbstractSaleStockSearchCriteria imp
 		super(fromDate,toDate,minimumQuantity);
 	}
 	
+	public SaleStockSearchCriteria(Date fromDate,Date toDate,BigDecimal minimumQuantity, Boolean saleDone) {
+		super(fromDate,toDate,minimumQuantity,saleDone);
+	}
+	
+	public SaleStockSearchCriteria(Date fromDate, Date toDate, Boolean saleDone) {
+		super(fromDate, toDate, saleDone);
+	}
+	
 }

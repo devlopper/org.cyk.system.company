@@ -140,8 +140,12 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
         return genericBusiness.update(object);
     }
     
+    protected void installApplication(Boolean fake){
+    	companyBusinessLayer.installApplication(fake);
+    }
+    
     protected void installApplication(){
-    	companyBusinessLayer.installApplication();
+    	installApplication(Boolean.TRUE);
     }
     
     protected void validate(Object object){

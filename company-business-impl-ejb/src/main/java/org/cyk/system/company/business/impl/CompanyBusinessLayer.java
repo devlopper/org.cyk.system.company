@@ -39,7 +39,6 @@ import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.product.CustomerBalanceReportTableDetails;
 import org.cyk.system.company.business.impl.product.SaleReportTableDetail;
-import org.cyk.system.company.business.impl.product.SaleStockInputReportTableDetail;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.business.impl.product.StockDashBoardReportTableDetails;
 import org.cyk.system.company.business.impl.product.TangibleProductInventoryReportTableDetails;
@@ -137,6 +136,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Getter private final String parameterSaleStockReportCashRegister = "ssorcr";
 	@Getter private final String parameterSaleStockReportInventory = "ssori";
 	@Getter private final String parameterSaleStockReportCustomer = "ssorc";
+	@Getter private final String parameterSaleStockReportInput = "ssiri";
+	@Getter private final String parameterSaleDone = "saledone";
 	
 	public static final Integer PRODUCT_POINT_OF_SALE = 1000;
 	public static final Integer PRODUCT_TANGIBLE_SALE_STOCK = 1001;
@@ -241,13 +242,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 				return saleBusiness.findByCriteria(searchCriteria);
 			}
 		});
-        
+        /*
         ReportBasedOnDynamicBuilderListener.IDENTIFIABLE_CONFIGURATIONS.add(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
-        		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),SaleStockInput.class,SaleStockInputReportTableDetail.class) {
+        		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),SaleStockInput.class,SaleStockReportTableRow.class) {
 			private static final long serialVersionUID = -1966207854828857772L;
 			@Override
 			public Object model(AbstractIdentifiable identifiable) {
-				return new SaleStockInputReportTableDetail((SaleStockInput) identifiable);
+				return new SaleStockReportTableRow((SaleStockInput) identifiable);
 			}
 			@Override
 			public Boolean useCustomIdentifiableCollection() {
@@ -257,12 +258,34 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			public Collection<? extends AbstractIdentifiable> identifiables(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
 				Date fromDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterFromDate())[0]));
 				Date toDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterToDate())[0]));
-				BigDecimal hasRemaingGoods = new BigDecimal(parameters.getExtendedParameterMap().get(parameterMinimumRemainingNumberOfGoods)[0]);
+				BigDecimal hasRemaingGoods = BigDecimal.ZERO; //new BigDecimal(parameters.getExtendedParameterMap().get(parameterMinimumRemainingNumberOfGoods)[0]);
 				SaleStockInputSearchCriteria searchCriteria = new SaleStockInputSearchCriteria(fromDate,toDate,hasRemaingGoods);
 				return saleStockInputBusiness.findByCriteria(searchCriteria);
 			}
 		});
         
+        ReportBasedOnDynamicBuilderListener.IDENTIFIABLE_CONFIGURATIONS.add(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
+        		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),SaleStockOutput.class,SaleStockReportTableRow.class) {
+			private static final long serialVersionUID = -1966207854828857772L;
+			@Override
+			public Object model(AbstractIdentifiable identifiable) {
+				return new SaleStockReportTableRow((SaleStockOutput) identifiable);
+			}
+			@Override
+			public Boolean useCustomIdentifiableCollection() {
+				return Boolean.TRUE;
+			}
+			@Override
+			public Collection<? extends AbstractIdentifiable> identifiables(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
+				parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestockoutput.cashregister.title"));
+				Date fromDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterFromDate())[0]));
+				Date toDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterToDate())[0]));
+				BigDecimal hasRemaingGoods = BigDecimal.ZERO; //new BigDecimal(parameters.getExtendedParameterMap().get(parameterMinimumRemainingNumberOfGoods)[0]);
+				SaleStockOutputSearchCriteria searchCriteria = new SaleStockOutputSearchCriteria(fromDate,toDate,hasRemaingGoods);
+				return saleStockOutputBusiness.findByCriteria(searchCriteria);
+			}
+		});       
+        */
         ReportBasedOnDynamicBuilderListener.IDENTIFIABLE_CONFIGURATIONS.add(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
         		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),SaleStock.class,SaleStockReportTableRow.class) {
 			private static final long serialVersionUID = -1966207854828857772L;
@@ -277,6 +300,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			@Override
 			public Collection<? extends AbstractIdentifiable> identifiables(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
 				String reportType = parameters.getExtendedParameterMap().get(parameterSaleStockReportType)[0];
+				Boolean saleDone = null;
+				try { saleDone = Boolean.parseBoolean(parameters.getExtendedParameterMap().get(parameterSaleDone)[0]); } 
+				catch (Exception e) { saleDone = Boolean.TRUE;}
 				Date fromDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterFromDate())[0]));
 				Date toDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterToDate())[0]));
 				
@@ -286,22 +312,33 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 						private static final long serialVersionUID = -1279948056976719107L;
 						public Boolean ignoreField(Field field) {return SaleStockReportTableRow.cashRegisterFieldIgnored(field);};
 			        });
-					SaleStockOutputSearchCriteria searchCriteria = new SaleStockOutputSearchCriteria(fromDate,toDate);
+					SaleStockOutputSearchCriteria searchCriteria = new SaleStockOutputSearchCriteria(fromDate,toDate,saleDone);
 					return saleStockOutputBusiness.findByCriteria(searchCriteria);
 				}else if(parameterSaleStockReportInventory.equals(reportType)){
-					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestockoutput.inventory.title"));
+					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestock.inventory.title"));
 					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 						private static final long serialVersionUID = -1279948056976719107L;
 						public Boolean ignoreField(Field field) {return SaleStockReportTableRow.inventoryFieldIgnored(field);};
 			        });
-					return saleStockBusiness.findByCriteria(new SaleStockSearchCriteria(fromDate,toDate,BigDecimal.ONE));
+					return saleStockBusiness.findByCriteria(new SaleStockSearchCriteria(fromDate,toDate,BigDecimal.ONE,saleDone));
 				}else if(parameterSaleStockReportCustomer.equals(reportType)){
-					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestockoutput.customer.title"));
+					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestock.customer.title"));
 					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 						private static final long serialVersionUID = -1279948056976719107L;
 						public Boolean ignoreField(Field field) {return SaleStockReportTableRow.customerFieldIgnored(field);};
 			        });
-					return saleStockBusiness.findByCriteria(new SaleStockSearchCriteria(fromDate,toDate));
+					return saleStockBusiness.findByCriteria(new SaleStockSearchCriteria(fromDate,toDate,saleDone));
+				}else if(parameterSaleStockReportInput.equals(reportType)){
+					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestockinput.list.title"));
+					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
+						private static final long serialVersionUID = -1279948056976719107L;
+						public Boolean ignoreField(Field field) {return SaleStockReportTableRow.inputFieldIgnored(field);};
+			        });
+					System.out.println(
+							"CompanyBusinessLayer.initialisation().new ReportBasedOnDynamicBuilderIdentifiableConfiguration() {...}.identifiables()");
+					System.out.println(saleStockInputBusiness.findByCriteria(new SaleStockInputSearchCriteria(fromDate,toDate,saleDone)));
+					debug(new SaleStockInputSearchCriteria(fromDate,toDate));
+					return saleStockInputBusiness.findByCriteria(new SaleStockInputSearchCriteria(fromDate,toDate,saleDone));
 				}
 				return null;
 			}
@@ -548,6 +585,11 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		Installation installation = super.buildInstallation();
 		installation.setFaked(Boolean.FALSE);
 		return installation;
+	}
+	
+	@Override
+	public void installApplication() {
+		super.installApplication();
 	}
 	
 	public Collection<CompanyBusinessLayerListener> getCompanyBusinessLayerListeners() {

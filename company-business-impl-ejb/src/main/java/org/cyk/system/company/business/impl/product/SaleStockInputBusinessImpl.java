@@ -2,7 +2,6 @@ package org.cyk.system.company.business.impl.product;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Date;
 
 import javax.ejb.Stateless;
@@ -91,17 +90,6 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 		create(saleStockInput);
 	}
 
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Collection<SaleStockInput> findByCriteria(SaleStockInputSearchCriteria criteria) {
-		prepareFindByCriteria(criteria);
-		return dao.readByCriteria(criteria);
-	}
-
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Long countByCriteria(SaleStockInputSearchCriteria criteria) {
-		return dao.countByCriteria(criteria);
-	}
-	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public void load(SaleStockInput saleStockInput) {
 		super.load(saleStockInput);

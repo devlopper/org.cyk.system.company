@@ -17,6 +17,7 @@ import org.cyk.system.company.business.impl.product.TangibleProductInventoryRepo
 import org.cyk.system.company.business.impl.product.TangibleProductStockMovementLineReport;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Sale;
+import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.TangibleProductInventory;
@@ -103,15 +104,17 @@ public class ReportBusinessIT extends AbstractBusinessIT {
         customerSaleStockParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), 
         		CompanyBusinessLayer.getInstance().getParameterCustomerReportSaleStock());
         rootTestHelper.reportBasedOnDynamicBuilderParameters(customerSaleStockParameters);
+        */
         
-        ReportBasedOnDynamicBuilderParameters<SaleStockInputReportTableDetail> saleStockInputParameters = new ReportBasedOnDynamicBuilderParameters<>();
-        saleStockInputParameters.setIdentifiableClass(SaleStockInput.class);
-        saleStockInputParameters.setModelClass(SaleStockInputReportTableDetail.class);
-        saleStockInputParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterMinimumRemainingNumberOfGoods(), "0");
+        ReportBasedOnDynamicBuilderParameters<SaleStockReportTableRow> saleStockInputParameters = new ReportBasedOnDynamicBuilderParameters<>();
+        saleStockInputParameters.setIdentifiableClass(SaleStock.class);
+        saleStockInputParameters.setModelClass(SaleStockReportTableRow.class);
+        saleStockInputParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterSaleStockReportType(),
+        		CompanyBusinessLayer.getInstance().getParameterSaleStockReportInput());
         rootTestHelper.addReportParameterFromDate(saleStockInputParameters, DateUtils.addDays(new Date(), -1000));
         rootTestHelper.addReportParameterToDate(saleStockInputParameters, DateUtils.addDays(new Date(), 1000));
         rootTestHelper.reportBasedOnDynamicBuilderParameters(saleStockInputParameters);
-        */
+        
         
         
     }

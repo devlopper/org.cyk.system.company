@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleStockInput;
@@ -36,11 +37,6 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 	protected void afterInitialisation() {
 		super.afterInitialisation();
 
-		table.setShowEditColumn(Boolean.FALSE);		
-		
-		((Commandable)table.getOpenRowCommandable()).getButton().setRendered(Boolean.TRUE);
-		((Commandable)table.getRemoveRowCommandable()).getButton().setRendered(Boolean.FALSE);
-		
 		table.getOpenRowCommandable().getCommand().getCommandListeners().add(new CommandAdapter(){
 			private static final long serialVersionUID = 1120566504648934547L;
 			@Override
@@ -52,13 +48,15 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 			}
 		});
 		
-		table.setShowToolBar(Boolean.TRUE);
-		
-		table.setShowEditColumn(Boolean.FALSE);
-		table.setShowAddRemoveColumn(Boolean.FALSE);
-		table.getPrintCommandable().setRendered(Boolean.TRUE);
-		
+		((Commandable)table.getOpenRowCommandable()).getButton().setRendered(Boolean.TRUE);
 		((Commandable)table.getAddRowCommandable()).getButton().setRendered(Boolean.TRUE);
+	}
+	
+	@Override
+	protected void __beforeFindByCriteria__(SaleStockInputSearchCriteria criteria) {
+		super.__beforeFindByCriteria__(criteria);
+		table.getPrintCommandable().setParameter(CompanyBusinessLayer.getInstance().getParameterSaleStockReportType(),
+				CompanyBusinessLayer.getInstance().getParameterSaleStockReportInput());
 	}
 	
 	@Override

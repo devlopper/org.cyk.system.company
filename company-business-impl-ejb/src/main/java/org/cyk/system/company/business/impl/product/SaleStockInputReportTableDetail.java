@@ -10,7 +10,7 @@ import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.ReportColumn;
 
-@Getter @Setter
+@Getter @Setter @Deprecated
 public class SaleStockInputReportTableDetail implements Serializable {
 
 	private static final long serialVersionUID = -3328823824725030136L;

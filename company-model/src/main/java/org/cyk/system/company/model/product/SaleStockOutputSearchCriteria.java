@@ -19,11 +19,16 @@ public class SaleStockOutputSearchCriteria extends AbstractSaleStockSearchCriter
 	}
 	
 	public SaleStockOutputSearchCriteria(Date fromDate,Date toDate,BigDecimal minimumPaid) {
-		super(fromDate,toDate,BigDecimal.ZERO);
+		super(fromDate,toDate);
 		this.minimumPaid = minimumPaid;
 	}
 	
 	public SaleStockOutputSearchCriteria(Date fromDate,Date toDate) {
 		this(fromDate,toDate,BigDecimal.ONE/*LOWEST_NON_ZERO_POSITIVE_VALUE*/);
+	}
+	
+	public SaleStockOutputSearchCriteria(Date fromDate, Date toDate, Boolean saleDone) {
+		super(fromDate, toDate, saleDone);
+		this.minimumPaid = BigDecimal.ONE;
 	}
 }

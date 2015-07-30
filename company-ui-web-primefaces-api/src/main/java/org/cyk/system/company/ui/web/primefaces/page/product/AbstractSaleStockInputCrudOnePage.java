@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness;
@@ -11,11 +12,11 @@ import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
+import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.company.ui.web.primefaces.model.SaleStockInputFormModel;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.model.AbstractIdentifiable;
@@ -25,7 +26,18 @@ import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.web.api.AjaxListener;
 import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
 import org.cyk.ui.web.api.WebNavigationManager;
+import org.cyk.ui.web.api.data.collector.control.WebInputOneCombo;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
+import org.cyk.utility.common.annotation.user.interfaces.Input;
+import org.cyk.utility.common.annotation.user.interfaces.InputBooleanButton;
+import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
+import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
+import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
+import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
+import org.cyk.utility.common.annotation.user.interfaces.InputText;
+import org.cyk.utility.common.annotation.user.interfaces.InputTextarea;
+import org.cyk.utility.common.annotation.user.interfaces.Text;
+import org.cyk.utility.common.annotation.user.interfaces.Text.ValueType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -69,6 +81,7 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 	protected void afterInitialisation() {
 		super.afterInitialisation();
 		ajax();
+		form.findInputByClassByFieldName(WebInputOneCombo.class, "customer").setFiltered(Boolean.TRUE);
 		//form.findInputByClassByFieldName(InputNumber.class,"quantity").setMinimum(-5);
 		//form.findInputByClassByFieldName(InputNumber.class,"quantity").setMaximum(150);
 	}
@@ -154,5 +167,71 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 	}
 	
 	/**/
+	
+	@Getter @Setter
+	public static class SaleStockInputFormModel extends AbstractFormModel<SaleStockInput> implements Serializable {
+
+		private static final long serialVersionUID = -7403076234556118486L;
+		
+		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private Customer customer;
+		
+		@Input(label=@Text(type=ValueType.ID,value="ui.form.salestockinput.field.external.identifier")) 
+		@InputText @NotNull private String externalIdentifier;
+		
+		@Input(label=@Text(type=ValueType.ID,value="ui.form.salestockinput.field.comments")) @InputTextarea @NotNull
+		private String comments;
+		
+		@Input @InputNumber @NotNull //@Size(min=1,max=Integer.MAX_VALUE) 
+		private BigDecimal quantity;
+		
+		@Input @InputNumber @NotNull //@Size(min=0,max=Integer.MAX_VALUE)
+		private BigDecimal price;
+		
+		private Boolean commissionInPercentage = Boolean.TRUE;
+		
+		@Input @InputNumber @NotNull //@Size(min=0,max=Integer.MAX_VALUE)
+		private BigDecimal commission;
+		
+		@Input @InputBooleanButton @NotNull //@Size(min=0,max=Integer.MAX_VALUE)
+		private Boolean valueAddedTaxable;
+		
+		@Input(readOnly=true) @InputText @NotNull 
+		private String totalCost; // used for read only value
+		
+		@Input(readOnly=true) @InputText @NotNull 
+		private String valueAddedTax; // used for read only value
+		
+		private SaleProduct saleProduct;
+		
+		@Override
+		public void read() {
+			super.read();
+			this.customer = identifiable.getSale().getCustomer();
+			this.externalIdentifier = identifiable.getExternalIdentifier();
+			this.price = identifiable.getSale().getCost();
+			this.quantity = identifiable.getTangibleProductStockMovement().getQuantity();
+			this.saleProduct = identifiable.getSale().getSaleProducts().iterator().next();
+			this.commission = saleProduct.getCommission();
+			this.valueAddedTaxable = BigDecimal.ZERO.compareTo(identifiable.getSale().getValueAddedTax()) != 0;
+			this.valueAddedTax = numberBusiness.format(identifiable.getSale().getValueAddedTax());
+			this.comments = identifiable.getSale().getComments();
+		}
+		
+		@Override
+		public void write() {
+			super.write();
+			identifiable.getSale().setCustomer(customer);
+			identifiable.setExternalIdentifier(externalIdentifier);
+			identifiable.getSale().setAutoComputeValueAddedTax(valueAddedTaxable);
+			identifiable.getSale().setComments(comments);
+			if(Boolean.TRUE.equals(commissionInPercentage)){
+				saleProduct.setCommission(numberBusiness.computePercentage(identifiable.getSale().getCost(),commission));
+			}else
+				saleProduct.setCommission(commission);
+			identifiable.getTangibleProductStockMovement().setQuantity(quantity);
+			SaleProduct saleProduct = identifiable.getSale().getSaleProducts().iterator().next();
+			saleProduct.setPrice(price);
+		}
+	}
 	
 }

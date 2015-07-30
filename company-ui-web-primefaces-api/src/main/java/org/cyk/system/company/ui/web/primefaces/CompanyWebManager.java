@@ -324,19 +324,12 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	}
 	
 	public UICommandable goodsDepositCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables,Cashier cashier){
-		UICommandable goods = null,c;
+		UICommandable goods = null;
 		if(userSession.hasRole(companyBusinessLayer.getRoleSaleManagerCode())){
 			goods = uiProvider.createCommandable("goods", null);
 			goods.getChildren().add(uiProvider.createCommandable("deposits", null, "saleStockInputListView"));
 			
-			goods.getChildren().add(c = uiProvider.createCommandable("company.report.salestockoutput.cashregister.title", null, outcomeSaleStockOutputList));
-			c.addParameter(companyBusinessLayer.getParameterSaleStockReportType(), companyBusinessLayer.getParameterSaleStockReportCashRegister());
-			
-			goods.getChildren().add(c = uiProvider.createCommandable("company.report.salestockoutput.inventory.title", null, outcomeSaleStockList));
-			c.addParameter(companyBusinessLayer.getParameterSaleStockReportType(), companyBusinessLayer.getParameterSaleStockReportInventory());
-			
-			goods.getChildren().add(c = uiProvider.createCommandable("company.report.salestockoutput.customer.title", null, outcomeSaleStockList));
-			c.addParameter(companyBusinessLayer.getParameterSaleStockReportType(), companyBusinessLayer.getParameterSaleStockReportCustomer());
+			saleStockReportCommandables(userSession, goods.getChildren(), mobileCommandables);
 		}
 		
 		return goods;
@@ -344,15 +337,14 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	
 	public void saleStockReportCommandables(AbstractUserSession userSession,Collection<UICommandable> commandables,Collection<UICommandable> mobileCommandables){
 		UICommandable c;
-		//commandables.add(uiProvider.createCommandable("deposits", null, "saleStockInputListView"));
 			
 		commandables.add(c = uiProvider.createCommandable("company.report.salestockoutput.cashregister.title", null, outcomeSaleStockOutputList));
 		c.addParameter(companyBusinessLayer.getParameterSaleStockReportType(), companyBusinessLayer.getParameterSaleStockReportCashRegister());
 		
-		commandables.add(c = uiProvider.createCommandable("company.report.salestockoutput.inventory.title", null, outcomeSaleStockList));
+		commandables.add(c = uiProvider.createCommandable("company.report.salestock.inventory.title", null, outcomeSaleStockList));
 		c.addParameter(companyBusinessLayer.getParameterSaleStockReportType(), companyBusinessLayer.getParameterSaleStockReportInventory());
 		
-		commandables.add(c = uiProvider.createCommandable("company.report.salestockoutput.customer.title", null, outcomeSaleStockList));
+		commandables.add(c = uiProvider.createCommandable("company.report.salestock.customer.title", null, outcomeSaleStockList));
 		c.addParameter(companyBusinessLayer.getParameterSaleStockReportType(), companyBusinessLayer.getParameterSaleStockReportCustomer());
 		
 	}
