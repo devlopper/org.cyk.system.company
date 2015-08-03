@@ -2,7 +2,6 @@ package org.cyk.system.company.business.impl.integration;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
-import java.util.Date;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -11,7 +10,6 @@ import javax.persistence.EntityManager;
 //import static org.hamcrest.MatcherAssert.*;
 
 import org.apache.commons.io.IOUtils;
-import org.cyk.system.company.business.api.CompanyBusinessTestHelper;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.CustomerBusiness;
@@ -22,13 +20,11 @@ import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
-import org.cyk.system.company.model.product.Customer;
-import org.cyk.system.company.model.product.SaleCashRegisterMovement;
-import org.cyk.system.company.model.product.SaleStockInput;
-import org.cyk.system.company.model.product.SaleStockOutput;
+import org.cyk.system.company.business.impl.CompanyBusinessTestHelper;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.api.party.ApplicationBusiness;
+import org.cyk.system.root.business.impl.AbstractTestHelper;
 import org.cyk.system.root.business.impl.BusinessIntegrationTestHelper;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.RootTestHelper;
@@ -38,11 +34,13 @@ import org.cyk.system.root.business.impl.validation.ExceptionUtils;
 import org.cyk.system.root.business.impl.validation.ValidatorMap;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.report.AbstractReport;
-import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.persistence.impl.GenericDaoImpl;
+import org.cyk.system.root.persistence.impl.PersistenceIntegrationTestHelper;
+import org.cyk.utility.common.test.DefaultTestEnvironmentAdapter;
 import org.cyk.utility.test.ArchiveBuilder;
 import org.cyk.utility.test.integration.AbstractIntegrationTestJpaBased;
 import org.jboss.shrinkwrap.api.Archive;
+import org.junit.Assert;
 
 import net.sf.jasperreports.view.JasperViewer;
 
@@ -56,10 +54,10 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 	@Inject private GenericDaoImpl g;
 	@Inject protected GenericBusiness genericBusiness;
 	@Inject protected ProductDao productDao;
-	@Inject protected RootTestHelper rootTestHelper;
 
 	@Inject protected ValidatorMap validatorMap;// = ValidatorMap.getInstance();
 	@Inject protected RootBusinessLayer rootBusinessLayer;
+	@Inject protected RootTestHelper rootTestHelper;
 	@Inject protected CompanyBusinessLayer companyBusinessLayer;
 	@Inject protected CompanyBusinessTestHelper companyBusinessTestHelper;
 	
@@ -92,35 +90,12 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     @Override
     protected void populate() {
     	
-    }
-    
-    protected SaleStockInput drop(Date date,Person person,Customer customer,String externalIdentifier,String cost,String commission,String quantity,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
-    	SaleStockInput saleStockInput = saleStockInputBusiness.newInstance(person);
-    	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person);
-    	companyBusinessTestHelper.set(saleStockInput, customerBusiness.load(customer.getIdentifier()),externalIdentifier, cost, commission, quantity,date);
-    	companyBusinessTestHelper.set(saleCashRegisterMovement, "0");
-    	saleStockInputBusiness.create(saleStockInput,saleCashRegisterMovement);
-    	
-    	saleStockInput = saleStockInputBusiness.load(saleStockInput.getIdentifier());
-    	assertBigDecimalValue("Cost", expectedCost, saleStockInput.getSale().getCost());
-    	assertBigDecimalValue("VAT", expectedVat, saleStockInput.getSale().getValueAddedTax());
-    	assertBigDecimalValue("Balance", expectedBalance, saleStockInput.getSale().getBalance().getValue());
-    	assertBigDecimalValue("Cumul Balance", expectedCumulBalance, saleStockInput.getSale().getBalance().getCumul());
-    	return saleStockInput;
-    }
-    
-    protected void taking(Date date,Person person,SaleStockInput saleStockInput,String quantity,String paid,String expectedRemainingGoods,String expectedBalance,String expectedCumulBalance){
-    	saleStockInput = saleStockInputBusiness.load(saleStockInput.getIdentifier());
-    	SaleStockOutput saleStockOutput = saleStockOutputBusiness.newInstance(person, saleStockInput);
-    	companyBusinessTestHelper.set(saleStockOutput, quantity);
-    	companyBusinessTestHelper.set(saleStockOutput.getSaleCashRegisterMovement(), paid,date);
-    	saleStockOutputBusiness.create(saleStockOutput);
-    	
-    	saleStockOutput = saleStockOutputBusiness.load(saleStockOutput.getIdentifier());
-    	//Matchers
-    	assertBigDecimalValue("Remaining number of goods", expectedRemainingGoods, saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods());
-    	assertBigDecimalValue("Balance", expectedBalance, saleStockOutput.getSaleStockInput().getSale().getBalance().getValue());
-    	assertBigDecimalValue("Cumul Balance", expectedCumulBalance, saleStockOutput.getSaleCashRegisterMovement().getBalance().getCumul());
+    	AbstractTestHelper.TEST_ENVIRONMENT_LISTENERS.add(new DefaultTestEnvironmentAdapter(){
+    		@Override
+    		public void assertEquals(String message, Object expected, Object actual) {
+    			Assert.assertEquals(message, expected, actual);
+    		}
+    	});
     }
     
     protected void finds() {}
@@ -198,9 +173,10 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
         return  
                 new ArchiveBuilder().create().getArchive().
                     addClasses(BusinessIntegrationTestHelper.classes()).
+                    addClasses(PersistenceIntegrationTestHelper.classes()).
                     addPackages(Boolean.FALSE, BusinessIntegrationTestHelper.packages()).
                     addPackages(Boolean.TRUE,"org.cyk.system.company") 
-                    .addClasses(RootBusinessLayer.class,CompanyBusinessLayer.class)
+                    .addClasses(RootBusinessLayer.class,RootTestHelper.class,CompanyBusinessLayer.class)
                     
                 ;
     } 

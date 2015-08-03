@@ -55,5 +55,10 @@ public class Product extends AbstractEnumeration implements Serializable  {
 		this.category = category;
 		this.price = price;
 	}
+	
+	public static final String FIELD_DIVISION = "division";
+	public static final String FIELD_CATEGORY = "category";
+	public static final String FIELD_PRICE = "price";
+	public static final String FIELD_SALABLE = "salable";
 
 }

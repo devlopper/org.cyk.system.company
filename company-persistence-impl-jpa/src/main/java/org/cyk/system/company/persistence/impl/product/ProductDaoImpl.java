@@ -10,31 +10,25 @@ public class ProductDaoImpl extends AbstractProductDaoImpl<Product> implements P
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	private String readByClass,readByNotClass,readByCollection;
+	private static final String FIELD_COLLECTION = "collection";
+	
+	private String readByCollection;
 	
     @Override
     protected void namedQueriesInitialisation() {
         super.namedQueriesInitialisation();
-        registerNamedQuery(readByClass, "SELECT product FROM Product product WHERE TYPE(product) = :aClass");
-        registerNamedQuery(readByNotClass, "SELECT product FROM Product product WHERE TYPE(product) <> :aClass");
         registerNamedQuery(readByCollection, "SELECT product FROM Product product WHERE "
         		+ "EXISTS(SELECT pCollection FROM ProductCollection pCollection WHERE pCollection = :collection AND product MEMBER OF pCollection.collection)");
     }
     
-    @SuppressWarnings("unchecked")
     @Override
-    public <T extends Product> Collection<T> readAll(Class<T> aClass) {
-        return (Collection<T>) namedQuery(readByClass).parameter("aClass", aClass).resultMany();
+    protected Boolean readByClassEnabled() {
+    	return Boolean.TRUE;
     }
     
-    @Override
-    public Collection<Product> readAllNot(Class<? extends Product> aClass) {
-    	return namedQuery(readByNotClass).parameter("aClass", aClass).resultMany();
-    }
-
 	@Override
 	public Collection<Product> readByCollection(ProductCollection collection) {
-		return namedQuery(readByCollection).parameter("collection", collection).resultMany();
+		return namedQuery(readByCollection).parameter(FIELD_COLLECTION, collection).resultMany();
 	}
 	
 }

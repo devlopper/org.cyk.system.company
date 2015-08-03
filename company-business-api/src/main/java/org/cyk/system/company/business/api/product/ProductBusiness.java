@@ -8,10 +8,6 @@ import org.cyk.system.company.model.product.Sale;
 
 public interface ProductBusiness extends AbstractProductBusiness<Product> {
 
-	<T extends Product> Collection<T> findAll(Class<T> aClass);
-	
-	Collection<Product> findAllNot(Class<? extends Product> aClass);
-	
 	Collection<Product> findByCollection(ProductCollection collection);
 	
 	Collection<Product> findToDelivery(Sale sale);

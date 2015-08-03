@@ -20,8 +20,7 @@ public class ProductCollectionDaoImpl extends AbstractProductDaoImpl<ProductColl
 	
 	@Override
 	public Collection<ProductCollection> readAllWithProduct() {
-		return namedQuery(readAllWithProduct)
-                .resultMany();
+		return namedQuery(readAllWithProduct).resultMany();
 	}
 
 }

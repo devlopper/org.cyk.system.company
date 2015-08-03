@@ -1,5 +1,6 @@
 package org.cyk.system.company.business.impl.product;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +22,7 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 
 @Stateless
-public class ProductBusinessImpl extends AbstractProductBusinessImpl<Product,ProductDao> implements ProductBusiness {
+public class ProductBusinessImpl extends AbstractProductBusinessImpl<Product,ProductDao> implements ProductBusiness,Serializable  {
 	
 	private static final long serialVersionUID = 2801588592108008404L;
 
@@ -57,16 +58,6 @@ public class ProductBusinessImpl extends AbstractProductBusinessImpl<Product,Pro
 	protected void beforeUpdate(Product product, BigDecimal usedCount) {
 		if(product instanceof TangibleProduct)
 			TangibleProductBusinessImpl.__beforeUpdate__((TangibleProduct) product, usedCount);
-	}
-
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public <T extends Product> Collection<T> findAll(Class<T> aClass) {
-		return dao.readAll(aClass);
-	}
-
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Collection<Product> findAllNot(Class<? extends Product> aClass) {
-		return dao.readAllNot(aClass);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)

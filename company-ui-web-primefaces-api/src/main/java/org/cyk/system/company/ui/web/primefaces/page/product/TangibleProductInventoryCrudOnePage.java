@@ -32,7 +32,7 @@ public class TangibleProductInventoryCrudOnePage extends AbstractCrudOnePage<Tan
 	protected void initialisation() {
 		super.initialisation();
 		if(Crud.CREATE.equals(crud)){
-			for(TangibleProduct tangibleProduct : productBusiness.findAll(TangibleProduct.class))
+			for(TangibleProduct tangibleProduct : productBusiness.findByClass(TangibleProduct.class))
 				details.add(new TangibleProductInventoryDetail(tangibleProduct, BigDecimal.ZERO, null));
 			identifiable.setDetails(details);
 		}else {

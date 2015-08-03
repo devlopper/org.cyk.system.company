@@ -25,5 +25,8 @@ public class SaleStock extends AbstractIdentifiable implements Serializable {
 
 	@OneToOne @NotNull
 	protected TangibleProductStockMovement tangibleProductStockMovement;
+
+	/**/
 	
+	public static final String FIELD_TANGIBLE_PRODUCT_STOCK_MOVEMENT = "tangibleProductStockMovement";
 }

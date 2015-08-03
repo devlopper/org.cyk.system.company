@@ -1,4 +1,4 @@
-package org.cyk.system.company.ui.web.primefaces.page;
+package org.cyk.system.company.ui.web.primefaces.page.product;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -36,7 +36,7 @@ public class ProductCollectionCrudOnePage extends AbstractCrudOnePage<ProductCol
 	protected void initialisation() {
 		super.initialisation();
 		selectedProducts = new ArrayList<Product>(identifiable.getCollection());
-		for(Product product : productBusiness.findAllNot(ProductCollection.class))
+		for(Product product : productBusiness.findByNotClass(ProductCollection.class))
 			if(!selectedProducts.contains(product))
 				products.add(product);
 		

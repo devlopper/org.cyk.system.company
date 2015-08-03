@@ -40,4 +40,11 @@ public class SaleStockInput extends SaleStock implements Serializable {
 	@Transient
 	private Collection<SaleStockOutput> saleStockOutputs;
 	
+	/**/
+	
+	public static final String FIELD_EXTERNAL_SALE = "sale";
+	public static final String FIELD_EXTERNAL_IDENTIFIER = "externalIdentifier";
+	public static final String FIELD_EXTERNAL_REMAINING_NUMBER_OF_GOODS = "remainingNumberOfGoods";
+	public static final String FIELD_EVENT = "event";
+	
 }

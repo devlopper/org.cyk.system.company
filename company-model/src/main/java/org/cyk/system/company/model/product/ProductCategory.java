@@ -25,5 +25,6 @@ public class ProductCategory extends DataTreeType implements Serializable  {
 		super(parent, code,label);
 	}
 	
+	public static final String FIELD_DIVISION = "division";
 	
 }

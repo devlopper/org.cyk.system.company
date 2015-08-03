@@ -26,7 +26,7 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 	//		"WHERE ssi.sale.date BETWEEN :fromDate AND :toDate AND ssi.sale.done = :saleDone AND ssi.remainingNumberOfGoods >= :minimumRemainingGoods ";
 	private static final String READ_BY_CRITERIA_WHERE_FORMAT = 
 			"WHERE ssi.externalIdentifier LIKE :externalIdentifier AND "
-			+ "ssi.sale.date BETWEEN :fromDate AND :toDate AND ssi.sale.done = :saleDone AND ssi.remainingNumberOfGoods >= :minimumRemainingGoods "
+			+ "ssi.sale.date BETWEEN :fromvalue AND :tovalue AND ssi.sale.done = :saleDone AND ssi.remainingNumberOfGoods >= :minimumRemainingGoods "
 			+ "AND ABS(ssi.tangibleProductStockMovement.quantity) >= :minimumQuantity ";
 	
 	private static final String READ_BY_CRITERIA_NOTORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT;

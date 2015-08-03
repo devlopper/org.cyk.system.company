@@ -14,7 +14,7 @@ public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOu
 	private static final long serialVersionUID = 6920278182318788380L;
 
 	private static final String READ_BY_CRITERIA_SELECT_FORMAT = "SELECT sso FROM SaleStockOutput sso ";
-	private static final String READ_BY_CRITERIA_WHERE_FORMAT = "WHERE sso.tangibleProductStockMovement.date BETWEEN :fromDate AND :toDate"
+	private static final String READ_BY_CRITERIA_WHERE_FORMAT = "WHERE sso.tangibleProductStockMovement.date BETWEEN :fromvalue AND :tovalue"
 			+ " AND sso.saleCashRegisterMovement.cashRegisterMovement.amount >= :minimumPaid "
 			+ "AND ABS(sso.tangibleProductStockMovement.quantity) >= :minimumQuantity AND sso.saleStockInput.externalIdentifier LIKE :externalIdentifier"
 			+ " AND sso.saleStockInput.sale.done = :saleDone ";

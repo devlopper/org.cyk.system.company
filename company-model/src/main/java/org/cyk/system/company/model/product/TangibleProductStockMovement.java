@@ -47,4 +47,11 @@ public class TangibleProductStockMovement extends AbstractIdentifiable implement
 	//@Input @InputTextarea
 	private String comments;
 	
+	/**/
+	
+	public static final String FIELD_TANGIBLE_PRODUCT = "tangibleProduct";
+	public static final String FIELD_DATE = "date";
+	public static final String FIELD_QUANTITY = "quantity";
+	public static final String FIELD_COMMENTS = "comments";
+	
 }

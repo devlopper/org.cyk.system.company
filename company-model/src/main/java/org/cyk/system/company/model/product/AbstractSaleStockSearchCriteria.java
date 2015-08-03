@@ -41,5 +41,7 @@ public abstract class AbstractSaleStockSearchCriteria extends DefaultSearchCrite
 		this(fromDate,toDate,BigDecimal.ZERO,Boolean.TRUE);
 	}
 	
+	/**/
 	
+	public static final String FIELD_MINIMUM_QUANTITY = "minimumQuantity";
 }

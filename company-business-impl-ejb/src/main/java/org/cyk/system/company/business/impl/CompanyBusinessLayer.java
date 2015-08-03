@@ -334,10 +334,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 						private static final long serialVersionUID = -1279948056976719107L;
 						public Boolean ignoreField(Field field) {return SaleStockReportTableRow.inputFieldIgnored(field);};
 			        });
-					System.out.println(
-							"CompanyBusinessLayer.initialisation().new ReportBasedOnDynamicBuilderIdentifiableConfiguration() {...}.identifiables()");
-					System.out.println(saleStockInputBusiness.findByCriteria(new SaleStockInputSearchCriteria(fromDate,toDate,saleDone)));
-					debug(new SaleStockInputSearchCriteria(fromDate,toDate));
 					return saleStockInputBusiness.findByCriteria(new SaleStockInputSearchCriteria(fromDate,toDate,saleDone));
 				}
 				return null;

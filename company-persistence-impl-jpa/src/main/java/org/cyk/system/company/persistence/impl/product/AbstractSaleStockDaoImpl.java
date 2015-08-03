@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.model.product.AbstractSaleStockSearchCriteria;
 import org.cyk.system.company.model.product.SaleStock;
+import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.persistence.api.product.AbstractSaleStockDao;
 import org.cyk.system.company.persistence.api.product.SaleDao;
@@ -19,6 +20,8 @@ public abstract class AbstractSaleStockDaoImpl<SALE_STOCK extends SaleStock,SEAR
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
+	public static final String FIELD_SALE_DONE = "saleDone";
+	
 	protected String readAllSortedByDate,readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,
 		readByTangibleProductStockMovements;
 	
@@ -27,8 +30,9 @@ public abstract class AbstractSaleStockDaoImpl<SALE_STOCK extends SaleStock,SEAR
 	@Override
     protected void namedQueriesInitialisation() {
     	super.namedQueriesInitialisation();
-    	registerNamedQuery(readAllSortedByDate,_select().orderBy("tangibleProductStockMovement.date", Boolean.TRUE));
-    	registerNamedQuery(readByTangibleProductStockMovements,_select().whereIdentifierIn("tangibleProductStockMovement") );
+    	registerNamedQuery(readAllSortedByDate,
+    			_select().orderBy(fieldPath(SaleStock.FIELD_TANGIBLE_PRODUCT_STOCK_MOVEMENT,TangibleProductStockMovement.FIELD_DATE), Boolean.TRUE));
+    	registerNamedQuery(readByTangibleProductStockMovements,_select().whereIdentifierIn(SaleStock.FIELD_TANGIBLE_PRODUCT_STOCK_MOVEMENT) );
     }
 	
 	@Override
@@ -77,8 +81,8 @@ public abstract class AbstractSaleStockDaoImpl<SALE_STOCK extends SaleStock,SEAR
 		super.applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		AbstractSaleStockSearchCriteria saleStockSearchCriteria = (AbstractSaleStockSearchCriteria) searchCriteria;
 		String externalIdentifier = saleStockSearchCriteria.getExternalIdentifierStringSearchCriteria().getPreparedValue();
-		queryWrapper.parameterLike("externalIdentifier", externalIdentifier);
-		queryWrapper.parameter("minimumQuantity", saleStockSearchCriteria.getMinimumQuantity());
-		queryWrapper.parameter("saleDone", saleStockSearchCriteria.getDone());
+		queryWrapper.parameterLike(SaleStockInput.FIELD_EXTERNAL_IDENTIFIER, externalIdentifier);
+		queryWrapper.parameter(AbstractSaleStockSearchCriteria.FIELD_MINIMUM_QUANTITY, saleStockSearchCriteria.getMinimumQuantity());
+		queryWrapper.parameter(FIELD_SALE_DONE, saleStockSearchCriteria.getDone());
 	}
 }

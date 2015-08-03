@@ -16,18 +16,18 @@ public abstract class AbstractProductDaoImpl<PRODUCT extends Product> extends Ab
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
-		registerNamedQuery(readBySalable, _select().where("salable"));
-		registerNamedQuery(readByCategory, _select().where("category"));
+		registerNamedQuery(readBySalable, _select().where(Product.FIELD_SALABLE));
+		registerNamedQuery(readByCategory, _select().where(Product.FIELD_CATEGORY));
 	}
 	
 	@Override
 	public Collection<PRODUCT> readBySalable(Boolean salable) {
-		return namedQuery(readBySalable).parameter("salable", salable).resultMany();
+		return namedQuery(readBySalable).parameter(Product.FIELD_SALABLE, salable).resultMany();
 	}
 	
 	@Override
 	public Collection<PRODUCT> readByCategory(ProductCategory category) {
-		return namedQuery(readByCategory).parameter("category", category).resultMany();
+		return namedQuery(readByCategory).parameter(Product.FIELD_CATEGORY, category).resultMany();
 	}
 	
 }

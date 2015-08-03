@@ -70,4 +70,12 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	@Transient private Collection<SaleProduct> saleProducts = new ArrayList<>();
 	@Transient private Collection<SaleCashRegisterMovement> saleCashRegisterMovements = new ArrayList<>();
 	
+	/**/
+	
+	public static final String FIELD_DONE = "done";
+	public static final String FIELD_IDENTIFICATION_NUMBER = "identificationNumber";
+	public static final String FIELD_CASHIER = "cashier";
+	public static final String FIELD_CUSTOMER = "customer";
+	public static final String FIELD_ACCOUNTING_PERIOD = "accountingPeriod";
+	
 }

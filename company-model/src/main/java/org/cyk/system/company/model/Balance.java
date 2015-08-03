@@ -24,5 +24,10 @@ public class Balance extends AbstractModelElement implements Serializable {
 	public String getUiString() {
 		return toString();
 	}
+	
+	/**/
+	
+	public static final String FIELD_VALUE = "value";
+	public static final String FIELD_CUMUL = "cumul";
 
 }

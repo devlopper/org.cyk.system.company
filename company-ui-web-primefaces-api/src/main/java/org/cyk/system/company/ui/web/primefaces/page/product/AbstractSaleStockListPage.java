@@ -167,7 +167,7 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 		private static final long serialVersionUID = -3328823824725030136L;
 		//saleStockInputExternalIdentifier
 		@Input(label=@Text(value="field.sale.stock.input.external.identifier")) @InputText 
-		@Sequence(direction=Direction.AFTER,field=DefaultQueryFormModel.FIELD_IDENTIFIER_NAME)
+		@Sequence(direction=Direction.AFTER,field=DefaultQueryFormModel.FIELD_IDENTIFIER)
 		private String externalIdentifier;
 		
 	}
