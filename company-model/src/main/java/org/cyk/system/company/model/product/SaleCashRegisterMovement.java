@@ -18,6 +18,7 @@ import lombok.Setter;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.file.File;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
 public class SaleCashRegisterMovement extends AbstractIdentifiable implements Serializable {
@@ -31,6 +32,8 @@ public class SaleCashRegisterMovement extends AbstractIdentifiable implements Se
 	
 	@Embedded private Balance balance = new Balance();
 
+	@OneToOne private File report;
+	
 	public SaleCashRegisterMovement(Sale sale,CashRegisterMovement cashRegisterMovement) {
 		super();
 		this.sale = sale;

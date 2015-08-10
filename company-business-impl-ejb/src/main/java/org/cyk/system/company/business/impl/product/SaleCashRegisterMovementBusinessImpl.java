@@ -2,6 +2,7 @@ package org.cyk.system.company.business.impl.product;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collection;
 
 import javax.ejb.Stateless;
@@ -9,18 +10,22 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.cyk.system.company.business.api.SaleReportProducer.ReceiptParameters;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
+import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.persistence.api.product.CustomerDao;
 import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.party.person.Person;
 
 @Stateless
@@ -46,6 +51,11 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	
 	@Override
 	public SaleCashRegisterMovement create(SaleCashRegisterMovement saleCashRegisterMovement) {
+		return create(saleCashRegisterMovement,Boolean.TRUE);
+	}
+	
+	@Override
+	public SaleCashRegisterMovement create(SaleCashRegisterMovement saleCashRegisterMovement,Boolean generatePos) {
 		logDebug("Create sale cash register movement");
 		Sale sale = saleCashRegisterMovement.getSale();
 		Customer customer = sale.getCustomer();
@@ -58,7 +68,9 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			exceptionUtils().exception(soldOut<0, "validtion.sale.soldout.no");
 			cashRegisterMovementBusiness.withdraw(saleCashRegisterMovement.getCashRegisterMovement());
 		}
+		ReceiptParameters previous = new ReceiptParameters(null,saleCashRegisterMovement);
 		sale.getBalance().setValue(sale.getBalance().getValue().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
+		sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
 		saleCashRegisterMovement.getBalance().setValue(sale.getBalance().getValue());
 		saleDao.update(sale);
 		
@@ -84,10 +96,18 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			sale.getCustomer().setPaymentCount(customer.getPaymentCount());
 			saleCashRegisterMovement.getBalance().setCumul(customer.getBalance());
 		}
+		
+		saleCashRegisterMovement = super.create(saleCashRegisterMovement);
+		
 		logDebug("Sale cash register movement created successfully. I={} O={} A={} CT={} CP={} CB={}",saleCashRegisterMovement.getAmountIn(),
 				saleCashRegisterMovement.getAmountOut(),saleCashRegisterMovement.getCashRegisterMovement().getAmount(),customer==null?"":customer.getTurnover()
 						,customer==null?"":customer.getPaid(),customer==null?"":customer.getPaid());
-		return super.create(saleCashRegisterMovement);
+		
+		if(Boolean.TRUE.equals(generatePos)){
+			SaleReport saleReport = CompanyBusinessLayer.getInstance().getSaleReportProducer().producePaymentReceipt(previous,new ReceiptParameters(null,saleCashRegisterMovement));
+			CompanyBusinessLayer.getInstance().persistPointOfSale(saleCashRegisterMovement, saleReport); 
+		}
+		return saleCashRegisterMovement;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
@@ -114,6 +134,17 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public void out(SaleCashRegisterMovement saleCashRegisterMovement) {
 		saleCashRegisterMovement.getCashRegisterMovement().setAmount(saleCashRegisterMovement.getAmountIn().subtract(saleCashRegisterMovement.getAmountOut()));
+	}
+
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public ReportBasedOnTemplateFile<SaleReport> findReport(Collection<SaleCashRegisterMovement> saleCashRegisterMovements) {
+		return CompanyBusinessLayer.getInstance().createReport(CompanyBusinessLayer.getInstance().getPointOfSalePaymentReportName(),
+				saleCashRegisterMovements.iterator().next().getReport(), null, null,null);//TODO many receipt print must be handled
+	}
+
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public ReportBasedOnTemplateFile<SaleReport> findReport(SaleCashRegisterMovement saleCashRegisterMovement) {
+		return findReport(Arrays.asList(saleCashRegisterMovement));
 	}
 
 }

@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.cyk.system.company.model.accounting.AccountingPeriodReport;
+import org.cyk.system.root.model.file.report.LabelValueCollection;
 import org.cyk.system.root.model.party.person.ActorReport;
 import org.cyk.utility.common.generator.AbstractGeneratable;
 
@@ -19,16 +20,22 @@ public class SaleReport extends AbstractGeneratable<SaleReport> implements Seria
 
 	private static final long serialVersionUID = 7332510774063666925L;
 
-	private String identifier,cashRegisterIdentifier,date,numberOfProducts,cost,welcomeMessage,goodByeMessage;
+	private LabelValueCollection headerInfos = new LabelValueCollection();
+	private LabelValueCollection paymentInfos = new LabelValueCollection();
+	private LabelValueCollection taxInfos = new LabelValueCollection();
+	
+	private String title,identifier,cashRegisterIdentifier,date,numberOfProducts,cost,welcomeMessage,goodByeMessage;
 	private Boolean done;
 	
 	private AccountingPeriodReport accountingPeriod = new AccountingPeriodReport();
 	private ActorReport cashier = new ActorReport();
 	private ActorReport customer = new ActorReport();
 	private SaleCashRegisterMovementReport saleCashRegisterMovement = new SaleCashRegisterMovementReport();
+	private SaleStockInputReport saleStockInputReport = new SaleStockInputReport();
 	
 	private Collection<SaleProductReport> saleProducts = new ArrayList<>();
 
+	/*
 	public SaleReport(String identifier, String cashRegisterIdentifier,
 			String date, String numberOfProducts, String cost,
 			String welcomeMessage, String goodByeMessage) {
@@ -40,11 +47,11 @@ public class SaleReport extends AbstractGeneratable<SaleReport> implements Seria
 		this.cost = cost;
 		this.welcomeMessage = welcomeMessage;
 		this.goodByeMessage = goodByeMessage;
-	}
+	}*/
 	
 	@Override
 	public void generate() {
-		
+		title = "Facture";
 		identifier=RandomStringUtils.randomNumeric(8);
 		cashRegisterIdentifier = RandomStringUtils.randomNumeric(8);
 		date=new Date().toString();
@@ -57,6 +64,7 @@ public class SaleReport extends AbstractGeneratable<SaleReport> implements Seria
 		cashier.generate();
 		customer.generate();
 		saleCashRegisterMovement.generate();
+		saleStockInputReport.generate();
 		for(int i=0;i<6;i++){
 			SaleProductReport sp = new SaleProductReport();
 			sp.generate();
@@ -64,6 +72,21 @@ public class SaleReport extends AbstractGeneratable<SaleReport> implements Seria
 			saleProducts.add(sp);
 		}
 		
+		headerInfos.add("Identifiant", identifier);
+		headerInfos.add("Caisse", cashier.getRegistrationCode());
+		headerInfos.add("Date", date);
+		headerInfos.add("Client", customer.getRegistrationCode());
+		
+		paymentInfos.add("A payer", saleCashRegisterMovement.getAmountDue());
+		paymentInfos.add("Especes", saleCashRegisterMovement.getAmountIn());
+		paymentInfos.add("A rendre", saleCashRegisterMovement.getAmountToOut());
+		
+		taxInfos.add("Taux TVA", saleCashRegisterMovement.getVatRate());
+		taxInfos.add("Montant Hors Taxe", saleCashRegisterMovement.getAmountDueNoTaxes());
+		taxInfos.add("TVA", saleCashRegisterMovement.getVatAmount());
+		
 	}
+	
+	
 	
 }

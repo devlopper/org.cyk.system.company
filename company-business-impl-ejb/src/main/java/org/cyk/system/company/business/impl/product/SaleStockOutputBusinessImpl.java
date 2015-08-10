@@ -9,12 +9,15 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.cyk.system.company.business.api.SaleReportProducer.ReceiptParameters;
 import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
+import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
@@ -55,7 +58,8 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 	@Override
 	public SaleStockOutput create(SaleStockOutput saleStockOutput) {
 		exceptionUtils().exception(saleStockOutput.getTangibleProductStockMovement().getQuantity().signum()>0, "salestockoutput.quantitymustbenegative");
-		saleCashRegisterMovementBusiness.create(saleStockOutput.getSaleCashRegisterMovement());
+		ReceiptParameters previous = new ReceiptParameters(saleStockOutput);
+		saleCashRegisterMovementBusiness.create(saleStockOutput.getSaleCashRegisterMovement(),Boolean.FALSE);
 		saleStockOutput.getTangibleProductStockMovement().setDate(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
 		tangibleProductStockMovementBusiness.create(saleStockOutput.getTangibleProductStockMovement());
 		saleStockOutput.getSaleStockInput().setRemainingNumberOfGoods(
@@ -76,7 +80,13 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 			eventBusiness.delete(event);
 		}
 		
-		return super.create(saleStockOutput);
+		saleStockOutput = super.create(saleStockOutput);
+		//debug(previous);
+		//debug(new ReceiptParameters(saleStockOutput));
+		SaleReport saleReport = CompanyBusinessLayer.getInstance().getSaleReportProducer().producePaymentReceipt(previous,new ReceiptParameters(saleStockOutput));
+		CompanyBusinessLayer.getInstance().persistPointOfSale(saleStockOutput.getSaleCashRegisterMovement(), saleReport); 
+		
+		return saleStockOutput;
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)

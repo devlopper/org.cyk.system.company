@@ -1,12 +1,10 @@
 package org.cyk.system.company.business.impl.product;
 
 import java.io.Serializable;
-
-import lombok.Getter;
-import lombok.Setter;
+import java.lang.reflect.Field;
 
 import org.cyk.system.company.model.product.Customer;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.impl.file.report.AbstractReportTableRow;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.cyk.utility.common.annotation.user.interfaces.ReportColumn;
@@ -14,8 +12,11 @@ import org.cyk.utility.common.annotation.user.interfaces.style.Alignment;
 import org.cyk.utility.common.annotation.user.interfaces.style.Alignment.Horizontal;
 import org.cyk.utility.common.annotation.user.interfaces.style.Style;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Getter @Setter
-public class CustomerBalanceReportTableDetails implements Serializable {
+public class CustomerReportTableRow extends AbstractReportTableRow implements Serializable {
 	private static final long serialVersionUID = -6341285110719947720L;
 	
 	@Input @InputText private String registrationCode;
@@ -28,15 +29,29 @@ public class CustomerBalanceReportTableDetails implements Serializable {
 	@Input @InputText @ReportColumn(style=@Style(alignment=@Alignment(horizontal=Horizontal.RIGHT))) private String paid;
 	@Input @InputText @ReportColumn(style=@Style(alignment=@Alignment(horizontal=Horizontal.RIGHT))) private String balance;
 	
-	public CustomerBalanceReportTableDetails(Customer customer) {
+	public CustomerReportTableRow(Customer customer) {
 		this.registrationCode = customer.getRegistration().getCode();
 		this.names = customer.getPerson().getNames();
-		this.saleStockInputCount = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getSaleStockInputCount());
-		this.saleStockOutputCount = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getSaleStockOutputCount());
+		this.saleStockInputCount = formatNumber(customer.getSaleStockInputCount());
+		this.saleStockOutputCount = formatNumber(customer.getSaleStockOutputCount());
 		//this.saleCount = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getSaleCount());
 		//this.paymentCount = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getPaymentCount());
-		this.turnover = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getTurnover());
-		this.paid = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getPaid());
-		this.balance = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getBalance());
+		this.turnover = formatNumber(customer.getTurnover());
+		this.paid = formatNumber(customer.getPaid());
+		this.balance = formatNumber(customer.getBalance());
+	}
+	
+	public static Boolean balanceFieldIgnored(Field field){
+		return !(field.getName().equals("registrationCode") || field.getName().equals("names") || 
+				field.getName().equals("paid") || field.getName().equals("turnover") || field.getName().equals("balance"));
+	}
+	
+	public static Boolean credenceFieldIgnored(Field field){
+		return !(field.getName().equals("registrationCode") || field.getName().equals("names") || field.getName().equals("balance"));
+	}
+	
+	public static Boolean saleStockFieldIgnored(Field field){
+		return !(field.getName().equals("registrationCode") || field.getName().equals("names") || 
+				field.getName().equals("saleStockInputCount") || field.getName().equals("saleStockOutputCount"));
 	}
 }

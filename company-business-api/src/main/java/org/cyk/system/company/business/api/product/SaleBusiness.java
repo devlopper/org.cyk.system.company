@@ -1,6 +1,7 @@
 package org.cyk.system.company.business.api.product;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.cyk.system.company.model.product.Product;
@@ -13,6 +14,7 @@ import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.root.business.api.TypedBusiness;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.party.person.Person;
+import org.cyk.utility.common.cdi.AbstractBean;
 
 public interface SaleBusiness extends TypedBusiness<Sale> {
 
@@ -26,7 +28,11 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 
 	void applyChange(Sale sale, SaleProduct saleProduct);
 	
+	void create(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement,Boolean produceReport);
+	
 	void create(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement);
+	
+	void complete(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement,Boolean produceReport);
 	
 	void complete(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement);
 	
@@ -41,6 +47,7 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 	BigDecimal sumBalanceByCriteria(SaleSearchCriteria criteria);
 	
 	ReportBasedOnTemplateFile<SaleReport> findReport(Collection<Sale> sales);
+	ReportBasedOnTemplateFile<SaleReport> findReport(Sale sale);
 	
 	void updateDelivery(Sale sale,Collection<ProductEmployee> productEmployees);
 	
@@ -50,4 +57,22 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 	CartesianModel findTurnOverStatistics(SaleSearchCriteria saleSearchCriteria,TimeDivisionType timeDivisionType);
 	CartesianModel findCountStatistics(SaleSearchCriteria saleSearchCriteria,TimeDivisionType timeDivisionType);
 	*/
+	
+	/**/
+	
+	Collection<SaleBusinessListener> LISTENERS = new ArrayList<>(); 
+	
+	public static interface SaleBusinessListener{
+		
+		void reportCreated(SaleBusiness saleBusiness,SaleReport saleReport,Boolean invoice);
+		
+	}
+	
+	public static class SaleBusinessAdapter extends AbstractBean implements SaleBusinessListener{
+
+		private static final long serialVersionUID = -855978096046996503L;
+
+		@Override public void reportCreated(SaleBusiness saleBusiness, SaleReport saleReport,Boolean invoice) {}
+		
+	}
 }

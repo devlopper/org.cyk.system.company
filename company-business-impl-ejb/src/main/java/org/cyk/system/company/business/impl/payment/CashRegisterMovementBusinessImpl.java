@@ -5,19 +5,19 @@ import java.io.Serializable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.cyk.system.company.business.api.CompanyValueGenerator;
+import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.business.impl.RootBusinessLayer;
 
 @Stateless
 public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessService<CashRegisterMovement, CashRegisterMovementDao> implements CashRegisterMovementBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	@Inject private CompanyValueGenerator companyValueGenerator;
 	@Inject private CashRegisterDao cashRegisterDao;
 	
 	@Inject
@@ -48,7 +48,8 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	private void doCreate(CashRegisterMovement movement){
 		if(movement.getDate()==null)
 			movement.setDate(universalTimeCoordinated());
-		movement.setIdentificationNumber(companyValueGenerator.cashRegisterMovementIdentificationNumber(movement));
+		movement.setIdentificationNumber(RootBusinessLayer.getInstance().getApplicationBusiness()
+				.generateStringValue(CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFICATION_NUMBER, movement));
 		cashRegisterDao.update(movement.getCashRegister());
 		dao.create(movement);
 	}

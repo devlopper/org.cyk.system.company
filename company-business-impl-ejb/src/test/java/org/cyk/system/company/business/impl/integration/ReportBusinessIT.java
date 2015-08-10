@@ -9,7 +9,7 @@ import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyRandomDataProvider;
-import org.cyk.system.company.business.impl.product.CustomerBalanceReportTableDetails;
+import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
 import org.cyk.system.company.business.impl.product.SaleReportTableDetail;
 import org.cyk.system.company.business.impl.product.SaleStockInputReportTableDetail;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;

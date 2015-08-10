@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
@@ -29,13 +30,15 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
 
+    private static final Boolean PRINT_REPORT = Boolean.FALSE;
+    
     @Deployment
     public static Archive<?> createDeployment() {
     	return createRootDeployment();
     } 
      
     private CashRegister cashRegister1;
-    private Customer customer1,customer2;
+    private Customer customer1,customer2,customer3;
     
     private void init(){
     	installApplication();
@@ -53,6 +56,10 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	customer2.setPerson(RootRandomDataProvider.getInstance().person());
     	customerBusiness.create(customer2); 
     	
+    	customer3 = new Customer();
+    	customer3.setPerson(RootRandomDataProvider.getInstance().person());
+    	customerBusiness.create(customer3); 
+    	
     	cashRegister1 = new CashRegister();
     	cashRegister1.setCode("CASHIER001");
     	cashRegister1.setOwnedCompany(ownedCompanyBusiness.findDefaultOwnedCompany());
@@ -65,6 +72,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	Person person = companyBusinessTestHelper.cashierPerson();
     	
     	dropAndTakeInOne(person);
+    	
     	dropAndTakeInMany(person);
     	dropAndTakeInManyWithZeroPayment(person);
     	dropAndTakeInManyWithZeroQuantity(person);
@@ -72,19 +80,30 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	
     	searchByCriterias();
     	
-    	//printReports();
+    	printReports();
+    	
     }
     
     private void dropAndTakeInOne(Person person){
+    	Boolean print = PRINT_REPORT && Boolean.FALSE;
     	SaleStockInput saleStockInput = companyBusinessTestHelper
-        		.drop(date(2015, 1, 1),person, customer1,"A", "1000", "100", "3", "1100", "168", "1100","1100");
-    	companyBusinessTestHelper.taking(date(2015, 1, 2),person, saleStockInput, "3", "1100", "0", "0","0");
+        		.drop(date(2015, 1, 1),person, customer1,"A", "1000", "100", "3",print, "1100", "168", "1100","1100");
+    	companyBusinessTestHelper.taking(date(2015, 1, 2),person, saleStockInput, "3", "1100",print, "0", "0","0");
+    	
+    	saleStockInput = companyBusinessTestHelper
+        		.drop(date(2015, 1, 1),person, customer2,"A1", "1000", "100", "3",print, "1100", "168", "1100","1100");
+    	companyBusinessTestHelper.taking(date(2015, 1, 2),person, saleStockInput, "3", "1100",print, "0", "0","0");
     }
     
     private void dropAndTakeInMany(Person person){
-    	SaleStockInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 3),person, customer1,"B", "1000", "100", "3", "1100", "168", "1100","1100");
-    	companyBusinessTestHelper.taking(date(2015, 1, 4),person, saleStockInput, "2", "800", "1", "300","300");
-    	companyBusinessTestHelper.taking(date(2015, 1, 5),person, saleStockInput, "1", "300", "0", "0","0");
+    	Boolean print = PRINT_REPORT && Boolean.FALSE;
+    	SaleStockInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 3),person, customer1,"B", "1000", "100", "3",print, "1100", "168", "1100","1100");
+    	companyBusinessTestHelper.taking(date(2015, 1, 4),person, saleStockInput, "2", "800",print, "1", "300","300");
+    	companyBusinessTestHelper.taking(date(2015, 1, 5),person, saleStockInput, "1", "300",print, "0", "0","0");
+    	
+    	saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 3),person, customer2,"B1", "1000", "100", "3",print, "1100", "168", "1100","1100");
+    	companyBusinessTestHelper.taking(date(2015, 1, 4),person, saleStockInput, "2", "800",print, "1", "300","300");
+    	companyBusinessTestHelper.taking(date(2015, 1, 5),person, saleStockInput, "1", "300",print, "0", "0","0");
     }
     
     private void dropAndTakeInManyWithZeroQuantity(Person person){
@@ -113,9 +132,9 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     
     private void searchByCriterias(){
     	//SaleStock
-    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,null, date(2015,1,1), date(2015,12,31), 18l);
-    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,null, null, null, 18l);
-    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,null, date(2015,1,1), date(2015,1,31), 13l);
+    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,null, date(2015,1,1), date(2015,12,31), 23l);
+    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,null, null, null, 23l);
+    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,null, date(2015,1,1), date(2015,1,31), 18l);
     	
     	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,"A", date(2015,1,1), date(2015,12,31), 2l);
     	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,"A", date(2015,1,2), date(2015,1,3), 1l);
@@ -128,9 +147,9 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,"B", null, null, 3l);
     	
     	//Sale Stock Input
-    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,null, date(2015,1,1), date(2015,12,31), 6l);
-    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,null, null, null, 6l);
-    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,null, date(2015,1,1), date(2015,1,31), 4l);
+    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,null, date(2015,1,1), date(2015,12,31), 8l);
+    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,null, null, null, 8l);
+    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,null, date(2015,1,1), date(2015,1,31), 6l);
     	
     	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"A", date(2015,1,1), date(2015,12,31), 1l);
     	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"A", date(2015,1,2), date(2015,1,3), 0l);
@@ -143,9 +162,9 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"B", null, null, 1l);
     	
     	//Sale Stock Output
-    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,null, date(2015,1,1), date(2015,12,31), 12l);
-    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,null, null, null, 12l);
-    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,null, date(2015,1,1), date(2015,1,31), 9l);
+    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,null, date(2015,1,1), date(2015,12,31), 15l);
+    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,null, null, null, 15l);
+    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,null, date(2015,1,1), date(2015,1,31), 12l);
     	
     	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"A", date(2015,1,1), date(2015,12,31), 1l);
     	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"A", date(2015,1,2), date(2015,1,3), 1l);
@@ -156,6 +175,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"B", date(2015,1,3), date(2015,1,3), 0l);
     	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"B", date(2016,1,1), date(2016,12,31), 0l);
     	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"B", null, null, 2l);
+    	
     }
     
     private <ENTITY extends SaleStock,SEARCH_CRITERIA extends AbstractSaleStockSearchCriteria> void searchByCriteria(Class<ENTITY> saleStockClass,
@@ -206,6 +226,15 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
         rootTestHelper.addReportParameterFromDate(saleStockOutputCustomerParameters, DateUtils.addDays(new Date(), -1000));
         rootTestHelper.addReportParameterToDate(saleStockOutputCustomerParameters, DateUtils.addDays(new Date(), 1000));
         rootTestHelper.reportBasedOnDynamicBuilderParameters(saleStockOutputCustomerParameters);
+        
+        ReportBasedOnDynamicBuilderParameters<CustomerReportTableRow> customerBalanceParameters = new ReportBasedOnDynamicBuilderParameters<>();
+        customerBalanceParameters.setIdentifiableClass(Customer.class);
+        customerBalanceParameters.setModelClass(CustomerReportTableRow.class);
+        customerBalanceParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), 
+        		CompanyBusinessLayer.getInstance().getParameterCustomerReportBalance());
+        customerBalanceParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType(), 
+        		CompanyBusinessLayer.getInstance().getParameterCustomerBalanceAll());
+        rootTestHelper.reportBasedOnDynamicBuilderParameters(customerBalanceParameters);
     }
     
 }

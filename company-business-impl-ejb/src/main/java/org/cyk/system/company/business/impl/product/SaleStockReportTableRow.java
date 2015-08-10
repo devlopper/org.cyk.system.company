@@ -12,6 +12,7 @@ import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.cyk.utility.common.annotation.user.interfaces.ReportColumn;
 import org.cyk.utility.common.annotation.user.interfaces.Text;
+import org.cyk.utility.common.annotation.user.interfaces.Text.ValueType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,8 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 	private static final long serialVersionUID = -3328823824725030136L;
 
 	public static Boolean FIELD_IDENTIFIER_VISIBLE = Boolean.TRUE;
+	
+	private SaleStock saleStock;
 	
 	@Input @InputText @ReportColumn private String date;
 	
@@ -39,11 +42,15 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 	@Input(label=@Text(value="remaining")) @ReportColumn private String remainingNumberOfGoods;
 	
 	@Input(label=@Text(value="amount")) @ReportColumn private String amount;
-	@Input(label=@Text(value="paid")) @ReportColumn private String amountPaid;
+	@Input @ReportColumn private String amountPaid;
 	@Input @ReportColumn private String balance;
 	@Input @ReportColumn private String cumulatedBalance;
 	
+	@Input(label=@Text(type=ValueType.ID,value="ui.form.salestockinput.field.comments")) @ReportColumn private String comments;
+	
 	public SaleStockReportTableRow(SaleStock saleStock) {
+		this.saleStock = saleStock;
+		//TODO refactor same code in functions
 		if(saleStock instanceof SaleStockInput){
 			saleStockIntput((SaleStockInput) saleStock);
 		}else if(saleStock instanceof SaleStockOutput){
@@ -57,7 +64,7 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		identifier = saleStockInput.getSale().getIdentificationNumber();
 		number = sale.getIdentificationNumber();
 		if(sale.getCustomer()!=null)
-			customer = sale.getCustomer().getPerson().getNames();
+			customer = sale.getCustomer().getRegistration().getCode()+" - "+sale.getCustomer().getPerson().getNames();
 		amount = formatNumber(sale.getCost());
 		//balance = amount;
 		balance = formatNumber(saleStockInput.getSale().getBalance().getValue()); 
@@ -79,7 +86,7 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		identifier = saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getIdentificationNumber();
 		number = sale.getIdentificationNumber();
 		if(sale.getCustomer()!=null)
-			customer = sale.getCustomer().getPerson().getNames();
+			customer = sale.getCustomer().getRegistration().getCode()+" - "+sale.getCustomer().getPerson().getNames();
 		amountPaid = formatNumber(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
 		balance = formatNumber(saleStockOutput.getSaleCashRegisterMovement().getBalance().getValue());
 		cumulatedBalance = formatNumber(saleStockOutput.getSaleCashRegisterMovement().getBalance().getCumul());
@@ -101,23 +108,26 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 	
 	public static Boolean cashRegisterFieldIgnored(Field field){
 		return !(field.getName().equals("date") || field.getName().equals("saleStockInputExternalIdentifier") || 
-				field.getName().equals("takenNumberOfGoods") || field.getName().equals("amountPaid") || field.getName().equals("balance"));
+				field.getName().equals("takenNumberOfGoods") || field.getName().equals("amountPaid") || field.getName().equals("balance") 
+				|| field.getName().equals("comments"));
 	}
 	
 	public static Boolean inventoryFieldIgnored(Field field){
 		return !(field.getName().equals("date") || field.getName().equals("saleStockInputExternalIdentifier") || 
-				field.getName().equals("customer") || field.getName().equals("stockIn") || field.getName().equals("stockOut") || field.getName().equals("remainingNumberOfGoods"));
+				field.getName().equals("customer") || field.getName().equals("stockIn") || field.getName().equals("stockOut") 
+				|| field.getName().equals("remainingNumberOfGoods") || field.getName().equals("comments"));
 	}
 	
 	public static Boolean customerFieldIgnored(Field field){
 		return !(field.getName().equals("date") || field.getName().equals("customer") || field.getName().equals("saleStockInputExternalIdentifier") || 
-				field.getName().equals("amount") || field.getName().equals("amountPaid") || field.getName().equals("cumulatedBalance"));
+				field.getName().equals("amount") || field.getName().equals("amountPaid") || field.getName().equals("cumulatedBalance") 
+				|| field.getName().equals("comments"));
 	}
 	
 	public static Boolean inputFieldIgnored(Field field){
 		return !(field.getName().equals("date") || field.getName().equals("customer") 
 				|| (Boolean.TRUE.equals(FIELD_IDENTIFIER_VISIBLE) && field.getName().equals("identifier")) 
-				||field.getName().equals("saleStockInputExternalIdentifier") || field.getName().equals("numberOfGoods") || field.getName().equals("remainingNumberOfGoods") 
+				|| field.getName().equals("saleStockInputExternalIdentifier") || field.getName().equals("numberOfGoods") || field.getName().equals("remainingNumberOfGoods") 
 				|| field.getName().equals("amount") || field.getName().equals("balance"));
 	}
 	

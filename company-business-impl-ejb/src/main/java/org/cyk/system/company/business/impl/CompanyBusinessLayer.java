@@ -7,13 +7,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
+import org.cyk.system.company.business.api.SaleReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
@@ -37,7 +42,7 @@ import org.cyk.system.company.business.api.structure.DivisionBusiness;
 import org.cyk.system.company.business.api.structure.DivisionTypeBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
-import org.cyk.system.company.business.impl.product.CustomerBalanceReportTableDetails;
+import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
 import org.cyk.system.company.business.impl.product.SaleReportTableDetail;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.business.impl.product.StockDashBoardReportTableDetails;
@@ -91,6 +96,7 @@ import org.cyk.system.root.business.impl.file.report.ReportBasedOnDynamicBuilder
 import org.cyk.system.root.business.impl.file.report.jasper.DefaultJasperReportBasedOnDynamicBuilder;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
+import org.cyk.system.root.model.file.report.AbstractReport;
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilder;
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderConfiguration;
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderIdentifiableConfiguration;
@@ -98,6 +104,8 @@ import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderListener
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParameters;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFileConfiguration;
+import org.cyk.system.root.model.generator.StringValueGenerator;
+import org.cyk.system.root.model.generator.ValueGenerator;
 import org.cyk.system.root.model.geography.PhoneNumber;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Credentials;
@@ -139,6 +147,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Getter private final String parameterSaleStockReportInput = "ssiri";
 	@Getter private final String parameterSaleDone = "saledone";
 	
+	@Getter private String pointOfSaleInvoiceReportName;
+	@Getter private String pointOfSalePaymentReportName;
+	@Getter private final String pointOfSaleReportExtension = "pdf";
+	
 	public static final Integer PRODUCT_POINT_OF_SALE = 1000;
 	public static final Integer PRODUCT_TANGIBLE_SALE_STOCK = 1001;
 	public static final Integer PRODUCT_INTANGIBLE_SALE_STOCK = 1002;
@@ -177,13 +189,14 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private UserAccountBusiness userAccountBusiness;
 	@Inject private RoleBusiness roleBusiness;
 	@Inject private ProductCategoryBusiness productCategoryBusiness;
+	@Getter @Setter private SaleReportProducer saleReportProducer = new DefaultSaleReportProducer();
 	
 	//@Getter private Role roleSaleManager,roleStockManager,roleHumanResourcesManager,customerManager,productionManager;
 	@Getter @Setter private TangibleProduct tangibleProductSaleStock;
 	@Getter private IntangibleProduct intangibleProductSaleStock;
 	private CashRegister cashRegister;
 	
-	@Getter private static final Collection<CompanyBusinessLayerListener> COMPANY_BUSINESS_LAYER_LISTENERS = new ArrayList<>();
+	private static final Collection<CompanyBusinessLayerListener> COMPANY_BUSINESS_LAYER_LISTENERS = new ArrayList<>();
 	
 	@Override
 	protected void initialisation() {
@@ -192,6 +205,14 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		registerResourceBundle("org.cyk.system.company.model.resources.entity", getClass().getClassLoader());
 		registerResourceBundle("org.cyk.system.company.model.resources.message", getClass().getClassLoader());
 		registerResourceBundle("org.cyk.system.company.business.impl.resources.message", getClass().getClassLoader());
+		
+		pointOfSaleInvoiceReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.invoice");
+		pointOfSalePaymentReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.paymentreceipt");
+		
+		applicationBusiness.registerValueGenerator((ValueGenerator<?, ?>) new StringValueGenerator<CashRegisterMovement>(
+        		CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFICATION_NUMBER,"", CashRegisterMovement.class));
+		applicationBusiness.registerValueGenerator((ValueGenerator<?, ?>) new StringValueGenerator<Sale>(
+        		CompanyBusinessLayerListener.SALE_IDENTIFICATION_NUMBER,"", Sale.class));
 		
 		ReportBasedOnDynamicBuilderListener.GLOBALS.add(new ReportBasedOnDynamicBuilderAdapter(){
         	@Override
@@ -242,50 +263,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 				return saleBusiness.findByCriteria(searchCriteria);
 			}
 		});
-        /*
-        ReportBasedOnDynamicBuilderListener.IDENTIFIABLE_CONFIGURATIONS.add(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
-        		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),SaleStockInput.class,SaleStockReportTableRow.class) {
-			private static final long serialVersionUID = -1966207854828857772L;
-			@Override
-			public Object model(AbstractIdentifiable identifiable) {
-				return new SaleStockReportTableRow((SaleStockInput) identifiable);
-			}
-			@Override
-			public Boolean useCustomIdentifiableCollection() {
-				return Boolean.TRUE;
-			}
-			@Override
-			public Collection<? extends AbstractIdentifiable> identifiables(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
-				Date fromDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterFromDate())[0]));
-				Date toDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterToDate())[0]));
-				BigDecimal hasRemaingGoods = BigDecimal.ZERO; //new BigDecimal(parameters.getExtendedParameterMap().get(parameterMinimumRemainingNumberOfGoods)[0]);
-				SaleStockInputSearchCriteria searchCriteria = new SaleStockInputSearchCriteria(fromDate,toDate,hasRemaingGoods);
-				return saleStockInputBusiness.findByCriteria(searchCriteria);
-			}
-		});
-        
-        ReportBasedOnDynamicBuilderListener.IDENTIFIABLE_CONFIGURATIONS.add(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
-        		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),SaleStockOutput.class,SaleStockReportTableRow.class) {
-			private static final long serialVersionUID = -1966207854828857772L;
-			@Override
-			public Object model(AbstractIdentifiable identifiable) {
-				return new SaleStockReportTableRow((SaleStockOutput) identifiable);
-			}
-			@Override
-			public Boolean useCustomIdentifiableCollection() {
-				return Boolean.TRUE;
-			}
-			@Override
-			public Collection<? extends AbstractIdentifiable> identifiables(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
-				parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestockoutput.cashregister.title"));
-				Date fromDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterFromDate())[0]));
-				Date toDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterToDate())[0]));
-				BigDecimal hasRemaingGoods = BigDecimal.ZERO; //new BigDecimal(parameters.getExtendedParameterMap().get(parameterMinimumRemainingNumberOfGoods)[0]);
-				SaleStockOutputSearchCriteria searchCriteria = new SaleStockOutputSearchCriteria(fromDate,toDate,hasRemaingGoods);
-				return saleStockOutputBusiness.findByCriteria(searchCriteria);
-			}
-		});       
-        */
+       
         ReportBasedOnDynamicBuilderListener.IDENTIFIABLE_CONFIGURATIONS.add(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
         		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),SaleStock.class,SaleStockReportTableRow.class) {
 			private static final long serialVersionUID = -1966207854828857772L;
@@ -338,6 +316,50 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 				}
 				return null;
 			}
+			
+			public void beforeBuild(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
+				String reportType = parameters.getExtendedParameterMap().get(parameterSaleStockReportType)[0];
+				if(parameterSaleStockReportCashRegister.equals(reportType)){
+					
+				}else if(parameterSaleStockReportInventory.equals(reportType)){
+					
+				}else if(parameterSaleStockReportCustomer.equals(reportType)){
+					Set<String> customerIds = new LinkedHashSet<>();
+					List<Object> list = new LinkedList<>();
+					//get the filters
+					for(Object object : parameters.getDatas()){
+						SaleStockReportTableRow row = (SaleStockReportTableRow)object;
+						customerIds.add(row.getCustomer());
+					}
+					//for each filter
+					for(String customerId : customerIds){
+						//filter rows
+						BigDecimal amount=BigDecimal.ZERO,paid=BigDecimal.ZERO,balance=BigDecimal.ZERO;
+						for(Object object : parameters.getDatas()){
+							SaleStockReportTableRow row = (SaleStockReportTableRow) object;
+							if(row.getCustomer().equals(customerId)){
+								list.add(row);
+								if(row.getSaleStock() instanceof SaleStockInput){
+									amount = amount.add( ((SaleStockInput)row.getSaleStock()).getSale().getCost());
+									balance = ((SaleStockInput)row.getSaleStock()).getSale().getBalance().getCumul();
+								}else if(row.getSaleStock() instanceof SaleStockOutput){
+									paid = paid.add( ((SaleStockOutput)row.getSaleStock()).getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
+									balance = ((SaleStockOutput)row.getSaleStock()).getSaleCashRegisterMovement().getBalance().getCumul();
+								}
+							}
+						}
+						SaleStockReportTableRow totalRow = new SaleStockReportTableRow(null);
+						totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));
+						totalRow.setAmount(RootBusinessLayer.getInstance().getNumberBusiness().format(amount));
+						totalRow.setAmountPaid(RootBusinessLayer.getInstance().getNumberBusiness().format(paid));	
+						totalRow.setCumulatedBalance(RootBusinessLayer.getInstance().getNumberBusiness().format(balance));
+						list.add(totalRow);
+					}
+					parameters.setDatas(list);
+				}else if(parameterSaleStockReportInput.equals(reportType)){
+					
+				}	
+			}
 		});
         
         ReportBasedOnDynamicBuilderListener.IDENTIFIABLE_CONFIGURATIONS.add(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
@@ -362,11 +384,11 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		});
         
         ReportBasedOnDynamicBuilderListener.IDENTIFIABLE_CONFIGURATIONS.add(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
-        		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),Customer.class,CustomerBalanceReportTableDetails.class) {
+        		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),Customer.class,CustomerReportTableRow.class) {
 			private static final long serialVersionUID = -1966207854828857772L;
 			@Override
 			public Object model(AbstractIdentifiable identifiable) {
-				return new CustomerBalanceReportTableDetails((Customer) identifiable);
+				return new CustomerReportTableRow((Customer) identifiable);
 			}
 			@Override
 			public Boolean useCustomIdentifiableCollection() {
@@ -381,14 +403,14 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 						parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.customer.balance.title"));
 						parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 							private static final long serialVersionUID = -1279948056976719107L;
-							public Boolean ignoreField(Field field) {return reportCustomerBalanceFieldIgnored(field);};
+							public Boolean ignoreField(Field field) {return CustomerReportTableRow.balanceFieldIgnored(field);};
 				        });
 						collection = customerBusiness.findAll();
 					}else{
 						parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.credence.title"));
 						parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 							private static final long serialVersionUID = -1279948056976719107L;
-							public Boolean ignoreField(Field field) {return reportCustomerCredenceFieldIgnored(field);};
+							public Boolean ignoreField(Field field) {return CustomerReportTableRow.credenceFieldIgnored(field);};
 				        });
 						collection = customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
 					}
@@ -396,7 +418,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.customer.salestock.title"));
 					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 						private static final long serialVersionUID = -1279948056976719107L;
-						public Boolean ignoreField(Field field) {return reportCustomerSaleStockFieldIgnored(field);};
+						public Boolean ignoreField(Field field) {return CustomerReportTableRow.saleStockFieldIgnored(field);};
 			        });
 					collection = customerBusiness.findAll();
 				}
@@ -428,20 +450,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		});	
 	}
 	
-	public Boolean reportCustomerBalanceFieldIgnored(Field field){
-		return !(field.getName().equals("registrationCode") || field.getName().equals("names") || 
-				field.getName().equals("paid") || field.getName().equals("turnover") || field.getName().equals("balance"));
-	}
-	
-	public Boolean reportCustomerCredenceFieldIgnored(Field field){
-		return !(field.getName().equals("registrationCode") || field.getName().equals("names") || field.getName().equals("balance"));
-	}
-	
-	public Boolean reportCustomerSaleStockFieldIgnored(Field field){
-		return !(field.getName().equals("registrationCode") || field.getName().equals("names") || 
-				field.getName().equals("saleStockInputCount") || field.getName().equals("saleStockOutputCount"));
-	}
-	
 	@Override
 	protected void persistData() {
 		security();
@@ -457,8 +465,11 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			if(value!=null)
 				bytes = value;
 		}
+		if(bytes==null)
+			bytes = getResourceAsBytes("report/payment/pos2.jrxml");
+		bytes = getResourceAsBytes("report/payment/pos_a4.jrxml");
 		
-		pointOfSaleReportFile = fileBusiness.process(bytes==null?getResourceAsBytes("report/payment/pos1.jrxml"):bytes,"pointofsale.jrxml");
+		pointOfSaleReportFile = fileBusiness.process(bytes,"pointofsale.jrxml");
 		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
 			listener.handlePointOfSaleToInstall(pointOfSaleReportFile);
 		
@@ -590,6 +601,55 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	
 	public Collection<CompanyBusinessLayerListener> getCompanyBusinessLayerListeners() {
 		return COMPANY_BUSINESS_LAYER_LISTENERS;
+	}
+	
+	public void persistPointOfSale(SaleCashRegisterMovement saleCashRegisterMovement,SaleReport saleReport){
+		ReportBasedOnTemplateFile<SaleReport> report = createReport(pointOfSalePaymentReportName+saleCashRegisterMovement.getCashRegisterMovement().getIdentificationNumber(),
+				saleCashRegisterMovement.getReport(), 
+				saleReport,saleCashRegisterMovement.getSale().getAccountingPeriod().getPointOfSaleReportFile(),
+				pointOfSaleReportExtension);
+		if(saleCashRegisterMovement.getReport()==null)
+			saleCashRegisterMovement.setReport(new File());
+		persistReport(saleCashRegisterMovement.getReport(), report);
+	}
+	
+	public void persistPointOfSale(Sale sale,SaleReport saleReport){
+		ReportBasedOnTemplateFile<SaleReport> report = createReport(pointOfSaleInvoiceReportName+sale.getIdentificationNumber(),
+				sale.getReport(), saleReport,sale.getAccountingPeriod().getPointOfSaleReportFile(),
+				pointOfSaleReportExtension);
+		if(sale.getReport()==null)
+			sale.setReport(new File());
+		
+		persistReport(sale.getReport(), report);
+	}
+	
+	private void persistReport(File file,AbstractReport<?> report){
+		file.setBytes(report.getBytes());
+		file.setExtension(report.getFileExtension());
+		if(file.getIdentifier()==null){
+			fileBusiness.create(file);
+			//logDebug("Report created");
+		}else{
+			fileBusiness.update(file);
+			//logDebug("Report updated");
+		}
+	}
+	
+	public ReportBasedOnTemplateFile<SaleReport> createReport(String name,File file,SaleReport saleReport,File template,String fileExtension){
+		ReportBasedOnTemplateFile<SaleReport> report = new ReportBasedOnTemplateFile<SaleReport>();
+		report.setTitle(name);
+		report.setFileExtension(StringUtils.isBlank(fileExtension)?pointOfSaleReportExtension:fileExtension);
+		//report.setFileName(RootBusinessLayer.getInstance().buildReportFileName(report) /*pointOfSaleReportName*/);
+		RootBusinessLayer.getInstance().prepareReport(report);
+		
+		if(saleReport==null){
+			report.setBytes(file.getBytes());
+		}else{
+			report.getDataSource().add(saleReport);
+			report.setTemplateFile(template);
+			reportBusiness.build(report, Boolean.FALSE);
+		}
+		return report;
 	}
 	
 	/**/

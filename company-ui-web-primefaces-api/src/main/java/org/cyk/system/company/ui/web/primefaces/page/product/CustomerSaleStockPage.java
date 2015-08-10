@@ -14,7 +14,7 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
-import org.cyk.system.company.business.impl.product.CustomerBalanceReportTableDetails;
+import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.ui.api.model.table.Cell;
 import org.cyk.ui.api.model.table.Column;
@@ -30,7 +30,7 @@ public class CustomerSaleStockPage extends AbstractPrimefacesPage implements Ser
 
 	@Inject private CustomerBusiness customerBusiness;
 	
-	private Table<CustomerBalanceReportTableDetails> table;
+	private Table<CustomerReportTableRow> table;
 	
 	@Override
 	protected void initialisation() {
@@ -41,19 +41,19 @@ public class CustomerSaleStockPage extends AbstractPrimefacesPage implements Ser
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
-		Collection<CustomerBalanceReportTableDetails> details = new ArrayList<>();
+		Collection<CustomerReportTableRow> details = new ArrayList<>();
 		for(Customer customer : customerBusiness.findAll())
-			details.add(new CustomerBalanceReportTableDetails(customer));
+			details.add(new CustomerReportTableRow(customer));
 		
-		TableAdapter<Row<CustomerBalanceReportTableDetails>, Column, CustomerBalanceReportTableDetails, String, Cell, String> listener;
-		listener = new TableAdapter<Row<CustomerBalanceReportTableDetails>, Column, CustomerBalanceReportTableDetails, String, Cell, String>(){
+		TableAdapter<Row<CustomerReportTableRow>, Column, CustomerReportTableRow, String, Cell, String> listener;
+		listener = new TableAdapter<Row<CustomerReportTableRow>, Column, CustomerReportTableRow, String, Cell, String>(){
 			@Override
 			public Boolean ignore(Field field) {
-				return CompanyBusinessLayer.getInstance().reportCustomerSaleStockFieldIgnored(field);
+				return CustomerReportTableRow.saleStockFieldIgnored(field);
 			}
 		};
 		
-		table = createDetailsTable(CustomerBalanceReportTableDetails.class, details,listener, "");	
+		table = createDetailsTable(CustomerReportTableRow.class, details,listener, "");	
 		table.setShowHeader(Boolean.FALSE);
 		table.setShowFooter(Boolean.FALSE);
 		table.setShowToolBar(Boolean.TRUE);

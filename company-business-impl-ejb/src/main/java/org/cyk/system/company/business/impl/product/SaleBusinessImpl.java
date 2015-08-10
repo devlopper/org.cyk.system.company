@@ -2,6 +2,7 @@ package org.cyk.system.company.business.impl.product;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -12,8 +13,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.business.api.CompanyValueGenerator;
+import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
+import org.cyk.system.company.business.api.SaleReportProducer.InvoiceParameters;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
@@ -21,6 +22,7 @@ import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.product.SaleProductBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Product;
@@ -28,22 +30,15 @@ import org.cyk.system.company.model.product.ProductEmployee;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleProduct;
-import org.cyk.system.company.model.product.SaleProductReport;
 import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
-import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.product.CustomerDao;
 import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.cyk.system.company.persistence.api.product.SaleProductDao;
-import org.cyk.system.root.business.api.file.FileBusiness;
-import org.cyk.system.root.business.api.geography.ContactCollectionBusiness;
-import org.cyk.system.root.business.api.language.LanguageBusiness;
-import org.cyk.system.root.business.api.time.TimeBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.business.impl.file.report.jasper.JasperReportBusinessImpl;
-import org.cyk.system.root.model.file.File;
+import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.party.person.Person;
 
@@ -52,17 +47,12 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	public static String DEFAULT_POINT_OF_SALE_REPORT_NAME = "SaleReport";
-	public static String DEFAULT_POINT_OF_SALE_REPORT_EXTENSION = "pdf";
+	//public static String DEFAULT_POINT_OF_SALE_REPORT_NAME = "SaleReport";
+	//public static String DEFAULT_POINT_OF_SALE_REPORT_EXTENSION = "pdf";
 	public static Boolean AUTO_SET_SALE_DATE = Boolean.TRUE;
 	
-	@Inject private CompanyValueGenerator companyValueGenerator;
 	@Inject private SaleProductBusiness saleProductBusiness;
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
-	@Inject private JasperReportBusinessImpl reportBusiness;
-	@Inject private LanguageBusiness languageBusiness;
-	@Inject private FileBusiness fileBusiness;
-	@Inject private ContactCollectionBusiness contactCollectionBusiness;
 	@Inject private ProductBusiness productBusiness;
 	@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
 	
@@ -142,7 +132,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		if(Boolean.TRUE.equals(AUTO_SET_SALE_DATE))
 			if(sale.getDate()==null)
 				sale.setDate(universalTimeCoordinated());
-		sale.setIdentificationNumber(companyValueGenerator.saleIdentificationNumber(sale));
+		sale.setIdentificationNumber(RootBusinessLayer.getInstance().getApplicationBusiness().generateStringValue(CompanyBusinessLayerListener.SALE_IDENTIFICATION_NUMBER, sale));
 		
 		exceptionUtils().exception(sale.getAccountingPeriod()==null, "exception.sale.accountingperiodmissing");
 		
@@ -236,93 +226,52 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	@Override
-	public void create(Sale sale, SaleCashRegisterMovement saleCashRegisterMovement) {
+	public void create(Sale sale, SaleCashRegisterMovement saleCashRegisterMovement,Boolean produceReport) {
 		create(sale);
+		InvoiceParameters previous = new InvoiceParameters(sale, null, saleCashRegisterMovement);
 		if(saleCashRegisterMovement.getAmountIn().equals(saleCashRegisterMovement.getAmountOut()) && saleCashRegisterMovement.getAmountIn().equals(BigDecimal.ZERO)){
 			logDebug("No sale cash register movement");
 		}else{
 			saleCashRegisterMovement.setSale(sale);
 			if(Boolean.TRUE.equals(sale.getDone())){
+				saleCashRegisterMovement.getCashRegisterMovement().setDate(sale.getDate());
 				saleCashRegisterMovementBusiness.create(saleCashRegisterMovement);
-			}	
+			}	 
 		}
-		
-		createReport(sale, saleCashRegisterMovement);
+		if(Boolean.TRUE.equals(produceReport)){
+			createReport(previous,new InvoiceParameters(sale, null, saleCashRegisterMovement));
+		}
 	}
 	
 	@Override
-	public void complete(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement) {
+	public void create(Sale sale, SaleCashRegisterMovement saleCashRegisterMovement) {
+		create(sale, saleCashRegisterMovement,Boolean.TRUE);
+	}
+	
+	@Override
+	public void complete(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement,Boolean produceReport) {
 		logDebug("Complete Sale");
+		InvoiceParameters previous = new InvoiceParameters(sale, null, saleCashRegisterMovement);
 		save(sale, Boolean.FALSE);
-		createReport(sale, saleCashRegisterMovement);
+		if(Boolean.TRUE.equals(produceReport))
+			createReport(previous,new InvoiceParameters(sale, null, saleCashRegisterMovement));
 		update(sale);
 		logDebugSale("Sale completed succesfully",sale);
 	}
 	
-	private void createReport(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement){
-		logDebug("Prepare report");
-		Company company = saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getOwnedCompany().getCompany();
-		BigDecimal numberOfProducts = BigDecimal.ZERO;
-		for(SaleProduct sp : sale.getSaleProducts())
-			numberOfProducts = numberOfProducts.add(sp.getQuantity());
-		SaleReport saleReport = new SaleReport(sale.getIdentificationNumber(),
-				Boolean.TRUE.equals(sale.getAccountingPeriod().getShowPointOfSaleReportCashier())?saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getCode():null,
-				timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN),numberBusiness.format(numberOfProducts)+"",numberBusiness.format(sale.getCost()),
-				languageBusiness.findText("company.report.pointofsale.welcome"),languageBusiness.findText("company.report.pointofsale.goodbye"));
-		saleReport.getAccountingPeriod().getCompany().setName(company.getName());
-		saleReport.setDone(sale.getDone());
-		contactCollectionBusiness.load(company.getContactCollection());
-		
-		saleReport.getAccountingPeriod().getCompany().getContact().setPhoneNumbers(StringUtils.join(company.getContactCollection().getPhoneNumbers()," - "));
-		saleReport.getCustomer().setRegistrationCode(sale.getCustomer()==null?"":sale.getCustomer().getRegistration().getCode());
-		saleReport.getSaleCashRegisterMovement().setAmountDue(numberBusiness.format(sale.getCost()));
-		if(Boolean.TRUE.equals(sale.getDone())){
-			saleReport.getSaleCashRegisterMovement().setAmountIn(numberBusiness.format(saleCashRegisterMovement.getAmountIn()));
-			saleReport.getSaleCashRegisterMovement().setAmountToOut(numberBusiness.format(saleCashRegisterMovement.getAmountIn().subtract(sale.getCost())));
-			saleReport.getSaleCashRegisterMovement().setAmountOut(numberBusiness.format(saleCashRegisterMovement.getAmountOut()));
-			if(sale.getValueAddedTax()!=null && sale.getValueAddedTax().signum()!=0){
-				saleReport.getSaleCashRegisterMovement().setVatRate(numberBusiness.format(sale.getAccountingPeriod().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
-				saleReport.getSaleCashRegisterMovement().setVatAmount(numberBusiness.format(sale.getValueAddedTax().setScale(2)));
-				saleReport.getSaleCashRegisterMovement().setAmountDueNoTaxes(numberBusiness.format(sale.getCost().subtract(sale.getValueAddedTax()).setScale(2)));
-			}
-		}
-		for(SaleProduct sp : sale.getSaleProducts()){
-			SaleProductReport spr = new SaleProductReport(saleReport,sp.getProduct().getCode(),sp.getProduct().getName(),
-					sp.getProduct().getPrice()==null?"":numberBusiness.format(sp.getProduct().getPrice()),
-					numberBusiness.format(sp.getQuantity()),numberBusiness.format(sp.getPrice()));
-			saleReport.getSaleProducts().add(spr);
-		}
-		
-		ReportBasedOnTemplateFile<SaleReport> report = createReport(sale, saleReport,sale.getAccountingPeriod().getPointOfSaleReportFile(),"pdf");
-		if(sale.getReport()==null)
-			sale.setReport(new File());
-		sale.getReport().setBytes(report.getBytes());
-		sale.getReport().setExtension(report.getFileExtension());
-		if(sale.getReport().getIdentifier()==null){
-			fileBusiness.create(sale.getReport());
-			logDebug("Report created");
-		}else{
-			fileBusiness.update(sale.getReport());
-			logDebug("Report updated");
-		}
-		
-		update(sale);
+	@Override
+	public void complete(Sale sale, SaleCashRegisterMovement saleCashRegisterMovement) {
+		complete(sale, saleCashRegisterMovement, Boolean.TRUE);
 	}
 	
-	private ReportBasedOnTemplateFile<SaleReport> createReport(Sale sale,SaleReport saleReport,File template,String fileExtension){
-		ReportBasedOnTemplateFile<SaleReport> report = new ReportBasedOnTemplateFile<SaleReport>();
-		report.setFileName(DEFAULT_POINT_OF_SALE_REPORT_NAME);
-		report.setFileExtension(StringUtils.isBlank(fileExtension)?DEFAULT_POINT_OF_SALE_REPORT_EXTENSION:fileExtension);
-		if(saleReport==null){
-			report.setBytes(sale.getReport().getBytes());
-		}else{
-			report.getDataSource().add(saleReport);
-			report.setTemplateFile(template);
-			reportBusiness.build(report, Boolean.FALSE);
-		}
-		return report;
+	private void createReport(InvoiceParameters previous,InvoiceParameters current){
+		SaleReport saleReport = CompanyBusinessLayer.getInstance().getSaleReportProducer().produceInvoice(previous,current);
+		for(SaleBusinessListener listener : LISTENERS)
+			listener.reportCreated(this, saleReport, Boolean.TRUE);
+		CompanyBusinessLayer.getInstance().persistPointOfSale(current.getSale(), saleReport); 
+		update(current.getSale());
 	}
-
+	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<Sale> findByCriteria(SaleSearchCriteria criteria) {
 		prepareFindByCriteria(criteria);
@@ -339,7 +288,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		return dao.sumCostByCriteria(criteria);
 	}
 	
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public BigDecimal sumValueAddedTaxByCriteria(SaleSearchCriteria criteria) {
 		return dao.sumValueAddedTaxByCriteria(criteria);
 	}
@@ -364,7 +313,13 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public ReportBasedOnTemplateFile<SaleReport> findReport(Collection<Sale> sales) {
-		return createReport(sales.iterator().next(), null, null,DEFAULT_POINT_OF_SALE_REPORT_EXTENSION);//TODO many receipt print must be handled
+		return CompanyBusinessLayer.getInstance().createReport(CompanyBusinessLayer.getInstance().getPointOfSaleInvoiceReportName(),
+				sales.iterator().next().getReport(), null, null,null);//TODO many receipt print must be handled
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public ReportBasedOnTemplateFile<SaleReport> findReport(Sale sale) {
+		return findReport(Arrays.asList(sale));
 	}
 	
 	@Override

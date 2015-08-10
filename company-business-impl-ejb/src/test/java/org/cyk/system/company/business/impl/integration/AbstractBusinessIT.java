@@ -13,10 +13,12 @@ import org.apache.commons.io.IOUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.CustomerBusiness;
+import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.product.SaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
@@ -70,6 +72,18 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     @Inject protected CashierBusiness cashierBusiness;
     @Inject protected AccountingPeriodBusiness accountingPeriodBusiness;
     @Inject protected OwnedCompanyBusiness ownedCompanyBusiness;
+    @Inject protected ProductBusiness productBusiness;
+	@Inject protected TangibleProductBusiness tangibleProductBusiness;
+    
+	static {
+		AbstractTestHelper.TEST_ENVIRONMENT_LISTENERS.add(new DefaultTestEnvironmentAdapter(){
+    		@Override
+    		public void assertEquals(String message, Object expected, Object actual) {
+    			Assert.assertEquals(message, expected, actual);
+    		}
+    		
+    	});
+	}
 	
     @Override
     public EntityManager getEntityManager() {
@@ -88,15 +102,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     }
     
     @Override
-    protected void populate() {
-    	
-    	AbstractTestHelper.TEST_ENVIRONMENT_LISTENERS.add(new DefaultTestEnvironmentAdapter(){
-    		@Override
-    		public void assertEquals(String message, Object expected, Object actual) {
-    			Assert.assertEquals(message, expected, actual);
-    		}
-    	});
-    }
+    protected void populate() {}
     
     protected void finds() {}
     protected void businesses() {}

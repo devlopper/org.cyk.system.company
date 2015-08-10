@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="A4 Point Of Sale" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="30" isIgnorePagination="true" uuid="f58b9cb0-12e7-4069-bd93-525c039951c5">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table" isUnderline="false">
+		<pen lineColor="#FF0000"/>
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+			<topPen lineWidth="0.0"/>
+			<leftPen lineWidth="0.0"/>
+			<bottomPen lineWidth="0.0"/>
+			<rightPen lineWidth="0.0"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#CCCCCC">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineColor="#FFFFFF"/>
+			<leftPen lineColor="#FFFFFF"/>
+			<bottomPen lineColor="#FFFFFF"/>
+			<rightPen lineColor="#FFFFFF"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF" fill="Solid">
+		<pen lineStyle="Dashed"/>
+		<box>
+			<pen lineWidth="0.5" lineColor="#FFFFFF"/>
+			<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+			<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+			<bottomPen lineWidth="0.5" lineColor="#FFFFFF"/>
+			<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+		</box>
+	</style>
+	<style name="table 2">
+		<box>
+			<pen lineWidth="0.0" lineColor="#000000"/>
+			<topPen lineWidth="0.0"/>
+			<leftPen lineWidth="0.0"/>
+			<bottomPen lineWidth="0.0"/>
+			<rightPen lineWidth="0.0"/>
+		</box>
+	</style>
+	<style name="table 2_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.0"/>
+			<leftPen lineWidth="0.0"/>
+			<bottomPen lineWidth="0.0"/>
+			<rightPen lineWidth="0.0"/>
+		</box>
+	</style>
+	<style name="table_column_label" fontSize="8" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+	<subDataset name="SaleProductDS" uuid="07340f48-0cf2-4c93-b2f8-43d0c4a27ecb">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="identifier" class="java.lang.String">
+			<fieldDescription><![CDATA[identifier]]></fieldDescription>
+		</field>
+		<field name="name" class="java.lang.String">
+			<fieldDescription><![CDATA[name]]></fieldDescription>
+		</field>
+		<field name="price" class="java.lang.String">
+			<fieldDescription><![CDATA[price]]></fieldDescription>
+		</field>
+		<field name="quantity" class="java.lang.String">
+			<fieldDescription><![CDATA[quantity]]></fieldDescription>
+		</field>
+		<field name="saleReport" class="org.cyk.system.company.model.product.SaleReport">
+			<fieldDescription><![CDATA[saleReport]]></fieldDescription>
+		</field>
+		<field name="totalPrice" class="java.lang.String">
+			<fieldDescription><![CDATA[totalPrice]]></fieldDescription>
+		</field>
+	</subDataset>
+	<subDataset name="HeaderInfos" uuid="a2df75ee-6bad-4bf2-b3d1-b9781b48fe75">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="label" class="java.lang.String">
+			<fieldDescription><![CDATA[label]]></fieldDescription>
+		</field>
+		<field name="value" class="java.lang.String">
+			<fieldDescription><![CDATA[value]]></fieldDescription>
+		</field>
+	</subDataset>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="identifier" class="java.lang.String">
+		<fieldDescription><![CDATA[identifier]]></fieldDescription>
+	</field>
+	<field name="goodByeMessage" class="java.lang.String">
+		<fieldDescription><![CDATA[goodByeMessage]]></fieldDescription>
+	</field>
+	<field name="welcomeMessage" class="java.lang.String">
+		<fieldDescription><![CDATA[welcomeMessage]]></fieldDescription>
+	</field>
+	<field name="customer" class="org.cyk.system.root.model.party.person.ActorReport">
+		<fieldDescription><![CDATA[customer]]></fieldDescription>
+	</field>
+	<field name="saleProducts" class="java.util.Collection">
+		<fieldDescription><![CDATA[saleProducts]]></fieldDescription>
+	</field>
+	<field name="saleCashRegisterMovement" class="org.cyk.system.company.model.product.SaleCashRegisterMovementReport">
+		<fieldDescription><![CDATA[saleCashRegisterMovement]]></fieldDescription>
+	</field>
+	<field name="cashier" class="org.cyk.system.root.model.party.person.ActorReport">
+		<fieldDescription><![CDATA[cashier]]></fieldDescription>
+	</field>
+	<field name="date" class="java.lang.String">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
+	<field name="cost" class="java.lang.String">
+		<fieldDescription><![CDATA[cost]]></fieldDescription>
+	</field>
+	<field name="cashRegisterIdentifier" class="java.lang.String">
+		<fieldDescription><![CDATA[cashRegisterIdentifier]]></fieldDescription>
+	</field>
+	<field name="accountingPeriod" class="org.cyk.system.company.model.accounting.AccountingPeriodReport">
+		<fieldDescription><![CDATA[accountingPeriod]]></fieldDescription>
+	</field>
+	<field name="numberOfProducts" class="java.lang.String">
+		<fieldDescription><![CDATA[numberOfProducts]]></fieldDescription>
+	</field>
+	<field name="done" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[done]]></fieldDescription>
+	</field>
+	<field name="headerInfos" class="org.cyk.system.root.model.file.report.LabelValueCollection">
+		<fieldDescription><![CDATA[headerInfos]]></fieldDescription>
+	</field>
+	<field name="taxInfos" class="org.cyk.system.root.model.file.report.LabelValueCollection">
+		<fieldDescription><![CDATA[taxInfos]]></fieldDescription>
+	</field>
+	<field name="paymentInfos" class="org.cyk.system.root.model.file.report.LabelValueCollection">
+		<fieldDescription><![CDATA[paymentInfos]]></fieldDescription>
+	</field>
+	<field name="title" class="java.lang.String">
+		<fieldDescription><![CDATA[title]]></fieldDescription>
+	</field>
+	<background>
+		<band/>
+	</background>
+	<detail>
+		<band height="700">
+			<textField>
+				<reportElement mode="Opaque" x="1" y="1" width="386" height="64" backcolor="#FFFFFF" uuid="f14fe2f1-6e50-4a39-991c-56e8ba8d5e0f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement key="header" style="table 2" positionType="Float" x="0" y="88" width="575" height="13" uuid="36df267b-97f5-4d0a-9fe1-fb50532eee3e"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="HeaderInfos" uuid="ac2c8167-8724-4433-8f1c-ab30279885a5">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{headerInfos}.getCollection())]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="250" uuid="f4d5a409-dbc4-4718-8159-a56a0608e1e1">
+						<jr:detailCell style="table 2_TD" height="30" rowSpan="1">
+							<textField>
+								<reportElement style="table_column_label" x="0" y="0" width="250" height="20" uuid="fc70d2d2-e83d-4d74-8b7a-638427f13670"/>
+								<textElement>
+									<font size="14" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{label}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="324" uuid="f8e49c74-b878-4000-8f81-9c98b2818454">
+						<jr:detailCell style="table 2_TD" height="30" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="324" height="20" uuid="014b3d39-c8e7-48de-a788-1af6ad1783dc"/>
+								<textElement>
+									<font size="14"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{value}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<componentElement>
+				<reportElement key="payment" style="table 2" positionType="Float" x="0" y="117" width="575" height="13" uuid="d9018c63-3316-4414-859e-cd9a5d51c129"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="HeaderInfos" uuid="2fc48e6f-5441-4326-a302-7cf3249d76ad">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{paymentInfos}.getCollection())]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="250" uuid="c6cb6975-b62e-424a-9b9f-24f33810cf8f">
+						<jr:detailCell style="table 2_TD" height="26" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="250" height="20" uuid="caf3ca5f-3be8-4311-8b4c-2a59cc18acc1"/>
+								<textElement>
+									<font size="14" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{label}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="324" uuid="3999b1d1-34ed-45a9-af5b-723444a9f8f9">
+						<jr:detailCell style="table 2_TD" height="26" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="324" height="20" uuid="96c0e1ff-dad1-42b6-aa89-69aab62ce23e"/>
+								<textElement>
+									<font size="14"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{value}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<componentElement>
+				<reportElement key="vat" style="table 2" positionType="Float" x="0" y="147" width="575" height="15" uuid="12f31851-534b-4b0c-8816-a447e0b99caf"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="HeaderInfos" uuid="a2825ad7-37ad-4813-8b79-fe2fd2cad672">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{taxInfos}.getCollection())]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="250" uuid="8338700c-a63f-421e-9785-931a5e3428c0">
+						<jr:detailCell style="table 2_TD" height="26" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="250" height="20" uuid="cea9762f-1bf5-4cbd-9c3d-9d5f1f4d205a"/>
+								<textElement>
+									<font size="14" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{label}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="324" uuid="0130eec8-451e-484e-a8c7-bd10889f54ed">
+						<jr:detailCell style="table 2_TD" height="26" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="324" height="20" uuid="0463d02c-aa69-48bd-a609-b39031ae049f"/>
+								<textElement>
+									<font size="14"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{value}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<image>
+				<reportElement x="491" y="1" width="64" height="64" uuid="10198e5f-bc92-4e95-9d39-e1eab0dc2fdd"/>
+				<imageExpression><![CDATA[$F{accountingPeriod}.getCompany().getImage()]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="42">
+			<textField>
+				<reportElement x="0" y="0" width="575" height="12" uuid="cba5b672-6b12-4a1e-8002-93fa64edb28c"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{goodByeMessage}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="12" width="575" height="11" uuid="dab246ed-83bf-4281-85a3-7040e8e928fc"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Telephone : "+$F{accountingPeriod}.getCompany().getContact().getPhoneNumbers()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

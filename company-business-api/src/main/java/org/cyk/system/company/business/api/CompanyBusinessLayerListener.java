@@ -17,4 +17,10 @@ public interface CompanyBusinessLayerListener {
 	
 	byte[] getCompanyLogoBytes();
 	byte[] getCompanyPointOfSaleBytes();
+	
+	/**/
+
+	String SALE_IDENTIFICATION_NUMBER = "SALE_IDENTIFICATION_NUMBER";
+	String CASH_MOVEMENT_IDENTIFICATION_NUMBER = "CASH_MOVEMENT_IDENTIFICATION_NUMBER";
+	
 }

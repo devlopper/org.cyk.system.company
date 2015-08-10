@@ -1,11 +1,12 @@
-package org.cyk.system.company.business.api;
+package org.cyk.system.company.business.impl;
 
+import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.structure.Company;
+import org.cyk.system.root.business.impl.AbstractBusinessLayerAdapter;
 import org.cyk.system.root.model.file.File;
-import org.cyk.utility.common.cdi.AbstractBean;
 
-public class CompanyBusinessLayerAdapter extends AbstractBean implements CompanyBusinessLayerListener {
+public class CompanyBusinessLayerAdapter extends AbstractBusinessLayerAdapter implements CompanyBusinessLayerListener {
 
 	private static final long serialVersionUID = -3717816726680012239L;
 

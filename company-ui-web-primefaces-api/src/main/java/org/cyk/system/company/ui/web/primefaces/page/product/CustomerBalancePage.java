@@ -15,7 +15,7 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
-import org.cyk.system.company.business.impl.product.CustomerBalanceReportTableDetails;
+import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.ui.api.model.table.Cell;
 import org.cyk.ui.api.model.table.Column;
@@ -31,7 +31,7 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 
 	@Inject private CustomerBusiness customerBusiness;
 	
-	private Table<CustomerBalanceReportTableDetails> table;
+	private Table<CustomerReportTableRow> table;
 	
 	@Override
 	protected void initialisation() {
@@ -42,22 +42,22 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
-		Collection<CustomerBalanceReportTableDetails> details = new ArrayList<>();
+		Collection<CustomerReportTableRow> details = new ArrayList<>();
 		String balanceType = requestParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType());
 		final Boolean all = CompanyBusinessLayer.getInstance().getParameterCustomerBalanceAll().equals(balanceType);
 		contentTitle = all?text("company.command.customer.balance"):text("field.credence");
 		Collection<Customer> customers = all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
 		for(Customer customer : customers)
-			details.add(new CustomerBalanceReportTableDetails(customer));
-		TableAdapter<Row<CustomerBalanceReportTableDetails>, Column, CustomerBalanceReportTableDetails, String, Cell, String> listener;
-		listener = new TableAdapter<Row<CustomerBalanceReportTableDetails>, Column, CustomerBalanceReportTableDetails, String, Cell, String>(){
+			details.add(new CustomerReportTableRow(customer));
+		TableAdapter<Row<CustomerReportTableRow>, Column, CustomerReportTableRow, String, Cell, String> listener;
+		listener = new TableAdapter<Row<CustomerReportTableRow>, Column, CustomerReportTableRow, String, Cell, String>(){
 			@Override
 			public Boolean ignore(Field field) {
-				return all?CompanyBusinessLayer.getInstance().reportCustomerBalanceFieldIgnored(field):
-					CompanyBusinessLayer.getInstance().reportCustomerCredenceFieldIgnored(field);
+				return all?CustomerReportTableRow.balanceFieldIgnored(field):
+					CustomerReportTableRow.credenceFieldIgnored(field);
 			}
 		};
-		table = createDetailsTable(CustomerBalanceReportTableDetails.class, details, listener, "");	
+		table = createDetailsTable(CustomerReportTableRow.class, details, listener, "");	
 		table.setShowHeader(Boolean.FALSE);
 		table.setShowFooter(Boolean.FALSE);
 		table.setShowToolBar(Boolean.TRUE);

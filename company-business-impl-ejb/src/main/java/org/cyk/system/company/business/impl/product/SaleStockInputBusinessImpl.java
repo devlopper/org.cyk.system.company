@@ -9,15 +9,19 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.cyk.system.company.business.api.SaleReportProducer;
+import org.cyk.system.company.business.api.SaleReportProducer.InvoiceParameters;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
+import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.TangibleProduct;
@@ -44,8 +48,11 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private CashierBusiness cashierBusiness;
 	@Inject private EventBusiness eventBusiness;
+	
 	@Inject private SaleStockOutputDao saleStockOutputDao;
 	@Inject private CustomerDao customerDao;
+	
+	private SaleReportProducer reportProducer = CompanyBusinessLayer.getInstance().getSaleReportProducer();
 	
 	@Inject
 	public SaleStockInputBusinessImpl(SaleStockInputDao dao) {
@@ -67,7 +74,9 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 	@Override
 	public void create(SaleStockInput saleStockInput,SaleCashRegisterMovement saleCashRegisterMovement) {
 		logDebug("Create sale stock input");
-		saleBusiness.create(saleStockInput.getSale(), saleCashRegisterMovement);
+		saleBusiness.create(saleStockInput.getSale(), saleCashRegisterMovement,Boolean.FALSE);
+		InvoiceParameters previous = new InvoiceParameters(saleStockInput, saleCashRegisterMovement);
+		
 		saleStockInput.getTangibleProductStockMovement().setDate(saleStockInput.getSale().getDate());
 		saleStockInput.setRemainingNumberOfGoods(saleStockInput.getTangibleProductStockMovement().getQuantity());
 		tangibleProductStockMovementBusiness.create(saleStockInput.getTangibleProductStockMovement());
@@ -87,7 +96,22 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 			customerDao.update(customer);
 		}
 		
+		SaleReport saleReport = reportProducer.produceInvoice(previous,new InvoiceParameters(saleStockInput, saleCashRegisterMovement));
+		CompanyBusinessLayer.getInstance().persistPointOfSale(saleStockInput.getSale(), saleReport); 
+	
 		create(saleStockInput);
+		
+		if(saleCashRegisterMovement.getIdentifier()!=null){
+			exceptionUtils().exception("sale.stock.input.cannotpaywhiledrop");
+			//saleCashRegisterMovement.setReport(saleCashRegisterMovement.getSale().getReport());
+			//debug(saleCashRegisterMovement.getCashRegisterMovement());
+			//debug(saleCashRegisterMovement.getBalance());
+			
+			//saleReport = reportProducer.produce(saleStockInput.getSale(),saleStockInput, saleCashRegisterMovement,amountToPay);
+			//CompanyBusinessLayer.getInstance().persistPointOfSale(saleStockInput.getSale(), saleReport); 
+			//saleCashRegisterMovementDao.update(saleCashRegisterMovement);
+		}
+		
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)

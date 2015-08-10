@@ -44,7 +44,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	@Column(unique=true) private String identificationNumber;
 	@ManyToOne @NotNull private Cashier cashier;
 	@ManyToOne private Customer customer;
-	@Column private String externalCustomerIdentifier;//This value is used to link to another system (Example : Accounting System)
+	//@Column private String externalIdentifier;//This value is used to link to another system (Example : Accounting System)
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal cost = BigDecimal.ZERO;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal valueAddedTax = BigDecimal.ZERO;

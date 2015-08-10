@@ -21,6 +21,7 @@ public class AccountingPeriodReport extends AbstractGeneratable<AccountingPeriod
 	@Override
 	public void generate() {
 		valueAddedTaxRate = RandomStringUtils.randomNumeric(2);
+		company.generate();
 	}
 	
 }

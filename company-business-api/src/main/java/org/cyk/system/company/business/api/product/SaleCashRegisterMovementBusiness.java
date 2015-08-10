@@ -5,7 +5,9 @@ import java.util.Collection;
 
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
+import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.root.business.api.TypedBusiness;
+import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.party.person.Person;
 
 public interface SaleCashRegisterMovementBusiness extends TypedBusiness<SaleCashRegisterMovement> {
@@ -20,6 +22,11 @@ public interface SaleCashRegisterMovementBusiness extends TypedBusiness<SaleCash
 	
 	//SaleCashRegisterMovement create(SaleCashRegisterMovement payment,Boolean payback);
 	
+	SaleCashRegisterMovement create(SaleCashRegisterMovement saleCashRegisterMovement,Boolean generatePos);
+	
 	BigDecimal computeBalance(SaleCashRegisterMovement payment);
+	
+	ReportBasedOnTemplateFile<SaleReport> findReport(Collection<SaleCashRegisterMovement> saleCashRegisterMovements);
+	ReportBasedOnTemplateFile<SaleReport> findReport(SaleCashRegisterMovement saleCashRegisterMovement);
 	
 }

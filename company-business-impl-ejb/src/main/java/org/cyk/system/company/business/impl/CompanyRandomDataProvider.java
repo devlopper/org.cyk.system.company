@@ -139,7 +139,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 			sale.setCustomer(rootRandomDataProvider.oneFromDatabase(Customer.class));
 			sale.setDate(date(accountingPeriod));
 			
-			sale.setExternalCustomerIdentifier(randomDataProvider.randomWord(5, 5));
+			//sale.setExternalCustomerIdentifier(randomDataProvider.randomWord(5, 5));
 			sale.setAutoComputeValueAddedTax(Boolean.TRUE);
 			sale.setComments(randomDataProvider.randomText(5, 5, 5, 5));
 

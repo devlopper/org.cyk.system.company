@@ -7,29 +7,32 @@ import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.persistence.api.product.SaleStockOutputDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
+import org.cyk.system.root.persistence.impl.QueryStringBuilder;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
+import org.cyk.utility.common.computation.ArithmeticOperator;
+import org.cyk.utility.common.computation.LogicalOperator;
 
 public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOutput,SaleStockOutputSearchCriteria> implements SaleStockOutputDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	private static final String READ_BY_CRITERIA_SELECT_FORMAT = "SELECT sso FROM SaleStockOutput sso ";
-	private static final String READ_BY_CRITERIA_WHERE_FORMAT = "WHERE sso.tangibleProductStockMovement.date BETWEEN :fromvalue AND :tovalue"
-			+ " AND sso.saleCashRegisterMovement.cashRegisterMovement.amount >= :minimumPaid "
-			+ "AND ABS(sso.tangibleProductStockMovement.quantity) >= :minimumQuantity AND sso.saleStockInput.externalIdentifier LIKE :externalIdentifier"
-			+ " AND sso.saleStockInput.sale.done = :saleDone ";
-	
-	private static final String READ_BY_CRITERIA_NOTORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT;
-	private static final String READ_BY_CRITERIA_ORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT+ORDER_BY_FORMAT;
-	
 	private String readBySaleStockInput;
 	
 	@Override
     protected void namedQueriesInitialisation() {
     	super.namedQueriesInitialisation();
-    	registerNamedQuery(readByCriteria,READ_BY_CRITERIA_NOTORDERED_FORMAT+" ORDER BY sso.tangibleProductStockMovement.date ASC");
-        registerNamedQuery(readByCriteriaDateAscendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "sso.tangibleProductStockMovement.date ASC") );
-        registerNamedQuery(readByCriteriaDateDescendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "sso.tangibleProductStockMovement.date DESC") );
+    	
+    	QueryStringBuilder queryStringBuilder = _select().where("saleStockInput.externalIdentifier","externalIdentifier",ArithmeticOperator.LIKE)
+    			.and().between("tangibleProductStockMovement.date").where(LogicalOperator.AND,"saleStockInput.sale.done","saleDone",ArithmeticOperator.EQ)
+    			.and().whereString("ABS(r.tangibleProductStockMovement.quantity) >= :minimumQuantity")
+    			.and().whereString("r.saleCashRegisterMovement.cashRegisterMovement.amount >= :minimumPaid");
+        	
+        String readByCriteriaDateAscendingOrderQuery = queryStringBuilder.orderBy("tangibleProductStockMovement.date", Boolean.TRUE).getValue();
+    	
+        registerNamedQuery(readByCriteria,readByCriteriaDateAscendingOrderQuery);
+        registerNamedQuery(readByCriteriaDateAscendingOrder,readByCriteriaDateAscendingOrderQuery );
+        registerNamedQuery(readByCriteriaDateDescendingOrder,queryStringBuilder.orderBy("tangibleProductStockMovement.date", Boolean.FALSE));	
+        
         registerNamedQuery(readBySaleStockInput,_select().where("saleStockInput"));
     }
 	

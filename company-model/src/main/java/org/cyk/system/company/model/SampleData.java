@@ -19,9 +19,11 @@ public class SampleData implements Serializable {
 	}
 	
 	public static Collection<SaleReport> createSaleReports(){
-		Collection<SaleReport> collection = RandomDataProvider.generate(SaleReport.class, 3);
+		Collection<SaleReport> collection = RandomDataProvider.generate(SaleReport.class, 1);
 		int i = 0;
-		for(SaleReport saleReport : collection)
+		for(SaleReport saleReport : collection){
+			saleReport.getAccountingPeriod().getCompany().setName(
+					saleReport.getAccountingPeriod().getCompany().getName()+" - "+i);
 			switch(i++){
 			case 0:
 				saleReport.setDone(Boolean.FALSE);
@@ -32,6 +34,7 @@ public class SampleData implements Serializable {
 			case 2:
 				break;
 			}	
+		}
 		return collection;
 	}
 	
