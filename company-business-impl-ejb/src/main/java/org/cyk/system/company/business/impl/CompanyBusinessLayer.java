@@ -91,6 +91,7 @@ import org.cyk.system.root.business.api.security.UserAccountBusiness;
 import org.cyk.system.root.business.impl.AbstractBusinessLayer;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.RootRandomDataProvider;
+import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.file.report.DefaultReportBasedOnDynamicBuilder;
 import org.cyk.system.root.business.impl.file.report.ReportBasedOnDynamicBuilderAdapter;
 import org.cyk.system.root.business.impl.file.report.jasper.DefaultJasperReportBasedOnDynamicBuilder;
@@ -195,6 +196,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Getter @Setter private TangibleProduct tangibleProductSaleStock;
 	@Getter private IntangibleProduct intangibleProductSaleStock;
 	private CashRegister cashRegister;
+	@Inject private CompanyReportRepository companyReportRepository;
 	
 	private static final Collection<CompanyBusinessLayerListener> COMPANY_BUSINESS_LAYER_LISTENERS = new ArrayList<>();
 	
@@ -214,7 +216,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		applicationBusiness.registerValueGenerator((ValueGenerator<?, ?>) new StringValueGenerator<Sale>(
         		CompanyBusinessLayerListener.SALE_IDENTIFICATION_NUMBER,"", Sale.class));
 		
-		ReportBasedOnDynamicBuilderListener.GLOBALS.add(new ReportBasedOnDynamicBuilderAdapter(){
+		/*ReportBasedOnDynamicBuilderListener.GLOBALS.add(new ReportBasedOnDynamicBuilderAdapter(){
         	@Override
         	public void report(ReportBasedOnDynamicBuilder<?> report,ReportBasedOnDynamicBuilderParameters<?> parameters) {
         		parameters.setOwner(ownedCompanyBusiness.findDefaultOwnedCompany().getCompany());
@@ -319,10 +321,60 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			
 			public void beforeBuild(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
 				String reportType = parameters.getExtendedParameterMap().get(parameterSaleStockReportType)[0];
+				Boolean saleDone = null;
+				try { saleDone = Boolean.parseBoolean(parameters.getExtendedParameterMap().get(parameterSaleDone)[0]); } 
+				catch (Exception e) { saleDone = Boolean.TRUE;}
+				Date fromDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterFromDate())[0]));
+				Date toDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterToDate())[0]));
 				if(parameterSaleStockReportCashRegister.equals(reportType)){
-					
+					BigDecimal output=BigDecimal.ZERO,paid=BigDecimal.ZERO,balance=BigDecimal.ZERO;
+					for(Object object : parameters.getDatas()){
+						SaleStockReportTableRow row = (SaleStockReportTableRow) object;
+						if(row.getSaleStock() instanceof SaleStockOutput){
+							output = output.add( ((SaleStockOutput)row.getSaleStock()).getTangibleProductStockMovement().getQuantity().abs());
+							paid = paid.add( ((SaleStockOutput)row.getSaleStock()).getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
+							//balance = saleBusiness.sumBalanceByCriteria(criteria) 
+									//balance.add(((SaleStockOutput)row.getSaleStock()).getSaleStockInput().getS.getBalance().getValue());
+						}
+					}
+					balance = saleBusiness.sumBalanceByCriteria(new SaleSearchCriteria(fromDate,toDate));
+					SaleStockReportTableRow totalRow = new SaleStockReportTableRow(null);
+					//totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));
+					totalRow.setTakenNumberOfGoods(RootBusinessLayer.getInstance().getNumberBusiness().format(output));
+					totalRow.setAmountPaid(RootBusinessLayer.getInstance().getNumberBusiness().format(paid));	
+					totalRow.setBalance(RootBusinessLayer.getInstance().getNumberBusiness().format(balance));
+					parameters.getDatas().add(totalRow);
 				}else if(parameterSaleStockReportInventory.equals(reportType)){
-					
+					Set<String> customerIds = new LinkedHashSet<>();
+					List<Object> list = new LinkedList<>();
+					//get the filters
+					for(Object object : parameters.getDatas()){
+						SaleStockReportTableRow row = (SaleStockReportTableRow)object;
+						customerIds.add(row.getCustomer());
+					}
+					//for each filter
+					for(String customerId : customerIds){
+						//filter rows
+						BigDecimal in=BigDecimal.ZERO,out=BigDecimal.ZERO;
+						for(Object object : parameters.getDatas()){
+							SaleStockReportTableRow row = (SaleStockReportTableRow) object;
+							if(row.getCustomer().equals(customerId)){
+								list.add(row);
+								if(row.getSaleStock() instanceof SaleStockInput){
+									in = in.add( ((SaleStockInput)row.getSaleStock()).getTangibleProductStockMovement().getQuantity());
+								}else if(row.getSaleStock() instanceof SaleStockOutput){
+									out = out.add( ((SaleStockOutput)row.getSaleStock()).getTangibleProductStockMovement().getQuantity().abs());
+								}
+							}
+						}
+						SaleStockReportTableRow totalRow = new SaleStockReportTableRow(null);
+						totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));
+						totalRow.setStockIn(RootBusinessLayer.getInstance().getNumberBusiness().format(in));
+						totalRow.setStockOut(RootBusinessLayer.getInstance().getNumberBusiness().format(out));	
+						totalRow.setRemainingNumberOfGoods(RootBusinessLayer.getInstance().getNumberBusiness().format(in.subtract(out)));
+						list.add(totalRow);
+					}
+					parameters.setDatas(list);
 				}else if(parameterSaleStockReportCustomer.equals(reportType)){
 					Set<String> customerIds = new LinkedHashSet<>();
 					List<Object> list = new LinkedList<>();
@@ -447,7 +499,12 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		        parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultJasperReportBasedOnDynamicBuilder());
 				return (ReportBasedOnDynamicBuilder<StockDashBoardReportTableDetails>) reportBusiness.build(parameters);
 			}
-		});	
+		});	*/
+	}
+	
+	@Override
+	protected AbstractReportRepository getReportRepository() {
+		return companyReportRepository;
 	}
 	
 	@Override

@@ -57,7 +57,10 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 
 	@Override
 	public SaleStockOutput create(SaleStockOutput saleStockOutput) {
-		exceptionUtils().exception(saleStockOutput.getTangibleProductStockMovement().getQuantity().signum()>0, "salestockoutput.quantitymustbenegative");
+		BigDecimal outputQuantity = saleStockOutput.getTangibleProductStockMovement().getQuantity();
+		exceptionUtils().exception(outputQuantity.signum()>0, "salestockoutput.quantitymustbenegative");
+		SaleStockInput saleStockInput = saleStockInputDao.read(saleStockOutput.getSaleStockInput().getIdentifier());
+		exceptionUtils().exception(outputQuantity.abs().compareTo(saleStockInput.getRemainingNumberOfGoods())>0, "salestockoutput.quantitymustbelessthanorequalsinstock");
 		ReceiptParameters previous = new ReceiptParameters(saleStockOutput);
 		saleCashRegisterMovementBusiness.create(saleStockOutput.getSaleCashRegisterMovement(),Boolean.FALSE);
 		saleStockOutput.getTangibleProductStockMovement().setDate(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
@@ -73,7 +76,7 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 			customerDao.update(customer);
 		}
 		
-		if(saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().equals(BigDecimal.ZERO)){
+		if(saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().equals(BigDecimal.ZERO) && saleStockOutput.getSaleStockInput().getEvent()!=null){
 			Event event = saleStockOutput.getSaleStockInput().getEvent();
 			saleStockOutput.getSaleStockInput().setEvent(null);
 			saleStockInputDao.update(saleStockOutput.getSaleStockInput());

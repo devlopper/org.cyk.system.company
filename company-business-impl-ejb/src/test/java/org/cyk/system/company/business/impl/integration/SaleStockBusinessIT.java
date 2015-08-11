@@ -19,12 +19,14 @@ import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStockSearchCriteria;
+import org.cyk.system.root.business.api.BusinessException;
 import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParameters;
 import org.cyk.system.root.model.party.person.Person;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class SaleStockBusinessIT extends AbstractBusinessIT {
 
@@ -39,6 +41,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
      
     private CashRegister cashRegister1;
     private Customer customer1,customer2,customer3;
+    private Person person;
     
     private void init(){
     	installApplication();
@@ -64,12 +67,14 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	cashRegister1.setCode("CASHIER001");
     	cashRegister1.setOwnedCompany(ownedCompanyBusiness.findDefaultOwnedCompany());
     	create(cashRegister1);
+    	
+    	person = companyBusinessTestHelper.cashierPerson();
     }
     
     @Override
     protected void businesses() {
     	init();
-    	Person person = companyBusinessTestHelper.cashierPerson();
+    	//Person person = companyBusinessTestHelper.cashierPerson();
     	
     	dropAndTakeInOne(person);
     	
@@ -77,8 +82,9 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	dropAndTakeInManyWithZeroPayment(person);
     	dropAndTakeInManyWithZeroQuantity(person);
     	dropManyAndTakeInMany(person);
+    	dropAndTakeInManyWithPaymentAtZeroQuantity(person);
     	
-    	searchByCriterias();
+    	//searchByCriterias();
     	
     	printReports();
     	
@@ -118,6 +124,12 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	companyBusinessTestHelper.taking(date(2015, 1, 11),person, saleStockInput, "1", "0", "2", "1100","1100");
     	companyBusinessTestHelper.taking(date(2015, 1, 12),person, saleStockInput, "1", "1000", "1", "100","100");
     	companyBusinessTestHelper.taking(date(2015, 1, 13),person, saleStockInput, "1", "100", "0", "0","0");
+    }
+    
+    private  void dropAndTakeInManyWithPaymentAtZeroQuantity(Person person){
+    	SaleStockInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 10),person, customer3,"DK", "1000", "100", "3", "1100", "168", "1100","1100");
+    	companyBusinessTestHelper.taking(date(2015, 1, 11),person, saleStockInput, "3", "600", "0", "500","500");
+    	companyBusinessTestHelper.taking(date(2015, 1, 12),person, saleStockInput, "0", "500", "0", "0","0");
     }
     
     private void dropManyAndTakeInMany(Person person){
@@ -236,5 +248,16 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
         		CompanyBusinessLayer.getInstance().getParameterCustomerBalanceAll());
         rootTestHelper.reportBasedOnDynamicBuilderParameters(customerBalanceParameters);
     }
+    
+    /* Exceptions */
+    /*
+    @Test(expected=BusinessException.class)
+    public void dropAndTakeTooManyGoodsThanInStock(){
+    	person = companyBusinessTestHelper.cashierPerson();
+    	SaleStockInput saleStockInput = companyBusinessTestHelper
+        		.drop(date(2015, 1, 1),person, customer1,"ZZZ", "1000", "100", "3", "1100", "168", "1100","1100");
+    	companyBusinessTestHelper.taking(date(2015, 1, 2),person, saleStockInput, "3", "1100", "0", "0","0");
+    }
+    */
     
 }

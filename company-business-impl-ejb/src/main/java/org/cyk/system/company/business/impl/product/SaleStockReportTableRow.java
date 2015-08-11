@@ -77,6 +77,7 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		date = formatDate(saleStockInput.getSale().getDate());
 		
 		stockIn = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity().abs());
+		comments = saleStockInput.getSale().getComments();
 	}
 	
 	private void saleStockOutput(SaleStockOutput saleStockOutput){
@@ -102,6 +103,8 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 			stockOut = formatNumber(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());
 		else if(sign==1)
 			stockIn = formatNumber(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());
+		
+		comments = saleStockOutput.getSaleStockInput().getSale().getComments();
 	}
 	
 	/**/

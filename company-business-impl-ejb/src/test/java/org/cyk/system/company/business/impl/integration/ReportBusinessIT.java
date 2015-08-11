@@ -11,7 +11,6 @@ import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyRandomDataProvider;
 import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
 import org.cyk.system.company.business.impl.product.SaleReportTableDetail;
-import org.cyk.system.company.business.impl.product.SaleStockInputReportTableDetail;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.business.impl.product.TangibleProductInventoryReportTableDetails;
 import org.cyk.system.company.business.impl.product.TangibleProductStockMovementLineReport;

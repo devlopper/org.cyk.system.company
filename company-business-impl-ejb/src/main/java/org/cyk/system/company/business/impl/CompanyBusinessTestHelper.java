@@ -7,6 +7,7 @@ import java.util.Date;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.api.product.ProductBusiness;
@@ -74,6 +75,7 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
     		saleProduct.setQuantity(new BigDecimal(products[i+1]));
     		saleBusiness.applyChange(sale, saleProduct);
     	}
+    	sale.setComments(RandomStringUtils.randomAlphabetic(10));
     	sale.setCustomer(customer);
     }
 	
@@ -82,6 +84,7 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
     	saleStockInput.getSale().setDate(date);
     	saleStockInput.setExternalIdentifier(externalIdentifier);
     	saleStockInput.getTangibleProductStockMovement().setQuantity(new BigDecimal(quantity));
+    	
     	SaleProduct saleProduct = saleStockInput.getSale().getSaleProducts().iterator().next();
     	
     	saleProduct.setQuantity(new BigDecimal("1"));

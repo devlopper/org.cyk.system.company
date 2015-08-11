@@ -22,7 +22,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	private static final BigDecimal BALANCE_ZERO_MIN=new BigDecimal("-0."+StringUtils.repeat('0', 18)+"1"),BALANCE_ZERO_MAX=new BigDecimal("0."+StringUtils.repeat('0', 18)+"1");
 	
 	private static final String READ_BY_CRITERIA_SELECT_FORMAT = "SELECT sale FROM Sale sale ";
-	private static final String READ_BY_CRITERIA_WHERE_FORMAT = "WHERE sale.date BETWEEN :fromDate AND :toDate AND sale.balance.value BETWEEN :minBalance AND :maxBalance AND sale.done = :done ";
+	private static final String READ_BY_CRITERIA_WHERE_FORMAT = "WHERE sale.date BETWEEN :fromvalue AND :tovalue AND sale.balance.value BETWEEN :minBalance AND :maxBalance AND sale.done = :done ";
 	
 	private static final String READ_BY_CRITERIA_NOTORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT;
 	private static final String READ_BY_CRITERIA_ORDERED_FORMAT = READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT+ORDER_BY_FORMAT;
