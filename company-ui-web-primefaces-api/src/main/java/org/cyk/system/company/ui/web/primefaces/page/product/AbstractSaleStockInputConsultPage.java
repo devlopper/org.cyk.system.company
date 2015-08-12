@@ -7,27 +7,34 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.ui.api.UIManager;
 import org.cyk.ui.api.UIProvider;
+import org.cyk.ui.api.command.CommandAdapter;
+import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.UICommandable.CommandRequestType;
 import org.cyk.ui.api.command.UICommandable.Parameter;
 import org.cyk.ui.api.command.UICommandable.ViewType;
+import org.cyk.ui.api.model.table.Cell;
+import org.cyk.ui.api.model.table.Column;
+import org.cyk.ui.api.model.table.Row;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
+import org.cyk.utility.common.model.table.TableAdapter;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter
 public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultPage<SaleStockInput> implements Serializable {
@@ -51,6 +58,26 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		
 		outputsTable = (Table<OutputDetails>) createTable(OutputDetails.class, null, null);
 		configureDetailsTable(outputsTable, "model.entity.payment");
+		
+		outputsTable.setShowAddRemoveColumn(Boolean.TRUE);
+		outputsTable.setShowOpenCommand(Boolean.TRUE);
+		
+		outputsTable.getTableListeners().add(new TableAdapter<Row<OutputDetails>, Column, OutputDetails, String, Cell, String>(){
+			@Override
+			public void rowAdded(Row<OutputDetails> row) {
+				super.rowAdded(row);
+				row.setOpenable(Boolean.TRUE);
+			}
+		});
+		outputsTable.getOpenRowCommandable().getCommand().getCommandListeners().add(new CommandAdapter(){
+			private static final long serialVersionUID = 8640883295366346645L;
+			@Override
+			public void serve(UICommand command, Object parameter) {
+				navigationManager.redirectToPrintData(
+						navigationManager.reportParameters(((Row<OutputDetails>)parameter).getData().getSaleStockOutput().getSaleCashRegisterMovement(), 
+						CompanyReportRepository.getInstance().getReportPointOfSaleReceipt(),Boolean.FALSE));
+			}
+		});
 	}
 	
 	protected void afterInitialisation() {
@@ -75,10 +102,11 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 			contextualMenu.addChild("command.widthdraw", null, "saleStockOutputEditView", parameters);	
 		}
 		
-		UICommandable printReceipt = UIProvider.getInstance().createCommandable("command.see.receipt", null);
+		UICommandable printReceipt = UIProvider.getInstance().createCommandable("command.see.invoice", null);
 		printReceipt.setCommandRequestType(CommandRequestType.UI_VIEW);
 		printReceipt.setViewType(ViewType.TOOLS_REPORT);
-		printReceipt.getParameters().addAll(navigationManager.reportParameters(identifiable.getSale(), companyBusinessLayer.getReportPointOfSale(),Boolean.FALSE));
+		printReceipt.getParameters().addAll(navigationManager.reportParameters(identifiable.getSale(), 
+				CompanyReportRepository.getInstance().getReportPointOfSale(),Boolean.FALSE));
 		contextualMenu.getChildren().add(printReceipt);
 		
 		return Arrays.asList(contextualMenu);
@@ -114,8 +142,10 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		
 		@Input @InputText
 		private String identifier,date,amount,numberOfStockGoods;
+		private SaleStockOutput saleStockOutput;
 		
 		public OutputDetails(SaleStockOutput saleStockOutput) {
+			this.saleStockOutput = saleStockOutput;
 			this.identifier = saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getIdentificationNumber();
 			this.amount = UIManager.getInstance().getNumberBusiness().format(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
 			this.numberOfStockGoods = UIManager.getInstance().getNumberBusiness().format(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());

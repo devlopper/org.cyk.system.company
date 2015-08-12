@@ -9,11 +9,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.product.CustomerBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.ui.api.model.table.Cell;
@@ -22,6 +19,9 @@ import org.cyk.ui.api.model.table.Row;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.page.AbstractPrimefacesPage;
 import org.cyk.utility.common.model.table.TableAdapter;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class CustomerSaleStockPage extends AbstractPrimefacesPage implements Serializable {
@@ -58,8 +58,8 @@ public class CustomerSaleStockPage extends AbstractPrimefacesPage implements Ser
 		table.setShowFooter(Boolean.FALSE);
 		table.setShowToolBar(Boolean.TRUE);
 		table.setIdentifiableClass(Customer.class);
-		table.getPrintCommandable().addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), 
-				CompanyBusinessLayer.getInstance().getParameterCustomerReportSaleStock());
+		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerReportType(), 
+				CompanyReportRepository.getInstance().getParameterCustomerReportSaleStock());
 	}
 	
 }

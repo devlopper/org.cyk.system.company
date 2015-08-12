@@ -26,7 +26,6 @@ import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.root.business.impl.AbstractTestHelper;
-import org.cyk.system.root.model.file.report.LabelValue;
 import org.cyk.system.root.model.party.person.Person;
 
 @Singleton
@@ -143,15 +142,13 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
     	}
     	return sale;
     }
-	
+	/*
 	private static void assertSaleReport(SaleReport saleReport,String[] payments,Boolean invoice){
 		contains(LabelValue.class, saleReport.getPaymentInfos().getCollection(), new Object[]{LabelValue.FIELD_LABEL,LabelValue.FIELD_VALUE}, new Object[][]{
 			{DefaultSaleReportProducer.LABEL_AMOUNT_TO_PAY,payments[0]}
 		});
-		System.out.println(saleReport.getHeaderInfos().getCollection());
-		System.out.println(saleReport.getPaymentInfos().getCollection());
-		System.out.println(saleReport.getTaxInfos().getCollection());
 	}
+	*/
 	
 	public SaleCashRegisterMovement pay(Date date,Person person,Sale sale,String paid,Boolean printPos,String expectedBalance,String expectedCumulBalance){
     	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, person);

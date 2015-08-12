@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.model.product.ProductEmployee;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
@@ -136,7 +137,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		UICommandable printReceipt = UIProvider.getInstance().createCommandable("command.see.receipt", null);
 		printReceipt.setCommandRequestType(CommandRequestType.UI_VIEW);
 		printReceipt.setViewType(ViewType.TOOLS_REPORT);
-		printReceipt.getParameters().addAll(navigationManager.reportParameters(identifiable, companyBusinessLayer.getReportPointOfSale(),Boolean.FALSE));
+		printReceipt.getParameters().addAll(navigationManager.reportParameters(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale(),Boolean.FALSE));
 		contextualMenu.getChildren().add(printReceipt);
 		
 		return Arrays.asList(contextualMenu);

@@ -9,7 +9,7 @@ import javax.inject.Named;
 
 import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.company.model.product.SaleStockSearchCriteria;
@@ -29,10 +29,10 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		type = requestParameter(CompanyBusinessLayer.getInstance().getParameterSaleStockReportType());
-		if(CompanyBusinessLayer.getInstance().getParameterSaleStockReportInventory().equals(type))
+		type = requestParameter(CompanyReportRepository.getInstance().getParameterSaleStockReportType());
+		if(CompanyReportRepository.getInstance().getParameterSaleStockReportInventory().equals(type))
 			contentTitle=text("company.report.salestock.inventory.title");
-		else if(CompanyBusinessLayer.getInstance().getParameterSaleStockReportCustomer().equals(type))
+		else if(CompanyReportRepository.getInstance().getParameterSaleStockReportCustomer().equals(type))
 			contentTitle=text("company.report.salestock.customer.title");
 		
 	}
@@ -40,9 +40,9 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 	@Override
 	protected Boolean ignoreField(Field field) {
 		
-		if(CompanyBusinessLayer.getInstance().getParameterSaleStockReportInventory().equals(type))
+		if(CompanyReportRepository.getInstance().getParameterSaleStockReportInventory().equals(type))
 			return SaleStockReportTableRow.inventoryFieldIgnored(field);
-		else if(CompanyBusinessLayer.getInstance().getParameterSaleStockReportCustomer().equals(type))
+		else if(CompanyReportRepository.getInstance().getParameterSaleStockReportCustomer().equals(type))
 			return SaleStockReportTableRow.customerFieldIgnored(field);
 		return Boolean.TRUE;
 	}
@@ -51,7 +51,7 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 	@Override
 	protected void __beforeFindByCriteria__(SaleStockSearchCriteria criteria) {
 		super.__beforeFindByCriteria__(criteria);
-		table.getPrintCommandable().setParameter(CompanyBusinessLayer.getInstance().getParameterSaleStockReportType(),type);
+		table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterSaleStockReportType(),type);
 	}
 	
 	@Override

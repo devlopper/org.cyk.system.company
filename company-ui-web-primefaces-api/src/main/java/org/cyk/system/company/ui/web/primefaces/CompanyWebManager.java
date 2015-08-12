@@ -17,6 +17,7 @@ import org.cyk.system.company.business.api.production.ProductionSpreadSheetBusin
 import org.cyk.system.company.business.api.production.ProductionSpreadSheetTemplateBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.Cashier;
@@ -25,6 +26,7 @@ import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.ProductCollection;
 import org.cyk.system.company.model.product.Sale;
+import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
@@ -90,6 +92,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	@Inject private ProductionSpreadSheetTemplateBusiness productionPlanModelBusiness;
 	
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
+	@Inject private CompanyReportRepository companyReportRepository;
 	
 	@Override
 	protected void initialisation() {
@@ -250,18 +253,18 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 			sale.getChildren().add(uiProvider.createCommandable("command.sale.listall", null, "saleListView"));
 			
 			sale.getChildren().add(c = uiProvider.createCommandable("field.credence", null, outcomeCustomerBalance));
-			c.addParameter(companyBusinessLayer.getParameterCustomerReportType(), companyBusinessLayer.getParameterCustomerReportBalance());
-			c.addParameter(companyBusinessLayer.getParameterCustomerBalanceType(), companyBusinessLayer.getParameterCustomerBalanceCredence());
+			c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportBalance());
+			c.addParameter(companyReportRepository.getParameterCustomerBalanceType(), companyReportRepository.getParameterCustomerBalanceCredence());
 			
 			sale.getChildren().add(c = uiProvider.createCommandable("company.command.customer.balance", null, outcomeCustomerBalance));
-			c.addParameter(companyBusinessLayer.getParameterCustomerReportType(), companyBusinessLayer.getParameterCustomerReportBalance());
-			c.addParameter(companyBusinessLayer.getParameterCustomerBalanceType(), companyBusinessLayer.getParameterCustomerBalanceAll());
+			c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportBalance());
+			c.addParameter(companyReportRepository.getParameterCustomerBalanceType(), companyReportRepository.getParameterCustomerBalanceAll());
 			
 			sale.getChildren().add(c = uiProvider.createCommandable("company.command.customer.salestock", null, outcomeCustomerSaleStock));
-			c.addParameter(companyBusinessLayer.getParameterCustomerReportType(), companyBusinessLayer.getParameterCustomerReportSaleStock());
+			c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportSaleStock());
 			
 			sale.getChildren().add(c = uiProvider.createCommandable("company.command.salestock.instock", null, outcomeSaleStockInStock));
-			c.addParameter(companyBusinessLayer.getParameterCustomerReportType(), companyBusinessLayer.getParameterCustomerReportSaleStock());
+			c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportSaleStock());
 			
 			sale.getChildren().add(uiProvider.createCommandable("command.list", null, "saleStockInputListView"));
 			
@@ -283,18 +286,18 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	public void reportCommandables(Collection<UICommandable> collection){
 		UICommandable c;
 		collection.add(c = uiProvider.createCommandable("field.credence", null, outcomeCustomerBalance));
-		c.addParameter(companyBusinessLayer.getParameterCustomerReportType(), companyBusinessLayer.getParameterCustomerReportBalance());
-		c.addParameter(companyBusinessLayer.getParameterCustomerBalanceType(), companyBusinessLayer.getParameterCustomerBalanceCredence());
+		c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportBalance());
+		c.addParameter(companyReportRepository.getParameterCustomerBalanceType(), companyReportRepository.getParameterCustomerBalanceCredence());
 		
 		collection.add(c = uiProvider.createCommandable("company.command.customer.balance", null, outcomeCustomerBalance));
-		c.addParameter(companyBusinessLayer.getParameterCustomerReportType(), companyBusinessLayer.getParameterCustomerReportBalance());
-		c.addParameter(companyBusinessLayer.getParameterCustomerBalanceType(), companyBusinessLayer.getParameterCustomerBalanceAll());
+		c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportBalance());
+		c.addParameter(companyReportRepository.getParameterCustomerBalanceType(), companyReportRepository.getParameterCustomerBalanceAll());
 		
 		collection.add(c = uiProvider.createCommandable("company.command.customer.salestock", null, outcomeCustomerSaleStock));
-		c.addParameter(companyBusinessLayer.getParameterCustomerReportType(), companyBusinessLayer.getParameterCustomerReportSaleStock());
+		c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportSaleStock());
 		
 		collection.add(c = uiProvider.createCommandable("company.command.salestock.instock", null, outcomeSaleStockInStock));
-		c.addParameter(companyBusinessLayer.getParameterCustomerReportType(), companyBusinessLayer.getParameterCustomerReportSaleStock());
+		c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportSaleStock());
 		
 		
 	}
@@ -339,21 +342,26 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		UICommandable c;
 			
 		commandables.add(c = uiProvider.createCommandable("company.report.salestockoutput.cashregister.title", null, outcomeSaleStockOutputList));
-		c.addParameter(companyBusinessLayer.getParameterSaleStockReportType(), companyBusinessLayer.getParameterSaleStockReportCashRegister());
+		c.addParameter(companyReportRepository.getParameterSaleStockReportType(), companyReportRepository.getParameterSaleStockReportCashRegister());
 		
 		commandables.add(c = uiProvider.createCommandable("company.report.salestock.inventory.title", null, outcomeSaleStockList));
-		c.addParameter(companyBusinessLayer.getParameterSaleStockReportType(), companyBusinessLayer.getParameterSaleStockReportInventory());
+		c.addParameter(companyReportRepository.getParameterSaleStockReportType(), companyReportRepository.getParameterSaleStockReportInventory());
 		
 		commandables.add(c = uiProvider.createCommandable("company.report.salestock.customer.title", null, outcomeSaleStockList));
-		c.addParameter(companyBusinessLayer.getParameterSaleStockReportType(), companyBusinessLayer.getParameterSaleStockReportCustomer());
+		c.addParameter(companyReportRepository.getParameterSaleStockReportType(), companyReportRepository.getParameterSaleStockReportCustomer());
 		
 	}
 	
 	/**/
 	
 	public String javascriptShowPointOfSale(Sale sale){
-		String url = webNavigationManager.reportUrl(sale, companyBusinessLayer.getReportPointOfSale(),uiManager.getPdfParameter(),Boolean.TRUE);
+		String url = webNavigationManager.reportUrl(sale, companyReportRepository.getReportPointOfSale(),uiManager.getPdfParameter(),Boolean.TRUE);
 		return javaScriptHelper.openWindow("pointofsale"+sale.getIdentifier(), url, 400, 550);
+	}
+	
+	public String javascriptShowPointOfSale(SaleCashRegisterMovement saleCashRegisterMovement){
+		String url = webNavigationManager.reportUrl(saleCashRegisterMovement, companyReportRepository.getReportPointOfSaleReceipt(),uiManager.getPdfParameter(),Boolean.TRUE);
+		return javaScriptHelper.openWindow("pointofsale"+saleCashRegisterMovement.getIdentifier(), url, 400, 550);
 	}
 		
 }

@@ -35,20 +35,6 @@ public class SaleReport extends AbstractGeneratable<SaleReport> implements Seria
 	
 	private Collection<SaleProductReport> saleProducts = new ArrayList<>();
 
-	/*
-	public SaleReport(String identifier, String cashRegisterIdentifier,
-			String date, String numberOfProducts, String cost,
-			String welcomeMessage, String goodByeMessage) {
-		super();
-		this.identifier = identifier;
-		this.cashRegisterIdentifier = cashRegisterIdentifier;
-		this.date = date;
-		this.numberOfProducts = numberOfProducts;
-		this.cost = cost;
-		this.welcomeMessage = welcomeMessage;
-		this.goodByeMessage = goodByeMessage;
-	}*/
-	
 	@Override
 	public void generate() {
 		title = "Facture";

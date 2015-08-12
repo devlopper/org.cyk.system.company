@@ -17,6 +17,7 @@ import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Product;
@@ -88,7 +89,7 @@ public class SaleCrudOnePage extends AbstractCrudOnePage<Sale> implements Serial
 		super.succeed(command, parameter);
 		String url = null;
 		//url = "http://localhost:8080/company/private/__tools__/report.jsf?clazz=Sale&identifiable=151&fileExtensionParam=pdf&ridp=pos&windowmode=windowmodedialog";
-		url = navigationManager.reportUrl(identifiable, companyBusinessLayer.getReportPointOfSale(),uiManager.getPdfParameter(),Boolean.TRUE);
+		url = navigationManager.reportUrl(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale(),uiManager.getPdfParameter(),Boolean.TRUE);
 		messageDialogOkButtonOnClick += "window.open('"+url+"', 'pointofsale"+identifiable.getIdentifier()+"', 'location=no,menubar=no,titlebar=no,toolbar=no,width=400, height=550');";
 		//System.out.println(messageDialogOkButtonOnClick);
 		return null;

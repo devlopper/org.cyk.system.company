@@ -7,12 +7,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.product.SaleBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
@@ -28,6 +25,9 @@ import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessQueryPage;
 import org.cyk.utility.common.model.table.TableAdapter;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter
 public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusinessQueryPage<Sale, QUERY, RESULT> implements Serializable {
@@ -136,7 +136,7 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterFromDate(),criteria.getFromDateSearchCriteria().getPreparedValue().getTime());
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterToDate(),criteria.getToDateSearchCriteria().getPreparedValue().getTime());
 		if(balanceType!=null)
-			table.getPrintCommandable().setParameter(CompanyBusinessLayer.getInstance().getParameterBalanceType(),balanceType.name());
+			table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterBalanceType(),balanceType.name());
 		return saleBusiness.findByCriteria(criteria);
 	}
 	

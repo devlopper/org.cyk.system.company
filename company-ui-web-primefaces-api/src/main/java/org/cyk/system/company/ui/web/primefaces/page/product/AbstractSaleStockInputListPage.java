@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleStockInput;
@@ -55,8 +55,8 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 	@Override
 	protected void __beforeFindByCriteria__(SaleStockInputSearchCriteria criteria) {
 		super.__beforeFindByCriteria__(criteria);
-		table.getPrintCommandable().setParameter(CompanyBusinessLayer.getInstance().getParameterSaleStockReportType(),
-				CompanyBusinessLayer.getInstance().getParameterSaleStockReportInput());
+		table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterSaleStockReportType(),
+				CompanyReportRepository.getInstance().getParameterSaleStockReportInput());
 	}
 	
 	@Override

@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.model.product.AbstractSaleStockSearchCriteria;
 import org.cyk.system.company.model.product.SaleStock;
@@ -104,7 +104,7 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 		table.setShowAddRemoveColumn(Boolean.FALSE);
 		table.getPrintCommandable().setRendered(Boolean.TRUE);
 		table.getPrintCommandable().setParameter(uiManager.getClassParameter(),uiManager.businessEntityInfos(SaleStock.class).getIdentifier());
-		table.getPrintCommandable().setParameter(CompanyBusinessLayer.getInstance().getParameterSaleDone(),Boolean.TRUE);
+		table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterSaleDone(),Boolean.TRUE);
 	}
 	
 	@Override

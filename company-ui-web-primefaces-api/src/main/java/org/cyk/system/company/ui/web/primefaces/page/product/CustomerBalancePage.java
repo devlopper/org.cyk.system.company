@@ -10,11 +10,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.product.CustomerBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.ui.api.model.table.Cell;
@@ -23,6 +20,9 @@ import org.cyk.ui.api.model.table.Row;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.page.AbstractPrimefacesPage;
 import org.cyk.utility.common.model.table.TableAdapter;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class CustomerBalancePage extends AbstractPrimefacesPage implements Serializable {
@@ -43,8 +43,8 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 	protected void afterInitialisation() {
 		super.afterInitialisation();
 		Collection<CustomerReportTableRow> details = new ArrayList<>();
-		String balanceType = requestParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType());
-		final Boolean all = CompanyBusinessLayer.getInstance().getParameterCustomerBalanceAll().equals(balanceType);
+		String balanceType = requestParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType());
+		final Boolean all = CompanyReportRepository.getInstance().getParameterCustomerBalanceAll().equals(balanceType);
 		contentTitle = all?text("company.command.customer.balance"):text("field.credence");
 		Collection<Customer> customers = all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
 		for(Customer customer : customers)
@@ -62,9 +62,9 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 		table.setShowFooter(Boolean.FALSE);
 		table.setShowToolBar(Boolean.TRUE);
 		table.setIdentifiableClass(Customer.class);
-		table.getPrintCommandable().addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), 
-				CompanyBusinessLayer.getInstance().getParameterCustomerReportBalance());
-		table.getPrintCommandable().addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType(), balanceType);
+		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerReportType(), 
+				CompanyReportRepository.getInstance().getParameterCustomerReportBalance());
+		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), balanceType);
 	}
 	
 }

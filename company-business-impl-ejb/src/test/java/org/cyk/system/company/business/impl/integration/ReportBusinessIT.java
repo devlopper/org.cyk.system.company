@@ -105,7 +105,7 @@ public class ReportBusinessIT extends AbstractBusinessIT {
         rootTestHelper.reportBasedOnDynamicBuilderParameters(customerSaleStockParameters);
         */
         
-        ReportBasedOnDynamicBuilderParameters<SaleStockReportTableRow> saleStockInputParameters = new ReportBasedOnDynamicBuilderParameters<>();
+        /*ReportBasedOnDynamicBuilderParameters<SaleStockReportTableRow> saleStockInputParameters = new ReportBasedOnDynamicBuilderParameters<>();
         saleStockInputParameters.setIdentifiableClass(SaleStock.class);
         saleStockInputParameters.setModelClass(SaleStockReportTableRow.class);
         saleStockInputParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterSaleStockReportType(),
@@ -114,7 +114,7 @@ public class ReportBusinessIT extends AbstractBusinessIT {
         rootTestHelper.addReportParameterToDate(saleStockInputParameters, DateUtils.addDays(new Date(), 1000));
         rootTestHelper.reportBasedOnDynamicBuilderParameters(saleStockInputParameters);
         
-        
+        */
         
     }
     

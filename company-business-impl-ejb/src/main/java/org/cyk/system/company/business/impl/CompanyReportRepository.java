@@ -17,6 +17,7 @@ import javax.inject.Singleton;
 
 import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness;
+import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.product.SaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
@@ -32,6 +33,7 @@ import org.cyk.system.company.business.impl.product.TangibleProductInventoryRepo
 import org.cyk.system.company.business.impl.product.TangibleProductStockMovementLineReport;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Sale;
+import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.model.product.SaleStock;
@@ -70,6 +72,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	private static final long serialVersionUID = 6917567891985885124L;
 
 	@Getter private final String reportPointOfSale = "pos";
+	@Getter private final String reportPointOfSaleReceipt = "posr";
 	@Getter private final String reportStockDashboard = "rsdb";
 	@Getter private final String parameterCustomerReportType = "crt";
 	@Getter private final String parameterCustomerReportBalance = "crb";
@@ -89,6 +92,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	@Inject private OwnedCompanyBusiness ownedCompanyBusiness;
 	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private SaleBusiness saleBusiness;
+	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	@Inject private SaleStockBusiness saleStockBusiness;
 	@Inject private SaleStockInputBusiness saleStockInputBusiness;
 	@Inject private SaleStockOutputBusiness saleStockOutputBusiness;
@@ -372,6 +376,14 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			@Override
 			public <MODEL> ReportBasedOnTemplateFile<SaleReport> build(Class<MODEL> arg0, Collection<MODEL> sales, String arg2,Boolean arg3, Map<String, String[]> arg4) {
 				return saleBusiness.findReport((Collection<Sale>) sales);
+			}
+		});
+		
+		registerConfiguration(new ReportBasedOnTemplateFileConfiguration<Sale, ReportBasedOnTemplateFile<SaleReport>>(reportPointOfSaleReceipt) {
+			@SuppressWarnings("unchecked")
+			@Override
+			public <MODEL> ReportBasedOnTemplateFile<SaleReport> build(Class<MODEL> arg0, Collection<MODEL> sales, String arg2,Boolean arg3, Map<String, String[]> arg4) {
+				return saleCashRegisterMovementBusiness.findReport((Collection<SaleCashRegisterMovement>) sales);
 			}
 		});
 		

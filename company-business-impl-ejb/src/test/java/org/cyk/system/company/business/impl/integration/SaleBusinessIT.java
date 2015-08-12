@@ -3,6 +3,7 @@ package org.cyk.system.company.business.impl.integration;
 import java.math.BigDecimal;
 
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
@@ -176,10 +177,10 @@ public class SaleBusinessIT extends AbstractBusinessIT {
         ReportBasedOnDynamicBuilderParameters<CustomerReportTableRow> customerBalanceParameters = new ReportBasedOnDynamicBuilderParameters<>();
         customerBalanceParameters.setIdentifiableClass(Customer.class);
         customerBalanceParameters.setModelClass(CustomerReportTableRow.class);
-        customerBalanceParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerReportType(), 
-        		CompanyBusinessLayer.getInstance().getParameterCustomerReportBalance());
-        customerBalanceParameters.addParameter(CompanyBusinessLayer.getInstance().getParameterCustomerBalanceType(), 
-        		CompanyBusinessLayer.getInstance().getParameterCustomerBalanceAll());
+        customerBalanceParameters.addParameter(CompanyReportRepository.getInstance().getParameterCustomerReportType(), 
+        		CompanyReportRepository.getInstance().getParameterCustomerReportBalance());
+        customerBalanceParameters.addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), 
+        		CompanyReportRepository.getInstance().getParameterCustomerBalanceAll());
         rootTestHelper.reportBasedOnDynamicBuilderParameters(customerBalanceParameters);
     }
     

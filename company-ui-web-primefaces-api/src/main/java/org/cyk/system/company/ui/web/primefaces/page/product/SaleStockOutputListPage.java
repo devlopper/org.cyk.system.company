@@ -9,7 +9,7 @@ import javax.inject.Named;
 
 import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
@@ -33,8 +33,8 @@ public class SaleStockOutputListPage extends AbstractSaleStockListPage<SaleStock
 	@Override
 	protected void __beforeFindByCriteria__(SaleStockOutputSearchCriteria criteria) {
 		super.__beforeFindByCriteria__(criteria);
-		table.getPrintCommandable().setParameter(CompanyBusinessLayer.getInstance().getParameterSaleStockReportType(),
-				CompanyBusinessLayer.getInstance().getParameterSaleStockReportCashRegister());
+		table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterSaleStockReportType(),
+				CompanyReportRepository.getInstance().getParameterSaleStockReportCashRegister());
 	}
 	
 	@Override

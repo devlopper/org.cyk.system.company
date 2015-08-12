@@ -6,13 +6,11 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
+import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.model.SaleStockOutputFormModel;
 import org.cyk.system.company.ui.web.primefaces.page.product.AbstractSaleStockInputConsultPage.Details;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
@@ -23,6 +21,9 @@ import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleStockOutputCrudOnePage extends AbstractCrudOnePage<SaleStockOutput> implements Serializable {
@@ -78,11 +79,8 @@ public class SaleStockOutputCrudOnePage extends AbstractCrudOnePage<SaleStockOut
 	@Override
 	public Object succeed(UICommand command, Object parameter) {
 		super.succeed(command, parameter);
-		//String url = null;
-		//url = "http://localhost:8080/company/private/__tools__/report.jsf?clazz=Sale&identifiable=151&fileExtensionParam=pdf&ridp=pos&windowmode=windowmodedialog";
-		//url = navigationManager.reportUrl(identifiable.getSale(), companyBusinessLayer.getReportPointOfSale(),uiManager.getPdfParameter(),Boolean.TRUE);
-		//messageDialogOkButtonOnClick += "window.open('"+url+"', 'pointofsale"+identifiable.getSale().getIdentifier()+"', 'location=no,menubar=no,titlebar=no,toolbar=no,width=400, height=550');";
-		//System.out.println(messageDialogOkButtonOnClick);
+		messageDialogOkButtonOnClick = javaScriptHelper.add(messageDialogOkButtonOnClick
+				, CompanyWebManager.getInstance().javascriptShowPointOfSale(identifiable.getSaleCashRegisterMovement()));
 		return null;
 	}
 	

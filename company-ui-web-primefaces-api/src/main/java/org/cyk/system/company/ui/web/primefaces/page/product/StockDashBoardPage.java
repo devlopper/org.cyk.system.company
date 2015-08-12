@@ -8,11 +8,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.StockDashBoardReportTableDetails;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
@@ -20,6 +17,9 @@ import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.page.AbstractDashboardPage;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class StockDashBoardPage extends AbstractDashboardPage implements Serializable {
@@ -47,7 +47,7 @@ public class StockDashBoardPage extends AbstractDashboardPage implements Seriali
 		tangibleProductTable.setShowHeader(Boolean.FALSE);
 		tangibleProductTable.setShowFooter(Boolean.FALSE);
 		tangibleProductTable.setShowToolBar(Boolean.TRUE);
-		tangibleProductTable.setReportIdentifier(CompanyBusinessLayer.getInstance().getReportStockDashboard());
+		tangibleProductTable.setReportIdentifier(CompanyReportRepository.getInstance().getReportStockDashboard());
 		tangibleProductTable.setIdentifiableClass(TangibleProductStockMovement.class);
 	}
 	
