@@ -113,6 +113,15 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 		}
 		
 	}
+	
+	@Override
+	public void complete(SaleStockInput saleStockInput, SaleCashRegisterMovement saleCashRegisterMovement) {
+		saleBusiness.complete(saleStockInput.getSale(), saleCashRegisterMovement,Boolean.FALSE);
+		InvoiceParameters previous = new InvoiceParameters(saleStockInput, saleCashRegisterMovement);
+		
+		SaleReport saleReport = reportProducer.produceInvoice(previous,new InvoiceParameters(saleStockInput, saleCashRegisterMovement));
+		CompanyBusinessLayer.getInstance().persistPointOfSale(saleStockInput.getSale(), saleReport); 
+	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public void load(SaleStockInput saleStockInput) {

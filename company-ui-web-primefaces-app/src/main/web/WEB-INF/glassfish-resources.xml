@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE resources PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN" "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
+<resources>
+	
+	<!-- MySQL -->
+    <!--
+    <jdbc-connection-pool name="cyk_company_pool" datasource-classname="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" res-type="javax.sql.DataSource">
+        <property name="serverName" value="localhost"/>
+        <property name="portNumber" value="3306"/>
+        <property name="databaseName" value="cyk_company_db"/>
+        <property name="user" value="root"/>
+        <property name="password" value="root"/>
+        <property name="URL" value="jdbc:mysql://localhost:3306/cyk_company_db"/>
+    </jdbc-connection-pool>
+    <jdbc-resource enabled="true" jndi-name="java:app/jdbc/cyk_company_pool" object-type="user" pool-name="cyk_company_pool"/>
+    -->
+    
+    <!-- Derby -->
+    <!--
+    <jdbc-connection-pool name="cyk_company_pool" datasource-classname="org.apache.derby.jdbc.ClientDataSource" res-type="javax.sql.XADataSource">
+        <property name="serverName" value="localhost"/>
+        <property name="portNumber" value="1527"/>
+        <property name="databaseName" value="cyk_company_db"/>
+        <property name="user" value="APP"/>
+        <property name="password" value="APP"/>
+        <property name="connectionAttributes" value=";create=true" />
+    </jdbc-connection-pool>
+    <jdbc-resource jndi-name="java:app/jdbc/cyk_company_pool" pool-name="cyk_company_pool" object-type="user" enabled="true"/>
+   -->
+    
+    <jdbc-connection-pool datasource-classname="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" res-type="javax.sql.DataSource" name="cyk_company_pool">
+      <property name="servername" value="localhost"></property>
+      <property name="databasename" value="cyk_company_db"></property>
+      <property name="user" value="root"></property>
+      <property name="password" value="root"></property>
+      <property name="URL" value="jdbc:mysql://localhost:3306/cyk_company_db"></property>
+    </jdbc-connection-pool>
+    <jdbc-resource pool-name="cyk_company_pool" jndi-name="java:app/jdbc/cyk_company_pool" />
+    
+    <!--mail-resource host="smtp.gmail.com" jndi-name="java:app/mail/cyk_root"  from="kycdev@gmail.com" user="kycdev@gmail.com">
+      <property name="mail.smtp.socketFactory.port" value="465"></property>
+      <property name="mail.smtp.port" value="465"></property>
+      <property name="mail.smtp.socketFactory.fallback" value="false"></property>
+      <property name="mail.smtp.auth" value="true"></property>
+      <property name="mail.smtp.password" value="p@ssw0rd*"></property>
+      <property name="mail.smtp.socketFactory.class" value="javax.net.ssl.SSLSocketFactory"></property>
+    </mail-resource-->
+    
+    
+</resources>

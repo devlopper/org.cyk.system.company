@@ -33,7 +33,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
 
-    private static final Boolean PRINT_REPORT = Boolean.FALSE;
+    private static final Boolean PRINT_REPORT = Boolean.TRUE;
     
     @Deployment
     public static Archive<?> createDeployment() {
@@ -77,22 +77,38 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	init();
     	//Person person = companyBusinessTestHelper.cashierPerson();
     	
-    	dropAndTakeInOne(person);
-    	
+    	dropAndTakeInOne0(person);
+    	//dropAndTakeInOne(person);
+    	/*
     	dropAndTakeInMany(person);
     	dropAndTakeInManyWithZeroPayment(person);
     	dropAndTakeInManyWithZeroQuantity(person);
     	dropManyAndTakeInMany(person);
     	dropAndTakeInManyWithPaymentAtZeroQuantity(person);
-    	
+    	*/
     	//searchByCriterias();
     	
-    	printReports();
+    	//printReports();
+    	
+    }
+    
+    private void dropAndTakeInOne0(Person person){
+    	Boolean print = PRINT_REPORT && Boolean.TRUE;
+    	Boolean value = companyBusinessTestHelper.getSaleAutoCompleted();
+    	companyBusinessTestHelper.setSaleAutoCompleted(Boolean.FALSE);
+    	SaleStockInput saleStockInput = companyBusinessTestHelper
+        		.drop(date(2015, 1, 1),person, customer1,"A", "1000", "0", "3",print, "1000", "0", "0","0");
+    	companyBusinessTestHelper.setSaleAutoCompleted(value);
+    	
+    	companyBusinessTestHelper.complete(date(2015, 1, 1),person, saleStockInput, "0",print, "1000", "0", "1000","1000");
+    	
+    	companyBusinessTestHelper.taking(date(2015, 1, 2),person, saleStockInput, "3", "1000",print, "0", "0","0");
+    	
     	
     }
     
     private void dropAndTakeInOne(Person person){
-    	Boolean print = PRINT_REPORT && Boolean.FALSE;
+    	Boolean print = PRINT_REPORT && Boolean.TRUE;
     	SaleStockInput saleStockInput = companyBusinessTestHelper
         		.drop(date(2015, 1, 1),person, customer1,"A", "1000", "100", "3",print, "1100", "168", "1100","1100");
     	companyBusinessTestHelper.taking(date(2015, 1, 2),person, saleStockInput, "3", "1100",print, "0", "0","0");

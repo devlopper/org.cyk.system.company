@@ -105,9 +105,11 @@ public class DefaultSaleReportProducer extends AbstractRootBusinessBean implemen
 		if(Boolean.TRUE.equals(paymentOnly)){
 			
 		}else{
-			labelValue(saleReport.getTaxInfos(),"vat.rate", format(sale.getAccountingPeriod().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
-			labelValue("amount.vat.excluded", format(sale.getCost().subtract(sale.getValueAddedTax()).setScale(2)));
-			labelValue("vat.amount", format(sale.getValueAddedTax().setScale(2)));
+			if(sale.getValueAddedTax().signum()>0){
+				labelValue(saleReport.getTaxInfos(),"vat.rate", format(sale.getAccountingPeriod().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
+				labelValue("amount.vat.excluded", format(sale.getCost().subtract(sale.getValueAddedTax()).setScale(2)));
+				labelValue("vat.amount", format(sale.getValueAddedTax().setScale(2)));
+			}
 		}
 		
 		

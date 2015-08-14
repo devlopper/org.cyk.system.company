@@ -14,6 +14,7 @@ import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness.SaleBusinessAdapter;
 import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.product.SaleProductBusiness;
 import org.cyk.system.company.business.api.product.SaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
@@ -27,6 +28,9 @@ import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.root.business.impl.AbstractTestHelper;
 import org.cyk.system.root.model.party.person.Person;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Singleton
 public class CompanyBusinessTestHelper extends AbstractTestHelper implements Serializable {
@@ -44,6 +48,9 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
     @Inject protected SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
     @Inject protected CustomerBusiness customerBusiness;
     @Inject protected ProductBusiness productBusiness;
+    @Inject protected SaleProductBusiness saleProductBusiness;
+    
+    @Getter @Setter private Boolean saleAutoCompleted = Boolean.TRUE;
 	
     static{
     	SaleBusiness.LISTENERS.add(new SaleBusinessAdapter(){
@@ -79,7 +86,7 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
     }
 	
 	public void set(SaleStockInput saleStockInput,Customer customer,String externalIdentifier,String cost,String commission,String quantity,Date date){
-    	saleStockInput.getSale().setCompleted(Boolean.TRUE);
+    	saleStockInput.getSale().setCompleted(saleAutoCompleted);
     	saleStockInput.getSale().setDate(date);
     	saleStockInput.setExternalIdentifier(externalIdentifier);
     	saleStockInput.getTangibleProductStockMovement().setQuantity(new BigDecimal(quantity));
@@ -189,6 +196,25 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
 	
 	public SaleStockInput drop(Date date,Person person,Customer customer,String externalIdentifier,String cost,String commission,String quantity,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
 		return drop(date, person, customer, externalIdentifier, cost, commission, quantity,Boolean.FALSE ,expectedCost, expectedVat, expectedBalance, expectedCumulBalance);
+	}
+	
+	public SaleStockInput complete(Date date,Person person,SaleStockInput saleStockInput,String commission,Boolean printPos,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
+		saleStockInput = saleStockInputBusiness.load(saleStockInput.getIdentifier());
+		saleStockInput.getSale().getSaleProducts().iterator().next().setCommission(new BigDecimal(commission));
+		saleBusiness.applyChange(saleStockInput.getSale(), saleStockInput.getSale().getSaleProducts().iterator().next());
+		SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person);
+		set(saleCashRegisterMovement, "0");
+		saleStockInputBusiness.complete(saleStockInput, saleCashRegisterMovement);
+    	
+    	if(Boolean.TRUE.equals(printPos))
+    		writeReport(saleBusiness.findReport(saleStockInput.getSale()));
+    	
+    	saleStockInput = saleStockInputBusiness.load(saleStockInput.getIdentifier());
+    	assertBigDecimalEquals("Cost", expectedCost, saleStockInput.getSale().getCost());
+    	assertBigDecimalEquals("VAT", expectedVat, saleStockInput.getSale().getValueAddedTax());
+    	assertBigDecimalEquals("Balance", expectedBalance, saleStockInput.getSale().getBalance().getValue());
+    	assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, saleStockInput.getSale().getBalance().getCumul());
+    	return saleStockInput;
 	}
     
     public void taking(Date date,Person person,SaleStockInput saleStockInput,String quantity,String paid,Boolean printPos,String expectedRemainingGoods,String expectedBalance,String expectedCumulBalance){

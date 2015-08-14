@@ -11,4 +11,5 @@ public interface SaleStockInputBusiness extends AbstractSaleStockBusiness<SaleSt
 	
 	void create(SaleStockInput saleStock,SaleCashRegisterMovement saleCashRegisterMovement);
 	
+	void complete(SaleStockInput saleStock,SaleCashRegisterMovement saleCashRegisterMovement);
 }

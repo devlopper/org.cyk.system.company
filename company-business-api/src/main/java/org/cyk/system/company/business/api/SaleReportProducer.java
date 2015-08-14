@@ -33,7 +33,8 @@ public interface SaleReportProducer {
 		public AbstractParameters(SaleCashRegisterMovement saleCashRegisterMovement) {
 			super();
 			this.saleCashRegisterMovement = saleCashRegisterMovement;
-			amountToPay = saleCashRegisterMovement.getSale().getBalance().getValue();
+			Sale sale = saleCashRegisterMovement.getSale();
+			amountToPay = Boolean.TRUE.equals(sale.getDone())?saleCashRegisterMovement.getSale().getBalance().getValue():sale.getCost();
 			amountPaid = saleCashRegisterMovement.getAmountIn();
 			amountToOut = amountPaid.subtract(amountToPay);
 		}
