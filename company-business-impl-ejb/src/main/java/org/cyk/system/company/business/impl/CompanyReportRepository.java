@@ -212,6 +212,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				return null;
 			}
 			
+			@SuppressWarnings("unchecked")
 			public void beforeBuild(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
 				String reportType = parameters.getExtendedParameterMap().get(parameterSaleStockReportType)[0];
 				/*Boolean saleDone = null;
@@ -219,6 +220,10 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				catch (Exception e) { saleDone = Boolean.TRUE;}*/
 				Date fromDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterFromDate())[0]));
 				Date toDate = new Date(Long.parseLong(parameters.getExtendedParameterMap().get(RootBusinessLayer.getInstance().getParameterToDate())[0]));
+				
+				parameters.setDatas((Collection<Object>) processSaleStockReportRows(reportType, fromDate, toDate, parameters.getDatas()));
+				
+				/*
 				if(parameterSaleStockReportCashRegister.equals(reportType)){
 					BigDecimal output=BigDecimal.ZERO,paid=BigDecimal.ZERO,balance=BigDecimal.ZERO;
 					for(Object object : parameters.getDatas()){
@@ -304,6 +309,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				}else if(parameterSaleStockReportInput.equals(reportType)){
 					
 				}	
+				*/
 			}
 		});
 		
@@ -404,6 +410,104 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	}
 	
 	/**/
+	
+	public Collection<?> processSaleStockReportRows(String reportType,Date fromDate,Date toDate,Collection<Object> initialRows) {
+		if(parameterSaleStockReportCashRegister.equals(reportType)){
+			BigDecimal output=BigDecimal.ZERO,paid=BigDecimal.ZERO,balance=BigDecimal.ZERO;
+			for(Object object : initialRows){
+				SaleStockReportTableRow row = (SaleStockReportTableRow) object;
+				if(row.getSaleStock() instanceof SaleStockOutput){
+					output = output.add( ((SaleStockOutput)row.getSaleStock()).getTangibleProductStockMovement().getQuantity().abs());
+					paid = paid.add( ((SaleStockOutput)row.getSaleStock()).getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
+					//balance = saleBusiness.sumBalanceByCriteria(criteria) 
+							//balance.add(((SaleStockOutput)row.getSaleStock()).getSaleStockInput().getS.getBalance().getValue());
+				}
+			}
+			balance = saleBusiness.sumBalanceByCriteria(new SaleSearchCriteria(fromDate,toDate));
+			SaleStockReportTableRow totalRow = new SaleStockReportTableRow(null);
+			//totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));
+			totalRow.setTakenNumberOfGoods(RootBusinessLayer.getInstance().getNumberBusiness().format(output));
+			totalRow.setAmountPaid(RootBusinessLayer.getInstance().getNumberBusiness().format(paid));	
+			totalRow.setBalance(RootBusinessLayer.getInstance().getNumberBusiness().format(balance));
+			initialRows.add(totalRow);
+			return initialRows;
+		}else if(parameterSaleStockReportInventory.equals(reportType)){
+			Set<String> customerIds = new LinkedHashSet<>();
+			List<Object> list = new LinkedList<>();
+			//get the filters
+			for(Object object : initialRows){
+				SaleStockReportTableRow row = (SaleStockReportTableRow)object;
+				customerIds.add(row.getCustomer());
+			}
+			//for each filter
+			for(String customerId : customerIds){
+				//filter rows
+				BigDecimal in=BigDecimal.ZERO,out=BigDecimal.ZERO;
+				for(Object object : initialRows){
+					SaleStockReportTableRow row = (SaleStockReportTableRow) object;
+					if(row.getCustomer().equals(customerId)){
+						list.add(row);
+						if(row.getSaleStock() instanceof SaleStockInput){
+							in = in.add( ((SaleStockInput)row.getSaleStock()).getTangibleProductStockMovement().getQuantity());
+						}else if(row.getSaleStock() instanceof SaleStockOutput){
+							out = out.add( ((SaleStockOutput)row.getSaleStock()).getTangibleProductStockMovement().getQuantity().abs());
+						}
+					}
+				}
+				SaleStockReportTableRow totalRow = new SaleStockReportTableRow(null);
+				totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));
+				totalRow.setStockIn(RootBusinessLayer.getInstance().getNumberBusiness().format(in));
+				totalRow.setStockOut(RootBusinessLayer.getInstance().getNumberBusiness().format(out));	
+				totalRow.setRemainingNumberOfGoods(RootBusinessLayer.getInstance().getNumberBusiness().format(in.subtract(out)));
+				list.add(totalRow);
+			}
+			return list;
+		}else if(parameterSaleStockReportCustomer.equals(reportType)){
+			Set<String> customerIds = new LinkedHashSet<>();
+			List<Object> list = new LinkedList<>();
+			//get the filters
+			for(Object object : initialRows){
+				SaleStockReportTableRow row = (SaleStockReportTableRow)object;
+				customerIds.add(row.getCustomer());
+			}
+			//for each filter
+			for(String customerId : customerIds){
+				//filter rows
+				BigDecimal amount=BigDecimal.ZERO,paid=BigDecimal.ZERO,balance=BigDecimal.ZERO;
+				for(Object object : initialRows){
+					SaleStockReportTableRow row = (SaleStockReportTableRow) object;
+					if(row.getCustomer().equals(customerId)){
+						list.add(row);
+						if(row.getSaleStock() instanceof SaleStockInput){
+							amount = amount.add( ((SaleStockInput)row.getSaleStock()).getSale().getCost());
+							balance = ((SaleStockInput)row.getSaleStock()).getSale().getBalance().getCumul();
+						}else if(row.getSaleStock() instanceof SaleStockOutput){
+							paid = paid.add( ((SaleStockOutput)row.getSaleStock()).getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
+							balance = ((SaleStockOutput)row.getSaleStock()).getSaleCashRegisterMovement().getBalance().getCumul();
+						}
+					}
+				}
+				SaleStockReportTableRow totalRow = new SaleStockReportTableRow(null);
+				totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));
+				totalRow.setAmount(RootBusinessLayer.getInstance().getNumberBusiness().format(amount));
+				totalRow.setAmountPaid(RootBusinessLayer.getInstance().getNumberBusiness().format(paid));	
+				totalRow.setCumulatedBalance(RootBusinessLayer.getInstance().getNumberBusiness().format(balance));
+				list.add(totalRow);
+			}
+			return list;
+		}else if(parameterSaleStockReportInput.equals(reportType)){
+			
+			return initialRows;
+		}	
+		return null;
+	}
+	
+	public Collection<?> processSaleStockReportRowsI(String reportType,Date fromDate,Date toDate,Collection<AbstractIdentifiable> initialRows) {
+		Collection<Object> c = new ArrayList<>();
+		for(AbstractIdentifiable i : initialRows)
+			c.add(i);
+		return processSaleStockReportRows(reportType, fromDate, toDate, c);
+	}
 	
 	private static CompanyReportRepository INSTANCE;
 	public static CompanyReportRepository getInstance() {

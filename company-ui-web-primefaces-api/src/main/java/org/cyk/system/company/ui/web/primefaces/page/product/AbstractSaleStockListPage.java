@@ -14,6 +14,7 @@ import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.model.product.AbstractSaleStockSearchCriteria;
 import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.search.DefaultQueryFormModel;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.api.data.collector.form.ControlSet;
@@ -45,6 +46,7 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 	private static final long serialVersionUID = 9040359120893077422L;
 
 	@Inject protected SaleStockBusiness saleStockBusiness;
+	@Inject protected CompanyReportRepository companyReportRepository;
 	
 	@Override
 	protected void initialisation() {
@@ -140,6 +142,13 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterToDate(),criteria.getToDateSearchCriteria().getPreparedValue().getTime());
 		__beforeFindByCriteria__(criteria);
 		return business().findByCriteria(criteria);
+	}
+	
+	@Override
+	protected Collection<Object> datas(Collection<AbstractIdentifiable> identifiables) {
+		Collection<Object> datas = super.datas(identifiables);
+		
+		return datas;
 	}
 	
 	protected void __beforeFindByCriteria__(SEARCH_CRITERIA criteria){}

@@ -7,15 +7,14 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
-import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleStockOutputListPage extends AbstractSaleStockListPage<SaleStockOutput, SaleStockOutputSearchCriteria> implements Serializable {
@@ -23,7 +22,7 @@ public class SaleStockOutputListPage extends AbstractSaleStockListPage<SaleStock
 	private static final long serialVersionUID = 9040359120893077422L;
 
 	@Inject protected SaleStockOutputBusiness saleStockOutputBusiness;
-	
+
 	@Override
 	protected void initialisation() {
 		super.initialisation();
@@ -33,10 +32,10 @@ public class SaleStockOutputListPage extends AbstractSaleStockListPage<SaleStock
 	@Override
 	protected void __beforeFindByCriteria__(SaleStockOutputSearchCriteria criteria) {
 		super.__beforeFindByCriteria__(criteria);
-		table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterSaleStockReportType(),
-				CompanyReportRepository.getInstance().getParameterSaleStockReportCashRegister());
+		table.getPrintCommandable().setParameter(companyReportRepository.getParameterSaleStockReportType(),
+				companyReportRepository.getParameterSaleStockReportCashRegister());
 	}
-	
+		
 	@Override
 	protected Class<SaleStockOutput> __entityClass__() {
 		return SaleStockOutput.class;
