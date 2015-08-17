@@ -140,7 +140,7 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 	        
 			salesResultsDetails = (FormOneData<SalesResultsDetails>) createFormOneData(new SalesResultsDetails(salesResults), Crud.READ);
 			configureDetailsForm(salesResultsDetails);
-			salesResultsDetails.setControlSetListener(new ControlSetAdapter<SalesResultsDetails>(){
+			salesResultsDetails.getControlSetListeners().add(new ControlSetAdapter<SalesResultsDetails>(){
 				@Override
 				public Boolean build(Field field) {
 					if(field.getName().equals("sales") || field.getName().equals("valueAddedTaxes"))

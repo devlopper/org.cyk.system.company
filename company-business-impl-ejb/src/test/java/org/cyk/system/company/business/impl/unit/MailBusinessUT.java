@@ -20,7 +20,7 @@ public class MailBusinessUT extends AbstractUnitTest {
 	protected void registerBeans(Collection<Object> collection) {
 		super.registerBeans(collection);
 		collection.add(mailBusiness);
-		mailBusiness.setConnectionProperties("smtp.gmail.com", "kycdev@gmail.com", "kycdev@gmail.com", "p@ssw0rd*");
+		mailBusiness.setProperties("smtp.gmail.com", 465, "kycdev@gmail.com", "p@ssw0rd*");
 	}
 	
 	@Test

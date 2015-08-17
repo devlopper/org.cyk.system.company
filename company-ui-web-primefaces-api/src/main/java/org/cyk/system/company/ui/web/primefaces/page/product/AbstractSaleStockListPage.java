@@ -49,7 +49,7 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		form.setControlSetListener(new ControlSetAdapter<SaleStockQueryFormModel>(){
+		form.getControlSetListeners().add(new ControlSetAdapter<SaleStockQueryFormModel>(){
 			
 			@Override
 			public Boolean build(Field field) {

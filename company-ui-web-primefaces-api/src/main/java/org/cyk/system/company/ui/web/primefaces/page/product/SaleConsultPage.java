@@ -64,7 +64,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		
 		saleDetails = (FormOneData<SaleDetails>) createFormOneData(new SaleDetails(identifiable), Crud.READ);
 		configureDetailsForm(saleDetails);
-		saleDetails.setControlSetListener(new ControlSetAdapter<SaleDetails>(){
+		saleDetails.getControlSetListeners().add(new ControlSetAdapter<SaleDetails>(){
 			@Override
 			public String fiedLabel(
 					ControlSet<SaleDetails, DynaFormModel, DynaFormRow, DynaFormLabel, DynaFormControl, SelectItem> controlSet,

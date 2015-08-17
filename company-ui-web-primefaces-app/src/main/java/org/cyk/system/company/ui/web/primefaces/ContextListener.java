@@ -5,11 +5,13 @@ import java.io.Serializable;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.annotation.WebListener;
 
+import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.root.ui.web.primefaces.api.RootWebManager;
 import org.cyk.ui.web.primefaces.AbstractContextListener;
 import org.cyk.ui.web.primefaces.page.application.ApplicationInstallationFormModel;
 import org.cyk.ui.web.primefaces.page.application.ApplicationInstallationPage;
 import org.cyk.ui.web.primefaces.page.application.ApplicationInstallationPage.ApplicationInstallListener;
+import org.cyk.ui.web.primefaces.page.tools.ActorCrudOnePageListener;
 
 @WebListener
 public class ContextListener extends AbstractContextListener implements Serializable {
@@ -21,6 +23,7 @@ public class ContextListener extends AbstractContextListener implements Serializ
 	@Override
 	protected void initialisation() {
 		super.initialisation();
+		primefacesManager.getBusinessEntityFormOnePageListeners().add(new ActorCrudOnePageListener<Customer>(Customer.class));
 		ApplicationInstallationPage.LISTENERS.add(new ApplicationInstallListener() {
 			
 			@Override
