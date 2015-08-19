@@ -42,7 +42,7 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 			@Override
 			public void serve(UICommand command, Object parameter) {
 				@SuppressWarnings("unchecked")
-				Sale sale = ((SaleStockInput)((Row<SaleStockQueryResultFormModel>)parameter).getData().getIdentifiable()).getSale();
+				Sale sale = ((SaleStockInput)((Row<SaleStockReportTableRow>)parameter).getData().getSaleStock()).getSale();
 				WebNavigationManager.getInstance().redirectTo(businessEntityInfos.getUiConsultViewId(), 
 						new Object[]{webManager.getRequestParameterIdentifiable(),sale.getIdentifier().toString()});
 			}

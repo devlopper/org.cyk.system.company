@@ -39,9 +39,10 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 		
 	}
 	
+	/*
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Collection<Object> datas(Collection<AbstractIdentifiable> identifiables) {
+	protected Collection<Object> datas(Collection<SaleStock> identifiables) {
 		Collection<Object> rows = new ArrayList<>();
 		for(Object object : super.datas(identifiables)){
 			rows.add(((SaleStockQueryResultFormModel)object).getSaleStockReportTableRow());
@@ -59,13 +60,14 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 			v.read();
 			nr.add(v);
 		}
-		/*SaleStockSearchCriteria searchCriteria = searchCriteria(); 
-		return (Collection<Object>) companyReportRepository.processSaleStockReportRows(companyReportRepository.getParameterSaleStockReportCashRegister(), 
-				searchCriteria.getFromDateSearchCriteria().getPreparedValue(), 
-				searchCriteria.getToDateSearchCriteria().getPreparedValue(), rows); //super.datas(identifiables);
-		*/
+		//SaleStockSearchCriteria searchCriteria = searchCriteria(); 
+		//return (Collection<Object>) companyReportRepository.processSaleStockReportRows(companyReportRepository.getParameterSaleStockReportCashRegister(), 
+		//		searchCriteria.getFromDateSearchCriteria().getPreparedValue(), 
+		//		searchCriteria.getToDateSearchCriteria().getPreparedValue(), rows); //super.datas(identifiables);
+		
 		return nr;
 	}
+*/
 	
 	@Override
 	protected Boolean ignoreField(Field field) {

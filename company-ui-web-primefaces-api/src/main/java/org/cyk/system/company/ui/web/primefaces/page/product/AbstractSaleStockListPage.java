@@ -41,7 +41,7 @@ import lombok.Getter;
 import lombok.Setter; 
 
 @Getter @Setter
-public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEARCH_CRITERIA extends AbstractSaleStockSearchCriteria> extends AbstractBusinessQueryPage<SALE_STOCK, AbstractSaleStockListPage.SaleStockQueryFormModel, AbstractSaleStockListPage.SaleStockQueryResultFormModel> implements Serializable {
+public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEARCH_CRITERIA extends AbstractSaleStockSearchCriteria> extends AbstractBusinessQueryPage<SALE_STOCK, AbstractSaleStockListPage.SaleStockQueryFormModel, SaleStockReportTableRow> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
@@ -126,8 +126,8 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 	}
 
 	@Override
-	protected Class<SaleStockQueryResultFormModel> __resultClass__() {
-		return SaleStockQueryResultFormModel.class;
+	protected Class<SaleStockReportTableRow> __resultClass__() {
+		return SaleStockReportTableRow.class;
 	}
 	
 	protected abstract Class<SEARCH_CRITERIA> searchCriteriaClass();
@@ -143,13 +143,13 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 		__beforeFindByCriteria__(criteria);
 		return business().findByCriteria(criteria);
 	}
-	
+	/*
 	@Override
-	protected Collection<Object> datas(Collection<AbstractIdentifiable> identifiables) {
+	protected Collection<SaleStockReportTableRow> datas(Collection<SaleStock> identifiables) {
 		Collection<Object> datas = super.datas(identifiables);
 		
 		return datas;
-	}
+	}*/
 	
 	protected void __beforeFindByCriteria__(SEARCH_CRITERIA criteria){}
 	
@@ -180,7 +180,7 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 		private String externalIdentifier;
 		
 	}
-	
+	/*
 	@Getter @Setter
 	public static class SaleStockQueryResultFormModel extends AbstractFormModel<SaleStock> implements Serializable {
 
@@ -196,5 +196,6 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 		}
 		
 	}
+	*/
 	
 }
