@@ -48,6 +48,10 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 	
 	@Input(label=@Text(type=ValueType.ID,value="ui.form.salestockinput.field.comments")) @ReportColumn private String comments;
 	
+	public SaleStockReportTableRow() {
+		constructor(null);
+	}
+	
 	public SaleStockReportTableRow(SaleStockOutput saleStock) {
 		constructor(saleStock);
 	}

@@ -17,7 +17,6 @@ import org.cyk.system.company.business.api.product.SaleStockBusiness;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.company.model.product.SaleStockSearchCriteria;
-import org.cyk.system.root.model.AbstractIdentifiable;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, SaleStockSearchCriteria> implements Serializable {
@@ -37,6 +36,33 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 		else if(companyReportRepository.getParameterSaleStockReportCustomer().equals(type))
 			contentTitle=text("company.report.salestock.customer.title");
 		
+	}
+	
+	@Override
+	protected Boolean isSummaryRow(SaleStockReportTableRow result) {
+		return result.getSaleStock()==null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Collection<SaleStockReportTableRow> __results__(Collection<SaleStock> saleStocks) {
+		Collection<Object> rows = new ArrayList<>();
+		for(SaleStockReportTableRow saleStock : super.__results__(saleStocks)){
+			rows.add(saleStock);
+		}
+		
+		SaleStockSearchCriteria searchCriteria = searchCriteria(); 
+		rows = (Collection<Object>) companyReportRepository.processSaleStockReportRows(type, 
+				searchCriteria.getFromDateSearchCriteria().getPreparedValue(), 
+				searchCriteria.getToDateSearchCriteria().getPreparedValue(), rows);
+		
+		Collection<SaleStockReportTableRow> saleStockReportTableRows = new ArrayList<>();
+		
+		for(Object r : rows){
+			saleStockReportTableRows.add((SaleStockReportTableRow) r);
+		}
+		
+		return saleStockReportTableRows;
 	}
 	
 	/*

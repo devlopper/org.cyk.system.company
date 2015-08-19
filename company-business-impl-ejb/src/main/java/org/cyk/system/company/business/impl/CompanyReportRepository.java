@@ -424,7 +424,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				}
 			}
 			balance = saleBusiness.sumBalanceByCriteria(new SaleSearchCriteria(fromDate,toDate));
-			SaleStockReportTableRow totalRow = new SaleStockReportTableRow(null);
+			SaleStockReportTableRow totalRow = new SaleStockReportTableRow();
 			//totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));
 			totalRow.setTakenNumberOfGoods(RootBusinessLayer.getInstance().getNumberBusiness().format(output));
 			totalRow.setAmountPaid(RootBusinessLayer.getInstance().getNumberBusiness().format(paid));	
@@ -454,7 +454,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 						}
 					}
 				}
-				SaleStockReportTableRow totalRow = new SaleStockReportTableRow(null);
+				SaleStockReportTableRow totalRow = new SaleStockReportTableRow();
 				totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));
 				totalRow.setStockIn(RootBusinessLayer.getInstance().getNumberBusiness().format(in));
 				totalRow.setStockOut(RootBusinessLayer.getInstance().getNumberBusiness().format(out));	
@@ -487,7 +487,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 						}
 					}
 				}
-				SaleStockReportTableRow totalRow = new SaleStockReportTableRow(null);
+				SaleStockReportTableRow totalRow = new SaleStockReportTableRow();
 				totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));
 				totalRow.setAmount(RootBusinessLayer.getInstance().getNumberBusiness().format(amount));
 				totalRow.setAmountPaid(RootBusinessLayer.getInstance().getNumberBusiness().format(paid));	
