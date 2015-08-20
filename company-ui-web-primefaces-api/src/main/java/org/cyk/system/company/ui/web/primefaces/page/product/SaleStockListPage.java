@@ -37,12 +37,7 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 			contentTitle=text("company.report.salestock.customer.title");
 		
 	}
-	
-	@Override
-	protected Boolean isSummaryRow(SaleStockReportTableRow result) {
-		return result.getSaleStock()==null;
-	}
-	
+		
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Collection<SaleStockReportTableRow> __results__(Collection<SaleStock> saleStocks) {

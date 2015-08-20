@@ -7,6 +7,9 @@ import java.util.Collection;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
@@ -14,9 +17,7 @@ import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.model.product.AbstractSaleStockSearchCriteria;
 import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
-import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.search.DefaultQueryFormModel;
-import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.api.data.collector.form.ControlSet;
 import org.cyk.ui.api.model.table.Cell;
 import org.cyk.ui.api.model.table.Column;
@@ -25,20 +26,17 @@ import org.cyk.ui.web.api.data.collector.control.WebInput;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessQueryPage;
-import org.cyk.utility.common.annotation.user.interfaces.IncludeInputs;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.cyk.utility.common.annotation.user.interfaces.Sequence;
 import org.cyk.utility.common.annotation.user.interfaces.Sequence.Direction;
 import org.cyk.utility.common.annotation.user.interfaces.Text;
+import org.cyk.utility.common.model.table.Dimension.DimensionType;
 import org.cyk.utility.common.model.table.TableAdapter;
 import org.primefaces.extensions.model.dynaform.DynaFormControl;
 import org.primefaces.extensions.model.dynaform.DynaFormLabel;
 import org.primefaces.extensions.model.dynaform.DynaFormModel;
 import org.primefaces.extensions.model.dynaform.DynaFormRow;
-
-import lombok.Getter;
-import lombok.Setter; 
 
 @Getter @Setter
 public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEARCH_CRITERIA extends AbstractSaleStockSearchCriteria> extends AbstractBusinessQueryPage<SALE_STOCK, AbstractSaleStockListPage.SaleStockQueryFormModel, SaleStockReportTableRow> implements Serializable {
@@ -116,6 +114,11 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 	}
 	
 	@Override
+	protected DimensionType getRowType(Row<Object> row) {
+		return ((SaleStockReportTableRow)row.getData()).getSaleStock()==null ? DimensionType.SUMMARY:super.getRowType(row);
+	}
+	
+	@Override
 	protected Boolean autoLoad() {
 		return Boolean.TRUE;
 	}
@@ -174,28 +177,10 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 	public static class SaleStockQueryFormModel extends DefaultQueryFormModel implements Serializable {
 
 		private static final long serialVersionUID = -3328823824725030136L;
-		//saleStockInputExternalIdentifier
 		@Input(label=@Text(value="field.sale.stock.input.external.identifier")) @InputText 
 		@Sequence(direction=Direction.AFTER,field=DefaultQueryFormModel.FIELD_IDENTIFIER)
 		private String externalIdentifier;
 		
 	}
-	/*
-	@Getter @Setter
-	public static class SaleStockQueryResultFormModel extends AbstractFormModel<SaleStock> implements Serializable {
-
-		private static final long serialVersionUID = -3328823824725030136L;
-
-		@IncludeInputs
-		private SaleStockReportTableRow saleStockReportTableRow;
-		
-		@Override
-		public void read() {
-			super.read();
-			saleStockReportTableRow = new SaleStockReportTableRow(identifiable);
-		}
-		
-	}
-	*/
 	
 }
