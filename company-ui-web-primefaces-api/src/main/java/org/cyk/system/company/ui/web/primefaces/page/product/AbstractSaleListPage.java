@@ -20,6 +20,7 @@ import org.cyk.ui.api.command.CommandAdapter;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.model.table.Cell;
 import org.cyk.ui.api.model.table.Column;
+import org.cyk.ui.api.model.table.ColumnAdapter;
 import org.cyk.ui.api.model.table.Row;
 import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.Commandable;
@@ -51,9 +52,9 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 		table.setShowFooter(Boolean.TRUE);
 		
 		((Commandable)table.getAddRowCommandable()).getButton().setRendered(Boolean.FALSE);
-		table.getTableListeners().add(new TableAdapter<Row<Object>, Column, Object, String, Cell, String>(){
+		table.getColumnListeners().add(new ColumnAdapter(){
 			@Override
-			public Boolean ignore(Field field) {
+			public Boolean isColumn(Field field) {
 				return field.getName().equals("balance") && BalanceType.ZERO.equals(balanceType);
 			}
 			

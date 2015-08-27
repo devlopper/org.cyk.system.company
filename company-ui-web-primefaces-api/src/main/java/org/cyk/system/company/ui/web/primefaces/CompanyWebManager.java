@@ -7,6 +7,8 @@ import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import lombok.Getter;
+
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.CustomerBusiness;
@@ -35,25 +37,20 @@ import org.cyk.system.company.model.production.ProductionSpreadSheetTemplate;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
-import org.cyk.system.company.ui.web.primefaces.model.CustomerFormModel;
-import org.cyk.system.company.ui.web.primefaces.model.EmployeeFormModel;
 import org.cyk.system.company.ui.web.primefaces.model.ProductCollectionFormModel;
 import org.cyk.system.root.business.api.BusinessAdapter;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.AbstractUserSession;
-import org.cyk.ui.api.UIManager;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.UICommandable.IconType;
 import org.cyk.ui.api.command.menu.SystemMenu;
-import org.cyk.ui.api.model.party.ActorConsultFormModel;
 import org.cyk.ui.web.api.security.shiro.WebEnvironmentAdapter;
 import org.cyk.ui.web.api.security.shiro.WebEnvironmentAdapter.SecuredUrlProvider;
 import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
-
-import lombok.Getter;
+import org.cyk.utility.common.computation.DataReadConfiguration;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyWebManager.DEPLOYMENT_ORDER) @Getter
 public class CompanyWebManager extends AbstractPrimefacesManager implements Serializable {
@@ -101,8 +98,8 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		identifier = "company";
 		languageBusiness.registerResourceBundle("org.cyk.system.company.ui.resources.ui", getClass().getClassLoader());
 		
-		businessClassConfig(Customer.class,CustomerFormModel.class);
-		businessClassConfig(Employee.class,EmployeeFormModel.class);
+		//businessClassConfig(Customer.class,CustomerFormModel.class);
+		//businessClassConfig(Employee.class,EmployeeFormModel.class);
 		//businessClassConfig(TangibleProductStockMovement.class,TangibleProductStockMovementFormModel.class);
 		
 		businessClassConfig(ProductCollection.class,ProductCollectionFormModel.class,null);
@@ -114,15 +111,14 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		businessEntityInfos(TangibleProductStockMovement.class).setUiEditViewId("tangibleProductStockMovementCrudManyView");
 		businessEntityInfos(TangibleProductStockMovement.class).setUiListViewId(outcomeTangibleProductStockMovementList);
 		
-		UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Employee.class, ActorConsultFormModel.class);
-		UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Customer.class, ActorConsultFormModel.class);
+		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Employee.class, ActorConsultFormModel.class);
+		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Customer.class, ActorConsultFormModel.class);
 		
 		uiManager.getBusinesslisteners().add(new BusinessAdapter(){
 			private static final long serialVersionUID = 4605368263736933413L;
 			@SuppressWarnings("unchecked")
 			@Override
-			public <T extends AbstractIdentifiable> Collection<T> find(Class<T> dataClass, Integer first, Integer pageSize, String sortField, Boolean ascendingOrder,
-					String filter) {
+			public <T extends AbstractIdentifiable> Collection<T> find(Class<T> dataClass, DataReadConfiguration configuration) {
 				if(Customer.class.equals(dataClass)){
 					return (Collection<T>) customerBusiness.findAll();
 				}else if(Employee.class.equals(dataClass)){
@@ -140,11 +136,11 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 				} else if(ProductionSpreadSheet.class.equals(dataClass)){
 					return (Collection<T>) productionBusiness.findAll();
 				}               
-				return super.find(dataClass, first, pageSize, sortField, ascendingOrder, filter);
+				return super.find(dataClass, configuration);
 			}
 			
 			@Override
-			public <T extends AbstractIdentifiable> Long count(Class<T> dataClass, String filter) {
+			public <T extends AbstractIdentifiable> Long count(Class<T> dataClass, DataReadConfiguration configuration) {
 				if(Customer.class.equals(dataClass)){
 					return customerBusiness.countAll();
 				}else if(Employee.class.equals(dataClass)){
@@ -163,7 +159,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 					return productionBusiness.countAll();
 				} 
 				
-				return super.count(dataClass, filter);
+				return super.count(dataClass, configuration);
 			}
 		});
 		
