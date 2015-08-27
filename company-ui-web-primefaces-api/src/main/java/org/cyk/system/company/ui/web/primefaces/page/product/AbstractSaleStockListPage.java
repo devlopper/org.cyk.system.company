@@ -7,9 +7,6 @@ import java.util.Collection;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
@@ -19,8 +16,7 @@ import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.search.DefaultQueryFormModel;
 import org.cyk.ui.api.data.collector.form.ControlSet;
-import org.cyk.ui.api.model.table.Cell;
-import org.cyk.ui.api.model.table.Column;
+import org.cyk.ui.api.model.table.ColumnAdapter;
 import org.cyk.ui.api.model.table.Row;
 import org.cyk.ui.web.api.data.collector.control.WebInput;
 import org.cyk.ui.web.primefaces.Commandable;
@@ -32,11 +28,13 @@ import org.cyk.utility.common.annotation.user.interfaces.Sequence;
 import org.cyk.utility.common.annotation.user.interfaces.Sequence.Direction;
 import org.cyk.utility.common.annotation.user.interfaces.Text;
 import org.cyk.utility.common.model.table.Dimension.DimensionType;
-import org.cyk.utility.common.model.table.TableAdapter;
 import org.primefaces.extensions.model.dynaform.DynaFormControl;
 import org.primefaces.extensions.model.dynaform.DynaFormLabel;
 import org.primefaces.extensions.model.dynaform.DynaFormModel;
 import org.primefaces.extensions.model.dynaform.DynaFormRow;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter
 public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEARCH_CRITERIA extends AbstractSaleStockSearchCriteria> extends AbstractBusinessQueryPage<SALE_STOCK, AbstractSaleStockListPage.SaleStockQueryFormModel, SaleStockReportTableRow> implements Serializable {
@@ -78,10 +76,10 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 				((WebInput<?, ?, ?, ?>)input).getCss().addClass("cyk-ui-form-salestock-search-inputfield");
 			}
 		}); 
-		table.getTableListeners().add(new TableAdapter<Row<Object>, Column, Object, String, Cell, String>(){
+		table.getColumnListeners().add(new ColumnAdapter(){
 			@Override
-			public Boolean ignore(Field field) {
-				return ignoreField(field);
+			public Boolean isColumn(Field field) {
+				return !ignoreField(field);
 			}
 		});
 	

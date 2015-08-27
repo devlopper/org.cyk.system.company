@@ -3,7 +3,6 @@ package org.cyk.system.company.ui.web.primefaces.page.product;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -18,14 +17,11 @@ import org.cyk.system.company.ui.web.primefaces.model.SaleQueryResultFormModel;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.ui.api.command.CommandAdapter;
 import org.cyk.ui.api.command.UICommand;
-import org.cyk.ui.api.model.table.Cell;
-import org.cyk.ui.api.model.table.Column;
 import org.cyk.ui.api.model.table.ColumnAdapter;
 import org.cyk.ui.api.model.table.Row;
 import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessQueryPage;
-import org.cyk.utility.common.model.table.TableAdapter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -57,7 +53,7 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 			public Boolean isColumn(Field field) {
 				return field.getName().equals("balance") && BalanceType.ZERO.equals(balanceType);
 			}
-			
+			/*
 			@Override
 			public void fields(List<Field> fields) {
 				super.fields(fields);
@@ -67,7 +63,7 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 						break;
 					}
 				}
-			}
+			}*/
 		});
 	}
 	

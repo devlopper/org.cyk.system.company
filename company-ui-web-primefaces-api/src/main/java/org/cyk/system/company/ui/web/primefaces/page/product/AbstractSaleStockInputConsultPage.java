@@ -23,15 +23,13 @@ import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.UICommandable.CommandRequestType;
 import org.cyk.ui.api.command.UICommandable.Parameter;
 import org.cyk.ui.api.command.UICommandable.ViewType;
-import org.cyk.ui.api.model.table.Cell;
-import org.cyk.ui.api.model.table.Column;
 import org.cyk.ui.api.model.table.Row;
+import org.cyk.ui.api.model.table.RowAdapter;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
-import org.cyk.utility.common.model.table.TableAdapter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -62,13 +60,14 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		outputsTable.setShowAddRemoveColumn(Boolean.TRUE);
 		outputsTable.setShowOpenCommand(Boolean.TRUE);
 		
-		outputsTable.getTableListeners().add(new TableAdapter<Row<OutputDetails>, Column, OutputDetails, String, Cell, String>(){
+		outputsTable.getRowListeners().add(new RowAdapter<OutputDetails>(){
 			@Override
-			public void rowAdded(Row<OutputDetails> row) {
-				super.rowAdded(row);
+			public void added(Row<OutputDetails> row) {
+				super.added(row);
 				row.setOpenable(Boolean.TRUE);
 			}
 		});
+		
 		outputsTable.getOpenRowCommandable().getCommand().getCommandListeners().add(new CommandAdapter(){
 			private static final long serialVersionUID = 8640883295366346645L;
 			@Override

@@ -14,12 +14,9 @@ import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
 import org.cyk.system.company.model.product.Customer;
-import org.cyk.ui.api.model.table.Cell;
-import org.cyk.ui.api.model.table.Column;
-import org.cyk.ui.api.model.table.Row;
+import org.cyk.ui.api.model.table.ColumnAdapter;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.page.AbstractPrimefacesPage;
-import org.cyk.utility.common.model.table.TableAdapter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -49,10 +46,10 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 		Collection<Customer> customers = all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
 		for(Customer customer : customers)
 			details.add(new CustomerReportTableRow(customer));
-		TableAdapter<Row<CustomerReportTableRow>, Column, CustomerReportTableRow, String, Cell, String> listener;
-		listener = new TableAdapter<Row<CustomerReportTableRow>, Column, CustomerReportTableRow, String, Cell, String>(){
+		ColumnAdapter listener;
+		listener = new ColumnAdapter(){
 			@Override
-			public Boolean ignore(Field field) {
+			public Boolean isColumn(Field field) {
 				return all?CustomerReportTableRow.balanceFieldIgnored(field):
 					CustomerReportTableRow.credenceFieldIgnored(field);
 			}
