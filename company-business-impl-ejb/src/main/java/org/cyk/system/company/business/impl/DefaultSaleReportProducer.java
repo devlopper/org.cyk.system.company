@@ -74,7 +74,7 @@ public class DefaultSaleReportProducer extends AbstractRootBusinessBean implemen
 		contactCollectionBusiness.load(company.getContactCollection());
 		saleReport.getAccountingPeriod().getCompany().getContact().setPhoneNumbers(StringUtils.join(company.getContactCollection().getPhoneNumbers()," - "));
 		
-		labelValue(saleReport.getHeaderInfos(),"company.report.pointofsale.invoicenumber", sale.getIdentificationNumber());
+		labelValue(saleReport.getHeaderInfos(),"company.report.pointofsale.invoicenumber", saleReport.getIdentifier());
 		labelValue(saleReport.getHeaderInfos(),"company.report.pointofsale.paymentreceiptnumber", cashRegisterMovement.getIdentificationNumber(),paymentExist);
 		labelValue("cashier",cashRegisterMovement.getCashRegister().getCode(),Boolean.TRUE.equals(sale.getAccountingPeriod().getShowPointOfSaleReportCashier()));
 		labelValue("date", timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN));

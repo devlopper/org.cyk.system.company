@@ -78,7 +78,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	//Person person = companyBusinessTestHelper.cashierPerson();
     	
     	dropAndTakeInOne0(person);
-    	//dropAndTakeInOne(person);
+    	dropAndTakeInOne(person);
     	/*
     	dropAndTakeInMany(person);
     	dropAndTakeInManyWithZeroPayment(person);
@@ -119,7 +119,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     }
     
     private void dropAndTakeInMany(Person person){
-    	Boolean print = PRINT_REPORT && Boolean.FALSE;
+    	Boolean print = PRINT_REPORT && Boolean.TRUE;
     	SaleStockInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 3),person, customer1,"B", "1000", "100", "3",print, "1100", "168", "1100","1100");
     	companyBusinessTestHelper.taking(date(2015, 1, 4),person, saleStockInput, "2", "800",print, "1", "300","300");
     	companyBusinessTestHelper.taking(date(2015, 1, 5),person, saleStockInput, "1", "300",print, "0", "0","0");

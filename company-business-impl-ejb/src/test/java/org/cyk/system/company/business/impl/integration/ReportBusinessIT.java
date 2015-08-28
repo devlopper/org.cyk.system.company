@@ -1,31 +1,10 @@
 package org.cyk.system.company.business.impl.integration;
 
-import java.util.Date;
-
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.time.DateUtils;
-import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyRandomDataProvider;
-import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
-import org.cyk.system.company.business.impl.product.SaleReportTableDetail;
-import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
-import org.cyk.system.company.business.impl.product.TangibleProductInventoryReportTableDetails;
-import org.cyk.system.company.business.impl.product.TangibleProductStockMovementLineReport;
 import org.cyk.system.company.model.product.Customer;
-import org.cyk.system.company.model.product.Sale;
-import org.cyk.system.company.model.product.SaleStock;
-import org.cyk.system.company.model.product.SaleStockInput;
-import org.cyk.system.company.model.product.SaleStockOutput;
-import org.cyk.system.company.model.product.TangibleProductInventory;
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
-import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.impl.RootRandomDataProvider;
-import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParameters;
-import org.cyk.system.root.model.search.DefaultSearchCriteria;
-import org.cyk.utility.common.generator.RandomDataProvider;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 
@@ -38,11 +17,11 @@ public class ReportBusinessIT extends AbstractBusinessIT {
     	return createRootDeployment();
     } 
     
-    @Inject private RandomDataProvider randomDataProvider;
+    //@Inject private RandomDataProvider randomDataProvider;
     @Inject private RootRandomDataProvider rootRandomDataProvider;
     @Inject private CompanyRandomDataProvider companyRandomDataProvider;
-    @Inject private TangibleProductInventoryBusiness tangibleProductInventoryBusiness;
-    @Inject private SaleStockOutputBusiness saleStockOutputBusiness;
+    //@Inject private TangibleProductInventoryBusiness tangibleProductInventoryBusiness;
+    //@Inject private SaleStockOutputBusiness saleStockOutputBusiness;
     
     @Override
     protected void businesses() {

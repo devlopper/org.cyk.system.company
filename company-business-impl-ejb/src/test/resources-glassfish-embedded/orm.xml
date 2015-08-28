@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="1.0"
+	xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemalocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd">
+
+	<entity name="Sale" class="org.cyk.system.company.model.product.Sale"
+		access="FIELD">
+		<attributes>
+			<id name="identifier">
+				<generated-value strategy="SEQUENCE"
+					generator="SALE_IDENTIFIER_SEQUENCE_GENERATOR" />
+				<sequence-generator name="SALE_IDENTIFIER_SEQUENCE_GENERATOR"
+					sequence-name="SALE_IDENTIFIER_SEQUENCE_GENERATOR" allocation-size="1" />
+			</id>
+		</attributes>
+	</entity>
+	
+	<entity name="CashRegisterMovement" class="org.cyk.system.company.model.payment.CashRegisterMovement"
+		access="FIELD">
+		<attributes>
+			<id name="identifier">
+				<generated-value strategy="SEQUENCE"
+					generator="SALECASHREGISTERMOVEMENT_IDENTIFIER_SEQUENCE_GENERATOR" />
+				<sequence-generator name="SALECASHREGISTERMOVEMENT_IDENTIFIER_SEQUENCE_GENERATOR"
+					sequence-name="SALECASHREGISTERMOVEMENT_IDENTIFIER_SEQUENCE_GENERATOR" allocation-size="1" />
+			</id>
+		</attributes>
+	</entity>
+
+</entity-mappings>

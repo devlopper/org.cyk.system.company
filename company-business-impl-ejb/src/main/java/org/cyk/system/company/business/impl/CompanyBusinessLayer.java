@@ -10,6 +10,9 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.SaleReportProducer;
@@ -46,7 +49,6 @@ import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.ProductCollection;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
-import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
@@ -62,7 +64,6 @@ import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.OwnedCompany;
-import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.root.business.api.TypedBusiness;
 import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.api.security.RoleBusiness;
@@ -72,11 +73,15 @@ import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.AbstractIdentifiableLifeCyleEventListener;
+import org.cyk.system.root.model.Identifiable;
+import org.cyk.system.root.model.LongIdentifiableLifeCyleEventAdapter;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.file.report.AbstractReport;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.generator.StringValueGenerator;
 import org.cyk.system.root.model.generator.ValueGenerator;
+import org.cyk.system.root.model.generator.ValueGenerator.GenerateMethod;
 import org.cyk.system.root.model.geography.PhoneNumber;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Credentials;
@@ -88,9 +93,6 @@ import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.joda.time.DateTime;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER)
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
 
@@ -101,24 +103,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	
 	@Getter private final String roleSaleManagerCode = "SALEMANAGER",roleStockManagerCode = "STOCKMANAGER",roleHumanResourcesManagerCode = "HUMANRESOURCESMANAGER"
 			,roleCustomerManagerCode = "CUSTOMERMANAGER",roleProductionManagerCode="PRODUCTIONMANAGER";
-	/*
-	@Getter private final String reportPointOfSale = "pos";
-	@Getter private final String reportStockDashboard = "rsdb";
-	@Getter private final String parameterCustomerReportType = "crt";
-	@Getter private final String parameterCustomerReportBalance = "crb";
-	@Getter private final String parameterCustomerReportSaleStock = "crss";
-	@Getter private final String parameterCustomerBalanceType = "cbt";
-	@Getter private final String parameterCustomerBalanceAll = "cball";
-	@Getter private final String parameterCustomerBalanceCredence = "cbcred";
-	@Getter private final String parameterMinimumRemainingNumberOfGoods = "mrnog";
-	@Getter private final String parameterBalanceType = "bt";
-	@Getter private final String parameterSaleStockReportType = "crt";
-	@Getter private final String parameterSaleStockReportCashRegister = "ssorcr";
-	@Getter private final String parameterSaleStockReportInventory = "ssori";
-	@Getter private final String parameterSaleStockReportCustomer = "ssorc";
-	@Getter private final String parameterSaleStockReportInput = "ssiri";
-	@Getter private final String parameterSaleDone = "saledone";
-	*/
+	
 	@Getter private String pointOfSaleInvoiceReportName;
 	@Getter private String pointOfSalePaymentReportName;
 	@Getter private final String pointOfSaleReportExtension = "pdf";
@@ -181,12 +166,54 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		pointOfSaleInvoiceReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.invoice");
 		pointOfSalePaymentReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.paymentreceipt");
 		
-		applicationBusiness.registerValueGenerator((ValueGenerator<?, ?>) new StringValueGenerator<CashRegisterMovement>(
-        		CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFICATION_NUMBER,"", CashRegisterMovement.class));
-		applicationBusiness.registerValueGenerator((ValueGenerator<?, ?>) new StringValueGenerator<Sale>(
-        		CompanyBusinessLayerListener.SALE_IDENTIFICATION_NUMBER,"", Sale.class));
+		StringValueGenerator<Sale> saleStringValueGenerator = new StringValueGenerator<Sale>(CompanyBusinessLayerListener.SALE_IDENTIFICATION_NUMBER,"", Sale.class);
+		applicationBusiness.registerValueGenerator((ValueGenerator<?, ?>) saleStringValueGenerator);
+		saleStringValueGenerator.setPrefix("Pref");
+		saleStringValueGenerator.setSuffix("Suff");
+		saleStringValueGenerator.setMethod(new GenerateMethod<Sale, String>() {
+			@Override
+			public String execute(Sale sale) {
+				return sale.getIdentifier().toString();
+			}
+		});
 		
+		StringValueGenerator<CashRegisterMovement> cashRegisterMovementStringValueGenerator = new StringValueGenerator<CashRegisterMovement>(CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFICATION_NUMBER,"", CashRegisterMovement.class);
+		applicationBusiness.registerValueGenerator((ValueGenerator<?, ?>) cashRegisterMovementStringValueGenerator);
+		cashRegisterMovementStringValueGenerator.setPrefix("Paie");
+		cashRegisterMovementStringValueGenerator.setMethod(new GenerateMethod<CashRegisterMovement, String>() {
+			@Override
+			public String execute(CashRegisterMovement cashRegisterMovement) {
+				return cashRegisterMovement.getIdentifier().toString();
+			}
+		});
+		
+		AbstractIdentifiableLifeCyleEventListener.MAP.put(Sale.class, new LongIdentifiableLifeCyleEventAdapter(){
+			private static final long serialVersionUID = 1695079730020340429L;
+			@Override
+			public void onPrePersist(Identifiable<Long> identifiable) {
+				if(identifiable instanceof Sale){
+					((Sale)identifiable).setIdentificationNumber(
+							RootBusinessLayer.getInstance().getApplicationBusiness().generateStringValue(CompanyBusinessLayerListener.SALE_IDENTIFICATION_NUMBER,
+									(Sale)identifiable)
+							);
+				}
+			}
+		});
+		
+		AbstractIdentifiableLifeCyleEventListener.MAP.put(CashRegisterMovement.class, new LongIdentifiableLifeCyleEventAdapter(){
+			private static final long serialVersionUID = 1695079730020340429L;
+			@Override
+			public void onPrePersist(Identifiable<Long> identifiable) {
+				if(identifiable instanceof CashRegisterMovement){
+					((CashRegisterMovement)identifiable).setIdentificationNumber(
+							RootBusinessLayer.getInstance().getApplicationBusiness().generateStringValue(CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFICATION_NUMBER,
+									(CashRegisterMovement)identifiable)
+							);
+				}
+			}
+		});
 	}
+	
 	
 	@Override
 	protected AbstractReportRepository getReportRepository() {
@@ -241,13 +268,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		installObject(FILE_COMPANY_LOGO,fileBusiness,company.getImage());
 		company.getContactCollection().setPhoneNumbers(new ArrayList<PhoneNumber>());
 		RootRandomDataProvider.getInstance().phoneNumber(company.getContactCollection());
-		//PhoneNumber pn = new PhoneNumber();
-		//pn.setCollection(company.getContactCollection());
-		//pn.setNumber("22441213");
-		//pn.setCountry(RootBusinessLayer.getInstance().getCountryCoteDivoire());
-		//pn.setType(RootBusinessLayer.getInstance().getLandPhoneNumberType());
-		//company.getContactCollection().getPhoneNumbers().add(pn);
-		//companyBusiness.create(company);
+
 		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
 			listener.handleCompanyToInstall(company);
 		installObject(STRUCTURE_COMPANY,companyBusiness,company);
@@ -284,8 +305,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
     	createRole(roleCustomerManagerCode, "Customer Manager");
     	createRole(roleProductionManagerCode, "Production Manager");
     }
-	
-	
+		
 	private void structure(){
 		DivisionType department = new DivisionType(null, DivisionType.DEPARTMENT, "Department");
         create(department);
@@ -324,8 +344,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
     	intangibleProductSaleStock = intangibleProductBusiness.find(IntangibleProduct.SALE_STOCK);
     	tangibleProductSaleStock = tangibleProductBusiness.find(TangibleProduct.SALE_STOCK);
     }
-	
-	
+
 	public static CompanyBusinessLayer getInstance() {
 		return INSTANCE;
 	}
@@ -399,34 +418,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	
 	protected void fakeTransactions(){
 		
-		ProductCategory productCategoryEntretienCoprs = productCategory(null, "EC", "Entretien du corps");
-        ProductCategory productCategoryBeaute = productCategory(null, "BT", "Beaute");
-        
-        ProductCategory productCategorySoindDuCorps = productCategory(productCategoryEntretienCoprs, "SC", "Soin du coprs");
-        ProductCategory productCategoryEpilation = productCategory(productCategoryEntretienCoprs, "EP", "Epilation");
-        ProductCategory productCategoryMassage = productCategory(productCategoryEntretienCoprs, "MASS", "Massage");
-
-        ProductCategory productCategoryOnglerie = productCategory(productCategoryBeaute, "OG", "Onglerie");
-        ProductCategory productCategoryCoiffure = productCategory(productCategoryBeaute, "CF", "Coiffure");
-        
-        products(productCategorySoindDuCorps,new String[]{"Gommage","1000","Masque Vert","1000","Masque Argileux","1500"}
-        	,new String[]{"Savon noir","1000","Miel","1000","Lait","1000"});
-        
-        products(productCategoryEpilation,new String[]{"Epilation Permanente","1000","Epilation a la cire","1000","Epilation electrique","1000"}
-    	,new String[]{"Rasoir electrique","1000","Cire","1000","Crie chauffante","1000"});
-        
-        products(productCategoryMassage,new String[]{"Massage relaxant","1000","Massage amincicant","1000","Massage erotique","1000"}
-    	,new String[]{"Huile d'arguant","1000","Pierre chaude","1000","Huile d'olive","1000"});
-        
-        products(productCategoryOnglerie,new String[]{"Manicure","1000","Pedicure","1000","Pose de faux ongle","1000"}
-    	,new String[]{"Verni","1000","Coupe ongle","1000","Lime","1000"});
-        
-        products(productCategoryCoiffure,new String[]{"Tissage","1000","Tresse","1000","Champoing","1000"}
-    	,new String[]{"Meche naturelle","1000","Meche synthetique","1000","RemiAir","1000"});
-        
         Employee employee = new Employee();
         employee.setPerson(new Person());
         employee.getPerson().setName("Zadi");
+        employee.getPerson().setLastName("Gerard");
         employeeBusiness.create(employee);
         
         Role[] roles = roleBusiness.findAllExclude(Arrays.asList(RootBusinessLayer.getInstance().getAdministratorRole())).toArray(new Role[]{});
@@ -436,112 +431,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         Company company = companyBusiness.find().one();
         company.setManager(employee.getPerson());
         companyBusiness.update(company);
-        
-        //bakeryFakeTransaction();
-        
+                
 	}
 	
+	/**/
 	
-	private TangibleProduct fakeTangibleProduct(String code,String name, ProductCategory productCategory, String cost){
-		TangibleProduct t = new TangibleProduct(code,name,null,productCategory,cost==null?null:new BigDecimal(cost));
-		t.setUseQuantity(new BigDecimal("100000"));
-		t.setStockQuantity(new BigDecimal("100000"));
-		tangibleProductBusiness.create(t);
-		return t;
-	}
-	
-	
-	private IntangibleProduct fakeIntangibleProduct(String code,String name, ProductCategory productCategory, String cost){
-		IntangibleProduct t = new IntangibleProduct(code,name,null,productCategory,StringUtils.isBlank(cost)?null:new BigDecimal(cost));
-		productBusiness.create(t);
-		return t;
-	}
-	
-	
-	private ProductCategory productCategory(ProductCategory parent,String code,String name){
-		return productCategoryBusiness.create(new ProductCategory(parent, code, name));
-	}
-	
-	
-	private static int I = 0,J=0;
-	
-	private void products(ProductCategory productCategory,String[] prestations,String[] articles){
-		if(prestations!=null)
-			for(int i=0;i<prestations.length;i+=2)
-				fakeIntangibleProduct("iprod"+(++I),prestations[i],productCategory,prestations[i+1]);
-		
-		if(articles!=null)
-			for(int i=0;i<articles.length;i+=2)
-				fakeTangibleProduct("tprod"+(++J),articles[i],productCategory,articles[i+1]);
-	}
-	
-    
-	public static Sale sell(SaleBusiness saleBusiness,ProductDao productDao,AccountingPeriod accountingPeriod,Cashier cashier,Integer day,Integer month,Integer hour,Integer minute,String[] products,String amountIn,String amountOut){
-    	Sale sale = new Sale();
-    	sale.setCashier(cashier);
-    	sale.setAccountingPeriod(accountingPeriod);
-    	if(day!=null)
-    		sale.setDate(new DateTime(new DateTime(accountingPeriod.getPeriod().getFromDate()).getYear(), month, day, hour, minute).toDate());
-    	saleProducts(saleBusiness,productDao,sale, products);
-    	saleBusiness.create(sale, new SaleCashRegisterMovement(sale, new CashRegisterMovement(cashier.getCashRegister()),
-    			amountIn==null?sale.getCost():new BigDecimal(amountIn), amountOut==null?BigDecimal.ZERO:new BigDecimal(amountOut)));
-    	return sale;
-    }
-    
-    
-    public static Sale sell(SaleBusiness saleBusiness,ProductDao productDao,AccountingPeriod accountingPeriod,Cashier cashier,Integer day,Integer month,Integer hour,Integer minute,String[] products){
-    	return sell(saleBusiness, productDao, accountingPeriod, cashier, day, month, hour, minute, products, null, null);
-    }
-    
-    
-    public static void saleProducts(SaleBusiness saleBusiness,ProductDao productDao,Sale sale,String[] products){
-    	if(products==null)
-    		return;
-    	for(int i=0;i<products.length;i+=2){
-    		SaleProduct saleProduct = saleBusiness.selectProduct(sale, productDao.read(products[i]));
-    		saleProduct.setQuantity(new BigDecimal(products[i+1]));
-    		saleBusiness.applyChange(sale, saleProduct);
-    	}
-    		
-    }
-
-    /**/
-    
-    /* bakery */    
-    /*
-    private void bakeryFakeTransaction(){
-    	ProductionSpreadSheetTemplate productionPlanModel = new ProductionSpreadSheetTemplate("PPM1","Production de pain");
-    	productionPlanModel.setTimeDivisionType(RootBusinessLayer.getInstance().getTimeDivisionTypeDay());
-    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("F", "Farine", null, null)));
-    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("L", "Levure", null, null)));
-    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("A", "Ameliorant", null, null)));
-    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("B", "Bois", null, null)));
-    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("G", "Gaz", null, null)));
-    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("C", "Carburant", null, null)));
-    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("GA", "Glace alimentaire", null, null)));
-    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("PV", "Pain vendable", null, null)));
-    	productionPlanModel.getRows().add(new ProductionSpreadSheetTemplateRow(fakeTangibleProduct("PNV", "Pain non vendu", null, null)));
-    	
-    	productionPlanModel.getColumns().add(new ProductionSpreadSheetTemplateColumn(inputName("PLANNED", "Planned Quantity")));
-    	productionPlanModel.getColumns().add(new ProductionSpreadSheetTemplateColumn(inputName("FACTORED", "Factored Quantity")));
-    	productionPlanModel.getColumns().add(new ProductionSpreadSheetTemplateColumn(inputName("UNUSED", "Unused Quantity")));
-    	
-    	productionPlanModelBusiness.create(productionPlanModel);
-    	
-		productionPlanModelBusiness.load(productionPlanModel);
-    	ProductionSpreadSheet production = new ProductionSpreadSheet();
-    	production.getPeriod().setFromDate(new Date());
-    	production.getPeriod().setToDate(production.getPeriod().getFromDate());
-    	for(ProductionSpreadSheetTemplateRow input : productionPlanModel.getRows()){
-			for(ProductionSpreadSheetTemplateColumn productionPlanModelMetric : productionPlanModel.getColumns()){
-				ProductionSpreadSheetCell productionInput = new ProductionSpreadSheetCell(input,productionPlanModelMetric);
-				//productionInput.getMetricValue().setInput(productionPlanModelMetric.getInputName());
-				production.getCells().add(productionInput);
-				productionInput.setValue(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 9999)));
-			}
-		}
-    	productionBusiness.create(production);
-    }
-    */
-    
 }

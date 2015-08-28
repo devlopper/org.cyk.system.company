@@ -41,9 +41,10 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne @NotNull private AccountingPeriod accountingPeriod;
-	@Column(unique=true) private String identificationNumber;
+	@Column(unique=true,nullable=false) @NotNull private String identificationNumber;
 	@ManyToOne @NotNull private Cashier cashier;
 	@ManyToOne private Customer customer;
+	
 	//@Column private String externalIdentifier;//This value is used to link to another system (Example : Accounting System)
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal cost = BigDecimal.ZERO;
@@ -69,6 +70,8 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	@Transient private Boolean autoComputeValueAddedTax;
 	@Transient private Collection<SaleProduct> saleProducts = new ArrayList<>();
 	@Transient private Collection<SaleCashRegisterMovement> saleCashRegisterMovements = new ArrayList<>();
+	
+	/**/
 	
 	/**/
 	

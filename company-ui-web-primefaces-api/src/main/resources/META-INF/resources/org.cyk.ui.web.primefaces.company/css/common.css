@@ -39,3 +39,7 @@
 .sale-dashboard-turnover-barchart{
 	width: 95%;height: 250px;
 }
+
+.salestockreporttablerow-remainingnumberofgoods{
+	font-weight: bold;
+}

@@ -13,7 +13,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.SaleReportProducer.InvoiceParameters;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
@@ -38,7 +37,6 @@ import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDa
 import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.cyk.system.company.persistence.api.product.SaleProductDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.party.person.Person;
 
@@ -47,8 +45,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	//public static String DEFAULT_POINT_OF_SALE_REPORT_NAME = "SaleReport";
-	//public static String DEFAULT_POINT_OF_SALE_REPORT_EXTENSION = "pdf";
 	public static Boolean AUTO_SET_SALE_DATE = Boolean.TRUE;
 	
 	@Inject private SaleProductBusiness saleProductBusiness;
@@ -132,7 +128,8 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		if(Boolean.TRUE.equals(AUTO_SET_SALE_DATE))
 			if(sale.getDate()==null)
 				sale.setDate(universalTimeCoordinated());
-		sale.setIdentificationNumber(RootBusinessLayer.getInstance().getApplicationBusiness().generateStringValue(CompanyBusinessLayerListener.SALE_IDENTIFICATION_NUMBER, sale));
+		
+		//sale.setIdentificationNumber(RootBusinessLayer.getInstance().getApplicationBusiness().generateStringValue(CompanyBusinessLayerListener.SALE_IDENTIFICATION_NUMBER, sale));
 		
 		exceptionUtils().exception(sale.getAccountingPeriod()==null, "exception.sale.accountingperiodmissing");
 		

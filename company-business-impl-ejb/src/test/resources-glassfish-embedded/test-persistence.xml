@@ -3,6 +3,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	<persistence-unit name="test" transaction-type="JTA">
 		<jta-data-source>jdbc/arquillian</jta-data-source>
+		<mapping-file>orm.xml</mapping-file>
 		<properties>
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
 			<property name="eclipselink.logging.level.sql" value="ALL" />
