@@ -10,9 +10,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.SaleReportProducer;
@@ -74,7 +71,6 @@ import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.AbstractIdentifiableLifeCyleEventListener;
-import org.cyk.system.root.model.Identifiable;
 import org.cyk.system.root.model.LongIdentifiableLifeCyleEventAdapter;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.file.report.AbstractReport;
@@ -92,6 +88,9 @@ import org.cyk.system.root.model.time.Period;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.joda.time.DateTime;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER)
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
@@ -173,6 +172,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		saleStringValueGenerator.setMethod(new GenerateMethod<Sale, String>() {
 			@Override
 			public String execute(Sale sale) {
+				System.out.println("CompanyBusinessLayer.initialisation().new GenerateMethod() {...}.execute()");
 				return sale.getIdentifier().toString();
 			}
 		});
@@ -190,8 +190,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		AbstractIdentifiableLifeCyleEventListener.MAP.put(Sale.class, new LongIdentifiableLifeCyleEventAdapter(){
 			private static final long serialVersionUID = 1695079730020340429L;
 			@Override
-			public void onPrePersist(Identifiable<Long> identifiable) {
+			public void onPrePersist(AbstractIdentifiable identifiable) {
 				if(identifiable instanceof Sale){
+					System.out.println(
+							"CompanyBusinessLayer.initialisation().new LongIdentifiableLifeCyleEventAdapter() {...}.onPrePersist()");
 					((Sale)identifiable).setIdentificationNumber(
 							RootBusinessLayer.getInstance().getApplicationBusiness().generateStringValue(CompanyBusinessLayerListener.SALE_IDENTIFICATION_NUMBER,
 									(Sale)identifiable)
@@ -203,8 +205,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		AbstractIdentifiableLifeCyleEventListener.MAP.put(CashRegisterMovement.class, new LongIdentifiableLifeCyleEventAdapter(){
 			private static final long serialVersionUID = 1695079730020340429L;
 			@Override
-			public void onPrePersist(Identifiable<Long> identifiable) {
+			public void onPrePersist(AbstractIdentifiable identifiable) {
 				if(identifiable instanceof CashRegisterMovement){
+					debug(identifiable);
 					((CashRegisterMovement)identifiable).setIdentificationNumber(
 							RootBusinessLayer.getInstance().getApplicationBusiness().generateStringValue(CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFICATION_NUMBER,
 									(CashRegisterMovement)identifiable)
