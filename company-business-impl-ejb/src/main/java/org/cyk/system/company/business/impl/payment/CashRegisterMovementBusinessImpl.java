@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
@@ -46,11 +47,9 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	private void doCreate(CashRegisterMovement movement){
 		if(movement.getDate()==null)
 			movement.setDate(universalTimeCoordinated());
-		/*
-		movement.setIdentificationNumber(RootBusinessLayer.getInstance().getApplicationBusiness()
-				.generateStringValue(CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFICATION_NUMBER, movement));
-		*/
 		cashRegisterDao.update(movement.getCashRegister());
 		dao.create(movement);
+		movement.setComputedIdentifier(generateStringValue(CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFIER, movement));
+		dao.update(movement);
 	}
 }

@@ -60,7 +60,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		contentTitle += " - "+identifiable.getIdentificationNumber();
+		contentTitle += " - "+identifiable.getComputedIdentifier();
 		
 		saleDetails = (FormOneData<SaleDetails>) createFormOneData(new SaleDetails(identifiable), Crud.READ);
 		configureDetailsForm(saleDetails);
@@ -153,7 +153,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		private String identifier,cost,balance,customer,date;
 		
 		public SaleDetails(Sale sale) {
-			this.identifier = sale.getIdentificationNumber();
+			this.identifier = sale.getComputedIdentifier();
 			this.cost = numberBusiness.format(sale.getCost());
 			this.balance = numberBusiness.format(sale.getBalance().getValue().abs());
 			this.customer = sale.getCustomer()==null?"":sale.getCustomer().getPerson().getNames();
@@ -198,7 +198,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		private String identifier,paid,date;
 		
 		public PaymentDetails(SaleCashRegisterMovement payment) {
-			this.identifier = payment.getCashRegisterMovement().getIdentificationNumber();
+			this.identifier = payment.getCashRegisterMovement().getComputedIdentifier();
 			this.paid = numberBusiness.format(payment.getCashRegisterMovement().getAmount());
 			this.date = timeBusiness.formatDateTime(payment.getCashRegisterMovement().getDate());
 		}

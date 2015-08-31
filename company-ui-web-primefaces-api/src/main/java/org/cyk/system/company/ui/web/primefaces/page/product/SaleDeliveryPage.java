@@ -44,7 +44,7 @@ public class SaleDeliveryPage extends AbstractBusinessEntityFormOnePage<Sale> im
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		contentTitle += " - "+identifiable.getIdentificationNumber()+" - "+text("command.edit.executiondetails");
+		contentTitle += " - "+identifiable.getComputedIdentifier()+" - "+text("command.edit.executiondetails");
 		form.setDynamic(Boolean.TRUE);
 		for(ProductEmployee productEmployee : productEmployeeBusiness.findPerformersBySale(identifiable))
 			assignments.add(new Assignment(productEmployee));

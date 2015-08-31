@@ -172,7 +172,7 @@ public class SaleBusinessITOLD extends AbstractBusinessIT {
     	saleCashRegisterMovement.setSale(sale); 
     	saleCashRegisterMovement.setAmountIn(new BigDecimal(in==null?amount:in));
     	saleCashRegisterMovement.setAmountOut(new BigDecimal(out==null?balance:out));
-    	saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement(null, cashier.getCashRegister(), new BigDecimal(amount), null));
+    	//saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement(null, cashier.getCashRegister(), new BigDecimal(amount), null));
     	
     	if(sale.getIdentifier()==null){
         	saleBusiness.create(sale,saleCashRegisterMovement);	

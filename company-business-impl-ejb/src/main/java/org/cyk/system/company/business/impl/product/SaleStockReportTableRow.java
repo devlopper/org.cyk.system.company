@@ -28,7 +28,7 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 	
 	@Input @InputText @ReportColumn private String date;
 	
-	@Input @ReportColumn private String number;
+	//@Input @ReportColumn private String number;
 	@Input @ReportColumn private String identifier;
 	@Input @ReportColumn private String saleStockInputExternalIdentifier;
 	
@@ -77,8 +77,8 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 	private void saleStockIntput(SaleStockInput saleStockInput){
 		Sale sale = saleStockInput.getSale();
 		saleStockInputExternalIdentifier = saleStockInput.getExternalIdentifier();
-		identifier = saleStockInput.getSale().getIdentificationNumber();
-		number = sale.getIdentificationNumber();
+		identifier = saleStockInput.getSale().getIdentifier().toString();
+		//number = sale.getIdentifier().to;
 		if(sale.getCustomer()!=null)
 			customer = sale.getCustomer().getRegistration().getCode()+" - "+sale.getCustomer().getPerson().getNames();
 		amount = formatNumber(sale.getCost());
@@ -100,8 +100,8 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		SaleStockInput saleStockInput = saleStockOutput.getSaleStockInput();
 		Sale sale = saleStockInput.getSale();
 		saleStockInputExternalIdentifier = saleStockInput.getExternalIdentifier();
-		identifier = saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getIdentificationNumber();
-		number = sale.getIdentificationNumber();
+		identifier = saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getIdentifier().toString();
+		//number = sale.getIdentificationNumber();
 		if(sale.getCustomer()!=null)
 			customer = sale.getCustomer().getRegistration().getCode()+" - "+sale.getCustomer().getPerson().getNames();
 		amountPaid = formatNumber(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());

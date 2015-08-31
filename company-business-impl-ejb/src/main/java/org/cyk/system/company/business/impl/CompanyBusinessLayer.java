@@ -1,5 +1,8 @@
 package org.cyk.system.company.business.impl;
 
+import static org.cyk.system.company.business.api.CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFIER;
+import static org.cyk.system.company.business.api.CompanyBusinessLayerListener.SALE_IDENTIFIER;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -9,6 +12,9 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
@@ -63,6 +69,7 @@ import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.business.api.TypedBusiness;
 import org.cyk.system.root.business.api.file.FileBusiness;
+import org.cyk.system.root.business.api.party.ApplicationBusiness;
 import org.cyk.system.root.business.api.security.RoleBusiness;
 import org.cyk.system.root.business.api.security.UserAccountBusiness;
 import org.cyk.system.root.business.impl.AbstractBusinessLayer;
@@ -70,8 +77,6 @@ import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.model.AbstractIdentifiable;
-import org.cyk.system.root.model.AbstractIdentifiableLifeCyleEventListener;
-import org.cyk.system.root.model.LongIdentifiableLifeCyleEventAdapter;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.file.report.AbstractReport;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
@@ -88,9 +93,6 @@ import org.cyk.system.root.model.time.Period;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.joda.time.DateTime;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER)
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
@@ -145,7 +147,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private RoleBusiness roleBusiness;
 	@Inject private ProductCategoryBusiness productCategoryBusiness;
 	@Getter @Setter private SaleReportProducer saleReportProducer = new DefaultSaleReportProducer();
-	
+	private ApplicationBusiness applicationBusiness = RootBusinessLayer.getInstance().getApplicationBusiness();
 	//@Getter private Role roleSaleManager,roleStockManager,roleHumanResourcesManager,customerManager,productionManager;
 	@Getter @Setter private TangibleProduct tangibleProductSaleStock;
 	@Getter private IntangibleProduct intangibleProductSaleStock;
@@ -165,19 +167,18 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		pointOfSaleInvoiceReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.invoice");
 		pointOfSalePaymentReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.paymentreceipt");
 		
-		StringValueGenerator<Sale> saleStringValueGenerator = new StringValueGenerator<Sale>(CompanyBusinessLayerListener.SALE_IDENTIFICATION_NUMBER,"", Sale.class);
+		StringValueGenerator<Sale> saleStringValueGenerator = new StringValueGenerator<Sale>(SALE_IDENTIFIER,"", Sale.class);
 		applicationBusiness.registerValueGenerator((ValueGenerator<?, ?>) saleStringValueGenerator);
 		saleStringValueGenerator.setPrefix("Pref");
 		saleStringValueGenerator.setSuffix("Suff");
 		saleStringValueGenerator.setMethod(new GenerateMethod<Sale, String>() {
 			@Override
 			public String execute(Sale sale) {
-				System.out.println("CompanyBusinessLayer.initialisation().new GenerateMethod() {...}.execute()");
 				return sale.getIdentifier().toString();
 			}
 		});
 		
-		StringValueGenerator<CashRegisterMovement> cashRegisterMovementStringValueGenerator = new StringValueGenerator<CashRegisterMovement>(CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFICATION_NUMBER,"", CashRegisterMovement.class);
+		StringValueGenerator<CashRegisterMovement> cashRegisterMovementStringValueGenerator = new StringValueGenerator<CashRegisterMovement>(CASH_MOVEMENT_IDENTIFIER,"", CashRegisterMovement.class);
 		applicationBusiness.registerValueGenerator((ValueGenerator<?, ?>) cashRegisterMovementStringValueGenerator);
 		cashRegisterMovementStringValueGenerator.setPrefix("Paie");
 		cashRegisterMovementStringValueGenerator.setMethod(new GenerateMethod<CashRegisterMovement, String>() {
@@ -186,19 +187,16 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 				return cashRegisterMovement.getIdentifier().toString();
 			}
 		});
-		
+						
+		/*
 		AbstractIdentifiableLifeCyleEventListener.MAP.put(Sale.class, new LongIdentifiableLifeCyleEventAdapter(){
 			private static final long serialVersionUID = 1695079730020340429L;
 			@Override
 			public void onPrePersist(AbstractIdentifiable identifiable) {
-				if(identifiable instanceof Sale){
-					System.out.println(
-							"CompanyBusinessLayer.initialisation().new LongIdentifiableLifeCyleEventAdapter() {...}.onPrePersist()");
-					((Sale)identifiable).setIdentificationNumber(
-							RootBusinessLayer.getInstance().getApplicationBusiness().generateStringValue(CompanyBusinessLayerListener.SALE_IDENTIFICATION_NUMBER,
-									(Sale)identifiable)
-							);
-				}
+				((Sale)identifiable).setIdentificationNumber(
+						applicationBusiness.generateStringValue(SALE_IDENTIFICATION_NUMBER,(Sale)identifiable)
+						);
+				
 			}
 		});
 		
@@ -206,15 +204,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			private static final long serialVersionUID = 1695079730020340429L;
 			@Override
 			public void onPrePersist(AbstractIdentifiable identifiable) {
-				if(identifiable instanceof CashRegisterMovement){
-					debug(identifiable);
-					((CashRegisterMovement)identifiable).setIdentificationNumber(
-							RootBusinessLayer.getInstance().getApplicationBusiness().generateStringValue(CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFICATION_NUMBER,
-									(CashRegisterMovement)identifiable)
-							);
-				}
+				((CashRegisterMovement)identifiable).setIdentificationNumber(
+						applicationBusiness.generateStringValue(CASH_MOVEMENT_IDENTIFICATION_NUMBER,(CashRegisterMovement)identifiable)
+						);
+				
 			}
 		});
+		*/
 	}
 	
 	
@@ -369,7 +365,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	}
 	
 	public void persistPointOfSale(SaleCashRegisterMovement saleCashRegisterMovement,SaleReport saleReport){
-		ReportBasedOnTemplateFile<SaleReport> report = createReport(pointOfSalePaymentReportName+saleCashRegisterMovement.getCashRegisterMovement().getIdentificationNumber(),
+		ReportBasedOnTemplateFile<SaleReport> report = createReport(pointOfSalePaymentReportName+saleCashRegisterMovement.getCashRegisterMovement().getIdentifier(),
 				saleCashRegisterMovement.getReport(), 
 				saleReport,saleCashRegisterMovement.getSale().getAccountingPeriod().getPointOfSaleReportFile(),
 				pointOfSaleReportExtension);
@@ -379,7 +375,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	}
 	
 	public void persistPointOfSale(Sale sale,SaleReport saleReport){
-		ReportBasedOnTemplateFile<SaleReport> report = createReport(pointOfSaleInvoiceReportName+sale.getIdentificationNumber(),
+		ReportBasedOnTemplateFile<SaleReport> report = createReport(pointOfSaleInvoiceReportName+sale.getIdentifier(),
 				sale.getReport(), saleReport,sale.getAccountingPeriod().getPointOfSaleReportFile(),
 				pointOfSaleReportExtension);
 		if(sale.getReport()==null)

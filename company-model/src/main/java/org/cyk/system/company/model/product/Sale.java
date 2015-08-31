@@ -41,7 +41,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne @NotNull private AccountingPeriod accountingPeriod;
-	@Column(unique=true,nullable=false) @NotNull private String identificationNumber;
+	@Column(unique=true,nullable=true) private String computedIdentifier;
 	@ManyToOne @NotNull private Cashier cashier;
 	@ManyToOne private Customer customer;
 	
@@ -76,7 +76,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	/**/
 	
 	public static final String FIELD_DONE = "done";
-	public static final String FIELD_IDENTIFICATION_NUMBER = "identificationNumber";
+	public static final String FIELD_COMPUTED_IDENTIFIER = "computedIdentifier";
 	public static final String FIELD_CASHIER = "cashier";
 	public static final String FIELD_CUSTOMER = "customer";
 	public static final String FIELD_ACCOUNTING_PERIOD = "accountingPeriod";

@@ -21,7 +21,7 @@ public interface SaleDao extends TypedDao<Sale> {
 	
 	//BigDecimal sumBalanceByCustomer(SaleSearchCriteria criteria);
 	
-	Sale readByIdentificationNumber(String identificationNumber);
+	Sale readByComputedIdentifier(String computedIdentifier);
 	
 	/*
 	Collection<Sale> readByCustomer(Customer customer,Collection<BalanceType> balanceTypes);

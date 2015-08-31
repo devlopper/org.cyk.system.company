@@ -60,7 +60,7 @@ public class DefaultSaleReportProducer extends AbstractRootBusinessBean implemen
 		
 		SaleReport saleReport = new SaleReport();
 		saleReport.setTitle(languageBusiness.findText(Boolean.TRUE.equals(paymentOnly)?"company.report.pointofsale.paymentreceipt":"company.report.pointofsale.invoice"));
-		saleReport.setIdentifier(sale.getIdentificationNumber());
+		saleReport.setIdentifier(sale.getComputedIdentifier());
 		saleReport.setCashRegisterIdentifier(Boolean.TRUE.equals(sale.getAccountingPeriod().getShowPointOfSaleReportCashier())?cashRegisterMovement.getCashRegister().getCode():null);
 		saleReport.setDate(timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN));
 		saleReport.setNumberOfProducts(numberBusiness.format(numberOfProducts));
@@ -75,7 +75,7 @@ public class DefaultSaleReportProducer extends AbstractRootBusinessBean implemen
 		saleReport.getAccountingPeriod().getCompany().getContact().setPhoneNumbers(StringUtils.join(company.getContactCollection().getPhoneNumbers()," - "));
 		
 		labelValue(saleReport.getHeaderInfos(),"company.report.pointofsale.invoicenumber", saleReport.getIdentifier());
-		labelValue(saleReport.getHeaderInfos(),"company.report.pointofsale.paymentreceiptnumber", cashRegisterMovement.getIdentificationNumber(),paymentExist);
+		labelValue(saleReport.getHeaderInfos(),"company.report.pointofsale.paymentreceiptnumber", cashRegisterMovement.getComputedIdentifier(),paymentExist);
 		labelValue("cashier",cashRegisterMovement.getCashRegister().getCode(),Boolean.TRUE.equals(sale.getAccountingPeriod().getShowPointOfSaleReportCashier()));
 		labelValue("date", timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN));
 		if(sale.getCustomer()!=null)

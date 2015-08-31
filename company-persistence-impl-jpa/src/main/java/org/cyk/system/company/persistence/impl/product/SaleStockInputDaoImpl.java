@@ -22,7 +22,7 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	private String readByIdentificationNumber,readBySales;
+	private String readBySaleComputedIdentifier,readBySales;
 	
 	@Inject private SaleDao saleDao;
 	
@@ -40,7 +40,7 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
         registerNamedQuery(readByCriteriaDateAscendingOrder,readByCriteriaDateAscendingOrderQuery );
         registerNamedQuery(readByCriteriaDateDescendingOrder,queryStringBuilder.orderBy("sale.date", Boolean.FALSE));
         
-        registerNamedQuery(readByIdentificationNumber,_select().where("sale.identificationNumber","identificationNumber") );
+        registerNamedQuery(readBySaleComputedIdentifier,_select().where("sale."+Sale.FIELD_COMPUTED_IDENTIFIER,Sale.FIELD_COMPUTED_IDENTIFIER) );
         registerNamedQuery(readBySales,_select().whereIdentifierIn("sale") );
         
     }
@@ -48,7 +48,7 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 	@Override
 	public Collection<SaleStockInput> readByCriteria(SaleStockInputSearchCriteria searchCriteria) {
 		if(StringUtils.isNotBlank(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue())){
-			Sale sale = saleDao.readByIdentificationNumber(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue());
+			Sale sale = saleDao.readByComputedIdentifier(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue());
 			if(sale==null)
 				return new ArrayList<SaleStockInput>();
 			SaleStockInput saleStockInput = readBySale(sale);

@@ -22,7 +22,7 @@ public class SaleReportTableDetail implements Serializable {
 	@Input @ReportColumn private String balance;
 	
 	public SaleReportTableDetail(Sale sale) {
-		number = sale.getIdentificationNumber();
+		number = sale.getIdentifier().toString();
 		if(sale.getCustomer()!=null)
 			customer = sale.getCustomer().getPerson().getNames();
 		cost = RootBusinessLayer.getInstance().getNumberBusiness().format(sale.getCost());

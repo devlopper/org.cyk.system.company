@@ -13,6 +13,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.SaleReportProducer.InvoiceParameters;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
@@ -129,8 +130,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			if(sale.getDate()==null)
 				sale.setDate(universalTimeCoordinated());
 		
-		//sale.setIdentificationNumber(RootBusinessLayer.getInstance().getApplicationBusiness().generateStringValue(CompanyBusinessLayerListener.SALE_IDENTIFICATION_NUMBER, sale));
-		
 		exceptionUtils().exception(sale.getAccountingPeriod()==null, "exception.sale.accountingperiodmissing");
 		
 		if(Boolean.TRUE.equals(sale.getCompleted())){
@@ -143,6 +142,9 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 				genericDao.create(saleProduct);
 			}
 		}
+		
+		sale.setComputedIdentifier(generateStringValue(CompanyBusinessLayerListener.SALE_IDENTIFIER,sale));
+		sale = dao.update(sale);
 		//notifyCrudDone(Crud.CREATE, sale);
 		logDebugSale("Sale created succesfully",sale);
 		return sale;

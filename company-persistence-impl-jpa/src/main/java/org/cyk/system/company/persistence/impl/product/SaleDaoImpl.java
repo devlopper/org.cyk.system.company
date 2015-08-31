@@ -35,7 +35,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	//		READ_BY_CRITERIA_SELECT_FORMAT+READ_BY_CRITERIA_WHERE_FORMAT+READ_BY_CRITERIA_WHERE_BALANCE_FORMAT+ORDER_BY_FORMAT;
 	
 	private String readAllSortedByDate,readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,sumBalanceByCriteria,
-		sumCostByCriteria,sumValueAddedTaxByCriteria,sumBalanceByCustomerCriteria,readByIdentificationNumber;
+		sumCostByCriteria,sumValueAddedTaxByCriteria,sumBalanceByCustomerCriteria,readByComputedIdentifier;
 	
 	@Override
     protected void namedQueriesInitialisation() {
@@ -49,7 +49,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
     	registerNamedQuery(readByCriteria,READ_BY_CRITERIA_NOTORDERED_FORMAT+" ORDER BY sale.date ASC");
         registerNamedQuery(readByCriteriaDateAscendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "sale.date ASC") );
         registerNamedQuery(readByCriteriaDateDescendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "sale.date DESC") );
-        registerNamedQuery(readByIdentificationNumber, _select().where("identificationNumber"));
+        registerNamedQuery(readByComputedIdentifier, _select().where(Sale.FIELD_COMPUTED_IDENTIFIER));
         //registerNamedQuery(readByPeriod,"SELECT sale FROM Sale sale WHERE sale.date BETWEEN :fromDate AND :toDate");
         
         //registerNamedQuery(readByCriteriaWithBalanceDateAscendingOrder,String.format(READ_BY_CRITERIA_WITHBALANCE_ORDERED_FORMAT, "sale.date ASC") );
@@ -160,8 +160,8 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	*/
 
 	@Override
-	public Sale readByIdentificationNumber(String identificationNumber) {
-		return namedQuery(readByIdentificationNumber).parameter("identificationNumber", identificationNumber)
+	public Sale readByComputedIdentifier(String computedIdentifier) {
+		return namedQuery(readByComputedIdentifier).parameter(Sale.FIELD_COMPUTED_IDENTIFIER, computedIdentifier)
 				.ignoreThrowable(NoResultException.class).resultOne();
 	}
 	

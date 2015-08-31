@@ -125,7 +125,7 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		private String identifier,cost,balance,customer,date,numberOfStockGoods,remainingNumberOfGoods;
 		
 		public Details(SaleStockInput saleStockInput) {
-			this.identifier = saleStockInput.getSale().getIdentificationNumber();
+			this.identifier = saleStockInput.getSale().getComputedIdentifier();
 			this.cost = UIManager.getInstance().getNumberBusiness().format(saleStockInput.getSale().getCost());
 			this.balance = UIManager.getInstance().getNumberBusiness().format(saleStockInput.getSale().getBalance().getValue().abs());
 			this.customer = saleStockInput.getSale().getCustomer()==null?"":saleStockInput.getSale().getCustomer().getPerson().getNames();
@@ -145,7 +145,7 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		
 		public OutputDetails(SaleStockOutput saleStockOutput) {
 			this.saleStockOutput = saleStockOutput;
-			this.identifier = saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getIdentificationNumber();
+			this.identifier = saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getComputedIdentifier();
 			this.amount = UIManager.getInstance().getNumberBusiness().format(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
 			this.numberOfStockGoods = UIManager.getInstance().getNumberBusiness().format(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());
 			this.date = UIManager.getInstance().getTimeBusiness().formatDateTime(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());

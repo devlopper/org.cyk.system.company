@@ -96,8 +96,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	Boolean print = PRINT_REPORT && Boolean.TRUE;
     	Boolean value = companyBusinessTestHelper.getSaleAutoCompleted();
     	companyBusinessTestHelper.setSaleAutoCompleted(Boolean.FALSE);
-    	SaleStockInput saleStockInput = companyBusinessTestHelper
-        		.drop(date(2015, 1, 1),person, customer1,"A", "1000", "0", "3",print, "1000", "0", "0","0");
+    	SaleStockInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 1),person, customer1,"A", "1000", "0", "3",print, "1000", "0", "0","0");
     	companyBusinessTestHelper.setSaleAutoCompleted(value);
     	
     	companyBusinessTestHelper.complete(date(2015, 1, 1),person, saleStockInput, "0",print, "1000", "0", "1000","1000");
