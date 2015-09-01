@@ -8,6 +8,8 @@ import lombok.Getter;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.persistence.api.GenericDao;
 import org.cyk.system.root.persistence.impl.AbstractPersistenceService;
+import org.cyk.system.root.persistence.impl.PersistenceIntegrationTestHelper;
+import org.cyk.utility.test.ArchiveBuilder;
 import org.cyk.utility.test.TestMethod;
 import org.cyk.utility.test.integration.AbstractIntegrationTestJpaBased;
 import org.jboss.shrinkwrap.api.Archive;
@@ -52,8 +54,18 @@ public abstract class AbstractPersistenceIT extends AbstractIntegrationTestJpaBa
 		return genericDao.update(object);
 	}
 	
+	/*
 	public static Archive<?> createRootDeployment() {
         return _deploymentOfPackages("org.cyk.system.company").getArchive();
+    } */
+	
+	public static Archive<?> createRootDeployment() {
+        return  
+                new ArchiveBuilder().create().getArchive().
+                    addClasses(PersistenceIntegrationTestHelper.classes()).
+                    addPackages(Boolean.TRUE,"org.cyk.system.company") 
+                    
+                ;
     } 
 	
 }

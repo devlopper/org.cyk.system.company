@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.cyk.system.company.business.api.product.SaleStockBusiness;
 import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.company.model.product.SaleStockSearchCriteria;
+import org.cyk.system.company.model.product.SaleStocksDetails;
 import org.cyk.system.company.persistence.api.product.SaleStockDao;
 
 public class SaleStockBusinessImpl extends AbstractSaleStockBusinessImpl<SaleStock, SaleStockDao,SaleStockSearchCriteria> implements SaleStockBusiness,Serializable {
@@ -17,5 +18,7 @@ public class SaleStockBusinessImpl extends AbstractSaleStockBusinessImpl<SaleSto
 	public SaleStockBusinessImpl(SaleStockDao dao) {
 		super(dao);
 	}
+
+	
 
 }

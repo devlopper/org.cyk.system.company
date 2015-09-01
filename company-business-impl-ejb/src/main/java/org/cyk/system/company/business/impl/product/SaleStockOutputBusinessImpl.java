@@ -21,6 +21,7 @@ import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
+import org.cyk.system.company.model.product.SaleStocksDetails;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.persistence.api.product.CustomerDao;
@@ -95,6 +96,13 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<SaleStockOutput> findBySaleStockInput(SaleStockInput saleStockInput) {
 		return dao.readBySaleStockInput(saleStockInput);
+	}
+
+	@Override
+	public SaleStocksDetails computeByCriteria(
+			SaleStockOutputSearchCriteria criteria) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

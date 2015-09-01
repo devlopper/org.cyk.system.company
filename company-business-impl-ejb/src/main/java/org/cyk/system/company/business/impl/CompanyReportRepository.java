@@ -42,6 +42,7 @@ import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStockSearchCriteria;
+import org.cyk.system.company.model.product.SalesDetails;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductInventoryDetail;
@@ -423,7 +424,8 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 							//balance.add(((SaleStockOutput)row.getSaleStock()).getSaleStockInput().getS.getBalance().getValue());
 				}
 			}
-			balance = saleBusiness.sumBalanceByCriteria(new SaleSearchCriteria(fromDate,toDate));
+			SalesDetails results = saleBusiness.computeByCriteria(new SaleSearchCriteria(fromDate,toDate));
+			balance = results.getBalance();
 			SaleStockReportTableRow totalRow = new SaleStockReportTableRow();
 			//totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));
 			totalRow.setTakenNumberOfGoods(RootBusinessLayer.getInstance().getNumberBusiness().format(output));

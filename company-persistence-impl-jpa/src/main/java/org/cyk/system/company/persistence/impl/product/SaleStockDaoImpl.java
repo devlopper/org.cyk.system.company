@@ -4,6 +4,7 @@ import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockSearchCriteria;
+import org.cyk.system.company.model.product.SaleStocksDetails;
 import org.cyk.system.company.persistence.api.product.SaleStockDao;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;
 import org.cyk.utility.common.computation.ArithmeticOperator;
@@ -34,5 +35,10 @@ public class SaleStockDaoImpl extends AbstractSaleStockDaoImpl<SaleStock,SaleSto
     			queryStringBuilder.orderBy("tangibleProductStockMovement.date", Boolean.FALSE));
     	
     }
+
+	@Override
+	public SaleStocksDetails computeByCriteria(SaleStockSearchCriteria criteria) {
+		return null;
+	}
 
 }

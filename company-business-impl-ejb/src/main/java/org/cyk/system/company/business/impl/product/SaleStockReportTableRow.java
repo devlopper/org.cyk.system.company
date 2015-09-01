@@ -77,7 +77,7 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 	private void saleStockIntput(SaleStockInput saleStockInput){
 		Sale sale = saleStockInput.getSale();
 		saleStockInputExternalIdentifier = saleStockInput.getExternalIdentifier();
-		identifier = saleStockInput.getSale().getIdentifier().toString();
+		identifier = saleStockInput.getSale().getComputedIdentifier();
 		//number = sale.getIdentifier().to;
 		if(sale.getCustomer()!=null)
 			customer = sale.getCustomer().getRegistration().getCode()+" - "+sale.getCustomer().getPerson().getNames();
@@ -149,5 +149,17 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 				|| field.getName().equals("saleStockInputExternalIdentifier") || field.getName().equals("numberOfGoods") || field.getName().equals("remainingNumberOfGoods") 
 				|| field.getName().equals("amount") || field.getName().equals("balance"));
 	}
+	
+	/**/
+	
+	public static final String FIELD_REMAINING_NUMBER_OF_GOODS="remainingNumberOfGoods";
+	public static final String FIELD_STOCK_IN="stockIn";
+	public static final String FIELD_TAKEN_NUMBER_OF_GOODS="takenNumberOfGoods";
+	public static final String FIELD_NUMBER_OF_GOODS="numberOfGoods";
+	public static final String FIELD_STOCK_OUT="stockOut";
+	public static final String FIELD_AMOUNT="amount";
+	public static final String FIELD_AMOUNT_PAID="amountPaid";
+	public static final String FIELD_BALANCE="balance";
+	public static final String FIELD_CUMULATED_BALANCE="cumulatedBalance";
 	
 }

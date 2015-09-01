@@ -11,6 +11,7 @@ import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
+import org.cyk.system.company.model.product.SalesDetails;
 import org.cyk.system.root.business.api.TypedBusiness;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.party.person.Person;
@@ -40,11 +41,7 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 	
 	Long countByCriteria(SaleSearchCriteria criteria);
 	
-	BigDecimal sumCostByCriteria(SaleSearchCriteria criteria);
-	
-	BigDecimal sumValueAddedTaxByCriteria(SaleSearchCriteria criteria);
-	
-	BigDecimal sumBalanceByCriteria(SaleSearchCriteria criteria);
+	SalesDetails computeByCriteria(SaleSearchCriteria criteria);
 	
 	ReportBasedOnTemplateFile<SaleReport> findReport(Collection<Sale> sales);
 	ReportBasedOnTemplateFile<SaleReport> findReport(Sale sale);

@@ -106,8 +106,8 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 		SalesResults salesResults = null;
 		saleSearchCriteria = new SaleSearchCriteria(exerciceBegin,exerciceEnd);
 		
-		credence = numberBusiness.format(saleBusiness.sumBalanceByCriteria(new SaleSearchCriteria(exerciceBegin,exerciceEnd,BalanceType.POSITIVE)));
-		debt = numberBusiness.format(saleBusiness.sumBalanceByCriteria(new SaleSearchCriteria(exerciceBegin,exerciceEnd,BalanceType.NEGAITVE)).abs());
+		credence = numberBusiness.format(saleBusiness.computeByCriteria(new SaleSearchCriteria(exerciceBegin,exerciceEnd,BalanceType.POSITIVE)).getBalance());
+		debt = numberBusiness.format(saleBusiness.computeByCriteria(new SaleSearchCriteria(exerciceBegin,exerciceEnd,BalanceType.NEGAITVE)).getBalance().abs());
 		
 		if(productCategory==null){
 			productCategories = productCategoryBusiness.findHierarchies();

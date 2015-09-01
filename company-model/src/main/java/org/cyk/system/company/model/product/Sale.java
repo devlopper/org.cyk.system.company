@@ -80,5 +80,9 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	public static final String FIELD_CASHIER = "cashier";
 	public static final String FIELD_CUSTOMER = "customer";
 	public static final String FIELD_ACCOUNTING_PERIOD = "accountingPeriod";
-	
+	public static final String FIELD_DATE = "date";
+	public static final String FIELD_COST = "cost";
+	public static final String FIELD_TURNOVER = "turnover";
+	public static final String FIELD_VALUE_ADDED_TAX = "valueAddedTax";
+	public static final String FIELD_BALANCE = "balance";
 }

@@ -32,6 +32,7 @@ import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
+import org.cyk.system.company.model.product.SalesDetails;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.product.CustomerDao;
 import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDao;
@@ -284,18 +285,8 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public BigDecimal sumCostByCriteria(SaleSearchCriteria criteria) {
-		return dao.sumCostByCriteria(criteria);
-	}
-	
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public BigDecimal sumValueAddedTaxByCriteria(SaleSearchCriteria criteria) {
-		return dao.sumValueAddedTaxByCriteria(criteria);
-	}
-	
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public BigDecimal sumBalanceByCriteria(SaleSearchCriteria criteria) {
-		return dao.sumBalanceByCriteria(criteria);
+	public SalesDetails computeByCriteria(SaleSearchCriteria criteria) {
+		return dao.computeByCriteria(criteria);
 	}
 	
 	/**/
@@ -344,4 +335,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		logDebug("{}. (Done={}) C={} B={} VAT={} T={}",message,sale.getDone(),sale.getCost(),sale.getBalance(),
 				sale.getValueAddedTax(),sale.getTurnover());
 	}
+
+	
 }

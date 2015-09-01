@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
+import org.cyk.system.company.model.product.SaleStocksDetails;
 import org.cyk.system.company.persistence.api.product.SaleStockOutputDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;
@@ -46,6 +47,13 @@ public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOu
 	@Override
 	public Collection<SaleStockOutput> readBySaleStockInput(SaleStockInput saleStockInput) {
 		return namedQuery(readBySaleStockInput).parameter("saleStockInput", saleStockInput).resultMany();
+	}
+
+	@Override
+	public SaleStocksDetails computeByCriteria(
+			SaleStockOutputSearchCriteria criteria) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

@@ -48,6 +48,8 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 			}
 		});
 		
+		table.getColumn(SaleStockReportTableRow.FIELD_REMAINING_NUMBER_OF_GOODS).setFooter("MyFooter");
+		
 		((Commandable)table.getOpenRowCommandable()).getButton().setRendered(Boolean.TRUE);
 		((Commandable)table.getAddRowCommandable()).getButton().setRendered(Boolean.TRUE);
 	}

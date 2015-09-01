@@ -12,6 +12,7 @@ import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
+import org.cyk.system.company.model.product.SalesDetails;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.model.SaleQueryResultFormModel;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
@@ -125,9 +126,10 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 		
 		criteria.getReadConfig().setFirstResultIndex(queryFirst);
 		criteria.getReadConfig().setMaximumResultCount(20l);
-		table.getColumn("cost").setFooter(numberBusiness.format(saleBusiness.sumCostByCriteria(criteria)));
+		SalesDetails results = saleBusiness.computeByCriteria(criteria); 
+		table.getColumn("cost").setFooter(numberBusiness.format(results.getCost()));
 		if(!BalanceType.ZERO.equals(balanceType)){
-			table.getColumn("balance").setFooter(numberBusiness.format(saleBusiness.sumBalanceByCriteria(criteria)));
+			table.getColumn("balance").setFooter(numberBusiness.format(results.getBalance()));
 		}
 		debug(criteria.getFromDateSearchCriteria());
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterFromDate(),criteria.getFromDateSearchCriteria().getPreparedValue().getTime());

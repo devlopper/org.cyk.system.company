@@ -10,12 +10,14 @@ import lombok.Setter;
 
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
+import org.cyk.system.root.model.search.StringSearchCriteria;
 
 @Getter @Setter
 public class SaleSearchCriteria extends AbstractPeriodSearchCriteria implements Serializable {
 
 	private static final long serialVersionUID = 6796076474234170332L;
 
+	private StringSearchCriteria computedIdentifierStringSearchCriteria = new StringSearchCriteria();
 	private Collection<BalanceType> balanceTypes = new ArrayList<>();
 	//private Boolean computeBalance=Boolean.TRUE;
 	private Collection<Customer> customers = new ArrayList<>();
