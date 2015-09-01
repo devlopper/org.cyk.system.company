@@ -35,6 +35,8 @@ public class AccountingPeriod extends AbstractIdentifiablePeriod implements Seri
 	private BigDecimal valueAddedTaxRate = BigDecimal.ZERO;
 	@Column(nullable=false) @NotNull private Boolean valueAddedTaxIncludedInCost = Boolean.TRUE;
 	
+	@Embedded private SaleConfiguration saleConfiguration = new SaleConfiguration();
+	
 	@Embedded private StockConfiguration stockConfiguration = new StockConfiguration();
 	
 	@Column(nullable=false) @NotNull private Boolean closed = Boolean.FALSE;

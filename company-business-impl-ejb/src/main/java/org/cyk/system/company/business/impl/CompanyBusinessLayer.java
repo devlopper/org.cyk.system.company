@@ -1,8 +1,5 @@
 package org.cyk.system.company.business.impl;
 
-import static org.cyk.system.company.business.api.CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFIER;
-import static org.cyk.system.company.business.api.CompanyBusinessLayerListener.SALE_IDENTIFIER;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -43,7 +40,6 @@ import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
-import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.IntangibleProduct;
@@ -69,7 +65,7 @@ import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.business.api.TypedBusiness;
 import org.cyk.system.root.business.api.file.FileBusiness;
-import org.cyk.system.root.business.api.party.ApplicationBusiness;
+import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.security.RoleBusiness;
 import org.cyk.system.root.business.api.security.UserAccountBusiness;
 import org.cyk.system.root.business.impl.AbstractBusinessLayer;
@@ -80,9 +76,6 @@ import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.file.report.AbstractReport;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
-import org.cyk.system.root.model.generator.StringValueGenerator;
-import org.cyk.system.root.model.generator.ValueGenerator;
-import org.cyk.system.root.model.generator.ValueGenerator.GenerateMethod;
 import org.cyk.system.root.model.geography.PhoneNumber;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Credentials;
@@ -146,8 +139,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private UserAccountBusiness userAccountBusiness;
 	@Inject private RoleBusiness roleBusiness;
 	@Inject private ProductCategoryBusiness productCategoryBusiness;
+	@Inject private StringGeneratorBusiness stringGeneratorBusiness;
 	@Getter @Setter private SaleReportProducer saleReportProducer = new DefaultSaleReportProducer();
-	private ApplicationBusiness applicationBusiness = RootBusinessLayer.getInstance().getApplicationBusiness();
 	//@Getter private Role roleSaleManager,roleStockManager,roleHumanResourcesManager,customerManager,productionManager;
 	@Getter @Setter private TangibleProduct tangibleProductSaleStock;
 	@Getter private IntangibleProduct intangibleProductSaleStock;
@@ -166,7 +159,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 		pointOfSaleInvoiceReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.invoice");
 		pointOfSalePaymentReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.paymentreceipt");
-		
+		/*
 		StringValueGenerator<Sale> saleStringValueGenerator = new StringValueGenerator<Sale>(SALE_IDENTIFIER,"", Sale.class);
 		applicationBusiness.registerValueGenerator((ValueGenerator<?, ?>) saleStringValueGenerator);
 		saleStringValueGenerator.setPrefix("Pref");
@@ -174,10 +167,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		saleStringValueGenerator.setMethod(new GenerateMethod<Sale, String>() {
 			@Override
 			public String execute(Sale sale) {
-				return sale.getIdentifier().toString();
+				return StringUtils.leftPad(sale.getIdentifier().toString(), size, padChar);
 			}
-		});
-		
+		});*/
+		/*
 		StringValueGenerator<CashRegisterMovement> cashRegisterMovementStringValueGenerator = new StringValueGenerator<CashRegisterMovement>(CASH_MOVEMENT_IDENTIFIER,"", CashRegisterMovement.class);
 		applicationBusiness.registerValueGenerator((ValueGenerator<?, ?>) cashRegisterMovementStringValueGenerator);
 		cashRegisterMovementStringValueGenerator.setPrefix("Paie");
@@ -186,7 +179,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			public String execute(CashRegisterMovement cashRegisterMovement) {
 				return cashRegisterMovement.getIdentifier().toString();
 			}
-		});
+		});*/
 						
 		/*
 		AbstractIdentifiableLifeCyleEventListener.MAP.put(Sale.class, new LongIdentifiableLifeCyleEventAdapter(){
@@ -253,7 +246,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 				companyName = value;
 		}
 		company.setName(companyName==null?"MyCompany":companyName);
-		//company.setImage(fileBusiness.process(IOUtils.toByteArray(getClass().getResourceAsStream("/org/cyk/system/company/business/impl/image/logo.png")),"image.png"));
 		bytes = null;
 		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS){
 			byte[] value = listener.getCompanyLogoBytes();
@@ -280,9 +272,15 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 		AccountingPeriod accountingPeriod = new AccountingPeriod();
 		accountingPeriod.setOwnedCompany(ownedCompany);
-		accountingPeriod.setPeriod(new Period(new DateTime(2015, 1, 1, 0, 0).toDate(), new DateTime(2015, 12, 31, 23, 59).toDate()));
+		Integer currentYear = new DateTime().getYear();
+		accountingPeriod.setPeriod(new Period(new DateTime(currentYear, 1, 1, 0, 0).toDate(), new DateTime(currentYear, 12, 31, 23, 59).toDate()));
 		accountingPeriod.setPointOfSaleReportFile(pointOfSaleReportFile);
 		accountingPeriod.setValueAddedTaxRate(BigDecimal.ZERO);
+		accountingPeriod.getSaleConfiguration().setSaleIdentifierGenerator(stringGenerator("0", 8l, null, null,8l));
+		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(stringGenerator("0", 8l, null, null,8l));
+		
+		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getSaleIdentifierGenerator());
+		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());
 		//accountingPeriodBusiness.create(accountingPeriod);
 		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
 			listener.handleAccountingPeriodToInstall(accountingPeriod);

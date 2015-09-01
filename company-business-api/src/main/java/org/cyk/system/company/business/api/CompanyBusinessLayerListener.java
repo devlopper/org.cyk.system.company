@@ -3,6 +3,7 @@ package org.cyk.system.company.business.api;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.model.file.File;
+import org.cyk.system.root.model.generator.StringGenerator;
 
 public interface CompanyBusinessLayerListener {
 	
@@ -18,8 +19,13 @@ public interface CompanyBusinessLayerListener {
 	byte[] getCompanyLogoBytes();
 	byte[] getCompanyPointOfSaleBytes();
 	
-	/**/
+	/* Identifier */
 
+	StringGenerator getSaleIdentifierGenerator();
+	StringGenerator getCashRegisterMovementIdentifierGenerator();
+	
+	/**/
+	
 	String SALE_IDENTIFIER = "SALE_IDENTIFIER";
 	String CASH_MOVEMENT_IDENTIFIER = "CASH_MOVEMENT_IDENTIFIER";
 	

@@ -143,7 +143,8 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			}
 		}
 		
-		sale.setComputedIdentifier(generateStringValue(CompanyBusinessLayerListener.SALE_IDENTIFIER,sale));
+		sale.setComputedIdentifier(generateIdentifier(sale,CompanyBusinessLayerListener.SALE_IDENTIFIER,accountingPeriodBusiness.findCurrent()
+				.getSaleConfiguration().getSaleIdentifierGenerator()));
 		sale = dao.update(sale);
 		//notifyCrudDone(Crud.CREATE, sale);
 		logDebugSale("Sale created succesfully",sale);

@@ -5,6 +5,7 @@ import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.impl.AbstractBusinessLayerAdapter;
 import org.cyk.system.root.model.file.File;
+import org.cyk.system.root.model.generator.StringGenerator;
 
 public class CompanyBusinessLayerAdapter extends AbstractBusinessLayerAdapter implements CompanyBusinessLayerListener {
 
@@ -34,6 +35,16 @@ public class CompanyBusinessLayerAdapter extends AbstractBusinessLayerAdapter im
 
 	@Override
 	public byte[] getCompanyPointOfSaleBytes() {
+		return null;
+	}
+
+	@Override
+	public StringGenerator getSaleIdentifierGenerator() {
+		return null;
+	}
+
+	@Override
+	public StringGenerator getCashRegisterMovementIdentifierGenerator() {
 		return null;
 	}
 

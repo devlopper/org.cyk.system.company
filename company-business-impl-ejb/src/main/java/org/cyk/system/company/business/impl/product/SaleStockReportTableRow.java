@@ -126,7 +126,7 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 	/**/
 	
 	public static Boolean cashRegisterFieldIgnored(Field field){
-		return !(field.getName().equals("date") || field.getName().equals("saleStockInputExternalIdentifier") || 
+		return !(field.getName().equals("date") || field.getName().equals("saleStockInputExternalIdentifier") || field.getName().equals("identifier") || 
 				field.getName().equals("takenNumberOfGoods") || field.getName().equals("amountPaid") || field.getName().equals("balance") 
 				|| field.getName().equals("comments"));
 	}
