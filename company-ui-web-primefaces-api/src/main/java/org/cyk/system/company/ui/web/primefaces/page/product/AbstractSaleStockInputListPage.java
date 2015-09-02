@@ -2,6 +2,7 @@ package org.cyk.system.company.ui.web.primefaces.page.product;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Collection;
 
 import javax.inject.Inject;
 
@@ -12,6 +13,7 @@ import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
+import org.cyk.system.company.model.product.SaleStocksDetails;
 import org.cyk.ui.api.command.CommandAdapter;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.model.table.Row;
@@ -48,8 +50,6 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 			}
 		});
 		
-		table.getColumn(SaleStockReportTableRow.FIELD_REMAINING_NUMBER_OF_GOODS).setFooter("MyFooter");
-		
 		((Commandable)table.getOpenRowCommandable()).getButton().setRendered(Boolean.TRUE);
 		((Commandable)table.getAddRowCommandable()).getButton().setRendered(Boolean.TRUE);
 	}
@@ -59,6 +59,17 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 		super.__beforeFindByCriteria__(criteria);
 		table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterSaleStockReportType(),
 				CompanyReportRepository.getInstance().getParameterSaleStockReportInput());
+	}
+	
+	@Override
+	protected Collection<SaleStockInput> __query__() {
+		Collection<SaleStockInput> collection = super.__query__();
+		SaleStocksDetails details = saleStockInputBusiness.computeByCriteria(searchCriteria());
+		table.getColumn(SaleStockReportTableRow.FIELD_NUMBER_OF_GOODS).setFooter(numberBusiness.format(details.getIn()));
+		table.getColumn(SaleStockReportTableRow.FIELD_REMAINING_NUMBER_OF_GOODS).setFooter(numberBusiness.format(details.getRemaining()));
+		table.getColumn(SaleStockReportTableRow.FIELD_AMOUNT).setFooter(numberBusiness.format(details.getSalesDetails().getCost()));
+		table.getColumn(SaleStockReportTableRow.FIELD_BALANCE).setFooter(numberBusiness.format(details.getSalesDetails().getBalance()));
+		return collection;
 	}
 	
 	@Override

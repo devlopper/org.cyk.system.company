@@ -2,12 +2,14 @@ package org.cyk.system.company.business.impl.integration;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
+import java.math.BigDecimal;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 //import static org.hamcrest.Matchers.*;
 //import static org.hamcrest.MatcherAssert.*;
+
 
 import org.apache.commons.io.IOUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
@@ -81,7 +83,10 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     		public void assertEquals(String message, Object expected, Object actual) {
     			Assert.assertEquals(message, expected, actual);
     		}
-    		
+    		@Override
+    		public String formatBigDecimal(BigDecimal value) {
+    			return RootBusinessLayer.getInstance().getNumberBusiness().format(value);
+    		}
     	});
 	}
 	

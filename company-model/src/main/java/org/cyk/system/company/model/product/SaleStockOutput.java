@@ -33,6 +33,7 @@ public class SaleStockOutput extends SaleStock implements Serializable {
 		this.saleCashRegisterMovement = saleCashRegisterMovement;
 	}
 	
-	
-	
+	public static final String FIELD_SALE_STOCK_INPUT = "saleStockInput";
+	public static final String FIELD_SALE_CASH_REGISTER_MOVEMENT = "saleCashRegisterMovement";
+	public static final String FIELD_REMAINING_NUMBER_OF_GOODS = "remainingNumberOfGoods";
 }

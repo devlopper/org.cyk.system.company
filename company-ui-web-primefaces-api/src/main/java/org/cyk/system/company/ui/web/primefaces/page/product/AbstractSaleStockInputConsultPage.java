@@ -7,6 +7,9 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
@@ -30,9 +33,6 @@ import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter @Setter
 public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultPage<SaleStockInput> implements Serializable {
@@ -59,6 +59,8 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		
 		outputsTable.setShowAddRemoveColumn(Boolean.TRUE);
 		outputsTable.setShowOpenCommand(Boolean.TRUE);
+		
+		//outputsTable.getColumnListeners().add(new DefaultColumnAdapter());
 		
 		outputsTable.getRowListeners().add(new RowAdapter<OutputDetails>(){
 			@Override

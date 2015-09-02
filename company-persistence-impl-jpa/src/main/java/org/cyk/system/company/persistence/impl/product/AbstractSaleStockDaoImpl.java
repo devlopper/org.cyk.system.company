@@ -7,6 +7,7 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import org.cyk.system.company.model.product.AbstractSaleStockSearchCriteria;
+import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
@@ -20,10 +21,8 @@ public abstract class AbstractSaleStockDaoImpl<SALE_STOCK extends SaleStock,SEAR
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	public static final String FIELD_SALE_DONE = "saleDone";
-	
 	protected String readAllSortedByDate,readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,
-		readByTangibleProductStockMovements;
+		readByTangibleProductStockMovements,computeByCriteria;
 	
 	@Inject protected SaleDao saleDao;
 	
@@ -75,6 +74,12 @@ public abstract class AbstractSaleStockDaoImpl<SALE_STOCK extends SaleStock,SEAR
 		Collection<SALE_STOCK> collection = readByTangibleProductStockMovements(Arrays.asList(tangibleProductStockMovement));
 		return collection.isEmpty()?null:collection.iterator().next();
 	}
+	
+	protected Object[] getComputeByCriteriaResults(SEARCH_CRITERIA criteria) {
+		QueryWrapper<?> queryWrapper = namedQuery(computeByCriteria, Object.class);
+		applyPeriodSearchCriteriaParameters(queryWrapper, criteria);
+		return (Object[]) queryWrapper.resultOne();
+	}
 
 	@Override
 	protected void applyPeriodSearchCriteriaParameters(QueryWrapper<?> queryWrapper,AbstractPeriodSearchCriteria searchCriteria) {
@@ -83,6 +88,6 @@ public abstract class AbstractSaleStockDaoImpl<SALE_STOCK extends SaleStock,SEAR
 		String externalIdentifier = saleStockSearchCriteria.getExternalIdentifierStringSearchCriteria().getPreparedValue();
 		queryWrapper.parameterLike(SaleStockInput.FIELD_EXTERNAL_IDENTIFIER, externalIdentifier);
 		queryWrapper.parameter(AbstractSaleStockSearchCriteria.FIELD_MINIMUM_QUANTITY, saleStockSearchCriteria.getMinimumQuantity());
-		queryWrapper.parameter(FIELD_SALE_DONE, saleStockSearchCriteria.getDone());
+		queryWrapper.parameter(Sale.FIELD_DONE, saleStockSearchCriteria.getDone());
 	}
 }

@@ -9,5 +9,5 @@ import lombok.Setter;
 @Getter @Setter
 public class SalesDetails implements Serializable {
 	private static final long serialVersionUID = 2804518082667973573L;
-	private BigDecimal cost, balance, valueAddedTax;
+	private BigDecimal cost, balance, valueAddedTax,turnover,paid;
 }

@@ -19,6 +19,11 @@ public class SaleStockBusinessImpl extends AbstractSaleStockBusinessImpl<SaleSto
 		super(dao);
 	}
 
+	@Override
+	public SaleStocksDetails computeByCriteria(SaleStockSearchCriteria criteria) {
+		return null;
+	}
+
 	
 
 }

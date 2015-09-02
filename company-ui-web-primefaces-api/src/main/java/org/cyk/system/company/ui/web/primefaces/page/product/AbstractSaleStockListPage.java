@@ -14,6 +14,7 @@ import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.model.product.AbstractSaleStockSearchCriteria;
 import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.search.DefaultQueryFormModel;
 import org.cyk.ui.api.data.collector.form.ControlSet;
 import org.cyk.ui.api.model.table.ColumnAdapter;
@@ -103,6 +104,11 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 		table.getPrintCommandable().setRendered(Boolean.TRUE);
 		table.getPrintCommandable().setParameter(uiManager.getClassParameter(),uiManager.businessEntityInfos(SaleStock.class).getIdentifier());
 		table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterSaleDone(),Boolean.TRUE);
+	}
+	
+	@Override
+	protected AbstractIdentifiable __identifiable__(Object data) {
+		return ((SaleStockReportTableRow)data).getSaleStock();
 	}
 	
 	@Override

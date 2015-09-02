@@ -99,10 +99,8 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 	}
 
 	@Override
-	public SaleStocksDetails computeByCriteria(
-			SaleStockOutputSearchCriteria criteria) {
-		// TODO Auto-generated method stub
-		return null;
+	public SaleStocksDetails computeByCriteria(SaleStockOutputSearchCriteria criteria) {
+		return dao.computeByCriteria(criteria);
 	}
 	
 }

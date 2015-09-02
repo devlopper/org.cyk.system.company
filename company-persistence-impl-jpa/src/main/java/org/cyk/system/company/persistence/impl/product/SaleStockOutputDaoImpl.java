@@ -1,11 +1,20 @@
 package org.cyk.system.company.persistence.impl.product;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
+import javax.inject.Inject;
+
+import org.cyk.system.company.model.payment.CashRegisterMovement;
+import org.cyk.system.company.model.product.SaleCashRegisterMovement;
+import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStocksDetails;
+import org.cyk.system.company.model.product.SalesDetails;
+import org.cyk.system.company.model.product.TangibleProductStockMovement;
+import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.cyk.system.company.persistence.api.product.SaleStockOutputDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;
@@ -17,17 +26,16 @@ public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOu
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
+	@Inject private SaleDao saleDao;
 	private String readBySaleStockInput;
 	
 	@Override
     protected void namedQueriesInitialisation() {
     	super.namedQueriesInitialisation();
     	
-    	QueryStringBuilder queryStringBuilder = _select().where("saleStockInput.externalIdentifier","externalIdentifier",ArithmeticOperator.LIKE)
-    			.and().between("tangibleProductStockMovement.date").where(LogicalOperator.AND,"saleStockInput.sale.done","saleDone",ArithmeticOperator.EQ)
-    			.and().whereString("ABS(r.tangibleProductStockMovement.quantity) >= :minimumQuantity")
-    			.and().whereString("r.saleCashRegisterMovement.cashRegisterMovement.amount >= :minimumPaid");
-        	
+    	QueryStringBuilder queryStringBuilder = _select();
+    	whereSearchCriteria(queryStringBuilder);
+    		
         String readByCriteriaDateAscendingOrderQuery = queryStringBuilder.orderBy("tangibleProductStockMovement.date", Boolean.TRUE).getValue();
     	
         registerNamedQuery(readByCriteria,readByCriteriaDateAscendingOrderQuery);
@@ -35,7 +43,23 @@ public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOu
         registerNamedQuery(readByCriteriaDateDescendingOrder,queryStringBuilder.orderBy("tangibleProductStockMovement.date", Boolean.FALSE));	
         
         registerNamedQuery(readBySaleStockInput,_select().where("saleStockInput"));
+        
+        queryStringBuilder = _selectString(sumAttributes(
+        		commonUtils.attributePath(SaleStockOutput.FIELD_TANGIBLE_PRODUCT_STOCK_MOVEMENT, TangibleProductStockMovement.FIELD_QUANTITY)
+        		,commonUtils.attributePath(SaleStockOutput.FIELD_SALE_CASH_REGISTER_MOVEMENT, SaleCashRegisterMovement.FIELD_CASH_REGISTER_MOVEMENT,CashRegisterMovement.FIELD_AMOUNT)
+        		
+        		));
+    	whereSearchCriteria(queryStringBuilder);
+    	registerNamedQuery(computeByCriteria,queryStringBuilder);
+    	
     }
+	
+	private void whereSearchCriteria(QueryStringBuilder queryStringBuilder){
+		queryStringBuilder.where("saleStockInput.externalIdentifier","externalIdentifier",ArithmeticOperator.LIKE)
+		.and().between("tangibleProductStockMovement.date").where(LogicalOperator.AND,"saleStockInput.sale.done","done",ArithmeticOperator.EQ)
+		.and().whereString("ABS(r.tangibleProductStockMovement.quantity) >= :minimumQuantity")
+		.and().whereString("r.saleCashRegisterMovement.cashRegisterMovement.amount >= :minimumPaid");
+	}
 	
 	@Override
 	protected void applyPeriodSearchCriteriaParameters(QueryWrapper<?> queryWrapper,AbstractPeriodSearchCriteria searchCriteria) {
@@ -50,10 +74,20 @@ public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOu
 	}
 
 	@Override
-	public SaleStocksDetails computeByCriteria(
-			SaleStockOutputSearchCriteria criteria) {
-		// TODO Auto-generated method stub
-		return null;
+	public SaleStocksDetails computeByCriteria(SaleStockOutputSearchCriteria criteria) {
+		Object[] values = getComputeByCriteriaResults(criteria);
+		SaleStocksDetails results = new SaleStocksDetails();
+		results.setOut((BigDecimal) values[0]);
+		results.getSalesDetails().setPaid((BigDecimal) values[1]);
+		
+		SaleSearchCriteria saleSearchCriteria = new SaleSearchCriteria();
+		saleSearchCriteria.setDone(criteria.getDone());
+		saleSearchCriteria.setFromDateSearchCriteria(criteria.getFromDateSearchCriteria());
+		saleSearchCriteria.setToDateSearchCriteria(criteria.getToDateSearchCriteria());
+		saleSearchCriteria.setReadConfig(criteria.getReadConfig());
+		SalesDetails salesDetails = saleDao.computeByCriteria(saleSearchCriteria);
+		results.getSalesDetails().setBalance(salesDetails.getBalance());
+		return results;
 	}
 	
 }

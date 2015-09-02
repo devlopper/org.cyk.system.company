@@ -48,6 +48,11 @@ public class SaleCashRegisterMovement extends AbstractIdentifiable implements Se
 		this.amountOut = amountOut;
 	}
 	
-	
+	public static final String FIELD_SALE = "sale";
+	public static final String FIELD_CASH_REGISTER_MOVEMENT = "cashRegisterMovement";
+	public static final String FIELD_AMOUNT_IN = "amountIn";
+	public static final String FIELD_AMOUNT_OUT = "amountOut";
+	public static final String FIELD_BALANCE = "balance";
+	public static final String FIELD_REPORT = "report";
 
 }

@@ -8,10 +8,12 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStocksDetails;
+import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.cyk.system.company.persistence.api.product.SaleStockInputDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
@@ -24,34 +26,42 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	private String readBySaleComputedIdentifier,readBySales,computeByCriteria;
+	private String readBySaleComputedIdentifier,readBySales;
 	
 	@Inject private SaleDao saleDao;
 	
 	@Override
     protected void namedQueriesInitialisation() {
     	super.namedQueriesInitialisation();
+    	String saleDateAttribute = commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_DATE);
     	
     	QueryStringBuilder queryStringBuilder = _select();
     	whereSearchCriteria(queryStringBuilder);
     	
-    	String readByCriteriaDateAscendingOrderQuery = queryStringBuilder.orderBy("sale.date", Boolean.TRUE).getValue();
+    	String readByCriteriaDateAscendingOrderQuery = queryStringBuilder.orderBy(saleDateAttribute, Boolean.TRUE).getValue();
     	registerNamedQuery(readByCriteria,readByCriteriaDateAscendingOrderQuery);
         registerNamedQuery(readByCriteriaDateAscendingOrder,readByCriteriaDateAscendingOrderQuery );
-        registerNamedQuery(readByCriteriaDateDescendingOrder,queryStringBuilder.orderBy("sale.date", Boolean.FALSE));
+        registerNamedQuery(readByCriteriaDateDescendingOrder,queryStringBuilder.orderBy(saleDateAttribute, Boolean.FALSE));
         
-        registerNamedQuery(readBySaleComputedIdentifier,_select().where("sale."+Sale.FIELD_COMPUTED_IDENTIFIER,Sale.FIELD_COMPUTED_IDENTIFIER) );
-        registerNamedQuery(readBySales,_select().whereIdentifierIn("sale") );
+        registerNamedQuery(readBySaleComputedIdentifier,_select().where(commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_COMPUTED_IDENTIFIER),Sale.FIELD_COMPUTED_IDENTIFIER) );
+        registerNamedQuery(readBySales,_select().whereIdentifierIn(SaleStockInput.FIELD_SALE) );
         
-        queryStringBuilder = _selectString(sumAttributes(Sale.FIELD_COST,Sale.FIELD_TURNOVER,Sale.FIELD_VALUE_ADDED_TAX));
+        queryStringBuilder = _selectString(sumAttributes(commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_COST)
+        		,commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_TURNOVER)
+        		,commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_VALUE_ADDED_TAX)
+        		,commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_BALANCE,Balance.FIELD_VALUE)
+        		,commonUtils.attributePath(SaleStockInput.FIELD_TANGIBLE_PRODUCT_STOCK_MOVEMENT,TangibleProductStockMovement.FIELD_QUANTITY)
+        		,SaleStockInput.FIELD_REMAINING_NUMBER_OF_GOODS
+        		));
     	whereSearchCriteria(queryStringBuilder);
     	registerNamedQuery(computeByCriteria,queryStringBuilder);
     }
 	
 	private void whereSearchCriteria(QueryStringBuilder queryStringBuilder){
-		queryStringBuilder.where("externalIdentifier",ArithmeticOperator.LIKE)
-		.and().between("sale.date").where(LogicalOperator.AND,"sale.done","saleDone",ArithmeticOperator.EQ)
-		.and("remainingNumberOfGoods", "minimumRemainingGoods", ArithmeticOperator.GTE)
+		queryStringBuilder.where(SaleStockInput.FIELD_EXTERNAL_IDENTIFIER,ArithmeticOperator.LIKE)
+		.and().between(commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_DATE))
+		.where(LogicalOperator.AND,commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_DONE),Sale.FIELD_DONE,ArithmeticOperator.EQ)
+		.and(SaleStockInput.FIELD_REMAINING_NUMBER_OF_GOODS, PARAM_MINIMUM_REMAINING_GOODS, ArithmeticOperator.GTE)
 		.and().whereString("ABS(r.tangibleProductStockMovement.quantity) >= :minimumQuantity");
 	}
 
@@ -74,7 +84,7 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 		super.applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		SaleStockInputSearchCriteria saleStockInputSearchCriteria = (SaleStockInputSearchCriteria) searchCriteria;
 		
-		queryWrapper.parameter("minimumRemainingGoods", saleStockInputSearchCriteria.getMinimumRemainingGoodsCount());
+		queryWrapper.parameter(PARAM_MINIMUM_REMAINING_GOODS, saleStockInputSearchCriteria.getMinimumRemainingGoodsCount());
 	}
 
 	@Override
@@ -94,18 +104,16 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 
 	@Override
 	public SaleStocksDetails computeByCriteria(SaleStockInputSearchCriteria criteria) {
-		QueryWrapper<?> queryWrapper = namedQuery(computeByCriteria, Object.class);
-		applyPeriodSearchCriteriaParameters(queryWrapper, criteria);
-		Object[] values = (Object[]) queryWrapper.resultOne();
+		Object[] values = getComputeByCriteriaResults(criteria);
 		SaleStocksDetails results = new SaleStocksDetails();
-		results.setIn((BigDecimal) values[0]);
-		results.setOut((BigDecimal) values[1]);
-		results.setRemaining((BigDecimal) values[2]);
-		results.getSalesDetails().setCost((BigDecimal) values[3]);
-		results.getSalesDetails().setBalance((BigDecimal) values[4]);
-		results.getSalesDetails().setValueAddedTax((BigDecimal) values[5]);
+		results.getSalesDetails().setCost((BigDecimal) values[0]);
+		results.getSalesDetails().setTurnover((BigDecimal) values[1]);
+		results.getSalesDetails().setValueAddedTax((BigDecimal) values[2]);
+		results.getSalesDetails().setBalance((BigDecimal) values[3]);
+		results.setIn((BigDecimal) values[4]);
+		results.setRemaining((BigDecimal) values[5]);
 		return results;
 	}
 	
-	
+	public static final String PARAM_MINIMUM_REMAINING_GOODS = "minimumRemainingGoods";
 }

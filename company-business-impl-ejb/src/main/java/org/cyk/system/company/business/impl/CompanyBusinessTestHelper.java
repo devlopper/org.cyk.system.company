@@ -24,8 +24,12 @@ import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleReport;
+import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.model.product.SaleStockInput;
+import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStockOutput;
+import org.cyk.system.company.model.product.SaleStocksDetails;
+import org.cyk.system.company.model.product.SalesDetails;
 import org.cyk.system.root.business.impl.AbstractTestHelper;
 import org.cyk.system.root.model.party.person.Person;
 
@@ -149,6 +153,19 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
     	}
     	return sale;
     }
+	
+	public void saleComputeByCriteria(SaleSearchCriteria criteria,String expectedCost,String expectedVat,String expectedTurnover,String expectedBalance){
+		SalesDetails actual = saleBusiness.computeByCriteria(criteria);
+		saleComputeByCriteria(actual, expectedCost, expectedVat, expectedTurnover, expectedBalance);
+	}
+	
+	private void saleComputeByCriteria(SalesDetails actual,String expectedCost,String expectedVat,String expectedTurnover,String expectedBalance){
+		assertBigDecimalEquals("Cost", expectedCost, actual.getCost());
+		assertBigDecimalEquals("VAT", expectedVat, actual.getValueAddedTax());
+		assertBigDecimalEquals("Turnover", expectedTurnover, actual.getTurnover());
+    	assertBigDecimalEquals("Balance", expectedBalance, actual.getBalance());
+	}
+	
 	/*
 	private static void assertSaleReport(SaleReport saleReport,String[] payments,Boolean invoice){
 		contains(LabelValue.class, saleReport.getPaymentInfos().getCollection(), new Object[]{LabelValue.FIELD_LABEL,LabelValue.FIELD_VALUE}, new Object[][]{
@@ -237,6 +254,14 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
     public void taking(Date date,Person person,SaleStockInput saleStockInput,String quantity,String paid,String expectedRemainingGoods,String expectedBalance,String expectedCumulBalance){
     	taking(date, person, saleStockInput, quantity, paid, Boolean.FALSE, expectedRemainingGoods, expectedBalance, expectedCumulBalance);
     }
+    
+    public void saleStockInputComputeByCriteria(SaleStockInputSearchCriteria criteria,String expectedIn,String expectedRemaining,String expectedCost,String expectedVat,String expectedTurnover,String expectedBalance){
+		//System.out.println(saleBusiness.findByCriteria(criteria));
+    	SaleStocksDetails actual = saleStockInputBusiness.computeByCriteria(criteria);
+    	saleComputeByCriteria(actual.getSalesDetails(), expectedCost, expectedVat, expectedTurnover, expectedBalance);
+		assertBigDecimalEquals("In", expectedIn, actual.getIn());
+		assertBigDecimalEquals("Remaining", expectedRemaining, actual.getRemaining());
+	}
 	
 	/**/
 	

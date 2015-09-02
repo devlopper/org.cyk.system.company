@@ -24,6 +24,7 @@ import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
+import org.cyk.system.company.model.product.SaleStocksDetails;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.persistence.api.product.CustomerDao;
@@ -128,6 +129,11 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 		super.load(saleStockInput);
 		saleStockInput.setSaleStockOutputs(saleStockOutputDao.readBySaleStockInput(saleStockInput));
 		saleBusiness.load(saleStockInput.getSale());
+	}
+
+	@Override
+	public SaleStocksDetails computeByCriteria(SaleStockInputSearchCriteria criteria) {
+		return dao.computeByCriteria(criteria);
 	}
 
 }

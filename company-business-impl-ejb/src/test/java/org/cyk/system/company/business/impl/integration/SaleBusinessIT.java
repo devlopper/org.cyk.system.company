@@ -9,6 +9,7 @@ import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Sale;
+import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParameters;
@@ -20,6 +21,8 @@ public class SaleBusinessIT extends AbstractBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
 
+    private static final Boolean PRINT = Boolean.FALSE;
+    
     @Deployment
     public static Archive<?> createDeployment() {
     	return createRootDeployment();
@@ -64,6 +67,9 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	//sellAndPayInOne(person);
     	//sellAndPayInOneWithNegativeBalance(person);
     	//sellAndPayInMany(person);
+    	
+    	computeByCriterias();
+    	
     	/*
     	searchByCriterias();
     	
@@ -72,26 +78,26 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     }
     
     private void sellAndPayAtSameTime(Person person){
-    	companyBusinessTestHelper.sell(date(2015, 1, 1),person, customer1,new String[]{"tp1","1"},"1000",Boolean.TRUE, "1000", "153", "0","0");
+    	companyBusinessTestHelper.sell(date(2015, 1, 1),person, customer1,new String[]{"tp1","1"},"1000",PRINT && Boolean.TRUE, "1000", "153", "0","0");
     }
     
     private void sellAndPayInOne(Person person){
     	Sale sale = companyBusinessTestHelper
-        		.sell(date(2015, 1, 1),person, customer1,new String[]{"tp1","1"},"0",Boolean.TRUE, "1000", "153", "1000","1000");
-    	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "1000",Boolean.TRUE, "0","0");
+        		.sell(date(2015, 1, 1),person, customer1,new String[]{"tp1","1"},"0",PRINT && Boolean.TRUE, "1000", "153", "1000","1000");
+    	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "1000",PRINT && Boolean.TRUE, "0","0");
     }
     
     private void sellAndPayInOneWithNegativeBalance(Person person){
     	Sale sale = companyBusinessTestHelper
-        		.sell(date(2015, 1, 1),person, customer1,new String[]{"tp1","1"},"0",Boolean.TRUE, "1000", "153", "1000","1000");
-    	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "1500",Boolean.TRUE, "-500","-500");
+        		.sell(date(2015, 1, 1),person, customer1,new String[]{"tp1","1"},"0",PRINT && Boolean.TRUE, "1000", "153", "1000","1000");
+    	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "1500",PRINT && Boolean.TRUE, "-500","-500");
     }
     
     private void sellAndPayInMany(Person person){
     	Sale sale = companyBusinessTestHelper
-        		.sell(date(2015, 1, 1),person, customer1,new String[]{"tp1","1"},"0",Boolean.TRUE, "1000", "153", "1000","1000");
-    	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "700",Boolean.TRUE, "300","300");
-    	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "300",Boolean.TRUE, "0","0");
+        		.sell(date(2015, 1, 1),person, customer1,new String[]{"tp1","1"},"0",PRINT && Boolean.TRUE, "1000", "153", "1000","1000");
+    	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "700",PRINT && Boolean.TRUE, "300","300");
+    	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "300",PRINT && Boolean.TRUE, "0","0");
     }
     /*
     private void sellAndPayInManyWithNegativeBalance(Person person){
@@ -182,6 +188,11 @@ public class SaleBusinessIT extends AbstractBusinessIT {
         customerBalanceParameters.addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), 
         		CompanyReportRepository.getInstance().getParameterCustomerBalanceAll());
         rootTestHelper.reportBasedOnDynamicBuilderParameters(customerBalanceParameters);
+    }
+    
+    private void computeByCriterias(){
+    	SaleSearchCriteria saleSearchCriteria = new SaleSearchCriteria();
+    	companyBusinessTestHelper.saleComputeByCriteria(saleSearchCriteria, "1000", "153", "1000", "0");
     }
     
 }
