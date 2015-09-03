@@ -53,23 +53,17 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 		((Commandable)table.getOpenRowCommandable()).getButton().setRendered(Boolean.TRUE);
 		((Commandable)table.getAddRowCommandable()).getButton().setRendered(Boolean.TRUE);
 	}
-	
+		
 	@Override
-	protected void __beforeFindByCriteria__(SaleStockInputSearchCriteria criteria) {
-		super.__beforeFindByCriteria__(criteria);
+	protected void __afterFindByCriteria__(SaleStockInputSearchCriteria criteria,Collection<SaleStockInput> results) {
+		super.__afterFindByCriteria__(criteria, results);
 		table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterSaleStockReportType(),
 				CompanyReportRepository.getInstance().getParameterSaleStockReportInput());
-	}
-	
-	@Override
-	protected Collection<SaleStockInput> __query__() {
-		Collection<SaleStockInput> collection = super.__query__();
 		SaleStocksDetails details = saleStockInputBusiness.computeByCriteria(searchCriteria());
 		table.getColumn(SaleStockReportTableRow.FIELD_NUMBER_OF_GOODS).setFooter(numberBusiness.format(details.getIn()));
 		table.getColumn(SaleStockReportTableRow.FIELD_REMAINING_NUMBER_OF_GOODS).setFooter(numberBusiness.format(details.getRemaining()));
 		table.getColumn(SaleStockReportTableRow.FIELD_AMOUNT).setFooter(numberBusiness.format(details.getSalesDetails().getCost()));
 		table.getColumn(SaleStockReportTableRow.FIELD_BALANCE).setFooter(numberBusiness.format(details.getSalesDetails().getBalance()));
-		return collection;
 	}
 	
 	@Override

@@ -9,19 +9,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.model.payment.BalanceType;
-import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
-import org.cyk.system.root.model.search.StringSearchCriteria;
+import org.cyk.system.root.model.search.DefaultSearchCriteria;
 
 @Getter @Setter
-public class SaleSearchCriteria extends AbstractPeriodSearchCriteria implements Serializable {
+public class SaleSearchCriteria extends DefaultSearchCriteria implements Serializable {
 
 	private static final long serialVersionUID = 6796076474234170332L;
 
-	private StringSearchCriteria computedIdentifierStringSearchCriteria = new StringSearchCriteria();
 	private Collection<BalanceType> balanceTypes = new ArrayList<>();
-	//private Boolean computeBalance=Boolean.TRUE;
 	private Collection<Customer> customers = new ArrayList<>();
-	private Boolean done = Boolean.TRUE;
+	private Boolean done = Boolean.TRUE,hasAtLeastOneCashRegisterMovement;
 	
 	public SaleSearchCriteria(){
 		this(null,null,null);
@@ -35,6 +32,17 @@ public class SaleSearchCriteria extends AbstractPeriodSearchCriteria implements 
 		super(fromDate,toDate);
 		if(balanceType!=null)
 			this.balanceTypes.add(balanceType);
+	}
+	
+	public SaleSearchCriteria(SaleSearchCriteria criteria){
+		super(criteria);
+		balanceTypes = new ArrayList<>(criteria.balanceTypes);
+		customers = new ArrayList<>(criteria.customers);
+		done = criteria.done;
+	}
+	
+	public SaleSearchCriteria(DefaultSearchCriteria criteria){
+		super(criteria);
 	}
 	
 }

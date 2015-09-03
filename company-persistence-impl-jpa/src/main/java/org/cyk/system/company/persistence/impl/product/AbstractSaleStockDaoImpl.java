@@ -88,6 +88,6 @@ public abstract class AbstractSaleStockDaoImpl<SALE_STOCK extends SaleStock,SEAR
 		String externalIdentifier = saleStockSearchCriteria.getExternalIdentifierStringSearchCriteria().getPreparedValue();
 		queryWrapper.parameterLike(SaleStockInput.FIELD_EXTERNAL_IDENTIFIER, externalIdentifier);
 		queryWrapper.parameter(AbstractSaleStockSearchCriteria.FIELD_MINIMUM_QUANTITY, saleStockSearchCriteria.getMinimumQuantity());
-		queryWrapper.parameter(Sale.FIELD_DONE, saleStockSearchCriteria.getDone());
+		queryWrapper.parameter(Sale.FIELD_DONE, saleStockSearchCriteria.getSaleSearchCriteria().getDone());
 	}
 }

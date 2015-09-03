@@ -3,8 +3,6 @@ package org.cyk.system.company.persistence.impl.product;
 import java.math.BigDecimal;
 import java.util.Collection;
 
-import javax.persistence.NoResultException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.payment.BalanceType;
@@ -28,7 +26,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	private static final BigDecimal BALANCE_ZERO_MIN=new BigDecimal("-0."+StringUtils.repeat('0', 18)+"1"),BALANCE_ZERO_MAX=new BigDecimal("0."+StringUtils.repeat('0', 18)+"1");
 	
 	private String readAllSortedByDate,readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,computeByCriteria
-		,readByComputedIdentifier/*,sumBalanceByCustomerCriteria*/;
+		,computeByCriteriaWhereCashRegisterMovementNotExists,computeByCriteriaWhereCashRegisterMovementExists/*,readByComputedIdentifier/*,sumBalanceByCustomerCriteria*/;
 	
 	@Override
     protected void namedQueriesInitialisation() {
@@ -36,10 +34,6 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
     	
     	QueryStringBuilder queryStringBuilder = _select();
     	whereSearchCriteria(queryStringBuilder);
-    	
-    	/*.where(Sale.FIELD_COMPUTED_IDENTIFIER,ArithmeticOperator.LIKE)
-    			.and().between(Sale.FIELD_DATE).and().between(Balance.FIELD_VALUE, PARAM_BALANCE_MIN, PARAM_BALANCE_MAX)
-    			.where(LogicalOperator.AND,Sale.FIELD_DONE,PARAM_SALE_DONE,ArithmeticOperator.EQ);*/
     	
     	String readByCriteriaDateAscendingOrderQuery = queryStringBuilder.orderBy(Sale.FIELD_DATE, Boolean.TRUE).getValue();
     	registerNamedQuery(readAllSortedByDate,readByCriteriaDateAscendingOrderQuery);
@@ -49,25 +43,25 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
     	
         queryStringBuilder = _selectString(sumAttributes(Sale.FIELD_COST,Sale.FIELD_TURNOVER,Sale.FIELD_VALUE_ADDED_TAX
         		,commonUtils.attributePath(Sale.FIELD_BALANCE, Balance.FIELD_VALUE)));
-        
     	whereSearchCriteria(queryStringBuilder);
-        //System.out.println(queryStringBuilder.getValue());
     	registerNamedQuery(computeByCriteria,queryStringBuilder);
-    	//registerNamedQuery(sumValueAddedTaxByCriteria,"SELECT SUM(sale.valueAddedTax) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT);
-    	//registerNamedQuery(sumBalanceByCriteria,"SELECT SUM(sale.balance.value) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT);
-    	//registerNamedQuery(sumBalanceByCustomerCriteria,"SELECT SUM(sale.balance.value) FROM Sale sale WHERE sale.customer.identifier IN :identifiers AND sale.done = :done");
-    	//registerNamedQuery(sumBalanceByCriteriaWithBalance,"SELECT SUM(sale.balance) FROM Sale sale "+READ_BY_CRITERIA_WHERE_FORMAT+READ_BY_CRITERIA_WHERE_BALANCE_FORMAT);
     	
-    	//registerNamedQuery(readByCriteria,READ_BY_CRITERIA_NOTORDERED_FORMAT+" ORDER BY sale.date ASC");
-        //registerNamedQuery(readByCriteriaDateAscendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "sale.date ASC") );
-        //registerNamedQuery(readByCriteriaDateDescendingOrder,String.format(READ_BY_CRITERIA_ORDERED_FORMAT, "sale.date DESC") );
-        registerNamedQuery(readByComputedIdentifier, _select().where(Sale.FIELD_COMPUTED_IDENTIFIER));
-        //registerNamedQuery(readByPeriod,"SELECT sale FROM Sale sale WHERE sale.date BETWEEN :fromDate AND :toDate");
-        
-        //registerNamedQuery(readByCriteriaWithBalanceDateAscendingOrder,String.format(READ_BY_CRITERIA_WITHBALANCE_ORDERED_FORMAT, "sale.date ASC") );
-        //registerNamedQuery(readByCriteriaWithBalanceDateDescendingOrder,String.format(READ_BY_CRITERIA_WITHBALANCE_ORDERED_FORMAT, "sale.date DESC") );
-        
-        //"WHERE sale.date BETWEEN :fromvalue AND :tovalue AND sale.balance.value BETWEEN :minBalance AND :maxBalance AND sale.done = :done ";
+    	String balanceValueField = commonUtils.attributePath(Sale.FIELD_BALANCE, Balance.FIELD_VALUE);
+    	
+    	queryStringBuilder = _selectString(sumAttributes(Sale.FIELD_COST,Sale.FIELD_TURNOVER,Sale.FIELD_VALUE_ADDED_TAX
+        		,commonUtils.attributePath(Sale.FIELD_BALANCE, Balance.FIELD_VALUE)));
+    	whereSearchCriteria(queryStringBuilder);
+    	queryStringBuilder.where(LogicalOperator.AND, balanceValueField,
+				commonUtils.attributePath(queryStringBuilder.getRootEntityVariableName(), Sale.FIELD_COST), ArithmeticOperator.EQ, Boolean.FALSE);
+    	registerNamedQuery(computeByCriteriaWhereCashRegisterMovementNotExists,queryStringBuilder);
+    	
+    	queryStringBuilder = _selectString(sumAttributes(Sale.FIELD_COST,Sale.FIELD_TURNOVER,Sale.FIELD_VALUE_ADDED_TAX
+        		,commonUtils.attributePath(Sale.FIELD_BALANCE, Balance.FIELD_VALUE)));
+    	whereSearchCriteria(queryStringBuilder);
+    	queryStringBuilder.where(LogicalOperator.AND, balanceValueField,
+				commonUtils.attributePath(queryStringBuilder.getRootEntityVariableName(), Sale.FIELD_COST), ArithmeticOperator.NEQ, Boolean.FALSE);
+    	registerNamedQuery(computeByCriteriaWhereCashRegisterMovementExists,queryStringBuilder);
+    	
     }	
 	
 	private void whereSearchCriteria(QueryStringBuilder queryStringBuilder){
@@ -113,7 +107,10 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	
 	@Override
 	public SalesDetails computeByCriteria(SaleSearchCriteria criteria) {
-		QueryWrapper<?> queryWrapper = namedQuery(computeByCriteria,Object.class);
+		QueryWrapper<?> queryWrapper = namedQuery(
+				criteria.getHasAtLeastOneCashRegisterMovement()==null?computeByCriteria
+						:Boolean.TRUE.equals(criteria.getHasAtLeastOneCashRegisterMovement())?
+								computeByCriteriaWhereCashRegisterMovementExists:computeByCriteriaWhereCashRegisterMovementNotExists,Object.class);
 		applyPeriodSearchCriteriaParameters(queryWrapper, criteria);
 		
 		Object[] values = (Object[]) queryWrapper.resultOne();
@@ -131,7 +128,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	protected void applyPeriodSearchCriteriaParameters(QueryWrapper<?> queryWrapper,AbstractPeriodSearchCriteria searchCriteria) {
 		super.applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		SaleSearchCriteria saleSearchCriteria = (SaleSearchCriteria) searchCriteria;
-		queryWrapper.parameterLike(Sale.FIELD_COMPUTED_IDENTIFIER,saleSearchCriteria.getComputedIdentifierStringSearchCriteria().getPreparedValue());
+		queryWrapper.parameterLike(Sale.FIELD_COMPUTED_IDENTIFIER,saleSearchCriteria.getIdentifierStringSearchCriteria().getPreparedValue());
 		queryWrapper.parameter(Sale.FIELD_DONE,saleSearchCriteria.getDone());
 		//queryWrapper.parameterIdentifiers(saleSearchCriteria.getCustomers());
 		BigDecimal minBalance=BALANCE_ZERO_MIN,maxBalance=BALANCE_ZERO_MAX;
@@ -150,12 +147,6 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 		}
 		queryWrapper.parameter(PARAM_BALANCE_MIN,minBalance);
 		queryWrapper.parameter(PARAM_BALANCE_MAX,maxBalance);
-	}
-	
-	@Override
-	public Sale readByComputedIdentifier(String computedIdentifier) {
-		return namedQuery(readByComputedIdentifier).parameter(Sale.FIELD_COMPUTED_IDENTIFIER, computedIdentifier)
-				.ignoreThrowable(NoResultException.class).resultOne();
 	}
 	
 	public static final String PARAM_BALANCE_MIN = "minBalance";

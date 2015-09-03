@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
-import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
@@ -79,13 +78,7 @@ public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOu
 		SaleStocksDetails results = new SaleStocksDetails();
 		results.setOut((BigDecimal) values[0]);
 		results.getSalesDetails().setPaid((BigDecimal) values[1]);
-		
-		SaleSearchCriteria saleSearchCriteria = new SaleSearchCriteria();
-		saleSearchCriteria.setDone(criteria.getDone());
-		saleSearchCriteria.setFromDateSearchCriteria(criteria.getFromDateSearchCriteria());
-		saleSearchCriteria.setToDateSearchCriteria(criteria.getToDateSearchCriteria());
-		saleSearchCriteria.setReadConfig(criteria.getReadConfig());
-		SalesDetails salesDetails = saleDao.computeByCriteria(saleSearchCriteria);
+		SalesDetails salesDetails = saleDao.computeByCriteria(criteria.getSaleSearchCriteria());
 		results.getSalesDetails().setBalance(salesDetails.getBalance());
 		return results;
 	}

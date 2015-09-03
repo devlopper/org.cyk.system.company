@@ -7,6 +7,9 @@ import java.util.Collection;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
@@ -33,9 +36,6 @@ import org.primefaces.extensions.model.dynaform.DynaFormControl;
 import org.primefaces.extensions.model.dynaform.DynaFormLabel;
 import org.primefaces.extensions.model.dynaform.DynaFormModel;
 import org.primefaces.extensions.model.dynaform.DynaFormRow;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter @Setter
 public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEARCH_CRITERIA extends AbstractSaleStockSearchCriteria> extends AbstractBusinessQueryPage<SALE_STOCK, AbstractSaleStockListPage.SaleStockQueryFormModel, SaleStockReportTableRow> implements Serializable {
@@ -148,17 +148,13 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterFromDate(),criteria.getFromDateSearchCriteria().getPreparedValue().getTime());
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterToDate(),criteria.getToDateSearchCriteria().getPreparedValue().getTime());
 		__beforeFindByCriteria__(criteria);
-		return business().findByCriteria(criteria);
+		Collection<SALE_STOCK> collection = business().findByCriteria(criteria);
+		__afterFindByCriteria__(criteria,collection);
+		return collection;
 	}
-	/*
-	@Override
-	protected Collection<SaleStockReportTableRow> datas(Collection<SaleStock> identifiables) {
-		Collection<Object> datas = super.datas(identifiables);
-		
-		return datas;
-	}*/
-	
+
 	protected void __beforeFindByCriteria__(SEARCH_CRITERIA criteria){}
+	protected void __afterFindByCriteria__(SEARCH_CRITERIA criteria,Collection<SALE_STOCK> results){}
 	
 	@Override
 	protected Long __count__() {
@@ -168,12 +164,12 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 	}
 
 	protected SEARCH_CRITERIA searchCriteria(){
-		SEARCH_CRITERIA searchCriteria = newInstance(searchCriteriaClass());
-		searchCriteria.getFromDateSearchCriteria().setValue(form.getData().getFromDate());
-		searchCriteria.getToDateSearchCriteria().setValue(form.getData().getToDate());
-		searchCriteria.getIdentifierStringSearchCriteria().setValue(form.getData().getIdentifier());
-		searchCriteria.getExternalIdentifierStringSearchCriteria().setValue(form.getData().getExternalIdentifier());
-		return searchCriteria;
+		SEARCH_CRITERIA criteria = newInstance(searchCriteriaClass());
+		criteria.getFromDateSearchCriteria().setValue(form.getData().getFromDate());
+		criteria.getToDateSearchCriteria().setValue(form.getData().getToDate());
+		criteria.getIdentifierStringSearchCriteria().setValue(form.getData().getIdentifier());
+		criteria.getExternalIdentifierStringSearchCriteria().setValue(form.getData().getExternalIdentifier());
+		return criteria;
 	}
 	
 	/**/

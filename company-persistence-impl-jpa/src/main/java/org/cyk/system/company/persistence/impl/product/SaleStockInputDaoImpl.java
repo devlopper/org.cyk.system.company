@@ -5,16 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStocksDetails;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
-import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.cyk.system.company.persistence.api.product.SaleStockInputDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;
@@ -27,8 +23,6 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 	private static final long serialVersionUID = 6920278182318788380L;
 
 	private String readBySaleComputedIdentifier,readBySales;
-	
-	@Inject private SaleDao saleDao;
 	
 	@Override
     protected void namedQueriesInitialisation() {
@@ -65,20 +59,6 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 		.and().whereString("ABS(r.tangibleProductStockMovement.quantity) >= :minimumQuantity");
 	}
 
-	@Override
-	public Collection<SaleStockInput> readByCriteria(SaleStockInputSearchCriteria searchCriteria) {
-		if(StringUtils.isNotBlank(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue())){
-			Sale sale = saleDao.readByComputedIdentifier(searchCriteria.getIdentifierStringSearchCriteria().getPreparedValue());
-			if(sale==null)
-				return new ArrayList<SaleStockInput>();
-			SaleStockInput saleStockInput = readBySale(sale);
-			if(saleStockInput==null)
-				return new ArrayList<SaleStockInput>();
-			return Arrays.asList(saleStockInput);
-		}
-		return super.readByCriteria(searchCriteria);
-	}
-	
 	@Override
 	protected void applyPeriodSearchCriteriaParameters(QueryWrapper<?> queryWrapper,AbstractPeriodSearchCriteria searchCriteria) {
 		super.applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);

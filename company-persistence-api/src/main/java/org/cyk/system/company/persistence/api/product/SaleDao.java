@@ -12,11 +12,7 @@ public interface SaleDao extends TypedDao<Sale> {
 	Collection<Sale> readByCriteria(SaleSearchCriteria criteria);
 	
 	Long countByCriteria(SaleSearchCriteria criteria);
-
+	
 	SalesDetails computeByCriteria(SaleSearchCriteria criteria);
-	
-	Sale readByComputedIdentifier(String computedIdentifier);
-	
-	/**/
 	
 }

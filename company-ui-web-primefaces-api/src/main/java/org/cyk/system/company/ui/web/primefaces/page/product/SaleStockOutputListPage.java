@@ -14,6 +14,7 @@ import lombok.Setter;
 import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
+import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStocksDetails;
@@ -52,6 +53,14 @@ public class SaleStockOutputListPage extends AbstractSaleStockListPage<SaleStock
 		table.getColumn(SaleStockReportTableRow.FIELD_AMOUNT_PAID).setFooter(numberBusiness.format(details.getSalesDetails().getPaid()));
 		table.getColumn(SaleStockReportTableRow.FIELD_BALANCE).setFooter(numberBusiness.format(details.getSalesDetails().getBalance()));
 		return collection;
+	}
+	
+	@Override
+	protected SaleStockOutputSearchCriteria searchCriteria() {
+		SaleStockOutputSearchCriteria criteria = super.searchCriteria();
+		criteria.setSaleSearchCriteria(new SaleSearchCriteria(criteria));
+		criteria.getSaleSearchCriteria().setHasAtLeastOneCashRegisterMovement(Boolean.TRUE);
+		return criteria;
 	}
 	
 	/**/
