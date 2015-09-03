@@ -17,7 +17,6 @@ import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductInventoryDetail;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.ui.api.command.UICommandable;
-import org.cyk.ui.api.model.table.Row;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudManyPage;
 
 @Named @ViewScoped @Getter @Setter
@@ -28,6 +27,12 @@ public class TangibleProductInventoryListPage extends AbstractCrudManyPage<Tangi
 	@Inject private ProductBusiness productBusiness;
 	
 	private List<TangibleProductInventoryDetail> details = new ArrayList<>();
+	
+	@Override
+	protected void initialisation() {
+		super.initialisation();
+		rowAdapter.setOpenable(Boolean.TRUE);
+	}
 	
 	@Override
 	protected void afterInitialisation() {
@@ -46,11 +51,5 @@ public class TangibleProductInventoryListPage extends AbstractCrudManyPage<Tangi
 	protected Collection<UICommandable> contextualCommandables() {
 		return CompanyWebManager.getInstance().stockContextCommandables(getUserSession());
 	}
-	
-	@Override
-	protected void rowAdded(Row<Object> row) {
-		super.rowAdded(row);
-		row.setOpenable(Boolean.TRUE);
-	}
-	
+		
 }

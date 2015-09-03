@@ -10,7 +10,6 @@ import lombok.Setter;
 
 import org.cyk.system.company.model.production.ProductionSpreadSheet;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
-import org.cyk.ui.api.model.table.Row;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudManyPage;
 
 @Named @ViewScoped @Getter @Setter
@@ -28,17 +27,12 @@ public class ProductionListPage extends AbstractCrudManyPage<ProductionSpreadShe
 		table.getOpenRowCommandable().setRendered(Boolean.TRUE);
 		
 		table.getPrintCommandable().setRendered(Boolean.FALSE);
+		rowAdapter.setOpenable(Boolean.TRUE);
 	}
 	
 	@Override
 	protected BusinessEntityInfos fetchBusinessEntityInfos() {
 		return uiManager.businessEntityInfos(ProductionSpreadSheet.class);
 	}
-	
-	@Override
-	protected void rowAdded(Row<Object> row) {
-		super.rowAdded(row);
-		row.setOpenable(Boolean.TRUE);
-	}
-	
+		
 }

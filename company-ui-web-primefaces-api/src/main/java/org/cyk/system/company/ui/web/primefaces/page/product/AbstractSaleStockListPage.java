@@ -86,6 +86,7 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 	
 		table.setShowHeader(Boolean.FALSE);
 		table.setShowFooter(Boolean.FALSE);
+		rowAdapter.setOpenable(Boolean.FALSE);
 	}
 	
 	protected abstract Boolean ignoreField(Field field);
@@ -110,13 +111,7 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 	protected AbstractIdentifiable __identifiable__(Object data) {
 		return ((SaleStockReportTableRow)data).getSaleStock();
 	}
-	
-	@Override
-	protected void rowAdded(Row<Object> row) {
-		super.rowAdded(row);
-		row.setOpenable(Boolean.FALSE);
-	}
-	
+		
 	@Override
 	protected DimensionType getRowType(Row<Object> row) {
 		return ((SaleStockReportTableRow)row.getData()).getSaleStock()==null ? DimensionType.SUMMARY:super.getRowType(row);

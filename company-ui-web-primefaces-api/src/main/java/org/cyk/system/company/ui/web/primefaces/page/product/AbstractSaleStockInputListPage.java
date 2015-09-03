@@ -36,6 +36,12 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 	}
 	
 	@Override
+	protected void initialisation() {
+		super.initialisation();
+		rowAdapter.setOpenable(Boolean.TRUE);
+	}
+	
+	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
 
@@ -52,6 +58,7 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 		
 		((Commandable)table.getOpenRowCommandable()).getButton().setRendered(Boolean.TRUE);
 		((Commandable)table.getAddRowCommandable()).getButton().setRendered(Boolean.TRUE);
+		
 	}
 		
 	@Override
@@ -59,19 +66,13 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 		super.__afterFindByCriteria__(criteria, results);
 		table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterSaleStockReportType(),
 				CompanyReportRepository.getInstance().getParameterSaleStockReportInput());
-		SaleStocksDetails details = saleStockInputBusiness.computeByCriteria(searchCriteria());
+		SaleStocksDetails details = saleStockInputBusiness.computeByCriteria(criteria);
 		table.getColumn(SaleStockReportTableRow.FIELD_NUMBER_OF_GOODS).setFooter(numberBusiness.format(details.getIn()));
 		table.getColumn(SaleStockReportTableRow.FIELD_REMAINING_NUMBER_OF_GOODS).setFooter(numberBusiness.format(details.getRemaining()));
 		table.getColumn(SaleStockReportTableRow.FIELD_AMOUNT).setFooter(numberBusiness.format(details.getSalesDetails().getCost()));
 		table.getColumn(SaleStockReportTableRow.FIELD_BALANCE).setFooter(numberBusiness.format(details.getSalesDetails().getBalance()));
 	}
-	
-	@Override
-	protected void rowAdded(Row<Object> row) {
-		super.rowAdded(row);
-		row.setOpenable(Boolean.TRUE);
-	}
-	
+		
 	@Override
 	protected Class<SaleStockInput> __entityClass__() {
 		return SaleStockInput.class;

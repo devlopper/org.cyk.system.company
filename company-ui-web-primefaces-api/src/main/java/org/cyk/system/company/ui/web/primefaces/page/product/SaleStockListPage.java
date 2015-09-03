@@ -17,6 +17,7 @@ import org.cyk.system.company.business.api.product.SaleStockBusiness;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
 import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.company.model.product.SaleStockSearchCriteria;
+import org.cyk.system.company.model.product.SaleStocksDetails;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, SaleStockSearchCriteria> implements Serializable {
@@ -60,39 +61,8 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 		return saleStockReportTableRows;
 	}
 	
-	/*
-	@SuppressWarnings("unchecked")
 	@Override
-	protected Collection<Object> datas(Collection<SaleStock> identifiables) {
-		Collection<Object> rows = new ArrayList<>();
-		for(Object object : super.datas(identifiables)){
-			rows.add(((SaleStockQueryResultFormModel)object).getSaleStockReportTableRow());
-		}
-		
-		SaleStockSearchCriteria searchCriteria = searchCriteria(); 
-		rows = (Collection<Object>) companyReportRepository.processSaleStockReportRows(type, 
-				searchCriteria.getFromDateSearchCriteria().getPreparedValue(), 
-				searchCriteria.getToDateSearchCriteria().getPreparedValue(), rows);
-		
-		Collection<Object> nr = new ArrayList<>();
-		for(Object r : rows){
-			SaleStockQueryResultFormModel v = new SaleStockQueryResultFormModel();
-			v.setIdentifiable(((SaleStockReportTableRow)r).getSaleStock());
-			v.read();
-			nr.add(v);
-		}
-		//SaleStockSearchCriteria searchCriteria = searchCriteria(); 
-		//return (Collection<Object>) companyReportRepository.processSaleStockReportRows(companyReportRepository.getParameterSaleStockReportCashRegister(), 
-		//		searchCriteria.getFromDateSearchCriteria().getPreparedValue(), 
-		//		searchCriteria.getToDateSearchCriteria().getPreparedValue(), rows); //super.datas(identifiables);
-		
-		return nr;
-	}
-*/
-	
-	@Override
-	protected Boolean ignoreField(Field field) {
-		
+	protected Boolean ignoreField(Field field) {	
 		if(companyReportRepository.getParameterSaleStockReportInventory().equals(type))
 			return SaleStockReportTableRow.inventoryFieldIgnored(field);
 		else if(companyReportRepository.getParameterSaleStockReportCustomer().equals(type))
@@ -100,11 +70,21 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 		return Boolean.TRUE;
 	}
 	
-	
 	@Override
-	protected void __beforeFindByCriteria__(SaleStockSearchCriteria criteria) {
-		super.__beforeFindByCriteria__(criteria);
+	protected void __afterFindByCriteria__(SaleStockSearchCriteria criteria,Collection<SaleStock> results) {
+		super.__afterFindByCriteria__(criteria, results);
 		table.getPrintCommandable().setParameter(companyReportRepository.getParameterSaleStockReportType(),type);
+		SaleStocksDetails details = saleStockBusiness.computeByCriteria(criteria);
+		if(companyReportRepository.getParameterSaleStockReportInventory().equals(type)){
+			table.getColumn(SaleStockReportTableRow.FIELD_STOCK_IN).setFooter(numberBusiness.format(details.getIn()));
+			table.getColumn(SaleStockReportTableRow.FIELD_STOCK_OUT).setFooter(numberBusiness.format(details.getOut()));
+			table.getColumn(SaleStockReportTableRow.FIELD_REMAINING_NUMBER_OF_GOODS).setFooter(numberBusiness.format(details.getRemaining()));	
+		}else if(companyReportRepository.getParameterSaleStockReportCustomer().equals(type)) {
+			table.getColumn(SaleStockReportTableRow.FIELD_AMOUNT).setFooter(numberBusiness.format(details.getSalesDetails().getCost()));
+			table.getColumn(SaleStockReportTableRow.FIELD_AMOUNT_PAID).setFooter(numberBusiness.format(details.getSalesDetails().getPaid()));
+			table.getColumn(SaleStockReportTableRow.FIELD_CUMULATED_BALANCE).setFooter(numberBusiness.format(details.getSalesDetails().getBalance()));
+		}
+		
 	}
 	
 	@Override
@@ -122,7 +102,4 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 		return saleStockBusiness;
 	}
 	
-	
-	
-
 }

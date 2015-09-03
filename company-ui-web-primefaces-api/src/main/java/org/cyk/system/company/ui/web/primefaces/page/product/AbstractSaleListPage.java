@@ -6,6 +6,9 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
@@ -23,9 +26,6 @@ import org.cyk.ui.api.model.table.Row;
 import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessQueryPage;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter @Setter
 public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusinessQueryPage<Sale, QUERY, RESULT> implements Serializable {
@@ -66,6 +66,8 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 				}
 			}*/
 		});
+		
+		rowAdapter.setOpenable(Boolean.TRUE);
 	}
 	
 	@Override
@@ -94,13 +96,7 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 		table.setShowAddRemoveColumn(Boolean.FALSE);
 		table.getPrintCommandable().setRendered(Boolean.TRUE);
 	}
-	
-	@Override
-	protected void rowAdded(Row<Object> row) {
-		super.rowAdded(row);
-		row.setOpenable(Boolean.TRUE);
-	}
-	
+		
 	@Override
 	protected Boolean autoLoad() {
 		return Boolean.TRUE;

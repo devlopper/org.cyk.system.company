@@ -100,7 +100,7 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		SaleStockInput saleStockInput = saleStockOutput.getSaleStockInput();
 		Sale sale = saleStockInput.getSale();
 		saleStockInputExternalIdentifier = saleStockInput.getExternalIdentifier();
-		identifier = saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getIdentifier().toString();
+		identifier = saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getComputedIdentifier();
 		//number = sale.getIdentificationNumber();
 		if(sale.getCustomer()!=null)
 			customer = sale.getCustomer().getRegistration().getCode()+" - "+sale.getCustomer().getPerson().getNames();
