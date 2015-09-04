@@ -76,6 +76,7 @@ import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.file.report.AbstractReport;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
+import org.cyk.system.root.model.geography.ContactCollection;
 import org.cyk.system.root.model.geography.PhoneNumber;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Credentials;
@@ -257,6 +258,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
 			listener.handleCompanyLogoToInstall(company.getImage());
 		installObject(FILE_COMPANY_LOGO,fileBusiness,company.getImage());
+		company.setContactCollection(new ContactCollection());
 		company.getContactCollection().setPhoneNumbers(new ArrayList<PhoneNumber>());
 		RootRandomDataProvider.getInstance().phoneNumber(company.getContactCollection());
 

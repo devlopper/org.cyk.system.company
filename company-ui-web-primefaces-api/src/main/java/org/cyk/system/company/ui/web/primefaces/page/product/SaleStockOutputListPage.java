@@ -45,16 +45,14 @@ public class SaleStockOutputListPage extends AbstractSaleStockListPage<SaleStock
 	}
 	
 	@Override
-	protected Collection<SaleStockOutput> __query__() {
-		Collection<SaleStockOutput> collection = super.__query__();
-		SaleStocksDetails details = saleStockOutputBusiness.computeByCriteria(searchCriteria());
-		
-		table.getColumn(SaleStockReportTableRow.FIELD_TAKEN_NUMBER_OF_GOODS).setFooter(numberBusiness.format(details.getOut().abs()));
-		table.getColumn(SaleStockReportTableRow.FIELD_AMOUNT_PAID).setFooter(numberBusiness.format(details.getSalesDetails().getPaid()));
-		table.getColumn(SaleStockReportTableRow.FIELD_BALANCE).setFooter(numberBusiness.format(details.getSalesDetails().getBalance()));
-		return collection;
+	protected void __afterFindByCriteria__(SaleStockOutputSearchCriteria criteria,Collection<SaleStockOutput> results) {
+		super.__afterFindByCriteria__(criteria, results);
+		SaleStocksDetails details = saleStockOutputBusiness.computeByCriteria(criteria);
+		table.setColumnFooter(SaleStockReportTableRow.FIELD_TAKEN_NUMBER_OF_GOODS,details.getOut().abs());
+		table.setColumnFooter(SaleStockReportTableRow.FIELD_AMOUNT_PAID,details.getSalesDetails().getPaid());
+		table.setColumnFooter(SaleStockReportTableRow.FIELD_BALANCE,details.getSalesDetails().getBalance());
 	}
-	
+		
 	@Override
 	protected SaleStockOutputSearchCriteria searchCriteria() {
 		SaleStockOutputSearchCriteria criteria = super.searchCriteria();

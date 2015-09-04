@@ -72,8 +72,8 @@ public class SaleStockDaoImpl extends AbstractSaleStockDaoImpl<SaleStock,SaleSto
 		Object[] values = getComputeByCriteriaResults(criteria);
 		SaleStocksDetails results = new SaleStocksDetails();
 		
-		results.setIn((BigDecimal) values[0]);
-		results.setOut((BigDecimal) values[1]);
+		results.setIn(values[0]==null?BigDecimal.ZERO:(BigDecimal) values[0]);
+		results.setOut(values[1]==null?BigDecimal.ZERO:(BigDecimal) values[1]);
 		results.setRemaining(results.getIn().subtract(results.getOut()));
 		results.setSalesDetails(saleDao.computeByCriteria(criteria.getSaleSearchCriteria()));
 		

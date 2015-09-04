@@ -54,4 +54,13 @@ public class CustomerReportTableRow extends AbstractReportTableRow implements Se
 		return !(field.getName().equals("registrationCode") || field.getName().equals("names") || 
 				field.getName().equals("saleStockInputCount") || field.getName().equals("saleStockOutputCount"));
 	}
+	
+	public static final String FIELD_REGISTRATION_CODE = "registrationCode";
+	public static final String FIELD_NAMES = "names";
+	public static final String FIELD_SALE_STOCK_INPUT_COUNT = "saleStockInputCount";
+	public static final String FIELD_SALE_STOCK_OUTPUT_COUNT = "saleStockOutputCount";
+	public static final String FIELD_TURNOVER = "turnover";
+	public static final String FIELD_PAID = "paid";
+	public static final String FIELD_BALANCE = "balance";
+	
 }

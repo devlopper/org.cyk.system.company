@@ -348,6 +348,14 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			}
 			@Override
 			public Collection<? extends AbstractIdentifiable> identifiables(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
+				if(parameters.getExtendedParameterMap().get(parameterCustomerReportType)==null){
+					parameters.getColumnNamesToExclude().add(CustomerReportTableRow.FIELD_BALANCE);
+					parameters.getColumnNamesToExclude().add(CustomerReportTableRow.FIELD_PAID);
+					parameters.getColumnNamesToExclude().add(CustomerReportTableRow.FIELD_SALE_STOCK_INPUT_COUNT);
+					parameters.getColumnNamesToExclude().add(CustomerReportTableRow.FIELD_SALE_STOCK_OUTPUT_COUNT);
+					parameters.getColumnNamesToExclude().add(CustomerReportTableRow.FIELD_TURNOVER);
+					return customerBusiness.findAll();
+				}
 				Collection<? extends AbstractIdentifiable> collection = null;
 				String reportType = parameters.getExtendedParameterMap().get(parameterCustomerReportType)[0];
 				if(parameterCustomerReportBalance.equals(reportType)){

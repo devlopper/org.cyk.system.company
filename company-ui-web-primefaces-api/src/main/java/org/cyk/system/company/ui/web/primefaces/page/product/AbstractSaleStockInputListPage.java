@@ -6,6 +6,9 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
@@ -19,9 +22,6 @@ import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.model.table.Row;
 import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.Commandable;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter @Setter
 public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockListPage<SaleStockInput, SaleStockInputSearchCriteria> implements Serializable {
@@ -67,10 +67,12 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 		table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterSaleStockReportType(),
 				CompanyReportRepository.getInstance().getParameterSaleStockReportInput());
 		SaleStocksDetails details = saleStockInputBusiness.computeByCriteria(criteria);
-		table.getColumn(SaleStockReportTableRow.FIELD_NUMBER_OF_GOODS).setFooter(numberBusiness.format(details.getIn()));
-		table.getColumn(SaleStockReportTableRow.FIELD_REMAINING_NUMBER_OF_GOODS).setFooter(numberBusiness.format(details.getRemaining()));
-		table.getColumn(SaleStockReportTableRow.FIELD_AMOUNT).setFooter(numberBusiness.format(details.getSalesDetails().getCost()));
-		table.getColumn(SaleStockReportTableRow.FIELD_BALANCE).setFooter(numberBusiness.format(details.getSalesDetails().getBalance()));
+		
+		debug(details);
+		table.setColumnFooter(SaleStockReportTableRow.FIELD_NUMBER_OF_GOODS, details.getIn());
+		table.setColumnFooter(SaleStockReportTableRow.FIELD_REMAINING_NUMBER_OF_GOODS, details.getRemaining());
+		table.setColumnFooter(SaleStockReportTableRow.FIELD_AMOUNT, details.getSalesDetails().getCost());
+		table.setColumnFooter(SaleStockReportTableRow.FIELD_BALANCE, details.getSalesDetails().getBalance());
 	}
 		
 	@Override

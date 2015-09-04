@@ -2,6 +2,7 @@ package org.cyk.system.company.business.impl;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.SaleReportProducer;
@@ -107,8 +108,8 @@ public class DefaultSaleReportProducer extends AbstractRootBusinessBean implemen
 		}else{
 			if(sale.getValueAddedTax().signum()>0){
 				labelValue(saleReport.getTaxInfos(),"vat.rate", format(sale.getAccountingPeriod().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
-				labelValue("amount.vat.excluded", format(sale.getCost().subtract(sale.getValueAddedTax()).setScale(2)));
-				labelValue("vat.amount", format(sale.getValueAddedTax().setScale(2)));
+				labelValue("amount.vat.excluded", format(sale.getCost().subtract(sale.getValueAddedTax()).setScale(2,RoundingMode.HALF_DOWN)));
+				labelValue("vat.amount", format(sale.getValueAddedTax().setScale(2,RoundingMode.HALF_DOWN)));
 			}
 		}
 		

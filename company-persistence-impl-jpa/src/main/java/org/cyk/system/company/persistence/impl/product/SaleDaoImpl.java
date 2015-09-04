@@ -115,10 +115,10 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 		
 		Object[] values = (Object[]) queryWrapper.resultOne();
 		SalesDetails results = new SalesDetails();
-		results.setCost((BigDecimal) values[0]);
-		results.setTurnover((BigDecimal) values[1]);
-		results.setValueAddedTax((BigDecimal) values[2]);
-		results.setBalance((BigDecimal) values[3]);
+		results.setCost(values[0]==null?BigDecimal.ZERO:(BigDecimal) values[0]);
+		results.setTurnover(values[1]==null?BigDecimal.ZERO:(BigDecimal) values[1]);
+		results.setValueAddedTax(values[2]==null?BigDecimal.ZERO:(BigDecimal) values[2]);
+		results.setBalance(values[3]==null?BigDecimal.ZERO:(BigDecimal) values[3]);
 		results.setPaid(results.getCost().subtract(results.getBalance()));
 		return results;
 	}
