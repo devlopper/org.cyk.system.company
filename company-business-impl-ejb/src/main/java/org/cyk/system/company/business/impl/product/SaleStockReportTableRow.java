@@ -86,9 +86,12 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		balance = formatNumber(saleStockInput.getSale().getBalance().getValue()); 
 		
 		cumulatedBalance = formatNumber(saleStockInput.getSale().getBalance().getCumul());
+		//cumulatedBalance = formatNumber(saleStockInput.getSale().getCost());
 		numberOfGoods = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity());
+		
+		remainingNumberOfGoods = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity());
 		//remainingNumberOfGoods = numberOfGoods;
-		remainingNumberOfGoods = formatNumber(saleStockInput.getRemainingNumberOfGoods());
+		//remainingNumberOfGoods = formatNumber(saleStockInput.getRemainingNumberOfGoods());
 		
 		date = formatDate(saleStockInput.getSale().getDate());
 		
