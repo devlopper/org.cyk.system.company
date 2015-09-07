@@ -70,7 +70,10 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		}
 		ReceiptParameters previous = new ReceiptParameters(null,saleCashRegisterMovement);
 		sale.getBalance().setValue(sale.getBalance().getValue().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
-		sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
+		
+		//cumul balance must be link to a date , so do not update a cumulated balance
+		//sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
+		
 		saleCashRegisterMovement.getBalance().setValue(sale.getBalance().getValue());
 		saleDao.update(sale);
 		

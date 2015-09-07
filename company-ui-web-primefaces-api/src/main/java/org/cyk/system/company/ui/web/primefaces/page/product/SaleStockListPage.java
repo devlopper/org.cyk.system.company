@@ -50,7 +50,7 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 		SaleStockSearchCriteria searchCriteria = searchCriteria(); 
 		rows = (Collection<Object>) companyReportRepository.processSaleStockReportRows(type, 
 				searchCriteria.getFromDateSearchCriteria().getPreparedValue(), 
-				searchCriteria.getToDateSearchCriteria().getPreparedValue(), rows);
+				searchCriteria.getToDateSearchCriteria().getPreparedValue(), rows,Boolean.FALSE);
 		
 		Collection<SaleStockReportTableRow> saleStockReportTableRows = new ArrayList<>();
 		
