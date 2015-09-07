@@ -78,10 +78,10 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	//Person person = companyBusinessTestHelper.cashierPerson();
     	
     	dropAndTakeInOne0(person);
-    	SaleStockInputSearchCriteria criteria = new SaleStockInputSearchCriteria();
-    	companyBusinessTestHelper.saleStockInputComputeByCriteria(criteria, "3","0","1000", "0", "1000", "0");
+    	//SaleStockInputSearchCriteria criteria = new SaleStockInputSearchCriteria();
+    	//companyBusinessTestHelper.saleStockInputComputeByCriteria(criteria, "3","0","1000", "0", "1000", "0");
     	
-    	dropAndTakeInOne(person);
+    	//dropAndTakeInOne(person);
     	/*
     	dropAndTakeInMany(person);
     	dropAndTakeInManyWithZeroPayment(person);

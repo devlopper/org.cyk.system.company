@@ -278,8 +278,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		accountingPeriod.setPeriod(new Period(new DateTime(currentYear, 1, 1, 0, 0).toDate(), new DateTime(currentYear, 12, 31, 23, 59).toDate()));
 		accountingPeriod.setPointOfSaleReportFile(pointOfSaleReportFile);
 		accountingPeriod.setValueAddedTaxRate(BigDecimal.ZERO);
-		accountingPeriod.getSaleConfiguration().setSaleIdentifierGenerator(stringGenerator("0", 8l, null, null,8l));
-		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(stringGenerator("0", 8l, null, null,8l));
+		accountingPeriod.getSaleConfiguration().setSaleIdentifierGenerator(stringGenerator("FACT","0", 8l, null, null,8l));
+		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(stringGenerator("PAIE","0", 8l, null, null,8l));
 		
 		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getSaleIdentifierGenerator());
 		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());

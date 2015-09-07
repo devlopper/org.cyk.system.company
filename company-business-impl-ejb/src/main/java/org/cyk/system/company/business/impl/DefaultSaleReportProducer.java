@@ -107,9 +107,9 @@ public class DefaultSaleReportProducer extends AbstractRootBusinessBean implemen
 			
 		}else{
 			if(sale.getValueAddedTax().signum()>0){
-				labelValue(saleReport.getTaxInfos(),"vat.rate", format(sale.getAccountingPeriod().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
-				labelValue("amount.vat.excluded", format(sale.getCost().subtract(sale.getValueAddedTax()).setScale(2,RoundingMode.HALF_DOWN)));
-				labelValue("vat.amount", format(sale.getValueAddedTax().setScale(2,RoundingMode.HALF_DOWN)));
+				labelValue(saleReport.getTaxInfos(),LABEL_VAT_RATE, format(sale.getAccountingPeriod().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
+				labelValue(LABEL_AMOUNT_VAT_EXCLUDED, format(sale.getCost().subtract(sale.getValueAddedTax()).setScale(2,RoundingMode.HALF_DOWN)));
+				labelValue(LABEL_VAT_AMOUNT, format(sale.getValueAddedTax().setScale(2,RoundingMode.HALF_DOWN)));
 			}
 		}
 		
@@ -187,6 +187,10 @@ public class DefaultSaleReportProducer extends AbstractRootBusinessBean implemen
 	public static final String LABEL_CASH = "cash";
 	public static final String LABEL_AMOUNT_PAID = "";
 	public static final String LABEL_AMOUNT_TO_OUT = "amount.to.out";
-	public static final String LABEL_AMOUNT_DU = "amount.du";
+	public static final String LABEL_AMOUNT_DU = "company.report.pointofsale.amount.du";
+	
+	public static final String LABEL_VAT_RATE = "company.report.pointofsale.vat.rate";
+	public static final String LABEL_VAT_AMOUNT = "company.report.pointofsale.vat.amount";
+	public static final String LABEL_AMOUNT_VAT_EXCLUDED = "company.report.pointofsale.amount.vat.excluded";
 
 }
