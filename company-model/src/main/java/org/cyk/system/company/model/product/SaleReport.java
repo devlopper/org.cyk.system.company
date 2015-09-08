@@ -58,18 +58,18 @@ public class SaleReport extends AbstractGeneratable<SaleReport> implements Seria
 			saleProducts.add(sp);
 		}
 		
-		headerInfos.add("Identifiant", identifier);
-		headerInfos.add("Caisse", cashier.getRegistrationCode());
-		headerInfos.add("Date", date);
-		headerInfos.add("Client", customer.getRegistrationCode());
+		headerInfos.add(null,"Identifiant", identifier);
+		headerInfos.add(null,"Caisse", cashier.getRegistrationCode());
+		headerInfos.add(null,"Date", date);
+		headerInfos.add(null,"Client", customer.getRegistrationCode());
 		
-		paymentInfos.add("A payer", saleCashRegisterMovement.getAmountDue());
-		paymentInfos.add("Especes", saleCashRegisterMovement.getAmountIn());
-		paymentInfos.add("A rendre", saleCashRegisterMovement.getAmountToOut());
+		paymentInfos.add(null,"A payer", saleCashRegisterMovement.getAmountDue());
+		paymentInfos.add(null,"Especes", saleCashRegisterMovement.getAmountIn());
+		paymentInfos.add(null,"A rendre", saleCashRegisterMovement.getAmountToOut());
 		
-		taxInfos.add("Taux TVA", saleCashRegisterMovement.getVatRate());
-		taxInfos.add("Montant Hors Taxe", saleCashRegisterMovement.getAmountDueNoTaxes());
-		taxInfos.add("TVA", saleCashRegisterMovement.getVatAmount());
+		taxInfos.add(null,"Taux TVA", saleCashRegisterMovement.getVatRate());
+		taxInfos.add(null,"Montant Hors Taxe", saleCashRegisterMovement.getAmountDueNoTaxes());
+		taxInfos.add(null,"TVA", saleCashRegisterMovement.getVatAmount());
 		
 	}
 	
