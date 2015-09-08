@@ -56,6 +56,9 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 
 	@Override
 	public void process(SaleProduct saleProduct) {
+		logTrace("Processing Sale Product {} , Completed={} Current={} Auto compute={}", 
+				saleProduct.getProduct().getCode(),Boolean.TRUE.equals(saleProduct.getSale().getCompleted())
+				,saleProduct.getValueAddedTax(),Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax()));
 		//logDebug("Update sale product {} calculated data",saleProduct.getProduct().getCode());
 		if(saleProduct.getProduct().getPrice()==null){
 		
@@ -80,6 +83,7 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 			}
 			*/
 			if(Boolean.TRUE.equals(saleProduct.getSale().getCompleted())){
+				//logTrace("Before computing VAT. Current={} ,Auto compute={}",saleProduct.getValueAddedTax(),Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax()));
 				//if(saleProduct.getValueAddedTax()==null)
 				saleProduct.setPrice(saleProduct.getPrice().add(saleProduct.getCommission()));
 				if(Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax())){
@@ -87,6 +91,7 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 				}else if(saleProduct.getValueAddedTax()==null)
 					saleProduct.setValueAddedTax(BigDecimal.ZERO);
 				saleProduct.setTurnover(accountingPeriodBusiness.computeTurnover(saleProduct.getSale().getAccountingPeriod(), saleProduct.getPrice(),saleProduct.getValueAddedTax()));
+				//logIdentifiable("Completed",saleProduct);
 			}else{
 				if(saleProduct.getValueAddedTax()==null){
 					saleProduct.setValueAddedTax(BigDecimal.ZERO);
@@ -99,11 +104,13 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 			}else{
 				//TODO price should be updated????
 				saleProduct.setPrice(saleProduct.getPrice().add(saleProduct.getValueAddedTax()));			
-				logDebug("Sale product {} price updated to {}",saleProduct.getProduct().getCode(),saleProduct.getPrice());
+				logTrace("Sale product {} price updated to {}",saleProduct.getProduct().getCode(),saleProduct.getPrice());
 			}
 			
-			logDebug("Sale product {} data calculated | P={} VAT={} T={}",saleProduct.getProduct().getCode(),saleProduct.getPrice(),
-					saleProduct.getValueAddedTax(),saleProduct.getTurnover());
+			//logDebug("Sale product {} data calculated | P={} VAT={} T={}",saleProduct.getProduct().getCode(),saleProduct.getPrice(),
+			//		saleProduct.getValueAddedTax(),saleProduct.getTurnover());
+			
+			logIdentifiable("Sale product processed",saleProduct);
 		}
 	}
 	

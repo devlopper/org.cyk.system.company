@@ -73,6 +73,12 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	/**/
 	
+	@Override
+	public String getLogMessage() {
+		return String.format(DEBUG_FORMAT,cost,turnover,valueAddedTax,balance.getValue(),balance.getCumul(),identifier,computedIdentifier,completed,done
+				,customer==null?"":customer.getRegistration().getCode(),autoComputeValueAddedTax);
+	}
+	
 	/**/
 	
 	public static final String FIELD_DONE = "done";
@@ -85,4 +91,6 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	public static final String FIELD_TURNOVER = "turnover";
 	public static final String FIELD_VALUE_ADDED_TAX = "valueAddedTax";
 	public static final String FIELD_BALANCE = "balance";
+	
+	private static final String DEBUG_FORMAT = "COST=%s TURN=%s VAT=%s BAL=(%s,%s) ID=%s CID=%s COMPLETED=%s DONE=%s CUST=%s AUTO_COMPUTE_VAT=%s";
 }

@@ -6,7 +6,6 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
@@ -20,20 +19,18 @@ import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStockSearchCriteria;
-import org.cyk.system.root.business.api.BusinessException;
 import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParameters;
 import org.cyk.system.root.model.party.person.Person;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Assert;
-import org.junit.Test;
 
 public class SaleStockBusinessIT extends AbstractBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
 
-    private static final Boolean PRINT_REPORT = Boolean.TRUE;
+    private static final Boolean PRINT_REPORT = Boolean.FALSE;
     
     @Deployment
     public static Archive<?> createDeployment() {
@@ -103,7 +100,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	SaleStockInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 1),person, customer1,"A", "1000", "0", "3",print, "1000", "0", "0","0");
     	companyBusinessTestHelper.setSaleAutoCompleted(value);
     	
-    	companyBusinessTestHelper.complete(date(2015, 1, 1),person, saleStockInput, "0",print, "1000", "0", "1000","1000");
+    	companyBusinessTestHelper.complete(date(2015, 1, 1),person, saleStockInput, "0",print, "1000", "153", "1000","1000");
     	
     	companyBusinessTestHelper.taking(date(2015, 1, 2),person, saleStockInput, "3", "1000",print, "0", "0","0");
     	

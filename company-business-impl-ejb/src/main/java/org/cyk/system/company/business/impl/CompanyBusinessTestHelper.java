@@ -217,6 +217,7 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
 	
 	public SaleStockInput complete(Date date,Person person,SaleStockInput saleStockInput,String commission,Boolean printPos,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
 		saleStockInput = saleStockInputBusiness.load(saleStockInput.getIdentifier());
+		saleStockInput.getSale().setAutoComputeValueAddedTax(Boolean.TRUE);
 		saleStockInput.getSale().getSaleProducts().iterator().next().setCommission(new BigDecimal(commission));
 		saleBusiness.applyChange(saleStockInput.getSale(), saleStockInput.getSale().getSaleProducts().iterator().next());
 		SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person);

@@ -68,13 +68,14 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Sale newInstance(Person person) {
-		logDebug("Instanciate sale.");
+		logInstanciate();
 		Sale sale = new Sale();
 		sale.setAccountingPeriod(accountingPeriodBusiness.findCurrent());
 		sale.setCashier(cashierBusiness.findByPerson(person));
 		sale.setAutoComputeValueAddedTax(sale.getAccountingPeriod().getValueAddedTaxRate().signum()!=0);
 		exceptionUtils().exception(sale.getCashier()==null, "exception.sale.cashier.null");
-		logDebug("Sale instanciated. Cashier={} VAT in={}.",sale.getCashier().getIdentifier(),Boolean.TRUE.equals(sale.getAccountingPeriod().getValueAddedTaxIncludedInCost()));
+		logInstanceCreated(sale);
+		//logDebug("Sale instanciated. Cashier={} VAT in={}.",sale.getCashier().getIdentifier(),Boolean.TRUE.equals(sale.getAccountingPeriod().getValueAddedTaxIncludedInCost()));
 		return sale;
 	}
 	
@@ -126,7 +127,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override
 	public Sale create(Sale sale) {
-		logDebug("Create Sale");
+		logIdentifiable("Create Sale",sale);
 		if(Boolean.TRUE.equals(AUTO_SET_SALE_DATE))
 			if(sale.getDate()==null)
 				sale.setDate(universalTimeCoordinated());
@@ -136,7 +137,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		if(Boolean.TRUE.equals(sale.getCompleted())){
 			save(sale,Boolean.TRUE);
 		}else{
-			logDebug("Sale not yet completed");
 			sale = super.create(sale);
 			for(SaleProduct saleProduct : sale.getSaleProducts()){
 				saleProduct.setSale(sale);
@@ -148,7 +148,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 				.getSaleConfiguration().getSaleIdentifierGenerator()));
 		sale = dao.update(sale);
 		//notifyCrudDone(Crud.CREATE, sale);
-		logDebugSale("Sale created succesfully",sale);
+		logIdentifiable("Sale created succesfully",sale);
 		return sale;
 	}
 	
@@ -223,7 +223,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		}else{
 			
 		}
-		logDebugSale("Sale data computed successfully", sale);
+		logIdentifiable("Sale data computed successfully", sale);
 	}
 	
 	@Override
@@ -257,7 +257,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		if(Boolean.TRUE.equals(produceReport))
 			createReport(previous,new InvoiceParameters(sale, null, saleCashRegisterMovement));
 		update(sale);
-		logDebugSale("Sale completed succesfully",sale);
+		logIdentifiable("Sale completed succesfully",sale);
 	}
 	
 	@Override
@@ -330,11 +330,5 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	/**/
-
-	private void logDebugSale(String message,Sale sale){
-		logDebug("{}. (Done={}) C={} B={} VAT={} T={}",message,sale.getDone(),sale.getCost(),sale.getBalance(),
-				sale.getValueAddedTax(),sale.getTurnover());
-	}
-
 	
 }

@@ -25,6 +25,11 @@ public class Balance extends AbstractModelElement implements Serializable {
 		return toString();
 	}
 	
+	@Override
+	public String toString() {
+		return value+(cumul==null?"":","+cumul);
+	}
+	
 	/**/
 	
 	public static final String FIELD_VALUE = "value";

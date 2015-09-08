@@ -45,5 +45,14 @@ public class SaleProduct extends AbstractIdentifiable implements Serializable {
 	public String toString() {
 		return getUiString();
 	}
+	
+	@Override
+	public String getLogMessage() {
+		return String.format(DEBUG_FORMAT,price,turnover,valueAddedTax,quantity,commission,reduction,product.getCode(),sale.getComputedIdentifier());
+	}
+	
+	/**/
+	
+	private static final String DEBUG_FORMAT = "PRICE=%s TURN=%s VAT=%s Q=%s COM=%s R=%s PROD=%s SALE=%s";
 
 }
