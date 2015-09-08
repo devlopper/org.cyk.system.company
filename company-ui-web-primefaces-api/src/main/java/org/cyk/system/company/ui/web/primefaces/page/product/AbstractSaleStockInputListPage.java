@@ -68,7 +68,6 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 				CompanyReportRepository.getInstance().getParameterSaleStockReportInput());
 		SaleStocksDetails details = saleStockInputBusiness.computeByCriteria(criteria);
 		
-		debug(details);
 		table.setColumnFooter(SaleStockReportTableRow.FIELD_NUMBER_OF_GOODS, details.getIn());
 		table.setColumnFooter(SaleStockReportTableRow.FIELD_REMAINING_NUMBER_OF_GOODS, details.getRemaining());
 		table.setColumnFooter(SaleStockReportTableRow.FIELD_AMOUNT, details.getSalesDetails().getCost());

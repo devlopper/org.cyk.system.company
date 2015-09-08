@@ -127,7 +127,7 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 		if(!BalanceType.ZERO.equals(balanceType)){
 			table.getColumn("balance").setFooter(numberBusiness.format(results.getBalance()));
 		}
-		debug(criteria.getFromDateSearchCriteria());
+		
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterFromDate(),criteria.getFromDateSearchCriteria().getPreparedValue().getTime());
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterToDate(),criteria.getToDateSearchCriteria().getPreparedValue().getTime());
 		if(balanceType!=null)
