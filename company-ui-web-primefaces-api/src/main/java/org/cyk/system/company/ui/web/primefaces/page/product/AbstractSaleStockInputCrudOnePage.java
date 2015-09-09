@@ -225,7 +225,7 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 			identifiable.getSale().setAutoComputeValueAddedTax(valueAddedTaxable);
 			identifiable.getSale().setComments(comments);
 			if(Boolean.TRUE.equals(commissionInPercentage)){
-				saleProduct.setCommission(numberBusiness.computePercentage(identifiable.getSale().getCost(),commission));
+				saleProduct.setCommission(numberBusiness.computePercentage(price,commission));
 			}else
 				saleProduct.setCommission(commission);
 			identifiable.getTangibleProductStockMovement().setQuantity(quantity);
