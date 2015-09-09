@@ -123,10 +123,12 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 	private void updateOutputTotalCost(){
 		BigDecimal price = bigDecimalValue("price");
 		BigDecimal commission = bigDecimalValue("commission");
+		logTrace("Update total cost. Price={} , Commission={}",price,commission);
 		BigDecimal totalCost = price.add(numberBusiness.computePercentage(price,commission));
 		setFieldValue("totalCost", totalCost);
 		BigDecimal valueAddedTax = accountingPeriodBusiness.computeValueAddedTax(accountingPeriod, totalCost);
 		setFieldValue("valueAddedTax", valueAddedTax);
+		logTrace("Total cost updated {}",totalCost);
 	}
 	
 	@SuppressWarnings("unchecked")
