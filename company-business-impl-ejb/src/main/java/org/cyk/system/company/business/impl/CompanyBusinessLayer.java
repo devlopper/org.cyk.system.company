@@ -154,57 +154,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	protected void initialisation() {
 		INSTANCE = this;
 		super.initialisation();
+		/*
 		registerResourceBundle("org.cyk.system.company.model.resources.entity", getClass().getClassLoader());
 		registerResourceBundle("org.cyk.system.company.model.resources.message", getClass().getClassLoader());
 		registerResourceBundle("org.cyk.system.company.business.impl.resources.message", getClass().getClassLoader());
-		
+		*/
 		pointOfSaleInvoiceReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.invoice");
 		pointOfSalePaymentReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.paymentreceipt");
-		/*
-		StringValueGenerator<Sale> saleStringValueGenerator = new StringValueGenerator<Sale>(SALE_IDENTIFIER,"", Sale.class);
-		applicationBusiness.registerValueGenerator((ValueGenerator<?, ?>) saleStringValueGenerator);
-		saleStringValueGenerator.setPrefix("Pref");
-		saleStringValueGenerator.setSuffix("Suff");
-		saleStringValueGenerator.setMethod(new GenerateMethod<Sale, String>() {
-			@Override
-			public String execute(Sale sale) {
-				return StringUtils.leftPad(sale.getIdentifier().toString(), size, padChar);
-			}
-		});*/
-		/*
-		StringValueGenerator<CashRegisterMovement> cashRegisterMovementStringValueGenerator = new StringValueGenerator<CashRegisterMovement>(CASH_MOVEMENT_IDENTIFIER,"", CashRegisterMovement.class);
-		applicationBusiness.registerValueGenerator((ValueGenerator<?, ?>) cashRegisterMovementStringValueGenerator);
-		cashRegisterMovementStringValueGenerator.setPrefix("Paie");
-		cashRegisterMovementStringValueGenerator.setMethod(new GenerateMethod<CashRegisterMovement, String>() {
-			@Override
-			public String execute(CashRegisterMovement cashRegisterMovement) {
-				return cashRegisterMovement.getIdentifier().toString();
-			}
-		});*/
-						
-		/*
-		AbstractIdentifiableLifeCyleEventListener.MAP.put(Sale.class, new LongIdentifiableLifeCyleEventAdapter(){
-			private static final long serialVersionUID = 1695079730020340429L;
-			@Override
-			public void onPrePersist(AbstractIdentifiable identifiable) {
-				((Sale)identifiable).setIdentificationNumber(
-						applicationBusiness.generateStringValue(SALE_IDENTIFICATION_NUMBER,(Sale)identifiable)
-						);
-				
-			}
-		});
-		
-		AbstractIdentifiableLifeCyleEventListener.MAP.put(CashRegisterMovement.class, new LongIdentifiableLifeCyleEventAdapter(){
-			private static final long serialVersionUID = 1695079730020340429L;
-			@Override
-			public void onPrePersist(AbstractIdentifiable identifiable) {
-				((CashRegisterMovement)identifiable).setIdentificationNumber(
-						applicationBusiness.generateStringValue(CASH_MOVEMENT_IDENTIFICATION_NUMBER,(CashRegisterMovement)identifiable)
-						);
-				
-			}
-		});
-		*/
 	}
 	
 	
