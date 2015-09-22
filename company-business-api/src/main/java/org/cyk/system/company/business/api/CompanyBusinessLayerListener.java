@@ -25,6 +25,13 @@ public interface CompanyBusinessLayerListener {
 	StringGenerator getCashRegisterMovementIdentifierGenerator();
 	
 	/**/
+	/*
+	Collection<Employee> getEmployees();
+	Employee getManager();
+	
+	UserAccount getUserAccount(Person person);
+	*/
+	/**/
 	
 	String SALE_IDENTIFIER = "SALE_IDENTIFIER";
 	String CASH_MOVEMENT_IDENTIFIER = "CASH_MOVEMENT_IDENTIFIER";
