@@ -46,6 +46,7 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 	
 	protected FormOneData<Details> details;
 	protected Table<OutputDetails> outputsTable;
+	protected Boolean canWithdraw=Boolean.TRUE;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -97,7 +98,7 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		Integer balance = identifiable.getSale().getBalance().getValue().compareTo(BigDecimal.ZERO);
 		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null);
 		contextualMenu.setLabel(contentTitle); 
-		if(Boolean.TRUE.equals(identifiable.getSale().getDone()) && balance!=0){
+		if(Boolean.TRUE.equals(identifiable.getSale().getDone()) && balance!=0 && Boolean.TRUE.equals(canWithdraw)){
 			Collection<Parameter> parameters = Arrays.asList(new Parameter(uiManager.keyFromClass(SaleStockInput.class), identifiable.getIdentifier()),
 					new Parameter(webManager.getRequestParameterPreviousUrl(), url));
 			contextualMenu.addChild("command.widthdraw", null, "saleStockOutputEditView", parameters);	
