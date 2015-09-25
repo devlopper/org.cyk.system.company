@@ -39,6 +39,8 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
+	public static final String COMMANDABLE_WITHDRAW_IDENTIFIER = "withdraw";
+	
 	@Inject protected SaleStockInputBusiness saleStockInputBusiness;
 	
 	@Inject protected SaleBusiness saleBusiness;
@@ -46,7 +48,6 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 	
 	protected FormOneData<Details> details;
 	protected Table<OutputDetails> outputsTable;
-	protected Boolean canWithdraw=Boolean.TRUE;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -96,12 +97,13 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 	@Override
 	protected Collection<UICommandable> contextualCommandables() {
 		Integer balance = identifiable.getSale().getBalance().getValue().compareTo(BigDecimal.ZERO);
-		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null);
+		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null),c;
 		contextualMenu.setLabel(contentTitle); 
-		if(Boolean.TRUE.equals(identifiable.getSale().getDone()) && balance!=0 && Boolean.TRUE.equals(canWithdraw)){
+		if(Boolean.TRUE.equals(identifiable.getSale().getDone()) && balance!=0){
 			Collection<Parameter> parameters = Arrays.asList(new Parameter(uiManager.keyFromClass(SaleStockInput.class), identifiable.getIdentifier()),
 					new Parameter(webManager.getRequestParameterPreviousUrl(), url));
-			contextualMenu.addChild("command.widthdraw", null, "saleStockOutputEditView", parameters);	
+			c = contextualMenu.addChild("command.widthdraw", null, "saleStockOutputEditView", parameters);	
+			c.setIdentifier(COMMANDABLE_WITHDRAW_IDENTIFIER);
 		}
 		
 		UICommandable printReceipt = UIProvider.getInstance().createCommandable("command.see.invoice", null);
