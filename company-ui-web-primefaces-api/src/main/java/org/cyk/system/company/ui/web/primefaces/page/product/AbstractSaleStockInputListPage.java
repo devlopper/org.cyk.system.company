@@ -13,14 +13,9 @@ import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
-import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStocksDetails;
-import org.cyk.ui.api.command.CommandAdapter;
-import org.cyk.ui.api.command.UICommand;
-import org.cyk.ui.api.model.table.Row;
-import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.Commandable;
 
 @Getter @Setter
@@ -44,7 +39,8 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
-
+		//TODO to be deleted : auto called by super
+		/*
 		table.getOpenRowCommandable().getCommand().getCommandListeners().add(new CommandAdapter(){
 			private static final long serialVersionUID = 1120566504648934547L;
 			@Override
@@ -54,7 +50,7 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 				WebNavigationManager.getInstance().redirectTo(businessEntityInfos.getUiConsultViewId(), 
 						new Object[]{webManager.getRequestParameterIdentifiable(),sale.getIdentifier().toString()});
 			}
-		});
+		});*/
 		
 		((Commandable)table.getOpenRowCommandable()).getButton().setRendered(Boolean.TRUE);
 		((Commandable)table.getAddRowCommandable()).getButton().setRendered(Boolean.TRUE);

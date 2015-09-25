@@ -17,13 +17,8 @@ import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.model.product.SalesDetails;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.company.ui.web.primefaces.model.SaleQueryResultFormModel;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
-import org.cyk.ui.api.command.CommandAdapter;
-import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.model.table.ColumnAdapter;
-import org.cyk.ui.api.model.table.Row;
-import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessQueryPage;
 
@@ -78,7 +73,8 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 		
 		((Commandable)table.getOpenRowCommandable()).getButton().setRendered(Boolean.TRUE);
 		((Commandable)table.getRemoveRowCommandable()).getButton().setRendered(Boolean.FALSE);
-		
+		//TODO to be deleted : auto called by super
+		/*
 		table.getOpenRowCommandable().getCommand().getCommandListeners().add(new CommandAdapter(){
 			private static final long serialVersionUID = 1120566504648934547L;
 			@Override
@@ -89,7 +85,7 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 						new Object[]{webManager.getRequestParameterIdentifiable(),sale.getIdentifier().toString()});
 			}
 		});
-		
+		*/
 		table.setShowToolBar(Boolean.TRUE);
 		
 		table.setShowEditColumn(Boolean.FALSE);
