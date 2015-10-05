@@ -37,6 +37,7 @@ public class SaleReport extends AbstractGeneratable<SaleReport> implements Seria
 
 	@Override
 	public void generate() {
+		accountingPeriod.getCompany().setGenerateImage(Boolean.TRUE);
 		title = "Facture";
 		identifier=RandomStringUtils.randomNumeric(8);
 		cashRegisterIdentifier = RandomStringUtils.randomNumeric(8);
