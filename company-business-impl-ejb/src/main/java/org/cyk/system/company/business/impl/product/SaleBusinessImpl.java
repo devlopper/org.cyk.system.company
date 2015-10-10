@@ -39,6 +39,7 @@ import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDa
 import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.cyk.system.company.persistence.api.product.SaleProductDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.party.person.Person;
 
@@ -304,7 +305,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public ReportBasedOnTemplateFile<SaleReport> findReport(Collection<Sale> sales) {
-		return CompanyBusinessLayer.getInstance().createReport(CompanyBusinessLayer.getInstance().getPointOfSaleInvoiceReportName(),
+		return RootBusinessLayer.getInstance().createReport(CompanyBusinessLayer.getInstance().getPointOfSaleInvoiceReportName(),
 				sales.iterator().next().getReport(), null, null,null);//TODO many receipt print must be handled
 	}
 	
