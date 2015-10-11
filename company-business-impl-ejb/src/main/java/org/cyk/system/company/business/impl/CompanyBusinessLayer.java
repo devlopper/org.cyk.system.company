@@ -323,19 +323,22 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 				saleCashRegisterMovement.getReport(), 
 				saleReport,saleCashRegisterMovement.getSale().getAccountingPeriod().getPointOfSaleReportFile(),
 				pointOfSaleReportExtension);
+		/*
 		if(saleCashRegisterMovement.getReport()==null)
 			saleCashRegisterMovement.setReport(new File());
-		RootBusinessLayer.getInstance().persistReport(saleCashRegisterMovement.getReport(), report);
+		*/
+		RootBusinessLayer.getInstance().persistReport(saleCashRegisterMovement, report,null);
 	}
 	
 	public void persistPointOfSale(Sale sale,SaleReport saleReport){
 		ReportBasedOnTemplateFile<SaleReport> report = RootBusinessLayer.getInstance().createReport(pointOfSaleInvoiceReportName+sale.getIdentifier(),
 				sale.getReport(), saleReport,sale.getAccountingPeriod().getPointOfSaleReportFile(),
 				pointOfSaleReportExtension);
+		/*
 		if(sale.getReport()==null)
 			sale.setReport(new File());
-		
-		RootBusinessLayer.getInstance().persistReport(sale.getReport(), report);
+		*/
+		RootBusinessLayer.getInstance().persistReport(sale, report,null);
 	}
 	
 	/*
