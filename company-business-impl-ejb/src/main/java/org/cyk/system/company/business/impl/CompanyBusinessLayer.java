@@ -10,10 +10,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.SaleReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
@@ -74,7 +70,6 @@ import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
-import org.cyk.system.root.model.file.report.AbstractReport;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.geography.ContactCollection;
 import org.cyk.system.root.model.geography.PhoneNumber;
@@ -87,6 +82,9 @@ import org.cyk.system.root.model.time.Period;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.joda.time.DateTime;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER)
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
@@ -321,24 +319,29 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	}
 	
 	public void persistPointOfSale(SaleCashRegisterMovement saleCashRegisterMovement,SaleReport saleReport){
-		ReportBasedOnTemplateFile<SaleReport> report = createReport(pointOfSalePaymentReportName+saleCashRegisterMovement.getCashRegisterMovement().getIdentifier(),
+		ReportBasedOnTemplateFile<SaleReport> report = RootBusinessLayer.getInstance().createReport(pointOfSalePaymentReportName+saleCashRegisterMovement.getCashRegisterMovement().getIdentifier(),
 				saleCashRegisterMovement.getReport(), 
 				saleReport,saleCashRegisterMovement.getSale().getAccountingPeriod().getPointOfSaleReportFile(),
 				pointOfSaleReportExtension);
+		/*
 		if(saleCashRegisterMovement.getReport()==null)
 			saleCashRegisterMovement.setReport(new File());
-		persistReport(saleCashRegisterMovement.getReport(), report);
+		*/
+		RootBusinessLayer.getInstance().persistReport(saleCashRegisterMovement, report,null);
 	}
 	
 	public void persistPointOfSale(Sale sale,SaleReport saleReport){
-		ReportBasedOnTemplateFile<SaleReport> report = createReport(pointOfSaleInvoiceReportName+sale.getIdentifier(),
+		ReportBasedOnTemplateFile<SaleReport> report = RootBusinessLayer.getInstance().createReport(pointOfSaleInvoiceReportName+sale.getIdentifier(),
 				sale.getReport(), saleReport,sale.getAccountingPeriod().getPointOfSaleReportFile(),
 				pointOfSaleReportExtension);
+		/*
 		if(sale.getReport()==null)
 			sale.setReport(new File());
-		
-		persistReport(sale.getReport(), report);
+		*/
+		RootBusinessLayer.getInstance().persistReport(sale, report,null);
 	}
+	
+	/*
 	
 	private void persistReport(File file,AbstractReport<?> report){
 		file.setBytes(report.getBytes());
@@ -351,12 +354,12 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			//logDebug("Report updated");
 		}
 	}
-	
+	/*
 	public ReportBasedOnTemplateFile<SaleReport> createReport(String name,File file,SaleReport saleReport,File template,String fileExtension){
 		ReportBasedOnTemplateFile<SaleReport> report = new ReportBasedOnTemplateFile<SaleReport>();
 		report.setTitle(name);
 		report.setFileExtension(StringUtils.isBlank(fileExtension)?pointOfSaleReportExtension:fileExtension);
-		//report.setFileName(RootBusinessLayer.getInstance().buildReportFileName(report) /*pointOfSaleReportName*/);
+		//report.setFileName(RootBusinessLayer.getInstance().buildReportFileName(report) );
 		RootBusinessLayer.getInstance().prepareReport(report);
 		
 		if(saleReport==null){
@@ -367,7 +370,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			reportBusiness.build(report, Boolean.FALSE);
 		}
 		return report;
-	}
+	}*/
 	
 	/**/
 	
