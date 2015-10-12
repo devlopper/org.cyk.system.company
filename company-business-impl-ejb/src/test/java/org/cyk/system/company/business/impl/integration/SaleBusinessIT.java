@@ -2,7 +2,6 @@ package org.cyk.system.company.business.impl.integration;
 
 import java.math.BigDecimal;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
@@ -21,7 +20,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
 
-    private static final Boolean PRINT = Boolean.FALSE;
+    private static final Boolean PRINT = Boolean.TRUE;
     
     @Deployment
     public static Archive<?> createDeployment() {
@@ -68,7 +67,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	//sellAndPayInOneWithNegativeBalance(person);
     	//sellAndPayInMany(person);
     	
-    	computeByCriterias();
+    	//computeByCriterias();
     	
     	/*
     	searchByCriterias();

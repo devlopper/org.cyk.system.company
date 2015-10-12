@@ -30,7 +30,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
 
-    private static final Boolean PRINT_REPORT = Boolean.FALSE;
+    private static final Boolean PRINT_REPORT = Boolean.TRUE;
     
     @Deployment
     public static Archive<?> createDeployment() {

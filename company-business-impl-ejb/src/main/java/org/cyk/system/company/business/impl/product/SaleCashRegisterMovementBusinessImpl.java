@@ -25,7 +25,7 @@ import org.cyk.system.company.persistence.api.product.CustomerDao;
 import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.impl.file.report.ReportManager;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.party.person.Person;
 
@@ -38,6 +38,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	@Inject private CustomerDao customerDao;
 	@Inject private CashRegisterMovementBusiness cashRegisterMovementBusiness;
 	@Inject private CashierBusiness cashierBusiness;
+	@Inject private ReportManager reportManager;
 
 	@Inject
 	public SaleCashRegisterMovementBusinessImpl(SaleCashRegisterMovementDao dao) {
@@ -109,7 +110,8 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		
 		if(Boolean.TRUE.equals(generatePos)){
 			SaleReport saleReport = CompanyBusinessLayer.getInstance().getSaleReportProducer().producePaymentReceipt(previous,new ReceiptParameters(null,saleCashRegisterMovement));
-			CompanyBusinessLayer.getInstance().persistPointOfSale(saleCashRegisterMovement, saleReport); 
+			reportManager.buildBinaryContent(saleCashRegisterMovement, saleReport
+					,saleCashRegisterMovement.getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE); //(saleCashRegisterMovement, saleReport); 
 		}
 		return saleCashRegisterMovement;
 	}
@@ -142,8 +144,8 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public ReportBasedOnTemplateFile<SaleReport> findReport(Collection<SaleCashRegisterMovement> saleCashRegisterMovements) {
-		return RootBusinessLayer.getInstance().createReport(CompanyBusinessLayer.getInstance().getPointOfSalePaymentReportName(),
-				saleCashRegisterMovements.iterator().next().getReport(), null, null,null);//TODO many receipt print must be handled
+		return reportManager.buildBinaryContent(saleCashRegisterMovements.iterator().next().getReport(),
+				CompanyBusinessLayer.getInstance().getPointOfSalePaymentReportName());//TODO many receipt print must be handled
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)

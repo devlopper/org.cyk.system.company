@@ -139,12 +139,16 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
     	saleBusiness.create(sale,saleCashRegisterMovement);
     	
     	sale = saleBusiness.load(sale.getIdentifier());
-    	assertBigDecimalEquals("Cost", expectedCost, sale.getCost());
-    	assertBigDecimalEquals("VAT", expectedVat, sale.getValueAddedTax());
-    	assertBigDecimalEquals("Balance", expectedBalance, sale.getBalance().getValue());
-    	assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, sale.getBalance().getCumul());
-    	   	
     	
+    	if(expectedCost!=null)
+    		assertBigDecimalEquals("Cost", expectedCost, sale.getCost());
+    	if(expectedVat!=null)
+    		assertBigDecimalEquals("VAT", expectedVat, sale.getValueAddedTax());
+    	if(expectedBalance!=null)
+    		assertBigDecimalEquals("Balance", expectedBalance, sale.getBalance().getValue());
+    	if(expectedCumulBalance!=null)
+    		assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, sale.getBalance().getCumul());
+    	   	
     	if(Boolean.TRUE.equals(printPos)){
     		writeReport(saleBusiness.findReport(sale));
     		pause(1000);
@@ -203,13 +207,22 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
     		//writeReport(saleCashRegisterMovementBusiness.findReport(saleCashRegisterMovement));
     	}
     	
-    	saleStockInput = saleStockInputBusiness.load(saleStockInput.getIdentifier());
-    	assertBigDecimalEquals("Cost", expectedCost, saleStockInput.getSale().getCost());
-    	assertBigDecimalEquals("VAT", expectedVat, saleStockInput.getSale().getValueAddedTax());
-    	assertBigDecimalEquals("Balance", expectedBalance, saleStockInput.getSale().getBalance().getValue());
-    	assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, saleStockInput.getSale().getBalance().getCumul());
+    	assertSaleStockInput(saleStockInput, expectedCost, expectedVat, expectedBalance, expectedCumulBalance);
+    	
     	return saleStockInput;
     }
+	
+	private void assertSaleStockInput(SaleStockInput saleStockInput,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
+		saleStockInput = saleStockInputBusiness.load(saleStockInput.getIdentifier());
+		if(expectedCost!=null)
+    		assertBigDecimalEquals("Cost", expectedCost, saleStockInput.getSale().getCost());
+    	if(expectedVat!=null)
+    		assertBigDecimalEquals("VAT", expectedVat, saleStockInput.getSale().getValueAddedTax());
+    	if(expectedBalance!=null)
+    		assertBigDecimalEquals("Balance", expectedBalance, saleStockInput.getSale().getBalance().getValue());
+    	if(expectedCumulBalance!=null)
+    		assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, saleStockInput.getSale().getBalance().getCumul());
+	}
 	
 	public SaleStockInput drop(Date date,Person person,Customer customer,String externalIdentifier,String cost,String commission,String quantity,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
 		return drop(date, person, customer, externalIdentifier, cost, commission, quantity,Boolean.FALSE ,expectedCost, expectedVat, expectedBalance, expectedCumulBalance);
@@ -227,11 +240,8 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
     	if(Boolean.TRUE.equals(printPos))
     		writeReport(saleBusiness.findReport(saleStockInput.getSale()));
     	
-    	saleStockInput = saleStockInputBusiness.load(saleStockInput.getIdentifier());
-    	assertBigDecimalEquals("Cost", expectedCost, saleStockInput.getSale().getCost());
-    	assertBigDecimalEquals("VAT", expectedVat, saleStockInput.getSale().getValueAddedTax());
-    	assertBigDecimalEquals("Balance", expectedBalance, saleStockInput.getSale().getBalance().getValue());
-    	assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, saleStockInput.getSale().getBalance().getCumul());
+    	assertSaleStockInput(saleStockInput, expectedCost, expectedVat, expectedBalance, expectedCumulBalance);
+    	
     	return saleStockInput;
 	}
     
@@ -247,9 +257,12 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
     	
     	saleStockOutput = saleStockOutputBusiness.load(saleStockOutput.getIdentifier());
     	//Matchers
-    	assertBigDecimalEquals("Remaining number of goods", expectedRemainingGoods, saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods());
-    	assertBigDecimalEquals("Balance", expectedBalance, saleStockOutput.getSaleStockInput().getSale().getBalance().getValue());
-    	assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, saleStockOutput.getSaleCashRegisterMovement().getBalance().getCumul());
+    	if(expectedRemainingGoods!=null)
+    		assertBigDecimalEquals("Remaining number of goods", expectedRemainingGoods, saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods());
+    	if(expectedBalance!=null)
+    		assertBigDecimalEquals("Balance", expectedBalance, saleStockOutput.getSaleStockInput().getSale().getBalance().getValue());
+    	if(expectedCumulBalance!=null)
+    		assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, saleStockOutput.getSaleCashRegisterMovement().getBalance().getCumul());
     }
     
     public void taking(Date date,Person person,SaleStockInput saleStockInput,String quantity,String paid,String expectedRemainingGoods,String expectedBalance,String expectedCumulBalance){

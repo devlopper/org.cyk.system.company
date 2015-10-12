@@ -32,6 +32,7 @@ import org.cyk.system.company.persistence.api.product.SaleStockInputDao;
 import org.cyk.system.company.persistence.api.product.SaleStockOutputDao;
 import org.cyk.system.root.business.api.event.EventBusiness;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.impl.file.report.ReportManager;
 import org.cyk.system.root.model.event.Event;
 import org.cyk.system.root.model.event.EventParticipation;
 import org.cyk.system.root.model.party.person.Person;
@@ -49,6 +50,7 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private CashierBusiness cashierBusiness;
 	@Inject private EventBusiness eventBusiness;
+	@Inject private ReportManager reportManager;
 	
 	@Inject private SaleStockOutputDao saleStockOutputDao;
 	@Inject private CustomerDao customerDao;
@@ -98,7 +100,7 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 		}
 		
 		SaleReport saleReport = reportProducer.produceInvoice(previous,new InvoiceParameters(saleStockInput, saleCashRegisterMovement));
-		CompanyBusinessLayer.getInstance().persistPointOfSale(saleStockInput.getSale(), saleReport); 
+		reportManager.buildBinaryContent(saleStockInput.getSale(), saleReport, saleStockInput.getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE);
 	
 		create(saleStockInput);
 		
@@ -121,7 +123,7 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 		InvoiceParameters previous = new InvoiceParameters(saleStockInput, saleCashRegisterMovement);
 		
 		SaleReport saleReport = reportProducer.produceInvoice(previous,new InvoiceParameters(saleStockInput, saleCashRegisterMovement));
-		CompanyBusinessLayer.getInstance().persistPointOfSale(saleStockInput.getSale(), saleReport); 
+		reportManager.buildBinaryContent(saleStockInput.getSale(), saleReport, saleStockInput.getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE);
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
