@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
-import org.cyk.system.company.business.api.SaleReportProducer;
+import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
@@ -137,7 +137,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private RoleBusiness roleBusiness;
 	@Inject private ProductCategoryBusiness productCategoryBusiness;
 	@Inject private StringGeneratorBusiness stringGeneratorBusiness;
-	@Getter @Setter private SaleReportProducer saleReportProducer = new DefaultSaleReportProducer();
+	@Getter @Setter private CompanyReportProducer saleReportProducer = new DefaultSaleReportProducer();
 	//@Getter private Role roleSaleManager,roleStockManager,roleHumanResourcesManager,customerManager,productionManager;
 	@Getter @Setter private TangibleProduct tangibleProductSaleStock;
 	@Getter private IntangibleProduct intangibleProductSaleStock;

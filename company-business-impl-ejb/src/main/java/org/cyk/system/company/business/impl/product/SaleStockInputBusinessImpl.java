@@ -9,8 +9,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.cyk.system.company.business.api.SaleReportProducer;
-import org.cyk.system.company.business.api.SaleReportProducer.InvoiceParameters;
+import org.cyk.system.company.business.api.CompanyReportProducer;
+import org.cyk.system.company.business.api.CompanyReportProducer.InvoiceParameters;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness;
@@ -55,7 +55,7 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 	@Inject private SaleStockOutputDao saleStockOutputDao;
 	@Inject private CustomerDao customerDao;
 	
-	private SaleReportProducer reportProducer = CompanyBusinessLayer.getInstance().getSaleReportProducer();
+	private CompanyReportProducer reportProducer = CompanyBusinessLayer.getInstance().getSaleReportProducer();
 	
 	@Inject
 	public SaleStockInputBusinessImpl(SaleStockInputDao dao) {

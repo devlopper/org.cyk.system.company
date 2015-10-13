@@ -11,7 +11,7 @@ import lombok.Setter;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.cyk.system.company.model.accounting.AccountingPeriodReport;
-import org.cyk.system.root.model.file.report.LabelValueCollection;
+import org.cyk.system.root.model.file.report.LabelValueCollectionReport;
 import org.cyk.system.root.model.party.person.ActorReport;
 import org.cyk.utility.common.generator.AbstractGeneratable;
 
@@ -20,9 +20,9 @@ public class SaleReport extends AbstractGeneratable<SaleReport> implements Seria
 
 	private static final long serialVersionUID = 7332510774063666925L;
 
-	private LabelValueCollection headerInfos = new LabelValueCollection();
-	private LabelValueCollection paymentInfos = new LabelValueCollection();
-	private LabelValueCollection taxInfos = new LabelValueCollection();
+	private LabelValueCollectionReport headerInfos = new LabelValueCollectionReport();
+	private LabelValueCollectionReport paymentInfos = new LabelValueCollectionReport();
+	private LabelValueCollectionReport taxInfos = new LabelValueCollectionReport();
 	
 	private String title,identifier,cashRegisterIdentifier,date,numberOfProducts,cost,welcomeMessage,goodByeMessage;
 	private Boolean done;

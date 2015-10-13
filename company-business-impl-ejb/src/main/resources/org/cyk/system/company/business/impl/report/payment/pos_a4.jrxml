@@ -162,13 +162,13 @@
 	<field name="done" class="java.lang.Boolean">
 		<fieldDescription><![CDATA[done]]></fieldDescription>
 	</field>
-	<field name="headerInfos" class="org.cyk.system.root.model.file.report.LabelValueCollection">
+	<field name="headerInfos" class="org.cyk.system.root.model.file.report.LabelValueCollectionReport">
 		<fieldDescription><![CDATA[headerInfos]]></fieldDescription>
 	</field>
-	<field name="taxInfos" class="org.cyk.system.root.model.file.report.LabelValueCollection">
+	<field name="taxInfos" class="org.cyk.system.root.model.file.report.LabelValueCollectionReport">
 		<fieldDescription><![CDATA[taxInfos]]></fieldDescription>
 	</field>
-	<field name="paymentInfos" class="org.cyk.system.root.model.file.report.LabelValueCollection">
+	<field name="paymentInfos" class="org.cyk.system.root.model.file.report.LabelValueCollectionReport">
 		<fieldDescription><![CDATA[paymentInfos]]></fieldDescription>
 	</field>
 	<field name="title" class="java.lang.String">

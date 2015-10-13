@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.business.api.SaleReportProducer;
+import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
@@ -16,17 +16,16 @@ import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.api.time.TimeBusiness;
-import org.cyk.system.root.business.impl.AbstractRootBusinessBean;
-import org.cyk.system.root.model.file.report.LabelValue;
+import org.cyk.system.root.business.impl.AbstractRootReportProducer;
 import org.cyk.system.root.model.file.report.LabelValueCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractSaleReportProducer extends AbstractRootBusinessBean implements SaleReportProducer,Serializable {
+public abstract class AbstractCompanyReportProducer extends AbstractRootReportProducer implements CompanyReportProducer,Serializable {
 
 	private static final long serialVersionUID = 7126711234011563710L;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSaleReportProducer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCompanyReportProducer.class);
 	
 	protected LabelValueCollection currentLabelValueCollection;
 	
@@ -171,21 +170,7 @@ public abstract class AbstractSaleReportProducer extends AbstractRootBusinessBea
 		currentLabelValueCollection = collection;
 		currentLabelValueCollection.add(id,languageBusiness.findText(id), value);
 	}
-	protected void labelValue(String id,String value,Boolean condition){
-		labelValue(currentLabelValueCollection, id, value,condition);
-	}
-	
-	protected void labelValue(LabelValueCollection collection,String id,String value){
-		labelValue(collection, id, value,Boolean.TRUE);
-	}
-	protected void labelValue(String id,String value){
-		labelValue(currentLabelValueCollection,id, value);
-	}
-	
-	protected LabelValue getLabelValue(String id){
-		return currentLabelValueCollection.getById(id);
-	}
-	
+		
 	@Override
 	protected Logger __logger__() {
 		return LOGGER;

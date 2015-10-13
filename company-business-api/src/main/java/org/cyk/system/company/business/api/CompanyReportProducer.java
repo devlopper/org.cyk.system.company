@@ -8,11 +8,12 @@ import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
+import org.cyk.system.root.business.api.RootReportProducer;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public interface SaleReportProducer {
+public interface CompanyReportProducer extends RootReportProducer {
 
 	SaleReport produceInvoice(InvoiceParameters previousStateParameters,InvoiceParameters currentStateParameters);
 	
