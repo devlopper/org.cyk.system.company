@@ -18,7 +18,7 @@ public class CompanyReport extends PartyReport implements Serializable {
 	public void generate() {
 		super.generate();
 		if(Boolean.TRUE.equals(generateImage))
-			image = inputStream(provider.companyLogo());
+			image = inputStream(provider.companyLogo().getBytes());
 		name = provider.companyName();
 	}
 	
