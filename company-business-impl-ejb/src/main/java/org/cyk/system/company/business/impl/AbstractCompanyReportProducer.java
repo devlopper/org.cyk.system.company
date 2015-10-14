@@ -17,7 +17,6 @@ import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.api.time.TimeBusiness;
 import org.cyk.system.root.business.impl.AbstractRootReportProducer;
-import org.cyk.system.root.model.file.report.LabelValueCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,8 +25,6 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	private static final long serialVersionUID = 7126711234011563710L;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCompanyReportProducer.class);
-	
-	protected LabelValueCollection currentLabelValueCollection;
 	
 	@Override
 	public SaleReport produceInvoice(InvoiceParameters previousStateParameters,InvoiceParameters currentStateParameters) {
@@ -162,13 +159,6 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		labelValue(saleReport.getTaxInfos(),LABEL_VAT_RATE, format(sale.getAccountingPeriod().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
 		labelValue(LABEL_AMOUNT_VAT_EXCLUDED, format(sale.getCost().subtract(sale.getValueAddedTax()).setScale(2,RoundingMode.HALF_DOWN)));
 		labelValue(LABEL_VAT_AMOUNT, format(sale.getValueAddedTax().setScale(2,RoundingMode.HALF_DOWN)));
-	}
-	
-	protected void labelValue(LabelValueCollection collection,String id,String value,Boolean condition){
-		if(!Boolean.TRUE.equals(condition))
-			return;
-		currentLabelValueCollection = collection;
-		currentLabelValueCollection.add(id,languageBusiness.findText(id), value);
 	}
 		
 	@Override
