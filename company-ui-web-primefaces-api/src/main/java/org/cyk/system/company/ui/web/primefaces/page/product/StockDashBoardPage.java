@@ -42,7 +42,7 @@ public class StockDashBoardPage extends AbstractDashboardPage implements Seriali
 		Collection<StockDashBoardReportTableDetails> details = new ArrayList<>();
 		for(TangibleProduct tangibleProduct : tangibleProductBusiness.findAll())
 			details.add(new StockDashBoardReportTableDetails(tangibleProduct));
-		tangibleProductTable = createDetailsTable(StockDashBoardReportTableDetails.class, details, "model.entity.tangibleProduct");	
+		//tangibleProductTable = createDetailsTable(StockDashBoardReportTableDetails.class, details, "model.entity.tangibleProduct");	
 		tangibleProductTable.setTitle(null);
 		tangibleProductTable.setShowHeader(Boolean.FALSE);
 		tangibleProductTable.setShowFooter(Boolean.FALSE);

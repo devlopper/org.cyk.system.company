@@ -181,7 +181,7 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 		countPieModel = business.findNumberOfSalesPieModel(resultsCollection);
 		turnoverPieModel = business.findTurnoverPieModel(resultsCollection);
 		
-		productTable = createDetailsTable(ProductDetails.class, productDetailsCollection, "model.entity.product");	
+		//productTable = createDetailsTable(ProductDetails.class, productDetailsCollection, "model.entity.product");	
 		for(Row<ProductDetails> row : productTable.getRows())
 			if(row.getData().getNumberOfSales().equals(highestNumberOfSales))
 				row.getCascadeStyleSheet().addClass("highestNumberOfSales");

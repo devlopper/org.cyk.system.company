@@ -26,6 +26,7 @@ import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.UICommandable.CommandRequestType;
 import org.cyk.ui.api.command.UICommandable.Parameter;
 import org.cyk.ui.api.command.UICommandable.ViewType;
+import org.cyk.ui.api.model.AbstractOutputDetails;
 import org.cyk.ui.api.model.table.Row;
 import org.cyk.ui.api.model.table.RowAdapter;
 import org.cyk.ui.web.primefaces.Table;
@@ -53,12 +54,17 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		details = (FormOneData<Details>) createFormOneData(new Details(identifiable), Crud.READ);
-		configureDetailsForm(details);
+		details = (FormOneData<Details>) createDetailsForm(Details.class,identifiable, new DetailsFormOneDataConfigurationAdapter<>(SaleStockInput.class, Details.class));
 		
-		outputsTable = (Table<OutputDetails>) createTable(OutputDetails.class, null, null);
-		configureDetailsTable(outputsTable, "model.entity.payment");
-		
+		outputsTable = (Table<OutputDetails>) createDetailsTable(OutputDetails.class, new DetailsTableConfigurationAdapter<SaleStockOutput,OutputDetails>(SaleStockOutput.class, OutputDetails.class){
+			private static final long serialVersionUID = -2147502075453340486L;
+			@Override
+			public Collection<SaleStockOutput> getIdentifiables() {
+				return identifiable.getSaleStockOutputs();
+			}
+		});
+		//configureDetailsTable(outputsTable, "model.entity.payment");
+		/*
 		outputsTable.setShowAddRemoveColumn(Boolean.TRUE);
 		outputsTable.setShowOpenCommand(Boolean.TRUE);
 		
@@ -81,13 +87,15 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 						CompanyReportRepository.getInstance().getReportPointOfSaleReceipt(),Boolean.FALSE));
 			}
 		});
+		*/
 	}
 	
 	protected void afterInitialisation() {
 		super.afterInitialisation();
+		/*
 		for(SaleStockOutput output : identifiable.getSaleStockOutputs())
 			outputsTable.addRow(new OutputDetails(output));
-		
+		*/
 		outputsTable.getColumn("amount").setFooter(numberBusiness.format(identifiable.getSale().getCost().subtract(identifiable.getSale().getBalance().getValue())));
 		outputsTable.getColumn("numberOfStockGoods").setFooter(numberBusiness.format(identifiable.getTangibleProductStockMovement().getQuantity()
 				.subtract(identifiable.getRemainingNumberOfGoods())));
@@ -141,15 +149,14 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 	}
 	
 	@Getter @Setter
-	public static class OutputDetails implements Serializable {
+	public static class OutputDetails extends AbstractOutputDetails<SaleStockOutput> implements Serializable {
 		private static final long serialVersionUID = -1498269103849317057L;
 		
 		@Input @InputText
 		private String identifier,date,amount,numberOfStockGoods;
-		private SaleStockOutput saleStockOutput;
 		
 		public OutputDetails(SaleStockOutput saleStockOutput) {
-			this.saleStockOutput = saleStockOutput;
+			super(saleStockOutput);
 			this.identifier = saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getComputedIdentifier();
 			this.amount = UIManager.getInstance().getNumberBusiness().format(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
 			this.numberOfStockGoods = UIManager.getInstance().getNumberBusiness().format(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());

@@ -31,7 +31,7 @@ public class TangibleProductInventoryConsultPage extends AbstractConsultPage<Tan
 		Collection<TangibleProductInventoryReportTableDetails> details = new ArrayList<>();
 		for(TangibleProductInventoryDetail tangibleProductInventoryDetail : identifiable.getDetails())
 			details.add(new TangibleProductInventoryReportTableDetails(tangibleProductInventoryDetail));
-		detailsTable = createDetailsTable(TangibleProductInventoryReportTableDetails.class, details, "model.entity.tangibleProductInventory");	
+		//detailsTable = createDetailsTable(TangibleProductInventoryReportTableDetails.class, details, "model.entity.tangibleProductInventory");	
 		detailsTable.setTitle(null);
 		detailsTable.setShowHeader(Boolean.FALSE);
 		detailsTable.setShowFooter(Boolean.FALSE);

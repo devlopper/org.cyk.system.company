@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.cyk.system.company.business.api.product.CustomerBusiness;
-import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.ui.api.model.table.ColumnAdapter;
@@ -42,21 +41,26 @@ public class CustomerSaleStockPage extends AbstractPrimefacesPage implements Ser
 		for(Customer customer : customerBusiness.findAll())
 			details.add(new CustomerReportTableRow(customer));
 		
-		ColumnAdapter listener;
-		listener = new ColumnAdapter(){
+		table = createDetailsTable(CustomerReportTableRow.class, new DetailsTableConfigurationAdapter<Customer, CustomerReportTableRow>(Customer.class, CustomerReportTableRow.class){
+			private static final long serialVersionUID = 1L;
 			@Override
-			public Boolean isColumn(Field field) {
-				return CustomerReportTableRow.saleStockFieldIgnored(field);
+			public ColumnAdapter getColumnAdapter() {
+				return new ColumnAdapter(){
+					@Override
+					public Boolean isColumn(Field field) {
+						return CustomerReportTableRow.saleStockFieldIgnored(field);
+					}
+				};
 			}
-		};
-		
-		table = createDetailsTable(CustomerReportTableRow.class, details,listener, "");	
+		});	
+		/*
 		table.setShowHeader(Boolean.FALSE);
 		table.setShowFooter(Boolean.FALSE);
 		table.setShowToolBar(Boolean.TRUE);
 		table.setIdentifiableClass(Customer.class);
 		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerReportType(), 
 				CompanyReportRepository.getInstance().getParameterCustomerReportSaleStock());
+				*/
 	}
 	
 }
