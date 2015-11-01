@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.production.ProductionSpreadSheetCellBusiness;
-import org.cyk.system.company.model.production.ProductionSpreadSheet;
+import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionSpreadSheetCell;
 import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetCellDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
@@ -23,7 +23,7 @@ public class ProductionSpreadSheetCellBusinessImpl extends AbstractTypedBusiness
 	}
 
 	@Override
-	public Collection<ProductionSpreadSheetCell> findByProductionSpreadSheet(ProductionSpreadSheet production) {
+	public Collection<ProductionSpreadSheetCell> findByProductionSpreadSheet(Production production) {
 		return dao.readByProductionSpreadSheet(production);
 	}
 

@@ -14,10 +14,10 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.api.production.ProductionSpreadSheetBusiness;
 import org.cyk.system.company.business.api.production.ProductionSpreadSheetTemplateBusiness;
-import org.cyk.system.company.model.production.ProductionSpreadSheet;
+import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionSpreadSheetCell;
-import org.cyk.system.company.model.production.ProductionSpreadSheetTemplate;
-import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateRow;
+import org.cyk.system.company.model.production.ProductionPlan;
+import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateColumn;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadSheetController;
@@ -56,13 +56,13 @@ public class ProductionConsultPage extends AbstractPrimefacesPage implements Ser
 			}
 		});
 		contentTitle = text("company.production.consult.page.content.title");
-		ProductionSpreadSheetTemplate productionPlanModel = productionPlanModelBusiness.findAll().iterator().next();
+		ProductionPlan productionPlanModel = productionPlanModelBusiness.findAll().iterator().next();
 		productionPlanModelBusiness.load(productionPlanModel);
 		productionSpreadSheetControllers = new ArrayList<ProductionSpreadSheetController>();
-		for(ProductionSpreadSheet production : productionBusiness.findAll()){
+		for(Production production : productionBusiness.findAll()){
 			productionBusiness.load(production);
 			productionSpreadSheetControllers.add(new ProductionSpreadSheetController(production, 
-					new ArrayList<ProductionSpreadSheetTemplateRow>(productionPlanModel.getRows()), 
+					new ArrayList<ProductionPlanResource>(productionPlanModel.getRows()), 
 					new ArrayList<ProductionSpreadSheetTemplateColumn>(productionPlanModel.getColumns()), 
 					new ArrayList<ProductionSpreadSheetCell>(production.getCells())));
 		}

@@ -32,8 +32,8 @@ import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
-import org.cyk.system.company.model.production.ProductionSpreadSheet;
-import org.cyk.system.company.model.production.ProductionSpreadSheetTemplate;
+import org.cyk.system.company.model.production.Production;
+import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
@@ -131,9 +131,9 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 					return (Collection<T>) tangibleProductStockMovementBusiness.findAll();
 				} else if(CashRegister.class.equals(dataClass)){
 					return (Collection<T>) cashRegisterBusiness.findAll();
-				} else if(ProductionSpreadSheetTemplate.class.equals(dataClass)){
+				} else if(ProductionPlan.class.equals(dataClass)){
 					return (Collection<T>) productionPlanModelBusiness.findAll();
-				} else if(ProductionSpreadSheet.class.equals(dataClass)){
+				} else if(Production.class.equals(dataClass)){
 					return (Collection<T>) productionBusiness.findAll();
 				}               
 				return super.find(dataClass, configuration);
@@ -153,9 +153,9 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 					return tangibleProductStockMovementBusiness.countAll();
 				} else if(CashRegister.class.equals(dataClass)){
 					return cashRegisterBusiness.countAll();
-				} else if(ProductionSpreadSheetTemplate.class.equals(dataClass)){
+				} else if(ProductionPlan.class.equals(dataClass)){
 					return productionPlanModelBusiness.countAll();
-				} else if(ProductionSpreadSheet.class.equals(dataClass)){
+				} else if(Production.class.equals(dataClass)){
 					return productionBusiness.countAll();
 				} 
 				
@@ -318,7 +318,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	public Collection<UICommandable> productionContextCommandables(AbstractUserSession userSession){
 		Collection<UICommandable> commandables = new ArrayList<>();
 		//commandables.add(uiProvider.createCommandable("dashboard", null, "productionDashBoardView"));
-		commandables.add(menuManager.crudOne(ProductionSpreadSheet.class, null));
+		commandables.add(menuManager.crudOne(Production.class, null));
 		return commandables;
 	}
 	

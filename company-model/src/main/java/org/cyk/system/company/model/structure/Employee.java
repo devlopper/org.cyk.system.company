@@ -16,7 +16,6 @@ public class Employee extends AbstractActor implements Serializable {
 
 	private static final long serialVersionUID = 1371797411549893368L;
 
-	@ManyToOne
-	private Division division;
+	@ManyToOne private Division division;
 
 }

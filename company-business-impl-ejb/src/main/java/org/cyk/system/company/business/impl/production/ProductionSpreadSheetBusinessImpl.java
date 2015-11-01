@@ -9,7 +9,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.production.ProductionSpreadSheetBusiness;
-import org.cyk.system.company.model.production.ProductionSpreadSheet;
+import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionSpreadSheetCell;
 import org.cyk.system.company.model.production.ProductionSpreadSheetSearchCriteria;
 import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetDao;
@@ -17,7 +17,7 @@ import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetCe
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
 @Stateless
-public class ProductionSpreadSheetBusinessImpl extends AbstractTypedBusinessService<ProductionSpreadSheet, ProductionSpreadSheetDao> implements ProductionSpreadSheetBusiness,Serializable {
+public class ProductionSpreadSheetBusinessImpl extends AbstractTypedBusinessService<Production, ProductionSpreadSheetDao> implements ProductionSpreadSheetBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 	
@@ -29,7 +29,7 @@ public class ProductionSpreadSheetBusinessImpl extends AbstractTypedBusinessServ
 	}
 
 	@Override
-	public ProductionSpreadSheet create(ProductionSpreadSheet production) {
+	public Production create(Production production) {
 		production.setCreationDate(universalTimeCoordinated());
 		//exceptionUtils().exception(production.getPeriod().getToDate().before(production.getCreationDate()), "baddates");
 		super.create(production);
@@ -41,27 +41,27 @@ public class ProductionSpreadSheetBusinessImpl extends AbstractTypedBusinessServ
 	}
 	
 	@Override
-	public ProductionSpreadSheet update(ProductionSpreadSheet production) {
+	public Production update(Production production) {
 		for(ProductionSpreadSheetCell input : production.getCells())
 			productionInputDao.update(input);
 		return super.update(production);
 	}
 	
 	@Override
-	public ProductionSpreadSheet delete(ProductionSpreadSheet production) {
+	public Production delete(Production production) {
 		for(ProductionSpreadSheetCell input : productionInputDao.readByProductionSpreadSheet(production))
 			productionInputDao.delete(input);
 		return super.delete(production);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void load(ProductionSpreadSheet production) {
+	public void load(Production production) {
 		super.load(production);
 		production.setCells(productionInputDao.readByProductionSpreadSheet(production));
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Collection<ProductionSpreadSheet> findByCriteria(ProductionSpreadSheetSearchCriteria searchCriteria) {
+	public Collection<Production> findByCriteria(ProductionSpreadSheetSearchCriteria searchCriteria) {
 		prepareFindByCriteria(searchCriteria);
 		return dao.readByCriteria(searchCriteria);
 	}

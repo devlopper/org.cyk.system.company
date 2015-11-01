@@ -2,7 +2,7 @@ package org.cyk.system.company.persistence.impl.production;
 
 import java.util.Collection;
 
-import org.cyk.system.company.model.production.ProductionSpreadSheet;
+import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionSpreadSheetCell;
 import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetCellDao;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
@@ -20,7 +20,7 @@ public class ProductionSpreadSheetCellDaoImpl extends AbstractTypedDao<Productio
 	}
 	
 	@Override
-	public Collection<ProductionSpreadSheetCell> readByProductionSpreadSheet(ProductionSpreadSheet production) {
+	public Collection<ProductionSpreadSheetCell> readByProductionSpreadSheet(Production production) {
 		return namedQuery(readByProduction).parameter("spreadSheet", production).resultMany();
 	}
 

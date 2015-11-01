@@ -12,17 +12,17 @@ import lombok.Setter;
 import org.cyk.system.root.model.userinterface.spreadsheet.AbstractSpreadSheetCell;
 
 @Getter @Setter @Entity
-public class ProductionSpreadSheetCell extends AbstractSpreadSheetCell<ProductionSpreadSheet, ProductionSpreadSheetTemplateRow, ProductionSpreadSheetTemplateColumn, BigDecimal> implements Serializable {
+public class ProductionSpreadSheetCell extends AbstractSpreadSheetCell<Production, ProductionPlanResource, ProductionSpreadSheetTemplateColumn, BigDecimal> implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	public ProductionSpreadSheetCell() {}
 
-	public ProductionSpreadSheetCell(ProductionSpreadSheet spreadSheet) {
+	public ProductionSpreadSheetCell(Production spreadSheet) {
 		super(spreadSheet);
 	}
 
-	public ProductionSpreadSheetCell(ProductionSpreadSheetTemplateRow row, ProductionSpreadSheetTemplateColumn column) {
+	public ProductionSpreadSheetCell(ProductionPlanResource row, ProductionSpreadSheetTemplateColumn column) {
 		super(row, column);
 	}
 	

@@ -7,9 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.model.production.ProductionSpreadSheet;
+import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionSpreadSheetCell;
-import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateRow;
+import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateColumn;
 import org.cyk.ui.api.UIManager;
 
@@ -18,14 +18,14 @@ public class ProductionSpreadSheetController implements Serializable {
 
 	private static final long serialVersionUID = -6574548621164268562L;
 
-	private ProductionSpreadSheet production;
-	private List<ProductionSpreadSheetTemplateRow> rows;
+	private Production production;
+	private List<ProductionPlanResource> rows;
 	private List<ProductionSpreadSheetTemplateColumn> columns;
 	private List<ProductionSpreadSheetCell> cells;
 	private Boolean editable = Boolean.FALSE;
 	private String rowHeader="HEADER",title="TITLE";
 
-	public ProductionSpreadSheetController(ProductionSpreadSheet production,List<ProductionSpreadSheetTemplateRow> rows,List<ProductionSpreadSheetTemplateColumn> columns, List<ProductionSpreadSheetCell> cells) {
+	public ProductionSpreadSheetController(Production production,List<ProductionPlanResource> rows,List<ProductionSpreadSheetTemplateColumn> columns, List<ProductionSpreadSheetCell> cells) {
 		super();
 		this.production = production;
 		this.rows = rows;

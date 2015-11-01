@@ -52,10 +52,10 @@ import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
-import org.cyk.system.company.model.production.ProductionSpreadSheet;
+import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionSpreadSheetCell;
-import org.cyk.system.company.model.production.ProductionSpreadSheetTemplate;
-import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateRow;
+import org.cyk.system.company.model.production.ProductionPlan;
+import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
@@ -281,10 +281,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)Company.class, (TypedBusiness)companyBusiness);
         beansMap.put((Class)SaleStockInput.class, (TypedBusiness)saleStockInputBusiness);
         beansMap.put((Class)SaleStockOutput.class, (TypedBusiness)saleStockOutputBusiness);
-        beansMap.put((Class)ProductionSpreadSheet.class, (TypedBusiness)productionBusiness);
+        beansMap.put((Class)Production.class, (TypedBusiness)productionBusiness);
         beansMap.put((Class)ProductionSpreadSheetCell.class, (TypedBusiness)productionInputBusiness);
-        beansMap.put((Class)ProductionSpreadSheetTemplate.class, (TypedBusiness)productionPlanModelBusiness);
-        beansMap.put((Class)ProductionSpreadSheetTemplateRow.class, (TypedBusiness)productionPlanModelInputBusiness);
+        beansMap.put((Class)ProductionPlan.class, (TypedBusiness)productionPlanModelBusiness);
+        beansMap.put((Class)ProductionPlanResource.class, (TypedBusiness)productionPlanModelInputBusiness);
     }
 	
 	/**/

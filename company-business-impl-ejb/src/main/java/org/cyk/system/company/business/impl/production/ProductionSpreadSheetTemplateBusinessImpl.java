@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.production.ProductionSpreadSheetTemplateBusiness;
-import org.cyk.system.company.model.production.ProductionSpreadSheetTemplate;
-import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateRow;
+import org.cyk.system.company.model.production.ProductionPlan;
+import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateColumn;
 import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetTemplateDao;
 import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetTemplateRowDao;
@@ -15,7 +15,7 @@ import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetTe
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
 @Stateless
-public class ProductionSpreadSheetTemplateBusinessImpl extends AbstractTypedBusinessService<ProductionSpreadSheetTemplate, ProductionSpreadSheetTemplateDao> implements ProductionSpreadSheetTemplateBusiness,Serializable {
+public class ProductionSpreadSheetTemplateBusinessImpl extends AbstractTypedBusinessService<ProductionPlan, ProductionSpreadSheetTemplateDao> implements ProductionSpreadSheetTemplateBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 	
@@ -28,10 +28,10 @@ public class ProductionSpreadSheetTemplateBusinessImpl extends AbstractTypedBusi
 	}
 
 	@Override
-	public ProductionSpreadSheetTemplate create(ProductionSpreadSheetTemplate productionPlanModel) {
+	public ProductionPlan create(ProductionPlan productionPlanModel) {
 		super.create(productionPlanModel);
 		Integer index = 0;
-		for(ProductionSpreadSheetTemplateRow row : productionPlanModel.getRows()){
+		for(ProductionPlanResource row : productionPlanModel.getRows()){
 			row.setTemplate(productionPlanModel);
 			row.setIndex(index++);
 			productionPlanModelInputDao.create(row);
@@ -46,8 +46,8 @@ public class ProductionSpreadSheetTemplateBusinessImpl extends AbstractTypedBusi
 	}
 	
 	@Override
-	public ProductionSpreadSheetTemplate update(ProductionSpreadSheetTemplate productionPlanModel) {
-		for(ProductionSpreadSheetTemplateRow row : productionPlanModel.getRows())
+	public ProductionPlan update(ProductionPlan productionPlanModel) {
+		for(ProductionPlanResource row : productionPlanModel.getRows())
 			productionPlanModelInputDao.update(row);
 		for(ProductionSpreadSheetTemplateColumn column : productionPlanModel.getColumns())
 			productionPlanModelMetricDao.update(column);
@@ -55,8 +55,8 @@ public class ProductionSpreadSheetTemplateBusinessImpl extends AbstractTypedBusi
 	}
 	
 	@Override
-	public ProductionSpreadSheetTemplate delete(ProductionSpreadSheetTemplate productionPlanModel) {
-		for(ProductionSpreadSheetTemplateRow row : productionPlanModelInputDao.readByProductionSpreadSheetTemplate(productionPlanModel))
+	public ProductionPlan delete(ProductionPlan productionPlanModel) {
+		for(ProductionPlanResource row : productionPlanModelInputDao.readByProductionSpreadSheetTemplate(productionPlanModel))
 			productionPlanModelInputDao.delete(row);
 		for(ProductionSpreadSheetTemplateColumn column : productionPlanModelMetricDao.readByProductionSpreadSheetTemplate(productionPlanModel))
 			productionPlanModelMetricDao.delete(column);
@@ -64,7 +64,7 @@ public class ProductionSpreadSheetTemplateBusinessImpl extends AbstractTypedBusi
 	}
 	
 	@Override
-	public void load(ProductionSpreadSheetTemplate productionPlanModel) {
+	public void load(ProductionPlan productionPlanModel) {
 		super.load(productionPlanModel);
 		productionPlanModel.setRows(productionPlanModelInputDao.readByProductionSpreadSheetTemplate(productionPlanModel));
 		productionPlanModel.setColumns(productionPlanModelMetricDao.readByProductionSpreadSheetTemplate(productionPlanModel));

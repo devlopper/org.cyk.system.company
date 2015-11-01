@@ -2,13 +2,13 @@ package org.cyk.system.company.persistence.impl.production;
 
 import java.util.Collection;
 
-import org.cyk.system.company.model.production.ProductionSpreadSheet;
+import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionSpreadSheetSearchCriteria;
 import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetDao;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
 
-public class ProductionSpreadSheetDaoImpl extends AbstractTypedDao<ProductionSpreadSheet> implements ProductionSpreadSheetDao {
+public class ProductionSpreadSheetDaoImpl extends AbstractTypedDao<Production> implements ProductionSpreadSheetDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
 	
@@ -31,7 +31,7 @@ public class ProductionSpreadSheetDaoImpl extends AbstractTypedDao<ProductionSpr
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<ProductionSpreadSheet> readByCriteria(ProductionSpreadSheetSearchCriteria searchCriteria) {
+	public Collection<Production> readByCriteria(ProductionSpreadSheetSearchCriteria searchCriteria) {
 		String queryName = null;
 		if(searchCriteria.getFromDateSearchCriteria().getAscendingOrdered()!=null){
 			queryName = Boolean.TRUE.equals(searchCriteria.getFromDateSearchCriteria().getAscendingOrdered())?
@@ -40,7 +40,7 @@ public class ProductionSpreadSheetDaoImpl extends AbstractTypedDao<ProductionSpr
 			queryName = readByCriteriaDateAscendingOrder;
 		QueryWrapper<?> queryWrapper = namedQuery(queryName);
 		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
-		return (Collection<ProductionSpreadSheet>) queryWrapper.resultMany();
+		return (Collection<Production>) queryWrapper.resultMany();
 	}
 
 	@Override
