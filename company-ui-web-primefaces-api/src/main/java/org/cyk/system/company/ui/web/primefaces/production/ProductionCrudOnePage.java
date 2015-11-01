@@ -14,12 +14,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.production.ProductionSpreadSheetTemplateBusiness;
+import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ProductionSpreadSheetCell;
+import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanResource;
-import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateColumn;
+import org.cyk.system.company.model.production.ProductionPlanMetric;
 import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadSheetController;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
@@ -34,7 +34,7 @@ public class ProductionCrudOnePage extends AbstractCrudOnePage<Production> imple
 	private static final long serialVersionUID = 9040359120893077422L;
 
 	@Inject
-	private ProductionSpreadSheetTemplateBusiness productionPlanModelBusiness;
+	private ProductionPlanBusiness productionPlanModelBusiness;
 	
 	private List<ProductionPlan> productionPlanModels;	
 	private ProductionPlan selectedProductionPlanModel;
@@ -49,15 +49,15 @@ public class ProductionCrudOnePage extends AbstractCrudOnePage<Production> imple
 		productionPlanModelBusiness.load(selectedProductionPlanModel);
 		
 		productionSpreadSheetController = new ProductionSpreadSheetController(identifiable, new ArrayList<ProductionPlanResource>(selectedProductionPlanModel.getRows()),
-				new ArrayList<ProductionSpreadSheetTemplateColumn>(selectedProductionPlanModel.getColumns()), null);
+				new ArrayList<ProductionPlanMetric>(selectedProductionPlanModel.getColumns()), null);
 		
 		productionSpreadSheetController.setEditable(form.getEditable());
 		for(ProductionPlanResource input : productionSpreadSheetController.getRows()){
-			for(ProductionSpreadSheetTemplateColumn productionPlanModelMetric : productionSpreadSheetController.getColumns())
-				identifiable.getCells().add(new ProductionSpreadSheetCell(input,productionPlanModelMetric));
+			for(ProductionPlanMetric productionPlanModelMetric : productionSpreadSheetController.getColumns())
+				identifiable.getCells().add(new ProductionValue(input,productionPlanModelMetric));
 			
 		}
-		productionSpreadSheetController.setCells(new ArrayList<ProductionSpreadSheetCell>(identifiable.getCells()));
+		productionSpreadSheetController.setCells(new ArrayList<ProductionValue>(identifiable.getCells()));
 		
 	}
 	

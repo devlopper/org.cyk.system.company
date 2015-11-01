@@ -11,13 +11,13 @@ import org.cyk.system.root.model.userinterface.InputName;
 import org.cyk.system.root.model.userinterface.spreadsheet.AbstractSpreadSheetTemplateColumn;
 
 @Getter @Setter @Entity
-public class ProductionSpreadSheetTemplateColumn extends AbstractSpreadSheetTemplateColumn<ProductionPlan> implements Serializable {
+public class ProductionPlanMetric extends AbstractSpreadSheetTemplateColumn<ProductionPlan> implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	public ProductionSpreadSheetTemplateColumn() {}
+	public ProductionPlanMetric() {}
 
-	public ProductionSpreadSheetTemplateColumn(InputName inputName) {
+	public ProductionPlanMetric(InputName inputName) {
 		super(inputName);
 	}
 	

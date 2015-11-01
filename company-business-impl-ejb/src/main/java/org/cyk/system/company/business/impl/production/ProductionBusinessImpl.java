@@ -8,23 +8,23 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.cyk.system.company.business.api.production.ProductionSpreadSheetBusiness;
+import org.cyk.system.company.business.api.production.ProductionBusiness;
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ProductionSpreadSheetCell;
+import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.ProductionSpreadSheetSearchCriteria;
-import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetDao;
-import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetCellDao;
+import org.cyk.system.company.persistence.api.production.ProductionDao;
+import org.cyk.system.company.persistence.api.production.ProductionValueDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
 @Stateless
-public class ProductionSpreadSheetBusinessImpl extends AbstractTypedBusinessService<Production, ProductionSpreadSheetDao> implements ProductionSpreadSheetBusiness,Serializable {
+public class ProductionBusinessImpl extends AbstractTypedBusinessService<Production, ProductionDao> implements ProductionBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 	
-	@Inject private ProductionSpreadSheetCellDao productionInputDao;
+	@Inject private ProductionValueDao productionInputDao;
 	
 	@Inject
-	public ProductionSpreadSheetBusinessImpl(ProductionSpreadSheetDao dao) {
+	public ProductionBusinessImpl(ProductionDao dao) {
 		super(dao);
 	}
 
@@ -33,7 +33,7 @@ public class ProductionSpreadSheetBusinessImpl extends AbstractTypedBusinessServ
 		production.setCreationDate(universalTimeCoordinated());
 		//exceptionUtils().exception(production.getPeriod().getToDate().before(production.getCreationDate()), "baddates");
 		super.create(production);
-		for(ProductionSpreadSheetCell input : production.getCells()){
+		for(ProductionValue input : production.getCells()){
 			input.setSpreadSheet(production);
 			productionInputDao.create(input);
 		}
@@ -42,14 +42,14 @@ public class ProductionSpreadSheetBusinessImpl extends AbstractTypedBusinessServ
 	
 	@Override
 	public Production update(Production production) {
-		for(ProductionSpreadSheetCell input : production.getCells())
+		for(ProductionValue input : production.getCells())
 			productionInputDao.update(input);
 		return super.update(production);
 	}
 	
 	@Override
 	public Production delete(Production production) {
-		for(ProductionSpreadSheetCell input : productionInputDao.readByProductionSpreadSheet(production))
+		for(ProductionValue input : productionInputDao.readByProduction(production))
 			productionInputDao.delete(input);
 		return super.delete(production);
 	}
@@ -57,7 +57,7 @@ public class ProductionSpreadSheetBusinessImpl extends AbstractTypedBusinessServ
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void load(Production production) {
 		super.load(production);
-		production.setCells(productionInputDao.readByProductionSpreadSheet(production));
+		production.setCells(productionInputDao.readByProduction(production));
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)

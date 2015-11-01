@@ -4,11 +4,11 @@ import java.util.Collection;
 
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionSpreadSheetSearchCriteria;
-import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetDao;
+import org.cyk.system.company.persistence.api.production.ProductionDao;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
 
-public class ProductionSpreadSheetDaoImpl extends AbstractTypedDao<Production> implements ProductionSpreadSheetDao {
+public class ProductionDaoImpl extends AbstractTypedDao<Production> implements ProductionDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
 	

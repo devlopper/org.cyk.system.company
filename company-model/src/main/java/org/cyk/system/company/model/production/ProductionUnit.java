@@ -27,7 +27,7 @@ public class ProductionUnit extends AbstractIdentifiable implements Serializable
 
 	@OneToOne @NotNull private Company company;
 	
-	@ManyToOne @NotNull private ProductionEnergyType productionEnergyType;
+	@ManyToOne @NotNull private ProductionEnergy energy;
 	
 	@Temporal(TemporalType.TIMESTAMP) private Date previousReportDate;
 	
@@ -35,11 +35,11 @@ public class ProductionUnit extends AbstractIdentifiable implements Serializable
 	
 	@ManyToOne @NotNull private TimeDivisionType reportIntervalTimeDivisionType;
 
-	public ProductionUnit(Company company, ProductionEnergyType productionEnergyType, Date nextReportDate,
+	public ProductionUnit(Company company, ProductionEnergy energy, Date nextReportDate,
 			TimeDivisionType reportIntervalTimeDivisionType) {
 		super();
 		this.company = company;
-		this.productionEnergyType = productionEnergyType;
+		this.energy = energy;
 		this.nextReportDate = nextReportDate;
 		this.reportIntervalTimeDivisionType = reportIntervalTimeDivisionType;
 	}

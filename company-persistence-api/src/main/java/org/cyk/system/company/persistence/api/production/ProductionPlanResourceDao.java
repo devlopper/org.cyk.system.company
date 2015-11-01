@@ -6,8 +6,8 @@ import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.root.persistence.api.TypedDao;
 
-public interface ProductionSpreadSheetTemplateRowDao extends TypedDao<ProductionPlanResource> {
+public interface ProductionPlanResourceDao extends TypedDao<ProductionPlanResource> {
 
-	Collection<ProductionPlanResource> readByProductionSpreadSheetTemplate(ProductionPlan productionSpreadSheetTemplate);
+	Collection<ProductionPlanResource> readByProductionPlan(ProductionPlan productionPlan);
 
 }

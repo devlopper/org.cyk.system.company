@@ -11,7 +11,7 @@ import lombok.Setter;
 import org.cyk.system.root.model.AbstractEnumeration;
 
 @Getter @Setter @NoArgsConstructor @Entity
-public class ProductionEnergyType extends AbstractEnumeration implements Serializable {
+public class ProductionEnergy extends AbstractEnumeration implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
@@ -19,7 +19,7 @@ public class ProductionEnergyType extends AbstractEnumeration implements Seriali
 	public static final String FUEL = "FUEL";
 	public static final String WOOD = "WOOD";
 	
-	public ProductionEnergyType(String code, String libelle) {
+	public ProductionEnergy(String code, String libelle) {
 		super(code, libelle,null, null);
 	}
 	

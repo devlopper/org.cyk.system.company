@@ -7,7 +7,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
-import org.cyk.system.company.model.product.resell.ResellerProductTaking;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
@@ -23,6 +22,6 @@ public class ProductionReseller extends AbstractIdentifiable implements Serializ
 
 	@OneToOne @NotNull private Production production;
 	
-	@ManyToOne @NotNull private ResellerProductTaking productTaking;
+	@ManyToOne @NotNull private ResellerProduction productTaking;
 
 }

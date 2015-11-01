@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ProductionSpreadSheetCell;
+import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.ProductionPlanResource;
-import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateColumn;
+import org.cyk.system.company.model.production.ProductionPlanMetric;
 import org.cyk.ui.api.UIManager;
 
 @Getter @Setter @NoArgsConstructor
@@ -20,12 +20,12 @@ public class ProductionSpreadSheetController implements Serializable {
 
 	private Production production;
 	private List<ProductionPlanResource> rows;
-	private List<ProductionSpreadSheetTemplateColumn> columns;
-	private List<ProductionSpreadSheetCell> cells;
+	private List<ProductionPlanMetric> columns;
+	private List<ProductionValue> cells;
 	private Boolean editable = Boolean.FALSE;
 	private String rowHeader="HEADER",title="TITLE";
 
-	public ProductionSpreadSheetController(Production production,List<ProductionPlanResource> rows,List<ProductionSpreadSheetTemplateColumn> columns, List<ProductionSpreadSheetCell> cells) {
+	public ProductionSpreadSheetController(Production production,List<ProductionPlanResource> rows,List<ProductionPlanMetric> columns, List<ProductionValue> cells) {
 		super();
 		this.production = production;
 		this.rows = rows;
@@ -34,7 +34,7 @@ public class ProductionSpreadSheetController implements Serializable {
 		this.title = UIManager.getInstance().getTimeBusiness().formatDate(production.getCreationDate());
 	}
 	
-	public ProductionSpreadSheetCell cell(Integer row, Integer column) {
+	public ProductionValue cell(Integer row, Integer column) {
 		return cells.get(row * columns.size() + column);
 	}
 	

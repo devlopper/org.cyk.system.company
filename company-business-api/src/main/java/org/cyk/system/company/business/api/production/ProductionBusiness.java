@@ -6,7 +6,7 @@ import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionSpreadSheetSearchCriteria;
 import org.cyk.system.root.business.api.TypedBusiness;
 
-public interface ProductionSpreadSheetBusiness extends TypedBusiness<Production> {
+public interface ProductionBusiness extends TypedBusiness<Production> {
 
 	Collection<Production> findByCriteria(ProductionSpreadSheetSearchCriteria searchCriteria);
 

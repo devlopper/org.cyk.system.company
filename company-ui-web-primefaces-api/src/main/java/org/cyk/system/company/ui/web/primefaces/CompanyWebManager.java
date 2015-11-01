@@ -15,8 +15,8 @@ import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.api.product.ProductCollectionBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
-import org.cyk.system.company.business.api.production.ProductionSpreadSheetBusiness;
-import org.cyk.system.company.business.api.production.ProductionSpreadSheetTemplateBusiness;
+import org.cyk.system.company.business.api.production.ProductionBusiness;
+import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
@@ -85,8 +85,8 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private CashRegisterBusiness cashRegisterBusiness;
 	@Inject private CashierBusiness cashierBusiness;
-	@Inject private ProductionSpreadSheetBusiness productionBusiness;
-	@Inject private ProductionSpreadSheetTemplateBusiness productionPlanModelBusiness;
+	@Inject private ProductionBusiness productionBusiness;
+	@Inject private ProductionPlanBusiness productionPlanModelBusiness;
 	
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
 	@Inject private CompanyReportRepository companyReportRepository;

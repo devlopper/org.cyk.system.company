@@ -5,25 +5,25 @@ import java.io.Serializable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.cyk.system.company.business.api.production.ProductionSpreadSheetTemplateBusiness;
+import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanResource;
-import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateColumn;
-import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetTemplateDao;
-import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetTemplateRowDao;
-import org.cyk.system.company.persistence.api.production.ProductionSpreadSheetTemplateColumnDao;
+import org.cyk.system.company.model.production.ProductionPlanMetric;
+import org.cyk.system.company.persistence.api.production.ProductionPlanDao;
+import org.cyk.system.company.persistence.api.production.ProductionPlanResourceDao;
+import org.cyk.system.company.persistence.api.production.ProductionPlanMetricDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
 @Stateless
-public class ProductionSpreadSheetTemplateBusinessImpl extends AbstractTypedBusinessService<ProductionPlan, ProductionSpreadSheetTemplateDao> implements ProductionSpreadSheetTemplateBusiness,Serializable {
+public class ProductionPlanBusinessImpl extends AbstractTypedBusinessService<ProductionPlan, ProductionPlanDao> implements ProductionPlanBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 	
-	@Inject private ProductionSpreadSheetTemplateRowDao productionPlanModelInputDao;
-	@Inject private ProductionSpreadSheetTemplateColumnDao productionPlanModelMetricDao;
+	@Inject private ProductionPlanResourceDao productionPlanModelInputDao;
+	@Inject private ProductionPlanMetricDao productionPlanModelMetricDao;
 	
 	@Inject
-	public ProductionSpreadSheetTemplateBusinessImpl(ProductionSpreadSheetTemplateDao dao) {
+	public ProductionPlanBusinessImpl(ProductionPlanDao dao) {
 		super(dao);
 	}
 
@@ -37,7 +37,7 @@ public class ProductionSpreadSheetTemplateBusinessImpl extends AbstractTypedBusi
 			productionPlanModelInputDao.create(row);
 		}
 		index = 0;
-		for(ProductionSpreadSheetTemplateColumn column : productionPlanModel.getColumns()){
+		for(ProductionPlanMetric column : productionPlanModel.getColumns()){
 			column.setTemplate(productionPlanModel);
 			column.setIndex(index++);
 			productionPlanModelMetricDao.create(column);
@@ -49,16 +49,16 @@ public class ProductionSpreadSheetTemplateBusinessImpl extends AbstractTypedBusi
 	public ProductionPlan update(ProductionPlan productionPlanModel) {
 		for(ProductionPlanResource row : productionPlanModel.getRows())
 			productionPlanModelInputDao.update(row);
-		for(ProductionSpreadSheetTemplateColumn column : productionPlanModel.getColumns())
+		for(ProductionPlanMetric column : productionPlanModel.getColumns())
 			productionPlanModelMetricDao.update(column);
 		return super.update(productionPlanModel);
 	}
 	
 	@Override
 	public ProductionPlan delete(ProductionPlan productionPlanModel) {
-		for(ProductionPlanResource row : productionPlanModelInputDao.readByProductionSpreadSheetTemplate(productionPlanModel))
+		for(ProductionPlanResource row : productionPlanModelInputDao.readByProductionPlan(productionPlanModel))
 			productionPlanModelInputDao.delete(row);
-		for(ProductionSpreadSheetTemplateColumn column : productionPlanModelMetricDao.readByProductionSpreadSheetTemplate(productionPlanModel))
+		for(ProductionPlanMetric column : productionPlanModelMetricDao.readByProductionPlan(productionPlanModel))
 			productionPlanModelMetricDao.delete(column);
 		return super.delete(productionPlanModel);
 	}
@@ -66,8 +66,8 @@ public class ProductionSpreadSheetTemplateBusinessImpl extends AbstractTypedBusi
 	@Override
 	public void load(ProductionPlan productionPlanModel) {
 		super.load(productionPlanModel);
-		productionPlanModel.setRows(productionPlanModelInputDao.readByProductionSpreadSheetTemplate(productionPlanModel));
-		productionPlanModel.setColumns(productionPlanModelMetricDao.readByProductionSpreadSheetTemplate(productionPlanModel));
+		productionPlanModel.setRows(productionPlanModelInputDao.readByProductionPlan(productionPlanModel));
+		productionPlanModel.setColumns(productionPlanModelMetricDao.readByProductionPlan(productionPlanModel));
 	}
 	
 }

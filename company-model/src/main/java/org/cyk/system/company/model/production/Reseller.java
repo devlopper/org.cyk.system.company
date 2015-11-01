@@ -1,4 +1,4 @@
-package org.cyk.system.company.model.product.resell;
+package org.cyk.system.company.model.production;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

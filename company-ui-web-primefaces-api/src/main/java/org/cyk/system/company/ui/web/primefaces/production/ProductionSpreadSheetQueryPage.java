@@ -10,7 +10,7 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.production.ProductionSpreadSheetBusiness;
+import org.cyk.system.company.business.api.production.ProductionBusiness;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionSpreadSheetSearchCriteria;
@@ -28,7 +28,7 @@ public class ProductionSpreadSheetQueryPage extends AbstractBusinessQueryPage<Pr
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	@Inject private ProductionSpreadSheetBusiness productionBusiness;
+	@Inject private ProductionBusiness productionBusiness;
 
 	@Override
 	protected void initialisation() {

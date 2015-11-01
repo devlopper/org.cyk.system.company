@@ -12,13 +12,13 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.production.ProductionSpreadSheetBusiness;
-import org.cyk.system.company.business.api.production.ProductionSpreadSheetTemplateBusiness;
+import org.cyk.system.company.business.api.production.ProductionBusiness;
+import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ProductionSpreadSheetCell;
+import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanResource;
-import org.cyk.system.company.model.production.ProductionSpreadSheetTemplateColumn;
+import org.cyk.system.company.model.production.ProductionPlanMetric;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadSheetController;
 import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadSheetQueryFormModel;
@@ -35,8 +35,8 @@ public class ProductionConsultPage extends AbstractPrimefacesPage implements Ser
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	@Inject private ProductionSpreadSheetBusiness productionBusiness;
-	@Inject private ProductionSpreadSheetTemplateBusiness productionPlanModelBusiness;
+	@Inject private ProductionBusiness productionBusiness;
+	@Inject private ProductionPlanBusiness productionPlanModelBusiness;
 	
 	private Tree tree = new Tree();
 	private Integer selectedMonthIndex;
@@ -63,8 +63,8 @@ public class ProductionConsultPage extends AbstractPrimefacesPage implements Ser
 			productionBusiness.load(production);
 			productionSpreadSheetControllers.add(new ProductionSpreadSheetController(production, 
 					new ArrayList<ProductionPlanResource>(productionPlanModel.getRows()), 
-					new ArrayList<ProductionSpreadSheetTemplateColumn>(productionPlanModel.getColumns()), 
-					new ArrayList<ProductionSpreadSheetCell>(production.getCells())));
+					new ArrayList<ProductionPlanMetric>(productionPlanModel.getColumns()), 
+					new ArrayList<ProductionValue>(production.getCells())));
 		}
 		
 	}
