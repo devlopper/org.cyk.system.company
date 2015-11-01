@@ -20,7 +20,7 @@ import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionPlanMetric;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadSheetController;
+import org.cyk.system.company.ui.web.primefaces.model.ProductionController;
 import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadSheetQueryFormModel;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.ui.api.command.CommandAdapter;
@@ -40,7 +40,7 @@ public class ProductionConsultPage extends AbstractPrimefacesPage implements Ser
 	
 	private Tree tree = new Tree();
 	private Integer selectedMonthIndex;
-	private List<ProductionSpreadSheetController> productionSpreadSheetControllers;
+	private List<ProductionController> productionSpreadSheetControllers;
 	private FormOneData<ProductionSpreadSheetQueryFormModel> form;
 	
 	@Override
@@ -58,10 +58,10 @@ public class ProductionConsultPage extends AbstractPrimefacesPage implements Ser
 		contentTitle = text("company.production.consult.page.content.title");
 		ProductionPlan productionPlanModel = productionPlanModelBusiness.findAll().iterator().next();
 		productionPlanModelBusiness.load(productionPlanModel);
-		productionSpreadSheetControllers = new ArrayList<ProductionSpreadSheetController>();
+		productionSpreadSheetControllers = new ArrayList<ProductionController>();
 		for(Production production : productionBusiness.findAll()){
 			productionBusiness.load(production);
-			productionSpreadSheetControllers.add(new ProductionSpreadSheetController(production, 
+			productionSpreadSheetControllers.add(new ProductionController(production, 
 					new ArrayList<ProductionPlanResource>(productionPlanModel.getRows()), 
 					new ArrayList<ProductionPlanMetric>(productionPlanModel.getColumns()), 
 					new ArrayList<ProductionValue>(production.getCells())));

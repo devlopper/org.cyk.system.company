@@ -27,17 +27,17 @@
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>productionEditView</from-outcome>
-			<to-view-id>/private/__role__/__productionmanager__/editoneproduction.xhtml</to-view-id>
+			<to-view-id>/private/__role__/__productionmanager__/production/edit.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>productionListView</from-outcome>
-			<to-view-id>/private/__role__/__productionmanager__/productionlist.xhtml</to-view-id>
+			<to-view-id>/private/__role__/__productionmanager__/production/list.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>productionConsultView</from-outcome>
-			<to-view-id>/private/__role__/__productionmanager__/consultproduction.xhtml</to-view-id>
+			<to-view-id>/private/__role__/__productionmanager__/production/consult.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		

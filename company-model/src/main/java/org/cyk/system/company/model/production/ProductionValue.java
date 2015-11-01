@@ -22,8 +22,8 @@ public class ProductionValue extends AbstractSpreadSheetCell<Production, Product
 		super(spreadSheet);
 	}
 
-	public ProductionValue(ProductionPlanResource row, ProductionPlanMetric column) {
-		super(row, column);
+	public ProductionValue(Production production,ProductionPlanResource row, ProductionPlanMetric column,BigDecimal value) {
+		super(production,row, column,value);
 	}
 	
 	@Override @Column(precision=10,scale=FLOAT_SCALE,nullable=false)

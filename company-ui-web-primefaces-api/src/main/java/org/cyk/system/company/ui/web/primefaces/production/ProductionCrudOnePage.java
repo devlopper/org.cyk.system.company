@@ -20,7 +20,7 @@ import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionPlanMetric;
-import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadSheetController;
+import org.cyk.system.company.ui.web.primefaces.model.ProductionController;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
@@ -36,38 +36,31 @@ public class ProductionCrudOnePage extends AbstractCrudOnePage<Production> imple
 	@Inject
 	private ProductionPlanBusiness productionPlanModelBusiness;
 	
-	private List<ProductionPlan> productionPlanModels;	
-	private ProductionPlan selectedProductionPlanModel;
-	private ProductionSpreadSheetController productionSpreadSheetController;
+	private List<ProductionPlan> productionPlans;	
+	private ProductionPlan selectedProductionPlan;
+	private ProductionController productionController;
 	
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		productionPlanModels = new ArrayList<ProductionPlan>(productionPlanModelBusiness.findAll());
-		if(!productionPlanModels.isEmpty())
-			selectedProductionPlanModel = productionPlanModels.get(0);
-		productionPlanModelBusiness.load(selectedProductionPlanModel);
+		productionPlans = new ArrayList<ProductionPlan>(productionPlanModelBusiness.findAll());
+		if(!productionPlans.isEmpty())
+			selectedProductionPlan = productionPlans.get(0);
+		productionPlanModelBusiness.load(selectedProductionPlan);
 		
-		productionSpreadSheetController = new ProductionSpreadSheetController(identifiable, new ArrayList<ProductionPlanResource>(selectedProductionPlanModel.getRows()),
-				new ArrayList<ProductionPlanMetric>(selectedProductionPlanModel.getColumns()), null);
+		productionController = new ProductionController(identifiable, new ArrayList<ProductionPlanResource>(selectedProductionPlan.getRows()),
+				new ArrayList<ProductionPlanMetric>(selectedProductionPlan.getColumns()), null);
 		
-		productionSpreadSheetController.setEditable(form.getEditable());
-		for(ProductionPlanResource input : productionSpreadSheetController.getRows()){
-			for(ProductionPlanMetric productionPlanModelMetric : productionSpreadSheetController.getColumns())
+		productionController.setEditable(form.getEditable());
+		for(ProductionPlanResource input : productionController.getRows()){
+			for(ProductionPlanMetric productionPlanModelMetric : productionController.getColumns())
 				identifiable.getCells().add(new ProductionValue(input,productionPlanModelMetric));
 			
 		}
-		productionSpreadSheetController.setCells(new ArrayList<ProductionValue>(identifiable.getCells()));
+		productionController.setCells(new ArrayList<ProductionValue>(identifiable.getCells()));
 		
 	}
-	
-	@Override
-	protected void create() {
-		identifiable.getPeriod().setFromDate(((FormModel)form.getData()).getDate());
-		identifiable.getPeriod().setToDate(identifiable.getPeriod().getFromDate());
-		super.create();
-	}
-	
+		
 	@Override
 	protected BusinessEntityInfos fetchBusinessEntityInfos() {
 		return uiManager.businessEntityInfos(Production.class);
@@ -81,12 +74,15 @@ public class ProductionCrudOnePage extends AbstractCrudOnePage<Production> imple
 	/**/
 	@Getter @Setter @AllArgsConstructor @NoArgsConstructor
 	public static class FormModel extends AbstractFormModel<Production> implements Serializable {
-
 		private static final long serialVersionUID = -731657715703646576L;
-		
 		@Input @InputCalendar(format=Format.DATE_LONG)
 		private Date date;
-		
+		@Override
+		public void write() {
+			super.write();
+			identifiable.getPeriod().setFromDate(date);
+			identifiable.getPeriod().setToDate(identifiable.getPeriod().getFromDate());
+		}
 	}
 	
 }

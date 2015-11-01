@@ -211,6 +211,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		addBusinessMenu(systemMenu,saleCommandables(userSession,systemMenu.getMobileBusinesses(), cashier)); 
 		addBusinessMenu(systemMenu,stockCommandables(userSession));
 		addBusinessMenu(systemMenu,goodsDepositCommandables(userSession, systemMenu.getMobileBusinesses(), cashier));
+		addBusinessMenu(systemMenu,productionCommandables(userSession, systemMenu.getMobileBusinesses()));
 		
 		return systemMenu;
 	}
@@ -332,6 +333,14 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		}
 		
 		return goods;
+	}
+	
+	public UICommandable productionCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables){
+		UICommandable production = null;
+		production = uiProvider.createCommandable("production", null);
+		production.getChildren().add(menuManager.crudMany(Production.class, null));
+		
+		return production;
 	}
 	
 	public void saleStockReportCommandables(AbstractUserSession userSession,Collection<UICommandable> commandables,Collection<UICommandable> mobileCommandables){

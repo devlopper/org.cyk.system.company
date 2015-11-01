@@ -14,7 +14,7 @@ import org.cyk.system.company.model.production.ProductionPlanMetric;
 import org.cyk.ui.api.UIManager;
 
 @Getter @Setter @NoArgsConstructor
-public class ProductionSpreadSheetController implements Serializable {
+public class ProductionController implements Serializable {
 
 	private static final long serialVersionUID = -6574548621164268562L;
 
@@ -25,7 +25,7 @@ public class ProductionSpreadSheetController implements Serializable {
 	private Boolean editable = Boolean.FALSE;
 	private String rowHeader="HEADER",title="TITLE";
 
-	public ProductionSpreadSheetController(Production production,List<ProductionPlanResource> rows,List<ProductionPlanMetric> columns, List<ProductionValue> cells) {
+	public ProductionController(Production production,List<ProductionPlanResource> rows,List<ProductionPlanMetric> columns, List<ProductionValue> cells) {
 		super();
 		this.production = production;
 		this.rows = rows;
@@ -44,7 +44,7 @@ public class ProductionSpreadSheetController implements Serializable {
 	}
 	
 	public String rowText(Integer row) {
-		return rows.get(row).getTangibleProduct().toString();
+		return rows.get(row).getProduct().getUiString();
 	}
 
 }
