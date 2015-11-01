@@ -1,11 +1,11 @@
 package org.cyk.system.company.business.impl.integration;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.transaction.UserTransaction;
 
 //import static org.hamcrest.Matchers.*;
 //import static org.hamcrest.MatcherAssert.*;
@@ -29,11 +29,11 @@ import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.api.party.ApplicationBusiness;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
+import org.cyk.system.root.business.impl.AbstractFakedDataProducer.FakedDataProducerAdapter;
 import org.cyk.system.root.business.impl.AbstractTestHelper;
 import org.cyk.system.root.business.impl.BusinessIntegrationTestHelper;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.RootTestHelper;
-import org.cyk.system.root.business.impl.validation.AbstractValidator;
 import org.cyk.system.root.business.impl.validation.DefaultValidator;
 import org.cyk.system.root.business.impl.validation.ExceptionUtils;
 import org.cyk.system.root.business.impl.validation.ValidatorMap;
@@ -43,12 +43,11 @@ import org.cyk.system.root.persistence.impl.GenericDaoImpl;
 import org.cyk.system.root.persistence.impl.PersistenceIntegrationTestHelper;
 import org.cyk.utility.common.test.DefaultTestEnvironmentAdapter;
 import org.cyk.utility.test.ArchiveBuilder;
+import org.cyk.utility.test.Transaction;
 import org.cyk.utility.test.integration.AbstractIntegrationTestJpaBased;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Assert;
-
-import net.sf.jasperreports.view.JasperViewer;
 
 public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased {
 
@@ -84,6 +83,8 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     @Inject protected OwnedCompanyBusiness ownedCompanyBusiness;
     @Inject protected ProductBusiness productBusiness;
 	@Inject protected TangibleProductBusiness tangibleProductBusiness;
+	
+	@Inject protected UserTransaction userTransaction;
     
 	static {
 		AbstractTestHelper.TEST_ENVIRONMENT_LISTENERS.add(new DefaultTestEnvironmentAdapter(){
@@ -143,45 +144,31 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     }
     
     protected void installApplication(){
+    	long t = System.currentTimeMillis();
     	installApplication(Boolean.TRUE);
+    	produce(getFakedDataProducer());
+    	System.out.println( ((System.currentTimeMillis()-t)/1000)+" s" );
     }
     
-    protected void validate(Object object){
-        if(object==null)
-            return;
-        @SuppressWarnings("unchecked")
-        AbstractValidator<Object> validator = (AbstractValidator<Object>) validatorMap.validatorOf(object.getClass());
-        if(validator==null){
-            //log.warning("No validator has been found. The default one will be used");
-            //validator = defaultValidator;
-            return;
-        }
-        try {
-            validator.validate(object);
-        } catch (Exception e) {}
-        
-        if(!Boolean.TRUE.equals(validator.isSuccess()))
-            System.out.println(validator.getMessagesAsString());
-        
-    }
-    
-    protected void jasperViewer(final byte[] bytes){
-    	Thread thread = new Thread(new Runnable() {
+    protected void produce(final AbstractFakedDataProducer fakedDataProducer){
+    	if(fakedDataProducer==null)
+    		return ;
+    	new Transaction(this,userTransaction,null){
 			@Override
-			public void run() {
-				JasperViewer jasperViewer;
-				try {
-					jasperViewer = new JasperViewer(new ByteArrayInputStream(bytes),Boolean.TRUE);
-					
-					jasperViewer.setVisible(true);
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			public void _execute_() {
+				fakedDataProducer.produce(fakedDataProducerAdapter());
 			}
-		});
-    	
-    	thread.run();
+    	}.run();
+    }
+    
+    protected FakedDataProducerAdapter fakedDataProducerAdapter(){
+    	return new FakedDataProducerAdapter(){
+    		@Override
+    		public void flush() {
+    			super.flush();
+    			getEntityManager().flush();
+    		}
+    	};
     }
     
     protected void writeReport(AbstractReport<?> report){

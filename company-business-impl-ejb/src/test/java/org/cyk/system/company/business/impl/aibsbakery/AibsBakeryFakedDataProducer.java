@@ -1,7 +1,6 @@
 package org.cyk.system.company.business.impl.aibsbakery;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -17,7 +16,6 @@ import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanMetric;
 import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionUnit;
-import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.root.model.userinterface.InputName;
 
 import lombok.Getter;
@@ -69,14 +67,14 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 		productionPlan.getRows().add(productionPlanResourceAmeliorant);
 		productionPlan.getColumns().add(productionPlanMetricQuantity);
 		
-		Production production = new Production();
-		production.getCells().add(new ProductionValue(production,productionPlanResourceFarine, productionPlanMetricQuantity,new BigDecimal("1")));
-		production.getCells().add(new ProductionValue(production,productionPlanResourceAmeliorant, productionPlanMetricQuantity,new BigDecimal("2")));
+		Collection<Production> productions = new ArrayList<>();
+		createProduction(productionPlan,new Object[][]{
+			{productionPlanResourceFarine, productionPlanMetricQuantity,"1"},{productionPlanResourceAmeliorant, productionPlanMetricQuantity,"2"}
+		}, productions);
 		
 		flush(ProductionUnit.class, productionUnitBusiness, productionUnits);
 		flush(ProductionPlan.class, productionPlanBusiness, productionPlans);
-		
-		
+		flush(Production.class, productionBusiness, productions);
 	}
 	
 	private void business(){

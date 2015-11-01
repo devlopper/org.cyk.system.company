@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.product.ProductBusiness;
+import org.cyk.system.company.business.api.production.ProductionBusiness;
 import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
 import org.cyk.system.company.business.api.production.ProductionPlanMetricBusiness;
 import org.cyk.system.company.business.api.production.ProductionPlanResourceBusiness;
@@ -43,6 +44,7 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	@Inject protected ProductionPlanMetricBusiness productionPlanMetricBusiness;
 	@Inject protected ProductionPlanBusiness productionPlanBusiness;
 	@Inject protected ProductionUnitBusiness productionUnitBusiness;
+	@Inject protected ProductionBusiness productionBusiness;
 	
 	
 	protected Company getCompany(){
@@ -82,8 +84,9 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 		return productionPlan;
 	}
 	
-	protected Production createProduction(Object[][] objects,Collection<Production> productions){
+	protected Production createProduction(ProductionPlan productionPlan,Object[][] objects,Collection<Production> productions){
 		Production production = new Production();
+		production.setTemplate(productionPlan);
 		productions.add(production);
 		for(Object[] object : objects)
 			production.getCells().add(new ProductionValue(production,(ProductionPlanResource)object[0], (ProductionPlanMetric)object[1],new BigDecimal((String)object[2])));

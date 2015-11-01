@@ -129,8 +129,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
 	@Inject private ProductionBusiness productionBusiness;
 	@Inject private ProductionSpreadSheetCellBusiness productionInputBusiness;
-	@Inject private ProductionPlanBusiness productionPlanModelBusiness;
-	@Inject private ProductionPlanResourceBusiness productionPlanModelInputBusiness;
+	@Inject private ProductionPlanBusiness productionPlanBusiness;
+	@Inject private ProductionPlanResourceBusiness productionPlanResourceBusiness;
 	//@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
 	//@Inject private AccountingPeriodProductCategoryBusiness accountingPeriodProductCategoryBusiness;
 	@Inject private UserAccountBusiness userAccountBusiness;
@@ -283,8 +283,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)SaleStockOutput.class, (TypedBusiness)saleStockOutputBusiness);
         beansMap.put((Class)Production.class, (TypedBusiness)productionBusiness);
         beansMap.put((Class)ProductionValue.class, (TypedBusiness)productionInputBusiness);
-        beansMap.put((Class)ProductionPlan.class, (TypedBusiness)productionPlanModelBusiness);
-        beansMap.put((Class)ProductionPlanResource.class, (TypedBusiness)productionPlanModelInputBusiness);
+        beansMap.put((Class)ProductionPlan.class, (TypedBusiness)productionPlanBusiness);
+        beansMap.put((Class)ProductionPlanResource.class, (TypedBusiness)productionPlanResourceBusiness);
     }
 	
 	/**/
