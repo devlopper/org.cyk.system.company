@@ -28,6 +28,7 @@ import org.cyk.system.company.business.impl.CompanyBusinessTestHelper;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.api.party.ApplicationBusiness;
+import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
 import org.cyk.system.root.business.impl.AbstractTestHelper;
 import org.cyk.system.root.business.impl.BusinessIntegrationTestHelper;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
@@ -43,6 +44,7 @@ import org.cyk.system.root.persistence.impl.PersistenceIntegrationTestHelper;
 import org.cyk.utility.common.test.DefaultTestEnvironmentAdapter;
 import org.cyk.utility.test.ArchiveBuilder;
 import org.cyk.utility.test.integration.AbstractIntegrationTestJpaBased;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Assert;
 
@@ -51,6 +53,12 @@ import net.sf.jasperreports.view.JasperViewer;
 public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased {
 
 	private static final long serialVersionUID = -5752455124275831171L;
+	
+	@Deployment
+    public static Archive<?> createDeployment() {
+    	Archive<?> archive = createRootDeployment();
+    	return archive;
+    }
 	
 	@Inject protected ApplicationBusiness applicationBusiness;
 	@Inject protected ExceptionUtils exceptionUtils;
@@ -89,6 +97,10 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     		}
     	});
 	}
+	
+	protected AbstractFakedDataProducer getFakedDataProducer(){
+    	return null;
+    }
 	
     @Override
     public EntityManager getEntityManager() {
