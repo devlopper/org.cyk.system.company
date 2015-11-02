@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.root.model.userinterface.spreadsheet.AbstractSpreadSheetCell;
+import org.cyk.system.root.model.spreadsheet.AbstractSpreadSheetCell;
 
 @Getter @Setter @Entity
 public class ProductionValue extends AbstractSpreadSheetCell<Production, ProductionPlanResource, ProductionPlanMetric, BigDecimal> implements Serializable {
@@ -18,12 +18,12 @@ public class ProductionValue extends AbstractSpreadSheetCell<Production, Product
 
 	public ProductionValue() {}
 
-	public ProductionValue(Production spreadSheet) {
-		super(spreadSheet);
+	public ProductionValue(Production production) {
+		super(production);
 	}
 
-	public ProductionValue(Production production,ProductionPlanResource row, ProductionPlanMetric column,BigDecimal value) {
-		super(production,row, column,value);
+	public ProductionValue(ProductionPlanResource resource, ProductionPlanMetric metric,BigDecimal value) {
+		super(resource,metric,value);
 	}
 	
 	@Override @Column(precision=10,scale=FLOAT_SCALE,nullable=false)

@@ -1,19 +1,20 @@
 package org.cyk.system.company.business.impl.production;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.math.BigDecimal;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.production.ProductionSpreadSheetCellBusiness;
 import org.cyk.system.company.model.production.Production;
+import org.cyk.system.company.model.production.ProductionPlan;
+import org.cyk.system.company.model.production.ProductionPlanMetric;
+import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.persistence.api.production.ProductionValueDao;
-import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.business.impl.spreadsheet.AbstractSpreadSheetCellBusinessImpl;
 
-@Stateless
-public class ProductionSpreadSheetCellBusinessImpl extends AbstractTypedBusinessService<ProductionValue, ProductionValueDao> implements ProductionSpreadSheetCellBusiness,Serializable {
+public class ProductionSpreadSheetCellBusinessImpl extends AbstractSpreadSheetCellBusinessImpl<ProductionValue,ProductionPlanResource,ProductionPlanMetric,BigDecimal,ProductionPlan,Production, ProductionValueDao> implements ProductionSpreadSheetCellBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 	
@@ -21,12 +22,6 @@ public class ProductionSpreadSheetCellBusinessImpl extends AbstractTypedBusiness
 	public ProductionSpreadSheetCellBusinessImpl(ProductionValueDao dao) {
 		super(dao);
 	}
-
-	@Override
-	public Collection<ProductionValue> findByProductionSpreadSheet(Production production) {
-		return dao.readByProduction(production);
-	}
-
 	
 	
 }

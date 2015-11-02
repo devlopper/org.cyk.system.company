@@ -12,25 +12,15 @@ import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionPlanMetric;
 import org.cyk.ui.api.UIManager;
+import org.cyk.ui.api.model.Spreadsheet;
 
 @Getter @Setter @NoArgsConstructor
-public class ProductionController implements Serializable {
+public class ProductionSpreadsheet extends Spreadsheet<Production, ProductionPlanResource, ProductionPlanMetric, ProductionValue> implements Serializable {
 
 	private static final long serialVersionUID = -6574548621164268562L;
 
-	private Production production;
-	private List<ProductionPlanResource> rows;
-	private List<ProductionPlanMetric> columns;
-	private List<ProductionValue> cells;
-	private Boolean editable = Boolean.FALSE;
-	private String rowHeader="HEADER",title="TITLE";
-
-	public ProductionController(Production production,List<ProductionPlanResource> rows,List<ProductionPlanMetric> columns, List<ProductionValue> cells) {
-		super();
-		this.production = production;
-		this.rows = rows;
-		this.columns = columns;
-		this.cells = cells;
+	public ProductionSpreadsheet(Production production,List<ProductionPlanResource> resources,List<ProductionPlanMetric> metrics, List<ProductionValue> values) {
+		super(production,resources,metrics,values);
 		this.title = UIManager.getInstance().getTimeBusiness().formatDate(production.getCreationDate());
 	}
 	

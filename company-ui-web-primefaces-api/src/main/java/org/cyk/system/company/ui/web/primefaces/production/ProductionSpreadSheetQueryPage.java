@@ -13,11 +13,11 @@ import lombok.Setter;
 import org.cyk.system.company.business.api.production.ProductionBusiness;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ProductionSpreadSheetSearchCriteria;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadSheetQueryFormModel;
 import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadSheetQueryResultFormModel;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.model.spreadsheet.SpreadSheetSearchCriteria;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessQueryPage;
@@ -47,7 +47,7 @@ public class ProductionSpreadSheetQueryPage extends AbstractBusinessQueryPage<Pr
 		
 	@Override
 	protected Collection<Production> __query__() {
-		ProductionSpreadSheetSearchCriteria searchCriteria = searchCriteria();
+		SpreadSheetSearchCriteria searchCriteria = searchCriteria();
 		Collection<Production> collection = productionBusiness.findByCriteria(searchCriteria);
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterFromDate(),searchCriteria.getFromDateSearchCriteria().getPreparedValue().getTime());
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterToDate(),searchCriteria.getToDateSearchCriteria().getPreparedValue().getTime());
@@ -64,8 +64,8 @@ public class ProductionSpreadSheetQueryPage extends AbstractBusinessQueryPage<Pr
 		return Boolean.TRUE;
 	}
 	
-	private ProductionSpreadSheetSearchCriteria searchCriteria() {
-		return new ProductionSpreadSheetSearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
+	private SpreadSheetSearchCriteria searchCriteria() {
+		return new SpreadSheetSearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
 	}
 
 	@Override

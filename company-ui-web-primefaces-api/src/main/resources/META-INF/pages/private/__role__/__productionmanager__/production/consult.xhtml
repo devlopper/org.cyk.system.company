@@ -13,11 +13,7 @@
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
         <ui:param name="pageController" value="#{productionConsultPage}" />
         <ui:define name="body">
-        	<p:tabView value="#{productionConsultPage.productionSpreadSheetControllers}" var="productionSpreadSheetController" >
-        		<p:tab title="#{productionSpreadSheetController.title}" >
-        			<company:productionSpreadSheet value="#{productionSpreadSheetController}" />
-        		</p:tab>
-        	</p:tabView>
+        	<company:productionSpreadSheet value="#{productionConsultPage.spreadsheet}" />
 
         </ui:define>
         

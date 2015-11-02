@@ -26,6 +26,7 @@ import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
+import org.cyk.system.root.model.time.Period;
 import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.system.root.model.userinterface.InputName;
 import org.cyk.utility.common.Constant;
@@ -57,39 +58,43 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 		return product;
 	}
 	
-	protected ProductionPlanResource createProductionPlanResource(Product product,Collection<ProductionPlanResource> productionPlanResources){
-		ProductionPlanResource productionPlanResource = new ProductionPlanResource(product);
-		productionPlanResources.add(productionPlanResource);
+	protected ProductionPlanResource createProductionPlanResource(ProductionPlan productionPlan,Product product){
+		ProductionPlanResource productionPlanResource = new ProductionPlanResource(productionPlan,product);
+		productionPlan.getRows().add(productionPlanResource);
 		return productionPlanResource;
 	}
 	
-	protected ProductionPlanMetric createProductionPlanMetric(InputName inputName,Collection<ProductionPlanMetric> productionPlanMetrics){
-		ProductionPlanMetric productionPlanMetric = new ProductionPlanMetric(inputName);
-		productionPlanMetrics.add(productionPlanMetric);
+	protected ProductionPlanMetric createProductionPlanMetric(ProductionPlan productionPlan,InputName inputName){
+		ProductionPlanMetric productionPlanMetric = new ProductionPlanMetric(productionPlan,inputName);
+		productionPlan.getColumns().add(productionPlanMetric);
 		return productionPlanMetric;
 	}
 
-	protected ProductionUnit createProductionUnit(Company company,ProductionEnergy energy,Collection<ProductionUnit> productionUnits){
+	protected ProductionUnit createProductionUnit(Company company,Collection<ProductionUnit> productionUnits){
 		ProductionUnit productionUnit = new ProductionUnit();
 		productionUnits.add(productionUnit);
 		productionUnit.setCompany(company);
-		productionUnit.setEnergy(energy);
-		productionUnit.setNextReportDate(new Date());
 		return productionUnit;
 	}
 	
-	protected ProductionPlan createProductionPlan(String code,ProductionUnit productionUnit,Product product,TimeDivisionType timeDivisionType,Collection<ProductionPlan> productionPlans){
-		ProductionPlan productionPlan = new ProductionPlan(code, code, productionUnit, product, timeDivisionType);
+	protected ProductionPlan createProductionPlan(String code,ProductionUnit productionUnit,Product product,ProductionEnergy energy,TimeDivisionType reportIntervaltTimeDivisionType,Collection<ProductionPlan> productionPlans){
+		ProductionPlan productionPlan = new ProductionPlan(code, code, productionUnit, product, reportIntervaltTimeDivisionType);
 		productionPlans.add(productionPlan);
+		productionPlan.setEnergy(energy);
+		productionPlan.setNextReportDate(new Date());
 		return productionPlan;
 	}
 	
 	protected Production createProduction(ProductionPlan productionPlan,Object[][] objects,Collection<Production> productions){
 		Production production = new Production();
+		production.setPeriod(new Period(new Date(), new Date()));
 		production.setTemplate(productionPlan);
 		productions.add(production);
-		for(Object[] object : objects)
-			production.getCells().add(new ProductionValue(production,(ProductionPlanResource)object[0], (ProductionPlanMetric)object[1],new BigDecimal((String)object[2])));
+		for(Object[] object : objects){
+			ProductionValue value = new ProductionValue((ProductionPlanResource)object[0], (ProductionPlanMetric)object[1],new BigDecimal((String)object[2]));
+			//debug(value);
+			production.getCells().add(value);
+		}
 		return production;
 	}
 		

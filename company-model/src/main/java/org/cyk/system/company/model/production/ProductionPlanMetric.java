@@ -7,8 +7,8 @@ import javax.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.cyk.system.root.model.spreadsheet.AbstractSpreadSheetTemplateColumn;
 import org.cyk.system.root.model.userinterface.InputName;
-import org.cyk.system.root.model.userinterface.spreadsheet.AbstractSpreadSheetTemplateColumn;
 
 @Getter @Setter @Entity
 public class ProductionPlanMetric extends AbstractSpreadSheetTemplateColumn<ProductionPlan> implements Serializable {
@@ -17,8 +17,8 @@ public class ProductionPlanMetric extends AbstractSpreadSheetTemplateColumn<Prod
 
 	public ProductionPlanMetric() {}
 
-	public ProductionPlanMetric(InputName inputName) {
-		super(inputName);
+	public ProductionPlanMetric(ProductionPlan productionPlan,InputName inputName) {
+		super(productionPlan,inputName);
 	}
 	
 }

@@ -1,7 +1,7 @@
 package org.cyk.system.company.business.impl.production;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.math.BigDecimal;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -10,18 +10,25 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.production.ProductionBusiness;
 import org.cyk.system.company.model.production.Production;
+import org.cyk.system.company.model.production.ProductionPlan;
+import org.cyk.system.company.model.production.ProductionPlanMetric;
+import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionValue;
-import org.cyk.system.company.model.production.ProductionSpreadSheetSearchCriteria;
 import org.cyk.system.company.persistence.api.production.ProductionDao;
+import org.cyk.system.company.persistence.api.production.ProductionPlanMetricDao;
+import org.cyk.system.company.persistence.api.production.ProductionPlanResourceDao;
 import org.cyk.system.company.persistence.api.production.ProductionValueDao;
-import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.business.impl.spreadsheet.AbstractSpreadSheetBusinessImpl;
+import org.cyk.system.root.model.spreadsheet.SpreadSheetSearchCriteria;
 
 @Stateless
-public class ProductionBusinessImpl extends AbstractTypedBusinessService<Production, ProductionDao> implements ProductionBusiness,Serializable {
+public class ProductionBusinessImpl extends AbstractSpreadSheetBusinessImpl<Production,ProductionPlan,ProductionPlanResource,ProductionPlanMetric,ProductionValue,BigDecimal,SpreadSheetSearchCriteria,ProductionDao> implements ProductionBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 	
-	@Inject private ProductionValueDao productionInputDao;
+	@Inject private ProductionValueDao productionValueDao;
+	@Inject private ProductionPlanResourceDao productionPlanResourceDao;
+	@Inject private ProductionPlanMetricDao productionPlanMetricDao;
 	
 	@Inject
 	public ProductionBusinessImpl(ProductionDao dao) {
@@ -35,7 +42,7 @@ public class ProductionBusinessImpl extends AbstractTypedBusinessService<Product
 		super.create(production);
 		for(ProductionValue input : production.getCells()){
 			input.setSpreadSheet(production);
-			productionInputDao.create(input);
+			productionValueDao.create(input);
 		}
 		return production;
 	}
@@ -43,32 +50,29 @@ public class ProductionBusinessImpl extends AbstractTypedBusinessService<Product
 	@Override
 	public Production update(Production production) {
 		for(ProductionValue input : production.getCells())
-			productionInputDao.update(input);
+			productionValueDao.update(input);
 		return super.update(production);
 	}
 	
 	@Override
 	public Production delete(Production production) {
-		for(ProductionValue input : productionInputDao.readByProduction(production))
-			productionInputDao.delete(input);
+		for(ProductionValue input : productionValueDao.readBySpreadSheet(production))
+			productionValueDao.delete(input);
 		return super.delete(production);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void load(Production production) {
 		super.load(production);
-		production.setCells(productionInputDao.readByProduction(production));
+		production.setCells(productionValueDao.readBySpreadSheet(production));
 	}
-
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Collection<Production> findByCriteria(ProductionSpreadSheetSearchCriteria searchCriteria) {
-		prepareFindByCriteria(searchCriteria);
-		return dao.readByCriteria(searchCriteria);
-	}
-
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Long countByCriteria(ProductionSpreadSheetSearchCriteria searchCriteria) {
-		return dao.countByCriteria(searchCriteria);
+	
+	@Override
+	protected void __load__(Production production) {
+		super.__load__(production);
+		production.setRows(productionPlanResourceDao.readByTemplate(production.getTemplate()));
+		production.setColumns(productionPlanMetricDao.readByTemplate(production.getTemplate()));
+		production.setCells(productionValueDao.readBySpreadSheet(production));
 	}
 	
 }

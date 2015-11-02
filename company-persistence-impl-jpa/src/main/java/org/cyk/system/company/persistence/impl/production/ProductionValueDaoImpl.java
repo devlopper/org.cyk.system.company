@@ -1,29 +1,18 @@
 package org.cyk.system.company.persistence.impl.production;
 
-import java.util.Collection;
+import java.math.BigDecimal;
 
 import org.cyk.system.company.model.production.Production;
+import org.cyk.system.company.model.production.ProductionPlan;
+import org.cyk.system.company.model.production.ProductionPlanMetric;
+import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.persistence.api.production.ProductionValueDao;
-import org.cyk.system.root.persistence.impl.AbstractTypedDao;
+import org.cyk.system.root.persistence.impl.spreadsheet.AbstractSpreadSheetCellDaoImpl;
 
-public class ProductionValueDaoImpl extends AbstractTypedDao<ProductionValue> implements ProductionValueDao {
+public class ProductionValueDaoImpl extends AbstractSpreadSheetCellDaoImpl<ProductionValue,ProductionPlanResource,ProductionPlanMetric,BigDecimal,ProductionPlan,Production> implements ProductionValueDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
-
-	private String readByProduction;
-	
-	@Override
-	protected void namedQueriesInitialisation() {
-		super.namedQueriesInitialisation();
-		registerNamedQuery(readByProduction, _select().where("spreadSheet"));
-	}
-	
-	@Override
-	public Collection<ProductionValue> readByProduction(Production production) {
-		return namedQuery(readByProduction).parameter("spreadSheet", production).resultMany();
-	}
-
 	
 	
 }

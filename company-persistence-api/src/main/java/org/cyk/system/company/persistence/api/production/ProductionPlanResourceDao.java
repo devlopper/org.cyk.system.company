@@ -1,13 +1,10 @@
 package org.cyk.system.company.persistence.api.production;
 
-import java.util.Collection;
-
 import org.cyk.system.company.model.production.ProductionPlan;
+import org.cyk.system.company.model.production.ProductionPlanMetric;
 import org.cyk.system.company.model.production.ProductionPlanResource;
-import org.cyk.system.root.persistence.api.TypedDao;
+import org.cyk.system.root.persistence.api.spreadsheet.AbstractSpreadSheetTemplateRowDao;
 
-public interface ProductionPlanResourceDao extends TypedDao<ProductionPlanResource> {
-
-	Collection<ProductionPlanResource> readByProductionPlan(ProductionPlan productionPlan);
+public interface ProductionPlanResourceDao extends AbstractSpreadSheetTemplateRowDao<ProductionPlanResource,ProductionPlanMetric,ProductionPlan> {
 
 }

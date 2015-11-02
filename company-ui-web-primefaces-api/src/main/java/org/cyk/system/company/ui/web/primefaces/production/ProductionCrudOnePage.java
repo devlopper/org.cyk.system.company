@@ -16,11 +16,11 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.ProductionPlan;
-import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionPlanMetric;
-import org.cyk.system.company.ui.web.primefaces.model.ProductionController;
+import org.cyk.system.company.model.production.ProductionPlanResource;
+import org.cyk.system.company.model.production.ProductionValue;
+import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadsheet;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
@@ -38,7 +38,7 @@ public class ProductionCrudOnePage extends AbstractCrudOnePage<Production> imple
 	
 	private List<ProductionPlan> productionPlans;	
 	private ProductionPlan selectedProductionPlan;
-	private ProductionController productionController;
+	private ProductionSpreadsheet spreadsheet;
 	
 	@Override
 	protected void initialisation() {
@@ -48,17 +48,24 @@ public class ProductionCrudOnePage extends AbstractCrudOnePage<Production> imple
 			selectedProductionPlan = productionPlans.get(0);
 		productionPlanModelBusiness.load(selectedProductionPlan);
 		
-		productionController = new ProductionController(identifiable, new ArrayList<ProductionPlanResource>(selectedProductionPlan.getRows()),
+		spreadsheet = new ProductionSpreadsheet(identifiable, new ArrayList<ProductionPlanResource>(selectedProductionPlan.getRows()),
 				new ArrayList<ProductionPlanMetric>(selectedProductionPlan.getColumns()), null);
 		
-		productionController.setEditable(form.getEditable());
-		for(ProductionPlanResource input : productionController.getRows()){
-			for(ProductionPlanMetric productionPlanModelMetric : productionController.getColumns())
-				identifiable.getCells().add(new ProductionValue(input,productionPlanModelMetric));
+		spreadsheet.setEditable(form.getEditable());
+		for(ProductionPlanResource input : spreadsheet.getRows()){
+			for(ProductionPlanMetric productionPlanModelMetric : spreadsheet.getColumns())
+				identifiable.getCells().add(new ProductionValue(input,productionPlanModelMetric,null));
 			
 		}
-		productionController.setCells(new ArrayList<ProductionValue>(identifiable.getCells()));
+		spreadsheet.setCells(new ArrayList<ProductionValue>(identifiable.getCells()));
 		
+	}
+	
+	@Override
+	protected void create() {
+		System.out.println(identifiable.getRows());
+		System.out.println(identifiable.getColumns());
+		System.out.println(identifiable.getCells());
 	}
 		
 	@Override

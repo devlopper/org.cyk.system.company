@@ -6,6 +6,8 @@ import java.util.Collection;
 
 import javax.inject.Singleton;
 
+import lombok.Getter;
+
 import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.Product;
@@ -16,9 +18,8 @@ import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanMetric;
 import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionUnit;
+import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.system.root.model.userinterface.InputName;
-
-import lombok.Getter;
 
 @Singleton @Getter
 public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProducer implements Serializable {
@@ -29,6 +30,7 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 	
 	private ProductionEnergy productionEnergyGas,productionEnergyFuel,productionEnergyWood;
 	private TangibleProduct tangibleProductFarine,tangibleProductAmeliorant,tangibleProductPain;
+	private ProductionPlan productionPlanPain;
 	private ProductionPlanResource productionPlanResourceFarine,productionPlanResourceAmeliorant;
 	private ProductionPlanMetric productionPlanMetricQuantity;
 	private InputName inputNameQuantity;
@@ -43,37 +45,33 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 		Collection<Product> products = new ArrayList<>();
 		tangibleProductFarine = createTangibleProduct("Farine", null, products);
 		tangibleProductAmeliorant = createTangibleProduct("Ameliorant", null, products);
-		
-		Collection<ProductionPlanResource> productionPlanResources = new ArrayList<>();
-		productionPlanResourceFarine = createProductionPlanResource(tangibleProductFarine, productionPlanResources);
-		productionPlanResourceAmeliorant = createProductionPlanResource(tangibleProductAmeliorant, productionPlanResources);
-		
-		Collection<ProductionPlanMetric> productionPlanMetrics = new ArrayList<>();
-		productionPlanMetricQuantity = createProductionPlanMetric(inputNameQuantity, productionPlanMetrics);
+		tangibleProductPain = createTangibleProduct("Pain", null, products);
 		
 		flush(Product.class, productBusiness, products);
-		flush(ProductionPlanResource.class, productionPlanResourceBusiness, productionPlanResources);
-		flush(ProductionPlanMetric.class, productionPlanMetricBusiness, productionPlanMetrics);
+		
 	}
 	
 	private void structure(){
 		Collection<ProductionUnit> productionUnits = new ArrayList<>();
-		productionUnit1 = createProductionUnit(getCompany(), getEnumeration(ProductionEnergy.class, ProductionEnergy.GAS), productionUnits);
+		productionUnit1 = createProductionUnit(getCompany(), productionUnits);
 		//createProductionUnit(company, getEnumeration(ProductionEnergy.class, ProductionEnergy.GAS), productionUnits);
+		flush(ProductionUnit.class, productionUnitBusiness, productionUnits);
 		
 		Collection<ProductionPlan> productionPlans = new ArrayList<>();
-		ProductionPlan productionPlan = createProductionPlan("PP1", productionUnit1, tangibleProductPain, rootBusinessLayer.getTimeDivisionTypeDay(), productionPlans);
-		productionPlan.getRows().add(productionPlanResourceFarine);
-		productionPlan.getRows().add(productionPlanResourceAmeliorant);
-		productionPlan.getColumns().add(productionPlanMetricQuantity);
+		productionPlanPain = createProductionPlan("PP1", productionUnit1, tangibleProductPain, getEnumeration(ProductionEnergy.class, ProductionEnergy.GAS),getEnumeration(TimeDivisionType.class, TimeDivisionType.DAY), productionPlans);
+		productionPlanResourceFarine = createProductionPlanResource(productionPlanPain,tangibleProductFarine);
+		productionPlanResourceAmeliorant = createProductionPlanResource(productionPlanPain,tangibleProductAmeliorant);
+		productionPlanMetricQuantity = createProductionPlanMetric(productionPlanPain,inputNameQuantity);
+		flush(ProductionPlan.class, productionPlanBusiness, productionPlans);
 		
 		Collection<Production> productions = new ArrayList<>();
-		createProduction(productionPlan,new Object[][]{
+		createProduction(productionPlanPain,new Object[][]{
 			{productionPlanResourceFarine, productionPlanMetricQuantity,"1"},{productionPlanResourceAmeliorant, productionPlanMetricQuantity,"2"}
 		}, productions);
 		
-		flush(ProductionUnit.class, productionUnitBusiness, productionUnits);
-		flush(ProductionPlan.class, productionPlanBusiness, productionPlans);
+		createProduction(productionPlanPain,new Object[][]{
+			{productionPlanResourceFarine, productionPlanMetricQuantity,"56"},{productionPlanResourceAmeliorant, productionPlanMetricQuantity,"102"}
+		}, productions);
 		flush(Production.class, productionBusiness, productions);
 	}
 	

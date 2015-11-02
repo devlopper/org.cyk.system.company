@@ -6,12 +6,12 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import org.cyk.system.company.model.product.Product;
-import org.cyk.system.root.model.userinterface.spreadsheet.AbstractSpreadSheetTemplateRow;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import org.cyk.system.company.model.product.Product;
+import org.cyk.system.root.model.spreadsheet.AbstractSpreadSheetTemplateRow;
 
 /**
  * Resource used in the production process in order to produce output
@@ -25,8 +25,8 @@ public class ProductionPlanResource extends AbstractSpreadSheetTemplateRow<Produ
 
 	@ManyToOne @NotNull private Product product;
 
-	public ProductionPlanResource(Product product) {
-		super();
+	public ProductionPlanResource(ProductionPlan productionPlan,Product product) {
+		super(productionPlan); 
 		this.product = product;
 	}
 	

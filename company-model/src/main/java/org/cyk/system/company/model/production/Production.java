@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.root.model.userinterface.spreadsheet.AbstractSpreadSheet;
+import org.cyk.system.root.model.spreadsheet.AbstractSpreadSheet;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 
