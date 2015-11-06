@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS)
+@Getter @Setter @NoArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS) @Deprecated
 public class ProductionReseller extends AbstractIdentifiable implements Serializable {
 
 	private static final long serialVersionUID = 1371797411549893368L;

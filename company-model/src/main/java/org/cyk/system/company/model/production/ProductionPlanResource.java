@@ -30,5 +30,9 @@ public class ProductionPlanResource extends AbstractSpreadSheetTemplateRow<Produ
 		this.product = product;
 	}
 	
+	@Override
+	public String toString() {
+		return product.getCode();
+	}
 }
 

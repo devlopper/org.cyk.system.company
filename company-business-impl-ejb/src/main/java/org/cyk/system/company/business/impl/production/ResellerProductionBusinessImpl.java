@@ -1,12 +1,18 @@
 package org.cyk.system.company.business.impl.production;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
+import org.cyk.system.company.model.production.Production;
+import org.cyk.system.company.model.production.ResellerProduct;
 import org.cyk.system.company.model.production.ResellerProduction;
+import org.cyk.system.company.persistence.api.production.ResellerProductDao;
 import org.cyk.system.company.persistence.api.production.ResellerProductionDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
@@ -15,9 +21,29 @@ public class ResellerProductionBusinessImpl extends AbstractTypedBusinessService
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
+	@Inject private ResellerProductDao resellerProductDao;
+	
 	@Inject
 	public ResellerProductionBusinessImpl(ResellerProductionDao dao) {
 		super(dao);
+	}
+
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public Collection<ResellerProduction> findByProduction(Production production) {
+		return dao.readByProduction(production);
+	}
+	
+	@Override
+	public ResellerProduction create(ResellerProduction resellerProduction) {
+		ResellerProduct resellerProduct = resellerProductDao.readByResellerByProduct(resellerProduction.getReseller()
+				, resellerProduction.getProduction().getTemplate().getProduct());
+		resellerProduction.getAmount().setSystem(resellerProduction.getTakenQuantity().multiply(resellerProduct.getSaleUnitPrice()));
+		resellerProduction.getAmount().computeGap();
+		resellerProduction.setDiscount(resellerProduct.getTakingUnitPrice().subtract(resellerProduct.getSaleUnitPrice()));
+		resellerProduction.setCommission(resellerProduction.getTakenQuantity().subtract(resellerProduction.getReturnedQuantity())
+				.multiply(resellerProduct.getCommissionRate()));
+		resellerProduction.setPayable(resellerProduction.getAmount().getGap().add(resellerProduction.getDiscount()).add(resellerProduction.getCommission()));
+		return super.create(resellerProduction);
 	}
 
 }

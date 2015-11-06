@@ -9,6 +9,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.production.ProductionBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanMetric;
@@ -34,14 +35,28 @@ public class ProductionBusinessImpl extends AbstractSpreadSheetBusinessImpl<Prod
 	public ProductionBusinessImpl(ProductionDao dao) {
 		super(dao);
 	}
+	
+	@Override
+	public Production instanciate(ProductionPlan productionPlan) {
+		Production production = new Production();
+		production.setTemplate(productionPlan);
+		CompanyBusinessLayer.getInstance().getProductionPlanBusiness().load(productionPlan);
+		for(ProductionPlanResource input : productionPlan.getRows()){
+			for(ProductionPlanMetric productionPlanModelMetric : productionPlan.getColumns())
+				production.getCells().add(new ProductionValue(input,productionPlanModelMetric,null));
+		}
+		return production;
+	}
 
 	@Override
 	public Production create(Production production) {
 		production.setCreationDate(universalTimeCoordinated());
 		//exceptionUtils().exception(production.getPeriod().getToDate().before(production.getCreationDate()), "baddates");
+		//System.out.println(production.getCells());
 		super.create(production);
 		for(ProductionValue input : production.getCells()){
 			input.setSpreadSheet(production);
+			//debug(input);
 			productionValueDao.create(input);
 		}
 		return production;

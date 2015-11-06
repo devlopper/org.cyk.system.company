@@ -12,5 +12,6 @@ import org.cyk.system.root.model.spreadsheet.SpreadSheetSearchCriteria;
 
 public interface ProductionBusiness extends AbstractSpreadSheetBusiness<Production,ProductionPlan,ProductionPlanResource,ProductionPlanMetric,ProductionValue,BigDecimal,SpreadSheetSearchCriteria> {
 
+	Production instanciate(ProductionPlan productionPlan);
 	
 }

@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import lombok.AllArgsConstructor;
@@ -14,12 +13,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionPlan;
-import org.cyk.system.company.model.production.ProductionPlanMetric;
-import org.cyk.system.company.model.production.ProductionPlanResource;
-import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadsheet;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
@@ -29,45 +25,29 @@ import org.cyk.utility.common.annotation.user.interfaces.InputCalendar;
 import org.cyk.utility.common.annotation.user.interfaces.InputCalendar.Format;
 
 @Named @ViewScoped @Getter @Setter
-public class ProductionCrudOnePage extends AbstractCrudOnePage<Production> implements Serializable {
+public class ProductionEditPage extends AbstractCrudOnePage<Production> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	@Inject
-	private ProductionPlanBusiness productionPlanModelBusiness;
-	
 	private List<ProductionPlan> productionPlans;	
 	private ProductionPlan selectedProductionPlan;
 	private ProductionSpreadsheet spreadsheet;
 	
 	@Override
 	protected void initialisation() {
-		super.initialisation();
-		productionPlans = new ArrayList<ProductionPlan>(productionPlanModelBusiness.findAll());
+		productionPlans = new ArrayList<ProductionPlan>(CompanyBusinessLayer.getInstance().getProductionPlanBusiness().findAll());
 		if(!productionPlans.isEmpty())
 			selectedProductionPlan = productionPlans.get(0);
-		productionPlanModelBusiness.load(selectedProductionPlan);
-		
-		spreadsheet = new ProductionSpreadsheet(identifiable, new ArrayList<ProductionPlanResource>(selectedProductionPlan.getRows()),
-				new ArrayList<ProductionPlanMetric>(selectedProductionPlan.getColumns()), null);
-		
+		super.initialisation();
+		spreadsheet = new ProductionSpreadsheet(identifiable);
 		spreadsheet.setEditable(form.getEditable());
-		for(ProductionPlanResource input : spreadsheet.getRows()){
-			for(ProductionPlanMetric productionPlanModelMetric : spreadsheet.getColumns())
-				identifiable.getCells().add(new ProductionValue(input,productionPlanModelMetric,null));
-			
-		}
-		spreadsheet.setCells(new ArrayList<ProductionValue>(identifiable.getCells()));
-		
 	}
 	
 	@Override
-	protected void create() {
-		System.out.println(identifiable.getRows());
-		System.out.println(identifiable.getColumns());
-		System.out.println(identifiable.getCells());
+	protected Production instanciateIdentifiable() {
+		return CompanyBusinessLayer.getInstance().getProductionBusiness().instanciate(selectedProductionPlan);
 	}
-		
+				
 	@Override
 	protected BusinessEntityInfos fetchBusinessEntityInfos() {
 		return uiManager.businessEntityInfos(Production.class);
@@ -75,12 +55,12 @@ public class ProductionCrudOnePage extends AbstractCrudOnePage<Production> imple
 	
 	@Override
 	protected Class<? extends AbstractFormModel<?>> __formModelClass__() {
-		return FormModel.class;
+		return Form.class;
 	}
 			
 	/**/
 	@Getter @Setter @AllArgsConstructor @NoArgsConstructor
-	public static class FormModel extends AbstractFormModel<Production> implements Serializable {
+	public static class Form extends AbstractFormModel<Production> implements Serializable {
 		private static final long serialVersionUID = -731657715703646576L;
 		@Input @InputCalendar(format=Format.DATE_LONG)
 		private Date date;

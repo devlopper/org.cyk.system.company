@@ -10,7 +10,6 @@ import lombok.Setter;
 
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
-import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.ui.api.model.AbstractOutputDetails;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudManyPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
@@ -53,12 +52,6 @@ public class ProductionListPage extends AbstractCrudManyPage<Production> impleme
 			date = timeBusiness.formatDate(production.getPeriod().getFromDate());
 		}
 		
-	}
-	
-	@Override
-	protected AbstractIdentifiable __identifiable__(Object data) {
-		System.out.println("ProductionListPage.__identifiable__()");
-		return super.__identifiable__(data);
 	}
 		
 }

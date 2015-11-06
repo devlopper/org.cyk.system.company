@@ -1,16 +1,15 @@
 package org.cyk.system.company.ui.web.primefaces.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ProductionValue;
-import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionPlanMetric;
+import org.cyk.system.company.model.production.ProductionPlanResource;
+import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.ui.api.UIManager;
 import org.cyk.ui.api.model.Spreadsheet;
 
@@ -19,9 +18,13 @@ public class ProductionSpreadsheet extends Spreadsheet<Production, ProductionPla
 
 	private static final long serialVersionUID = -6574548621164268562L;
 
-	public ProductionSpreadsheet(Production production,List<ProductionPlanResource> resources,List<ProductionPlanMetric> metrics, List<ProductionValue> values) {
-		super(production,resources,metrics,values);
+	public ProductionSpreadsheet(Production production) {
+		super(production,production.getRows(),production.getColumns(),production.getCells());
 		this.title = UIManager.getInstance().getTimeBusiness().formatDate(production.getCreationDate());
+		listeners.add(new SpreadsheetAdapter<Production, ProductionPlanResource, ProductionPlanMetric, ProductionValue>(){
+			private static final long serialVersionUID = 6405059869268114127L;
+			
+		});
 	}
 	
 	public ProductionValue cell(Integer row, Integer column) {

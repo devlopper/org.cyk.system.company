@@ -13,12 +13,14 @@ import javax.validation.constraints.NotNull;
 
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ValueDetails;
+import org.cyk.utility.common.annotation.ModelBean;
+import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor @Entity
+@Getter @Setter @NoArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS)
 public class ResellerProduction extends AbstractIdentifiable implements Serializable {
 
 	private static final long serialVersionUID = 1371797411549893368L;
@@ -38,8 +40,27 @@ public class ResellerProduction extends AbstractIdentifiable implements Serializ
 			,@AttributeOverride(name="gap",column=@Column(name="sold_amount_gap"))
 	})
 	@Embedded private ValueDetails amount = new ValueDetails();
+	//@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountGapCumul = BigDecimal.ZERO;
 	
 	/* Return */
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal returnedQuantity = BigDecimal.ZERO;
 	
+	/**/
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal discount = BigDecimal.ZERO;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal commission = BigDecimal.ZERO;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal payable = BigDecimal.ZERO;
+	//@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal payableCummul = BigDecimal.ZERO;
+	
+	/**/
+	
+	public ResellerProduction(Reseller reseller, Production production) {
+		super();
+		this.reseller = reseller;
+		this.production = production;
+	}
+	
+	/**/
+	
+	public static final String FIELD_RESELLER = "reseller";
+	public static final String FIELD_PRODUCTION = "production";
 }

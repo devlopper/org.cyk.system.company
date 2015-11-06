@@ -18,6 +18,9 @@ import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanMetric;
 import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionUnit;
+import org.cyk.system.company.model.production.Reseller;
+import org.cyk.system.company.model.production.ResellerProduct;
+import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.system.root.model.userinterface.InputName;
 
@@ -35,6 +38,7 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 	private ProductionPlanMetric productionPlanMetricQuantity;
 	private InputName inputNameQuantity;
 	private ProductionUnit productionUnit1;
+	private Collection<Reseller> resellers;
 	
 	private void parameters(){
 		productionEnergyGas = createEnumeration(ProductionEnergy.class, ProductionEnergy.GAS);
@@ -64,6 +68,25 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 		productionPlanMetricQuantity = createProductionPlanMetric(productionPlanPain,inputNameQuantity);
 		flush(ProductionPlan.class, productionPlanBusiness, productionPlans);
 		
+	}
+	
+	private void business(){
+		Collection<Reseller> resellers = new ArrayList<Reseller>();
+		for(int i=0;i<10;i++){
+			Reseller reseller = rootRandomDataProvider.actor(Reseller.class);
+			resellers.add(reseller);
+			reseller.setCompany(getCompany());
+		}
+		resellerBusiness.create(resellers);
+		//rootRandomDataProvider.createActor(Reseller.class, 10);
+		flush("Resellers");
+		
+		Collection<ResellerProduct> resellerProducts = new ArrayList<>();
+		for(Reseller reseller : resellerBusiness.findAll()){
+			createResellerProduct(reseller, tangibleProductPain, resellerProducts);
+		}
+		flush(ResellerProduct.class, resellerProductBusiness, resellerProducts);
+		
 		Collection<Production> productions = new ArrayList<>();
 		createProduction(productionPlanPain,new Object[][]{
 			{productionPlanResourceFarine, productionPlanMetricQuantity,"1"},{productionPlanResourceAmeliorant, productionPlanMetricQuantity,"2"}
@@ -73,10 +96,12 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 			{productionPlanResourceFarine, productionPlanMetricQuantity,"56"},{productionPlanResourceAmeliorant, productionPlanMetricQuantity,"102"}
 		}, productions);
 		flush(Production.class, productionBusiness, productions);
-	}
-	
-	private void business(){
 		
+		Collection<ResellerProduction> resellerProductions = new ArrayList<>();
+		for(Production production : productionBusiness.findAll())
+			for(Reseller reseller : resellerBusiness.findAll())
+				createResellerProduction(reseller, production, resellerProductions);
+		flush(ResellerProduction.class, resellerProductionBusiness, resellerProductions);
 	}
 	
 	@Override

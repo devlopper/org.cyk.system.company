@@ -22,6 +22,10 @@ public class Reseller extends AbstractActor implements Serializable {
 
 	@ManyToOne @NotNull private Company company;
 	
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountPaidGapCumulation = BigDecimal.ZERO;
+	/* Contract information */
+	
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountGapCumulation = BigDecimal.ZERO;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal salary = BigDecimal.ZERO;
+	
 	
 }

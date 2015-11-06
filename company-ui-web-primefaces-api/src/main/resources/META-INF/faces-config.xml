@@ -41,6 +41,17 @@
 			<redirect />
 		</navigation-case>
 		
+		<navigation-case>
+			<from-outcome>resellerProductionEditView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/resellerproduction/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>resellerProductionConsultView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/resellerproduction/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
 		<!-- Stock Manager -->
 		<navigation-case>
 			<from-outcome>productCollectionEditView</from-outcome>

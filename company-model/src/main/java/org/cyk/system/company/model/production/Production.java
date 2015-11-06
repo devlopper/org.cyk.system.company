@@ -1,8 +1,11 @@
 package org.cyk.system.company.model.production;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,5 +19,5 @@ public class Production extends AbstractSpreadSheet<ProductionPlan,ProductionPla
 
 	private static final long serialVersionUID = -625974035216780560L;
 	
-	
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal quantity = BigDecimal.ZERO;
 }
