@@ -49,9 +49,6 @@ public class ResellerProductionBusinessImpl extends AbstractTypedBusinessService
 		resellerProduction.setPayableCumul(resellerProduction.getReseller().getPayable().add(resellerProduction.getPayable()));
 		super.create(resellerProduction);
 		
-		System.out.println("ResellerProductionBusinessImpl.create()");
-		debug(resellerProduction);
-		
 		resellerProduction.getReseller().setAmountGap(resellerProduction.getAmountGapCumul());
 		resellerProduction.getReseller().setPayable(resellerProduction.getPayableCumul());
 		resellerDao.update(resellerProduction.getReseller());

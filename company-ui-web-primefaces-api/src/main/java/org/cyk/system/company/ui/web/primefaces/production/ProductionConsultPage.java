@@ -57,7 +57,6 @@ public class ProductionConsultPage extends AbstractConsultPage<Production> imple
 			}
 			@Override
 			public ResellerProductionDetails createData(ResellerProduction identifiable) {
-				debug(identifiable);
 				return super.createData(identifiable);
 			}
 			@Override
