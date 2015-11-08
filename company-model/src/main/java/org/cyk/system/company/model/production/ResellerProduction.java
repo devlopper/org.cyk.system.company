@@ -40,7 +40,7 @@ public class ResellerProduction extends AbstractIdentifiable implements Serializ
 			,@AttributeOverride(name="gap",column=@Column(name="sold_amount_gap"))
 	})
 	@Embedded private ValueDetails amount = new ValueDetails();
-	//@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountGapCumul = BigDecimal.ZERO;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountGapCumul = BigDecimal.ZERO;
 	
 	/* Return */
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal returnedQuantity = BigDecimal.ZERO;
@@ -49,7 +49,7 @@ public class ResellerProduction extends AbstractIdentifiable implements Serializ
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal discount = BigDecimal.ZERO;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal commission = BigDecimal.ZERO;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal payable = BigDecimal.ZERO;
-	//@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal payableCummul = BigDecimal.ZERO;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal payableCumul = BigDecimal.ZERO;
 	
 	/**/
 	

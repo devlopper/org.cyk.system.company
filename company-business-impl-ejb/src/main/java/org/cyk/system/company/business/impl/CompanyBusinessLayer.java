@@ -60,6 +60,7 @@ import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.Reseller;
+import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
@@ -275,6 +276,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)Employee.class, (TypedBusiness)employeeBusiness);
         beansMap.put((Class)Customer.class, (TypedBusiness)customerBusiness);
         beansMap.put((Class)Reseller.class, (TypedBusiness)resellerBusiness);
+        beansMap.put((Class)ResellerProduction.class, (TypedBusiness)resellerProductionBusiness);
         beansMap.put((Class)TangibleProduct.class, (TypedBusiness)tangibleProductBusiness);
         beansMap.put((Class)Product.class, (TypedBusiness)productBusiness);
         beansMap.put((Class)DivisionType.class, (TypedBusiness)divisionTypeBusiness);

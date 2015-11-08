@@ -52,6 +52,22 @@
 			<redirect />
 		</navigation-case>
 		
+		<navigation-case>
+			<from-outcome>resellerProductEditView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/resellerproduct/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>resellerProductListView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/resellerproduct/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>resellerProductConsultView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/resellerproduct/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
 		<!-- Stock Manager -->
 		<navigation-case>
 			<from-outcome>productCollectionEditView</from-outcome>

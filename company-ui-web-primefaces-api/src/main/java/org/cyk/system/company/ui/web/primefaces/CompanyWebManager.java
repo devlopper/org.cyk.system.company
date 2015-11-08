@@ -7,8 +7,6 @@ import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.CustomerBusiness;
@@ -17,6 +15,8 @@ import org.cyk.system.company.business.api.product.TangibleProductInventoryBusin
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
 import org.cyk.system.company.business.api.production.ProductionBusiness;
 import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
+import org.cyk.system.company.business.api.production.ResellerBusiness;
+import org.cyk.system.company.business.api.production.ResellerProductBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
@@ -34,6 +34,8 @@ import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionPlan;
+import org.cyk.system.company.model.production.Reseller;
+import org.cyk.system.company.model.production.ResellerProduct;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
@@ -51,6 +53,8 @@ import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.cyk.utility.common.computation.DataReadConfiguration;
+
+import lombok.Getter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyWebManager.DEPLOYMENT_ORDER) @Getter
 public class CompanyWebManager extends AbstractPrimefacesManager implements Serializable {
@@ -80,6 +84,8 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private EmployeeBusiness employeeBusiness;
+	@Inject private ResellerBusiness resellerBusiness;
+	@Inject private ResellerProductBusiness resellerProductBusiness;
 	@Inject private ProductCollectionBusiness productCollectionBusiness;
 	@Inject private TangibleProductInventoryBusiness tangibleProductInventoryBusiness;
 	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
@@ -123,7 +129,11 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 					return (Collection<T>) customerBusiness.findAll();
 				}else if(Employee.class.equals(dataClass)){
 					return (Collection<T>) employeeBusiness.findAll();
-				} else if(ProductCollection.class.equals(dataClass)){
+				}else if(Reseller.class.equals(dataClass)){
+					return (Collection<T>) resellerBusiness.findAll();	
+				}else if(ResellerProduct.class.equals(dataClass)){
+					return (Collection<T>) resellerProductBusiness.findAll();	
+				}else if(ProductCollection.class.equals(dataClass)){
 					return (Collection<T>) productCollectionBusiness.findAllWithProduct();
 				} else if(TangibleProductInventory.class.equals(dataClass)){
 					return (Collection<T>) tangibleProductInventoryBusiness.findAll();
@@ -145,6 +155,10 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 					return customerBusiness.countAll();
 				}else if(Employee.class.equals(dataClass)){
 					return employeeBusiness.countAll();	
+				}else if(Reseller.class.equals(dataClass)){
+					return resellerBusiness.countAll();	
+				}else if(ResellerProduct.class.equals(dataClass)){
+					return resellerProductBusiness.countAll();	
 				}else if(ProductCollection.class.equals(dataClass)){
 					return productCollectionBusiness.countAll();
 				}else if(TangibleProductInventory.class.equals(dataClass)){
@@ -338,6 +352,8 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	public UICommandable productionCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables){
 		UICommandable production = null;
 		production = uiProvider.createCommandable("production", null);
+		production.getChildren().add(menuManager.crudMany(Reseller.class, null));
+		production.getChildren().add(menuManager.crudMany(ResellerProduct.class, null));
 		production.getChildren().add(menuManager.crudMany(Production.class, null));
 		
 		return production;

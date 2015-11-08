@@ -56,6 +56,11 @@ public class ProductionConsultPage extends AbstractConsultPage<Production> imple
 				return CompanyBusinessLayer.getInstance().getResellerProductionBusiness().findByProduction(identifiable);
 			}
 			@Override
+			public ResellerProductionDetails createData(ResellerProduction identifiable) {
+				debug(identifiable);
+				return super.createData(identifiable);
+			}
+			@Override
 			public Crud[] getCruds() {
 				return new Crud[]{Crud.CREATE,Crud.READ,Crud.UPDATE,Crud.DELETE};
 			}

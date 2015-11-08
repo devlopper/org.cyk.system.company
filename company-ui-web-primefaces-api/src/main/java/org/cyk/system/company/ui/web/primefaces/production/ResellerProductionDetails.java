@@ -21,5 +21,11 @@ public class ResellerProductionDetails extends AbstractOutputDetails<ResellerPro
 		returnedQuantity = numberBusiness.format(resellerProduction.getReturnedQuantity());
 		amountPaid = numberBusiness.format(resellerProduction.getAmount().getUser());
 		amountToPay = numberBusiness.format(resellerProduction.getAmount().getSystem());
+		amountGap = numberBusiness.format(resellerProduction.getAmount().getGap());
+		amountGapCummul = numberBusiness.format(resellerProduction.getAmountGapCumul());
+		discount = numberBusiness.format(resellerProduction.getDiscount());
+		commission = numberBusiness.format(resellerProduction.getCommission());
+		payable = numberBusiness.format(resellerProduction.getPayable());
+		netPayable = numberBusiness.format(resellerProduction.getPayableCumul());
 	}
 }

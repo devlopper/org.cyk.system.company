@@ -41,9 +41,12 @@ public class ProductionBusinessImpl extends AbstractSpreadSheetBusinessImpl<Prod
 		Production production = new Production();
 		production.setTemplate(productionPlan);
 		CompanyBusinessLayer.getInstance().getProductionPlanBusiness().load(productionPlan);
-		for(ProductionPlanResource input : productionPlan.getRows()){
-			for(ProductionPlanMetric productionPlanModelMetric : productionPlan.getColumns())
-				production.getCells().add(new ProductionValue(input,productionPlanModelMetric,null));
+		for(ProductionPlanMetric metric : productionPlan.getColumns())
+			production.getColumns().add(metric);
+		for(ProductionPlanResource resource : productionPlan.getRows()){
+			production.getRows().add(resource);
+			for(ProductionPlanMetric metric : production.getColumns())
+				production.getCells().add(new ProductionValue(resource,metric,null));
 		}
 		return production;
 	}

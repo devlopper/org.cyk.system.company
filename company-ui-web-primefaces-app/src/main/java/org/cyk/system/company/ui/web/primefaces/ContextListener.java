@@ -5,11 +5,13 @@ import java.io.Serializable;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.annotation.WebListener;
 
+import org.cyk.system.company.model.production.Reseller;
+import org.cyk.system.company.ui.web.primefaces.production.ResellerCrudOnePageAdapter;
+import org.cyk.system.root.model.party.person.AbstractActor;
 import org.cyk.system.root.ui.web.primefaces.api.RootWebManager;
+import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.web.primefaces.AbstractContextListener;
-import org.cyk.ui.web.primefaces.page.application.ApplicationInstallationFormModel;
-import org.cyk.ui.web.primefaces.page.application.ApplicationInstallationPage;
-import org.cyk.ui.web.primefaces.page.application.ApplicationInstallationPage.ApplicationInstallListener;
+import org.cyk.ui.web.primefaces.page.tools.AbstractActorCrudOnePageAdapter;
 
 @WebListener
 public class ContextListener extends AbstractContextListener implements Serializable {
@@ -19,21 +21,29 @@ public class ContextListener extends AbstractContextListener implements Serializ
 	//@Inject private CompanyRandomDataProvider companyRandomDataProvider;
 	
 	@Override
-	protected void initialisation() {
-		super.initialisation();
-		ApplicationInstallationPage.LISTENERS.add(new ApplicationInstallListener() {
-			
-			@Override
-			public void install(ApplicationInstallationFormModel formModel) {
-				/*
-				rootRandomDataProvider.createActor(Customer.class, 25);
-				rootRandomDataProvider.createActor(Employee.class, 25);
-		    	companyRandomDataProvider.createSale(100);
-		        companyRandomDataProvider.createTangibleProductStockMovement(25);
-		        companyRandomDataProvider.createTangibleProductInventory(25);
-		        */
-			}
-		});
+	protected <ACTOR extends AbstractActor> void registerActorForm(Class<ACTOR> actorClass) {
+		super.registerActorForm(actorClass);
+		if(Reseller.class.equals(actorClass)){
+			;//registerBusinessEntityFormOnePageListener(Reseller.class,new ResellerCrudOnePageAdapter());
+		}else
+			;
+	}
+	
+	@Override
+	protected Class<? extends AbstractFormModel<?>> getEditFormModelClass(Class<?> clazz) {
+		if(Reseller.class.equals(clazz)){
+			return ResellerCrudOnePageAdapter.ResellerEditFormModel.class;
+		}else
+			return super.getEditFormModelClass(clazz);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	protected <ACTOR extends AbstractActor> AbstractActorCrudOnePageAdapter<ACTOR> getActorCrudOnePageAdapter(Class<ACTOR> actorClass) {
+		if(Reseller.class.equals(actorClass)){
+			return (AbstractActorCrudOnePageAdapter<ACTOR>) new ResellerCrudOnePageAdapter();
+		}else
+			return super.getActorCrudOnePageAdapter(actorClass);
 	}
 		
 	@Override

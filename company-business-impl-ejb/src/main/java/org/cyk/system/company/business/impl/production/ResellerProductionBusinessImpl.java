@@ -12,6 +12,7 @@ import org.cyk.system.company.business.api.production.ResellerProductionBusiness
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ResellerProduct;
 import org.cyk.system.company.model.production.ResellerProduction;
+import org.cyk.system.company.persistence.api.production.ResellerDao;
 import org.cyk.system.company.persistence.api.production.ResellerProductDao;
 import org.cyk.system.company.persistence.api.production.ResellerProductionDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
@@ -22,6 +23,7 @@ public class ResellerProductionBusinessImpl extends AbstractTypedBusinessService
 	private static final long serialVersionUID = -7830673760640348717L;
 
 	@Inject private ResellerProductDao resellerProductDao;
+	@Inject private ResellerDao resellerDao;
 	
 	@Inject
 	public ResellerProductionBusinessImpl(ResellerProductionDao dao) {
@@ -39,11 +41,22 @@ public class ResellerProductionBusinessImpl extends AbstractTypedBusinessService
 				, resellerProduction.getProduction().getTemplate().getProduct());
 		resellerProduction.getAmount().setSystem(resellerProduction.getTakenQuantity().multiply(resellerProduct.getSaleUnitPrice()));
 		resellerProduction.getAmount().computeGap();
+		resellerProduction.setAmountGapCumul(resellerProduction.getReseller().getAmountGap().add(resellerProduction.getAmount().getGap()));
 		resellerProduction.setDiscount(resellerProduct.getTakingUnitPrice().subtract(resellerProduct.getSaleUnitPrice()));
 		resellerProduction.setCommission(resellerProduction.getTakenQuantity().subtract(resellerProduction.getReturnedQuantity())
 				.multiply(resellerProduct.getCommissionRate()));
 		resellerProduction.setPayable(resellerProduction.getAmount().getGap().add(resellerProduction.getDiscount()).add(resellerProduction.getCommission()));
-		return super.create(resellerProduction);
+		resellerProduction.setPayableCumul(resellerProduction.getReseller().getPayable().add(resellerProduction.getPayable()));
+		super.create(resellerProduction);
+		
+		System.out.println("ResellerProductionBusinessImpl.create()");
+		debug(resellerProduction);
+		
+		resellerProduction.getReseller().setAmountGap(resellerProduction.getAmountGapCumul());
+		resellerProduction.getReseller().setPayable(resellerProduction.getPayableCumul());
+		resellerDao.update(resellerProduction.getReseller());
+		
+		return resellerProduction;
 	}
 
 }
