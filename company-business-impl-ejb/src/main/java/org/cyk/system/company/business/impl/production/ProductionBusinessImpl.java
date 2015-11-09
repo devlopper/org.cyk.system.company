@@ -2,6 +2,7 @@ package org.cyk.system.company.business.impl.production;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collection;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -91,6 +92,11 @@ public class ProductionBusinessImpl extends AbstractSpreadSheetBusinessImpl<Prod
 		production.setRows(productionPlanResourceDao.readByTemplate(production.getTemplate()));
 		production.setColumns(productionPlanMetricDao.readByTemplate(production.getTemplate()));
 		production.setCells(productionValueDao.readBySpreadSheet(production));
+	}
+
+	@Override
+	public Collection<Production> findByProductionPlan(ProductionPlan productionPlan) {
+		return dao.readByProductionPlan(productionPlan);
 	}
 	
 }

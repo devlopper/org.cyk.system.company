@@ -1,6 +1,7 @@
 package org.cyk.system.company.business.impl.production;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,6 +10,7 @@ import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanMetric;
 import org.cyk.system.company.model.production.ProductionPlanResource;
+import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.persistence.api.production.ProductionPlanDao;
 import org.cyk.system.company.persistence.api.production.ProductionPlanMetricDao;
 import org.cyk.system.company.persistence.api.production.ProductionPlanResourceDao;
@@ -46,12 +48,12 @@ public class ProductionPlanBusinessImpl extends AbstractSpreadSheetTemplateBusin
 	}
 	
 	@Override
-	public ProductionPlan update(ProductionPlan productionPlanModel) {
-		for(ProductionPlanResource row : productionPlanModel.getRows())
+	public ProductionPlan update(ProductionPlan productionPlan) {
+		for(ProductionPlanResource row : productionPlan.getRows())
 			productionPlanResourceDao.update(row);
-		for(ProductionPlanMetric column : productionPlanModel.getColumns())
+		for(ProductionPlanMetric column : productionPlan.getColumns())
 			productionPlanMetricDao.update(column);
-		return super.update(productionPlanModel);
+		return super.update(productionPlan);
 	}
 	
 	@Override
@@ -68,6 +70,11 @@ public class ProductionPlanBusinessImpl extends AbstractSpreadSheetTemplateBusin
 		super.load(productionPlanModel);
 		productionPlanModel.setRows(productionPlanResourceDao.readByTemplate(productionPlanModel));
 		productionPlanModel.setColumns(productionPlanMetricDao.readByTemplate(productionPlanModel));
+	}
+
+	@Override
+	public Collection<ProductionPlan> findByProductionUnit(ProductionUnit productionUnit) {
+		return dao.readByProductionUnit(productionUnit);
 	}
 	
 }

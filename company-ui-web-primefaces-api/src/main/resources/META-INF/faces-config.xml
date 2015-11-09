@@ -25,6 +25,39 @@
 			<to-view-id>/private/__role__/__productionmanager__/productionplanmodellist.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>productionUnitEditView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/productionunit/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>productionUnitListView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/productionunit/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>productionUnitConsultView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/productionunit/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>productionPlanEditView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/productionplan/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>productionPlanListView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/productionplan/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>productionPlanConsultView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/productionplan/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
 		<navigation-case>
 			<from-outcome>productionEditView</from-outcome>
 			<to-view-id>/private/__role__/__productionmanager__/production/edit.xhtml</to-view-id>

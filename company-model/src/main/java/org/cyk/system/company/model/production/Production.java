@@ -18,6 +18,8 @@ import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 public class Production extends AbstractSpreadSheet<ProductionPlan,ProductionPlanResource,ProductionPlanMetric,ProductionValue> implements Serializable {
 
 	private static final long serialVersionUID = -625974035216780560L;
-	
+
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal quantity = BigDecimal.ZERO;
+
+	
 }

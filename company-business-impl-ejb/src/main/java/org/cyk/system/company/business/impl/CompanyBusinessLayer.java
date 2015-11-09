@@ -29,9 +29,10 @@ import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
 import org.cyk.system.company.business.api.production.ProductionBusiness;
-import org.cyk.system.company.business.api.production.ProductionSpreadSheetCellBusiness;
 import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
 import org.cyk.system.company.business.api.production.ProductionPlanResourceBusiness;
+import org.cyk.system.company.business.api.production.ProductionSpreadSheetCellBusiness;
+import org.cyk.system.company.business.api.production.ProductionUnitBusiness;
 import org.cyk.system.company.business.api.production.ResellerBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
@@ -56,9 +57,10 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanResource;
+import org.cyk.system.company.model.production.ProductionUnit;
+import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.model.structure.Company;
@@ -89,7 +91,7 @@ import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.joda.time.DateTime;
 
-@Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER)
+@Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER) @Getter
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
 
 	public static final int DEPLOYMENT_ORDER = RootBusinessLayer.DEPLOYMENT_ORDER+1;
@@ -133,6 +135,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
 	@Inject @Getter private ProductionBusiness productionBusiness;
+	@Inject @Getter private ProductionUnitBusiness productionUnitBusiness;
 	@Inject @Getter private ProductionSpreadSheetCellBusiness productionInputBusiness;
 	@Inject @Getter private ProductionPlanBusiness productionPlanBusiness;
 	@Inject @Getter private ProductionPlanResourceBusiness productionPlanResourceBusiness;
@@ -292,6 +295,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)SaleStockInput.class, (TypedBusiness)saleStockInputBusiness);
         beansMap.put((Class)SaleStockOutput.class, (TypedBusiness)saleStockOutputBusiness);
         beansMap.put((Class)Production.class, (TypedBusiness)productionBusiness);
+        beansMap.put((Class)ProductionUnit.class, (TypedBusiness)productionUnitBusiness);
         beansMap.put((Class)ProductionValue.class, (TypedBusiness)productionInputBusiness);
         beansMap.put((Class)ProductionPlan.class, (TypedBusiness)productionPlanBusiness);
         beansMap.put((Class)ProductionPlanResource.class, (TypedBusiness)productionPlanResourceBusiness);

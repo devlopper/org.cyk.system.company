@@ -1,9 +1,7 @@
 package org.cyk.system.company.ui.web.primefaces.production;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -29,15 +27,10 @@ public class ProductionEditPage extends AbstractCrudOnePage<Production> implemen
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	private List<ProductionPlan> productionPlans;	
-	private ProductionPlan selectedProductionPlan;
 	private ProductionSpreadsheet spreadsheet;
 	
 	@Override
 	protected void initialisation() {
-		productionPlans = new ArrayList<ProductionPlan>(CompanyBusinessLayer.getInstance().getProductionPlanBusiness().findAll());
-		if(!productionPlans.isEmpty())
-			selectedProductionPlan = productionPlans.get(0);
 		super.initialisation();
 		spreadsheet = new ProductionSpreadsheet(identifiable);
 		spreadsheet.setEditable(form.getEditable());
@@ -45,7 +38,8 @@ public class ProductionEditPage extends AbstractCrudOnePage<Production> implemen
 	
 	@Override
 	protected Production instanciateIdentifiable() {
-		return CompanyBusinessLayer.getInstance().getProductionBusiness().instanciate(selectedProductionPlan);
+		return CompanyBusinessLayer.getInstance().getProductionBusiness().instanciate(
+				CompanyBusinessLayer.getInstance().getProductionPlanBusiness().find(requestParameterLong(ProductionPlan.class)));
 	}
 				
 	@Override

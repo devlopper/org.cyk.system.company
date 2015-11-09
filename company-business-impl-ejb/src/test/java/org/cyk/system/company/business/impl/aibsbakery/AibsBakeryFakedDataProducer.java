@@ -71,14 +71,8 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 	}
 	
 	private void business(){
-		Collection<Reseller> resellers = new ArrayList<Reseller>();
-		for(int i=0;i<10;i++){
-			Reseller reseller = rootRandomDataProvider.actor(Reseller.class);
-			resellers.add(reseller);
-			reseller.setCompany(getCompany());
-		}
-		resellerBusiness.create(resellers);
-		//rootRandomDataProvider.createActor(Reseller.class, 10);
+	
+		rootRandomDataProvider.createActor(Reseller.class, 10);
 		flush("Resellers");
 		
 		Collection<ResellerProduct> resellerProducts = new ArrayList<>();
@@ -102,6 +96,7 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 			for(Reseller reseller : resellerBusiness.findAll())
 				createResellerProduction(reseller, production, resellerProductions);
 		flush(ResellerProduction.class, resellerProductionBusiness, resellerProductions);
+			
 	}
 	
 	@Override
@@ -111,6 +106,7 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 		parameters();
     	structure();
     	business();
+    	
 	}
 	
 	/**/

@@ -42,6 +42,6 @@ public class ProductionPlan extends AbstractSpreadSheetTemplate<ProductionPlanRe
 		this.reportIntervalTimeDivisionType = reportIntervalTimeDivisionType;
 	}
 	
-	
+	public static final String FIELD_PRODUCTION_UNIT = "productionUnit";
 	
 }

@@ -7,6 +7,8 @@ import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import lombok.Getter;
+
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.CustomerBusiness;
@@ -15,6 +17,7 @@ import org.cyk.system.company.business.api.product.TangibleProductInventoryBusin
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
 import org.cyk.system.company.business.api.production.ProductionBusiness;
 import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
+import org.cyk.system.company.business.api.production.ProductionUnitBusiness;
 import org.cyk.system.company.business.api.production.ResellerBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
@@ -34,6 +37,7 @@ import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionPlan;
+import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProduct;
 import org.cyk.system.company.model.structure.Division;
@@ -53,8 +57,6 @@ import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.cyk.utility.common.computation.DataReadConfiguration;
-
-import lombok.Getter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyWebManager.DEPLOYMENT_ORDER) @Getter
 public class CompanyWebManager extends AbstractPrimefacesManager implements Serializable {
@@ -92,6 +94,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	@Inject private CashRegisterBusiness cashRegisterBusiness;
 	@Inject private CashierBusiness cashierBusiness;
 	@Inject private ProductionBusiness productionBusiness;
+	@Inject private ProductionUnitBusiness productionUnitBusiness;
 	@Inject private ProductionPlanBusiness productionPlanModelBusiness;
 	
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
@@ -145,7 +148,9 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 					return (Collection<T>) productionPlanModelBusiness.findAll();
 				} else if(Production.class.equals(dataClass)){
 					return (Collection<T>) productionBusiness.findAll();
-				}               
+				} else if(ProductionUnit.class.equals(dataClass)){
+					return (Collection<T>) productionUnitBusiness.findAll();
+				}                
 				return super.find(dataClass, configuration);
 			}
 			
@@ -171,7 +176,9 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 					return productionPlanModelBusiness.countAll();
 				} else if(Production.class.equals(dataClass)){
 					return productionBusiness.countAll();
-				} 
+				} else if(ProductionUnit.class.equals(dataClass)){
+					return productionUnitBusiness.countAll();
+				}  
 				
 				return super.count(dataClass, configuration);
 			}
@@ -354,6 +361,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		production = uiProvider.createCommandable("production", null);
 		production.getChildren().add(menuManager.crudMany(Reseller.class, null));
 		production.getChildren().add(menuManager.crudMany(ResellerProduct.class, null));
+		production.getChildren().add(menuManager.crudMany(ProductionUnit.class, null));
 		production.getChildren().add(menuManager.crudMany(Production.class, null));
 		
 		return production;

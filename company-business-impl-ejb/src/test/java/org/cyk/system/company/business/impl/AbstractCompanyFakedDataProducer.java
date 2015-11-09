@@ -34,6 +34,7 @@ import org.cyk.system.company.model.production.ResellerProduct;
 import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
+import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.system.root.model.userinterface.InputName;
@@ -56,6 +57,22 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	@Inject protected ResellerProductionBusiness resellerProductionBusiness;
 	@Inject protected ResellerProductBusiness resellerProductBusiness;
 	@Inject protected ResellerBusiness resellerBusiness;
+	
+	@Override
+	protected void initialisation() {
+		super.initialisation();
+		rootRandomDataProvider.getRandomDataProviderListeners().add(new RootRandomDataProvider.RootRandomDataProviderAdapter(){
+			private static final long serialVersionUID = -4292999908835323092L;
+
+			@Override
+			public void set(Object object) {
+				super.set(object);
+				if(object instanceof Reseller){
+					((Reseller)object).setProductionUnit(rootRandomDataProvider.oneFromDatabase(ProductionUnit.class));
+				}
+			}
+		});
+	}
 	
 	protected Company getCompany(){
 		return ownedCompanyBusiness.findDefaultOwnedCompany().getCompany();
