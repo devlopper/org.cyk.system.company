@@ -59,6 +59,22 @@
 		</navigation-case>
 		
 		<navigation-case>
+			<from-outcome>resellerProductionPlanEditView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/resellerproductionplan/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>resellerProductionPlanListView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/resellerproductionplan/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>resellerProductionPlanConsultView</from-outcome>
+			<to-view-id>/private/__role__/__productionmanager__/resellerproductionplan/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
 			<from-outcome>productionEditView</from-outcome>
 			<to-view-id>/private/__role__/__productionmanager__/production/edit.xhtml</to-view-id>
 			<redirect />

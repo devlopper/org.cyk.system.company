@@ -34,7 +34,7 @@ import org.cyk.system.company.business.api.production.ProductionPlanResourceBusi
 import org.cyk.system.company.business.api.production.ProductionSpreadSheetCellBusiness;
 import org.cyk.system.company.business.api.production.ProductionUnitBusiness;
 import org.cyk.system.company.business.api.production.ResellerBusiness;
-import org.cyk.system.company.business.api.production.ResellerProductBusiness;
+import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
 import org.cyk.system.company.business.api.structure.DivisionBusiness;
@@ -63,6 +63,7 @@ import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProduction;
+import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
@@ -140,7 +141,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject @Getter private ProductionPlanBusiness productionPlanBusiness;
 	@Inject @Getter private ProductionPlanResourceBusiness productionPlanResourceBusiness;
 	@Inject @Getter private ResellerBusiness resellerBusiness;
-	@Inject @Getter private ResellerProductBusiness resellerProductBusiness;
+	@Inject @Getter private ResellerProductionPlanBusiness resellerProductionPlanBusiness;
 	@Inject @Getter private ResellerProductionBusiness resellerProductionBusiness;
 	//@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
 	//@Inject private AccountingPeriodProductCategoryBusiness accountingPeriodProductCategoryBusiness;
@@ -280,6 +281,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)Customer.class, (TypedBusiness)customerBusiness);
         beansMap.put((Class)Reseller.class, (TypedBusiness)resellerBusiness);
         beansMap.put((Class)ResellerProduction.class, (TypedBusiness)resellerProductionBusiness);
+        beansMap.put((Class)ResellerProductionPlan.class, (TypedBusiness)resellerProductionPlanBusiness);
         beansMap.put((Class)TangibleProduct.class, (TypedBusiness)tangibleProductBusiness);
         beansMap.put((Class)Product.class, (TypedBusiness)productBusiness);
         beansMap.put((Class)DivisionType.class, (TypedBusiness)divisionTypeBusiness);

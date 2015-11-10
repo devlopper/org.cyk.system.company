@@ -29,4 +29,8 @@ public class Reseller extends AbstractActor implements Serializable {
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountGap = BigDecimal.ZERO;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal payable = BigDecimal.ZERO;
+	
+	/**/
+	
+	public static final String FIELD_PRODUCTION_UNIT = "productionUnit";
 }

@@ -23,6 +23,7 @@ public class TangibleProduct extends Product implements Serializable  {
 	public static final String SALE_STOCK = "STOCK_GOODS";
 	
 	/* Stock */
+	//FIXME to be refactored : move stock related data to another class to enforce loose coupling
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull
 	private BigDecimal stockQuantity = BigDecimal.ZERO;

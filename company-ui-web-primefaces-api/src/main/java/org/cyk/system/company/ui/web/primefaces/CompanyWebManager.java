@@ -19,7 +19,7 @@ import org.cyk.system.company.business.api.production.ProductionBusiness;
 import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
 import org.cyk.system.company.business.api.production.ProductionUnitBusiness;
 import org.cyk.system.company.business.api.production.ResellerBusiness;
-import org.cyk.system.company.business.api.production.ResellerProductBusiness;
+import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
@@ -39,7 +39,7 @@ import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
-import org.cyk.system.company.model.production.ResellerProduct;
+import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
@@ -87,7 +87,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private EmployeeBusiness employeeBusiness;
 	@Inject private ResellerBusiness resellerBusiness;
-	@Inject private ResellerProductBusiness resellerProductBusiness;
+	@Inject private ResellerProductionPlanBusiness resellerProductBusiness;
 	@Inject private ProductCollectionBusiness productCollectionBusiness;
 	@Inject private TangibleProductInventoryBusiness tangibleProductInventoryBusiness;
 	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
@@ -134,7 +134,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 					return (Collection<T>) employeeBusiness.findAll();
 				}else if(Reseller.class.equals(dataClass)){
 					return (Collection<T>) resellerBusiness.findAll();	
-				}else if(ResellerProduct.class.equals(dataClass)){
+				}else if(ResellerProductionPlan.class.equals(dataClass)){
 					return (Collection<T>) resellerProductBusiness.findAll();	
 				}else if(ProductCollection.class.equals(dataClass)){
 					return (Collection<T>) productCollectionBusiness.findAllWithProduct();
@@ -162,7 +162,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 					return employeeBusiness.countAll();	
 				}else if(Reseller.class.equals(dataClass)){
 					return resellerBusiness.countAll();	
-				}else if(ResellerProduct.class.equals(dataClass)){
+				}else if(ResellerProductionPlan.class.equals(dataClass)){
 					return resellerProductBusiness.countAll();	
 				}else if(ProductCollection.class.equals(dataClass)){
 					return productCollectionBusiness.countAll();
@@ -360,9 +360,9 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		UICommandable production = null;
 		production = uiProvider.createCommandable("production", null);
 		production.getChildren().add(menuManager.crudMany(Reseller.class, null));
-		production.getChildren().add(menuManager.crudMany(ResellerProduct.class, null));
+		production.getChildren().add(menuManager.crudMany(ResellerProductionPlan.class, null));
 		production.getChildren().add(menuManager.crudMany(ProductionUnit.class, null));
-		production.getChildren().add(menuManager.crudMany(Production.class, null));
+		//production.getChildren().add(menuManager.crudMany(Production.class, null));
 		
 		return production;
 	}
@@ -392,5 +392,9 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		String url = webNavigationManager.reportUrl(saleCashRegisterMovement, companyReportRepository.getReportPointOfSaleReceipt(),uiManager.getPdfParameter(),Boolean.TRUE);
 		return javaScriptHelper.openWindow("pointofsale"+saleCashRegisterMovement.getIdentifier(), url, 400, 550);
 	}
+	
+	/**/
+	
+	
 		
 }

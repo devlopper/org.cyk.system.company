@@ -28,6 +28,9 @@ public class ProductionUnit extends AbstractIdentifiable implements Serializable
 
 	}
 	
-	
+	@Override
+	public String getUiString() {
+		return company.getUiString();
+	}
 
 }

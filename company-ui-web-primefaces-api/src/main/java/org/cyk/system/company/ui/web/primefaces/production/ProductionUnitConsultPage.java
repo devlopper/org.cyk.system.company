@@ -13,6 +13,7 @@ import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionUnit;
+import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.ui.api.command.UICommandable;
@@ -30,6 +31,7 @@ public class ProductionUnitConsultPage extends AbstractConsultPage<ProductionUni
 
 	private FormOneData<Details> details;
 	private Table<ProductionPlanDetails> productionPlanTable;
+	private Table<ResellerDetails> resellerProductTable;
 
 	@Override
 	protected void initialisation() {
@@ -54,8 +56,25 @@ public class ProductionUnitConsultPage extends AbstractConsultPage<ProductionUni
 			}
 			@Override
 			public Crud[] getCruds() {
-				return new Crud[]{Crud.CREATE,Crud.READ,Crud.UPDATE,Crud.DELETE};
+				return new Crud[]{Crud.READ};
 			}
+			@Override
+			public String getTabId() {
+				return tabId;
+			}
+		});
+		
+		resellerProductTable = (Table<ResellerDetails>) createDetailsTable(ResellerDetails.class, new DetailsTableConfigurationAdapter<Reseller,ResellerDetails>(Reseller.class, ResellerDetails.class){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public Collection<Reseller> getIdentifiables() {
+				return CompanyBusinessLayer.getInstance().getResellerBusiness().findByProductionUnit(identifiable);
+			}
+			/*
+			@Override
+			public Crud[] getCruds() {
+				return new Crud[]{Crud.READ};
+			}*/
 			@Override
 			public String getTabId() {
 				return tabId;
@@ -84,9 +103,22 @@ public class ProductionUnitConsultPage extends AbstractConsultPage<ProductionUni
 		@Input @InputText private String product,energy,nextReportDate;
 		public ProductionPlanDetails(ProductionPlan productionPlan) {
 			super(productionPlan);
-			product = productionPlan.getProduct().getName();
+			product = productionPlan.getManufacturedProduct().getProduct().getName();
 			energy = productionPlan.getEnergy().getName();
 			nextReportDate = timeBusiness.formatDate(productionPlan.getNextReportDate());
+		}
+	}
+	
+	public static class ResellerDetails extends AbstractOutputDetails<Reseller> implements Serializable{
+		private static final long serialVersionUID = -4741435164709063863L;
+		@Input @InputText private String registrationCode,names,salary,amountGap,payable;
+		public ResellerDetails(Reseller reseller) {
+			super(reseller);
+			registrationCode = reseller.getRegistration().getCode();
+			names = reseller.getPerson().getNames();
+			salary = numberBusiness.format(reseller.getSalary());
+			amountGap = numberBusiness.format(reseller.getAmountGap());
+			payable = numberBusiness.format(reseller.getPayable());
 		}
 	}
 	

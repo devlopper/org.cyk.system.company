@@ -12,6 +12,7 @@ import lombok.Setter;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionPlan;
+import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.ui.api.command.UICommandable;
@@ -29,6 +30,7 @@ public class ProductionPlanConsultPage extends AbstractConsultPage<ProductionPla
 
 	private FormOneData<Details> details;
 	private Table<ProductionDetails> productionTable;
+	private Table<ResellerProductionPlanDetails> resellerProductionPlanTable;
 	
 	@Override
 	protected void initialisation() {
@@ -39,10 +41,7 @@ public class ProductionPlanConsultPage extends AbstractConsultPage<ProductionPla
 			public Boolean getEnabledInDefaultTab() {
 				return Boolean.TRUE;
 			}
-			@Override
-			public String getTabId() {
-				return "tabId";
-			}
+			
 		});
 		
 		productionTable = (Table<ProductionDetails>) createDetailsTable(ProductionDetails.class, new DetailsTableConfigurationAdapter<Production,ProductionDetails>(Production.class, ProductionDetails.class){
@@ -55,11 +54,27 @@ public class ProductionPlanConsultPage extends AbstractConsultPage<ProductionPla
 			public Crud[] getCruds() {
 				return new Crud[]{Crud.CREATE,Crud.READ,Crud.UPDATE,Crud.DELETE};
 			}
-			@Override
-			public String getTabId() {
-				return tabId;
-			}
+			
 		});
+		
+		resellerProductionPlanTable = (Table<ResellerProductionPlanDetails>) createDetailsTable(ResellerProductionPlanDetails.class, new DetailsTableConfigurationAdapter<ResellerProductionPlan,ResellerProductionPlanDetails>(ResellerProductionPlan.class, ResellerProductionPlanDetails.class){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public Collection<ResellerProductionPlan> getIdentifiables() {
+				return CompanyBusinessLayer.getInstance().getResellerProductionPlanBusiness().findByProductionPlan(identifiable);
+			}
+			
+			@Override
+			public Crud[] getCruds() {
+				return new Crud[]{Crud.CREATE,Crud.UPDATE,Crud.DELETE};
+			}
+			
+		});
+	}
+	
+	@Override
+	public Boolean getShowDetailsMenu() {
+		return Boolean.TRUE;
 	}
 	
 	@Override
@@ -76,7 +91,7 @@ public class ProductionPlanConsultPage extends AbstractConsultPage<ProductionPla
 		public Details(ProductionPlan productionPlan) {
 			super(productionPlan);
 			productionUnit = productionPlan.getProductionUnit().getCompany().getName();
-			product = productionPlan.getProduct().getName();
+			product = productionPlan.getManufacturedProduct().getProduct().getName();
 			energy = productionPlan.getEnergy().getName();
 			previousReportDate = timeBusiness.formatDate(productionPlan.getPreviousReportDate());
 			nextReportDate = timeBusiness.formatDate(productionPlan.getNextReportDate());
@@ -96,4 +111,15 @@ public class ProductionPlanConsultPage extends AbstractConsultPage<ProductionPla
 		}
 	}
 	
+	public static class ResellerProductionPlanDetails extends AbstractOutputDetails<ResellerProductionPlan> implements Serializable{
+		private static final long serialVersionUID = -4741435164709063863L;
+		@Input @InputText private String reseller,takingUnitPrice,saleUnitPrice,commissionRate;
+		public ResellerProductionPlanDetails(ResellerProductionPlan resellerProduct) {
+			super(resellerProduct);
+			reseller = resellerProduct.getReseller().getPerson().getNames();
+			takingUnitPrice = numberBusiness.format(resellerProduct.getTakingUnitPrice());
+			saleUnitPrice = numberBusiness.format(resellerProduct.getSaleUnitPrice());
+			commissionRate = numberBusiness.format(resellerProduct.getCommissionRate());
+		}
+	}
 }

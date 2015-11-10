@@ -33,6 +33,8 @@ public class Product extends AbstractEnumeration implements Serializable  {
 
 	private static final long serialVersionUID = -6128937819261060725L;
 	
+	//FIXME to be refactored : move sale related data to another class to enforce loose coupling
+	
 	@ManyToOne
 	//@Input @InputChoice @InputOneChoice @InputOneCombo
 	protected Division division;

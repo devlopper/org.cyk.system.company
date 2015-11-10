@@ -11,12 +11,14 @@
       xmlns:company="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.company/component">
 
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
-        <ui:param name="pageController" value="#{productionUnitConsultPage}" />
+        <ui:param name="pageController" value="#{resellerProductionPlanEditPage}" />
         <ui:define name="body">
-        	<cyk:formOneData value="#{productionUnitConsultPage.details}" />
-			<cyk:table value="#{productionUnitConsultPage.productionPlanTable}" />
-			<cyk:table value="#{productionUnitConsultPage.resellerProductTable}" />
+        	<cyk:formOneData value="#{resellerProductionPlanEditPage.form}"/>       		
         </ui:define>
+        
+        <ui:define name="contentMenuBar">
+ 			<cyk:command value="#{resellerProductionPlanEditPage.form.submitCommandable}" executeParameter="#{resellerProductionPlanEditPage.form.data}" />
+ 		</ui:define>
         
     </ui:decorate>
  

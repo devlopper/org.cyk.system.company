@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.model.product.Product;
 import org.cyk.system.root.model.spreadsheet.AbstractSpreadSheetTemplateRow;
 
 /**
@@ -23,16 +22,16 @@ public class ProductionPlanResource extends AbstractSpreadSheetTemplateRow<Produ
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @NotNull private Product product;
+	@ManyToOne @NotNull private ResourceProduct resourceProduct;
 
-	public ProductionPlanResource(ProductionPlan productionPlan,Product product) {
+	public ProductionPlanResource(ProductionPlan productionPlan,ResourceProduct resourceProduct) {
 		super(productionPlan); 
-		this.product = product;
+		this.resourceProduct = resourceProduct;
 	}
 	
 	@Override
 	public String toString() {
-		return product.getCode();
+		return resourceProduct.toString();
 	}
 }
 

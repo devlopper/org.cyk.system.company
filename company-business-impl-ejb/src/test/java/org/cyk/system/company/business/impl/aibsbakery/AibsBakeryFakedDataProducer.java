@@ -12,6 +12,7 @@ import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.production.ManufacturedProduct;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionEnergy;
 import org.cyk.system.company.model.production.ProductionPlan;
@@ -19,8 +20,9 @@ import org.cyk.system.company.model.production.ProductionPlanMetric;
 import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
-import org.cyk.system.company.model.production.ResellerProduct;
+import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.production.ResellerProduction;
+import org.cyk.system.company.model.production.ResourceProduct;
 import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.system.root.model.userinterface.InputName;
 
@@ -31,10 +33,15 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 
 	private CompanyBusinessLayer companyBusinessLayer = CompanyBusinessLayer.getInstance();
 	
-	private ProductionEnergy productionEnergyGas,productionEnergyFuel,productionEnergyWood;
+	/* Products */
 	private TangibleProduct tangibleProductFarine,tangibleProductAmeliorant,tangibleProductPain;
+	private ManufacturedProduct manufacturedProductPain;
+	private ResourceProduct resourceProductFarine,resourceProductAmeliorant;
+	
+	/* Production */
+	private ProductionEnergy productionEnergyGas,productionEnergyFuel,productionEnergyWood;
 	private ProductionPlan productionPlanPain;
-	private ProductionPlanResource productionPlanResourceFarine,productionPlanResourceAmeliorant;
+	private ProductionPlanResource productionPlanResourceFarine,productionPlanResourceAmeliorant;	
 	private ProductionPlanMetric productionPlanMetricQuantity;
 	private InputName inputNameQuantity;
 	private ProductionUnit productionUnit1;
@@ -50,8 +57,17 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 		tangibleProductFarine = createTangibleProduct("Farine", null, products);
 		tangibleProductAmeliorant = createTangibleProduct("Ameliorant", null, products);
 		tangibleProductPain = createTangibleProduct("Pain", null, products);
-		
 		flush(Product.class, productBusiness, products);
+		
+		Collection<ManufacturedProduct> manufacturedProducts = new ArrayList<>();
+		manufacturedProductPain = createManufacturedProduct(tangibleProductPain, manufacturedProducts);
+		flush(ManufacturedProduct.class, manufacturedProducts);
+		
+		Collection<ResourceProduct> resourceProducts = new ArrayList<>();
+		resourceProductFarine = createResourceProduct(tangibleProductFarine, resourceProducts);
+		resourceProductAmeliorant = createResourceProduct(tangibleProductAmeliorant, resourceProducts);
+		flush(ResourceProduct.class, resourceProducts);
+		
 		
 	}
 	
@@ -62,9 +78,9 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 		flush(ProductionUnit.class, productionUnitBusiness, productionUnits);
 		
 		Collection<ProductionPlan> productionPlans = new ArrayList<>();
-		productionPlanPain = createProductionPlan("PP1", productionUnit1, tangibleProductPain, getEnumeration(ProductionEnergy.class, ProductionEnergy.GAS),getEnumeration(TimeDivisionType.class, TimeDivisionType.DAY), productionPlans);
-		productionPlanResourceFarine = createProductionPlanResource(productionPlanPain,tangibleProductFarine);
-		productionPlanResourceAmeliorant = createProductionPlanResource(productionPlanPain,tangibleProductAmeliorant);
+		productionPlanPain = createProductionPlan("PP1", productionUnit1, manufacturedProductPain, getEnumeration(ProductionEnergy.class, ProductionEnergy.GAS),getEnumeration(TimeDivisionType.class, TimeDivisionType.DAY), productionPlans);
+		productionPlanResourceFarine = createProductionPlanResource(productionPlanPain,resourceProductFarine);
+		productionPlanResourceAmeliorant = createProductionPlanResource(productionPlanPain,resourceProductAmeliorant);
 		productionPlanMetricQuantity = createProductionPlanMetric(productionPlanPain,inputNameQuantity);
 		flush(ProductionPlan.class, productionPlanBusiness, productionPlans);
 		
@@ -75,11 +91,11 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 		rootRandomDataProvider.createActor(Reseller.class, 10);
 		flush("Resellers");
 		
-		Collection<ResellerProduct> resellerProducts = new ArrayList<>();
+		Collection<ResellerProductionPlan> resellerProductionPlans = new ArrayList<>();
 		for(Reseller reseller : resellerBusiness.findAll()){
-			createResellerProduct(reseller, tangibleProductPain, resellerProducts);
+			createResellerProductionPlan(reseller, productionPlanPain, resellerProductionPlans);
 		}
-		flush(ResellerProduct.class, resellerProductBusiness, resellerProducts);
+		flush(ResellerProductionPlan.class, resellerProductionPlanBusiness, resellerProductionPlans);
 		
 		Collection<Production> productions = new ArrayList<>();
 		createProduction(productionPlanPain,new Object[][]{

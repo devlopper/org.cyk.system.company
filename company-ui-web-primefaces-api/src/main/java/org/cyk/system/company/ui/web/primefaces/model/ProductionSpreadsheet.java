@@ -37,7 +37,7 @@ public class ProductionSpreadsheet extends Spreadsheet<Production, ProductionPla
 	}
 	
 	public String rowText(Integer row) {
-		return rows.get(row).getProduct().getUiString();
+		return rows.get(row).getResourceProduct().getProduct().getUiString();
 	}
 
 }

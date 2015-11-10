@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
-import org.cyk.system.company.model.production.ResellerProduct;
+import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.ui.api.model.AbstractOutputDetails;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudManyPage;
@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
-public class ResellerProductListPage extends AbstractCrudManyPage<ResellerProduct> implements Serializable {
+public class ResellerProductListPage extends AbstractCrudManyPage<ResellerProductionPlan> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 	
@@ -35,7 +35,7 @@ public class ResellerProductListPage extends AbstractCrudManyPage<ResellerProduc
 	
 	@Override
 	protected BusinessEntityInfos fetchBusinessEntityInfos() {
-		return uiManager.businessEntityInfos(ResellerProduct.class);
+		return uiManager.businessEntityInfos(ResellerProductionPlan.class);
 	}
 	
 	@Override
@@ -44,13 +44,13 @@ public class ResellerProductListPage extends AbstractCrudManyPage<ResellerProduc
 	}
 	
 	@Getter @Setter
-	public static class Details extends AbstractOutputDetails<ResellerProduct> implements Serializable{
+	public static class Details extends AbstractOutputDetails<ResellerProductionPlan> implements Serializable{
 		private static final long serialVersionUID = 3230980200211455609L;
 		@Input @InputText private String reseller,product,takingUnitPrice,saleUnitPrice,commissionRate;
-		public Details(ResellerProduct resellerProduct) {
+		public Details(ResellerProductionPlan resellerProduct) {
 			super(resellerProduct);
 			reseller = resellerProduct.getReseller().getPerson().getNames();
-			product = resellerProduct.getProduct().getName();
+			//product = resellerProduct.getManufacturedProduct().getProduct().getName();
 			takingUnitPrice = numberBusiness.format(resellerProduct.getTakingUnitPrice());
 			saleUnitPrice = numberBusiness.format(resellerProduct.getSaleUnitPrice());
 			commissionRate = numberBusiness.format(resellerProduct.getCommissionRate());

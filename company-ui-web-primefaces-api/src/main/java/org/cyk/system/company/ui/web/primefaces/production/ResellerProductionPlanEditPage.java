@@ -7,7 +7,13 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
-import org.cyk.system.company.model.product.Product;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
@@ -19,13 +25,8 @@ import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 @Named @ViewScoped @Getter @Setter
-public class ResellerProductEditPage extends AbstractCrudOnePage<ResellerProductionPlan> implements Serializable {
+public class ResellerProductionPlanEditPage extends AbstractCrudOnePage<ResellerProductionPlan> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
@@ -33,6 +34,13 @@ public class ResellerProductEditPage extends AbstractCrudOnePage<ResellerProduct
 	protected void initialisation() {
 		super.initialisation();
 		
+	}
+	
+	@Override
+	protected ResellerProductionPlan instanciateIdentifiable() {
+		ResellerProductionPlan instance = super.instanciateIdentifiable();
+		instance.setProductionPlan(CompanyBusinessLayer.getInstance().getProductionPlanBusiness().find(requestParameterLong(ProductionPlan.class)));
+		return instance;
 	}
 				
 	@Override
@@ -49,20 +57,14 @@ public class ResellerProductEditPage extends AbstractCrudOnePage<ResellerProduct
 	@Getter @Setter @AllArgsConstructor @NoArgsConstructor
 	public static class Form extends AbstractFormModel<ResellerProductionPlan> implements Serializable {
 		private static final long serialVersionUID = -731657715703646576L;
+		
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private Reseller reseller;
-		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private Product product;
+		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private ProductionPlan productionPlan;
+		
 		@Input @InputNumber @NotNull private BigDecimal takingUnitPrice;
 		@Input @InputNumber @NotNull private BigDecimal saleUnitPrice;
 		@Input @InputNumber @NotNull private BigDecimal commissionRate;
-		/*
-		@Override
-		public void write() {
-			super.write();
-			identifiable.setTakingUnitPrice(takingUnitPrice);
-			identifiable.setSaleUnitPrice(saleUnitPrice);
-			identifiable.setCommissionRate(commissionRate);
-			identifiable.setp.setToDate(identifiable.getPeriod().getFromDate());
-		}*/
+		
 	}
 	
 }

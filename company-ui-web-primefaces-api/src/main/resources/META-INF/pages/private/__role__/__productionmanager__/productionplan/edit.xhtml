@@ -13,7 +13,24 @@
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
         <ui:param name="pageController" value="#{productionPlanEditPage}" />
         <ui:define name="body">
-        	<cyk:formOneData value="#{productionPlanEditPage.form}"/>       		
+        	<cyk:formOneData value="#{productionPlanEditPage.form}"/>  
+        	
+        	<cyk:itemCollection value="#{productionPlanEditPage.productionPlanResourceCollection}" >
+ 				<p:column headerText="#{uiManager.text('model.entity.tangibleProduct')}" >
+ 					<p:selectOneMenu value="#{item.resourceProduct}" converter="#{objectConverter}">
+ 						<f:selectItems value="#{productionPlanEditPage.resourceProductSelectItems}" />
+ 					</p:selectOneMenu>
+ 				</p:column>
+ 			</cyk:itemCollection>
+ 			
+ 			<cyk:itemCollection value="#{productionPlanEditPage.productionPlanMetricCollection}" >
+ 				<p:column headerText="#{uiManager.text('model.entity.metric')}" >
+ 					<p:selectOneMenu value="#{item.inputName}" converter="#{objectConverter}">
+ 						<f:selectItems value="#{productionPlanEditPage.inputNameSelectItems}" />
+ 					</p:selectOneMenu>
+ 				</p:column>
+ 			</cyk:itemCollection>
+        	     		
         </ui:define>
         
         <ui:define name="contentMenuBar">

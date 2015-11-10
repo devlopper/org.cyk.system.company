@@ -17,11 +17,12 @@ import org.cyk.system.company.business.api.production.ProductionPlanMetricBusine
 import org.cyk.system.company.business.api.production.ProductionPlanResourceBusiness;
 import org.cyk.system.company.business.api.production.ProductionUnitBusiness;
 import org.cyk.system.company.business.api.production.ResellerBusiness;
-import org.cyk.system.company.business.api.production.ResellerProductBusiness;
+import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.production.ManufacturedProduct;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionEnergy;
 import org.cyk.system.company.model.production.ProductionPlan;
@@ -30,8 +31,9 @@ import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.Reseller;
-import org.cyk.system.company.model.production.ResellerProduct;
+import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.production.ResellerProduction;
+import org.cyk.system.company.model.production.ResourceProduct;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
 import org.cyk.system.root.business.impl.RootRandomDataProvider;
@@ -55,7 +57,7 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	@Inject protected ProductionUnitBusiness productionUnitBusiness;
 	@Inject protected ProductionBusiness productionBusiness;
 	@Inject protected ResellerProductionBusiness resellerProductionBusiness;
-	@Inject protected ResellerProductBusiness resellerProductBusiness;
+	@Inject protected ResellerProductionPlanBusiness resellerProductionPlanBusiness;
 	@Inject protected ResellerBusiness resellerBusiness;
 	
 	@Override
@@ -69,6 +71,9 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 				super.set(object);
 				if(object instanceof Reseller){
 					((Reseller)object).setProductionUnit(rootRandomDataProvider.oneFromDatabase(ProductionUnit.class));
+					((Reseller)object).setSalary(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 100000)));
+					((Reseller)object).setAmountGap(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 100000)));
+					((Reseller)object).setPayable(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 100000)));
 				}
 			}
 		});
@@ -84,8 +89,20 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 		return product;
 	}
 	
-	protected ProductionPlanResource createProductionPlanResource(ProductionPlan productionPlan,Product product){
-		ProductionPlanResource productionPlanResource = new ProductionPlanResource(productionPlan,product);
+	protected ManufacturedProduct createManufacturedProduct(Product product,Collection<ManufacturedProduct> manufacturedProducts){
+		ManufacturedProduct manufacturedProduct = new ManufacturedProduct(product);
+		manufacturedProducts.add(manufacturedProduct);
+		return manufacturedProduct;
+	}
+	
+	protected ResourceProduct createResourceProduct(Product product,Collection<ResourceProduct> resourceProducts){
+		ResourceProduct resourceProduct = new ResourceProduct(product);
+		resourceProducts.add(resourceProduct);
+		return resourceProduct;
+	}
+	
+	protected ProductionPlanResource createProductionPlanResource(ProductionPlan productionPlan,ResourceProduct resourceProduct){
+		ProductionPlanResource productionPlanResource = new ProductionPlanResource(productionPlan,resourceProduct);
 		productionPlan.getRows().add(productionPlanResource);
 		return productionPlanResource;
 	}
@@ -103,21 +120,21 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 		return productionUnit;
 	}
 	
-	protected ProductionPlan createProductionPlan(String code,ProductionUnit productionUnit,Product product,ProductionEnergy energy,TimeDivisionType reportIntervaltTimeDivisionType,Collection<ProductionPlan> productionPlans){
-		ProductionPlan productionPlan = new ProductionPlan(code, code, productionUnit, product, reportIntervaltTimeDivisionType);
+	protected ProductionPlan createProductionPlan(String code,ProductionUnit productionUnit,ManufacturedProduct manufacturedProduct,ProductionEnergy energy,TimeDivisionType reportIntervaltTimeDivisionType,Collection<ProductionPlan> productionPlans){
+		ProductionPlan productionPlan = new ProductionPlan(code, code, productionUnit, manufacturedProduct, reportIntervaltTimeDivisionType);
 		productionPlans.add(productionPlan);
 		productionPlan.setEnergy(energy);
 		productionPlan.setNextReportDate(new Date());
 		return productionPlan;
 	}
 	
-	protected ResellerProduct createResellerProduct(Reseller reseller,Product product,Collection<ResellerProduct> resellerProducts){
-		ResellerProduct resellerProduct = new ResellerProduct(reseller,product);
-		resellerProducts.add(resellerProduct);
-		resellerProduct.setSaleUnitPrice(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 1000)));
-		resellerProduct.setTakingUnitPrice(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 1000)));
-		resellerProduct.setCommissionRate(new BigDecimal("0."+RandomDataProvider.getInstance().randomInt(0, 100)));
-		return resellerProduct;
+	protected ResellerProductionPlan createResellerProductionPlan(Reseller reseller,ProductionPlan productionPlan,Collection<ResellerProductionPlan> resellerProductionPlans){
+		ResellerProductionPlan resellerProductionPlan = new ResellerProductionPlan(reseller,productionPlan);
+		resellerProductionPlans.add(resellerProductionPlan);
+		resellerProductionPlan.setSaleUnitPrice(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 1000)));
+		resellerProductionPlan.setTakingUnitPrice(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 1000)));
+		resellerProductionPlan.setCommissionRate(new BigDecimal("0."+RandomDataProvider.getInstance().randomInt(0, 100)));
+		return resellerProductionPlan;
 	}
 	
 	protected Production createProduction(ProductionPlan productionPlan,Object[][] objects,Collection<Production> productions){

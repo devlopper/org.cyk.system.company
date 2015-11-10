@@ -10,10 +10,10 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ResellerProduct;
+import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.persistence.api.production.ResellerDao;
-import org.cyk.system.company.persistence.api.production.ResellerProductDao;
+import org.cyk.system.company.persistence.api.production.ResellerProductionPlanDao;
 import org.cyk.system.company.persistence.api.production.ResellerProductionDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
@@ -22,7 +22,7 @@ public class ResellerProductionBusinessImpl extends AbstractTypedBusinessService
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	@Inject private ResellerProductDao resellerProductDao;
+	@Inject private ResellerProductionPlanDao resellerProductionPlanDao;
 	@Inject private ResellerDao resellerDao;
 	
 	@Inject
@@ -37,8 +37,8 @@ public class ResellerProductionBusinessImpl extends AbstractTypedBusinessService
 	
 	@Override
 	public ResellerProduction create(ResellerProduction resellerProduction) {
-		ResellerProduct resellerProduct = resellerProductDao.readByResellerByProduct(resellerProduction.getReseller()
-				, resellerProduction.getProduction().getTemplate().getProduct());
+		ResellerProductionPlan resellerProduct = resellerProductionPlanDao.readByResellerByProductionPlan(resellerProduction.getReseller()
+				, resellerProduction.getProduction().getTemplate());
 		resellerProduction.getAmount().setSystem(resellerProduction.getTakenQuantity().multiply(resellerProduct.getSaleUnitPrice()));
 		resellerProduction.getAmount().computeGap();
 		resellerProduction.setAmountGapCumul(resellerProduction.getReseller().getAmountGap().add(resellerProduction.getAmount().getGap()));
