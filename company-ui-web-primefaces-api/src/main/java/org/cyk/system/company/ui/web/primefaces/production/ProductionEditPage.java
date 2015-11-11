@@ -1,6 +1,7 @@
 package org.cyk.system.company.ui.web.primefaces.production;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.faces.view.ViewScoped;
@@ -20,7 +21,7 @@ import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputCalendar;
-import org.cyk.utility.common.annotation.user.interfaces.InputCalendar.Format;
+import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 
 @Named @ViewScoped @Getter @Setter
 public class ProductionEditPage extends AbstractCrudOnePage<Production> implements Serializable {
@@ -56,8 +57,8 @@ public class ProductionEditPage extends AbstractCrudOnePage<Production> implemen
 	@Getter @Setter @AllArgsConstructor @NoArgsConstructor
 	public static class Form extends AbstractFormModel<Production> implements Serializable {
 		private static final long serialVersionUID = -731657715703646576L;
-		@Input @InputCalendar(format=Format.DATE_SHORT)
-		private Date date;
+		@Input @InputCalendar private Date date;
+		@Input @InputNumber private BigDecimal manufacturedQuantity;
 		
 		@Override
 		public void read() {

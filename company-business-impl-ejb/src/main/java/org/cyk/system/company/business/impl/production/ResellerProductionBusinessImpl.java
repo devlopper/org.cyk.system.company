@@ -10,10 +10,8 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.persistence.api.production.ResellerDao;
-import org.cyk.system.company.persistence.api.production.ResellerProductionPlanDao;
 import org.cyk.system.company.persistence.api.production.ResellerProductionDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
@@ -22,7 +20,6 @@ public class ResellerProductionBusinessImpl extends AbstractTypedBusinessService
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	@Inject private ResellerProductionPlanDao resellerProductionPlanDao;
 	@Inject private ResellerDao resellerDao;
 	
 	@Inject
@@ -37,21 +34,19 @@ public class ResellerProductionBusinessImpl extends AbstractTypedBusinessService
 	
 	@Override
 	public ResellerProduction create(ResellerProduction resellerProduction) {
-		ResellerProductionPlan resellerProduct = resellerProductionPlanDao.readByResellerByProductionPlan(resellerProduction.getReseller()
-				, resellerProduction.getProduction().getTemplate());
-		resellerProduction.getAmount().setSystem(resellerProduction.getTakenQuantity().multiply(resellerProduct.getSaleUnitPrice()));
+		resellerProduction.getAmount().setSystem(resellerProduction.getTakenQuantity().multiply(resellerProduction.getResellerProductionPlan().getSaleUnitPrice()));
 		resellerProduction.getAmount().computeGap();
-		resellerProduction.setAmountGapCumul(resellerProduction.getReseller().getAmountGap().add(resellerProduction.getAmount().getGap()));
-		resellerProduction.setDiscount(resellerProduct.getTakingUnitPrice().subtract(resellerProduct.getSaleUnitPrice()));
+		resellerProduction.setAmountGapCumul(resellerProduction.getResellerProductionPlan().getReseller().getAmountGap().add(resellerProduction.getAmount().getGap()));
+		resellerProduction.setDiscount(resellerProduction.getResellerProductionPlan().getTakingUnitPrice().subtract(resellerProduction.getResellerProductionPlan().getSaleUnitPrice()));
 		resellerProduction.setCommission(resellerProduction.getTakenQuantity().subtract(resellerProduction.getReturnedQuantity())
-				.multiply(resellerProduct.getCommissionRate()));
+				.multiply(resellerProduction.getResellerProductionPlan().getCommissionRate()));
 		resellerProduction.setPayable(resellerProduction.getAmount().getGap().add(resellerProduction.getDiscount()).add(resellerProduction.getCommission()));
-		resellerProduction.setPayableCumul(resellerProduction.getReseller().getPayable().add(resellerProduction.getPayable()));
+		resellerProduction.setPayableCumul(resellerProduction.getResellerProductionPlan().getReseller().getPayable().add(resellerProduction.getPayable()));
 		super.create(resellerProduction);
 		
-		resellerProduction.getReseller().setAmountGap(resellerProduction.getAmountGapCumul());
-		resellerProduction.getReseller().setPayable(resellerProduction.getPayableCumul());
-		resellerDao.update(resellerProduction.getReseller());
+		resellerProduction.getResellerProductionPlan().getReseller().setAmountGap(resellerProduction.getAmountGapCumul());
+		resellerProduction.getResellerProductionPlan().getReseller().setPayable(resellerProduction.getPayableCumul());
+		resellerDao.update(resellerProduction.getResellerProductionPlan().getReseller());
 		
 		return resellerProduction;
 	}

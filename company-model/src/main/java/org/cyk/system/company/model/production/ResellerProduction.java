@@ -25,7 +25,7 @@ public class ResellerProduction extends AbstractIdentifiable implements Serializ
 
 	private static final long serialVersionUID = 1371797411549893368L;
 
-	@ManyToOne @NotNull private Reseller reseller;
+	@ManyToOne @NotNull private ResellerProductionPlan resellerProductionPlan;
 	@ManyToOne @NotNull private Production production;
 	
 	/* Taking */
@@ -53,14 +53,14 @@ public class ResellerProduction extends AbstractIdentifiable implements Serializ
 	
 	/**/
 	
-	public ResellerProduction(Reseller reseller, Production production) {
+	public ResellerProduction(ResellerProductionPlan resellerProductionPlan, Production production) {
 		super();
-		this.reseller = reseller;
+		this.resellerProductionPlan = resellerProductionPlan;
 		this.production = production;
 	}
 	
 	/**/
 	
-	public static final String FIELD_RESELLER = "reseller";
+	public static final String FIELD_RESELLER_PRODUCTION_PLAN = "resellerProductionPlan";
 	public static final String FIELD_PRODUCTION = "production";
 }

@@ -36,7 +36,12 @@ public class ResellerProductionPlan extends AbstractIdentifiable implements Seri
 	
 	@Override
 	public String getUiString() {
-		return toString();
+		return reseller.getUiString();
+	}
+	
+	@Override
+	public String toString() {
+		return reseller.toString();
 	}
 	
 	/**/

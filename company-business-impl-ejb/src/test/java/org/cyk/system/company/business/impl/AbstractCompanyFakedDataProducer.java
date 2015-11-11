@@ -2,6 +2,7 @@ package org.cyk.system.company.business.impl;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -20,6 +21,7 @@ import org.cyk.system.company.business.api.production.ResellerBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
+import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.production.ManufacturedProduct;
@@ -88,6 +90,11 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 		products.add(product);
 		return product;
 	}
+	protected IntangibleProduct createIntangibleProduct(String name,String price,Collection<Product> products){
+		IntangibleProduct product = new IntangibleProduct(StringUtils.remove(name, Constant.CHARACTER_SPACE),name,null,null,price==null?null:new BigDecimal(price));
+		products.add(product);
+		return product;
+	}
 	
 	protected ManufacturedProduct createManufacturedProduct(Product product,Collection<ManufacturedProduct> manufacturedProducts){
 		ManufacturedProduct manufacturedProduct = new ManufacturedProduct(product);
@@ -99,6 +106,10 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 		ResourceProduct resourceProduct = new ResourceProduct(product);
 		resourceProducts.add(resourceProduct);
 		return resourceProduct;
+	}
+	protected void createResourceProducts(Collection<Product> products,Collection<ResourceProduct> resourceProducts){
+		for(Product product : products)
+			createResourceProduct(product, resourceProducts);
 	}
 	
 	protected ProductionPlanResource createProductionPlanResource(ProductionPlan productionPlan,ResourceProduct resourceProduct){
@@ -137,12 +148,12 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 		return resellerProductionPlan;
 	}
 	
-	protected Production createProduction(ProductionPlan productionPlan,Object[][] objects,Collection<Production> productions){
+	protected Production createProduction(ProductionPlan productionPlan,Collection<Object[]> collection,Collection<Production> productions){
 		Production production = new Production();
 		production.setPeriod(new Period(new Date(), new Date()));
 		production.setTemplate(productionPlan);
 		productions.add(production);
-		for(Object[] object : objects){
+		for(Object[] object : collection){
 			ProductionValue value = new ProductionValue((ProductionPlanResource)object[0], (ProductionPlanMetric)object[1],new BigDecimal((String)object[2]));
 			//debug(value);
 			production.getCells().add(value);
@@ -150,8 +161,18 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 		return production;
 	}
 	
-	protected ResellerProduction createResellerProduction(Reseller reseller,Production production,Collection<ResellerProduction> resellerProductions){
-		ResellerProduction resellerProduction = new ResellerProduction(reseller,production);
+	protected Production createProduction(ProductionPlan productionPlan,Collection<Production> productions){
+		Collection<ProductionPlanResource> resources = productionPlanResourceBusiness.findByTemplate(productionPlan);
+		Collection<ProductionPlanMetric> metrics = productionPlanMetricBusiness.findByTemplate(productionPlan);
+		Collection<Object[]> collection = new ArrayList<>();
+		for(ProductionPlanResource productionPlanResource : resources)
+			for(ProductionPlanMetric productionPlanMetric : metrics)
+				collection.add(new Object[]{productionPlanResource,productionPlanMetric,RandomDataProvider.getInstance().randomInt(1, 10)+""});
+		return createProduction(productionPlan, collection, productions);
+	}
+	
+	protected ResellerProduction createResellerProduction(ResellerProductionPlan resellerProductionPlan,Production production,Collection<ResellerProduction> resellerProductions){
+		ResellerProduction resellerProduction = new ResellerProduction(resellerProductionPlan,production);
 		resellerProductions.add(resellerProduction);
 		resellerProduction.setTakenQuantity(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 1000)));
 		resellerProduction.setSoldQuantity(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 1000)));

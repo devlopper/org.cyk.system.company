@@ -15,7 +15,7 @@ public class ResellerProductionDetails extends AbstractOutputDetails<ResellerPro
 	
 	public ResellerProductionDetails(ResellerProduction resellerProduction) {
 		super(resellerProduction);
-		names = resellerProduction.getReseller().getPerson().getNames();
+		names = resellerProduction.getResellerProductionPlan().getReseller().getPerson().getNames();
 		takenQuantity = numberBusiness.format(resellerProduction.getTakenQuantity());
 		soldQuantity = numberBusiness.format(resellerProduction.getSoldQuantity());
 		returnedQuantity = numberBusiness.format(resellerProduction.getReturnedQuantity());

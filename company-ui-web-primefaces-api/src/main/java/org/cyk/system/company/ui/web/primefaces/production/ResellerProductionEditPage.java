@@ -13,8 +13,8 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProduction;
+import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
@@ -32,6 +32,12 @@ public class ResellerProductionEditPage extends AbstractCrudOnePage<ResellerProd
 	@Override
 	protected void initialisation() {
 		super.initialisation();
+	}
+	
+	@Override
+	protected void afterInitialisation() {
+		super.afterInitialisation();
+		setChoices(Form.RESELLER_PRODUCTION_PLAN, CompanyBusinessLayer.getInstance().getResellerProductionPlanBusiness().findByProductionPlan(identifiable.getProduction().getTemplate()));
 	}
 	
 	@Override
@@ -55,7 +61,7 @@ public class ResellerProductionEditPage extends AbstractCrudOnePage<ResellerProd
 	@Getter @Setter @AllArgsConstructor @NoArgsConstructor
 	public static class Form extends AbstractFormModel<ResellerProduction> implements Serializable {
 		private static final long serialVersionUID = -731657715703646576L;
-		@Input @InputChoice @InputOneChoice @InputOneCombo private Reseller reseller;
+		@Input @InputChoice(load=false) @InputOneChoice @InputOneCombo private ResellerProductionPlan resellerProductionPlan;
 		@Input @InputChoice @InputOneChoice @InputOneCombo private Production production;
 		@Input @InputNumber private BigDecimal takenQuantity,soldQuantity,returnedQuantity,paidAmount;
 		
@@ -68,13 +74,15 @@ public class ResellerProductionEditPage extends AbstractCrudOnePage<ResellerProd
 		@Override
 		public void write() {
 			super.write();
-			reseller = identifiable.getReseller();
+			resellerProductionPlan = identifiable.getResellerProductionPlan();
 			production = identifiable.getProduction();
 			identifiable.setTakenQuantity(takenQuantity);
 			identifiable.setSoldQuantity(soldQuantity);
 			identifiable.setReturnedQuantity(returnedQuantity);
 			identifiable.getAmount().setUser(paidAmount);
 		}
+		
+		public static final String RESELLER_PRODUCTION_PLAN = "resellerProductionPlan";
 	}
 	
 }
