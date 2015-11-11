@@ -58,6 +58,13 @@ public class ResellerProductionEditPage extends AbstractCrudOnePage<ResellerProd
 		@Input @InputChoice @InputOneChoice @InputOneCombo private Reseller reseller;
 		@Input @InputChoice @InputOneChoice @InputOneCombo private Production production;
 		@Input @InputNumber private BigDecimal takenQuantity,soldQuantity,returnedQuantity,paidAmount;
+		
+		@Override
+		public void read() {
+			super.read();
+			paidAmount = identifiable.getAmount().getUser();
+		}
+		
 		@Override
 		public void write() {
 			super.write();

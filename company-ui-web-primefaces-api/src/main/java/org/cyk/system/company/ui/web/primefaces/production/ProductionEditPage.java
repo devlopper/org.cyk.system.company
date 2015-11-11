@@ -56,8 +56,15 @@ public class ProductionEditPage extends AbstractCrudOnePage<Production> implemen
 	@Getter @Setter @AllArgsConstructor @NoArgsConstructor
 	public static class Form extends AbstractFormModel<Production> implements Serializable {
 		private static final long serialVersionUID = -731657715703646576L;
-		@Input @InputCalendar(format=Format.DATE_LONG)
+		@Input @InputCalendar(format=Format.DATE_SHORT)
 		private Date date;
+		
+		@Override
+		public void read() {
+			super.read();
+			date = identifiable.getPeriod().getFromDate();
+		}
+		
 		@Override
 		public void write() {
 			super.write();

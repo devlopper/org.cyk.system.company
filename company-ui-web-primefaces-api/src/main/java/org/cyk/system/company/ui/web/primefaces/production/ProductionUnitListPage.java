@@ -23,14 +23,21 @@ public class ProductionUnitListPage extends AbstractCrudManyPage<ProductionUnit>
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		/*table.setShowEditColumn(Boolean.FALSE);
-		table.setShowAddRemoveColumn(Boolean.FALSE);
-		*/
+		table.setShowEditColumn(Boolean.TRUE);
+		table.setShowAddRemoveColumn(Boolean.TRUE);
+		
 		table.setShowOpenCommand(Boolean.TRUE);
 		table.getOpenRowCommandable().setRendered(Boolean.TRUE);
-		/*
-		table.getPrintCommandable().setRendered(Boolean.FALSE);*/
+		
+		table.getPrintCommandable().setRendered(Boolean.FALSE);
 		rowAdapter.setOpenable(Boolean.TRUE);
+		rowAdapter.setUpdatable(Boolean.TRUE);
+	}
+	
+	@Override
+	protected void afterInitialisation() {
+		// TODO Auto-generated method stub
+		super.afterInitialisation();
 	}
 	
 	@Override

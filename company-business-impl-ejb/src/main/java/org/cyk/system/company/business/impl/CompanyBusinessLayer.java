@@ -34,8 +34,8 @@ import org.cyk.system.company.business.api.production.ProductionPlanResourceBusi
 import org.cyk.system.company.business.api.production.ProductionSpreadSheetCellBusiness;
 import org.cyk.system.company.business.api.production.ProductionUnitBusiness;
 import org.cyk.system.company.business.api.production.ResellerBusiness;
-import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
+import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
 import org.cyk.system.company.business.api.structure.DivisionBusiness;
 import org.cyk.system.company.business.api.structure.DivisionTypeBusiness;
@@ -69,16 +69,19 @@ import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.OwnedCompany;
+import org.cyk.system.root.business.api.FormatterBusiness;
 import org.cyk.system.root.business.api.TypedBusiness;
 import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.security.RoleBusiness;
 import org.cyk.system.root.business.api.security.UserAccountBusiness;
 import org.cyk.system.root.business.impl.AbstractBusinessLayer;
+import org.cyk.system.root.business.impl.AbstractFormatter;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.geography.ContactCollection;
 import org.cyk.system.root.model.geography.PhoneNumber;
@@ -155,6 +158,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Getter private IntangibleProduct intangibleProductSaleStock;
 	private CashRegister cashRegister;
 	@Inject private CompanyReportRepository companyReportRepository;
+	@Inject private FormatterBusiness formatterBusiness;
 	
 	private static final Collection<CompanyBusinessLayerListener> COMPANY_BUSINESS_LAYER_LISTENERS = new ArrayList<>();
 	
@@ -162,11 +166,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	protected void initialisation() {
 		INSTANCE = this;
 		super.initialisation();
-		/*
-		registerResourceBundle("org.cyk.system.company.model.resources.entity", getClass().getClassLoader());
-		registerResourceBundle("org.cyk.system.company.model.resources.message", getClass().getClassLoader());
-		registerResourceBundle("org.cyk.system.company.business.impl.resources.message", getClass().getClassLoader());
-		*/
+		formatterBusiness.registerFormatter(Production.class, new AbstractFormatter<Production>() {
+			private static final long serialVersionUID = 3952155697329951912L;
+			@Override
+			public String format(Production production, ContentType contentType) {
+				return rootBusinessLayer.getTimeBusiness().formatDate(production.getPeriod().getFromDate());
+			}
+		});
 		pointOfSaleInvoiceReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.invoice");
 		pointOfSalePaymentReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.paymentreceipt");
 	}

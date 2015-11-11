@@ -52,6 +52,13 @@ public class ProductionUnitEditPage extends AbstractCrudOnePage<ProductionUnit> 
 		private static final long serialVersionUID = -731657715703646576L;
 		@Input @InputText
 		private String name;
+		
+		@Override
+		public void read() {
+			super.read();
+			name = identifiable.getCompany().getName();
+		}
+		
 		@Override
 		public void write() {
 			super.write();

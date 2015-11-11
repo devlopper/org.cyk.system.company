@@ -56,7 +56,7 @@ public class ProductionUnitConsultPage extends AbstractConsultPage<ProductionUni
 			}
 			@Override
 			public Crud[] getCruds() {
-				return new Crud[]{Crud.READ};
+				return new Crud[]{Crud.UPDATE,Crud.READ};
 			}
 			@Override
 			public String getTabId() {
