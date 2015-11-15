@@ -229,9 +229,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			listener.handleCompanyLogoToInstall(company.getImage());
 		installObject(FILE_COMPANY_LOGO,fileBusiness,company.getImage());
 		company.setContactCollection(new ContactCollection());
-		company.getContactCollection().setPhoneNumbers(new ArrayList<PhoneNumber>());
-		RootRandomDataProvider.getInstance().phoneNumber(company.getContactCollection());
-
+		//company.getContactCollection().setPhoneNumbers(new ArrayList<PhoneNumber>());
+		//RootRandomDataProvider.getInstance().phoneNumber(company.getContactCollection());
+				
 		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
 			listener.handleCompanyToInstall(company);
 		installObject(STRUCTURE_COMPANY,companyBusiness,company);
