@@ -37,7 +37,7 @@ public class ProductionConsultPage extends AbstractConsultPage<Production> imple
 	protected void initialisation() {
 		super.initialisation();
 		spreadsheet = new ProductionSpreadsheet(identifiable);	
-		details = createDetailsForm(Details.class, identifiable, new DetailsFormOneDataConfigurationAdapter<Production,Details>(Production.class, Details.class){
+		details = createDetailsForm(Details.class, identifiable, new DetailsConfigurationListener.Form.Adapter<Production,Details>(Production.class, Details.class){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Boolean getEnabledInDefaultTab() {
@@ -49,7 +49,7 @@ public class ProductionConsultPage extends AbstractConsultPage<Production> imple
 			}
 		});
 		
-		resellerTable = (Table<ResellerProductionDetails>) createDetailsTable(ResellerProductionDetails.class, new DetailsTableConfigurationAdapter<ResellerProduction,ResellerProductionDetails>(ResellerProduction.class, ResellerProductionDetails.class){
+		resellerTable = (Table<ResellerProductionDetails>) createDetailsTable(ResellerProductionDetails.class, new DetailsConfigurationListener.Table.Adapter<ResellerProduction,ResellerProductionDetails>(ResellerProduction.class, ResellerProductionDetails.class){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Collection<ResellerProduction> getIdentifiables() {

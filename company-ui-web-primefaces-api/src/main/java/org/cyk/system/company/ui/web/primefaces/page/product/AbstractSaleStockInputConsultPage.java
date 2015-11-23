@@ -17,18 +17,13 @@ import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
-import org.cyk.system.root.business.api.Crud;
 import org.cyk.ui.api.UIManager;
 import org.cyk.ui.api.UIProvider;
-import org.cyk.ui.api.command.CommandAdapter;
-import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.UICommandable.CommandRequestType;
 import org.cyk.ui.api.command.UICommandable.Parameter;
 import org.cyk.ui.api.command.UICommandable.ViewType;
 import org.cyk.ui.api.model.AbstractOutputDetails;
-import org.cyk.ui.api.model.table.Row;
-import org.cyk.ui.api.model.table.RowAdapter;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
@@ -50,13 +45,12 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 	protected FormOneData<Details> details;
 	protected Table<OutputDetails> outputsTable;
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		details = (FormOneData<Details>) createDetailsForm(Details.class,identifiable, new DetailsFormOneDataConfigurationAdapter<>(SaleStockInput.class, Details.class));
+		details = (FormOneData<Details>) createDetailsForm(Details.class,identifiable, new DetailsConfigurationListener.Form.Adapter<>(SaleStockInput.class, Details.class));
 		
-		outputsTable = (Table<OutputDetails>) createDetailsTable(OutputDetails.class, new DetailsTableConfigurationAdapter<SaleStockOutput,OutputDetails>(SaleStockOutput.class, OutputDetails.class){
+		outputsTable = (Table<OutputDetails>) createDetailsTable(OutputDetails.class, new DetailsConfigurationListener.Table.Adapter<SaleStockOutput,OutputDetails>(SaleStockOutput.class, OutputDetails.class){
 			private static final long serialVersionUID = -2147502075453340486L;
 			@Override
 			public Collection<SaleStockOutput> getIdentifiables() {

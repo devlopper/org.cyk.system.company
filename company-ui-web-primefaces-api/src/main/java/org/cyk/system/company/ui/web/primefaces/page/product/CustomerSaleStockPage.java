@@ -41,7 +41,7 @@ public class CustomerSaleStockPage extends AbstractPrimefacesPage implements Ser
 		for(Customer customer : customerBusiness.findAll())
 			details.add(new CustomerReportTableRow(customer));
 		
-		table = createDetailsTable(CustomerReportTableRow.class, new DetailsTableConfigurationAdapter<Customer, CustomerReportTableRow>(Customer.class, CustomerReportTableRow.class){
+		table = createDetailsTable(CustomerReportTableRow.class, new DetailsConfigurationListener.Table.Adapter<Customer, CustomerReportTableRow>(Customer.class, CustomerReportTableRow.class){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public ColumnAdapter getColumnAdapter() {

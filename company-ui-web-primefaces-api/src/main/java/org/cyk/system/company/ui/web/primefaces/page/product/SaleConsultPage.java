@@ -78,7 +78,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 			}
 		}); 
 		
-		productTable = createDetailsTable(ProductDetails.class, new DetailsTableConfigurationAdapter<SaleProduct, ProductDetails>(SaleProduct.class, ProductDetails.class){
+		productTable = createDetailsTable(ProductDetails.class, new DetailsConfigurationListener.Table.Adapter<SaleProduct, ProductDetails>(SaleProduct.class, ProductDetails.class){
 			private static final long serialVersionUID = 1L;
 			
 		});
@@ -87,7 +87,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		//productExecutionTable = (Table<ProductExecutionDetails>) createTable(ProductExecutionDetails.class, null, null);
 		//configureDetailsTable(productExecutionTable, /*"executiondetails"*/null);
 		
-		paymentTable = createDetailsTable(PaymentDetails.class,new DetailsTableConfigurationAdapter<SaleCashRegisterMovement, PaymentDetails>(SaleCashRegisterMovement.class, PaymentDetails.class){
+		paymentTable = createDetailsTable(PaymentDetails.class,new DetailsConfigurationListener.Table.Adapter<SaleCashRegisterMovement, PaymentDetails>(SaleCashRegisterMovement.class, PaymentDetails.class){
 			private static final long serialVersionUID = 1L;
 			
 		});

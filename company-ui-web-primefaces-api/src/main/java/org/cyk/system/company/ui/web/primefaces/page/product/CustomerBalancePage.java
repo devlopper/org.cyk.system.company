@@ -48,7 +48,7 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 		for(Customer customer : customers)
 			details.add(new CustomerReportTableRow(customer));
 		*/
-		table = createDetailsTable(CustomerReportTableRow.class, new DetailsTableConfigurationAdapter<Customer,CustomerReportTableRow>(Customer.class, CustomerReportTableRow.class){
+		table = createDetailsTable(CustomerReportTableRow.class, new DetailsConfigurationListener.Table.Adapter<Customer,CustomerReportTableRow>(Customer.class, CustomerReportTableRow.class){
 			private static final long serialVersionUID = -6570916902889942385L;
 			@Override
 			public Collection<Customer> getIdentifiables() {

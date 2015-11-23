@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
-import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
@@ -36,7 +35,7 @@ public class ProductionUnitConsultPage extends AbstractConsultPage<ProductionUni
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		details = createDetailsForm(Details.class, identifiable, new DetailsFormOneDataConfigurationAdapter<Production,Details>(Production.class, Details.class){
+		details = createDetailsForm(Details.class, identifiable, new DetailsConfigurationListener.Form.Adapter<ProductionUnit,Details>(ProductionUnit.class, Details.class){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Boolean getEnabledInDefaultTab() {
@@ -48,7 +47,7 @@ public class ProductionUnitConsultPage extends AbstractConsultPage<ProductionUni
 			}
 		});
 		
-		productionPlanTable = (Table<ProductionPlanDetails>) createDetailsTable(ProductionPlanDetails.class, new DetailsTableConfigurationAdapter<ProductionPlan,ProductionPlanDetails>(ProductionPlan.class, ProductionPlanDetails.class){
+		productionPlanTable = (Table<ProductionPlanDetails>) createDetailsTable(ProductionPlanDetails.class, new DetailsConfigurationListener.Table.Adapter<ProductionPlan,ProductionPlanDetails>(ProductionPlan.class, ProductionPlanDetails.class){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Collection<ProductionPlan> getIdentifiables() {
@@ -64,7 +63,7 @@ public class ProductionUnitConsultPage extends AbstractConsultPage<ProductionUni
 			}
 		});
 		
-		resellerProductTable = (Table<ResellerDetails>) createDetailsTable(ResellerDetails.class, new DetailsTableConfigurationAdapter<Reseller,ResellerDetails>(Reseller.class, ResellerDetails.class){
+		resellerProductTable = (Table<ResellerDetails>) createDetailsTable(ResellerDetails.class, new DetailsConfigurationListener.Table.Adapter<Reseller,ResellerDetails>(Reseller.class, ResellerDetails.class){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Collection<Reseller> getIdentifiables() {

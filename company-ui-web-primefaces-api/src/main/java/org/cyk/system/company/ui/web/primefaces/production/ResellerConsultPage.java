@@ -27,7 +27,7 @@ public class ResellerConsultPage extends AbstractActorConsultPage<Reseller> impl
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		/*details = createDetailsForm(Details.class, identifiable, new DetailsFormOneDataConfigurationAdapter<Production,Details>(Production.class, Details.class){
+		/*details = createDetailsForm(Details.class, identifiable, new DetailsConfigurationListener.Form.Adapter<Production,Details>(Production.class, Details.class){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Boolean getEnabledInDefaultTab() {
@@ -39,7 +39,7 @@ public class ResellerConsultPage extends AbstractActorConsultPage<Reseller> impl
 			}
 		});
 		
-		resellerTable = (Table<ResellerProductionDetails>) createDetailsTable(ResellerProductionDetails.class, new DetailsTableConfigurationAdapter<ResellerProduction,ResellerProductionDetails>(ResellerProduction.class, ResellerProductionDetails.class){
+		resellerTable = (Table<ResellerProductionDetails>) createDetailsTable(ResellerProductionDetails.class, new DetailsConfigurationListener.Table.Adapter<ResellerProduction,ResellerProductionDetails>(ResellerProduction.class, ResellerProductionDetails.class){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Collection<ResellerProduction> getIdentifiables() {

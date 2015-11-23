@@ -35,7 +35,7 @@ public class ProductionPlanConsultPage extends AbstractConsultPage<ProductionPla
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		details = createDetailsForm(Details.class, identifiable, new DetailsFormOneDataConfigurationAdapter<ProductionPlan,Details>(ProductionPlan.class, Details.class){
+		details = createDetailsForm(Details.class, identifiable, new DetailsConfigurationListener.Form.Adapter<ProductionPlan,Details>(ProductionPlan.class, Details.class){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Boolean getEnabledInDefaultTab() {
@@ -44,7 +44,7 @@ public class ProductionPlanConsultPage extends AbstractConsultPage<ProductionPla
 			
 		});
 		
-		productionTable = (Table<ProductionDetails>) createDetailsTable(ProductionDetails.class, new DetailsTableConfigurationAdapter<Production,ProductionDetails>(Production.class, ProductionDetails.class){
+		productionTable = (Table<ProductionDetails>) createDetailsTable(ProductionDetails.class, new DetailsConfigurationListener.Table.Adapter<Production,ProductionDetails>(Production.class, ProductionDetails.class){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Collection<Production> getIdentifiables() {
@@ -57,7 +57,7 @@ public class ProductionPlanConsultPage extends AbstractConsultPage<ProductionPla
 			
 		});
 		
-		resellerProductionPlanTable = (Table<ResellerProductionPlanDetails>) createDetailsTable(ResellerProductionPlanDetails.class, new DetailsTableConfigurationAdapter<ResellerProductionPlan,ResellerProductionPlanDetails>(ResellerProductionPlan.class, ResellerProductionPlanDetails.class){
+		resellerProductionPlanTable = (Table<ResellerProductionPlanDetails>) createDetailsTable(ResellerProductionPlanDetails.class, new DetailsConfigurationListener.Table.Adapter<ResellerProductionPlan,ResellerProductionPlanDetails>(ResellerProductionPlan.class, ResellerProductionPlanDetails.class){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Collection<ResellerProductionPlan> getIdentifiables() {
