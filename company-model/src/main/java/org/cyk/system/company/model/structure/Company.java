@@ -19,6 +19,8 @@ public class Company extends Party implements Serializable {
 
 	@ManyToOne private Person manager;
 	
+	@ManyToOne private Person signer;
+	
 	@Override
 	public String toString() {
 		return name;
