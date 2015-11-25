@@ -7,7 +7,7 @@ import javax.inject.Named;
 
 import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
-import org.cyk.ui.api.model.AbstractOutputDetails;
+import org.cyk.system.root.business.impl.AbstractOutputDetails;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudManyPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;

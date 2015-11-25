@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
-import org.cyk.ui.api.model.AbstractOutputDetails;
+import org.cyk.system.root.business.impl.AbstractOutputDetails;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.crud.AbstractActorConsultPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
