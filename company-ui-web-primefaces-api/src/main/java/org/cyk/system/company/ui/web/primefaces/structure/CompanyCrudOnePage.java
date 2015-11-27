@@ -11,11 +11,11 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.structure.Company;
-import org.cyk.system.company.ui.web.primefaces.model.CompanyFormModel;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
+import org.cyk.ui.api.model.party.AbstractPartyFormModel;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
 
 @Named @ViewScoped @Getter @Setter
@@ -27,7 +27,7 @@ public class CompanyCrudOnePage extends AbstractCrudOnePage<Company> implements 
 	
 	@Override
 	protected Class<? extends AbstractFormModel<?>> __formModelClass__() {
-		return CompanyFormModel.class;
+		return Form.class;
 	}
 	
 	@Override
@@ -44,6 +44,16 @@ public class CompanyCrudOnePage extends AbstractCrudOnePage<Company> implements 
 	@Override
 	protected BusinessEntityInfos fetchBusinessEntityInfos() {
 		return uiManager.businessEntityInfos(Company.class);
+	}
+	
+	/**/
+	
+	@Getter @Setter
+	public static class Form extends AbstractPartyFormModel<Company> implements Serializable {
+
+		private static final long serialVersionUID = -3328823824725030136L;
+
+		
 	}
 			
 }
