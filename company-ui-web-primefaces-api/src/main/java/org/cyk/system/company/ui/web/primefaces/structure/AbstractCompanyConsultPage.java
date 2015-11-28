@@ -4,14 +4,10 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.impl.AbstractOutputDetails;
 import org.cyk.system.root.model.file.File;
-import org.cyk.system.root.model.party.person.AbstractActor;
 import org.cyk.ui.api.UIProvider;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.model.geography.ContactDetails;
@@ -19,6 +15,7 @@ import org.cyk.ui.api.model.party.DefaultPersonEditFormModel;
 import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.ConsultPageListener;
+import org.cyk.ui.web.primefaces.page.ContactDetailsAdapter;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
 import org.cyk.utility.common.FileExtensionGroup;
 import org.cyk.utility.common.annotation.user.interfaces.FileExtensions;
@@ -27,15 +24,17 @@ import org.cyk.utility.common.annotation.user.interfaces.InputFile;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.cyk.utility.common.cdi.AbstractBean;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Getter @Setter
-public abstract class CompanyConsultPage extends AbstractConsultPage<Company> implements Serializable {
+public abstract class AbstractCompanyConsultPage extends AbstractConsultPage<Company> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
 	private FormOneData<MainDetails> mainDetails;
 	private FormOneData<ContactDetails> contactDetails;
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void consultInitialisation() {
 		super.consultInitialisation();
@@ -61,21 +60,7 @@ public abstract class CompanyConsultPage extends AbstractConsultPage<Company> im
 			}
 		});
 		
-		contactDetails = createDetailsForm(ContactDetails.class, identifiable, new CompanyDetailsFormOneDataConfigurationAdapter<ContactDetails>(ContactDetails.class){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public ContactDetails createData(AbstractActor identifiable) {
-				return new ContactDetails(identifiable);
-			}
-			@Override
-			public String getTitleId() {
-				return "contacts";
-			}
-			@Override
-			public String getTabId() {
-				return DefaultPersonEditFormModel.TAB_CONTACT_ID;
-			}
-		});
+		contactDetails = createDetailsForm(ContactDetails.class, identifiable.getContactCollection(), new ContactDetailsAdapter.Default());
 				
 	}
 	
@@ -134,21 +119,20 @@ public abstract class CompanyConsultPage extends AbstractConsultPage<Company> im
 			super(Company.class);
 		}
 		
-		@SuppressWarnings("unchecked")
 		@Override
 		public void initialisationEnded(AbstractBean bean) {
 			super.initialisationEnded(bean);
-			/*if(bean instanceof AbstractActorConsultPage){
+			if(bean instanceof AbstractCompanyConsultPage){
 				
 				ControlSetAdapter<MainDetails> mainDetailsControlSetAdapter = getControlSetAdapter(MainDetails.class);
 				if(mainDetailsControlSetAdapter!=null)
-					((AbstractActorConsultPage<AbstractActor>)bean).getMainDetails().getControlSetListeners().add(mainDetailsControlSetAdapter);
+					((AbstractCompanyConsultPage)bean).getMainDetails().getControlSetListeners().add(mainDetailsControlSetAdapter);
 				
 				ControlSetAdapter<ContactDetails> contactDetailsControlSetAdapter = getControlSetAdapter(ContactDetails.class);
 				if(contactDetailsControlSetAdapter!=null)
-					((AbstractActorConsultPage<AbstractActor>)bean).getContactDetails().getControlSetListeners().add(contactDetailsControlSetAdapter);
+					((AbstractCompanyConsultPage)bean).getContactDetails().getControlSetListeners().add(contactDetailsControlSetAdapter);
 				
-			}*/
+			}
 		}
 		
 		public <DETAILS> ControlSetAdapter<DETAILS> getControlSetAdapter(Class<DETAILS> detailsClass){
