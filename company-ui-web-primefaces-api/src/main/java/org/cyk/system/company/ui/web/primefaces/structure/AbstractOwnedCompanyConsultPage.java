@@ -7,34 +7,32 @@ import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.impl.structure.CompanyDetails;
 import org.cyk.system.company.model.structure.Company;
-import org.cyk.system.root.business.impl.AbstractOutputDetails;
+import org.cyk.system.company.model.structure.OwnedCompany;
+import org.cyk.system.company.ui.web.primefaces.structure.AbstractCompanyConsultPage.DetailsAdapter;
 import org.cyk.ui.api.UIProvider;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.model.geography.ContactDetails;
 import org.cyk.ui.api.model.party.DefaultPersonEditFormModel;
-import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
-import org.cyk.ui.web.primefaces.page.ConsultPageListener;
 import org.cyk.ui.web.primefaces.page.ContactDetailsAdapter;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
-import org.cyk.utility.common.cdi.AbstractBean;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public abstract class AbstractCompanyConsultPage extends AbstractConsultPage<Company> implements Serializable {
+public abstract class AbstractOwnedCompanyConsultPage extends AbstractConsultPage<OwnedCompany> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
-	private FormOneData<CompanyDetails> mainDetails;
+	private FormOneData<CompanyDetails> companyDetails;
 	private FormOneData<ContactDetails> contactDetails;
 	
 	@Override
 	protected void consultInitialisation() {
 		super.consultInitialisation();
 		
-		mainDetails = createDetailsForm(CompanyDetails.class, identifiable, new DetailsAdapter<CompanyDetails>(CompanyDetails.class){
+		companyDetails = createDetailsForm(CompanyDetails.class, identifiable.getCompany(), new DetailsAdapter<CompanyDetails>(CompanyDetails.class){
 			private static final long serialVersionUID = 1L;
 			
 			@Override
@@ -55,7 +53,7 @@ public abstract class AbstractCompanyConsultPage extends AbstractConsultPage<Com
 			}
 		});
 		
-		contactDetails = createDetailsForm(ContactDetails.class, identifiable.getContactCollection(), new ContactDetailsAdapter.Default());		
+		contactDetails = createDetailsForm(ContactDetails.class, identifiable.getCompany().getContactCollection(), new ContactDetailsAdapter.Default());		
 	}
 	
 	@Override
@@ -73,38 +71,6 @@ public abstract class AbstractCompanyConsultPage extends AbstractConsultPage<Com
 		
 		return Arrays.asList(contextualMenu);
 	}
-					
-	public static class DetailsAdapter<DETAILS extends AbstractOutputDetails<Company>> extends DetailsConfigurationListener.Form.Adapter<Company,DETAILS>{
-
-		private static final long serialVersionUID = -9101575271431241099L;
-
-		public DetailsAdapter(Class<DETAILS> detailsClass) {
-			super(Company.class, detailsClass);
-		}
-		
-	}
 	
-	public static class Adapter extends ConsultPageListener.Adapter.Default<Company>{
-		private static final long serialVersionUID = -5657492205127185872L;
-		
-		public Adapter() {
-			super(Company.class);
-		}
-		
-		@Override
-		public void initialisationEnded(AbstractBean bean) {
-			super.initialisationEnded(bean);
-			if(bean instanceof AbstractCompanyConsultPage){
-				
-				ControlSetAdapter<CompanyDetails> mainDetailsControlSetAdapter = getControlSetAdapter(CompanyDetails.class);
-				if(mainDetailsControlSetAdapter!=null)
-					((AbstractCompanyConsultPage)bean).getMainDetails().getControlSetListeners().add(mainDetailsControlSetAdapter);
-				
-				ControlSetAdapter<ContactDetails> contactDetailsControlSetAdapter = getControlSetAdapter(ContactDetails.class);
-				if(contactDetailsControlSetAdapter!=null)
-					((AbstractCompanyConsultPage)bean).getContactDetails().getControlSetListeners().add(contactDetailsControlSetAdapter);
-				
-			}
-		}
-	}
+	
 }

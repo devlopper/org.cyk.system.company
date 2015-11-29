@@ -10,10 +10,10 @@
       xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component">
 
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
- 		<ui:param name="pageController" value="#{companyConsultPage}" />
+ 		<ui:param name="pageController" value="#{defaultOwnedCompanyConsultPage}" />
  		<ui:define name="body">
- 			<cyk:formOneData value="#{companyConsultPage.mainDetails}" />	
- 			<cyk:formOneData value="#{companyConsultPage.contactDetails}" /> 			
+ 			<cyk:formOneData value="#{defaultOwnedCompanyConsultPage.mainDetails}" />	
+ 			<cyk:formOneData value="#{defaultOwnedCompanyConsultPage.contactDetails}" /> 			
  		</ui:define>
  	</ui:decorate>
  

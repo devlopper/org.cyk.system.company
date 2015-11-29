@@ -9,9 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter @ViewScoped @Named
-public abstract class DefaultCompanyConsultPage extends AbstractCompanyConsultPage implements Serializable {
+public class CompanyConsultPage extends AbstractCompanyConsultPage implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
-	
 	
 }

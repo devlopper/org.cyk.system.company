@@ -7,20 +7,6 @@ import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-
-import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
-import org.cyk.system.company.business.api.payment.CashierBusiness;
-import org.cyk.system.company.business.api.product.CustomerBusiness;
-import org.cyk.system.company.business.api.product.ProductCollectionBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
-import org.cyk.system.company.business.api.production.ProductionBusiness;
-import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
-import org.cyk.system.company.business.api.production.ProductionUnitBusiness;
-import org.cyk.system.company.business.api.production.ResellerBusiness;
-import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
-import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.model.payment.BalanceType;
@@ -40,6 +26,7 @@ import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
+import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
@@ -57,6 +44,8 @@ import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.cyk.utility.common.computation.DataReadConfiguration;
+
+import lombok.Getter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyWebManager.DEPLOYMENT_ORDER) @Getter
 public class CompanyWebManager extends AbstractPrimefacesManager implements Serializable {
@@ -83,20 +72,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	private final String outcomeSaleStockInStock = "saleStockInStockView";
 	private final String outcomeSaleStockList = "saleStockListView";
 	private final String outcomeSaleStockOutputList = "saleStockOutputListView";
-	
-	@Inject private CustomerBusiness customerBusiness;
-	@Inject private EmployeeBusiness employeeBusiness;
-	@Inject private ResellerBusiness resellerBusiness;
-	@Inject private ResellerProductionPlanBusiness resellerProductBusiness;
-	@Inject private ProductCollectionBusiness productCollectionBusiness;
-	@Inject private TangibleProductInventoryBusiness tangibleProductInventoryBusiness;
-	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
-	@Inject private CashRegisterBusiness cashRegisterBusiness;
-	@Inject private CashierBusiness cashierBusiness;
-	@Inject private ProductionBusiness productionBusiness;
-	@Inject private ProductionUnitBusiness productionUnitBusiness;
-	@Inject private ProductionPlanBusiness productionPlanModelBusiness;
-	
+		
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
 	@Inject private CompanyReportRepository companyReportRepository;
 	
@@ -129,27 +105,29 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 			@Override
 			public <T extends AbstractIdentifiable> Collection<T> find(Class<T> dataClass, DataReadConfiguration configuration) {
 				if(Customer.class.equals(dataClass)){
-					return (Collection<T>) customerBusiness.findAll();
+					return (Collection<T>) companyBusinessLayer.getCustomerBusiness().findAll();
 				}else if(Employee.class.equals(dataClass)){
-					return (Collection<T>) employeeBusiness.findAll();
+					return (Collection<T>) companyBusinessLayer.getEmployeeBusiness().findAll();
 				}else if(Reseller.class.equals(dataClass)){
-					return (Collection<T>) resellerBusiness.findAll();	
+					return (Collection<T>) companyBusinessLayer.getResellerBusiness().findAll();	
 				}else if(ResellerProductionPlan.class.equals(dataClass)){
-					return (Collection<T>) resellerProductBusiness.findAll();	
+					return (Collection<T>) companyBusinessLayer.getResellerProductionPlanBusiness().findAll();	
 				}else if(ProductCollection.class.equals(dataClass)){
-					return (Collection<T>) productCollectionBusiness.findAllWithProduct();
+					return (Collection<T>) companyBusinessLayer.getProductCollectionBusiness().findAllWithProduct();
 				} else if(TangibleProductInventory.class.equals(dataClass)){
-					return (Collection<T>) tangibleProductInventoryBusiness.findAll();
+					return (Collection<T>) companyBusinessLayer.getTangibleProductInventoryBusiness().findAll();
 				} else if(TangibleProductStockMovement.class.equals(dataClass)){
-					return (Collection<T>) tangibleProductStockMovementBusiness.findAll();
+					return (Collection<T>) companyBusinessLayer.getTangibleProductStockMovementBusiness().findAll();
 				} else if(CashRegister.class.equals(dataClass)){
-					return (Collection<T>) cashRegisterBusiness.findAll();
+					return (Collection<T>) companyBusinessLayer.getCashRegisterBusiness().findAll();
 				} else if(ProductionPlan.class.equals(dataClass)){
-					return (Collection<T>) productionPlanModelBusiness.findAll();
+					return (Collection<T>) companyBusinessLayer.getProductionPlanBusiness().findAll();
 				} else if(Production.class.equals(dataClass)){
-					return (Collection<T>) productionBusiness.findAll();
+					return (Collection<T>) companyBusinessLayer.getProductionBusiness().findAll();
 				} else if(ProductionUnit.class.equals(dataClass)){
-					return (Collection<T>) productionUnitBusiness.findAll();
+					return (Collection<T>) companyBusinessLayer.getProductionUnitBusiness().findAll();
+				} else if(Company.class.equals(dataClass)){
+					return (Collection<T>) companyBusinessLayer.getCompanyBusiness().findAll();
 				}                
 				return super.find(dataClass, configuration);
 			}
@@ -157,27 +135,29 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 			@Override
 			public <T extends AbstractIdentifiable> Long count(Class<T> dataClass, DataReadConfiguration configuration) {
 				if(Customer.class.equals(dataClass)){
-					return customerBusiness.countAll();
+					return companyBusinessLayer.getCustomerBusiness().countAll();
 				}else if(Employee.class.equals(dataClass)){
-					return employeeBusiness.countAll();	
+					return companyBusinessLayer.getEmployeeBusiness().countAll();	
 				}else if(Reseller.class.equals(dataClass)){
-					return resellerBusiness.countAll();	
+					return companyBusinessLayer.getResellerBusiness().countAll();	
 				}else if(ResellerProductionPlan.class.equals(dataClass)){
-					return resellerProductBusiness.countAll();	
+					return companyBusinessLayer.getResellerProductionPlanBusiness().countAll();	
 				}else if(ProductCollection.class.equals(dataClass)){
-					return productCollectionBusiness.countAll();
+					return companyBusinessLayer.getProductCollectionBusiness().countAll();
 				}else if(TangibleProductInventory.class.equals(dataClass)){
-					return tangibleProductInventoryBusiness.countAll();
+					return companyBusinessLayer.getTangibleProductInventoryBusiness().countAll();
 				}else if(TangibleProductStockMovement.class.equals(dataClass)){
-					return tangibleProductStockMovementBusiness.countAll();
+					return companyBusinessLayer.getTangibleProductStockMovementBusiness().countAll();
 				} else if(CashRegister.class.equals(dataClass)){
-					return cashRegisterBusiness.countAll();
+					return companyBusinessLayer.getCashRegisterBusiness().countAll();
 				} else if(ProductionPlan.class.equals(dataClass)){
-					return productionPlanModelBusiness.countAll();
+					return companyBusinessLayer.getProductionPlanBusiness().countAll();
 				} else if(Production.class.equals(dataClass)){
-					return productionBusiness.countAll();
+					return companyBusinessLayer.getProductionBusiness().countAll();
 				} else if(ProductionUnit.class.equals(dataClass)){
-					return productionUnitBusiness.countAll();
+					return companyBusinessLayer.getProductionUnitBusiness().countAll();
+				} else if(Company.class.equals(dataClass)){
+					return companyBusinessLayer.getCompanyBusiness().countAll();
 				}  
 				
 				return super.count(dataClass, configuration);
@@ -204,7 +184,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	public SystemMenu systemMenu(AbstractUserSession userSession) {
 		Cashier cashier = null;
 		if(userSession.getUser() instanceof Person){
-			cashier = cashierBusiness.findByPerson((Person) userSession.getUser());
+			cashier = companyBusinessLayer.getCashierBusiness().findByPerson((Person) userSession.getUser());
 		}
 		SystemMenu systemMenu = new SystemMenu();
 		UICommandable group = uiProvider.createCommandable("department", null);
@@ -224,6 +204,8 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		group = uiProvider.createCommandable("sale", null);
 		group.addChild(menuManager.crudMany(CashRegister.class, null));	
 		systemMenu.getReferenceEntities().add(group);
+		
+		systemMenu.getBusinesses().add(menuManager.crudMany(Company.class, null));	
 		
 		/**/
 		

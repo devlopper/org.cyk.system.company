@@ -10,11 +10,10 @@ import org.cyk.system.company.ui.web.primefaces.production.ResellerCrudOnePageAd
 import org.cyk.system.root.model.party.person.AbstractActor;
 import org.cyk.system.root.ui.web.primefaces.api.RootWebManager;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
-import org.cyk.ui.web.primefaces.AbstractContextListener;
 import org.cyk.ui.web.primefaces.page.tools.AbstractActorCrudOnePageAdapter;
 
 @WebListener
-public class ContextListener extends AbstractContextListener implements Serializable {
+public class ContextListener extends AbstractCompanyContextListener implements Serializable {
 
 	private static final long serialVersionUID = -9042005596731665575L;
 

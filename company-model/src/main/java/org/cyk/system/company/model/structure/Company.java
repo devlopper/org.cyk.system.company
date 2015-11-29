@@ -11,8 +11,10 @@ import lombok.Setter;
 
 import org.cyk.system.root.model.party.Party;
 import org.cyk.system.root.model.party.person.Person;
+import org.cyk.utility.common.annotation.ModelBean;
+import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 
-@Getter @Setter @NoArgsConstructor @Entity
+@Getter @Setter @NoArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS)
 public class Company extends Party implements Serializable {
  
 	private static final long serialVersionUID = 2742833783679362737L;
