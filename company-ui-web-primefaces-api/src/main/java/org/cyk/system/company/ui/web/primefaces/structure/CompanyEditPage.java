@@ -34,6 +34,10 @@ public class CompanyEditPage extends AbstractCrudOnePage<Company> implements Ser
 		@Input @InputChoice @InputOneChoice @InputOneCombo private Person manager;
 		@Input @InputChoice @InputOneChoice @InputOneCombo private Person signer;
 		
+		public static final String FIELD_SIGNER = "signer";
+		
+		public static final String TAB_COMPANY_ID = "company";
+		
 	}
 
 }
