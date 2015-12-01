@@ -21,15 +21,17 @@ public abstract class AbstractCompanyDetails<IDENTIFIABLE extends AbstractIdenti
 	private static final long serialVersionUID = -1498269103849317057L;
 	
 	@Input @InputFile (extensions=@FileExtensions(groups=FileExtensionGroup.IMAGE)) protected File logo;
-	@Input @InputText protected String name,manager,signer;
+	@Input @InputText protected String name/*,manager*/,signer;
 	
 	public AbstractCompanyDetails(IDENTIFIABLE identifiable) {
 		super(identifiable);
 		Company company = getCompany();
 		logo = company.getImage();
 		name = company.getName();
-		if(company.getManager()!=null)
-			manager = company.getManager().getNames();
+		
+		//if(company.getManager()!=null)
+		//	manager = company.getManager().getNames();
+		
 		if(company.getSigner()!=null)
 			signer = company.getSigner().getNames();
 	}
