@@ -21,12 +21,14 @@ public class CompanyListPage extends AbstractCrudManyPage<Company> implements Se
 		super.initialisation();
 		rowAdapter.setOpenable(Boolean.TRUE);
 		rowAdapter.setUpdatable(Boolean.TRUE);
+		//table.getPrintCommandable().setRendered(Boolean.FALSE);
 	}
 	
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
 		table.setShowOpenCommand(Boolean.TRUE);
+		table.setShowToolBar(Boolean.FALSE);
 	}
 	
 }
