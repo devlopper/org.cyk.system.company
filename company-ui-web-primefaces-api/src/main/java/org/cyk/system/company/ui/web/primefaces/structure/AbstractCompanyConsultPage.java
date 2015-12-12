@@ -47,7 +47,7 @@ public abstract class AbstractCompanyConsultPage extends AbstractConsultPage<Com
 			}
 			@Override
 			public String getTitleId() {
-				return businessEntityInfos.getUiLabelId();
+				return businessEntityInfos.getUserInterface().getLabelId();
 			}
 			@Override
 			public String getTabId() {

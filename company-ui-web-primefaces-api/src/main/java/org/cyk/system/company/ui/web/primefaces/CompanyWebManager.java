@@ -88,13 +88,13 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		//businessClassConfig(TangibleProductStockMovement.class,TangibleProductStockMovementFormModel.class);
 		
 		businessClassConfig(ProductCollection.class,ProductCollectionFormModel.class,null);
-		businessEntityInfos(ProductCollection.class).setUiListViewId(null);
+		businessEntityInfos(ProductCollection.class).getUserInterface().setListViewId(null);
 		
-		businessEntityInfos(TangibleProductInventory.class).setUiListViewId("tangibleProductInventoryListView");
-		businessEntityInfos(TangibleProductInventory.class).setUiConsultViewId("tangibleProductInventoryConsultView");
+		businessEntityInfos(TangibleProductInventory.class).getUserInterface().setListViewId("tangibleProductInventoryListView");
+		businessEntityInfos(TangibleProductInventory.class).getUserInterface().setConsultViewId("tangibleProductInventoryConsultView");
 		
-		businessEntityInfos(TangibleProductStockMovement.class).setUiEditViewId("tangibleProductStockMovementCrudManyView");
-		businessEntityInfos(TangibleProductStockMovement.class).setUiListViewId(outcomeTangibleProductStockMovementList);
+		businessEntityInfos(TangibleProductStockMovement.class).getUserInterface().setEditViewId("tangibleProductStockMovementCrudManyView");
+		businessEntityInfos(TangibleProductStockMovement.class).getUserInterface().setListViewId(outcomeTangibleProductStockMovementList);
 		
 		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Employee.class, ActorConsultFormModel.class);
 		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Customer.class, ActorConsultFormModel.class);

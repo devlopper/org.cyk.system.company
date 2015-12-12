@@ -81,7 +81,7 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 	protected void afterInitialisation() {
 		super.afterInitialisation();
 		ajax();
-		form.findInputByClassByFieldName(WebInputOneCombo.class, "customer").setFiltered(Boolean.TRUE);
+		form.findInputByClassByFieldName(org.cyk.ui.api.data.collector.control.InputChoice.class, "customer").setFiltered(Boolean.TRUE);
 		//form.findInputByClassByFieldName(InputNumber.class,"quantity").setMinimum(-5);
 		//form.findInputByClassByFieldName(InputNumber.class,"quantity").setMaximum(150);
 	}
@@ -94,30 +94,33 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 	}
 	
 	protected AjaxListener priceAjaxListener(){
-		return setAjaxListener("price", "change", new String[]{"commission"},new String[]{"totalCost","valueAddedTax"}, BigDecimal.class,new ListenValueMethod<BigDecimal>() {
+		/*return setAjaxListener("price", "change", new String[]{"commission"},new String[]{"totalCost","valueAddedTax"}, BigDecimal.class,new ListenValueMethod<BigDecimal>() {
 			@Override
 			public void execute(BigDecimal value) {
 				updateOutputTotalCost();
 			}
-		});
+		});*/
+		return null;
 	}
 	
 	protected AjaxListener commissionAjaxListener(){
-		return setAjaxListener("commission", "change", new String[]{"price"},new String[]{"totalCost","valueAddedTax"}, BigDecimal.class,new ListenValueMethod<BigDecimal>() {
+		/*return setAjaxListener("commission", "change", new String[]{"price"},new String[]{"totalCost","valueAddedTax"}, BigDecimal.class,new ListenValueMethod<BigDecimal>() {
 			@Override
 			public void execute(BigDecimal value) {
 				updateOutputTotalCost();
 			}
-		});
+		});*/
+		return null;
 	}
 	
 	protected AjaxListener valueAddedTaxableAjaxListener(){
-		return setAjaxListener("valueAddedTaxable", "change", null,null, Boolean.class,new ListenValueMethod<Boolean>() {
+		/*return setAjaxListener("valueAddedTaxable", "change", null,null, Boolean.class,new ListenValueMethod<Boolean>() {
 			@Override
 			public void execute(Boolean value) {
 				onComplete(inputRowVisibility("valueAddedTax",value));
 			}
-		});
+		});*/
+		return null;
 	}
 	
 	private void updateOutputTotalCost(){

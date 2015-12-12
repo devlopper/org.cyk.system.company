@@ -48,7 +48,7 @@ public class SaleDeliveryPage extends AbstractBusinessEntityFormOnePage<Sale> im
 		form.setDynamic(Boolean.TRUE);
 		for(ProductEmployee productEmployee : productEmployeeBusiness.findPerformersBySale(identifiable))
 			assignments.add(new Assignment(productEmployee));
-		employeesItems = webManager.buildSelectItems(Employee.class); 
+		//employeesItems = webManager.buildSelectItems(Employee.class); 
 		products = new ArrayList<>(productBusiness.findToDelivery(identifiable));
 		
 	}
