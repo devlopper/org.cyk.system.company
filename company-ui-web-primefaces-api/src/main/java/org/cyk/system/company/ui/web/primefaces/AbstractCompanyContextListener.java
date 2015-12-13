@@ -17,7 +17,7 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 	@Override
 	protected void identifiableConfiguration(ServletContextEvent event) {
 		super.identifiableConfiguration(event);
-		uiManager.registerConfiguration(new IdentifiableConfiguration(Company.class, CompanyEditPage.Form.class, CompanyDetails.class));
+		uiManager.registerConfiguration(new IdentifiableConfiguration(Company.class, CompanyEditPage.Form.class, CompanyDetails.class,null));
 		uiManager.configBusinessIdentifiable(Company.class, null);
 		
 	}
