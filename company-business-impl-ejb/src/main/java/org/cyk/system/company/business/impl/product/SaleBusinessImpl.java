@@ -38,8 +38,8 @@ import org.cyk.system.company.persistence.api.product.CustomerDao;
 import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.cyk.system.company.persistence.api.product.SaleProductDao;
+import org.cyk.system.root.business.api.file.report.ReportBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.business.impl.file.report.ReportManager;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.party.person.Person;
 
@@ -54,7 +54,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	@Inject private ProductBusiness productBusiness;
 	@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
-	@Inject private ReportManager reportManager;
+	@Inject private ReportBusiness reportBusiness;
 	
 	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
 	@Inject private CashierBusiness cashierBusiness;
@@ -272,7 +272,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		for(SaleBusinessListener listener : LISTENERS)
 			listener.reportCreated(this, saleReport, Boolean.TRUE);
 		
-		reportManager.buildBinaryContent(current.getSale(), saleReport, current.getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE); 
+		reportBusiness.buildBinaryContent(current.getSale(), saleReport, current.getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE); 
 		update(current.getSale());
 	}
 	
@@ -307,7 +307,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public ReportBasedOnTemplateFile<SaleReport> findReport(Collection<Sale> sales) {
-		return reportManager.buildBinaryContent(sales.iterator().next().getReport(),CompanyBusinessLayer.getInstance().getPointOfSaleInvoiceReportName());//TODO many receipt print must be handled
+		return reportBusiness.buildBinaryContent(sales.iterator().next().getReport(),CompanyBusinessLayer.getInstance().getPointOfSaleInvoiceReportName());//TODO many receipt print must be handled
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)

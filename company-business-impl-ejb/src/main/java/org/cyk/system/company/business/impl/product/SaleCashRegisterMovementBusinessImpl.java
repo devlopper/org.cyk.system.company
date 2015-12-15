@@ -24,8 +24,8 @@ import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.persistence.api.product.CustomerDao;
 import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.product.SaleDao;
+import org.cyk.system.root.business.api.file.report.ReportBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.business.impl.file.report.ReportManager;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.party.person.Person;
 
@@ -38,7 +38,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	@Inject private CustomerDao customerDao;
 	@Inject private CashRegisterMovementBusiness cashRegisterMovementBusiness;
 	@Inject private CashierBusiness cashierBusiness;
-	@Inject private ReportManager reportManager;
+	@Inject private ReportBusiness reportBusiness;
 
 	@Inject
 	public SaleCashRegisterMovementBusinessImpl(SaleCashRegisterMovementDao dao) {
@@ -110,7 +110,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		
 		if(Boolean.TRUE.equals(generatePos)){
 			SaleReport saleReport = CompanyBusinessLayer.getInstance().getSaleReportProducer().producePaymentReceipt(previous,new ReceiptParameters(null,saleCashRegisterMovement));
-			reportManager.buildBinaryContent(saleCashRegisterMovement, saleReport
+			reportBusiness.buildBinaryContent(saleCashRegisterMovement, saleReport
 					,saleCashRegisterMovement.getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE); //(saleCashRegisterMovement, saleReport); 
 		}
 		return saleCashRegisterMovement;
@@ -144,7 +144,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public ReportBasedOnTemplateFile<SaleReport> findReport(Collection<SaleCashRegisterMovement> saleCashRegisterMovements) {
-		return reportManager.buildBinaryContent(saleCashRegisterMovements.iterator().next().getReport(),
+		return reportBusiness.buildBinaryContent(saleCashRegisterMovements.iterator().next().getReport(),
 				CompanyBusinessLayer.getInstance().getPointOfSalePaymentReportName());//TODO many receipt print must be handled
 	}
 

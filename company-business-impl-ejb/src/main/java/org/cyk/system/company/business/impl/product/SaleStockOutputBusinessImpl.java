@@ -28,7 +28,7 @@ import org.cyk.system.company.persistence.api.product.CustomerDao;
 import org.cyk.system.company.persistence.api.product.SaleStockInputDao;
 import org.cyk.system.company.persistence.api.product.SaleStockOutputDao;
 import org.cyk.system.root.business.api.event.EventBusiness;
-import org.cyk.system.root.business.impl.file.report.ReportManager;
+import org.cyk.system.root.business.api.file.report.ReportBusiness;
 import org.cyk.system.root.model.event.Event;
 import org.cyk.system.root.model.party.person.Person;
 
@@ -43,7 +43,7 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 	@Inject private EventBusiness eventBusiness;
 	@Inject private SaleStockInputDao saleStockInputDao;
 	@Inject private CustomerDao customerDao;
-	@Inject private ReportManager reportManager;
+	@Inject private ReportBusiness reportBusiness;
 	
 	@Inject
 	public SaleStockOutputBusinessImpl(SaleStockOutputDao dao) {
@@ -90,7 +90,7 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 		//debug(previous);
 		//debug(new ReceiptParameters(saleStockOutput));
 		SaleReport saleReport = CompanyBusinessLayer.getInstance().getSaleReportProducer().producePaymentReceipt(previous,new ReceiptParameters(saleStockOutput));
-		reportManager.buildBinaryContent(saleStockOutput.getSaleCashRegisterMovement(), saleReport,
+		reportBusiness.buildBinaryContent(saleStockOutput.getSaleCashRegisterMovement(), saleReport,
 				saleStockOutput.getSaleCashRegisterMovement().getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE); 
 		
 		return saleStockOutput;
