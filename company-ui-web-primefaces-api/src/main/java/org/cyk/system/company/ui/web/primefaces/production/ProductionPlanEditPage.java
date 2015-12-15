@@ -28,7 +28,7 @@ import org.cyk.system.root.model.userinterface.InputName;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.api.model.AbstractItemCollectionItem;
-import org.cyk.ui.api.model.ItemCollectionListener.ItemCollectionAdapter;
+import org.cyk.ui.web.api.ItemCollectionWebAdapter;
 import org.cyk.ui.web.primefaces.ItemCollection;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
@@ -51,8 +51,8 @@ public class ProductionPlanEditPage extends AbstractCrudOnePage<ProductionPlan> 
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		productionPlanResourceCollection = createItemCollection(form, "resources", ProductionPlanResourceItem.class, ProductionPlanResource.class
-				, identifiable.getRows(),new ItemCollectionAdapter<ProductionPlanResourceItem,ProductionPlanResource>(){
+		productionPlanResourceCollection = createItemCollection(ProductionPlanResourceItem.class, ProductionPlanResource.class
+				, identifiable.getRows(),new ItemCollectionWebAdapter<ProductionPlanResourceItem,ProductionPlanResource>(){
 			private static final long serialVersionUID = -2779323315299764384L;
 			@Override
 			public void write(ProductionPlanResourceItem item) {
@@ -60,9 +60,10 @@ public class ProductionPlanEditPage extends AbstractCrudOnePage<ProductionPlan> 
 				item.getIdentifiable().setResourceProduct(item.getResourceProduct());
 			}
 		});
+		productionPlanResourceCollection.setIdentifier("resources");
 		
-		productionPlanMetricCollection = createItemCollection(form, "metrics", ProductionPlanMetricItem.class, ProductionPlanMetric.class
-				, identifiable.getColumns(),new ItemCollectionAdapter<ProductionPlanMetricItem,ProductionPlanMetric>(){
+		productionPlanMetricCollection = createItemCollection(ProductionPlanMetricItem.class, ProductionPlanMetric.class
+				, identifiable.getColumns(),new ItemCollectionWebAdapter<ProductionPlanMetricItem,ProductionPlanMetric>(){
 			private static final long serialVersionUID = -2779323315299764384L;
 			@Override
 			public void write(ProductionPlanMetricItem item) {
@@ -70,6 +71,7 @@ public class ProductionPlanEditPage extends AbstractCrudOnePage<ProductionPlan> 
 				item.getIdentifiable().setInputName(item.getInputName());
 			}
 		});
+		productionPlanMetricCollection.setIdentifier("metrics");
 		
 		resourceProductSelectItems = webManager.getSelectItems(ResourceProduct.class);
 		inputNameSelectItems = webManager.getSelectItems(InputName.class);
