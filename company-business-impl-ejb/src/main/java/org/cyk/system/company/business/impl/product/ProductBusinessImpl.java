@@ -40,7 +40,7 @@ public class ProductBusinessImpl extends AbstractProductBusinessImpl<Product,Pro
 				productCollections.add((ProductCollection) saleProduct.getProduct());
 			else
 				noProductCollections.add(saleProduct.getProduct());
-		
+		/*
 		for(ProductCollection collection : productCollections){
 			if(Boolean.TRUE.equals(collection.getSalable()))
 				products.add(collection);
@@ -50,7 +50,7 @@ public class ProductBusinessImpl extends AbstractProductBusinessImpl<Product,Pro
 		for(Product product : noProductCollections)
 			if(Boolean.TRUE.equals(product.getSalable()))
 				products.add(product);
-		
+		*/
 		return products;
 	}
 	

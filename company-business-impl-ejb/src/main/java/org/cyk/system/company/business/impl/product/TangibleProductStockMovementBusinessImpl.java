@@ -51,12 +51,12 @@ public class TangibleProductStockMovementBusinessImpl extends AbstractTypedBusin
 		StockConfiguration stockConfiguration = accountingPeriodBusiness.findCurrent().getStockConfiguration();
 		exceptionUtils().exception(Boolean.FALSE.equals(stockConfiguration.getZeroQuantityAllowed()) && tangibleProductStockMovement.getQuantity().signum()==0, 
 				"exception.tangibleproductstockmovement.quantity.mustbegreaterthanzero");
-		BigDecimal stock = tangibleProductStockMovement.getTangibleProduct().getStockQuantity();
+		BigDecimal stock = null;//tangibleProductStockMovement.getTangibleProduct().getStockQuantity();
 		if(stock==null)
 			stock = BigDecimal.ZERO;
 		BigDecimal newStock = stock.add(tangibleProductStockMovement.getQuantity());
 		exceptionUtils().exception(newStock.signum()==-1, "tangibleproduct.stock.negative");
-		tangibleProductStockMovement.getTangibleProduct().setStockQuantity(newStock);
+		//tangibleProductStockMovement.getTangibleProduct().setStockQuantity(newStock);
 		productDao.update(tangibleProductStockMovement.getTangibleProduct());
 	}
 

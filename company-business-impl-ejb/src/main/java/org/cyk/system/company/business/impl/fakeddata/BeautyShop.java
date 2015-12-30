@@ -24,7 +24,7 @@ import org.cyk.utility.common.cdi.AbstractBean;
 import org.joda.time.DateTime;
 
 public class BeautyShop extends AbstractBean implements Serializable {
-
+/*
 	private static final long serialVersionUID = -4180196113740218243L;
 
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
@@ -123,5 +123,5 @@ public class BeautyShop extends AbstractBean implements Serializable {
     	}
     		
     }
-	
+	*/
 }

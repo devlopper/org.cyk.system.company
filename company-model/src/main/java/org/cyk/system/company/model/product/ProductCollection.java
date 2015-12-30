@@ -1,7 +1,6 @@
 package org.cyk.system.company.model.product;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -34,15 +33,15 @@ public class ProductCollection extends Product implements Serializable  {
 	@Size(min=2)
 	private Collection<Product> collection = new ArrayList<Product>();
 	
-	public ProductCollection(String code, String name, Division division,ProductCategory category, BigDecimal price) {
-		super(code, name, division, category, price);
+	public ProductCollection(String code, String name, Division division,ProductCategory category) {
+		super(code, name, division, category);
 	}
 	
-	public BigDecimal getTotalPrice(){
+	/*public BigDecimal getTotalPrice(){
 		BigDecimal sum = BigDecimal.ZERO;
 		for(Product product : collection)
 			sum = sum.add(product.getPrice());
 		return sum;
-	}
+	}*/
 	
 }

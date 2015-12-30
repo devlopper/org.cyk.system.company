@@ -115,8 +115,9 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public void applyChange(Sale sale, SaleProduct saleProduct) {
-		logDebug("Apply changes to sale product {}. UP={} Q={} P={} VAT={} T={}",saleProduct.getProduct().getCode(),
+		/*logDebug("Apply changes to sale product {}. UP={} Q={} P={} VAT={} T={}",saleProduct.getProduct().getCode(),
 				saleProduct.getProduct().getPrice(),saleProduct.getQuantity(),saleProduct.getPrice(),saleProduct.getValueAddedTax(),saleProduct.getTurnover());
+		*/
 		saleProductBusiness.process(saleProduct);
 		updateCost(sale);
 	}

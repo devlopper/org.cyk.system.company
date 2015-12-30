@@ -11,18 +11,12 @@ public abstract class AbstractProductDaoImpl<PRODUCT extends Product> extends Ab
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	protected String readBySalable,readByCategory;
+	protected String readByCategory;
 	
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
-		registerNamedQuery(readBySalable, _select().where(Product.FIELD_SALABLE));
 		registerNamedQuery(readByCategory, _select().where(Product.FIELD_CATEGORY));
-	}
-	
-	@Override
-	public Collection<PRODUCT> readBySalable(Boolean salable) {
-		return namedQuery(readBySalable).parameter(Product.FIELD_SALABLE, salable).resultMany();
 	}
 	
 	@Override

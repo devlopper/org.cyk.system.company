@@ -15,7 +15,6 @@ public interface AbstractProductBusiness<PRODUCT extends Product> extends Abstra
      * Compute and store data
      */
 	void consume(Collection<SaleProduct> saleProducts);
-	Collection<PRODUCT> findBySalable(Boolean salable);
 	
 	Collection<PRODUCT> findByCategory(ProductCategory category);
 	

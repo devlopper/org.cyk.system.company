@@ -60,11 +60,11 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 				saleProduct.getProduct().getCode(),Boolean.TRUE.equals(saleProduct.getSale().getCompleted())
 				,saleProduct.getValueAddedTax(),Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax()));
 		//logDebug("Update sale product {} calculated data",saleProduct.getProduct().getCode());
-		if(saleProduct.getProduct().getPrice()==null){
+		/*if(saleProduct.getProduct().getPrice()==null){
 		
 		}else{
 			saleProduct.setPrice(saleProduct.getProduct().getPrice().multiply(saleProduct.getQuantity()).subtract(saleProduct.getReduction()));	
-		}
+		}*/
 		
 		if(saleProduct.getPrice()==null){
 			//logWarning("Sale product {} has no price",saleProduct.getProduct().getCode());

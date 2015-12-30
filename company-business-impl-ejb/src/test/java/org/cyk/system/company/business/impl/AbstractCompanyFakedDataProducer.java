@@ -86,12 +86,12 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	}
 	
 	protected TangibleProduct createTangibleProduct(String name,String price,Collection<Product> products){
-		TangibleProduct product = new TangibleProduct(StringUtils.remove(name, Constant.CHARACTER_SPACE),name,null,null,price==null?null:new BigDecimal(price));
+		TangibleProduct product = null;//new TangibleProduct(StringUtils.remove(name, Constant.CHARACTER_SPACE),name,null,null,price==null?null:new BigDecimal(price));
 		products.add(product);
 		return product;
 	}
 	protected IntangibleProduct createIntangibleProduct(String name,String price,Collection<Product> products){
-		IntangibleProduct product = new IntangibleProduct(StringUtils.remove(name, Constant.CHARACTER_SPACE),name,null,null,price==null?null:new BigDecimal(price));
+		IntangibleProduct product = null;//new IntangibleProduct(StringUtils.remove(name, Constant.CHARACTER_SPACE),name,null,null,price==null?null:new BigDecimal(price));
 		products.add(product);
 		return product;
 	}

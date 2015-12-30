@@ -54,12 +54,7 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
     			accountingPeriodProductDao.create(new AccountingPeriodProduct(accountingPeriod, product));
     	return product;
     }
-    
-    @Override //@Transactional(value=TxType.NEVER) //TODO why error
-    public Collection<PRODUCT> findBySalable(Boolean salable) {
-    	return dao.readBySalable(salable);
-    }
-    
+        
     @Override
 	public void consume(Collection<SaleProduct> saleProducts) {
 		Set<PRODUCT> products = products(saleProducts);

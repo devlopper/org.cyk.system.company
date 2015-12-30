@@ -10,10 +10,14 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
+import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
@@ -72,7 +76,6 @@ import org.cyk.system.root.business.api.FormatterBusiness;
 import org.cyk.system.root.business.api.TypedBusiness;
 import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
-import org.cyk.system.root.business.api.security.RoleBusiness;
 import org.cyk.system.root.business.api.security.UserAccountBusiness;
 import org.cyk.system.root.business.impl.AbstractBusinessLayer;
 import org.cyk.system.root.business.impl.AbstractFormatter;
@@ -88,12 +91,10 @@ import org.cyk.system.root.model.security.Installation;
 import org.cyk.system.root.model.security.Role;
 import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.model.time.Period;
+import org.cyk.system.root.persistence.api.security.RoleDao;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.joda.time.DateTime;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER) @Getter
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
@@ -103,6 +104,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 
 	private static CompanyBusinessLayer INSTANCE;
 	
+	//TODO all those roles are not longer needed
 	private final String roleSaleManagerCode = "SALEMANAGER",roleStockManagerCode = "STOCKMANAGER",roleHumanResourcesManagerCode = "HUMANRESOURCESMANAGER"
 			,roleCustomerManagerCode = "CUSTOMERMANAGER",roleProductionManagerCode="PRODUCTIONMANAGER";
 	
@@ -146,13 +148,14 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private ProductionPlanBusiness productionPlanBusiness;
 	@Inject private ProductionPlanResourceBusiness productionPlanResourceBusiness;
 	@Inject private ResellerBusiness resellerBusiness;
+	@Inject private CashRegisterMovementBusiness cashRegisterMovementBusiness;
 	
 	@Inject private ResellerProductionPlanBusiness resellerProductionPlanBusiness;
 	@Inject private ResellerProductionBusiness resellerProductionBusiness;
 	//@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
 	//@Inject private AccountingPeriodProductCategoryBusiness accountingPeriodProductCategoryBusiness;
 	@Inject private UserAccountBusiness userAccountBusiness;
-	@Inject private RoleBusiness roleBusiness;
+	@Inject private RoleDao roleDao;
 	@Inject private ProductCategoryBusiness productCategoryBusiness;
 	@Inject private StringGeneratorBusiness stringGeneratorBusiness;
 	@Setter private CompanyReportProducer saleReportProducer = new DefaultSaleReportProducer();
@@ -264,10 +267,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		cashRegister = create(new CashRegister("CR01",ownedCompany,BigDecimal.ZERO, null, null));
 		
 		//intangibleProductBusiness.create(new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null, null));
-		installObject(PRODUCT_INTANGIBLE_SALE_STOCK,intangibleProductBusiness,new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null, null));
+		//installObject(PRODUCT_INTANGIBLE_SALE_STOCK,intangibleProductBusiness,new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null));
 		
 		//tangibleProductBusiness.create(new TangibleProduct(TangibleProduct.SALE_STOCK, "Marchandise", null, null, null));
-		installObject(PRODUCT_TANGIBLE_SALE_STOCK,tangibleProductBusiness,new TangibleProduct(TangibleProduct.SALE_STOCK, "Marchandise", null, null, null));
+		//installObject(PRODUCT_TANGIBLE_SALE_STOCK,tangibleProductBusiness,new TangibleProduct(TangibleProduct.SALE_STOCK, "Marchandise", null, null));
 	}
 	
 	private void security(){ 
@@ -317,8 +320,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Override
 	protected void setConstants(){
     	departmentDivisiontype = divisionTypeBusiness.find(DivisionType.DEPARTMENT);
-    	intangibleProductSaleStock = intangibleProductBusiness.find(IntangibleProduct.SALE_STOCK);
-    	tangibleProductSaleStock = tangibleProductBusiness.find(TangibleProduct.SALE_STOCK);
+    	intangibleProductSaleStock = getEnumeration(IntangibleProduct.class,IntangibleProduct.SALE_STOCK);
+    	tangibleProductSaleStock = getEnumeration(TangibleProduct.class,TangibleProduct.SALE_STOCK);
     }
 
 	public static CompanyBusinessLayer getInstance() {
@@ -351,7 +354,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         employee.getPerson().setLastName("Gerard");
         employeeBusiness.create(employee);
         
-        Role[] roles = roleBusiness.findAllExclude(Arrays.asList(RootBusinessLayer.getInstance().getAdministratorRole())).toArray(new Role[]{});
+        Role[] roles = roleDao.readAllExclude(Arrays.asList(RootBusinessLayer.getInstance().getRoleAdministrator())).toArray(new Role[]{});
         userAccountBusiness.create(new UserAccount(employee.getPerson(), new Credentials("zadi", "123"),null,roles));
         create(new Cashier(employee,cashRegister));
         

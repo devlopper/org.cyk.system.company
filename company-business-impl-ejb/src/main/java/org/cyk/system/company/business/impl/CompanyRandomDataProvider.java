@@ -75,9 +75,9 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 		tangibleProductStockMovementBusiness.create(tangibleProductStockMovement);
 		if(randomDataProvider.randomInt(1, 10)!=5){
 			TangibleProduct lTangibleProduct = tangibleProductDao.read(tangibleProduct.getIdentifier());
-			lTangibleProduct.setUseQuantity(lTangibleProduct.getUseQuantity().add(tangibleProductStockMovement.getQuantity()));
+			//lTangibleProduct.setUseQuantity(lTangibleProduct.getUseQuantity().add(tangibleProductStockMovement.getQuantity()));
 			tangibleProductBusiness.update(tangibleProduct);
-			tangibleProduct.setUseQuantity(lTangibleProduct.getUseQuantity());
+			//tangibleProduct.setUseQuantity(lTangibleProduct.getUseQuantity());
 		}
 	}
 	
@@ -108,7 +108,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 				if(product.getCode().equals(TangibleProduct.SALE_STOCK))
 					continue;
 				if(product.getCode().equals(IntangibleProduct.SALE_STOCK))
-					product.setPrice(new BigDecimal(randomDataProvider.randomInt(100000, 500000)));
+					;//product.setPrice(new BigDecimal(randomDataProvider.randomInt(100000, 500000)));
 				saleBusiness.selectProduct(sale, product, new BigDecimal(randomDataProvider.randomInt(1, 10)));
 			}
 				

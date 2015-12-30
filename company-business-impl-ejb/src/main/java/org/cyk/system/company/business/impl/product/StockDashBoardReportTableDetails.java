@@ -27,8 +27,8 @@ public class StockDashBoardReportTableDetails implements Serializable {
 	public StockDashBoardReportTableDetails(TangibleProduct tangibleProduct) {
 		this.code = tangibleProduct.getCode();
 		this.name = tangibleProduct.getName();
-		this.stockQuantity = RootBusinessLayer.getInstance().getNumberBusiness().format(tangibleProduct.getStockQuantity());
+		/*this.stockQuantity = RootBusinessLayer.getInstance().getNumberBusiness().format(tangibleProduct.getStockQuantity());
 		this.useQuantity = RootBusinessLayer.getInstance().getNumberBusiness().format(tangibleProduct.getUseQuantity());
-		this.usedQuantity = RootBusinessLayer.getInstance().getNumberBusiness().format(tangibleProduct.getUsedQuantity());
+		this.usedQuantity = RootBusinessLayer.getInstance().getNumberBusiness().format(tangibleProduct.getUsedQuantity());*/
 	}
 }

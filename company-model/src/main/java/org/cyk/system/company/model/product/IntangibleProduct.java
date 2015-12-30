@@ -1,7 +1,6 @@
 package org.cyk.system.company.model.product;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Entity;
 
@@ -18,8 +17,8 @@ public class IntangibleProduct extends Product implements Serializable  {
 
 	public static final String SALE_STOCK = "STOCKING";
 	
-	public IntangibleProduct(String code, String name, Division division,ProductCategory category, BigDecimal price) {
-		super(code, name, division, category, price);
+	public IntangibleProduct(String code, String name, Division division,ProductCategory category) {
+		super(code, name, division, category);
 	}
 	
 }

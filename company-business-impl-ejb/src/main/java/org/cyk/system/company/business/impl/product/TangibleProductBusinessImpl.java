@@ -37,11 +37,11 @@ public class TangibleProductBusinessImpl extends AbstractProductBusinessImpl<Tan
 	}
 	
 	public static void __beforeUpdate__(TangibleProduct product, BigDecimal usedCount) {
-		product.setUseQuantity(product.getUseQuantity().subtract(usedCount));
+		/*product.setUseQuantity(product.getUseQuantity().subtract(usedCount));
 		product.setUsedQuantity(product.getUsedQuantity().add(usedCount));
 		
 		if(product.getMinimalStockQuantityBlock()!=null)
 			ExceptionUtils.getInstance().exception(product.getUseQuantity().compareTo(product.getMinimalStockQuantityBlock())==-1, 
-			"exception.tangibleproduct.quantity.cannotbelowerthantoblock",new Object[]{product.getName()});
+			"exception.tangibleproduct.quantity.cannotbelowerthantoblock",new Object[]{product.getName()});*/
 	}
 }

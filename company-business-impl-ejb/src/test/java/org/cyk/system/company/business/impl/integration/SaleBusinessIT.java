@@ -51,8 +51,8 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	cashRegister1.setOwnedCompany(ownedCompanyBusiness.findDefaultOwnedCompany());
     	create(cashRegister1);
     	
-    	TangibleProduct tp = new TangibleProduct("tp1", "P1", null, null, new BigDecimal("1000"));
-    	tp.setUseQuantity(new BigDecimal("1000"));
+    	TangibleProduct tp = new TangibleProduct("tp1", "P1", null, null);
+    	//tp.setUseQuantity(new BigDecimal("1000"));
     	create(tp);
     	
     }

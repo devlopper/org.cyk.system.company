@@ -141,11 +141,12 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 			saleReport.setSaleProducts(null);
 		}else{
 			if(saleStockInput==null){
-				for(SaleProduct sp : sale.getSaleProducts()){
+				/*for(SaleProduct sp : sale.getSaleProducts()){
 					SaleProductReport spr = new SaleProductReport(saleReport,sp.getProduct().getCode(),sp.getProduct().getName(),
 						sp.getProduct().getPrice()==null?"":format(sp.getProduct().getPrice()),format(sp.getQuantity()),format(sp.getPrice()));
 					saleReport.getSaleProducts().add(spr);
 				}
+				*/
 			}else{
 				saleReport.setSaleProducts(null);
 			}

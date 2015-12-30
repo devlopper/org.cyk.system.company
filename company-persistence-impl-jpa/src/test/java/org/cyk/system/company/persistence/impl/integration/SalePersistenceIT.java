@@ -1,7 +1,5 @@
 package org.cyk.system.company.persistence.impl.integration;
 
-import java.math.BigDecimal;
-
 import javax.inject.Inject;
 
 import org.cyk.system.company.model.product.IntangibleProduct;
@@ -28,7 +26,7 @@ public class SalePersistenceIT extends AbstractPersistenceIT {
 		product = new IntangibleProduct();
     	product.setCode("prest01");
     	product.setName("Mon produit");
-    	product.setPrice(new BigDecimal("1000"));
+    	//product.setPrice(new BigDecimal("1000"));
     	create(product);
     	
     	sell("1", "1000", "0", "1000", Boolean.TRUE);
