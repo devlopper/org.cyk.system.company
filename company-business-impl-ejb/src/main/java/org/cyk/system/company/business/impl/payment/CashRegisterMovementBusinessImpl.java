@@ -14,12 +14,15 @@ import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.utility.common.Constant;
+import org.cyk.utility.common.computation.ArithmeticOperator;
 
 @Stateless
 public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessService<CashRegisterMovement, CashRegisterMovementDao> implements CashRegisterMovementBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
+	private static final String COMPUTE_NEW_VALUE_EXCEPTION_MESSAGE_FORMAT = "exception.%s.%s.%s";
+	
 	@Inject private CashRegisterDao cashRegisterDao;
 	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
 	
@@ -36,7 +39,9 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 				"validtion.cashregister.deposit.maximum");
 		movement.getCashRegister().setBalance(balance);
 		*/
-		doCreate(movement,movement.getAmount(),Boolean.TRUE,movement.getCashRegister().getMaximumBalance());
+		//"exception.cashregister.movement.amount."+operation+".invalid"
+		//"exception.cashregister.movement.amount."+operation+".offlimit"
+		doCreate(movement,movement.getCashRegister().getMaximumBalance());
 	}
 
 	@Override
@@ -47,17 +52,27 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 				"validtion.cashregister.deposit.minimum");
 		movement.getCashRegister().setBalance(balance);
 		*/
-		doCreate(movement,movement.getAmount(),Boolean.FALSE,movement.getCashRegister().getMinimumBalance());
+		doCreate(movement,movement.getCashRegister().getMinimumBalance());
 	}
 	
-	private void doCreate(CashRegisterMovement movement,BigDecimal amount,Boolean positive,BigDecimal limit){
-		String operation = Boolean.TRUE.equals(positive) ? "deposit":"withdraw";
+	private BigDecimal computeNewValue(BigDecimal current,BigDecimal increment,BigDecimal limit,String valueNameId){
+		Boolean positive = increment.signum() == 0 ? null : increment.signum() == 1 ;
 		BigDecimal sign = new BigDecimal((Boolean.TRUE.equals(positive) ? Constant.EMPTY_STRING:"-")+"1");
-		exceptionUtils().exception(movement.getAmount().signum()<0, "exception.cashregister.movement.amount."+operation+".invalid");
-		BigDecimal balance = movement.getCashRegister().getBalance().add(movement.getAmount().multiply(sign));
+		exceptionUtils().comparison(positive==null || increment.multiply(sign).signum() <= 0, valueNameId, ArithmeticOperator.GT, BigDecimal.ZERO);
+		current = current.add(increment);
+		exceptionUtils().exception(limit!=null && current.compareTo(limit)==sign.intValue(), "depasemment");
+		return current;
+	}
+	
+	private void doCreate(CashRegisterMovement movement,BigDecimal limit){
+		/*String operation = Boolean.TRUE.equals(positive) ? "deposit":"withdraw";
+		BigDecimal sign = new BigDecimal((Boolean.TRUE.equals(positive) ? Constant.EMPTY_STRING:"-")+"1");
+		exceptionUtils().exception(amount.multiply(sign).signum() <= 0, "exception.cashregister.movement.amount."+operation+".invalid");
+		BigDecimal balance = movement.getCashRegister().getBalance().add(movement.getAmount());
 		exceptionUtils().exception(limit!=null && balance.compareTo(limit)==sign.intValue(), "exception.cashregister.movement.amount."+operation+".offlimit");
+		*/
+		movement.getCashRegister().setBalance(computeNewValue(movement.getCashRegister().getBalance(), movement.getAmount(), limit,"cashregister.movement.amount"));
 		
-		movement.getCashRegister().setBalance(balance);
 		if(movement.getDate()==null)
 			movement.setDate(universalTimeCoordinated());
 		logTrace(movement.getLogMessage());
