@@ -58,7 +58,7 @@ public class PaymentBusinessIT extends AbstractBusinessIT {
     private void withdraw(CashRegister cashRegister,String amount,String expectedBalance){
     	CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
     	cashRegisterMovement.setCashRegister(cashRegister);
-    	cashRegisterMovement.setAmount(new BigDecimal(amount));
+    	cashRegisterMovement.setAmount(new BigDecimal(amount).negate());
     	companyBusinessLayer.getCashRegisterMovementBusiness().withdraw(cashRegisterMovement);
     	assertCashRegister(cashRegister, expectedBalance);
     }

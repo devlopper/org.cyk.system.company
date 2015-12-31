@@ -32,6 +32,15 @@ public class CashRegisterMovement extends AbstractIdentifiable implements Serial
 		this.cashRegister = cashRegister;
 	}
 	
+	/**/
+	
+	@Override
+	public String getLogMessage() {
+		return date+" | "+amount+" | "+cashRegister.getCode();
+	}
+	
+	/**/
+	
 	public static final String FIELD_COMPUTED_IDENTIFIER = "computedIdentifier";
 	public static final String FIELD_AMOUNT = "amount";
 	public static final String FIELD_DATE = "date";
