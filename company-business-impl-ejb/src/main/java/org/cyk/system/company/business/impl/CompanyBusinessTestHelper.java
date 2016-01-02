@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.api.product.ProductBusiness;
@@ -18,6 +19,8 @@ import org.cyk.system.company.business.api.product.SaleProductBusiness;
 import org.cyk.system.company.business.api.product.SaleStockBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
+import org.cyk.system.company.model.payment.CashRegister;
+import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.Sale;
@@ -31,7 +34,10 @@ import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStocksDetails;
 import org.cyk.system.company.model.product.SalesDetails;
 import org.cyk.system.root.business.impl.AbstractTestHelper;
+import org.cyk.system.root.business.impl.RootDataProducerHelper;
 import org.cyk.system.root.model.party.person.Person;
+import org.cyk.utility.test.AbstractTest.Try;
+import org.junit.Assert;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -45,6 +51,7 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
 	
 	@Inject private CashierBusiness cashierBusiness;
 	@Inject private SaleBusiness saleBusiness;
+	@Inject private RootDataProducerHelper rootDataProducerHelper;
 	
 	@Inject protected SaleStockInputBusiness saleStockInputBusiness;
     @Inject protected SaleStockOutputBusiness saleStockOutputBusiness;
@@ -75,6 +82,11 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
 	public Person cashierPerson(){
 		return cashierBusiness.findOneRandomly().getEmployee().getPerson();
     }
+	
+	public void set(CashRegisterMovement cashRegisterMovement,String code,String amount){
+		cashRegisterMovement.setCashRegister(rootDataProducerHelper.getEnumeration(CashRegister.class, code));
+    	cashRegisterMovement.getMovement().setValue(new BigDecimal(amount));
+	}
 	
 	public void set(Sale sale,Customer customer,String[] products,Date date){
     	sale.setCompleted(Boolean.TRUE);
@@ -119,7 +131,7 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
 	public void set(SaleCashRegisterMovement saleCashRegisterMovement,String amountIn,String amountOut,Date date){
 		saleCashRegisterMovement.setAmountIn(new BigDecimal(amountIn));
 		saleCashRegisterMovement.setAmountOut(new BigDecimal(amountOut));
-		saleCashRegisterMovement.getCashRegisterMovement().setDate(date);
+		//saleCashRegisterMovement.getCashRegisterMovement().setDate(date);
 		saleCashRegisterMovementBusiness.in(saleCashRegisterMovement);
 	}
 	public void set(SaleCashRegisterMovement saleCashRegisterMovement,String amountIn,Date date){
@@ -128,6 +140,48 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
 	public void set(SaleCashRegisterMovement saleCashRegisterMovement,String amountIn){
 		set(saleCashRegisterMovement,amountIn,"0",null);
 	}
+	
+	/* Payment */
+	
+	public void deposit(String cashRegisterCode,String amount,String expectedBalance,String expectedThrowableMessage){
+    	final CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
+    	set(cashRegisterMovement, cashRegisterCode, amount);
+    	
+    	if(StringUtils.isBlank(expectedThrowableMessage)){
+    		CompanyBusinessLayer.getInstance().getCashRegisterMovementBusiness().deposit(cashRegisterMovement);
+    		assertCashRegister(cashRegisterMovement.getCashRegister(), expectedBalance);
+    		
+    	}else{
+    		new Try("Deux doit être supérieur à un"){ 
+    			private static final long serialVersionUID = -8176804174113453706L;
+    			@Override protected void code() {CompanyBusinessLayer.getInstance().getCashRegisterMovementBusiness().deposit(cashRegisterMovement);}
+    		}.execute();
+    	}
+    }
+	public void deposit(String cashRegisterCode,String amount,String expectedBalance){
+		deposit(cashRegisterCode, amount, expectedBalance,null);
+	}
+	public void depositBalanceGreaterThanMaximumBalance(String cashRegisterCode,String amount){
+    	deposit(cashRegisterCode, amount, null,"mess");
+    }
+    
+	public void withdraw(String cashRegisterCode,String amount,String expectedBalance,String expectedThrowableMessage){
+    	CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
+    	set(cashRegisterMovement, cashRegisterCode, amount);
+    	CompanyBusinessLayer.getInstance().getCashRegisterMovementBusiness().withdraw(cashRegisterMovement);
+    	assertCashRegister(cashRegisterMovement.getCashRegister(), expectedBalance);
+    }
+	public void withdraw(String cashRegisterCode,String amount,String expectedBalance){
+		withdraw(cashRegisterCode, amount, expectedBalance,null);
+	}
+	public void depositBalanceLowerThanMinimumBalance(String cashRegisterCode,String amount){
+    	withdraw(cashRegisterCode, amount, null,"sdfgj");
+    }
+    
+    private void assertCashRegister(CashRegister cashRegister,String expectedBalance){
+    	cashRegister = (CashRegister) genericBusiness.use(CashRegister.class).find(cashRegister.getIdentifier());
+    	Assert.assertEquals(new BigDecimal(expectedBalance), cashRegister.getMovementCollection().getValue());
+    }    
 	
 	/* Sale */
 	

@@ -1,21 +1,18 @@
 package org.cyk.system.company.model.payment;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+
+import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.mathematics.Movement;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import org.cyk.system.root.model.AbstractIdentifiable;
 
 @Getter @Setter @NoArgsConstructor @Entity
 public class CashRegisterMovement extends AbstractIdentifiable implements Serializable {
@@ -24,26 +21,25 @@ public class CashRegisterMovement extends AbstractIdentifiable implements Serial
 
 	@Column(unique=true,nullable=true) private String computedIdentifier;
 	@ManyToOne @NotNull private CashRegister cashRegister;
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amount;
-	@Temporal(TemporalType.TIMESTAMP) @Column(nullable=false) @NotNull private Date date;
+	@ManyToOne @NotNull private Movement movement;
 	
-	public CashRegisterMovement(CashRegister cashRegister) {
+	public CashRegisterMovement(CashRegister cashRegister,Movement movement) {
 		super();
 		this.cashRegister = cashRegister;
+		this.movement = movement;
 	}
 	
 	/**/
 	
 	@Override
 	public String getLogMessage() {
-		return date+" | "+amount+" | "+cashRegister.getCode();
+		return movement.getLogMessage()+" | "+cashRegister.getCode();
 	}
 	
 	/**/
 	
 	public static final String FIELD_COMPUTED_IDENTIFIER = "computedIdentifier";
-	public static final String FIELD_AMOUNT = "amount";
-	public static final String FIELD_DATE = "date";
+	public static final String FIELD_MOVEMENT = "movement";
 	public static final String FIELD_CASH_REGISTER = "cashRegister";
 		
 }

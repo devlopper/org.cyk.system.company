@@ -33,29 +33,15 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 
 	@Override
 	public void deposit(CashRegisterMovement movement) {
-		/*exceptionUtils().exception(movement.getAmount().signum()<0, "exception.cashregister.movement.amount.deposit.invalid");
-		BigDecimal balance = movement.getCashRegister().getBalance().add(movement.getAmount());
-		exceptionUtils().exception(movement.getCashRegister().getMaximumBalance()!=null && balance.compareTo(movement.getCashRegister().getMaximumBalance())==1, 
-				"validtion.cashregister.deposit.maximum");
-		movement.getCashRegister().setBalance(balance);
-		*/
-		//"exception.cashregister.movement.amount."+operation+".invalid"
-		//"exception.cashregister.movement.amount."+operation+".offlimit"
 		doCreate(movement,movement.getCashRegister().getMaximumBalance());
 	}
 
 	@Override
 	public void withdraw(CashRegisterMovement movement) {
-		/*exceptionUtils().exception(movement.getAmount().signum()>0, "exception.cashregister.movement.amount.withdraw.invalid");
-		BigDecimal balance = movement.getCashRegister().getBalance().subtract(movement.getAmount());
-		exceptionUtils().exception(movement.getCashRegister().getMinimumBalance()!=null && balance.compareTo(movement.getCashRegister().getMinimumBalance())==-1, 
-				"validtion.cashregister.deposit.minimum");
-		movement.getCashRegister().setBalance(balance);
-		*/
 		doCreate(movement,movement.getCashRegister().getMinimumBalance());
 	}
 	
-	private BigDecimal computeNewValue(BigDecimal current,BigDecimal increment,BigDecimal limit,String valueNameId){
+	private BigDecimal increment(BigDecimal current,BigDecimal increment,BigDecimal limit,String valueNameId){
 		Boolean positive = increment.signum() == 0 ? null : increment.signum() == 1 ;
 		BigDecimal sign = new BigDecimal((Boolean.TRUE.equals(positive) ? Constant.EMPTY_STRING:"-")+"1");
 		exceptionUtils().comparison(positive==null || increment.multiply(sign).signum() <= 0, valueNameId, ArithmeticOperator.GT, BigDecimal.ZERO);
@@ -65,13 +51,7 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	}
 	
 	private void doCreate(CashRegisterMovement movement,BigDecimal limit){
-		/*String operation = Boolean.TRUE.equals(positive) ? "deposit":"withdraw";
-		BigDecimal sign = new BigDecimal((Boolean.TRUE.equals(positive) ? Constant.EMPTY_STRING:"-")+"1");
-		exceptionUtils().exception(amount.multiply(sign).signum() <= 0, "exception.cashregister.movement.amount."+operation+".invalid");
-		BigDecimal balance = movement.getCashRegister().getBalance().add(movement.getAmount());
-		exceptionUtils().exception(limit!=null && balance.compareTo(limit)==sign.intValue(), "exception.cashregister.movement.amount."+operation+".offlimit");
-		*/
-		movement.getCashRegister().setBalance(computeNewValue(movement.getCashRegister().getBalance(), movement.getAmount(), limit,"cashregister.movement.amount"));
+		movement.getCashRegister().setBalance(increment(movement.getCashRegister().getBalance(), movement.getAmount(), limit,"cashregister.movement.amount"));
 		
 		if(movement.getDate()==null)
 			movement.setDate(universalTimeCoordinated());

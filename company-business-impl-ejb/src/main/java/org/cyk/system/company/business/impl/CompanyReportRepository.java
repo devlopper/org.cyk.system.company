@@ -336,7 +336,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				SaleStockReportTableRow row = (SaleStockReportTableRow) object;
 				if(row.getSaleStock() instanceof SaleStockOutput){
 					output = output.add( ((SaleStockOutput)row.getSaleStock()).getTangibleProductStockMovement().getQuantity().abs());
-					paid = paid.add( ((SaleStockOutput)row.getSaleStock()).getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
+					paid = paid.add( ((SaleStockOutput)row.getSaleStock()).getSaleCashRegisterMovement().getCashRegisterMovement().getMovement().getValue());
 					//balance = saleBusiness.sumBalanceByCriteria(criteria) 
 							//balance.add(((SaleStockOutput)row.getSaleStock()).getSaleStockInput().getS.getBalance().getValue());
 				}
@@ -386,7 +386,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 					set(totals, CUMUL,0, ((SaleStockInput)row.getSaleStock()).getSale().getBalance().getCumul());
 				}else if(row.getSaleStock() instanceof SaleStockOutput){
 					incrementTotal(totals, STOCK_OUT, ((SaleStockOutput)row.getSaleStock()).getTangibleProductStockMovement().getQuantity().abs());
-					incrementTotal(totals, PAID, ((SaleStockOutput)row.getSaleStock()).getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
+					incrementTotal(totals, PAID, ((SaleStockOutput)row.getSaleStock()).getSaleCashRegisterMovement().getCashRegisterMovement().getMovement().getValue());
 					set(totals, CUMUL,0, ((SaleStockOutput)row.getSaleStock()).getSaleCashRegisterMovement().getBalance().getCumul());
 				}
 			} 

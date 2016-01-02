@@ -7,6 +7,9 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.UserTransaction;
 
+//import static org.hamcrest.Matchers.*;
+//import static org.hamcrest.MatcherAssert.*;
+import org.apache.commons.io.IOUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.CustomerBusiness;
@@ -20,6 +23,7 @@ import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper;
+import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.root.business.api.BusinessLayer;
 import org.cyk.system.root.business.api.BusinessLayerListener;
@@ -30,6 +34,7 @@ import org.cyk.system.root.business.impl.AbstractFakedDataProducer.FakedDataProd
 import org.cyk.system.root.business.impl.AbstractTestHelper;
 import org.cyk.system.root.business.impl.BusinessIntegrationTestHelper;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.impl.RootDataProducerHelper;
 import org.cyk.system.root.business.impl.RootTestHelper;
 import org.cyk.system.root.business.impl.validation.DefaultValidator;
 import org.cyk.system.root.business.impl.validation.ExceptionUtils;
@@ -46,9 +51,6 @@ import org.cyk.utility.test.integration.AbstractIntegrationTestJpaBased;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Assert;
-//import static org.hamcrest.Matchers.*;
-//import static org.hamcrest.MatcherAssert.*;
-import org.apache.commons.io.IOUtils;
 
 public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased {
 
@@ -70,6 +72,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 	@Inject protected ValidatorMap validatorMap;// = ValidatorMap.getInstance();
 	@Inject protected RootBusinessLayer rootBusinessLayer;
 	@Inject protected RootTestHelper rootTestHelper;
+	@Inject protected RootDataProducerHelper rootDataProducerHelper;
 	@Inject protected CompanyBusinessLayer companyBusinessLayer;
 	@Inject protected CompanyBusinessTestHelper companyBusinessTestHelper;
 	
@@ -85,6 +88,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     @Inject protected ProductBusiness productBusiness;
 	@Inject protected TangibleProductBusiness tangibleProductBusiness;
 	
+	@Inject protected CashRegisterDao cashRegisterDao;
 	@Inject protected UserTransaction userTransaction;
     
 	static {
@@ -121,7 +125,14 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     }
     
     @Override
-    protected void populate() {}
+    protected void populate() {
+    	installApplication();
+    }
+    
+    @Override
+    protected Boolean populateInTransaction() {
+    	return Boolean.TRUE;
+    }
     
     protected void finds() {}
     protected void businesses() {}
@@ -145,7 +156,6 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     }
     
     protected void installApplication(){
-    	long t = System.currentTimeMillis();
     	RootBusinessLayer.getInstance().getBusinessLayerListeners().add(new BusinessLayerListener.Adapter.Default(){
 			private static final long serialVersionUID = 6148913289155659043L;
 			@Override
@@ -158,7 +168,6 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     	});
     	installApplication(Boolean.TRUE);
     	produce(getFakedDataProducer());
-    	System.out.println( ((System.currentTimeMillis()-t)/1000)+" s" );
     }
     
     protected void produce(final AbstractFakedDataProducer fakedDataProducer){

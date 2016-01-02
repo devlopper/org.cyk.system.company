@@ -43,14 +43,14 @@ public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOu
         
         registerNamedQuery(readBySaleStockInput,_select().where("saleStockInput"));
         
-        queryStringBuilder = _selectString(sumAttributes(
+        /*queryStringBuilder = _selectString(sumAttributes(
         		commonUtils.attributePath(SaleStockOutput.FIELD_TANGIBLE_PRODUCT_STOCK_MOVEMENT, TangibleProductStockMovement.FIELD_QUANTITY)
         		,commonUtils.attributePath(SaleStockOutput.FIELD_SALE_CASH_REGISTER_MOVEMENT, SaleCashRegisterMovement.FIELD_CASH_REGISTER_MOVEMENT,CashRegisterMovement.FIELD_AMOUNT)
         		
         		));
     	whereSearchCriteria(queryStringBuilder);
     	registerNamedQuery(computeByCriteria,queryStringBuilder);
-    	
+    	*/
     }
 	
 	private void whereSearchCriteria(QueryStringBuilder queryStringBuilder){

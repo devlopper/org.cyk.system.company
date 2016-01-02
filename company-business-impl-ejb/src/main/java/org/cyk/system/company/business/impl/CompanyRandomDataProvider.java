@@ -112,7 +112,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 				saleBusiness.selectProduct(sale, product, new BigDecimal(randomDataProvider.randomInt(1, 10)));
 			}
 				
-			SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement(sale,new CashRegisterMovement(sale.getCashier().getCashRegister()));
+			SaleCashRegisterMovement saleCashRegisterMovement = null;//new SaleCashRegisterMovement(sale,new CashRegisterMovement(sale.getCashier().getCashRegister()));
 			saleCashRegisterMovement.setAmountIn(new BigDecimal(randomDataProvider.randomPositiveInt(sale.getCost().intValue())*1.3));
 			saleCashRegisterMovement.setAmountIn(saleCashRegisterMovement.getAmountIn().round(new MathContext(0, RoundingMode.DOWN)));
 			saleCashRegisterMovementBusiness.in(saleCashRegisterMovement);
@@ -149,7 +149,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 			saleProduct.setCommission(new BigDecimal(randomDataProvider.randomInt(0, saleProduct.getPrice().intValue())));
 			saleBusiness.applyChange(sale, saleProduct);
 			
-			SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement(sale,new CashRegisterMovement(sale.getCashier().getCashRegister()));
+			SaleCashRegisterMovement saleCashRegisterMovement = null;//new SaleCashRegisterMovement(sale,new CashRegisterMovement(sale.getCashier().getCashRegister()));
 			saleCashRegisterMovement(saleCashRegisterMovement,sale.getCost(),1.3f);
 		
 			saleStockInputBusiness.create(saleStockInput, saleCashRegisterMovement);

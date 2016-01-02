@@ -85,6 +85,8 @@ import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.geography.ContactCollection;
+import org.cyk.system.root.model.mathematics.Interval;
+import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Credentials;
 import org.cyk.system.root.model.security.Installation;
@@ -264,7 +266,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			listener.handleAccountingPeriodToInstall(accountingPeriod);
 		installObject(ACCOUNTING_PERIOD,accountingPeriodBusiness,accountingPeriod);
 		
-		cashRegister = create(new CashRegister("CR01",ownedCompany,BigDecimal.ZERO, null, null));
+		cashRegister = create(new CashRegister("CR01",ownedCompany,new MovementCollection(BigDecimal.ZERO, new Interval(null, "c1", "cn", null, null))));
 		
 		//intangibleProductBusiness.create(new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null, null));
 		//installObject(PRODUCT_INTANGIBLE_SALE_STOCK,intangibleProductBusiness,new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null));
