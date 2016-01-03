@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.product.ProductEmployeeBusiness;
 import org.cyk.system.company.model.product.ProductEmployee;
-import org.cyk.system.company.model.product.Sale;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.product.ProductEmployeeDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 

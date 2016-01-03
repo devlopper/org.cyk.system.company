@@ -20,7 +20,7 @@ import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductEmployee;
-import org.cyk.system.company.model.product.Sale;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.api.Crud;

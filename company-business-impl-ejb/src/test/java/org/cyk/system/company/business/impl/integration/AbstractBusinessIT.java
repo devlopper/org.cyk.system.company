@@ -25,17 +25,17 @@ import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
+import org.cyk.system.root.business.api.AbstractBusinessException;
 import org.cyk.system.root.business.api.BusinessLayer;
 import org.cyk.system.root.business.api.BusinessLayerListener;
 import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.api.party.ApplicationBusiness;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer.FakedDataProducerAdapter;
-import org.cyk.system.root.business.impl.AbstractTestHelper;
 import org.cyk.system.root.business.impl.BusinessIntegrationTestHelper;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.impl.RootBusinessTestHelper;
 import org.cyk.system.root.business.impl.RootDataProducerHelper;
-import org.cyk.system.root.business.impl.RootTestHelper;
 import org.cyk.system.root.business.impl.validation.DefaultValidator;
 import org.cyk.system.root.business.impl.validation.ExceptionUtils;
 import org.cyk.system.root.business.impl.validation.ValidatorMap;
@@ -44,7 +44,7 @@ import org.cyk.system.root.model.file.report.AbstractReport;
 import org.cyk.system.root.model.security.Installation;
 import org.cyk.system.root.persistence.impl.GenericDaoImpl;
 import org.cyk.system.root.persistence.impl.PersistenceIntegrationTestHelper;
-import org.cyk.utility.common.test.DefaultTestEnvironmentAdapter;
+import org.cyk.utility.common.test.TestEnvironmentListener;
 import org.cyk.utility.test.ArchiveBuilder;
 import org.cyk.utility.test.Transaction;
 import org.cyk.utility.test.integration.AbstractIntegrationTestJpaBased;
@@ -71,7 +71,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 
 	@Inject protected ValidatorMap validatorMap;// = ValidatorMap.getInstance();
 	@Inject protected RootBusinessLayer rootBusinessLayer;
-	@Inject protected RootTestHelper rootTestHelper;
+	@Inject protected RootBusinessTestHelper rootBusinessTestHelper;
 	@Inject protected RootDataProducerHelper rootDataProducerHelper;
 	@Inject protected CompanyBusinessLayer companyBusinessLayer;
 	@Inject protected CompanyBusinessTestHelper companyBusinessTestHelper;
@@ -92,7 +92,12 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 	@Inject protected UserTransaction userTransaction;
     
 	static {
-		AbstractTestHelper.TEST_ENVIRONMENT_LISTENERS.add(new DefaultTestEnvironmentAdapter(){
+		TestEnvironmentListener.COLLECTION.add(new TestEnvironmentListener.Adapter.Default(){
+			private static final long serialVersionUID = 1983969363248568780L;
+			@Override
+			protected Throwable getThrowable(Throwable throwable) {
+				return commonUtils.getThrowableInstanceOf(throwable, AbstractBusinessException.class);
+			}
     		@Override
     		public void assertEquals(String message, Object expected, Object actual) {
     			Assert.assertEquals(message, expected, actual);
@@ -206,7 +211,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
                     addClasses(PersistenceIntegrationTestHelper.classes()).
                     addPackages(Boolean.FALSE, BusinessIntegrationTestHelper.packages()).
                     addPackages(Boolean.TRUE,"org.cyk.system.company") 
-                    .addClasses(RootBusinessLayer.class,RootTestHelper.class,CompanyBusinessLayer.class)
+                    .addClasses(RootBusinessLayer.class,RootBusinessTestHelper.class,CompanyBusinessLayer.class)
                     
                 ;
     } 

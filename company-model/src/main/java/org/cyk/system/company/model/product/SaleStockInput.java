@@ -10,6 +10,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.model.event.Event;
 
 import lombok.AllArgsConstructor;

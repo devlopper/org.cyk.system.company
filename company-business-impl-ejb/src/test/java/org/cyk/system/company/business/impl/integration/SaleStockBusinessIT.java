@@ -231,6 +231,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     }
     
     private void printReports(){
+    	/*
     	ReportBasedOnDynamicBuilderParameters<SaleStockReportTableRow> saleStockOutputCashRegisterParameters = new ReportBasedOnDynamicBuilderParameters<>();
         saleStockOutputCashRegisterParameters.setIdentifiableClass(SaleStock.class);
         saleStockOutputCashRegisterParameters.setModelClass(SaleStockReportTableRow.class);
@@ -264,6 +265,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
         customerBalanceParameters.addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), 
         		CompanyReportRepository.getInstance().getParameterCustomerBalanceAll());
         rootTestHelper.reportBasedOnDynamicBuilderParameters(customerBalanceParameters);
+        */
     }
     
     /* Exceptions */

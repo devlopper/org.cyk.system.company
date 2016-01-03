@@ -5,7 +5,7 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.model.product.Sale;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.ReportColumn;

@@ -66,7 +66,7 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 		exceptionUtils().exception(outputQuantity.abs().compareTo(saleStockInput.getRemainingNumberOfGoods())>0, "salestockoutput.quantitymustbelessthanorequalsinstock");
 		ReceiptParameters previous = new ReceiptParameters(saleStockOutput);
 		saleCashRegisterMovementBusiness.create(saleStockOutput.getSaleCashRegisterMovement(),Boolean.FALSE);
-		saleStockOutput.getTangibleProductStockMovement().setDate(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
+		//saleStockOutput.getTangibleProductStockMovement().setDate(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
 		tangibleProductStockMovementBusiness.create(saleStockOutput.getTangibleProductStockMovement());
 		saleStockOutput.getSaleStockInput().setRemainingNumberOfGoods(
 				saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().add(saleStockOutput.getTangibleProductStockMovement().getQuantity()));

@@ -3,10 +3,10 @@ package org.cyk.system.company.business.impl.product;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
-import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.business.impl.file.report.AbstractReportTableRow;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
@@ -107,7 +107,7 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		//number = sale.getIdentificationNumber();
 		if(sale.getCustomer()!=null)
 			customer = sale.getCustomer().getRegistration().getCode()+" - "+sale.getCustomer().getPerson().getNames();
-		amountPaid = formatNumber(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
+		//amountPaid = formatNumber(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
 		balance = formatNumber(saleStockOutput.getSaleCashRegisterMovement().getBalance().getValue());
 		cumulatedBalance = formatNumber(saleStockOutput.getSaleCashRegisterMovement().getBalance().getCumul());
 		numberOfGoods = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity());
@@ -115,7 +115,7 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		
 		takenNumberOfGoods = formatNumber(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());
 		
-		date = formatDate(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
+		//date = formatDate(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
 		
 		Integer sign = saleStockOutput.getTangibleProductStockMovement().getQuantity().signum();
 		if(sign==-1)

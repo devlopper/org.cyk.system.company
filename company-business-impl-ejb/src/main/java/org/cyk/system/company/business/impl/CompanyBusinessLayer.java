@@ -10,9 +10,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
@@ -52,7 +49,6 @@ import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.ProductCollection;
-import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
@@ -67,6 +63,7 @@ import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
@@ -85,8 +82,6 @@ import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.geography.ContactCollection;
-import org.cyk.system.root.model.mathematics.Interval;
-import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Credentials;
 import org.cyk.system.root.model.security.Installation;
@@ -97,6 +92,9 @@ import org.cyk.system.root.persistence.api.security.RoleDao;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.joda.time.DateTime;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER) @Getter
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
@@ -266,7 +264,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			listener.handleAccountingPeriodToInstall(accountingPeriod);
 		installObject(ACCOUNTING_PERIOD,accountingPeriodBusiness,accountingPeriod);
 		
-		cashRegister = create(new CashRegister("CR01",ownedCompany,new MovementCollection(BigDecimal.ZERO, new Interval(null, "c1", "cn", null, null))));
+		cashRegister = create(new CashRegister("CR01",ownedCompany,createMovementCollection("mc1", "Entrée", "Sortie")));
 		
 		//intangibleProductBusiness.create(new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null, null));
 		//installObject(PRODUCT_INTANGIBLE_SALE_STOCK,intangibleProductBusiness,new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null));
@@ -315,6 +313,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)ProductionValue.class, (TypedBusiness)productionInputBusiness);
         beansMap.put((Class)ProductionPlan.class, (TypedBusiness)productionPlanBusiness);
         beansMap.put((Class)ProductionPlanResource.class, (TypedBusiness)productionPlanResourceBusiness);
+        beansMap.put((Class)CashRegister.class, (TypedBusiness)cashRegisterBusiness);
     }
 	
 	/**/

@@ -15,7 +15,7 @@ public class CashRegisterDaoImpl extends AbstractEnumerationDaoImpl<CashRegister
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
-		registerNamedQuery(sumBalance, "SELECT SUM(cr.balance) FROM CashRegister cr");
+		//registerNamedQuery(sumBalance, "SELECT SUM(cr.balance) FROM CashRegister cr");
 	}
 
 	@Override

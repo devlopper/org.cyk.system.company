@@ -23,7 +23,6 @@ import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleReport;
@@ -33,17 +32,19 @@ import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStocksDetails;
 import org.cyk.system.company.model.product.SalesDetails;
-import org.cyk.system.root.business.impl.AbstractTestHelper;
+import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.root.business.impl.AbstractBusinessTestHelper;
 import org.cyk.system.root.business.impl.RootDataProducerHelper;
+import org.cyk.system.root.model.mathematics.Movement;
+import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.party.person.Person;
-import org.cyk.utility.test.AbstractTest.Try;
-import org.junit.Assert;
+import org.cyk.utility.common.test.TestEnvironmentListener.Try;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Singleton
-public class CompanyBusinessTestHelper extends AbstractTestHelper implements Serializable {
+public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implements Serializable {
 
 	private static final long serialVersionUID = -6893154890151909538L;
 	
@@ -83,9 +84,18 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
 		return cashierBusiness.findOneRandomly().getEmployee().getPerson();
     }
 	
-	public void set(CashRegisterMovement cashRegisterMovement,String code,String amount){
-		cashRegisterMovement.setCashRegister(rootDataProducerHelper.getEnumeration(CashRegister.class, code));
-    	cashRegisterMovement.getMovement().setValue(new BigDecimal(amount));
+	public void set(CashRegister cashRegister,String code){
+		cashRegister.setCode(code);
+		cashRegister.setName(code);
+		cashRegister.setOwnedCompany(CompanyBusinessLayer.getInstance().getOwnedCompanyBusiness().findDefaultOwnedCompany());
+		cashRegister.setMovementCollection(new MovementCollection());
+	}
+	
+	public void set(CashRegisterMovement cashRegisterMovement,String cashRegisterCode,String amount){
+		cashRegisterMovement.setCashRegister(rootDataProducerHelper.getEnumeration(CashRegister.class, cashRegisterCode));
+		cashRegisterMovement.setMovement(new Movement());
+		set(cashRegisterMovement.getMovement(), cashRegisterMovement.getCashRegister().getMovementCollection().getCode(), amount);
+		cashRegisterMovement.getMovement().setValue(new BigDecimal(amount));
 	}
 	
 	public void set(Sale sale,Customer customer,String[] products,Date date){
@@ -143,44 +153,28 @@ public class CompanyBusinessTestHelper extends AbstractTestHelper implements Ser
 	
 	/* Payment */
 	
-	public void deposit(String cashRegisterCode,String amount,String expectedBalance,String expectedThrowableMessage){
+	public void createCashRegisterMovement(String cashRegisterCode,String amount,String expectedBalance,String expectedThrowableMessage){
     	final CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
     	set(cashRegisterMovement, cashRegisterCode, amount);
     	
     	if(StringUtils.isBlank(expectedThrowableMessage)){
-    		CompanyBusinessLayer.getInstance().getCashRegisterMovementBusiness().deposit(cashRegisterMovement);
+    		CompanyBusinessLayer.getInstance().getCashRegisterMovementBusiness().create(cashRegisterMovement);
     		assertCashRegister(cashRegisterMovement.getCashRegister(), expectedBalance);
-    		
     	}else{
-    		new Try("Deux doit être supérieur à un"){ 
+    		new Try(expectedThrowableMessage){ 
     			private static final long serialVersionUID = -8176804174113453706L;
-    			@Override protected void code() {CompanyBusinessLayer.getInstance().getCashRegisterMovementBusiness().deposit(cashRegisterMovement);}
+    			@Override protected void code() {CompanyBusinessLayer.getInstance().getCashRegisterMovementBusiness().create(cashRegisterMovement);}
     		}.execute();
     	}
     }
-	public void deposit(String cashRegisterCode,String amount,String expectedBalance){
-		deposit(cashRegisterCode, amount, expectedBalance,null);
+	public void createCashRegisterMovement(String cashRegisterCode,String amount,String expectedBalance){
+		createCashRegisterMovement(cashRegisterCode, amount, expectedBalance,null);
 	}
-	public void depositBalanceGreaterThanMaximumBalance(String cashRegisterCode,String amount){
-    	deposit(cashRegisterCode, amount, null,"mess");
-    }
-    
-	public void withdraw(String cashRegisterCode,String amount,String expectedBalance,String expectedThrowableMessage){
-    	CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
-    	set(cashRegisterMovement, cashRegisterCode, amount);
-    	CompanyBusinessLayer.getInstance().getCashRegisterMovementBusiness().withdraw(cashRegisterMovement);
-    	assertCashRegister(cashRegisterMovement.getCashRegister(), expectedBalance);
-    }
-	public void withdraw(String cashRegisterCode,String amount,String expectedBalance){
-		withdraw(cashRegisterCode, amount, expectedBalance,null);
-	}
-	public void depositBalanceLowerThanMinimumBalance(String cashRegisterCode,String amount){
-    	withdraw(cashRegisterCode, amount, null,"sdfgj");
-    }
+	
     
     private void assertCashRegister(CashRegister cashRegister,String expectedBalance){
     	cashRegister = (CashRegister) genericBusiness.use(CashRegister.class).find(cashRegister.getIdentifier());
-    	Assert.assertEquals(new BigDecimal(expectedBalance), cashRegister.getMovementCollection().getValue());
+    	assertEquals("Cash register balance",new BigDecimal(expectedBalance), cashRegister.getMovementCollection().getValue());
     }    
 	
 	/* Sale */

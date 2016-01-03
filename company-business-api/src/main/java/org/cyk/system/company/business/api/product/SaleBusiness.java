@@ -6,12 +6,12 @@ import java.util.Collection;
 
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductEmployee;
-import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.model.product.SalesDetails;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.business.api.TypedBusiness;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.party.person.Person;

@@ -8,8 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.model.product.ProductCategory;
-import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleProduct;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.business.api.TypedBusiness;
 import org.cyk.system.root.business.api.chart.CartesianModel;
 import org.cyk.system.root.model.time.Period;

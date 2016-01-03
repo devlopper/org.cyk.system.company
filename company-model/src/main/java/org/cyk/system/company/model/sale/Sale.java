@@ -1,4 +1,4 @@
-package org.cyk.system.company.model.product;
+package org.cyk.system.company.model.sale;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -27,8 +27,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.cyk.system.company.model.Balance;
+import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.Cashier;
+import org.cyk.system.company.model.product.Customer;
+import org.cyk.system.company.model.product.ProductEmployee;
+import org.cyk.system.company.model.product.SaleCashRegisterMovement;
+import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
 import org.cyk.utility.common.annotation.ModelBean;
@@ -47,9 +52,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	//@Column private String externalIdentifier;//This value is used to link to another system (Example : Accounting System)
 	
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal cost = BigDecimal.ZERO;
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal valueAddedTax = BigDecimal.ZERO;
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal turnover = BigDecimal.ZERO;
+	@Embedded private Cost cost = new Cost();
 	
 	@Temporal(TemporalType.TIMESTAMP) @Column(nullable=false) @NotNull private Date date;
 	@Embedded private Balance balance = new Balance();

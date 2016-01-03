@@ -27,12 +27,12 @@ import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductEmployee;
-import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.model.product.SalesDetails;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.product.CustomerDao;
 import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDao;
@@ -238,7 +238,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		}else{
 			saleCashRegisterMovement.setSale(sale);
 			if(Boolean.TRUE.equals(sale.getDone())){
-				saleCashRegisterMovement.getCashRegisterMovement().setDate(sale.getDate());
+				//saleCashRegisterMovement.getCashRegisterMovement().setDate(sale.getDate());
 				saleCashRegisterMovementBusiness.create(saleCashRegisterMovement);
 			}	 
 		}

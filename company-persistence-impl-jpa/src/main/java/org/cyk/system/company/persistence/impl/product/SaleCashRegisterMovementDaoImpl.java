@@ -3,8 +3,8 @@ package org.cyk.system.company.persistence.impl.product;
 import java.math.BigDecimal;
 import java.util.Collection;
 
-import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDao;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 

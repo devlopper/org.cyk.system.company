@@ -6,11 +6,11 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.cyk.system.company.model.Balance;
-import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStocksDetails;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.product.SaleStockInputDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;

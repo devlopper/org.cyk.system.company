@@ -3,8 +3,8 @@ package org.cyk.system.company.persistence.impl.integration;
 import javax.inject.Inject;
 
 import org.cyk.system.company.model.product.IntangibleProduct;
-import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.product.SaleDao;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;

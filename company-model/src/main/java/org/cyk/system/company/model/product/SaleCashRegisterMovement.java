@@ -17,6 +17,7 @@ import lombok.Setter;
 
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
 

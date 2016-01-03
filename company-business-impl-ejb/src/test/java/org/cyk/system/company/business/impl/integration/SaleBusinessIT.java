@@ -7,9 +7,9 @@ import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.product.Customer;
-import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParameters;
 import org.cyk.system.root.model.party.person.Person;
@@ -21,22 +21,16 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     private static final long serialVersionUID = -6691092648665798471L;
 
     private static final Boolean PRINT = Boolean.TRUE;
-    
-    @Deployment
-    public static Archive<?> createDeployment() {
-    	return createRootDeployment();
-    } 
-     
+         
     private CashRegister cashRegister1;
     private Customer customer1,customer2;
     
-    private void init(){
-    	installApplication();
+    @Override
+    protected void populate() {
+    	super.populate();
     	AccountingPeriod accountingPeriod = accountingPeriodBusiness.findCurrent();
     	accountingPeriod.setValueAddedTaxRate(new BigDecimal("0.18"));
     	accountingPeriod.setValueAddedTaxIncludedInCost(Boolean.TRUE);
-    	accountingPeriod.getStockConfiguration().setZeroQuantityAllowed(Boolean.TRUE);
-    	accountingPeriodBusiness.update(accountingPeriod);
     	
     	customer1 = new Customer();
     	customer1.setPerson(RootRandomDataProvider.getInstance().person());
@@ -54,12 +48,10 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	TangibleProduct tp = new TangibleProduct("tp1", "P1", null, null);
     	//tp.setUseQuantity(new BigDecimal("1000"));
     	create(tp);
-    	
     }
-    
+        
     @Override
     protected void businesses() {
-    	init();
     	Person person = companyBusinessTestHelper.cashierPerson();
     	
     	sellAndPayAtSameTime(person);
@@ -186,7 +178,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
         		CompanyReportRepository.getInstance().getParameterCustomerReportBalance());
         customerBalanceParameters.addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), 
         		CompanyReportRepository.getInstance().getParameterCustomerBalanceAll());
-        rootTestHelper.reportBasedOnDynamicBuilderParameters(customerBalanceParameters);
+        //rootTestHelper.reportBasedOnDynamicBuilderParameters(customerBalanceParameters);
     }
     
     private void computeByCriterias(){

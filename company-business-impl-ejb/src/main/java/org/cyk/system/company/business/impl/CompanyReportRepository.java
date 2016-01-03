@@ -32,7 +32,6 @@ import org.cyk.system.company.business.impl.product.StockDashBoardReportTableDet
 import org.cyk.system.company.business.impl.product.TangibleProductInventoryReportTableDetails;
 import org.cyk.system.company.business.impl.product.TangibleProductStockMovementLineReport;
 import org.cyk.system.company.model.product.Customer;
-import org.cyk.system.company.model.product.Sale;
 import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
@@ -49,6 +48,7 @@ import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductInventoryDetail;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.product.TangibleProductStockMovementSearchCriteria;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.impl.RootBusinessLayer;

@@ -7,7 +7,7 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.model.product.Sale;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.utility.common.annotation.user.interfaces.Binding;
 import org.cyk.utility.common.annotation.user.interfaces.Input;

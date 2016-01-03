@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCollection;
-import org.cyk.system.company.model.product.Sale;
+import org.cyk.system.company.model.sale.Sale;
 
 public interface ProductBusiness extends AbstractProductBusiness<Product> {
 

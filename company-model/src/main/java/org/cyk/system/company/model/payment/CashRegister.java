@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.structure.OwnedCompany;
@@ -25,7 +26,7 @@ public class CashRegister extends AbstractEnumeration implements Serializable {
 	
 	@ManyToOne @NotNull private OwnedCompany ownedCompany;
 	
-	@ManyToOne @NotNull private MovementCollection movementCollection;
+	@OneToOne @NotNull private MovementCollection movementCollection;
 
 	public CashRegister(String code, OwnedCompany ownedCompany,MovementCollection movementCollection) {
 		super(code, code, null, null);

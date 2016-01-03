@@ -11,6 +11,7 @@ import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.business.impl.RootBusinessLayer;
 
 public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashRegister, CashRegisterDao> implements CashRegisterBusiness,Serializable {
 
@@ -19,6 +20,12 @@ public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashR
 	@Inject
 	public CashRegisterBusinessImpl(CashRegisterDao dao) {
 		super(dao);
+	}
+	
+	@Override
+	public CashRegister create(CashRegister cashRegister) {
+		RootBusinessLayer.getInstance().getMovementCollectionBusiness().create(cashRegister.getMovementCollection());
+		return super.create(cashRegister);
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
