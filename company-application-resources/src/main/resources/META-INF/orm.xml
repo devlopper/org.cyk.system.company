@@ -3,7 +3,7 @@
 	xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemalocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd">
 
-	<entity name="Sale" class="org.cyk.system.company.model.product.Sale"
+	<!--entity name="Sale" class="org.cyk.system.company.model.product.Sale"
 		access="FIELD">
 		<attributes>
 			<id name="identifier">
@@ -25,6 +25,6 @@
 					sequence-name="SALECASHREGISTERMOVEMENT_IDENTIFIER_SEQUENCE_GENERATOR" allocation-size="1" />
 			</id>
 		</attributes>
-	</entity>
+	</entity-->
 
 </entity-mappings>

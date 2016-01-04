@@ -1,15 +1,18 @@
-package org.cyk.system.company.persistence.impl.product;
+package org.cyk.system.company.persistence.impl.sale;
 
 import java.math.BigDecimal;
 import java.util.Collection;
 
+import javax.persistence.NoResultException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.model.Balance;
+import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
-import org.cyk.system.company.model.product.SalesDetails;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.persistence.api.product.SaleDao;
+import org.cyk.system.company.model.sale.SalesDetails;
+import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;
@@ -25,41 +28,45 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	private static final BigDecimal BALANCE_MIN=new BigDecimal("-1"+StringUtils.repeat('0', 18)),BALANCE_MAX=new BigDecimal("1"+StringUtils.repeat('0', 18));
 	private static final BigDecimal BALANCE_ZERO_MIN=new BigDecimal("-0."+StringUtils.repeat('0', 18)+"1"),BALANCE_ZERO_MAX=new BigDecimal("0."+StringUtils.repeat('0', 18)+"1");
 	
-	private String readAllSortedByDate,readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,computeByCriteria
+	private String readAllSortedByDate,readByComputedIdentifier,readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,computeByCriteria
 		,computeByCriteriaWhereCashRegisterMovementNotExists,computeByCriteriaWhereCashRegisterMovementExists/*,readByComputedIdentifier/*,sumBalanceByCustomerCriteria*/;
 	
 	@Override
     protected void namedQueriesInitialisation() {
     	super.namedQueriesInitialisation();
+    	String attributeCost = commonUtils.attributePath(Sale.FIELD_COST, Cost.FIELD_VALUE);
+    	String attributeTax = commonUtils.attributePath(Sale.FIELD_COST, Cost.FIELD_TAX);
+    	String attributeTurnover = commonUtils.attributePath(Sale.FIELD_COST, Cost.FIELD_TURNOVER);
     	
     	QueryStringBuilder queryStringBuilder = _select();
     	whereSearchCriteria(queryStringBuilder);
     	
     	String readByCriteriaDateAscendingOrderQuery = queryStringBuilder.orderBy(Sale.FIELD_DATE, Boolean.TRUE).getValue();
+    	registerNamedQuery(readByComputedIdentifier,_select().where(Sale.FIELD_COMPUTED_IDENTIFIER));
     	registerNamedQuery(readAllSortedByDate,readByCriteriaDateAscendingOrderQuery);
         registerNamedQuery(readByCriteria,readByCriteriaDateAscendingOrderQuery);
         registerNamedQuery(readByCriteriaDateAscendingOrder,readByCriteriaDateAscendingOrderQuery );
         registerNamedQuery(readByCriteriaDateDescendingOrder,queryStringBuilder.orderBy(Sale.FIELD_DATE, Boolean.FALSE));
     	
-        queryStringBuilder = _selectString(sumAttributes(Sale.FIELD_COST,Sale.FIELD_TURNOVER,Sale.FIELD_VALUE_ADDED_TAX
+        queryStringBuilder = _selectString(sumAttributes(attributeCost,attributeTurnover,attributeTax
         		,commonUtils.attributePath(Sale.FIELD_BALANCE, Balance.FIELD_VALUE)));
     	whereSearchCriteria(queryStringBuilder);
     	registerNamedQuery(computeByCriteria,queryStringBuilder);
     	
     	String balanceValueField = commonUtils.attributePath(Sale.FIELD_BALANCE, Balance.FIELD_VALUE);
     	
-    	queryStringBuilder = _selectString(sumAttributes(Sale.FIELD_COST,Sale.FIELD_TURNOVER,Sale.FIELD_VALUE_ADDED_TAX
+    	queryStringBuilder = _selectString(sumAttributes(attributeCost,attributeTurnover,attributeTax
         		,commonUtils.attributePath(Sale.FIELD_BALANCE, Balance.FIELD_VALUE)));
     	whereSearchCriteria(queryStringBuilder);
     	queryStringBuilder.where(LogicalOperator.AND, balanceValueField,
-				commonUtils.attributePath(queryStringBuilder.getRootEntityVariableName(), Sale.FIELD_COST), ArithmeticOperator.EQ, Boolean.FALSE);
+				commonUtils.attributePath(queryStringBuilder.getRootEntityVariableName(), Sale.FIELD_COST,Cost.FIELD_VALUE), ArithmeticOperator.EQ, Boolean.FALSE);
     	registerNamedQuery(computeByCriteriaWhereCashRegisterMovementNotExists,queryStringBuilder);
     	
-    	queryStringBuilder = _selectString(sumAttributes(Sale.FIELD_COST,Sale.FIELD_TURNOVER,Sale.FIELD_VALUE_ADDED_TAX
+    	queryStringBuilder = _selectString(sumAttributes(attributeCost,attributeTurnover,attributeTax
         		,commonUtils.attributePath(Sale.FIELD_BALANCE, Balance.FIELD_VALUE)));
     	whereSearchCriteria(queryStringBuilder);
     	queryStringBuilder.where(LogicalOperator.AND, balanceValueField,
-				commonUtils.attributePath(queryStringBuilder.getRootEntityVariableName(), Sale.FIELD_COST), ArithmeticOperator.NEQ, Boolean.FALSE);
+				commonUtils.attributePath(queryStringBuilder.getRootEntityVariableName(), Sale.FIELD_COST,Cost.FIELD_VALUE), ArithmeticOperator.NEQ, Boolean.FALSE);
     	registerNamedQuery(computeByCriteriaWhereCashRegisterMovementExists,queryStringBuilder);
     	
     }	
@@ -77,6 +84,11 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	@Override
 	public Collection<Sale> readAll() {
 		return namedQuery(readAllSortedByDate).resultMany();
+	}
+	
+	@Override
+	public Sale readByComputedIdentifier(String identifier) {
+		return namedQuery(readByComputedIdentifier).parameter(Sale.FIELD_COMPUTED_IDENTIFIER, identifier).ignoreThrowable(NoResultException.class).resultOne();
 	}
 	/*
 	@Override

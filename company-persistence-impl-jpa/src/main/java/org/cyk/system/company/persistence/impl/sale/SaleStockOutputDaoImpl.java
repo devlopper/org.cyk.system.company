@@ -1,4 +1,4 @@
-package org.cyk.system.company.persistence.impl.product;
+package org.cyk.system.company.persistence.impl.sale;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -6,15 +6,15 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStocksDetails;
-import org.cyk.system.company.model.product.SalesDetails;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
-import org.cyk.system.company.persistence.api.product.SaleDao;
-import org.cyk.system.company.persistence.api.product.SaleStockOutputDao;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SalesDetails;
+import org.cyk.system.company.persistence.api.sale.SaleDao;
+import org.cyk.system.company.persistence.api.sale.SaleStockOutputDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;
 import org.cyk.system.root.persistence.impl.QueryWrapper;

@@ -10,8 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.party.person.Person;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
@@ -30,7 +30,7 @@ public class Cashier extends AbstractIdentifiable implements Serializable {
 	@InputChoice
 	@InputOneChoice
 	@InputOneCombo
-	private Employee employee;
+	private Person person;
 	
 	@ManyToOne
 	@Input
@@ -38,5 +38,8 @@ public class Cashier extends AbstractIdentifiable implements Serializable {
 	@InputOneChoice
 	@InputOneCombo
 	private CashRegister cashRegister;
+	
+	public static final String FIELD_PERSON = "person";
+	public static final String FIELD_CASH_REGISTER = "cashRegister";
 	
 }

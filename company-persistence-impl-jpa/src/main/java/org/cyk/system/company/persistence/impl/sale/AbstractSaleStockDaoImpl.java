@@ -1,4 +1,4 @@
-package org.cyk.system.company.persistence.impl.product;
+package org.cyk.system.company.persistence.impl.sale;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,8 +11,8 @@ import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.persistence.api.product.AbstractSaleStockDao;
-import org.cyk.system.company.persistence.api.product.SaleDao;
+import org.cyk.system.company.persistence.api.sale.AbstractSaleStockDao;
+import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 import org.cyk.system.root.persistence.impl.QueryWrapper;

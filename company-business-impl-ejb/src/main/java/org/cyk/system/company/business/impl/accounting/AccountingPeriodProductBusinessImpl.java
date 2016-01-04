@@ -15,7 +15,8 @@ import org.cyk.system.company.model.accounting.AccountingPeriodProductCategory;
 import org.cyk.system.company.model.accounting.SalesResults;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
-import org.cyk.system.company.model.product.SaleProduct;
+import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductCategoryDao;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.product.ProductCategoryDao;
@@ -34,23 +35,23 @@ public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPerio
 
 	@Override
 	public void consume(AccountingPeriod accountingPeriod,Collection<SaleProduct> saleProducts) {
-		Set<Product> products = new HashSet<>();
+		Set<SalableProduct> products = new HashSet<>();
 		for(SaleProduct saleProduct : saleProducts)
-			products.add(saleProduct.getProduct());
+			products.add(saleProduct.getSalableProduct());
 		
-		for(Product product : products){
+		for(SalableProduct salableProduct : products){
 			BigDecimal usedCount = BigDecimal.ZERO,turnover = BigDecimal.ZERO;
 			for(SaleProduct saleProduct : saleProducts)
-				if(saleProduct.getProduct().equals(product)){
+				if(saleProduct.getSalableProduct().equals(salableProduct)){
 					usedCount = usedCount.add(saleProduct.getQuantity());
-					turnover = turnover.add(saleProduct.getTurnover());
+					turnover = turnover.add(saleProduct.getCost().getTurnover());
 				}
-			AccountingPeriodProduct accountingPeriodProduct = dao.readByAccountingPeriodByProduct(accountingPeriod, product);
+			AccountingPeriodProduct accountingPeriodProduct = dao.readByAccountingPeriodByProduct(accountingPeriod, salableProduct.getProduct());
 			updateSalesResults(accountingPeriodProduct.getSalesResults(),usedCount,turnover);
 			dao.update(accountingPeriodProduct);
 			
 			//Update Hierarchy
-		 	ProductCategory category = product.getCategory();
+		 	ProductCategory category = salableProduct.getProduct().getCategory();
 			while(category!=null){
 				AccountingPeriodProductCategory accountingPeriodProductCategory = accountingPeriodProductCategoryDao.readByAccountingPeriodByProduct(accountingPeriod, category);
 				updateSalesResults(accountingPeriodProductCategory.getSalesResults(), usedCount, turnover);

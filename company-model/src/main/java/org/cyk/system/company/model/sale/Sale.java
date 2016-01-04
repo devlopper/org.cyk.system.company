@@ -1,7 +1,6 @@
 package org.cyk.system.company.model.sale;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -32,8 +31,6 @@ import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.ProductEmployee;
-import org.cyk.system.company.model.product.SaleCashRegisterMovement;
-import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
 import org.cyk.utility.common.annotation.ModelBean;
@@ -46,7 +43,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne @NotNull private AccountingPeriod accountingPeriod;
-	@Column(unique=true,nullable=true) private String computedIdentifier;
+	@Column(unique=true,nullable=false) @NotNull private String computedIdentifier;
 	@ManyToOne @NotNull private Cashier cashier;
 	@ManyToOne private Customer customer;
 	
@@ -78,8 +75,8 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	@Override
 	public String getLogMessage() {
-		return String.format(DEBUG_FORMAT,cost,turnover,valueAddedTax,balance.getValue(),balance.getCumul(),identifier,computedIdentifier,completed,done
-				,customer==null?"":customer.getRegistration().getCode(),autoComputeValueAddedTax);
+		return String.format(DEBUG_FORMAT,identifier,computedIdentifier,cost.getLogMessage(),balance.getLogMessage(),completed,done
+				,customer==null?"":customer.getRegistration().getCode(),autoComputeValueAddedTax,accountingPeriod.getLogMessage());
 	}
 	
 	/**/
@@ -91,9 +88,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	public static final String FIELD_ACCOUNTING_PERIOD = "accountingPeriod";
 	public static final String FIELD_DATE = "date";
 	public static final String FIELD_COST = "cost";
-	public static final String FIELD_TURNOVER = "turnover";
-	public static final String FIELD_VALUE_ADDED_TAX = "valueAddedTax";
 	public static final String FIELD_BALANCE = "balance";
 	
-	private static final String DEBUG_FORMAT = "COST=%s TURN=%s VAT=%s BAL=(%s,%s) ID=%s CID=%s COMPLETED=%s DONE=%s CUST=%s AUTO_COMPUTE_VAT=%s";
+	private static final String DEBUG_FORMAT = "Sale(ID=%s|%s %s %s C=%s D=%s CUST=%s ATX=%s %s)";
 }

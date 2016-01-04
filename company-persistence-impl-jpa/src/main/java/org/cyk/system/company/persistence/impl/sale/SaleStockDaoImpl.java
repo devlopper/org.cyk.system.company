@@ -1,4 +1,4 @@
-package org.cyk.system.company.persistence.impl.product;
+package org.cyk.system.company.persistence.impl.sale;
 
 import java.math.BigDecimal;
 
@@ -9,8 +9,8 @@ import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.SaleStockSearchCriteria;
 import org.cyk.system.company.model.product.SaleStocksDetails;
-import org.cyk.system.company.persistence.api.product.SaleDao;
-import org.cyk.system.company.persistence.api.product.SaleStockDao;
+import org.cyk.system.company.persistence.api.sale.SaleDao;
+import org.cyk.system.company.persistence.api.sale.SaleStockDao;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 

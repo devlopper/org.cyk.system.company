@@ -16,9 +16,9 @@ import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCollection;
 import org.cyk.system.company.model.product.ProductEmployee;
-import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 
 @Stateless
@@ -36,10 +36,10 @@ public class ProductBusinessImpl extends AbstractProductBusinessImpl<Product,Pro
 		Set<Product> products = new HashSet<>(),noProductCollections= new HashSet<>();
 		Set<ProductCollection> productCollections= new HashSet<>();
 		for(SaleProduct saleProduct : saleProducts)
-			if(saleProduct.getProduct() instanceof ProductCollection)
-				productCollections.add((ProductCollection) saleProduct.getProduct());
+			if(saleProduct.getSalableProduct().getProduct() instanceof ProductCollection)
+				productCollections.add((ProductCollection) saleProduct.getSalableProduct().getProduct());
 			else
-				noProductCollections.add(saleProduct.getProduct());
+				noProductCollections.add(saleProduct.getSalableProduct().getProduct());
 		/*
 		for(ProductCollection collection : productCollections){
 			if(Boolean.TRUE.equals(collection.getSalable()))
@@ -69,11 +69,11 @@ public class ProductBusinessImpl extends AbstractProductBusinessImpl<Product,Pro
 	public Collection<Product> findNotCollectionBySale(Sale sale) {
 		Collection<Product> products = new ArrayList<>();
 		for(SaleProduct saleProduct : sale.getSaleProducts())
-			if(saleProduct.getProduct() instanceof ProductCollection)
-				for(Product product : dao.readByCollection((ProductCollection) saleProduct.getProduct()))
+			if(saleProduct.getSalableProduct().getProduct() instanceof ProductCollection)
+				for(Product product : dao.readByCollection((ProductCollection) saleProduct.getSalableProduct().getProduct()))
 					products.add(product);
 			else
-				products.add(saleProduct.getProduct());
+				products.add(saleProduct.getSalableProduct().getProduct());
 		return products;
 	}
 	

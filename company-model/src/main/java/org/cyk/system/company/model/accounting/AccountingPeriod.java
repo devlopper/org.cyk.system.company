@@ -42,5 +42,13 @@ public class AccountingPeriod extends AbstractIdentifiablePeriod implements Seri
 	@Column(nullable=false) @NotNull private Boolean closed = Boolean.FALSE;
 	
 	@Embedded private SalesResults salesResults = new SalesResults();
+
+	/**/
 	
+	@Override
+	public String getLogMessage() {
+		return String.format(DEBUG_FORMAT,valueAddedTaxRate,valueAddedTaxIncludedInCost);
+	}
+	
+	private static final String DEBUG_FORMAT = "AccountingPeriod(VAT_RATE=%s IN_COST=%s)";
 }

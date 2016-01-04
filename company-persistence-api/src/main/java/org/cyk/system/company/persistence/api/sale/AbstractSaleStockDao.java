@@ -1,4 +1,4 @@
-package org.cyk.system.company.persistence.api.product;
+package org.cyk.system.company.persistence.api.sale;
 
 import java.util.Collection;
 

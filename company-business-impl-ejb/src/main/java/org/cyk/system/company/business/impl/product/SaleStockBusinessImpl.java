@@ -8,7 +8,7 @@ import org.cyk.system.company.business.api.product.SaleStockBusiness;
 import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.company.model.product.SaleStockSearchCriteria;
 import org.cyk.system.company.model.product.SaleStocksDetails;
-import org.cyk.system.company.persistence.api.product.SaleStockDao;
+import org.cyk.system.company.persistence.api.sale.SaleStockDao;
 
 public class SaleStockBusinessImpl extends AbstractSaleStockBusinessImpl<SaleStock, SaleStockDao,SaleStockSearchCriteria> implements SaleStockBusiness,Serializable {
 

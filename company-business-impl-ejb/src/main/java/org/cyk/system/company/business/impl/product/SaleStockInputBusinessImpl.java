@@ -20,16 +20,16 @@ import org.cyk.system.company.business.api.product.TangibleProductStockMovementB
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.IntangibleProduct;
-import org.cyk.system.company.model.product.SaleCashRegisterMovement;
-import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStocksDetails;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
-import org.cyk.system.company.persistence.api.product.CustomerDao;
-import org.cyk.system.company.persistence.api.product.SaleStockInputDao;
-import org.cyk.system.company.persistence.api.product.SaleStockOutputDao;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleReport;
+import org.cyk.system.company.persistence.api.sale.CustomerDao;
+import org.cyk.system.company.persistence.api.sale.SaleStockInputDao;
+import org.cyk.system.company.persistence.api.sale.SaleStockOutputDao;
 import org.cyk.system.root.business.api.event.EventBusiness;
 import org.cyk.system.root.business.api.file.report.ReportBusiness;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
@@ -69,7 +69,7 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 		saleStockInput.setSale(saleBusiness.newInstance(person));
 		saleStockInput.setTangibleProductStockMovement(new TangibleProductStockMovement());
 		saleStockInput.getTangibleProductStockMovement().setTangibleProduct(tangibleProductBusiness.find(TangibleProduct.SALE_STOCK));
-		saleBusiness.selectProduct(saleStockInput.getSale(), intangibleProductBusiness.find(IntangibleProduct.SALE_STOCK));
+		//saleBusiness.selectProduct(saleStockInput.getSale(), intangibleProductBusiness.find(IntangibleProduct.SALE_STOCK));
 		logDebug("Sale stock input instanciated");
 		return saleStockInput;
 	}
@@ -88,7 +88,7 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 		Event event = new Event(null, RootBusinessLayer.getInstance().getReminderEventType(), "REMINDER", "REMIND GOODS", 
 				new Period(start, new DateTime(start).plusHours(23).toDate()));
 		
-		event.setOwner(cashierBusiness.findByCashRegister(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister()).getEmployee().getPerson());
+		event.setOwner(cashierBusiness.findByCashRegister(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister()).getPerson());
 		event.getEventParticipations().add(new EventParticipation(saleStockInput.getSale().getCustomer().getPerson()));
 		eventBusiness.create(event);
 		saleStockInput.setEvent(event);

@@ -3,12 +3,14 @@ package org.cyk.system.company.business.impl;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.CompanyReportProducer;
@@ -23,6 +25,7 @@ import org.cyk.system.company.business.api.product.ProductCategoryBusiness;
 import org.cyk.system.company.business.api.product.ProductCollectionBusiness;
 import org.cyk.system.company.business.api.product.SaleBusiness;
 import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.product.SaleProductBusiness;
 import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
 import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
@@ -49,7 +52,6 @@ import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.ProductCollection;
-import org.cyk.system.company.model.product.SaleCashRegisterMovement;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.TangibleProduct;
@@ -64,6 +66,7 @@ import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
@@ -82,19 +85,13 @@ import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.geography.ContactCollection;
-import org.cyk.system.root.model.party.person.Person;
-import org.cyk.system.root.model.security.Credentials;
 import org.cyk.system.root.model.security.Installation;
-import org.cyk.system.root.model.security.Role;
-import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.model.time.Period;
+import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.system.root.persistence.api.security.RoleDao;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.joda.time.DateTime;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER) @Getter
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
@@ -131,6 +128,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
 	@Inject private IntangibleProductBusiness intangibleProductBusiness;
 	@Inject private SaleBusiness saleBusiness;
+	@Inject private SaleProductBusiness saleProductBusiness;
 	@Inject private SaleStockInputBusiness saleStockInputBusiness;
 	@Inject private SaleStockOutputBusiness saleStockOutputBusiness;
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
@@ -156,13 +154,14 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	//@Inject private AccountingPeriodProductCategoryBusiness accountingPeriodProductCategoryBusiness;
 	@Inject private UserAccountBusiness userAccountBusiness;
 	@Inject private RoleDao roleDao;
+	@Inject private PersonDao personDao;
 	@Inject private ProductCategoryBusiness productCategoryBusiness;
 	@Inject private StringGeneratorBusiness stringGeneratorBusiness;
 	@Setter private CompanyReportProducer saleReportProducer = new DefaultSaleReportProducer();
 	//private Role roleSaleManager,roleStockManager,roleHumanResourcesManager,customerManager,productionManager;
 	@Setter private TangibleProduct tangibleProductSaleStock;
 	private IntangibleProduct intangibleProductSaleStock;
-	private CashRegister cashRegister;
+
 	@Inject private CompanyReportRepository companyReportRepository;
 	@Inject private FormatterBusiness formatterBusiness;
 	
@@ -237,7 +236,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		company.setContactCollection(new ContactCollection());
 		//company.getContactCollection().setPhoneNumbers(new ArrayList<PhoneNumber>());
 		//RootRandomDataProvider.getInstance().phoneNumber(company.getContactCollection());
-				
+		company.setManager(personDao.select().one());
+		
 		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
 			listener.handleCompanyToInstall(company);
 		installObject(STRUCTURE_COMPANY,companyBusiness,company);
@@ -264,7 +264,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			listener.handleAccountingPeriodToInstall(accountingPeriod);
 		installObject(ACCOUNTING_PERIOD,accountingPeriodBusiness,accountingPeriod);
 		
-		cashRegister = create(new CashRegister("CR01",ownedCompany,createMovementCollection("mc1", "Entrée", "Sortie")));
+		CashRegister cashRegister = create(new CashRegister("CR01",ownedCompany,createMovementCollection("mc1", "Entrée", "Sortie")));
+		create(new Cashier(personDao.select().one(),cashRegister));
+
 		
 		//intangibleProductBusiness.create(new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null, null));
 		//installObject(PRODUCT_INTANGIBLE_SALE_STOCK,intangibleProductBusiness,new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null));
@@ -295,6 +297,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)ResellerProduction.class, (TypedBusiness)resellerProductionBusiness);
         beansMap.put((Class)ResellerProductionPlan.class, (TypedBusiness)resellerProductionPlanBusiness);
         beansMap.put((Class)TangibleProduct.class, (TypedBusiness)tangibleProductBusiness);
+        beansMap.put((Class)IntangibleProduct.class, (TypedBusiness)intangibleProductBusiness);
         beansMap.put((Class)Product.class, (TypedBusiness)productBusiness);
         beansMap.put((Class)DivisionType.class, (TypedBusiness)divisionTypeBusiness);
         beansMap.put((Class)Division.class, (TypedBusiness)divisionBusiness);
@@ -348,20 +351,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	/**/
 	
 	protected void fakeTransactions(){
-		
-        Employee employee = new Employee();
-        employee.setPerson(new Person());
-        employee.getPerson().setName("Zadi");
-        employee.getPerson().setLastName("Gerard");
-        employeeBusiness.create(employee);
+        //Role[] roles = roleDao.readAllExclude(Arrays.asList(RootBusinessLayer.getInstance().getRoleAdministrator())).toArray(new Role[]{});
+        //userAccountBusiness.create(new UserAccount(employee.getPerson(), new Credentials("zadi", "123"),null,roles));
+        //create(new Cashier(RootBusinessLayer.getInstance().getPersonBusiness().one(),cashRegister));
         
-        Role[] roles = roleDao.readAllExclude(Arrays.asList(RootBusinessLayer.getInstance().getRoleAdministrator())).toArray(new Role[]{});
-        userAccountBusiness.create(new UserAccount(employee.getPerson(), new Credentials("zadi", "123"),null,roles));
-        create(new Cashier(employee,cashRegister));
-        
-        Company company = companyBusiness.find().one();
-        company.setManager(employee.getPerson());
-        companyBusiness.update(company);
+        //Company company = companyBusiness.find().one();
+        //company.setManager(RootBusinessLayer.getInstance().getPersonBusiness().one());
+        //companyBusiness.update(company);
                 
 	}
 	

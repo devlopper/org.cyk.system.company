@@ -7,13 +7,12 @@ import java.math.RoundingMode;
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.system.company.model.product.SaleCashRegisterMovement;
-import org.cyk.system.company.model.product.SaleProduct;
-import org.cyk.system.company.model.product.SaleProductReport;
-import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleProduct;
+import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.api.time.TimeBusiness;
 import org.cyk.system.root.business.impl.AbstractRootReportProducer;
@@ -62,7 +61,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		saleReport.setCashRegisterIdentifier(Boolean.TRUE.equals(sale.getAccountingPeriod().getShowPointOfSaleReportCashier())?cashRegisterMovement.getCashRegister().getCode():null);
 		saleReport.setDate(timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN));
 		saleReport.setNumberOfProducts(numberBusiness.format(numberOfProducts));
-		saleReport.setCost(numberBusiness.format(sale.getCost()));
+		saleReport.setCost(numberBusiness.format(sale.getCost().getValue()));
 		saleReport.setWelcomeMessage(languageBusiness.findText("company.report.pointofsale.welcome"));
 		saleReport.setGoodByeMessage(languageBusiness.findText("company.report.pointofsale.goodbye"));
 		
@@ -103,7 +102,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		if(Boolean.TRUE.equals(paymentOnly)){
 			
 		}else{
-			if(sale.getValueAddedTax().signum()>0)
+			if(sale.getCost().getTax().signum()>0)
 				valueAddedTaxesPart(saleReport, sale);
 		}
 		
@@ -158,8 +157,8 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	
 	protected void valueAddedTaxesPart(SaleReport saleReport,Sale sale){
 		labelValue(saleReport.getTaxInfos(),LABEL_VAT_RATE, format(sale.getAccountingPeriod().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
-		labelValue(LABEL_AMOUNT_VAT_EXCLUDED, format(sale.getCost().subtract(sale.getValueAddedTax()).setScale(2,RoundingMode.HALF_DOWN)));
-		labelValue(LABEL_VAT_AMOUNT, format(sale.getValueAddedTax().setScale(2,RoundingMode.HALF_DOWN)));
+		labelValue(LABEL_AMOUNT_VAT_EXCLUDED, format(sale.getCost().getValue().subtract(sale.getCost().getTax()).setScale(2,RoundingMode.HALF_DOWN)));
+		labelValue(LABEL_VAT_AMOUNT, format(sale.getCost().getTax().setScale(2,RoundingMode.HALF_DOWN)));
 	}
 		
 	@Override

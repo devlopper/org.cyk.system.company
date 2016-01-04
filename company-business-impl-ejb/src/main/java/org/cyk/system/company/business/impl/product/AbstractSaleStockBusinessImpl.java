@@ -10,7 +10,7 @@ import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
 import org.cyk.system.company.model.product.AbstractSaleStockSearchCriteria;
 import org.cyk.system.company.model.product.SaleStock;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
-import org.cyk.system.company.persistence.api.product.AbstractSaleStockDao;
+import org.cyk.system.company.persistence.api.sale.AbstractSaleStockDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
 public abstract class AbstractSaleStockBusinessImpl<SALE_STOCK extends SaleStock,DAO extends AbstractSaleStockDao<SALE_STOCK, SEARCH_CRITERIA>,SEARCH_CRITERIA extends AbstractSaleStockSearchCriteria> extends AbstractTypedBusinessService<SALE_STOCK, DAO> implements AbstractSaleStockBusiness<SALE_STOCK,SEARCH_CRITERIA>,Serializable {

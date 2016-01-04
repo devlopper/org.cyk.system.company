@@ -3,6 +3,8 @@ package org.cyk.system.company.model.product;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import org.cyk.system.company.model.sale.SalesDetails;
+
 import lombok.Getter;
 import lombok.Setter;
 

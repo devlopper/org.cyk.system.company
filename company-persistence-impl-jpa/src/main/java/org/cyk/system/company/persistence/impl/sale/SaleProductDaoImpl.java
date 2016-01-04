@@ -1,10 +1,10 @@
-package org.cyk.system.company.persistence.impl.product;
+package org.cyk.system.company.persistence.impl.sale;
 
 import java.util.Collection;
 
-import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.persistence.api.product.SaleProductDao;
+import org.cyk.system.company.model.sale.SaleProduct;
+import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 
 public class SaleProductDaoImpl extends AbstractTypedDao<SaleProduct> implements SaleProductDao {

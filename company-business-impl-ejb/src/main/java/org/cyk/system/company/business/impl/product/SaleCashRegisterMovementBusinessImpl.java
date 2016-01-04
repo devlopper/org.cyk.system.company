@@ -18,12 +18,12 @@ import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.Customer;
-import org.cyk.system.company.model.product.SaleCashRegisterMovement;
-import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.persistence.api.product.CustomerDao;
-import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDao;
-import org.cyk.system.company.persistence.api.product.SaleDao;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleReport;
+import org.cyk.system.company.persistence.api.sale.CustomerDao;
+import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
+import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.file.report.ReportBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
@@ -118,7 +118,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public BigDecimal computeBalance(SaleCashRegisterMovement movement) {
-		BigDecimal balance = movement.getSale().getIdentifier()==null/*movement.getSale().getBalance()==null*/?movement.getSale().getCost():movement.getSale().getBalance().getValue();
+		BigDecimal balance = movement.getSale().getIdentifier()==null/*movement.getSale().getBalance()==null*/?movement.getSale().getCost().getValue():movement.getSale().getBalance().getValue();
 		if(/*movement.getCashRegisterMovement().getAmount().signum()*/1==-1)//withdraw
 			if(balance.signum()==1)
 				return /*balance.subtract(movement.getCashRegisterMovement().getAmount())*/null;

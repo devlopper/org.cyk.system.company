@@ -13,7 +13,7 @@ import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
-import org.cyk.system.company.model.product.SaleProduct;
+import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.product.AbstractProductDao;
@@ -62,7 +62,7 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
 		for(PRODUCT product : products){
 			BigDecimal usedCount = BigDecimal.ZERO;
 			for(SaleProduct saleProduct : saleProducts)
-				if(saleProduct.getProduct().equals(product))
+				if(saleProduct.getSalableProduct().equals(product))
 					usedCount = usedCount.add(saleProduct.getQuantity());
 			
 			//product.setUsedCount(product.getUsedCount().add(usedCount));

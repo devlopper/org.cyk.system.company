@@ -28,6 +28,16 @@ public class SalableProduct extends AbstractIdentifiable implements Serializable
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull protected BigDecimal price;
 	
+	@Override
+	public String getLogMessage() {
+		return String.format(DEBUG_FORMAT,product.getCode(),price);
+	}
+	
+	/**/
+	
+	private static final String DEBUG_FORMAT = "Product(C=%s P=%s)";
+
+	
 	/**/
 	
 	public static final String FIELD_PRODUCT = "product";

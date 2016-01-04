@@ -1,10 +1,10 @@
-package org.cyk.system.company.persistence.api.product;
+package org.cyk.system.company.persistence.api.sale;
 
 import java.util.Collection;
 
 import org.cyk.system.company.model.product.SaleSearchCriteria;
-import org.cyk.system.company.model.product.SalesDetails;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SalesDetails;
 import org.cyk.system.root.persistence.api.TypedDao;
 
 public interface SaleDao extends TypedDao<Sale> {
@@ -15,4 +15,5 @@ public interface SaleDao extends TypedDao<Sale> {
 	
 	SalesDetails computeByCriteria(SaleSearchCriteria criteria);
 	
+	Sale readByComputedIdentifier(String identifier);
 }

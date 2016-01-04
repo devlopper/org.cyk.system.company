@@ -30,6 +30,13 @@ public class Balance extends AbstractModelElement implements Serializable {
 		return value+(cumul==null?"":","+cumul);
 	}
 	
+	@Override
+	public String getLogMessage() {
+		return String.format(DEBUG_FORMAT,value,cumul);
+	}
+	
+	private static final String DEBUG_FORMAT = "Balance(V=%s C=%s)";
+	
 	/**/
 	
 	public static final String FIELD_VALUE = "value";

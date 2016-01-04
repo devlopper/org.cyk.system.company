@@ -25,7 +25,7 @@ public class SaleReportTableDetail implements Serializable {
 		number = sale.getIdentifier().toString();
 		if(sale.getCustomer()!=null)
 			customer = sale.getCustomer().getPerson().getNames();
-		cost = RootBusinessLayer.getInstance().getNumberBusiness().format(sale.getCost());
+		cost = RootBusinessLayer.getInstance().getNumberBusiness().format(sale.getCost().getValue());
 		balance = RootBusinessLayer.getInstance().getNumberBusiness().format(sale.getBalance().getValue());
 		date = RootBusinessLayer.getInstance().getTimeBusiness().formatDateTime(sale.getDate());
 	}

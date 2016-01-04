@@ -1,4 +1,4 @@
-package org.cyk.system.company.model.product;
+package org.cyk.system.company.model.sale;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.model.AbstractIdentifiable;
 
 @Getter @Setter @NoArgsConstructor @Entity
@@ -23,7 +22,7 @@ public class SaleProduct extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne private Sale sale;
-	@ManyToOne private Product product;
+	@ManyToOne private SalableProduct salableProduct;
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal quantity;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal reduction=BigDecimal.ZERO;
@@ -31,16 +30,9 @@ public class SaleProduct extends AbstractIdentifiable implements Serializable {
 	
 	@Embedded private Cost cost = new Cost();
 
-	public SaleProduct(Sale sale,Product product,BigDecimal quantity) {
-		super();
-		this.sale = sale;
-		this.product = product;
-		this.quantity = quantity;
-	}
-	
 	@Override
 	public String getUiString() {
-		return product.getUiString();
+		return salableProduct.getUiString();
 	}
 	
 	@Override
@@ -50,11 +42,11 @@ public class SaleProduct extends AbstractIdentifiable implements Serializable {
 	
 	@Override
 	public String getLogMessage() {
-		return String.format(DEBUG_FORMAT,cost.getLogMessage(),quantity,commission,reduction,product.getCode(),sale.getComputedIdentifier());
+		return String.format(DEBUG_FORMAT,salableProduct.getLogMessage(),cost.getLogMessage(),quantity,commission,reduction,sale.getLogMessage());
 	}
 	
 	/**/
 	
-	private static final String DEBUG_FORMAT = "%s Q=%s COM=%s R=%s PROD=%s SALE=%s";
+	private static final String DEBUG_FORMAT = "SaleProduct(%s %s Q=%s C=%s R=%s %s)";
 
 }

@@ -66,7 +66,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	cashRegister1.setOwnedCompany(ownedCompanyBusiness.findDefaultOwnedCompany());
     	create(cashRegister1);
     	
-    	person = companyBusinessTestHelper.cashierPerson();
+    	//person = companyBusinessTestHelper.cashierPerson();
     }
     
     @Override

@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.product.ProductCollectionBusiness;
 import org.cyk.system.company.model.product.ProductCollection;
-import org.cyk.system.company.model.product.SaleProduct;
+import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.persistence.api.product.ProductCollectionDao;
 
 public class ProductCollectionBusinessImpl extends AbstractProductBusinessImpl<ProductCollection, ProductCollectionDao> implements ProductCollectionBusiness,Serializable {

@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
-import org.cyk.system.company.model.product.SaleProduct;
+import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.business.api.AbstractEnumerationBusiness;
 

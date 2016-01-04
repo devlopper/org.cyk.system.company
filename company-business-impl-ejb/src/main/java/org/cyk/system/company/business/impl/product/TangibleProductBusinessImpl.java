@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
-import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.root.business.impl.validation.ExceptionUtils;
 

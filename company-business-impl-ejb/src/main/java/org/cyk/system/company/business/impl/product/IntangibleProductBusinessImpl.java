@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
 import org.cyk.system.company.model.product.IntangibleProduct;
-import org.cyk.system.company.model.product.SaleProduct;
+import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.persistence.api.product.IntangibleProductDao;
 
 @Stateless

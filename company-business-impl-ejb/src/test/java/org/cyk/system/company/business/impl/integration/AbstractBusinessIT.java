@@ -2,10 +2,16 @@ package org.cyk.system.company.business.impl.integration;
 
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.UserTransaction;
+
+
+
+
+
 
 //import static org.hamcrest.Matchers.*;
 //import static org.hamcrest.MatcherAssert.*;
@@ -23,8 +29,16 @@ import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper;
+import org.cyk.system.company.model.product.IntangibleProduct;
+import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
+import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
+import org.cyk.system.company.persistence.api.sale.SalableProductDao;
+import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.AbstractBusinessException;
 import org.cyk.system.root.business.api.BusinessLayer;
 import org.cyk.system.root.business.api.BusinessLayerListener;
@@ -89,6 +103,9 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 	@Inject protected TangibleProductBusiness tangibleProductBusiness;
 	
 	@Inject protected CashRegisterDao cashRegisterDao;
+	@Inject protected SaleDao saleDao;
+	@Inject protected AccountingPeriodProductDao accountingPeriodProductDao;
+	@Inject protected SalableProductDao salableProductDao;
 	@Inject protected UserTransaction userTransaction;
     
 	static {
@@ -131,12 +148,24 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     
     @Override
     protected void populate() {
+    	/*RootBusinessLayer.getInstance().getBusinessLayerListeners().add(new BusinessLayerListener.Adapter.Default(){
+			private static final long serialVersionUID = -3467108501198426378L;
+			@Override
+    		public void afterInstall(BusinessLayer businessLayer,Installation installation) {
+    			super.afterInstall(businessLayer, installation);
+    			create(new Cashier(RootBusinessLayer.getInstance().getPersonBusiness().one(),cashRegister));
+    	        
+    	        Company company = CompanyBusinessLayer.getInstance().getCompanyBusiness().find().one();
+    	        company.setManager(RootBusinessLayer.getInstance().getPersonBusiness().one());
+    	        CompanyBusinessLayer.getInstance().getCompanyBusiness().update(company);
+    		}
+    	});*/
     	installApplication();
     }
     
     @Override
     protected Boolean populateInTransaction() {
-    	return Boolean.TRUE;
+    	return Boolean.FALSE;
     }
     
     protected void finds() {}
@@ -215,4 +244,39 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
                     
                 ;
     } 
+    
+    /**/
+    
+    protected void createProducts(Integer tangibleProductCount,Integer intangibleProductCount) {
+		for(int i=1;i<=tangibleProductCount;i++){
+			TangibleProduct tangibleProduct = new TangibleProduct();
+			companyBusinessTestHelper.set(tangibleProduct, "TP"+i);
+			create(tangibleProduct);
+		}
+		
+		for(int i=1;i<=intangibleProductCount;i++){
+			IntangibleProduct intangibleProduct = new IntangibleProduct();
+			companyBusinessTestHelper.set(intangibleProduct, "IP"+i);
+			create(intangibleProduct);
+		}
+	}
+	
+	protected void createSales(Integer tangibleProductCount,Integer intangibleProductCount,String[][] salableProducts,Object[][] sales) {
+		createProducts(tangibleProductCount, intangibleProductCount);
+		
+		if(salableProducts!=null)
+			for(String[] infos : salableProducts){
+				SalableProduct salableProduct = new SalableProduct();
+				companyBusinessTestHelper.set(salableProduct, infos[0], infos[1]);
+				create(salableProduct);
+			}
+		
+		if(sales!=null)
+			for(Object[] infos : sales){
+				Sale sale = new Sale();
+				int i = 0;
+				companyBusinessTestHelper.set(sale, (String)infos[i++],(String)infos[i++], (String)infos[i++], (String[][])infos[i++],new Date());
+				create(sale);
+			}
+	}
 }

@@ -11,9 +11,9 @@ import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.product.ProductCategoryBusiness;
 import org.cyk.system.company.business.api.product.SaleProductBusiness;
 import org.cyk.system.company.model.product.ProductCategory;
-import org.cyk.system.company.model.product.SaleProduct;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.persistence.api.product.SaleProductDao;
+import org.cyk.system.company.model.sale.SaleProduct;
+import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.root.business.api.chart.CartesianModel;
 import org.cyk.system.root.business.api.chart.CartesianModelListener;
 import org.cyk.system.root.business.api.chart.Series;
@@ -47,8 +47,8 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 			return collection;
 		Collection<SaleProduct> results = new ArrayList<>();
 		for(SaleProduct saleProduct : collection){
-			if(productCategories.contains(saleProduct.getProduct().getCategory()) || 
-					productCategoryBusiness.isAtLeastOneAncestorOf(productCategories,saleProduct.getProduct().getCategory()))
+			if(productCategories.contains(saleProduct.getSalableProduct().getProduct().getCategory()) || 
+					productCategoryBusiness.isAtLeastOneAncestorOf(productCategories,saleProduct.getSalableProduct().getProduct().getCategory()))
 				results.add(saleProduct);
 		}
 		return results;
@@ -56,18 +56,16 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 
 	@Override
 	public void process(SaleProduct saleProduct) {
-		logTrace("Processing Sale Product {} , Completed={} Current={} Auto compute={}", 
-				saleProduct.getProduct().getCode(),Boolean.TRUE.equals(saleProduct.getSale().getCompleted())
-				,saleProduct.getValueAddedTax(),Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax()));
-		//logDebug("Update sale product {} calculated data",saleProduct.getProduct().getCode());
-		/*if(saleProduct.getProduct().getPrice()==null){
+		logTrace("Processing {} ",saleProduct.getLogMessage());
+		/*
+		if(saleProduct.getSalableProduct().getPrice()==null){
 		
 		}else{
-			saleProduct.setPrice(saleProduct.getProduct().getPrice().multiply(saleProduct.getQuantity()).subtract(saleProduct.getReduction()));	
-		}*/
-		
-		if(saleProduct.getPrice()==null){
-			//logWarning("Sale product {} has no price",saleProduct.getProduct().getCode());
+			saleProduct.getSalableProduct().setPrice(saleProduct.getSalableProduct().getPrice().multiply(saleProduct.getQuantity()).subtract(saleProduct.getReduction()));	
+		}
+		*/
+		if(saleProduct.getSalableProduct().getPrice()==null){
+			//logTrace("No price");
 			return;
 		}else{
 			/*
@@ -85,17 +83,18 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 			if(Boolean.TRUE.equals(saleProduct.getSale().getCompleted())){
 				//logTrace("Before computing VAT. Current={} ,Auto compute={}",saleProduct.getValueAddedTax(),Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax()));
 				//if(saleProduct.getValueAddedTax()==null)
-				saleProduct.setPrice(saleProduct.getPrice().add(saleProduct.getCommission()));
+				saleProduct.getCost().setValue(saleProduct.getSalableProduct().getPrice().add(saleProduct.getCommission()));
 				if(Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax())){
-					saleProduct.setValueAddedTax(accountingPeriodBusiness.computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getPrice()));
-				}else if(saleProduct.getValueAddedTax()==null)
-					saleProduct.setValueAddedTax(BigDecimal.ZERO);
-				saleProduct.setTurnover(accountingPeriodBusiness.computeTurnover(saleProduct.getSale().getAccountingPeriod(), saleProduct.getPrice(),saleProduct.getValueAddedTax()));
+					saleProduct.getCost().setTax(accountingPeriodBusiness.computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getCost().getValue()));
+				}else if(saleProduct.getCost().getTax()==null)
+					saleProduct.getCost().setTax(BigDecimal.ZERO);
+				saleProduct.getCost().setTurnover(accountingPeriodBusiness.computeTurnover(saleProduct.getSale().getAccountingPeriod()
+						, saleProduct.getCost().getValue(),saleProduct.getCost().getTax()));
 				//logIdentifiable("Completed",saleProduct);
 			}else{
-				if(saleProduct.getValueAddedTax()==null){
-					saleProduct.setValueAddedTax(BigDecimal.ZERO);
-					saleProduct.setTurnover(BigDecimal.ZERO);
+				if(saleProduct.getCost().getTax()==null){
+					saleProduct.getCost().setTax(BigDecimal.ZERO);
+					saleProduct.getCost().setTurnover(BigDecimal.ZERO);
 				}
 			}
 			
@@ -103,14 +102,14 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 				
 			}else{
 				//TODO price should be updated????
-				saleProduct.setPrice(saleProduct.getPrice().add(saleProduct.getValueAddedTax()));			
-				logTrace("Sale product {} price updated to {}",saleProduct.getProduct().getCode(),saleProduct.getPrice());
+				saleProduct.getCost().setValue(saleProduct.getCost().getValue().add(saleProduct.getCost().getTax()));			
+				logTrace("Sale product {} price updated to {}",saleProduct.getSalableProduct().getProduct().getCode(),saleProduct.getCost().getValue());
 			}
 			
 			//logDebug("Sale product {} data calculated | P={} VAT={} T={}",saleProduct.getProduct().getCode(),saleProduct.getPrice(),
 			//		saleProduct.getValueAddedTax(),saleProduct.getTurnover());
 			
-			logIdentifiable("Sale product processed",saleProduct);
+			logIdentifiable("Processed",saleProduct);
 		}
 	}
 	
@@ -143,7 +142,7 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 		return salesCartesianModel(parameters,new CartesianModelListener<SaleProduct>() {
 			@Override
 			public BigDecimal y(SaleProduct saleProduct) {
-				return saleProduct.getTurnover();
+				return saleProduct.getCost().getTurnover();
 			} 
 			
 			@Override

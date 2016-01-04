@@ -25,19 +25,19 @@ import org.cyk.system.company.business.api.product.SaleProductBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.product.Customer;
-import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductEmployee;
-import org.cyk.system.company.model.product.SaleCashRegisterMovement;
-import org.cyk.system.company.model.product.SaleProduct;
-import org.cyk.system.company.model.product.SaleReport;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
-import org.cyk.system.company.model.product.SalesDetails;
+import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleProduct;
+import org.cyk.system.company.model.sale.SaleReport;
+import org.cyk.system.company.model.sale.SalesDetails;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
-import org.cyk.system.company.persistence.api.product.CustomerDao;
-import org.cyk.system.company.persistence.api.product.SaleCashRegisterMovementDao;
-import org.cyk.system.company.persistence.api.product.SaleDao;
-import org.cyk.system.company.persistence.api.product.SaleProductDao;
+import org.cyk.system.company.persistence.api.sale.CustomerDao;
+import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
+import org.cyk.system.company.persistence.api.sale.SaleDao;
+import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.root.business.api.file.report.ReportBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
@@ -82,24 +82,27 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public SaleProduct selectProduct(Sale sale, Product product,BigDecimal quantity) {
-		logDebug("Select Sale product {}",product.getCode());
-		SaleProduct saleProduct = new SaleProduct(sale, product, quantity);
+	public SaleProduct selectProduct(Sale sale, SalableProduct salableProduct,BigDecimal quantity) {
+		logDebug("Select Sale product {}",salableProduct.getProduct().getCode());
+		SaleProduct saleProduct = new SaleProduct();
+		saleProduct.setSale(sale);
+		saleProduct.setSalableProduct(salableProduct);
+		saleProduct.setQuantity(quantity);
 		saleProductBusiness.process(saleProduct);
 		sale.getSaleProducts().add(saleProduct);
-		if(saleProduct.getPrice()!=null)
-			sale.setCost(sale.getCost().add(saleProduct.getPrice()));
+		if(saleProduct.getCost().getValue()!=null)
+			sale.getCost().setValue(sale.getCost().getValue().add(saleProduct.getCost().getValue()));
 		return saleProduct;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public SaleProduct selectProduct(Sale sale, Product product) {
-		return selectProduct(sale, product, BigDecimal.ONE);
+	public SaleProduct selectProduct(Sale sale, SalableProduct salableProduct) {
+		return selectProduct(sale, salableProduct, BigDecimal.ONE);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public void unselectProduct(Sale sale, SaleProduct saleProduct) {
-		logDebug("Unselect Sale product {}",saleProduct.getProduct().getCode());
+		logDebug("Unselect Sale product {}",saleProduct.getSalableProduct().getProduct().getCode());
 		if(sale.getSaleProducts() instanceof List<?>){
 			List<SaleProduct> list = (List<SaleProduct>) sale.getSaleProducts();
 			for(int i=0;i<list.size();){
@@ -110,7 +113,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 					i++;
 			}
 		}
-		sale.setCost(sale.getCost().subtract(saleProduct.getPrice()));
+		sale.getCost().setValue(sale.getCost().getValue().subtract(saleProduct.getCost().getValue()));
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
@@ -123,9 +126,10 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	private void updateCost(Sale sale){
-		sale.setCost(BigDecimal.ZERO);
-		for(SaleProduct lSaleProduct : sale.getSaleProducts())
-			sale.setCost( sale.getCost().add(lSaleProduct.getPrice() ));
+		sale.getCost().setValue(BigDecimal.ZERO);
+		for(SaleProduct lSaleProduct : sale.getSaleProducts()){
+			sale.getCost().setValue( sale.getCost().getValue().add(lSaleProduct.getCost().getValue() ));
+		}
 	}
 	
 	@Override
@@ -146,8 +150,8 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 				genericDao.create(saleProduct);
 			}
 		}
-		
-		sale.setComputedIdentifier(generateIdentifier(sale,CompanyBusinessLayerListener.SALE_IDENTIFIER,accountingPeriodBusiness.findCurrent()
+		if(sale.getComputedIdentifier()==null)
+			sale.setComputedIdentifier(generateIdentifier(sale,CompanyBusinessLayerListener.SALE_IDENTIFIER,accountingPeriodBusiness.findCurrent()
 				.getSaleConfiguration().getSaleIdentifierGenerator()));
 		sale = dao.update(sale);
 		//notifyCrudDone(Crud.CREATE, sale);
@@ -159,7 +163,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		logDebug("Computing sale data");
 		exceptionUtils().exception(Boolean.TRUE.equals(sale.getDone()), "exception.sale.done.already");
 		for(SaleProduct saleProduct : sale.getSaleProducts())
-			exceptionUtils().exception(saleProduct.getPrice()==null, "exception.sale.product.price.null");
+			exceptionUtils().exception(saleProduct.getCost().getValue()==null, "exception.sale.product.price.null");
 		
 		if(Boolean.TRUE.equals(creation)){
 			
@@ -182,29 +186,29 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			productBusiness.consume(sale.getSaleProducts());
 			AccountingPeriod accountingPeriod = sale.getAccountingPeriod();
 			accountingPeriod.getSalesResults().setCount(sale.getAccountingPeriod().getSalesResults().getCount().add(BigDecimal.ONE));
-			accountingPeriod.getSalesResults().setTurnover(accountingPeriod.getSalesResults().getTurnover().add(sale.getTurnover()));
+			accountingPeriod.getSalesResults().setTurnover(accountingPeriod.getSalesResults().getTurnover().add(sale.getCost().getTurnover()));
 			accountingPeriodDao.update(accountingPeriod);
 			
 			for(SaleProduct saleProduct : sale.getSaleProducts()){
-				sale.setValueAddedTax(sale.getValueAddedTax().add(saleProduct.getValueAddedTax()));
+				sale.getCost().setTax(sale.getCost().getTax().add(saleProduct.getCost().getTax()));
 				//FIXME is it necessary since it is updated later???
-				sale.setTurnover(sale.getTurnover().add(saleProduct.getTurnover()));
-				sale.getBalance().setValue(sale.getBalance().getValue().add(saleProduct.getPrice()));
+				sale.getCost().setTurnover(sale.getCost().getTurnover().add(saleProduct.getCost().getTurnover()));
+				sale.getBalance().setValue(sale.getBalance().getValue().add(saleProduct.getCost().getValue()));
 			}
-			sale.getBalance().setValue(sale.getCost());
-			sale.setTurnover(sale.getCost());
+			sale.getBalance().setValue(sale.getCost().getValue());
+			sale.getCost().setTurnover(sale.getCost().getValue());
 			
 			Customer customer = sale.getCustomer();
 			if(customer!=null){
 				customer.setSaleCount(customer.getSaleCount().add(BigDecimal.ONE));
-				customer.setTurnover(customer.getTurnover().add(sale.getTurnover()));
+				customer.setTurnover(customer.getTurnover().add(sale.getCost().getTurnover()));
 				customer.setBalance(customer.getBalance().add(sale.getBalance().getValue()));
 				sale.getBalance().setCumul(customer.getBalance());//to keep track of evolution
 				customerDao.update(customer);
 			}
 		}else{
-			sale.setValueAddedTax(BigDecimal.ZERO);
-			sale.setTurnover(BigDecimal.ZERO);
+			sale.getCost().setTax(BigDecimal.ZERO);
+			sale.getCost().setTurnover(BigDecimal.ZERO);
 			sale.getBalance().setValue(BigDecimal.ZERO);
 		}
 

@@ -54,7 +54,7 @@ public class ReportBusinessIT extends AbstractBusinessIT {
     @Override
     protected void businesses() {
     	init();
-    	Person person = companyBusinessTestHelper.cashierPerson();
+    	Person person = null;//companyBusinessTestHelper.cashierPerson();
     	companyBusinessTestHelper.sell(date(2015, 1, 1),person, customer1,new String[]{"tp1","1"},"1000",Boolean.TRUE, null, null, null,null);
     	companyBusinessTestHelper.setSaleAutoCompleted(Boolean.FALSE);
     	SaleStockInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 1),person, customer1,"A", "1000", "0", "3",Boolean.TRUE, null,null,null,null);

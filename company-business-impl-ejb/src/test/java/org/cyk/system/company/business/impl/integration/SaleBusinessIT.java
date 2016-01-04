@@ -2,19 +2,18 @@ package org.cyk.system.company.business.impl.integration;
 
 import java.math.BigDecimal;
 
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
-import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.payment.CashRegister;
+import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.SaleSearchCriteria;
-import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.root.business.impl.RootRandomDataProvider;
+import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParameters;
 import org.cyk.system.root.model.party.person.Person;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.shrinkwrap.api.Archive;
+import org.junit.Test;
 
 public class SaleBusinessIT extends AbstractBusinessIT {
 
@@ -22,39 +21,28 @@ public class SaleBusinessIT extends AbstractBusinessIT {
 
     private static final Boolean PRINT = Boolean.TRUE;
          
-    private CashRegister cashRegister1;
-    private Customer customer1,customer2;
-    
     @Override
     protected void populate() {
     	super.populate();
-    	AccountingPeriod accountingPeriod = accountingPeriodBusiness.findCurrent();
-    	accountingPeriod.setValueAddedTaxRate(new BigDecimal("0.18"));
-    	accountingPeriod.setValueAddedTaxIncludedInCost(Boolean.TRUE);
-    	
-    	customer1 = new Customer();
-    	customer1.setPerson(RootRandomDataProvider.getInstance().person());
-    	customerBusiness.create(customer1); 
-    	
-    	customer2 = new Customer();
-    	customer2.setPerson(RootRandomDataProvider.getInstance().person());
-    	customerBusiness.create(customer2); 
-    	
-    	cashRegister1 = new CashRegister();
-    	cashRegister1.setCode("CASHIER001");
-    	cashRegister1.setOwnedCompany(ownedCompanyBusiness.findDefaultOwnedCompany());
-    	create(cashRegister1);
-    	
-    	TangibleProduct tp = new TangibleProduct("tp1", "P1", null, null);
-    	//tp.setUseQuantity(new BigDecimal("1000"));
-    	create(tp);
+    	createSales(3,4,new String[][]{ {"TP1", "1000"},{"TP3", "500"},{"IP2", "700"} } , /*new Object[][]{ 
+    			{ "1",null,null,new String[][]{{"TP1","2"}} }
+    			,{ "2",null,null,new String[][]{{"IP2","2"}} }
+    			,{ "3",null,null,new String[][]{{"IP2","1"}} }
+    			,{ "4",null,null,new String[][]{{"TP3","2"},{"TP1","1"}} }
+		}*/null);
     }
         
     @Override
     protected void businesses() {
-    	Person person = companyBusinessTestHelper.cashierPerson();
     	
-    	sellAndPayAtSameTime(person);
+    	assertEquals("Count all sale", 0l, saleDao.countAll());
+    	companyBusinessTestHelper.createSale("1", null, null, null, new String[][]{{"TP1","2"}}, "800", "1000", "0", "1000", "200", "200");
+    	//assertCost(saleDao.readByComputedIdentifier("1").getCost(),"1000","0","1000");
+    	
+    	
+    	//Person person = companyBusinessTestHelper.cashierPerson();
+    	
+    	//sellAndPayAtSameTime(person);
     	//sellAndPayInOne(person);
     	//sellAndPayInOneWithNegativeBalance(person);
     	//sellAndPayInMany(person);
@@ -68,27 +56,49 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	*/
     }
     
+    /**/
+    
+    //@Test
+    public void processSaleProduct(){
+    	Sale sale = new Sale();
+    	companyBusinessTestHelper.set(sale, null, null, null, null, null);
+    	
+    	SalableProduct salableProduct = salableProductDao.readByProduct(productDao.read("TP1"));
+    	SaleProduct saleProduct = new SaleProduct();
+    	saleProduct.setSalableProduct(salableProduct);
+    	saleProduct.setQuantity(BigDecimal.ONE);
+    	saleProduct.setSale(sale);
+    	
+    	CompanyBusinessLayer.getInstance().getSaleProductBusiness().process(saleProduct);
+    	//assertCost(sale.getCost(),"1000","0","0");
+    	
+    }
+    
+    /* Exceptions */
+    
+    
+    
     private void sellAndPayAtSameTime(Person person){
-    	companyBusinessTestHelper.sell(date(2015, 1, 1),person, customer1,new String[]{"tp1","1"},"1000",PRINT && Boolean.TRUE, "1000", "153", "0","0");
+    	//companyBusinessTestHelper.sell(date(2015, 1, 1),person, customer1,new String[]{"tp1","1"},"1000",PRINT && Boolean.TRUE, "1000", "153", "0","0");
     }
     
     private void sellAndPayInOne(Person person){
-    	Sale sale = companyBusinessTestHelper
+    	/*Sale sale = companyBusinessTestHelper
         		.sell(date(2015, 1, 1),person, customer1,new String[]{"tp1","1"},"0",PRINT && Boolean.TRUE, "1000", "153", "1000","1000");
-    	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "1000",PRINT && Boolean.TRUE, "0","0");
+    	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "1000",PRINT && Boolean.TRUE, "0","0");*/
     }
     
     private void sellAndPayInOneWithNegativeBalance(Person person){
-    	Sale sale = companyBusinessTestHelper
+    	/*Sale sale = companyBusinessTestHelper
         		.sell(date(2015, 1, 1),person, customer1,new String[]{"tp1","1"},"0",PRINT && Boolean.TRUE, "1000", "153", "1000","1000");
-    	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "1500",PRINT && Boolean.TRUE, "-500","-500");
+    	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "1500",PRINT && Boolean.TRUE, "-500","-500");*/
     }
     
     private void sellAndPayInMany(Person person){
-    	Sale sale = companyBusinessTestHelper
+    	/*Sale sale = companyBusinessTestHelper
         		.sell(date(2015, 1, 1),person, customer1,new String[]{"tp1","1"},"0",PRINT && Boolean.TRUE, "1000", "153", "1000","1000");
     	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "700",PRINT && Boolean.TRUE, "300","300");
-    	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "300",PRINT && Boolean.TRUE, "0","0");
+    	companyBusinessTestHelper.pay(date(2015, 1, 2),person, sale, "300",PRINT && Boolean.TRUE, "0","0");*/
     }
     /*
     private void sellAndPayInManyWithNegativeBalance(Person person){

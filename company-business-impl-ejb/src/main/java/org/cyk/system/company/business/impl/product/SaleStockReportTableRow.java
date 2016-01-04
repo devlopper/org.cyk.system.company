@@ -81,7 +81,7 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		//number = sale.getIdentifier().to;
 		if(sale.getCustomer()!=null)
 			customer = sale.getCustomer().getRegistration().getCode()+" - "+sale.getCustomer().getPerson().getNames();
-		amount = formatNumber(sale.getCost());
+		amount = formatNumber(sale.getCost().getValue());
 		//balance = amount;
 		balance = formatNumber(saleStockInput.getSale().getBalance().getValue()); 
 		

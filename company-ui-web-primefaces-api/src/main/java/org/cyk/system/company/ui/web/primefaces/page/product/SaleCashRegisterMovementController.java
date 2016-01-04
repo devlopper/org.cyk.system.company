@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.model.product.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.utility.common.cdi.AbstractBean;
 
 @Getter @Setter

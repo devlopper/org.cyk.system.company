@@ -6,7 +6,7 @@ public class PaymentBusinessIT extends AbstractBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
 
-    private String cashRegisterUnlimitedIdentifier="CASHIER001",cashRegisterLimitedIdentifier="CASHIER002";
+    private String cashRegisterUnlimitedIdentifier="CASHIER001"/*,cashRegisterLimitedIdentifier="CASHIER002"*/;
     
     @Override
     protected void populate() {

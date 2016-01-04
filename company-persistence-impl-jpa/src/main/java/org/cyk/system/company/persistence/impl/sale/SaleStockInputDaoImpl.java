@@ -1,4 +1,4 @@
-package org.cyk.system.company.persistence.impl.product;
+package org.cyk.system.company.persistence.impl.sale;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.product.SaleStocksDetails;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.persistence.api.product.SaleStockInputDao;
+import org.cyk.system.company.persistence.api.sale.SaleStockInputDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
@@ -40,13 +40,13 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
         registerNamedQuery(readBySaleComputedIdentifier,_select().where(commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_COMPUTED_IDENTIFIER),Sale.FIELD_COMPUTED_IDENTIFIER) );
         registerNamedQuery(readBySales,_select().whereIdentifierIn(SaleStockInput.FIELD_SALE) );
         
-        queryStringBuilder = _selectString(sumAttributes(commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_COST)
+        /*queryStringBuilder = _selectString(sumAttributes(commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_COST)
         		,commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_TURNOVER)
         		,commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_VALUE_ADDED_TAX)
         		,commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_BALANCE,Balance.FIELD_VALUE)
         		,commonUtils.attributePath(SaleStockInput.FIELD_TANGIBLE_PRODUCT_STOCK_MOVEMENT,TangibleProductStockMovement.FIELD_QUANTITY)
         		,SaleStockInput.FIELD_REMAINING_NUMBER_OF_GOODS
-        		));
+        		));*/
     	whereSearchCriteria(queryStringBuilder);
     	registerNamedQuery(computeByCriteria,queryStringBuilder);
     }

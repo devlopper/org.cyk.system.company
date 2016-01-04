@@ -3,7 +3,7 @@ package org.cyk.system.company.model;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.cyk.system.company.model.product.SaleReport;
+import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.utility.common.generator.RandomDataProvider;
 
 public class SampleData implements Serializable {
