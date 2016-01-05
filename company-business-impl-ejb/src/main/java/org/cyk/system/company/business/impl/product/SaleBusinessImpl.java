@@ -50,14 +50,13 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 
 	public static Boolean AUTO_SET_SALE_DATE = Boolean.TRUE;
 	
-	@Inject private SaleProductBusiness saleProductBusiness;
+	private CompanyBusinessLayer companyBusinessLayer = CompanyBusinessLayer.getInstance();
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	@Inject private ProductBusiness productBusiness;
 	@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
 	@Inject private ReportBusiness reportBusiness;
 	
 	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
-	@Inject private CashierBusiness cashierBusiness;
 	@Inject private AccountingPeriodDao accountingPeriodDao;
 	@Inject private SaleProductDao saleProductDao;
 	@Inject private SaleCashRegisterMovementDao saleCashRegisterMovementDao;
@@ -73,9 +72,8 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		logInstanciate();
 		Sale sale = new Sale();
 		sale.setAccountingPeriod(accountingPeriodBusiness.findCurrent());
-		sale.setCashier(cashierBusiness.findByPerson(person));
+		sale.setCashier(companyBusinessLayer.getCashierBusiness().findByPerson(person));
 		sale.setAutoComputeValueAddedTax(sale.getAccountingPeriod().getValueAddedTaxRate().signum()!=0);
-		exceptionUtils().exception(sale.getCashier()==null, "exception.sale.cashier.null");
 		logInstanceCreated(sale);
 		//logDebug("Sale instanciated. Cashier={} VAT in={}.",sale.getCashier().getIdentifier(),Boolean.TRUE.equals(sale.getAccountingPeriod().getValueAddedTaxIncludedInCost()));
 		return sale;
@@ -88,7 +86,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		saleProduct.setSale(sale);
 		saleProduct.setSalableProduct(salableProduct);
 		saleProduct.setQuantity(quantity);
-		saleProductBusiness.process(saleProduct);
+		companyBusinessLayer.getSaleProductBusiness().process(saleProduct);
 		sale.getSaleProducts().add(saleProduct);
 		if(saleProduct.getCost().getValue()!=null)
 			sale.getCost().setValue(sale.getCost().getValue().add(saleProduct.getCost().getValue()));
@@ -121,7 +119,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		/*logDebug("Apply changes to sale product {}. UP={} Q={} P={} VAT={} T={}",saleProduct.getProduct().getCode(),
 				saleProduct.getProduct().getPrice(),saleProduct.getQuantity(),saleProduct.getPrice(),saleProduct.getValueAddedTax(),saleProduct.getTurnover());
 		*/
-		saleProductBusiness.process(saleProduct);
+		companyBusinessLayer.getSaleProductBusiness().process(saleProduct);
 		updateCost(sale);
 	}
 	
@@ -169,7 +167,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			
 		}else{
 			for(SaleProduct saleProduct : sale.getSaleProducts()){
-				saleProductBusiness.process(saleProduct);				
+				companyBusinessLayer.getSaleProductBusiness().process(saleProduct);				
 			}
 			updateCost(sale);
 		}

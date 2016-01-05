@@ -12,7 +12,7 @@ import org.cyk.system.root.model.party.person.Person;
 
 public interface SaleCashRegisterMovementBusiness extends TypedBusiness<SaleCashRegisterMovement> {
 
-	SaleCashRegisterMovement newInstance(Sale sale,Person person);
+	SaleCashRegisterMovement newInstance(Sale sale,Person person,Boolean input);
 	
 	Collection<SaleCashRegisterMovement> findBySale(Sale sale);
 

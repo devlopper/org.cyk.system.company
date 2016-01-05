@@ -164,6 +164,8 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	}
 	
 	public void set(SaleCashRegisterMovement saleCashRegisterMovement,String amountIn,String amountOut,Date date){
+		debug(saleCashRegisterMovement);
+		System.out.println("CompanyBusinessTestHelper.set() "+amountIn);
 		saleCashRegisterMovement.setAmountIn(new BigDecimal(amountIn));
 		saleCashRegisterMovement.setAmountOut(new BigDecimal(amountOut));
 		//saleCashRegisterMovement.getCashRegisterMovement().setDate(date);
@@ -205,9 +207,10 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	/* Sale */
 	
     public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String expectedCost,String expectedTax,String expectedTurnover,String expectedBalance,String expectedCumulBalance){
+    	debug(cashierDao.select().one());
     	Sale sale = saleBusiness.newInstance(cashierDao.select().one().getPerson());
     	set(sale,identifier, cashierCode, customerCode, products, getDate(date));
-    	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, sale.getCashier().getPerson());
+    	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, sale.getCashier().getPerson(),Boolean.TRUE);
     	set(saleCashRegisterMovement, paid);
     	saleBusiness.create(sale,saleCashRegisterMovement);
     	
@@ -228,7 +231,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     
 	public Sale sell(Date date,Person person,Customer customer,String[] products,String paid,Boolean printPos,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
     	Sale sale = saleBusiness.newInstance(person);
-    	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, person);
+    	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, person,Boolean.TRUE);
     	//set(sale, customerBusiness.load(customer.getIdentifier()), products,date);
     	set(saleCashRegisterMovement, paid);
     	saleBusiness.create(sale,saleCashRegisterMovement);
@@ -274,7 +277,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	*/
 	
 	public SaleCashRegisterMovement pay(Date date,Person person,Sale sale,String paid,Boolean printPos,String expectedBalance,String expectedCumulBalance){
-    	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, person);
+    	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, person,Boolean.TRUE);
     	set(saleCashRegisterMovement, paid);
     	saleCashRegisterMovementBusiness.create(saleCashRegisterMovement);
     	
@@ -292,7 +295,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	
 	public SaleStockInput drop(Date date,Person person,Customer customer,String externalIdentifier,String cost,String commission,String quantity,Boolean printPos,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
     	SaleStockInput saleStockInput = saleStockInputBusiness.newInstance(person);
-    	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person);
+    	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person,Boolean.TRUE);
     	//set(saleStockInput, customerBusiness.load(customer.getIdentifier()),externalIdentifier, cost, commission, quantity,date);
     	set(saleCashRegisterMovement, "0");
     	saleStockInputBusiness.create(saleStockInput,saleCashRegisterMovement);
@@ -328,7 +331,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		saleStockInput.getSale().setAutoComputeValueAddedTax(Boolean.TRUE);
 		saleStockInput.getSale().getSaleProducts().iterator().next().setCommission(new BigDecimal(commission));
 		saleBusiness.applyChange(saleStockInput.getSale(), saleStockInput.getSale().getSaleProducts().iterator().next());
-		SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person);
+		SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person,Boolean.TRUE);
 		set(saleCashRegisterMovement, "0");
 		saleStockInputBusiness.complete(saleStockInput, saleCashRegisterMovement);
     	

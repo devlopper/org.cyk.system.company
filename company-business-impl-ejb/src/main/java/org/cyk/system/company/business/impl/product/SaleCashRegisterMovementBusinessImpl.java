@@ -21,12 +21,14 @@ import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
+import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.file.report.ReportBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
+import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.party.person.Person;
 
 @Stateless
@@ -34,10 +36,11 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
+	private CompanyBusinessLayer companyBusinessLayer = CompanyBusinessLayer.getInstance();
+	
 	@Inject private SaleDao saleDao;
 	@Inject private CustomerDao customerDao;
-	@Inject private CashRegisterMovementBusiness cashRegisterMovementBusiness;
-	@Inject private CashierBusiness cashierBusiness;
+	@Inject private CashierDao cashierDao;
 	@Inject private ReportBusiness reportBusiness;
 
 	@Inject
@@ -46,9 +49,12 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public SaleCashRegisterMovement newInstance(Sale sale,Person person) {
-		Cashier cashier = cashierBusiness.findByPerson(person);
-		return null;//new SaleCashRegisterMovement(sale,new CashRegisterMovement(cashier.getCashRegister()));
+	public SaleCashRegisterMovement newInstance(Sale sale,Person person,Boolean input) {
+		Cashier cashier = cashierDao.readByPerson(person);
+		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement(cashier.getCashRegister(),new Movement());
+		cashRegisterMovement.getMovement().setCollection(cashier.getCashRegister().getMovementCollection());
+		cashRegisterMovement.getMovement().setAction(input==null || input ? cashier.getCashRegister().getMovementCollection().getIncrementAction() : cashier.getCashRegister().getMovementCollection().getDecrementAction());
+		return new SaleCashRegisterMovement(sale,cashRegisterMovement);
 	}
 	
 	@Override
@@ -65,10 +71,10 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		Boolean deposit = null;//saleCashRegisterMovement.getCashRegisterMovement().getAmount().signum()>=0;
 		if(Boolean.TRUE.equals(deposit)){
 			exceptionUtils().exception(soldOut>=0, "validtion.sale.soldout.yes");
-			cashRegisterMovementBusiness.create(saleCashRegisterMovement.getCashRegisterMovement());
+			companyBusinessLayer.getCashRegisterMovementBusiness().create(saleCashRegisterMovement.getCashRegisterMovement());
 		}else{
 			exceptionUtils().exception(soldOut<0, "validtion.sale.soldout.no");
-			cashRegisterMovementBusiness.create(saleCashRegisterMovement.getCashRegisterMovement());
+			companyBusinessLayer.getCashRegisterMovementBusiness().create(saleCashRegisterMovement.getCashRegisterMovement());
 		}
 		ReceiptParameters previous = new ReceiptParameters(null,saleCashRegisterMovement);
 		sale.getBalance().setValue(sale.getBalance().getValue().subtract(/*saleCashRegisterMovement.getCashRegisterMovement().getAmount()*/null));
