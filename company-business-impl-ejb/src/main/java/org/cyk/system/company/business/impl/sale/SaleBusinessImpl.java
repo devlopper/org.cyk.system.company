@@ -185,14 +185,17 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			accountingPeriod.getSalesResults().setTurnover(accountingPeriod.getSalesResults().getTurnover().add(sale.getCost().getTurnover()));
 			accountingPeriodDao.update(accountingPeriod);
 			
-			for(SaleProduct saleProduct : sale.getSaleProducts()){
+			/*for(SaleProduct saleProduct : sale.getSaleProducts()){
 				sale.getCost().setTax(sale.getCost().getTax().add(saleProduct.getCost().getTax()));
 				//FIXME is it necessary since it is updated later???
 				sale.getCost().setTurnover(sale.getCost().getTurnover().add(saleProduct.getCost().getTurnover()));
 				sale.getBalance().setValue(sale.getBalance().getValue().add(saleProduct.getCost().getValue()));
-			}
+			}*/
+			
 			sale.getBalance().setValue(sale.getCost().getValue());
-			sale.getCost().setTurnover(sale.getCost().getValue());
+			if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))
+				sale.getCost().setTax(companyBusinessLayer.getAccountingPeriodBusiness().computeValueAddedTax(accountingPeriod, sale.getCost().getValue()));
+			sale.getCost().setTurnover(companyBusinessLayer.getAccountingPeriodBusiness().computeTurnover(accountingPeriod, sale.getCost().getValue(), sale.getCost().getTax()));
 			
 			Customer customer = sale.getCustomer();
 			if(customer!=null){

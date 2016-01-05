@@ -13,14 +13,15 @@ import lombok.Setter;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
+import org.cyk.system.company.business.api.sale.SaleBusiness.SaleBusinessAdapter;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness.SaleBusinessAdapter;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
+import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.product.Product;
@@ -41,7 +42,6 @@ import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
-import org.cyk.system.company.persistence.api.structure.OwnedCompanyDao;
 import org.cyk.system.root.business.impl.AbstractBusinessTestHelper;
 import org.cyk.system.root.business.impl.RootDataProducerHelper;
 import org.cyk.system.root.model.mathematics.Movement;
@@ -115,7 +115,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		cashRegisterMovement.getMovement().setValue(new BigDecimal(amount));
 	}
 	
-	public void set(Sale sale,String identifier,String cashierCode,String customerCode,String[][] products,Date date){
+	public void set(Sale sale,String identifier,String date,String cashierCode,String customerCode,String[][] products,String taxable){
 		sale.setComputedIdentifier(identifier);
 		sale.setAccountingPeriod(accountingPeriodDao.select().one());
 		if(cashierCode==null)
@@ -123,7 +123,8 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		else
 			sale.setCashier(cashierDao.readByPerson(personDao.readByCode(cashierCode)));
     	sale.setCompleted(Boolean.TRUE);
-    	sale.setDate(date);
+    	sale.setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
+    	sale.setDate(getDate(date));
     	if(products!=null)
 	    	for(String[] infos : products){
 	    		SalableProduct salableProduct = salableProductDao.readByProduct(productDao.read(infos[0]));
@@ -202,9 +203,10 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	
 	/* Sale */
 	
-    public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String expectedCost,String expectedTax,String expectedTurnover,String expectedBalance,String expectedCumulBalance){
+    public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable
+    		,String expectedCost,String expectedTax,String expectedTurnover,String expectedBalance,String expectedCumulBalance){
     	Sale sale = saleBusiness.newInstance(cashierDao.select().one().getPerson());
-    	set(sale,identifier, cashierCode, customerCode, products, getDate(date));
+    	set(sale,identifier,date, cashierCode, customerCode, products, taxable);
     	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, sale.getCashier().getPerson(),Boolean.TRUE);
     	set(saleCashRegisterMovement, paid);
     	saleBusiness.create(sale,saleCashRegisterMovement);
@@ -380,6 +382,15 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     public void assertBalance(Balance balance,String expectedValue,String expectedCumul){
     	assertBigDecimalEquals("Balance", expectedValue, balance.getValue());
     	assertBigDecimalEquals("Balance Cumul", expectedCumul, balance.getCumul());
+    }
+    
+    public void assertCostComputation(AccountingPeriod accountingPeriod,String[][] values){
+    	for(String[] infos : values){
+    		BigDecimal vat = CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(accountingPeriod, commonUtils.getBigDecimal(infos[0]));
+    		assertBigDecimalEquals("Value Added Tax of "+infos[0], infos[1], vat);
+    		assertBigDecimalEquals("Turnover of "+infos[0]+" with VAT = "+vat, infos[2]
+    				, CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(accountingPeriod, commonUtils.getBigDecimal(infos[0]), vat));
+    	}
     }
 	
 	/**/

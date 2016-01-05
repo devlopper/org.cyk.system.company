@@ -22,34 +22,64 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     @Override
     protected void populate() {
     	super.populate();
-    	rootBusinessTestHelper.createActors(Customer.class, new String[]{"C1","C2","C3","C4","C5"});
+    	rootBusinessTestHelper.createActors(Customer.class, new String[]{"C1","C2","C3","C4","C5","C6","C7","C8","C9","C10","C11","C12","C13","C14","C15"});
     	createProducts(3, 4);
-    	createSales(new String[][]{ {"TP1", "1000"},{"TP3", "500"},{"IP2", "700"} } , /*new Object[][]{ 
-    			{ "1",null,null,new String[][]{{"TP1","2"}} }
-    			,{ "2",null,null,new String[][]{{"IP2","2"}} }
-    			,{ "3",null,null,new String[][]{{"IP2","1"}} }
-    			,{ "4",null,null,new String[][]{{"TP3","2"},{"TP1","1"}} }
-		}*/null);
+    	createSalableProducts(new String[][]{ {"TP1", "1000"},{"TP3", "500"},{"IP2", "700"} });
     }
-        
+           
     @Override
     protected void businesses() {
     	assertEquals("Count all sale", 0l, saleDao.countAll());
+    	updateAccountingPeriod(new BigDecimal("0.18"), Boolean.TRUE);
+    	//No tax applied
     	//nothing paid
-    	companyBusinessTestHelper.createSale("1", null, null, "C1", new String[][]{{"TP1","2"}}, "0", "2000", "0", "2000", "2000", "2000");
+    	companyBusinessTestHelper.createSale("nt1", null, null, "C1", new String[][]{{"TP1","2"}}, "0","false", "2000", "0", "2000", "2000", "2000");
     	//all paid
-    	companyBusinessTestHelper.createSale("2", null, null, "C2", new String[][]{{"IP2","3"}}, "2100", "2100", "0", "2100", "0", "0");
+    	companyBusinessTestHelper.createSale("nt2", null, null, "C2", new String[][]{{"IP2","3"}}, "2100","false", "2100", "0", "2100", "0", "0");
     	//less paid
-    	companyBusinessTestHelper.createSale("3", null, null, "C3", new String[][]{{"TP3","3"}}, "600", "1500", "0", "1500", "900", "900");
+    	companyBusinessTestHelper.createSale("nt3", null, null, "C3", new String[][]{{"TP3","3"}}, "600","false", "1500", "0", "1500", "900", "900");
     	//more paid
-    	companyBusinessTestHelper.createSale("4", null, null, "C4", new String[][]{{"TP3","2"}}, "1800", "1000", "0", "1000", "-800", "-800");
+    	companyBusinessTestHelper.createSale("nt4", null, null, "C4", new String[][]{{"TP3","2"}}, "1800","false", "1000", "0", "1000", "-800", "-800");
     	//many items
-    	companyBusinessTestHelper.createSale("5", null, null, "C5", new String[][]{{"TP3","2"},{"IP2","1"},{"TP1","3"}}, "5000", "4700", "0", "4700", "-300", "-300");
+    	companyBusinessTestHelper.createSale("nt5", null, null, "C5"
+    			, new String[][]{{"TP3","2"},{"IP2","1"},{"TP1","3"}}, "5000","false", "4700", "0", "4700", "-300", "-300");
+    	companyBusinessTestHelper.createSale("nt6", null, null, "C5", new String[][]{{"TP3","2"}}, "1800","false", "1000", "0", "1000", "-800", "-1100");
+    	
+    	//Tax applied in cost
+    	//nothing paid
+    	companyBusinessTestHelper.createSale("t1", null, null, "C6", new String[][]{{"TP1","2"}}, "0","true", "2000", "306", "1694", "2000", "2000");
+    	//all paid
+    	companyBusinessTestHelper.createSale("t2", null, null, "C7", new String[][]{{"IP2","3"}}, "2100","true", "2100", "321", "1779", "0", "0");
+    	//less paid
+    	companyBusinessTestHelper.createSale("t3", null, null, "C8", new String[][]{{"TP3","3"}}, "600","true", "1500", "229", "1271", "900", "900");
+    	//more paid
+    	companyBusinessTestHelper.createSale("t4", null, null, "C9", new String[][]{{"TP3","2"}}, "1800","true", "1000", "153", "847", "-800", "-800");
+    	//many items
+    	companyBusinessTestHelper.createSale("t5", null, null, "C10"
+    			, new String[][]{{"TP3","2"},{"IP2","1"},{"TP1","3"}}, "5000","true", "4700", "717", "3983", "-300", "-300");
+    	companyBusinessTestHelper.createSale("t6", null, null, "C10", new String[][]{{"TP3","2"}}, "1800","true", "1000", "153", "847", "-800", "-1100");
+    	
+    	
+    	/*
+    	//Tax applied out of cost
+    	updateAccountingPeriod(new BigDecimal("0.18"), Boolean.FALSE);
+    	//nothing paid
+    	companyBusinessTestHelper.createSale("ot1", null, null, "C11", new String[][]{{"TP1","2"}}, "0","true", "2360", "360", "2000", "2360", "2360");
+    	//all paid
+    	companyBusinessTestHelper.createSale("ot2", null, null, "C12", new String[][]{{"IP2","3"}}, "2478","true", "2478", "378", "2478", "0", "0");
+    	//less paid
+    	companyBusinessTestHelper.createSale("ot3", null, null, "C13", new String[][]{{"TP3","3"}}, "600","true", "1500", "270", "1500", "900", "900");
+    	//more paid
+    	companyBusinessTestHelper.createSale("ot4", null, null, "C14", new String[][]{{"TP3","2"}}, "1800","true", "1000", "180", "1000", "-800", "-800");
+    	//many items
+    	companyBusinessTestHelper.createSale("ot5", null, null, "C15"
+    			, new String[][]{{"TP3","2"},{"IP2","1"},{"TP1","3"}}, "5000","true", "4700", "846", "4700", "-300", "-300");
+    	companyBusinessTestHelper.createSale("ot6", null, null, "C15", new String[][]{{"TP3","2"}}, "1800","true", "1000", "180", "1000", "-800", "-1100");
+    	*/
     	
     	//companyBusinessTestHelper.createSale("4", null, null, "C1", new String[][]{{"TP1","2"}}, "800", "2000", "0", "2000", "1200", "1200");
     	
     	//assertCost(saleDao.readByComputedIdentifier("1").getCost(),"1000","0","1000");
-    	
     	
     	//Person person = companyBusinessTestHelper.cashierPerson();
     	
@@ -72,7 +102,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     //@Test
     public void processSaleProduct(){
     	Sale sale = new Sale();
-    	companyBusinessTestHelper.set(sale, null, null, null, null, null);
+    	//companyBusinessTestHelper.set(sale, null, null, null, null, null);
     	
     	SalableProduct salableProduct = salableProductDao.readByProduct(productDao.read("TP1"));
     	SaleProduct saleProduct = new SaleProduct();

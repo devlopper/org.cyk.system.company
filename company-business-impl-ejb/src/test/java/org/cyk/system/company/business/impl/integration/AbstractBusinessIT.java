@@ -2,12 +2,10 @@ package org.cyk.system.company.business.impl.integration;
 
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
-import java.util.Date;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.UserTransaction;
-
 
 
 //import static org.hamcrest.Matchers.*;
@@ -26,9 +24,9 @@ import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper;
+import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
@@ -174,6 +172,13 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 	
 	/* Shortcut */
     
+    protected void updateAccountingPeriod(BigDecimal valueAddedTaxRate, Boolean valueAddedTaxIncludedInCost){
+    	AccountingPeriod accountingPeriod = accountingPeriodBusiness.findCurrent();
+    	accountingPeriod.setValueAddedTaxRate(valueAddedTaxRate);
+    	accountingPeriod.setValueAddedTaxIncludedInCost(valueAddedTaxIncludedInCost);
+    	accountingPeriodBusiness.update(accountingPeriod);
+    }
+    
     protected AbstractIdentifiable create(AbstractIdentifiable object){
         return genericBusiness.create(object);
     }
@@ -257,22 +262,22 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 			create(intangibleProduct);
 		}
 	}
+    
+    protected void createSalableProducts(String[][] salableProducts) {
+    	for(String[] infos : salableProducts){
+			SalableProduct salableProduct = new SalableProduct();
+			companyBusinessTestHelper.set(salableProduct, infos[0], infos[1]);
+			create(salableProduct);
+		}	
+    }
 	
-	protected void createSales(String[][] salableProducts,Object[][] sales) {
-		
-		if(salableProducts!=null)
-			for(String[] infos : salableProducts){
-				SalableProduct salableProduct = new SalableProduct();
-				companyBusinessTestHelper.set(salableProduct, infos[0], infos[1]);
-				create(salableProduct);
-			}	
-		
-		if(sales!=null)
-			for(Object[] infos : sales){
-				Sale sale = new Sale();
-				int i = 0;
-				companyBusinessTestHelper.set(sale, (String)infos[i++],(String)infos[i++], (String)infos[i++], (String[][])infos[i++],new Date());
-				create(sale);
-			}
+	protected void createSales(Object[][] sales) {
+		for(Object[] infos : sales){
+			Sale sale = new Sale();
+			int i = 0;
+			companyBusinessTestHelper.set(sale, (String)infos[i++],(String)infos[i++], (String)infos[i++], (String)infos[i++],(String[][])infos[i++]
+					,(String)infos[i++]);
+			create(sale);
+		}
 	}
 }

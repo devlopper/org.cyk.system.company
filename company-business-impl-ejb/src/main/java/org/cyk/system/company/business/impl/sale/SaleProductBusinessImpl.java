@@ -7,9 +7,8 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
-import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
-import org.cyk.system.company.business.api.product.ProductCategoryBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleProduct;
@@ -18,18 +17,14 @@ import org.cyk.system.root.business.api.chart.CartesianModel;
 import org.cyk.system.root.business.api.chart.CartesianModelListener;
 import org.cyk.system.root.business.api.chart.Series;
 import org.cyk.system.root.business.api.chart.SeriesItem;
-import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.time.Period;
 
 public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SaleProduct, SaleProductDao> implements SaleProductBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	@Inject private LanguageBusiness languageBusiness;
-	@Inject private ProductCategoryBusiness productCategoryBusiness;
-	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
-	
 	@Inject
 	public SaleProductBusinessImpl(SaleProductDao dao) {
 		super(dao);
@@ -48,10 +43,21 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 		Collection<SaleProduct> results = new ArrayList<>();
 		for(SaleProduct saleProduct : collection){
 			if(productCategories.contains(saleProduct.getSalableProduct().getProduct().getCategory()) || 
-					productCategoryBusiness.isAtLeastOneAncestorOf(productCategories,saleProduct.getSalableProduct().getProduct().getCategory()))
+					CompanyBusinessLayer.getInstance().getProductCategoryBusiness().isAtLeastOneAncestorOf(productCategories,saleProduct.getSalableProduct().getProduct().getCategory()))
 				results.add(saleProduct);
 		}
 		return results;
+	}
+	
+	@Override
+	public BigDecimal computeCost(SaleProduct saleProduct, Boolean taxIncluded) {
+		BigDecimal cost = saleProduct.getSalableProduct().getPrice()
+				.multiply(saleProduct.getQuantity())
+				.subtract(saleProduct.getReduction())
+				.add(saleProduct.getCommission());
+		if(Boolean.TRUE.equals(taxIncluded))
+			cost = cost.add(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), cost));
+		return cost;
 	}
 
 	@Override
@@ -61,7 +67,8 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 		if(saleProduct.getSalableProduct().getPrice()==null){
 		
 		}else{
-			saleProduct.getSalableProduct().setPrice(saleProduct.getSalableProduct().getPrice().multiply(saleProduct.getQuantity()).subtract(saleProduct.getReduction()));	
+			//FIXME is it right to do that??? why you do update price on salables catalog ????
+			saleProduct.getCost().setValue(computeCost(saleProduct, Boolean.FALSE));// setPrice(saleProduct.getSalableProduct().getPrice().multiply(saleProduct.getQuantity()).subtract(saleProduct.getReduction()));	
 		}
 		
 		if(saleProduct.getSalableProduct().getPrice()==null){
@@ -83,12 +90,12 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 			if(Boolean.TRUE.equals(saleProduct.getSale().getCompleted())){
 				//logTrace("Before computing VAT. Current={} ,Auto compute={}",saleProduct.getValueAddedTax(),Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax()));
 				//if(saleProduct.getValueAddedTax()==null)
-				saleProduct.getCost().setValue(saleProduct.getSalableProduct().getPrice().add(saleProduct.getCommission()));
+				//saleProduct.getCost().setValue(saleProduct.getSalableProduct().getPrice());
 				if(Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax())){
-					saleProduct.getCost().setTax(accountingPeriodBusiness.computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getCost().getValue()));
+					saleProduct.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getCost().getValue()));
 				}else if(saleProduct.getCost().getTax()==null)
 					saleProduct.getCost().setTax(BigDecimal.ZERO);
-				saleProduct.getCost().setTurnover(accountingPeriodBusiness.computeTurnover(saleProduct.getSale().getAccountingPeriod()
+				saleProduct.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(saleProduct.getSale().getAccountingPeriod()
 						, saleProduct.getCost().getValue(),saleProduct.getCost().getTax()));
 				//logIdentifiable("Completed",saleProduct);
 			}else{
@@ -117,11 +124,11 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 		if(parameters.getSaleProducts().isEmpty())
 			return null;
 		
-		CartesianModel cartesianModel = new CartesianModel(languageBusiness.findText(nameId)+" - "+timeBusiness.formatPeriodFromTo(parameters.getPeriod()),
+		CartesianModel cartesianModel = new CartesianModel(RootBusinessLayer.getInstance().getLanguageBusiness().findText(nameId)+" - "+timeBusiness.formatPeriodFromTo(parameters.getPeriod()),
 				parameters.getTimeDivisionType().getName(),
-				languageBusiness.findText(yAxisLabelId));
+				RootBusinessLayer.getInstance().getLanguageBusiness().findText(yAxisLabelId));
 		cartesianModel.getXAxis().setTickAngle(45);
-		Series ySeries = cartesianModel.addSeries(languageBusiness.findText(nameId));
+		Series ySeries = cartesianModel.addSeries(RootBusinessLayer.getInstance().getLanguageBusiness().findText(nameId));
 		
 		for(Period period : timeBusiness.findPeriods(parameters.getPeriod(), parameters.getTimeDivisionType(),Boolean.TRUE)){
 			String x = timeBusiness.formatPeriod(period, parameters.getTimeDivisionType());

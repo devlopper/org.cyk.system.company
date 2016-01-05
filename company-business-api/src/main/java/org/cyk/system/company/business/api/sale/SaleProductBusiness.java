@@ -1,6 +1,7 @@
 package org.cyk.system.company.business.api.sale;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import org.cyk.system.root.model.time.TimeDivisionType;
 
 public interface SaleProductBusiness extends TypedBusiness<SaleProduct> {
 
+	BigDecimal computeCost(SaleProduct saleProduct,Boolean taxIncluded);
 	void process(SaleProduct saleProduct);
 	
 	CartesianModel findCartesianModelTurnOver(SalesResultsCartesianModelParameters parameters);
