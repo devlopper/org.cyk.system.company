@@ -8,7 +8,7 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.model.product.SaleSearchCriteria;
+import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.ui.web.primefaces.model.SaleQueryResultFormModel;
 import org.cyk.system.company.ui.web.primefaces.model.SaleQueryFormModel;
 

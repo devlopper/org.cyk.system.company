@@ -11,7 +11,7 @@ import lombok.Setter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
-import org.cyk.system.company.business.api.product.SaleBusiness;
+import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;

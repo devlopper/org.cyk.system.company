@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.model.product.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockOutput;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputNumber;

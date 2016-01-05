@@ -10,7 +10,7 @@ import javax.inject.Named;
 
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
-import org.cyk.system.company.business.impl.product.StockDashBoardReportTableDetails;
+import org.cyk.system.company.business.impl.sale.StockDashBoardReportTableDetails;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;

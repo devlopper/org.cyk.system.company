@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.utility.common.cdi.AbstractBean;
 

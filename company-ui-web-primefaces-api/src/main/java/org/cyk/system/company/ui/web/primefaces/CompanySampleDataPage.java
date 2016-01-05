@@ -12,9 +12,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.business.impl.CompanyRandomDataProvider;
-import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.RootBusinessLayer;

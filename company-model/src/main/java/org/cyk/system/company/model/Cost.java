@@ -36,6 +36,11 @@ public class Cost extends AbstractModelElement implements Serializable {
 		return String.format(DEBUG_FORMAT,value,tax,turnover);
 	}
 	
+	@Override
+	public String toString() {
+		return String.format(DEBUG_FORMAT,value,tax,turnover);
+	}
+	
 	private static final String DEBUG_FORMAT = "Cost(V=%s T=%s TX=%s)";
 
 	public static final String FIELD_VALUE = "value";

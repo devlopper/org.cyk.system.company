@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
-import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
+import org.cyk.system.company.business.impl.sale.SaleStockReportTableRow;
 import org.cyk.system.root.business.impl.language.LanguageBusinessImpl;
 import org.cyk.utility.test.unit.AbstractUnitTest;
 import org.junit.Test;

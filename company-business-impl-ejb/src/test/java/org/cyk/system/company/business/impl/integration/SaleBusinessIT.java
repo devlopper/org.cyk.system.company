@@ -4,16 +4,14 @@ import java.math.BigDecimal;
 
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
-import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
-import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.product.Customer;
-import org.cyk.system.company.model.product.SaleSearchCriteria;
+import org.cyk.system.company.business.impl.sale.CustomerReportTableRow;
+import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleProduct;
+import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParameters;
 import org.cyk.system.root.model.party.person.Person;
-import org.junit.Test;
 
 public class SaleBusinessIT extends AbstractBusinessIT {
 
@@ -24,7 +22,9 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     @Override
     protected void populate() {
     	super.populate();
-    	createSales(3,4,new String[][]{ {"TP1", "1000"},{"TP3", "500"},{"IP2", "700"} } , /*new Object[][]{ 
+    	rootBusinessTestHelper.createActors(Customer.class, new String[]{"C1","C2","C3","C4","C5"});
+    	createProducts(3, 4);
+    	createSales(new String[][]{ {"TP1", "1000"},{"TP3", "500"},{"IP2", "700"} } , /*new Object[][]{ 
     			{ "1",null,null,new String[][]{{"TP1","2"}} }
     			,{ "2",null,null,new String[][]{{"IP2","2"}} }
     			,{ "3",null,null,new String[][]{{"IP2","1"}} }
@@ -34,9 +34,20 @@ public class SaleBusinessIT extends AbstractBusinessIT {
         
     @Override
     protected void businesses() {
-    	
     	assertEquals("Count all sale", 0l, saleDao.countAll());
-    	companyBusinessTestHelper.createSale("1", null, null, null, new String[][]{{"TP1","2"}}, "800", "1000", "0", "1000", "200", "200");
+    	//nothing paid
+    	companyBusinessTestHelper.createSale("1", null, null, "C1", new String[][]{{"TP1","2"}}, "0", "2000", "0", "2000", "2000", "2000");
+    	//all paid
+    	companyBusinessTestHelper.createSale("2", null, null, "C2", new String[][]{{"IP2","3"}}, "2100", "2100", "0", "2100", "0", "0");
+    	//less paid
+    	companyBusinessTestHelper.createSale("3", null, null, "C3", new String[][]{{"TP3","3"}}, "600", "1500", "0", "1500", "900", "900");
+    	//more paid
+    	companyBusinessTestHelper.createSale("4", null, null, "C4", new String[][]{{"TP3","2"}}, "1800", "1000", "0", "1000", "-800", "-800");
+    	//many items
+    	companyBusinessTestHelper.createSale("5", null, null, "C5", new String[][]{{"TP3","2"},{"IP2","1"},{"TP1","3"}}, "5000", "4700", "0", "4700", "-300", "-300");
+    	
+    	//companyBusinessTestHelper.createSale("4", null, null, "C1", new String[][]{{"TP1","2"}}, "800", "2000", "0", "2000", "1200", "1200");
+    	
     	//assertCost(saleDao.readByComputedIdentifier("1").getCost(),"1000","0","1000");
     	
     	

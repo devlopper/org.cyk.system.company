@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
-import org.cyk.system.company.model.product.Customer;
-import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.sale.Customer;
+import org.cyk.system.company.model.sale.SaleStockInput;
 import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.model.party.person.Person;
 import org.jboss.arquillian.container.test.api.Deployment;

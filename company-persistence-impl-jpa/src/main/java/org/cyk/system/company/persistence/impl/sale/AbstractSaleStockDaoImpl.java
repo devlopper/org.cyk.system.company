@@ -6,11 +6,11 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
-import org.cyk.system.company.model.product.AbstractSaleStockSearchCriteria;
-import org.cyk.system.company.model.product.SaleStock;
-import org.cyk.system.company.model.product.SaleStockInput;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
+import org.cyk.system.company.model.sale.AbstractSaleStockSearchCriteria;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleStock;
+import org.cyk.system.company.model.sale.SaleStockInput;
 import org.cyk.system.company.persistence.api.sale.AbstractSaleStockDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;

@@ -10,38 +10,33 @@ import javax.transaction.UserTransaction;
 
 
 
-
-
-
 //import static org.hamcrest.Matchers.*;
 //import static org.hamcrest.MatcherAssert.*;
 import org.apache.commons.io.IOUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
-import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.api.product.ProductBusiness;
-import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.product.SaleStockBusiness;
-import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
-import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
+import org.cyk.system.company.business.api.sale.CustomerBusiness;
+import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.AbstractBusinessException;
-import org.cyk.system.root.business.api.BusinessLayer;
-import org.cyk.system.root.business.api.BusinessLayerListener;
 import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.api.party.ApplicationBusiness;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
@@ -50,6 +45,8 @@ import org.cyk.system.root.business.impl.BusinessIntegrationTestHelper;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.RootBusinessTestHelper;
 import org.cyk.system.root.business.impl.RootDataProducerHelper;
+import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
+import org.cyk.system.root.business.impl.party.ApplicationBusinessImplListener;
 import org.cyk.system.root.business.impl.validation.DefaultValidator;
 import org.cyk.system.root.business.impl.validation.ExceptionUtils;
 import org.cyk.system.root.business.impl.validation.ValidatorMap;
@@ -190,14 +187,14 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     }
     
     protected void installApplication(){
-    	RootBusinessLayer.getInstance().getBusinessLayerListeners().add(new BusinessLayerListener.Adapter.Default(){
+    	ApplicationBusinessImpl.LISTENERS.add(new ApplicationBusinessImplListener.Adapter.Default(){
 			private static final long serialVersionUID = 6148913289155659043L;
 			@Override
-    		public void beforeInstall(BusinessLayer businessLayer,Installation installation) {
+    		public void installationStarted(Installation installation) {
     			installation.getApplication().setUniformResourceLocatorFilteringEnabled(Boolean.FALSE);
     			installation.getApplication().setWebContext("company");
     			installation.getApplication().setName("CompanyApp");
-    			super.beforeInstall(businessLayer, installation);
+    			super.installationStarted(installation);
     		}
     	});
     	installApplication(Boolean.TRUE);
@@ -261,15 +258,14 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 		}
 	}
 	
-	protected void createSales(Integer tangibleProductCount,Integer intangibleProductCount,String[][] salableProducts,Object[][] sales) {
-		createProducts(tangibleProductCount, intangibleProductCount);
+	protected void createSales(String[][] salableProducts,Object[][] sales) {
 		
 		if(salableProducts!=null)
 			for(String[] infos : salableProducts){
 				SalableProduct salableProduct = new SalableProduct();
 				companyBusinessTestHelper.set(salableProduct, infos[0], infos[1]);
 				create(salableProduct);
-			}
+			}	
 		
 		if(sales!=null)
 			for(Object[] infos : sales){

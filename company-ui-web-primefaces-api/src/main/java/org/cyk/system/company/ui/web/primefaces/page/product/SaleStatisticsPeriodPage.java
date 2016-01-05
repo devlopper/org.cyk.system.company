@@ -12,8 +12,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.cyk.system.company.business.api.product.SaleBusiness;
-import org.cyk.system.company.model.product.SaleSearchCriteria;
+import org.cyk.system.company.business.api.sale.SaleBusiness;
+import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.root.business.api.time.TimeDivisionTypeBusiness;
 import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.ui.web.primefaces.page.AbstractChartPage;

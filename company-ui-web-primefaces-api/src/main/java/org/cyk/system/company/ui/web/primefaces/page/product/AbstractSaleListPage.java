@@ -10,11 +10,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.business.api.product.SaleBusiness;
+import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.model.payment.BalanceType;
-import org.cyk.system.company.model.product.SaleSearchCriteria;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.sale.SalesDetails;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.impl.RootBusinessLayer;

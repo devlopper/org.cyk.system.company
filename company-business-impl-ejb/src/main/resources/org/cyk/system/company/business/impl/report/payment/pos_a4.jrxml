@@ -102,7 +102,7 @@
 		<field name="quantity" class="java.lang.String">
 			<fieldDescription><![CDATA[quantity]]></fieldDescription>
 		</field>
-		<field name="saleReport" class="org.cyk.system.company.model.product.SaleReport">
+		<field name="saleReport" class="org.cyk.system.company.model.sale.SaleReport">
 			<fieldDescription><![CDATA[saleReport]]></fieldDescription>
 		</field>
 		<field name="totalPrice" class="java.lang.String">
@@ -138,7 +138,7 @@
 	<field name="saleProducts" class="java.util.Collection">
 		<fieldDescription><![CDATA[saleProducts]]></fieldDescription>
 	</field>
-	<field name="saleCashRegisterMovement" class="org.cyk.system.company.model.product.SaleCashRegisterMovementReport">
+	<field name="saleCashRegisterMovement" class="org.cyk.system.company.model.sale.SaleCashRegisterMovementReport">
 		<fieldDescription><![CDATA[saleCashRegisterMovement]]></fieldDescription>
 	</field>
 	<field name="cashier" class="org.cyk.system.root.model.party.person.ActorReport">

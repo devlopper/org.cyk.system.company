@@ -9,9 +9,9 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.cyk.system.company.business.api.product.CustomerBusiness;
-import org.cyk.system.company.business.impl.product.CustomerReportTableRow;
-import org.cyk.system.company.model.product.Customer;
+import org.cyk.system.company.business.api.sale.CustomerBusiness;
+import org.cyk.system.company.business.impl.sale.CustomerReportTableRow;
+import org.cyk.system.company.model.sale.Customer;
 import org.cyk.ui.api.model.table.ColumnAdapter;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.page.AbstractPrimefacesPage;

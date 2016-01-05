@@ -6,10 +6,10 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
-import org.cyk.system.company.model.product.SaleStockInput;
-import org.cyk.system.company.model.product.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockInput;
+import org.cyk.system.company.model.sale.SaleStockOutput;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.model.SaleStockOutputFormModel;
 import org.cyk.system.company.ui.web.primefaces.page.product.AbstractSaleStockInputConsultPage.Details;

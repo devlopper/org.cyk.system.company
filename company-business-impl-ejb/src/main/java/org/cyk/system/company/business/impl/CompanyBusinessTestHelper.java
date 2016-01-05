@@ -12,29 +12,29 @@ import lombok.Setter;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.business.api.product.SaleBusiness;
-import org.cyk.system.company.business.api.product.SaleBusiness.SaleBusinessAdapter;
-import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.product.SaleProductBusiness;
-import org.cyk.system.company.business.api.product.SaleStockBusiness;
-import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
-import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.sale.SaleBusiness;
+import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.sale.SaleProductBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.sale.SaleBusiness.SaleBusinessAdapter;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.SaleSearchCriteria;
-import org.cyk.system.company.model.product.SaleStockInput;
-import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
-import org.cyk.system.company.model.product.SaleStockOutput;
-import org.cyk.system.company.model.product.SaleStocksDetails;
+import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleReport;
+import org.cyk.system.company.model.sale.SaleSearchCriteria;
+import org.cyk.system.company.model.sale.SaleStockInput;
+import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
+import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.system.company.model.sale.SalesDetails;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
@@ -127,9 +127,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	if(products!=null)
 	    	for(String[] infos : products){
 	    		SalableProduct salableProduct = salableProductDao.readByProduct(productDao.read(infos[0]));
-	    		SaleProduct saleProduct = saleBusiness.selectProduct(sale, salableProduct);
-	    		saleProduct.setQuantity(new BigDecimal(infos[1]));
-	    		saleBusiness.applyChange(sale, saleProduct);
+	    		saleBusiness.selectProduct(sale, salableProduct,commonUtils.getBigDecimal(infos[1]));
 	    	}
     	sale.setComments(RandomStringUtils.randomAlphabetic(10));
     	if(customerCode!=null)
@@ -164,8 +162,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	}
 	
 	public void set(SaleCashRegisterMovement saleCashRegisterMovement,String amountIn,String amountOut,Date date){
-		debug(saleCashRegisterMovement);
-		System.out.println("CompanyBusinessTestHelper.set() "+amountIn);
 		saleCashRegisterMovement.setAmountIn(new BigDecimal(amountIn));
 		saleCashRegisterMovement.setAmountOut(new BigDecimal(amountOut));
 		//saleCashRegisterMovement.getCashRegisterMovement().setDate(date);
@@ -207,7 +203,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	/* Sale */
 	
     public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String expectedCost,String expectedTax,String expectedTurnover,String expectedBalance,String expectedCumulBalance){
-    	debug(cashierDao.select().one());
     	Sale sale = saleBusiness.newInstance(cashierDao.select().one().getPerson());
     	set(sale,identifier, cashierCode, customerCode, products, getDate(date));
     	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, sale.getCashier().getPerson(),Boolean.TRUE);

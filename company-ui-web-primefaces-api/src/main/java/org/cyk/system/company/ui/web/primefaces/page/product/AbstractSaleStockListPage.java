@@ -10,12 +10,12 @@ import javax.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
-import org.cyk.system.company.business.api.product.SaleStockBusiness;
+import org.cyk.system.company.business.api.sale.AbstractSaleStockBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
-import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
-import org.cyk.system.company.model.product.AbstractSaleStockSearchCriteria;
-import org.cyk.system.company.model.product.SaleStock;
+import org.cyk.system.company.business.impl.sale.SaleStockReportTableRow;
+import org.cyk.system.company.model.sale.AbstractSaleStockSearchCriteria;
+import org.cyk.system.company.model.sale.SaleStock;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.search.DefaultQueryFormModel;

@@ -9,13 +9,13 @@ import javax.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
-import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
+import org.cyk.system.company.business.api.sale.AbstractSaleStockBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
-import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
-import org.cyk.system.company.model.product.SaleStockInput;
-import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
-import org.cyk.system.company.model.product.SaleStocksDetails;
+import org.cyk.system.company.business.impl.sale.SaleStockReportTableRow;
+import org.cyk.system.company.model.sale.SaleStockInput;
+import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
+import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.ui.web.primefaces.Commandable;
 
 @Getter @Setter

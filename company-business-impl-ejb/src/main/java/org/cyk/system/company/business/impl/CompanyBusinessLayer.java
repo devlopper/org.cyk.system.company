@@ -18,16 +18,10 @@ import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
-import org.cyk.system.company.business.api.product.CustomerBusiness;
 import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.ProductCategoryBusiness;
 import org.cyk.system.company.business.api.product.ProductCollectionBusiness;
-import org.cyk.system.company.business.api.product.SaleBusiness;
-import org.cyk.system.company.business.api.product.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.product.SaleProductBusiness;
-import org.cyk.system.company.business.api.product.SaleStockInputBusiness;
-import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
@@ -39,6 +33,12 @@ import org.cyk.system.company.business.api.production.ProductionUnitBusiness;
 import org.cyk.system.company.business.api.production.ResellerBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
+import org.cyk.system.company.business.api.sale.CustomerBusiness;
+import org.cyk.system.company.business.api.sale.SaleBusiness;
+import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.sale.SaleProductBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
 import org.cyk.system.company.business.api.structure.DivisionBusiness;
 import org.cyk.system.company.business.api.structure.DivisionTypeBusiness;
@@ -47,13 +47,10 @@ import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.Cashier;
-import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.ProductCollection;
-import org.cyk.system.company.model.product.SaleStockInput;
-import org.cyk.system.company.model.product.SaleStockOutput;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
@@ -65,8 +62,11 @@ import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
+import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleStockInput;
+import org.cyk.system.company.model.sale.SaleStockOutput;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
@@ -81,6 +81,8 @@ import org.cyk.system.root.business.impl.AbstractBusinessLayer;
 import org.cyk.system.root.business.impl.AbstractFormatter;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
+import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
+import org.cyk.system.root.business.impl.party.ApplicationBusinessImplListener;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.File;
@@ -180,6 +182,19 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		});
 		pointOfSaleInvoiceReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.invoice");
 		pointOfSalePaymentReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.paymentreceipt");
+		
+		ApplicationBusinessImpl.LISTENERS.add(new ApplicationBusinessImplListener.Adapter.Default(){
+			private static final long serialVersionUID = 5234235361543643487L;
+			@Override
+			public void installationEnded(Installation installation) {
+				super.installationEnded(installation);
+				OwnedCompany ownedCompany = ownedCompanyBusiness.findDefaultOwnedCompany();
+				ownedCompany.getCompany().setManager(personDao.select().one());
+				companyBusiness.update(ownedCompany.getCompany());
+				CashRegister cashRegister = create(new CashRegister("CashRegister01",ownedCompany,createMovementCollection("CashRegisterMovementCollection01", "Entrée", "Sortie")));
+				cashierBusiness.create(new Cashier(ownedCompany.getCompany().getManager(),cashRegister));
+			}
+		});
 	}
 	
 	
@@ -236,7 +251,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		company.setContactCollection(new ContactCollection());
 		//company.getContactCollection().setPhoneNumbers(new ArrayList<PhoneNumber>());
 		//RootRandomDataProvider.getInstance().phoneNumber(company.getContactCollection());
-		company.setManager(personDao.select().one());
 		
 		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
 			listener.handleCompanyToInstall(company);
@@ -264,8 +278,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			listener.handleAccountingPeriodToInstall(accountingPeriod);
 		installObject(ACCOUNTING_PERIOD,accountingPeriodBusiness,accountingPeriod);
 		
-		CashRegister cashRegister = create(new CashRegister("CR01",ownedCompany,createMovementCollection("mc1", "Entrée", "Sortie")));
-		create(new Cashier(personDao.select().one(),cashRegister));
+		
 
 		
 		//intangibleProductBusiness.create(new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null, null));
@@ -350,16 +363,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 	/**/
 	
-	protected void fakeTransactions(){
-        //Role[] roles = roleDao.readAllExclude(Arrays.asList(RootBusinessLayer.getInstance().getRoleAdministrator())).toArray(new Role[]{});
-        //userAccountBusiness.create(new UserAccount(employee.getPerson(), new Credentials("zadi", "123"),null,roles));
-        //create(new Cashier(RootBusinessLayer.getInstance().getPersonBusiness().one(),cashRegister));
-        
-        //Company company = companyBusiness.find().one();
-        //company.setManager(RootBusinessLayer.getInstance().getPersonBusiness().one());
-        //companyBusiness.update(company);
-                
-	}
+	protected void fakeTransactions(){}
 	
 	/**/
 	

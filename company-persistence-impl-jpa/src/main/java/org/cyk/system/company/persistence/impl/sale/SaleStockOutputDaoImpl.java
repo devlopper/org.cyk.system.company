@@ -6,12 +6,12 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.system.company.model.product.SaleStockInput;
-import org.cyk.system.company.model.product.SaleStockOutput;
-import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
-import org.cyk.system.company.model.product.SaleStocksDetails;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleStockInput;
+import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockOutputSearchCriteria;
+import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.system.company.model.sale.SalesDetails;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockOutputDao;

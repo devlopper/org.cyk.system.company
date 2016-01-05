@@ -2,9 +2,9 @@ package org.cyk.system.company.persistence.api.sale;
 
 import java.util.Collection;
 
-import org.cyk.system.company.model.product.SaleStockInput;
-import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleStockInput;
+import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
 
 public interface SaleStockInputDao extends AbstractSaleStockDao<SaleStockInput,SaleStockInputSearchCriteria> {
 

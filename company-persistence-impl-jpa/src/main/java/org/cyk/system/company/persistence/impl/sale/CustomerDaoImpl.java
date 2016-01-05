@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 
-import org.cyk.system.company.model.product.Customer;
+import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.root.persistence.impl.party.person.AbstractActorDaoImpl;
 import org.cyk.utility.common.computation.ArithmeticOperator;

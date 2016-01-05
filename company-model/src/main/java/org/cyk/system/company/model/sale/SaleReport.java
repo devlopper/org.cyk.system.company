@@ -11,7 +11,6 @@ import lombok.Setter;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.cyk.system.company.model.accounting.AccountingPeriodReport;
-import org.cyk.system.company.model.product.SaleStockInputReport;
 import org.cyk.system.root.model.file.report.LabelValueCollectionReport;
 import org.cyk.system.root.model.party.person.ActorReport;
 import org.cyk.utility.common.generator.AbstractGeneratable;

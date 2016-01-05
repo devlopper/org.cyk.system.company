@@ -2,10 +2,10 @@ package org.cyk.system.company.persistence.api.sale;
 
 import java.util.Collection;
 
-import org.cyk.system.company.model.product.AbstractSaleStockSearchCriteria;
-import org.cyk.system.company.model.product.SaleStock;
-import org.cyk.system.company.model.product.SaleStocksDetails;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
+import org.cyk.system.company.model.sale.AbstractSaleStockSearchCriteria;
+import org.cyk.system.company.model.sale.SaleStock;
+import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.system.root.persistence.api.TypedDao;
 
 public interface AbstractSaleStockDao<SALE_STOCK extends SaleStock,SEARCH_CRITERIA extends AbstractSaleStockSearchCriteria> extends TypedDao<SALE_STOCK> {

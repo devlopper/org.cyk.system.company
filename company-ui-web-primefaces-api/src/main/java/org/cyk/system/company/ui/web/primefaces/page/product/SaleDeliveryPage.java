@@ -16,7 +16,7 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.ProductEmployeeBusiness;
-import org.cyk.system.company.business.api.product.SaleBusiness;
+import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductEmployee;

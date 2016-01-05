@@ -29,7 +29,6 @@ import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.Cashier;
-import org.cyk.system.company.model.product.Customer;
 import org.cyk.system.company.model.product.ProductEmployee;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
@@ -54,6 +53,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP) @Column(nullable=false) @NotNull private Date date;
 	@Embedded private Balance balance = new Balance();
 	
+	//TODO used to handle work flow. So it is urgent to model work flow and use it
 	@Column(nullable=false) @NotNull private Boolean done = Boolean.FALSE;
 	
 	@OneToOne private File report;

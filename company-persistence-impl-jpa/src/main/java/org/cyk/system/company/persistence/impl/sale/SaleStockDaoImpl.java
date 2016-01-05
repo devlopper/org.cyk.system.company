@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
-import org.cyk.system.company.model.product.SaleStock;
-import org.cyk.system.company.model.product.SaleStockInput;
-import org.cyk.system.company.model.product.SaleStockOutput;
-import org.cyk.system.company.model.product.SaleStockSearchCriteria;
-import org.cyk.system.company.model.product.SaleStocksDetails;
+import org.cyk.system.company.model.sale.SaleStock;
+import org.cyk.system.company.model.sale.SaleStockInput;
+import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockSearchCriteria;
+import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockDao;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;

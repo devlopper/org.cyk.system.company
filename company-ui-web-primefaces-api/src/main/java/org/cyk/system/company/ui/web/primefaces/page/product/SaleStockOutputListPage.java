@@ -11,13 +11,13 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.product.AbstractSaleStockBusiness;
-import org.cyk.system.company.business.api.product.SaleStockOutputBusiness;
-import org.cyk.system.company.business.impl.product.SaleStockReportTableRow;
-import org.cyk.system.company.model.product.SaleSearchCriteria;
-import org.cyk.system.company.model.product.SaleStockOutput;
-import org.cyk.system.company.model.product.SaleStockOutputSearchCriteria;
-import org.cyk.system.company.model.product.SaleStocksDetails;
+import org.cyk.system.company.business.api.sale.AbstractSaleStockBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
+import org.cyk.system.company.business.impl.sale.SaleStockReportTableRow;
+import org.cyk.system.company.model.sale.SaleSearchCriteria;
+import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockOutputSearchCriteria;
+import org.cyk.system.company.model.sale.SaleStocksDetails;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleStockOutputListPage extends AbstractSaleStockListPage<SaleStockOutput, SaleStockOutputSearchCriteria> implements Serializable {

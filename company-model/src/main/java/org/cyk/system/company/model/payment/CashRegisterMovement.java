@@ -33,8 +33,10 @@ public class CashRegisterMovement extends AbstractIdentifiable implements Serial
 	
 	@Override
 	public String getLogMessage() {
-		return movement.getLogMessage()+" | "+cashRegister.getCode();
+		return String.format(DEBUG_FORMAT, computedIdentifier,cashRegister.getCode(),movement.getValue());
 	}
+	
+	private static final String DEBUG_FORMAT = "CashRegisterMovement(I=%S C=%s M=%s)";
 	
 	/**/
 	

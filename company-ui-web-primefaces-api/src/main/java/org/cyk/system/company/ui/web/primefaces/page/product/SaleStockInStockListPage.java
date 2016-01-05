@@ -7,7 +7,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.cyk.system.company.business.impl.CompanyReportRepository;
-import org.cyk.system.company.model.product.SaleStockInputSearchCriteria;
+import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
 
 import lombok.Getter;
 import lombok.Setter;
