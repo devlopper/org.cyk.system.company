@@ -26,6 +26,7 @@ import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
@@ -48,6 +49,8 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP) @Column(nullable=false) @NotNull private Date date;
 	@Embedded private Balance balance = new Balance();
 	
+	@OneToOne private FiniteStateMachine finiteStateMachine;
+	
 	//TODO used to handle work flow. So it is urgent to model work flow and use it
 	@Column(nullable=false) @NotNull private Boolean done = Boolean.FALSE;
 	
@@ -61,7 +64,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	/**/
 	
-	@Transient private Boolean completed = Boolean.TRUE;
+	@Transient private Boolean completed = Boolean.TRUE;//TODO to be removed when Workflow OK
 	@Transient private Boolean autoComputeValueAddedTax;
 	@Transient private Collection<SaleProduct> saleProducts = new ArrayList<>();
 	@Transient private Collection<SaleCashRegisterMovement> saleCashRegisterMovements = new ArrayList<>();
