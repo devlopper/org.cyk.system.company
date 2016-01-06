@@ -15,6 +15,7 @@ import lombok.Setter;
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
@@ -121,6 +122,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	
 	private DivisionType departmentDivisiontype;
 	
+	private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private CashRegisterBusiness cashRegisterBusiness;
 	@Inject private CashierBusiness cashierBusiness;

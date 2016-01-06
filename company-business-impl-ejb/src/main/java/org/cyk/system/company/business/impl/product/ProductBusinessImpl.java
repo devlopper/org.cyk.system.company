@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCollection;
-import org.cyk.system.company.model.product.ProductEmployee;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleProduct;
@@ -80,8 +79,8 @@ public class ProductBusinessImpl extends AbstractProductBusinessImpl<Product,Pro
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<Product> findToDelivery(Sale sale) {
 		Collection<Product> products = new ArrayList<>(findNotCollectionBySale(sale));
-		for(ProductEmployee productEmployee : sale.getPerformers())
-			products.remove(productEmployee.getProduct());
+		/*for(ProductEmployee productEmployee : sale.getPerformers())
+			products.remove(productEmployee.getProduct());*/
 		return products;
 	}
  

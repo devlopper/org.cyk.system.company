@@ -73,25 +73,25 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 		return findPrevious(ownedCompanyBusiness.findDefaultOwnedCompany());
 	}
 	
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public BigDecimal computeValueAddedTax(AccountingPeriod accountingPeriod,BigDecimal amount) {
 		BigDecimal vat;
 		if(Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()))
 			vat = amount.subtract(amount.divide(BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate()),RoundingMode.DOWN));
 		else
 			vat = /*amount.divide(BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate()),RoundingMode.DOWN);*/ accountingPeriod.getValueAddedTaxRate().multiply(amount);
-		logDebug("VAT of amount {} is {}. (VAT included in amount ? {})", amount,vat,Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()));
+		logDebug("VAT of amount {} is {}", amount,vat);
 		return vat;
 	}
 	
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public BigDecimal computeTurnover(AccountingPeriod accountingPeriod,BigDecimal amount,BigDecimal valueAddedTax) {
 		BigDecimal turnover;
 		if(Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()))
 			turnover = amount.subtract(valueAddedTax);
 		else
 			turnover = amount;
-		logDebug("Turnover of amount {} is {}. (VAT included in amount ? {})", amount,turnover,Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()));
+		logDebug("Turnover of amount {} is {}", amount,turnover);
 		return turnover;
 	}
 	

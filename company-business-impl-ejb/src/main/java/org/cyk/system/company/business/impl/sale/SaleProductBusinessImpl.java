@@ -48,76 +48,35 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 		}
 		return results;
 	}
-	
-	@Override
-	public BigDecimal computeCost(SaleProduct saleProduct, Boolean taxIncluded) {
-		BigDecimal cost = saleProduct.getSalableProduct().getPrice()
-				.multiply(saleProduct.getQuantity())
-				.subtract(saleProduct.getReduction())
-				.add(saleProduct.getCommission());
-		if(Boolean.TRUE.equals(taxIncluded))
-			cost = cost.add(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), cost));
-		return cost;
-	}
 
 	@Override
 	public void process(SaleProduct saleProduct) {
-		logTrace("Processing {} ",saleProduct.getLogMessage());
-		
+		logIdentifiable("Processing",saleProduct);
 		if(saleProduct.getSalableProduct().getPrice()==null){
 		
 		}else{
-			//FIXME is it right to do that??? why you do update price on salables catalog ????
-			saleProduct.getCost().setValue(computeCost(saleProduct, Boolean.FALSE));// setPrice(saleProduct.getSalableProduct().getPrice().multiply(saleProduct.getQuantity()).subtract(saleProduct.getReduction()));	
+			BigDecimal cost = saleProduct.getSalableProduct().getPrice()
+					.multiply(saleProduct.getQuantity())
+					.subtract(saleProduct.getReduction())
+					.add(saleProduct.getCommission());
+			saleProduct.getCost().setValue(cost);
 		}
 		
-		if(saleProduct.getSalableProduct().getPrice()==null){
-			//logTrace("No price");
-			return;
+		if(Boolean.TRUE.equals(saleProduct.getSale().getCompleted())){
+			if(Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax())){
+				saleProduct.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getCost().getValue()));
+			}else if(saleProduct.getCost().getTax()==null)
+				saleProduct.getCost().setTax(BigDecimal.ZERO);
+			saleProduct.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(saleProduct.getSale().getAccountingPeriod()
+					, saleProduct.getCost().getValue(),saleProduct.getCost().getTax()));
 		}else{
-			/*
-			AccountingPeriod accountingPeriod = saleProduct.getSale().getAccountingPeriod();
-			if(Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost())){
-				BigDecimal divider = BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate());
-				saleProduct.setValueAddedTax(saleProduct.getPrice().divide(divider).subtract(saleProduct.getPrice()));
-				saleProduct.setTurnover(saleProduct.getPrice().subtract(saleProduct.getValueAddedTax()));
-			}else{
-				saleProduct.setValueAddedTax(accountingPeriod.getValueAddedTaxRate().multiply(saleProduct.getPrice()));
-				saleProduct.setTurnover(saleProduct.getPrice());
-				//TODO price should be updated????
+			if(saleProduct.getCost().getTax()==null){
+				saleProduct.getCost().setTax(BigDecimal.ZERO);
+				saleProduct.getCost().setTurnover(BigDecimal.ZERO);
 			}
-			*/
-			if(Boolean.TRUE.equals(saleProduct.getSale().getCompleted())){
-				//logTrace("Before computing VAT. Current={} ,Auto compute={}",saleProduct.getValueAddedTax(),Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax()));
-				//if(saleProduct.getValueAddedTax()==null)
-				//saleProduct.getCost().setValue(saleProduct.getSalableProduct().getPrice());
-				if(Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax())){
-					saleProduct.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getCost().getValue()));
-				}else if(saleProduct.getCost().getTax()==null)
-					saleProduct.getCost().setTax(BigDecimal.ZERO);
-				saleProduct.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(saleProduct.getSale().getAccountingPeriod()
-						, saleProduct.getCost().getValue(),saleProduct.getCost().getTax()));
-				//logIdentifiable("Completed",saleProduct);
-			}else{
-				if(saleProduct.getCost().getTax()==null){
-					saleProduct.getCost().setTax(BigDecimal.ZERO);
-					saleProduct.getCost().setTurnover(BigDecimal.ZERO);
-				}
-			}
-			
-			if(Boolean.TRUE.equals(saleProduct.getSale().getAccountingPeriod().getValueAddedTaxIncludedInCost())){
-				
-			}else{
-				//TODO price should be updated????
-				saleProduct.getCost().setValue(saleProduct.getCost().getValue().add(saleProduct.getCost().getTax()));			
-				logTrace("Sale product {} price updated to {}",saleProduct.getSalableProduct().getProduct().getCode(),saleProduct.getCost().getValue());
-			}
-			
-			//logDebug("Sale product {} data calculated | P={} VAT={} T={}",saleProduct.getProduct().getCode(),saleProduct.getPrice(),
-			//		saleProduct.getValueAddedTax(),saleProduct.getTurnover());
-			
-			logIdentifiable("Processed",saleProduct);
 		}
+		
+		logIdentifiable("Processed",saleProduct);
 	}
 	
 	private CartesianModel salesCartesianModel(SalesResultsCartesianModelParameters parameters,CartesianModelListener<SaleProduct> cartesianModelListener,String nameId,String yAxisLabelId){

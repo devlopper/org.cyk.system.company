@@ -4,16 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -29,14 +24,14 @@ import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.Cashier;
-import org.cyk.system.company.model.product.ProductEmployee;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
+import org.cyk.utility.common.annotation.ModelBean.GenderType;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
-@ModelBean(crudStrategy=CrudStrategy.BUSINESS)
+@ModelBean(genderType=GenderType.FEMALE,crudStrategy=CrudStrategy.BUSINESS)
 public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
@@ -58,8 +53,8 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	@OneToOne private File report;
 	
-	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.MERGE,orphanRemoval=true)
-	private Set<ProductEmployee> performers = new HashSet<>();
+	//@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.MERGE,orphanRemoval=true)
+	//private Set<ProductEmployee> performers = new HashSet<>();
 	
 	@Column(length=1024*1)
 	private String comments;

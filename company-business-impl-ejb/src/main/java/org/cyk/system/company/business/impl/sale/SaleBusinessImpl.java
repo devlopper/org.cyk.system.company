@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -15,11 +13,7 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.CompanyReportProducer.InvoiceParameters;
-import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
-import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
-import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.product.ProductEmployee;
@@ -36,8 +30,8 @@ import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleProductDao;
-import org.cyk.system.root.business.api.file.report.ReportBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.party.person.Person;
 
@@ -48,13 +42,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 
 	public static Boolean AUTO_SET_SALE_DATE = Boolean.TRUE;
 	
-	private CompanyBusinessLayer companyBusinessLayer = CompanyBusinessLayer.getInstance();
-	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
-	@Inject private ProductBusiness productBusiness;
-	@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
-	@Inject private ReportBusiness reportBusiness;
-	
-	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
 	@Inject private AccountingPeriodDao accountingPeriodDao;
 	@Inject private SaleProductDao saleProductDao;
 	@Inject private SaleCashRegisterMovementDao saleCashRegisterMovementDao;
@@ -67,10 +54,10 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Sale newInstance(Person person) {
-		logInstanciate();
+		//logInstanciate();
 		Sale sale = new Sale();
-		sale.setAccountingPeriod(accountingPeriodBusiness.findCurrent());
-		sale.setCashier(companyBusinessLayer.getCashierBusiness().findByPerson(person));
+		sale.setAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent());
+		sale.setCashier(CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson(person));
 		sale.setAutoComputeValueAddedTax(sale.getAccountingPeriod().getValueAddedTaxRate().signum()!=0);
 		logInstanceCreated(sale);
 		//logDebug("Sale instanciated. Cashier={} VAT in={}.",sale.getCashier().getIdentifier(),Boolean.TRUE.equals(sale.getAccountingPeriod().getValueAddedTaxIncludedInCost()));
@@ -79,12 +66,12 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public SaleProduct selectProduct(Sale sale, SalableProduct salableProduct,BigDecimal quantity) {
-		logTrace("Select Sale product {}",salableProduct.getProduct().getCode());
+		//logTrace("Select Sale product {}",salableProduct.getProduct().getCode());
 		SaleProduct saleProduct = new SaleProduct();
 		saleProduct.setSale(sale);
 		saleProduct.setSalableProduct(salableProduct);
 		saleProduct.setQuantity(quantity);
-		companyBusinessLayer.getSaleProductBusiness().process(saleProduct);
+		CompanyBusinessLayer.getInstance().getSaleProductBusiness().process(saleProduct);
 		sale.getSaleProducts().add(saleProduct);
 		if(saleProduct.getCost().getValue()!=null)
 			sale.getCost().setValue(sale.getCost().getValue().add(saleProduct.getCost().getValue()));
@@ -98,7 +85,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public void unselectProduct(Sale sale, SaleProduct saleProduct) {
-		logTrace("Unselect Sale product {}",saleProduct.getSalableProduct().getProduct().getCode());
+		//logTrace("Unselect Sale product {}",saleProduct.getSalableProduct().getProduct().getCode());
 		if(sale.getSaleProducts() instanceof List<?>){
 			List<SaleProduct> list = (List<SaleProduct>) sale.getSaleProducts();
 			for(int i=0;i<list.size();){
@@ -114,17 +101,14 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public void applyChange(Sale sale, SaleProduct saleProduct) {
-		/*logDebug("Apply changes to sale product {}. UP={} Q={} P={} VAT={} T={}",saleProduct.getProduct().getCode(),
-				saleProduct.getProduct().getPrice(),saleProduct.getQuantity(),saleProduct.getPrice(),saleProduct.getValueAddedTax(),saleProduct.getTurnover());
-		*/
-		companyBusinessLayer.getSaleProductBusiness().process(saleProduct);
+		CompanyBusinessLayer.getInstance().getSaleProductBusiness().process(saleProduct);
 		updateCost(sale);
 	}
 	
 	private void updateCost(Sale sale){
 		sale.getCost().setValue(BigDecimal.ZERO);
-		for(SaleProduct lSaleProduct : sale.getSaleProducts()){
-			sale.getCost().setValue( sale.getCost().getValue().add(lSaleProduct.getCost().getValue() ));
+		for(SaleProduct saleProduct : sale.getSaleProducts()){
+			sale.getCost().setValue(sale.getCost().getValue().add(saleProduct.getCost().getValue()));
 		}
 	}
 	
@@ -135,7 +119,8 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			if(sale.getDate()==null)
 				sale.setDate(universalTimeCoordinated());
 		
-		exceptionUtils().exception(sale.getAccountingPeriod()==null, "exception.sale.accountingperiodmissing");
+		if(sale.getAccountingPeriod()==null)
+			sale.setAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent());
 		
 		if(Boolean.TRUE.equals(sale.getCompleted())){
 			save(sale,Boolean.TRUE);
@@ -147,7 +132,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			}
 		}
 		if(sale.getComputedIdentifier()==null)
-			sale.setComputedIdentifier(generateIdentifier(sale,CompanyBusinessLayerListener.SALE_IDENTIFIER,accountingPeriodBusiness.findCurrent()
+			sale.setComputedIdentifier(generateIdentifier(sale,CompanyBusinessLayerListener.SALE_IDENTIFIER,CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent()
 				.getSaleConfiguration().getSaleIdentifierGenerator()));
 		sale = dao.update(sale);
 		//notifyCrudDone(Crud.CREATE, sale);
@@ -156,30 +141,20 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	private void save(Sale sale,Boolean creation){
-		logDebug("Saving {}",sale.getLogMessage());
+		//logDebug("Saving {}",sale.getLogMessage());
 		exceptionUtils().exception(Boolean.TRUE.equals(sale.getDone()), "exception.sale.done.already");
-		for(SaleProduct saleProduct : sale.getSaleProducts())
-			exceptionUtils().exception(saleProduct.getCost().getValue()==null, "exception.sale.product.price.null");
 		
 		if(Boolean.TRUE.equals(creation)){
 			
 		}else{
 			for(SaleProduct saleProduct : sale.getSaleProducts()){
-				companyBusinessLayer.getSaleProductBusiness().process(saleProduct);				
+				CompanyBusinessLayer.getInstance().getSaleProductBusiness().process(saleProduct);				
 			}
 			updateCost(sale);
 		}
-		
-		/*
-		BigDecimal total = BigDecimal.ZERO;
-		for(SaleProduct saleProduct : sale.getSaleProducts()){
-			total = total.add(saleProduct.getPrice());
-		}
-		exceptionUtils().exception(!total.equals(sale.getCost()), "validation.sale.cost.sum");
-		 */
-		
+				
 		if(Boolean.TRUE.equals(sale.getCompleted())){
-			productBusiness.consume(sale.getSaleProducts());
+			CompanyBusinessLayer.getInstance().getProductBusiness().consume(sale.getSaleProducts());
 			AccountingPeriod accountingPeriod = sale.getAccountingPeriod();
 			accountingPeriod.getSalesResults().setCount(sale.getAccountingPeriod().getSalesResults().getCount().add(BigDecimal.ONE));
 			accountingPeriod.getSalesResults().setTurnover(accountingPeriod.getSalesResults().getTurnover().add(sale.getCost().getTurnover()));
@@ -192,10 +167,13 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 				sale.getBalance().setValue(sale.getBalance().getValue().add(saleProduct.getCost().getValue()));
 			}*/
 			
-			sale.getBalance().setValue(sale.getCost().getValue());
 			if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))
-				sale.getCost().setTax(companyBusinessLayer.getAccountingPeriodBusiness().computeValueAddedTax(accountingPeriod, sale.getCost().getValue()));
-			sale.getCost().setTurnover(companyBusinessLayer.getAccountingPeriodBusiness().computeTurnover(accountingPeriod, sale.getCost().getValue(), sale.getCost().getTax()));
+				sale.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(accountingPeriod, sale.getCost().getValue()));
+				
+			sale.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(accountingPeriod, sale.getCost().getValue(), sale.getCost().getTax()));
+			
+			sale.getBalance().setValue(sale.getCost().getValue().add( Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()) ? BigDecimal.ZERO
+					:sale.getCost().getTax()));
 			
 			Customer customer = sale.getCustomer();
 			if(customer!=null){
@@ -225,11 +203,11 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		}
 		
 		if(Boolean.TRUE.equals(sale.getCompleted())){
-			accountingPeriodProductBusiness.consume(sale.getAccountingPeriod(), sale.getSaleProducts());
+			CompanyBusinessLayer.getInstance().getAccountingPeriodProductBusiness().consume(sale.getAccountingPeriod(), sale.getSaleProducts());
 		}else{
 			
 		}
-		logIdentifiable("Sale data computed successfully", sale);
+		//logIdentifiable("Sale data computed successfully", sale);
 	}
 	
 	@Override
@@ -240,11 +218,11 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		InvoiceParameters previous = new InvoiceParameters(sale, null, saleCashRegisterMovement);
 		//FIXME has be done to handled sale stock issue : 0 amount and X stock out. think another better way
 		if(saleCashRegisterMovement.getAmountIn().equals(saleCashRegisterMovement.getAmountOut()) && saleCashRegisterMovement.getAmountIn().equals(BigDecimal.ZERO)){
-			logDebug("No sale cash register movement");
+			//logDebug("No sale cash register movement");
 		}else{
 			saleCashRegisterMovement.setSale(sale);
 			if(Boolean.TRUE.equals(sale.getDone())){
-				saleCashRegisterMovementBusiness.create(saleCashRegisterMovement);
+				CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().create(saleCashRegisterMovement);
 				sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
 			}	 
 		}
@@ -260,7 +238,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override
 	public void complete(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement,Boolean produceReport) {
-		logIdentifiable("Complete",sale);
+		logIdentifiable("Completing",sale);
 		InvoiceParameters previous = new InvoiceParameters(sale, null, saleCashRegisterMovement);
 		save(sale, Boolean.FALSE);
 		if(Boolean.TRUE.equals(produceReport))
@@ -279,7 +257,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		for(SaleBusinessListener listener : LISTENERS)
 			listener.reportCreated(this, saleReport, Boolean.TRUE);
 		
-		reportBusiness.buildBinaryContent(current.getSale(), saleReport, current.getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE); 
+		RootBusinessLayer.getInstance().getReportBusiness().buildBinaryContent(current.getSale(), saleReport, current.getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE); 
 		update(current.getSale());
 	}
 	
@@ -314,7 +292,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public ReportBasedOnTemplateFile<SaleReport> findReport(Collection<Sale> sales) {
-		return reportBusiness.buildBinaryContent(sales.iterator().next().getReport(),CompanyBusinessLayer.getInstance().getPointOfSaleInvoiceReportName());//TODO many receipt print must be handled
+		return RootBusinessLayer.getInstance().getReportBusiness().buildBinaryContent(sales.iterator().next().getReport(),CompanyBusinessLayer.getInstance().getPointOfSaleInvoiceReportName());//TODO many receipt print must be handled
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
@@ -324,7 +302,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override
 	public void updateDelivery(Sale sale,Collection<ProductEmployee> productEmployees) {
-		for(ProductEmployee productEmployee : productEmployees)
+		/*for(ProductEmployee productEmployee : productEmployees)
 			sale.getPerformers().add(productEmployee);
 		
 		Set<ProductEmployee> delete = new HashSet<>();
@@ -335,7 +313,8 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		for(ProductEmployee productEmployee : delete)
 			sale.getPerformers().remove(productEmployee);
 		
-		update(sale);	
+		update(sale);
+		*/	
 	}
 	
 	/**/
