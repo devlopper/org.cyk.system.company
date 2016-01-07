@@ -26,7 +26,7 @@ import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
@@ -49,10 +49,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP) @Column(nullable=false) @NotNull private Date date;
 	@Embedded private Balance balance = new Balance();
 	
-	@OneToOne private FiniteStateMachine finiteStateMachine;
-	
-	//TODO used to handle work flow. So it is urgent to model work flow and use it
-	@Column(nullable=false) @NotNull private Boolean done = Boolean.FALSE;
+	@ManyToOne private FiniteStateMachineState finiteStateMachineState;
 	
 	@OneToOne private File report;
 	
@@ -64,8 +61,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	/**/
 	
-	@Transient private Boolean completed = Boolean.TRUE;//TODO to be removed when Workflow OK
-	@Transient private Boolean autoComputeValueAddedTax;
+	@Transient private Boolean autoComputeValueAddedTax = Boolean.TRUE;
 	@Transient private Collection<SaleProduct> saleProducts = new ArrayList<>();
 	@Transient private Collection<SaleCashRegisterMovement> saleCashRegisterMovements = new ArrayList<>();
 	
@@ -73,13 +69,12 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	@Override
 	public String getLogMessage() {
-		return String.format(DEBUG_FORMAT,identifier,computedIdentifier,cost.getLogMessage(),balance.getLogMessage(),completed,done
-				,customer==null?"":customer.getRegistration().getCode(),autoComputeValueAddedTax,accountingPeriod.getLogMessage());
+		return String.format(DEBUG_FORMAT,identifier,computedIdentifier,cost.getLogMessage(),balance.getLogMessage()
+				,customer==null?"":customer.getRegistration().getCode(),accountingPeriod.getLogMessage());
 	}
 	
 	/**/
 	
-	public static final String FIELD_DONE = "done";
 	public static final String FIELD_COMPUTED_IDENTIFIER = "computedIdentifier";
 	public static final String FIELD_CASHIER = "cashier";
 	public static final String FIELD_CUSTOMER = "customer";
@@ -88,5 +83,5 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	public static final String FIELD_COST = "cost";
 	public static final String FIELD_BALANCE = "balance";
 	
-	private static final String DEBUG_FORMAT = "Sale(ID=%s|%s %s %s C=%s D=%s CUST=%s ATX=%s %s)";
+	private static final String DEBUG_FORMAT = "Sale(ID=%s|%s %s %s CUST=%s %s)";
 }

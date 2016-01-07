@@ -80,6 +80,7 @@ import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.security.UserAccountBusiness;
 import org.cyk.system.root.business.impl.AbstractBusinessLayer;
 import org.cyk.system.root.business.impl.AbstractFormatter;
+import org.cyk.system.root.business.impl.BusinessListener;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
@@ -94,6 +95,7 @@ import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.system.root.persistence.api.security.RoleDao;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
+import org.cyk.utility.common.computation.DataReadConfiguration;
 import org.joda.time.DateTime;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER) @Getter
@@ -103,10 +105,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	private static final long serialVersionUID = -462780912429013933L;
 
 	private static CompanyBusinessLayer INSTANCE;
-	
-	//TODO all those roles are not longer needed
-	private final String roleSaleManagerCode = "SALEMANAGER",roleStockManagerCode = "STOCKMANAGER",roleHumanResourcesManagerCode = "HUMANRESOURCESMANAGER"
-			,roleCustomerManagerCode = "CUSTOMERMANAGER",roleProductionManagerCode="PRODUCTIONMANAGER";
 	
 	private String pointOfSaleInvoiceReportName;
 	private String pointOfSalePaymentReportName;
@@ -122,7 +120,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	
 	private DivisionType departmentDivisiontype;
 	
-	private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
+	@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private CashRegisterBusiness cashRegisterBusiness;
 	@Inject private CashierBusiness cashierBusiness;
@@ -197,6 +195,21 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 				cashierBusiness.create(new Cashier(ownedCompany.getCompany().getManager(),cashRegister));
 			}
 		});
+		
+		BusinessListener.LISTENERS.add(new BusinessListener.Adapter.Default(){
+			private static final long serialVersionUID = 2105514784569748009L;
+			@Override
+			public <T extends AbstractIdentifiable> Collection<T> find(Class<T> dataClass,DataReadConfiguration configuration) {
+				
+				return super.find(dataClass, configuration);
+			}
+			
+			@Override
+			public <T extends AbstractIdentifiable> Long count(Class<T> dataClass,DataReadConfiguration configuration) {
+				
+				return super.count(dataClass, configuration);
+			}
+        });
 	}
 	
 	
@@ -290,13 +303,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		//installObject(PRODUCT_TANGIBLE_SALE_STOCK,tangibleProductBusiness,new TangibleProduct(TangibleProduct.SALE_STOCK, "Marchandise", null, null));
 	}
 	
-	private void security(){ 
-		createRole(roleSaleManagerCode, "Sale Manager");
-    	createRole(roleStockManagerCode, "Stock Manager");
-    	createRole(roleHumanResourcesManagerCode, "Human Resources Manager");
-    	createRole(roleCustomerManagerCode, "Customer Manager");
-    	createRole(roleProductionManagerCode, "Production Manager");
-    }
+	private void security(){ }
 		
 	private void structure(){
 		DivisionType department = new DivisionType(null, DivisionType.DEPARTMENT, "Department");

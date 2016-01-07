@@ -51,7 +51,7 @@ public class TangibleProductStockMovementCrudManyPage extends AbstractTangiblePr
 	}
 	
 	public BigDecimal minValue(TangibleProductStockMovement tangibleProductStockMovement){
-		return tangibleProductStockMovement.getTangibleProduct().getStockQuantity().negate();
+		return null;//tangibleProductStockMovement.getTangibleProduct().getStockQuantity().negate();
 	}
 
 	@Override

@@ -57,11 +57,11 @@ public class SaleStockDaoImpl extends AbstractSaleStockDaoImpl<SaleStock,SaleSto
 		queryStringBuilder.where()
 			.parenthesis(Boolean.TRUE)
 			.exists().openSubQueryStringBuilder(SaleStockInput.class,null,"ssi")
-				.and("externalIdentifier", ArithmeticOperator.LIKE).and("sale.done", "done",ArithmeticOperator.EQ)
+				.and("externalIdentifier", ArithmeticOperator.LIKE)
 				.closeSubQueryStringBuilder()	
 			.or().exists().openSubQueryStringBuilder(SaleStockOutput.class,null,"sso")
 				.and("saleStockInput.externalIdentifier","externalIdentifier", ArithmeticOperator.LIKE)
-				.and("saleStockInput.sale.done", "done",ArithmeticOperator.EQ)
+				//.and("saleStockInput.sale.done", "done",ArithmeticOperator.EQ)
 				.closeSubQueryStringBuilder()
 		.parenthesis(Boolean.FALSE)
 		.and().between("tangibleProductStockMovement.date").and().whereString("ABS(r.tangibleProductStockMovement.quantity) >= :minimumQuantity");

@@ -7,6 +7,8 @@ import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import lombok.Getter;
+
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.model.payment.BalanceType;
@@ -19,7 +21,6 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
@@ -31,21 +32,14 @@ import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.ui.web.primefaces.model.ProductCollectionFormModel;
-import org.cyk.system.root.business.api.BusinessAdapter;
-import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.AbstractUserSession;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.UICommandable.IconType;
 import org.cyk.ui.api.command.menu.SystemMenu;
-import org.cyk.ui.web.api.security.shiro.WebEnvironmentAdapter;
-import org.cyk.ui.web.api.security.shiro.WebEnvironmentAdapter.SecuredUrlProvider;
 import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
-import org.cyk.utility.common.computation.DataReadConfiguration;
-
-import lombok.Getter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyWebManager.DEPLOYMENT_ORDER) @Getter
 public class CompanyWebManager extends AbstractPrimefacesManager implements Serializable {
@@ -98,82 +92,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		
 		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Employee.class, ActorConsultFormModel.class);
 		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Customer.class, ActorConsultFormModel.class);
-		
-		uiManager.getBusinesslisteners().add(new BusinessAdapter(){
-			private static final long serialVersionUID = 4605368263736933413L;
-			@SuppressWarnings("unchecked")
-			@Override
-			public <T extends AbstractIdentifiable> Collection<T> find(Class<T> dataClass, DataReadConfiguration configuration) {
-				if(Customer.class.equals(dataClass)){
-					return (Collection<T>) companyBusinessLayer.getCustomerBusiness().findAll();
-				}else if(Employee.class.equals(dataClass)){
-					return (Collection<T>) companyBusinessLayer.getEmployeeBusiness().findAll();
-				}else if(Reseller.class.equals(dataClass)){
-					return (Collection<T>) companyBusinessLayer.getResellerBusiness().findAll();	
-				}else if(ResellerProductionPlan.class.equals(dataClass)){
-					return (Collection<T>) companyBusinessLayer.getResellerProductionPlanBusiness().findAll();	
-				}else if(ProductCollection.class.equals(dataClass)){
-					return (Collection<T>) companyBusinessLayer.getProductCollectionBusiness().findAllWithProduct();
-				} else if(TangibleProductInventory.class.equals(dataClass)){
-					return (Collection<T>) companyBusinessLayer.getTangibleProductInventoryBusiness().findAll();
-				} else if(TangibleProductStockMovement.class.equals(dataClass)){
-					return (Collection<T>) companyBusinessLayer.getTangibleProductStockMovementBusiness().findAll();
-				} else if(CashRegister.class.equals(dataClass)){
-					return (Collection<T>) companyBusinessLayer.getCashRegisterBusiness().findAll();
-				} else if(ProductionPlan.class.equals(dataClass)){
-					return (Collection<T>) companyBusinessLayer.getProductionPlanBusiness().findAll();
-				} else if(Production.class.equals(dataClass)){
-					return (Collection<T>) companyBusinessLayer.getProductionBusiness().findAll();
-				} else if(ProductionUnit.class.equals(dataClass)){
-					return (Collection<T>) companyBusinessLayer.getProductionUnitBusiness().findAll();
-				} else if(Company.class.equals(dataClass)){
-					return (Collection<T>) companyBusinessLayer.getCompanyBusiness().findAll();
-				}                
-				return super.find(dataClass, configuration);
-			}
-			
-			@Override
-			public <T extends AbstractIdentifiable> Long count(Class<T> dataClass, DataReadConfiguration configuration) {
-				if(Customer.class.equals(dataClass)){
-					return companyBusinessLayer.getCustomerBusiness().countAll();
-				}else if(Employee.class.equals(dataClass)){
-					return companyBusinessLayer.getEmployeeBusiness().countAll();	
-				}else if(Reseller.class.equals(dataClass)){
-					return companyBusinessLayer.getResellerBusiness().countAll();	
-				}else if(ResellerProductionPlan.class.equals(dataClass)){
-					return companyBusinessLayer.getResellerProductionPlanBusiness().countAll();	
-				}else if(ProductCollection.class.equals(dataClass)){
-					return companyBusinessLayer.getProductCollectionBusiness().countAll();
-				}else if(TangibleProductInventory.class.equals(dataClass)){
-					return companyBusinessLayer.getTangibleProductInventoryBusiness().countAll();
-				}else if(TangibleProductStockMovement.class.equals(dataClass)){
-					return companyBusinessLayer.getTangibleProductStockMovementBusiness().countAll();
-				} else if(CashRegister.class.equals(dataClass)){
-					return companyBusinessLayer.getCashRegisterBusiness().countAll();
-				} else if(ProductionPlan.class.equals(dataClass)){
-					return companyBusinessLayer.getProductionPlanBusiness().countAll();
-				} else if(Production.class.equals(dataClass)){
-					return companyBusinessLayer.getProductionBusiness().countAll();
-				} else if(ProductionUnit.class.equals(dataClass)){
-					return companyBusinessLayer.getProductionUnitBusiness().countAll();
-				} else if(Company.class.equals(dataClass)){
-					return companyBusinessLayer.getCompanyBusiness().countAll();
-				}  
 				
-				return super.count(dataClass, configuration);
-			}
-		});
-		
-		WebEnvironmentAdapter.SECURED_URL_PROVIDERS.add(new SecuredUrlProvider() {
-			
-			@Override
-			public void provide() {
-				roleFolder("__salemanager__", companyBusinessLayer.getRoleSaleManagerCode());
-				roleFolder("__stockmanager__", companyBusinessLayer.getRoleStockManagerCode());
-				roleFolder("__humanresourcesmanager__", companyBusinessLayer.getRoleHumanResourcesManagerCode());
-				roleFolder("__productionmanager__", companyBusinessLayer.getRoleProductionManagerCode());
-			}
-		});
 	}
 		
 	public static CompanyWebManager getInstance() {
@@ -221,64 +140,59 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	
 	public UICommandable humanResourcesManagerCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables){
 		UICommandable hr = null;
-		if(userSession.hasRole(companyBusinessLayer.getRoleCustomerManagerCode())){
-			hr = uiProvider.createCommandable("command.humanresources", null);
-			hr.addChild(menuManager.crudMany(Employee.class, null));
-			hr.addChild(menuManager.crudMany(Cashier.class, null));
-		}
+		hr = uiProvider.createCommandable("command.humanresources", null);
+		hr.addChild(menuManager.crudMany(Employee.class, null));
+		hr.addChild(menuManager.crudMany(Cashier.class, null));
 		return hr;
 	}
 	
 	public UICommandable customerManagerCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables){
 		UICommandable customer = null;
-		if(userSession.hasRole(companyBusinessLayer.getRoleCustomerManagerCode())){
-			customer = uiProvider.createCommandable("customer", IconType.PERSON);
-			customer.addChild(menuManager.crudMany(Customer.class, null));
-		}
+		customer = uiProvider.createCommandable("customer", IconType.PERSON);
+		customer.addChild(menuManager.crudMany(Customer.class, null));
 		return customer;
 	}
 	
 	public UICommandable saleCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables,Cashier cashier){
 		UICommandable sale = uiProvider.createCommandable("command.sale", null);
-		if(userSession.hasRole(companyBusinessLayer.getRoleSaleManagerCode())){
-			UICommandable c;
-			if(cashier!=null){
-				sale.getChildren().add(c = menuManager.crudOne(Sale.class, IconType.ACTION_ADD));
-				c.setLabel(uiManager.text("command.sale.new"));
-				
-			}
+		UICommandable c;
+		if(cashier!=null){
+			sale.getChildren().add(c = menuManager.crudOne(Sale.class, IconType.ACTION_ADD));
+			c.setLabel(uiManager.text("command.sale.new"));
 			
-			sale.getChildren().add(c = uiProvider.createCommandable("dashboard", null, outcomeSaleDashBoard));
-			mobileCommandables.add(c); 
-			sale.getChildren().add(uiProvider.createCommandable("command.sale.listall", null, "saleListView"));
-			
-			sale.getChildren().add(c = uiProvider.createCommandable("field.credence", null, outcomeCustomerBalance));
-			c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportBalance());
-			c.addParameter(companyReportRepository.getParameterCustomerBalanceType(), companyReportRepository.getParameterCustomerBalanceCredence());
-			
-			sale.getChildren().add(c = uiProvider.createCommandable("company.command.customer.balance", null, outcomeCustomerBalance));
-			c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportBalance());
-			c.addParameter(companyReportRepository.getParameterCustomerBalanceType(), companyReportRepository.getParameterCustomerBalanceAll());
-			
-			sale.getChildren().add(c = uiProvider.createCommandable("company.command.customer.salestock", null, outcomeCustomerSaleStock));
-			c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportSaleStock());
-			
-			sale.getChildren().add(c = uiProvider.createCommandable("company.command.salestock.instock", null, outcomeSaleStockInStock));
-			c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportSaleStock());
-			
-			sale.getChildren().add(uiProvider.createCommandable("command.list", null, "saleStockInputListView"));
-			
-			sale.getChildren().add(uiProvider.createCommandable("prod", null, "productionConsultView"));
-			
-			sale.getChildren().add(c = uiProvider.createCommandable("company.command.salestock.list", null, outcomeSaleStockList));
-			//sale.getChildren().add(uiProvider.createCommandable("prodPlan", null, "productionPlanModelListView"));
-			
-			/*
-			sale.addChild("command.sale.negativebalance", null, "saleNegativeBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterNegativeBalance)));
-			sale.addChild("command.sale.zerobalance", null, "saleZeroBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterZeroBalance)));
-			sale.addChild("command.sale.positivebalance", null, "salePositiveBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterPositiveBalance)));
-			*/
 		}
+		
+		sale.getChildren().add(c = uiProvider.createCommandable("dashboard", null, outcomeSaleDashBoard));
+		mobileCommandables.add(c); 
+		sale.getChildren().add(uiProvider.createCommandable("command.sale.listall", null, "saleListView"));
+		
+		sale.getChildren().add(c = uiProvider.createCommandable("field.credence", null, outcomeCustomerBalance));
+		c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportBalance());
+		c.addParameter(companyReportRepository.getParameterCustomerBalanceType(), companyReportRepository.getParameterCustomerBalanceCredence());
+		
+		sale.getChildren().add(c = uiProvider.createCommandable("company.command.customer.balance", null, outcomeCustomerBalance));
+		c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportBalance());
+		c.addParameter(companyReportRepository.getParameterCustomerBalanceType(), companyReportRepository.getParameterCustomerBalanceAll());
+		
+		sale.getChildren().add(c = uiProvider.createCommandable("company.command.customer.salestock", null, outcomeCustomerSaleStock));
+		c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportSaleStock());
+		
+		sale.getChildren().add(c = uiProvider.createCommandable("company.command.salestock.instock", null, outcomeSaleStockInStock));
+		c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportSaleStock());
+		
+		sale.getChildren().add(uiProvider.createCommandable("command.list", null, "saleStockInputListView"));
+		
+		sale.getChildren().add(uiProvider.createCommandable("prod", null, "productionConsultView"));
+		
+		sale.getChildren().add(c = uiProvider.createCommandable("company.command.salestock.list", null, outcomeSaleStockList));
+		//sale.getChildren().add(uiProvider.createCommandable("prodPlan", null, "productionPlanModelListView"));
+		
+		/*
+		sale.addChild("command.sale.negativebalance", null, "saleNegativeBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterNegativeBalance)));
+		sale.addChild("command.sale.zerobalance", null, "saleZeroBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterZeroBalance)));
+		sale.addChild("command.sale.positivebalance", null, "salePositiveBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterPositiveBalance)));
+		*/
+		
 		
 		return sale;
 	}
@@ -304,9 +218,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	
 	public UICommandable stockCommandables(AbstractUserSession userSession){
 		UICommandable stock = uiProvider.createCommandable("command.stock", null);
-		if(userSession.hasRole(companyBusinessLayer.getRoleStockManagerCode())){
-			stock.getChildren().addAll(stockContextCommandables(userSession));
-		}
+		stock.getChildren().addAll(stockContextCommandables(userSession));
 		return stock;
 	}
 	
@@ -328,12 +240,10 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	
 	public UICommandable goodsDepositCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables,Cashier cashier){
 		UICommandable goods = null;
-		if(userSession.hasRole(companyBusinessLayer.getRoleSaleManagerCode())){
-			goods = uiProvider.createCommandable("goods", null);
-			goods.getChildren().add(uiProvider.createCommandable("deposits", null, "saleStockInputListView"));
-			
-			saleStockReportCommandables(userSession, goods.getChildren(), mobileCommandables);
-		}
+		goods = uiProvider.createCommandable("goods", null);
+		goods.getChildren().add(uiProvider.createCommandable("deposits", null, "saleStockInputListView"));
+		
+		saleStockReportCommandables(userSession, goods.getChildren(), mobileCommandables);
 		
 		return goods;
 	}

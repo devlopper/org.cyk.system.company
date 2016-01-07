@@ -44,7 +44,7 @@ public class ProductCollectionCrudOnePage extends AbstractCrudOnePage<ProductCol
 		
 		dualListModel = new DualListModel<Product>(products, selectedProducts);
 		for(Product product : selectedProducts)
-			totalPrice = totalPrice.add(product.getPrice());
+			;//totalPrice = totalPrice.add(product.getPrice());
 	}
 	
 	/**/
@@ -71,7 +71,7 @@ public class ProductCollectionCrudOnePage extends AbstractCrudOnePage<ProductCol
 	        	identifiable.getCollection().remove(product);
 	    }
         
-        totalPrice = identifiable.getTotalPrice();
+        //totalPrice = identifiable.getTotalPrice();
         list = new ArrayList<Product>(identifiable.getCollection());
         //for(Product product : (List<Product>)event.getItems())
         //	totalPrice = totalPrice.add( new BigDecimal(event.isAdd()?1:-1).multiply(product.getPrice()));

@@ -90,7 +90,7 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		for(SaleStockOutput output : identifiable.getSaleStockOutputs())
 			outputsTable.addRow(new OutputDetails(output));
 		*/
-		outputsTable.getColumn("amount").setFooter(numberBusiness.format(identifiable.getSale().getCost().subtract(identifiable.getSale().getBalance().getValue())));
+		//outputsTable.getColumn("amount").setFooter(numberBusiness.format(identifiable.getSale().getCost().subtract(identifiable.getSale().getBalance().getValue())));
 		outputsTable.getColumn("numberOfStockGoods").setFooter(numberBusiness.format(identifiable.getTangibleProductStockMovement().getQuantity()
 				.subtract(identifiable.getRemainingNumberOfGoods())));
 		
@@ -101,12 +101,12 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		Integer balance = identifiable.getSale().getBalance().getValue().compareTo(BigDecimal.ZERO);
 		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null),c;
 		contextualMenu.setLabel(contentTitle); 
-		if(Boolean.TRUE.equals(identifiable.getSale().getDone()) && balance!=0){
+		/*if(Boolean.TRUE.equals(identifiable.getSale().getDone()) && balance!=0){
 			Collection<Parameter> parameters = Arrays.asList(new Parameter(uiManager.keyFromClass(SaleStockInput.class), identifiable.getIdentifier()),
 					new Parameter(webManager.getRequestParameterPreviousUrl(), url));
 			c = contextualMenu.addChild("command.widthdraw", null, "saleStockOutputEditView", parameters);	
 			c.setIdentifier(COMMANDABLE_WITHDRAW_IDENTIFIER);
-		}
+		}*/
 		
 		UICommandable printReceipt = UIProvider.getInstance().createCommandable("command.see.invoice", null);
 		printReceipt.setCommandRequestType(CommandRequestType.UI_VIEW);
@@ -133,7 +133,7 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		
 		public Details(SaleStockInput saleStockInput) {
 			this.identifier = saleStockInput.getSale().getComputedIdentifier();
-			this.cost = UIManager.getInstance().getNumberBusiness().format(saleStockInput.getSale().getCost());
+			//this.cost = UIManager.getInstance().getNumberBusiness().format(saleStockInput.getSale().getCost());
 			this.balance = UIManager.getInstance().getNumberBusiness().format(saleStockInput.getSale().getBalance().getValue().abs());
 			this.customer = saleStockInput.getSale().getCustomer()==null?"":saleStockInput.getSale().getCustomer().getPerson().getNames();
 			this.date = UIManager.getInstance().getTimeBusiness().formatDateTime(saleStockInput.getSale().getDate());
@@ -152,9 +152,9 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		public OutputDetails(SaleStockOutput saleStockOutput) {
 			super(saleStockOutput);
 			this.identifier = saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getComputedIdentifier();
-			this.amount = UIManager.getInstance().getNumberBusiness().format(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
+			//this.amount = UIManager.getInstance().getNumberBusiness().format(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
 			this.numberOfStockGoods = UIManager.getInstance().getNumberBusiness().format(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());
-			this.date = UIManager.getInstance().getTimeBusiness().formatDateTime(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
+			//this.date = UIManager.getInstance().getTimeBusiness().formatDateTime(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
 		}
 	}
 

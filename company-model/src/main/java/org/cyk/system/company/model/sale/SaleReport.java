@@ -25,7 +25,6 @@ public class SaleReport extends AbstractGeneratable<SaleReport> implements Seria
 	private LabelValueCollectionReport taxInfos = new LabelValueCollectionReport();
 	
 	private String title,identifier,cashRegisterIdentifier,date,numberOfProducts,cost,welcomeMessage,goodByeMessage;
-	private Boolean done;
 	
 	private AccountingPeriodReport accountingPeriod = new AccountingPeriodReport();
 	private ActorReport cashier = new ActorReport();

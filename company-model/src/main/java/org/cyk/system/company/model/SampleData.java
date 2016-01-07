@@ -26,7 +26,7 @@ public class SampleData implements Serializable {
 					saleReport.getAccountingPeriod().getCompany().getName()+" - "+i);
 			switch(i++){
 			case 0:
-				saleReport.setDone(Boolean.FALSE);
+				
 				break;
 			case 1:
 				saleReport.getSaleCashRegisterMovement().setVatRate(null);

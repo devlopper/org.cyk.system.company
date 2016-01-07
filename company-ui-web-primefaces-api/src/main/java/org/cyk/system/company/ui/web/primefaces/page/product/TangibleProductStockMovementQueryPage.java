@@ -42,7 +42,7 @@ public class TangibleProductStockMovementQueryPage extends AbstractBusinessQuery
 	protected void initialisation() {
 		super.initialisation();
 		table.setShowToolBar(Boolean.TRUE);
-		((Commandable)table.getAddRowCommandable()).updateLabel(languageBusiness.findDoFunctionnalityText(TangibleProductStockMovement.class));
+		//((Commandable)table.getAddRowCommandable()).updateLabel(languageBusiness.findDoFunctionnalityText(TangibleProductStockMovement.class));
 		table.getAddRowCommandable().setRendered(Boolean.TRUE);
 		table.setShowOpenCommand(Boolean.FALSE);
 		

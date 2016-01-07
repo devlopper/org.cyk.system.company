@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import org.cyk.system.root.model.AbstractModelElement;
 import org.cyk.system.root.model.generator.StringGenerator;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 
 @Getter @Setter @Embeddable
 public class SaleConfiguration extends AbstractModelElement implements Serializable {
@@ -19,6 +20,8 @@ public class SaleConfiguration extends AbstractModelElement implements Serializa
 	@OneToOne private StringGenerator saleIdentifierGenerator;
 
 	@OneToOne private StringGenerator cashRegisterMovementIdentifierGenerator;
+	
+	@OneToOne private FiniteStateMachine finiteStateMachine;
 
 	@Override
 	public String getUiString() {

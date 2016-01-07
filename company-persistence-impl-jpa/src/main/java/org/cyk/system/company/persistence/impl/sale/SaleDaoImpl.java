@@ -76,7 +76,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 		.and().between(Sale.FIELD_DATE)
 		.and()
 		.between(commonUtils.attributePath(Sale.FIELD_BALANCE,Balance.FIELD_VALUE), Constant.CHARACTER_COLON+PARAM_BALANCE_MIN, Constant.CHARACTER_COLON+PARAM_BALANCE_MAX)
-		.where(LogicalOperator.AND,Sale.FIELD_DONE,Sale.FIELD_DONE,ArithmeticOperator.EQ);
+		;
 	}
 	
 	/**/
@@ -142,7 +142,6 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 		super.applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		SaleSearchCriteria saleSearchCriteria = (SaleSearchCriteria) searchCriteria;
 		queryWrapper.parameterLike(Sale.FIELD_COMPUTED_IDENTIFIER,saleSearchCriteria.getIdentifierStringSearchCriteria().getPreparedValue());
-		queryWrapper.parameter(Sale.FIELD_DONE,saleSearchCriteria.getDone());
 		//queryWrapper.parameterIdentifiers(saleSearchCriteria.getCustomers());
 		BigDecimal minBalance=BALANCE_ZERO_MIN,maxBalance=BALANCE_ZERO_MAX;
 		if(saleSearchCriteria.getBalanceTypes().contains(BalanceType.NEGAITVE)){

@@ -54,7 +54,7 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 	private void whereSearchCriteria(QueryStringBuilder queryStringBuilder){
 		queryStringBuilder.where(SaleStockInput.FIELD_EXTERNAL_IDENTIFIER,ArithmeticOperator.LIKE)
 		.and().between(commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_DATE))
-		.where(LogicalOperator.AND,commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_DONE),Sale.FIELD_DONE,ArithmeticOperator.EQ)
+		//.where(LogicalOperator.AND,commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_DONE),Sale.FIELD_DONE,ArithmeticOperator.EQ)
 		.and(SaleStockInput.FIELD_REMAINING_NUMBER_OF_GOODS, PARAM_MINIMUM_REMAINING_GOODS, ArithmeticOperator.GTE)
 		.and().whereString("ABS(r.tangibleProductStockMovement.quantity) >= :minimumQuantity");
 	}

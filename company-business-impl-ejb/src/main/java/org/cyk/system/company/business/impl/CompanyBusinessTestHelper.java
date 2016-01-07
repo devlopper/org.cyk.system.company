@@ -122,7 +122,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 			sale.setCashier(cashierDao.select().one());
 		else
 			sale.setCashier(cashierDao.readByPerson(personDao.readByCode(cashierCode)));
-    	sale.setCompleted(Boolean.TRUE);
     	sale.setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
     	sale.setDate(getDate(date));
     	if(products!=null)
@@ -136,7 +135,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     }
 	
 	public void set(SaleStockInput saleStockInput,Customer customer,String externalIdentifier,String cost,String commission,String quantity,Date date){
-    	saleStockInput.getSale().setCompleted(saleAutoCompleted);
     	saleStockInput.getSale().setDate(date);
     	saleStockInput.setExternalIdentifier(externalIdentifier);
     	saleStockInput.getTangibleProductStockMovement().setQuantity(new BigDecimal(quantity));

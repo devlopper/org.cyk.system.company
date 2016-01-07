@@ -159,9 +159,6 @@
 	<field name="numberOfProducts" class="java.lang.String">
 		<fieldDescription><![CDATA[numberOfProducts]]></fieldDescription>
 	</field>
-	<field name="done" class="java.lang.Boolean">
-		<fieldDescription><![CDATA[done]]></fieldDescription>
-	</field>
 	<field name="headerInfos" class="org.cyk.system.root.model.file.report.LabelValueCollectionReport">
 		<fieldDescription><![CDATA[headerInfos]]></fieldDescription>
 	</field>

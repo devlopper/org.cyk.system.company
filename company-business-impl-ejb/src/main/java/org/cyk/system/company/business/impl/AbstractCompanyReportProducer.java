@@ -67,7 +67,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		
 		saleReport.getAccountingPeriod().getCompany().setName(company.getName());
 		saleReport.getAccountingPeriod().getCompany().setImage(rootBusinessLayer.getFileBusiness().findInputStream(company.getImage()));
-		saleReport.setDone(sale.getDone());
+
 		contactCollectionBusiness.load(company.getContactCollection());
 		saleReport.getAccountingPeriod().getCompany().getContact().setPhoneNumbers(StringUtils.join(company.getContactCollection().getPhoneNumbers()," - "));
 		

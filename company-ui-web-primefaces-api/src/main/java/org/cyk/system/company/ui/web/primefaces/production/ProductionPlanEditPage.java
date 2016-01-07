@@ -51,7 +51,7 @@ public class ProductionPlanEditPage extends AbstractCrudOnePage<ProductionPlan> 
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		productionPlanResourceCollection = createItemCollection(ProductionPlanResourceItem.class, ProductionPlanResource.class
+		/*productionPlanResourceCollection = createItemCollection(ProductionPlanResourceItem.class, ProductionPlanResource.class
 				, identifiable.getRows(),new ItemCollectionWebAdapter<ProductionPlanResourceItem,ProductionPlanResource>(){
 			private static final long serialVersionUID = -2779323315299764384L;
 			@Override
@@ -70,7 +70,7 @@ public class ProductionPlanEditPage extends AbstractCrudOnePage<ProductionPlan> 
 				super.write(item);
 				item.getIdentifiable().setInputName(item.getInputName());
 			}
-		});
+		});*/
 		productionPlanMetricCollection.setIdentifier("metrics");
 		
 		resourceProductSelectItems = webManager.getSelectItems(ResourceProduct.class);

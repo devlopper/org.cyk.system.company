@@ -34,7 +34,7 @@ public class SaleCashRegisterMovementCrudOnePage extends AbstractCrudOnePage<Sal
 		super.initialisation();
 		if(identifiable.getSale()==null){
 			identifiable.setSale(saleBusiness.find(requestParameterLong(uiManager.keyFromClass(Sale.class))));
-			identifiable.setCashRegisterMovement(new CashRegisterMovement(cashierBusiness.findByPerson((Person) getUserSession().getUser()).getCashRegister()));
+			//identifiable.setCashRegisterMovement(new CashRegisterMovement(cashierBusiness.findByPerson((Person) getUserSession().getUser()).getCashRegister()));
 			/*if(identifiable.getCashier()==null){
 				renderViewErrorMessage("View Init Error!!!", "View Init Error Details!!!");
 				return;

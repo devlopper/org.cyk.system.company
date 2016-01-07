@@ -34,8 +34,7 @@ public interface CompanyReportProducer extends RootReportProducer {
 		public AbstractParameters(SaleCashRegisterMovement saleCashRegisterMovement) {
 			super();
 			this.saleCashRegisterMovement = saleCashRegisterMovement;
-			Sale sale = saleCashRegisterMovement.getSale();
-			amountToPay = Boolean.TRUE.equals(sale.getDone())?saleCashRegisterMovement.getSale().getBalance().getValue():sale.getCost().getValue();
+			amountToPay = saleCashRegisterMovement.getSale().getBalance().getValue();
 			amountPaid = saleCashRegisterMovement.getAmountIn();
 			amountToOut = amountPaid.subtract(amountToPay);
 		}

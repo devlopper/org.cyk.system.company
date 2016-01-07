@@ -75,7 +75,7 @@ public class TangibleProductUseQuantityEditManyPage extends AbstractTangibleProd
 
 	@Override
 	public BigDecimal minValue(TangibleProductUseQuantityMovement detail) {
-		return detail.getTangibleProduct().getUseQuantity().negate();
+		return null;//detail.getTangibleProduct().getUseQuantity().negate();
 	}
 	
 	

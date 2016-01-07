@@ -62,19 +62,12 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 			saleProduct.getCost().setValue(cost);
 		}
 		
-		if(Boolean.TRUE.equals(saleProduct.getSale().getCompleted())){
-			if(Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax())){
-				saleProduct.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getCost().getValue()));
-			}else if(saleProduct.getCost().getTax()==null)
-				saleProduct.getCost().setTax(BigDecimal.ZERO);
-			saleProduct.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(saleProduct.getSale().getAccountingPeriod()
-					, saleProduct.getCost().getValue(),saleProduct.getCost().getTax()));
-		}else{
-			if(saleProduct.getCost().getTax()==null){
-				saleProduct.getCost().setTax(BigDecimal.ZERO);
-				saleProduct.getCost().setTurnover(BigDecimal.ZERO);
-			}
-		}
+		if(Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax())){
+			saleProduct.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getCost().getValue()));
+		}else if(saleProduct.getCost().getTax()==null)
+			saleProduct.getCost().setTax(BigDecimal.ZERO);
+		saleProduct.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(saleProduct.getSale().getAccountingPeriod()
+				, saleProduct.getCost().getValue(),saleProduct.getCost().getTax()));
 		
 		logIdentifiable("Processed",saleProduct);
 	}

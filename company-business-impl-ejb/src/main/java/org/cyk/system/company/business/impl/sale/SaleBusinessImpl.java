@@ -122,15 +122,8 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		if(sale.getAccountingPeriod()==null)
 			sale.setAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent());
 		
-		if(Boolean.TRUE.equals(sale.getCompleted())){
-			save(sale,Boolean.TRUE);
-		}else{
-			sale = super.create(sale);
-			for(SaleProduct saleProduct : sale.getSaleProducts()){
-				saleProduct.setSale(sale);
-				genericDao.create(saleProduct);
-			}
-		}
+		save(sale,Boolean.TRUE);
+		
 		if(sale.getComputedIdentifier()==null)
 			sale.setComputedIdentifier(generateIdentifier(sale,CompanyBusinessLayerListener.SALE_IDENTIFIER,CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent()
 				.getSaleConfiguration().getSaleIdentifierGenerator()));
@@ -141,9 +134,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	private void save(Sale sale,Boolean creation){
-		//logDebug("Saving {}",sale.getLogMessage());
-		exceptionUtils().exception(Boolean.TRUE.equals(sale.getDone()), "exception.sale.done.already");
-		
 		if(Boolean.TRUE.equals(creation)){
 			
 		}else{
@@ -153,43 +143,36 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			updateCost(sale);
 		}
 				
-		if(Boolean.TRUE.equals(sale.getCompleted())){
-			CompanyBusinessLayer.getInstance().getProductBusiness().consume(sale.getSaleProducts());
-			AccountingPeriod accountingPeriod = sale.getAccountingPeriod();
-			accountingPeriod.getSalesResults().setCount(sale.getAccountingPeriod().getSalesResults().getCount().add(BigDecimal.ONE));
-			accountingPeriod.getSalesResults().setTurnover(accountingPeriod.getSalesResults().getTurnover().add(sale.getCost().getTurnover()));
-			accountingPeriodDao.update(accountingPeriod);
+		CompanyBusinessLayer.getInstance().getProductBusiness().consume(sale.getSaleProducts());
+		AccountingPeriod accountingPeriod = sale.getAccountingPeriod();
+		accountingPeriod.getSalesResults().setCount(sale.getAccountingPeriod().getSalesResults().getCount().add(BigDecimal.ONE));
+		accountingPeriod.getSalesResults().setTurnover(accountingPeriod.getSalesResults().getTurnover().add(sale.getCost().getTurnover()));
+		accountingPeriodDao.update(accountingPeriod);
+		
+		/*for(SaleProduct saleProduct : sale.getSaleProducts()){
+			sale.getCost().setTax(sale.getCost().getTax().add(saleProduct.getCost().getTax()));
+			//FIXME is it necessary since it is updated later???
+			sale.getCost().setTurnover(sale.getCost().getTurnover().add(saleProduct.getCost().getTurnover()));
+			sale.getBalance().setValue(sale.getBalance().getValue().add(saleProduct.getCost().getValue()));
+		}*/
+		
+		if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))
+			sale.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(accountingPeriod, sale.getCost().getValue()));
 			
-			/*for(SaleProduct saleProduct : sale.getSaleProducts()){
-				sale.getCost().setTax(sale.getCost().getTax().add(saleProduct.getCost().getTax()));
-				//FIXME is it necessary since it is updated later???
-				sale.getCost().setTurnover(sale.getCost().getTurnover().add(saleProduct.getCost().getTurnover()));
-				sale.getBalance().setValue(sale.getBalance().getValue().add(saleProduct.getCost().getValue()));
-			}*/
-			
-			if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))
-				sale.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(accountingPeriod, sale.getCost().getValue()));
-				
-			sale.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(accountingPeriod, sale.getCost().getValue(), sale.getCost().getTax()));
-			
-			sale.getBalance().setValue(sale.getCost().getValue().add( Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()) ? BigDecimal.ZERO
-					:sale.getCost().getTax()));
-			
-			Customer customer = sale.getCustomer();
-			if(customer!=null){
-				customer.setSaleCount(customer.getSaleCount().add(BigDecimal.ONE));
-				customer.setTurnover(customer.getTurnover().add(sale.getCost().getTurnover()));
-				customer.setBalance(customer.getBalance().add(sale.getBalance().getValue()));
-				sale.getBalance().setCumul(customer.getBalance());//to keep track of evolution
-				customerDao.update(customer);
-			}
-		}else{
-			sale.getCost().setTax(BigDecimal.ZERO);
-			sale.getCost().setTurnover(BigDecimal.ZERO);
-			sale.getBalance().setValue(BigDecimal.ZERO);
+		sale.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(accountingPeriod, sale.getCost().getValue(), sale.getCost().getTax()));
+		
+		sale.getBalance().setValue(sale.getCost().getValue().add( Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()) ? BigDecimal.ZERO
+				:sale.getCost().getTax()));
+		
+		Customer customer = sale.getCustomer();
+		if(customer!=null){
+			customer.setSaleCount(customer.getSaleCount().add(BigDecimal.ONE));
+			customer.setTurnover(customer.getTurnover().add(sale.getCost().getTurnover()));
+			customer.setBalance(customer.getBalance().add(sale.getBalance().getValue()));
+			sale.getBalance().setCumul(customer.getBalance());//to keep track of evolution
+			customerDao.update(customer);
 		}
-
-		sale.setDone(sale.getCompleted());
+		
 		if(Boolean.TRUE.equals(creation))
 			sale = super.create(sale);
 		else
@@ -201,12 +184,9 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			}else
 				genericDao.update(saleProduct);
 		}
+	
+		CompanyBusinessLayer.getInstance().getAccountingPeriodProductBusiness().consume(sale.getAccountingPeriod(), sale.getSaleProducts());
 		
-		if(Boolean.TRUE.equals(sale.getCompleted())){
-			CompanyBusinessLayer.getInstance().getAccountingPeriodProductBusiness().consume(sale.getAccountingPeriod(), sale.getSaleProducts());
-		}else{
-			
-		}
 		//logIdentifiable("Sale data computed successfully", sale);
 	}
 	
@@ -221,10 +201,8 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			//logDebug("No sale cash register movement");
 		}else{
 			saleCashRegisterMovement.setSale(sale);
-			if(Boolean.TRUE.equals(sale.getDone())){
-				CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().create(saleCashRegisterMovement);
-				sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
-			}	 
+			CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().create(saleCashRegisterMovement);
+			sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));	 
 		}
 		if(Boolean.TRUE.equals(produceReport)){
 			createReport(previous,new InvoiceParameters(sale, null, saleCashRegisterMovement));

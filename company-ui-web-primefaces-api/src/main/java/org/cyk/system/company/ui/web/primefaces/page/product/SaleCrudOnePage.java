@@ -62,12 +62,12 @@ public class SaleCrudOnePage extends AbstractCrudOnePage<Sale> implements Serial
 			return;
 		}
 		*/
-		products = new ArrayList<Product>(productBusiness.findBySalable(Boolean.TRUE));
+		/*products = new ArrayList<Product>(productBusiness.findBySalable(Boolean.TRUE));
 		intangibleProducts = new ArrayList<Product>(intangibleProductBusiness.findBySalable(Boolean.TRUE));
 		tangibleProducts = new ArrayList<Product>(tangibleProductBusiness.findBySalable(Boolean.TRUE));
 		customers = new ArrayList<Customer>(customerBusiness.findAll());
 		cashRegisterController.init(new SaleCashRegisterMovement(identifiable,new CashRegisterMovement(identifiable.getCashier().getCashRegister())),Boolean.TRUE);
-		sell();
+		sell();*/
 	}
 	
 	/**/
@@ -96,12 +96,13 @@ public class SaleCrudOnePage extends AbstractCrudOnePage<Sale> implements Serial
 	}
 	
 	public void addProduct(Integer type){
-		if(type==0)
+		/*if(type==0)
 			saleBusiness.selectProduct(identifiable, selectedProduct);
 		else if(type==1)
 			saleBusiness.selectProduct(identifiable, selectedIntangibleProduct);
 		else if(type==2)
 			saleBusiness.selectProduct(identifiable, selectedTangibleProduct);
+		*/
 	}
 	
 	public void deleteProduct(SaleProduct saleProduct){

@@ -18,14 +18,14 @@ public class TangibleProductUseQuantityMovement implements Serializable {
 	public TangibleProductUseQuantityMovement(TangibleProduct tangibleProduct) {
 		super();
 		this.tangibleProduct = tangibleProduct;
-		tempUseQuantity = tangibleProduct.getUseQuantity();
+		//tempUseQuantity = tangibleProduct.getUseQuantity();
 	}
 	
 	public void reset(){
-		tangibleProduct.setUseQuantity(tempUseQuantity);
+		//tangibleProduct.setUseQuantity(tempUseQuantity);
 	}
 	
 	public void apply(){
-		tangibleProduct.setUseQuantity(tempUseQuantity.add(addUseQuantity));
+		//tangibleProduct.setUseQuantity(tempUseQuantity.add(addUseQuantity));
 	}
 }

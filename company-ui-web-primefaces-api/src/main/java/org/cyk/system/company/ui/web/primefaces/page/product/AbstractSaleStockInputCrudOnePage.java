@@ -64,7 +64,7 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 		super.initialisation();
 		accountingPeriod = accountingPeriodBusiness.findCurrent();
 		//customers = new ArrayList<Customer>(customerBusiness.findAll());
-		cashRegisterController.init(new SaleCashRegisterMovement(identifiable.getSale(),new CashRegisterMovement(identifiable.getSale().getCashier().getCashRegister())),Boolean.TRUE);
+		//cashRegisterController.init(new SaleCashRegisterMovement(identifiable.getSale(),new CashRegisterMovement(identifiable.getSale().getCashier().getCashRegister())),Boolean.TRUE);
 		previousUrl = WebNavigationManager.getInstance().url(previousUrlOutcome(),previousUrlParameters(),Boolean.FALSE,Boolean.FALSE);
 		
 	}
@@ -213,12 +213,12 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 			super.read();
 			this.customer = identifiable.getSale().getCustomer();
 			this.externalIdentifier = identifiable.getExternalIdentifier();
-			this.price = identifiable.getSale().getCost();
+			//this.price = identifiable.getSale().getCost();
 			this.quantity = identifiable.getTangibleProductStockMovement().getQuantity();
 			this.saleProduct = identifiable.getSale().getSaleProducts().iterator().next();
 			this.commission = saleProduct.getCommission();
-			this.valueAddedTaxable = BigDecimal.ZERO.compareTo(identifiable.getSale().getValueAddedTax()) != 0;
-			this.valueAddedTax = numberBusiness.format(identifiable.getSale().getValueAddedTax());
+			//this.valueAddedTaxable = BigDecimal.ZERO.compareTo(identifiable.getSale().getValueAddedTax()) != 0;
+			//this.valueAddedTax = numberBusiness.format(identifiable.getSale().getValueAddedTax());
 			this.comments = identifiable.getSale().getComments();
 		}
 		
@@ -235,7 +235,7 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 				saleProduct.setCommission(commission);
 			identifiable.getTangibleProductStockMovement().setQuantity(quantity);
 			SaleProduct saleProduct = identifiable.getSale().getSaleProducts().iterator().next();
-			saleProduct.setPrice(price);
+			//saleProduct.setPrice(price);
 		}
 	}
 	
