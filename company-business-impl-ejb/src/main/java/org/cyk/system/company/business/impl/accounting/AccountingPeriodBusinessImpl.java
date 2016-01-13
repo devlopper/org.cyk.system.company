@@ -13,9 +13,11 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
+import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
 import org.cyk.system.company.model.product.Product;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
@@ -76,10 +78,10 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public BigDecimal computeValueAddedTax(AccountingPeriod accountingPeriod,BigDecimal amount) {
 		BigDecimal vat;
-		if(Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()))
-			vat = amount.subtract(amount.divide(BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate()),RoundingMode.DOWN));
+		if(Boolean.TRUE.equals(accountingPeriod.getSaleConfiguration().getValueAddedTaxIncludedInCost()))
+			vat = amount.subtract(amount.divide(BigDecimal.ONE.add(accountingPeriod.getSaleConfiguration().getValueAddedTaxRate()),RoundingMode.DOWN));
 		else
-			vat = /*amount.divide(BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate()),RoundingMode.DOWN);*/ accountingPeriod.getValueAddedTaxRate().multiply(amount);
+			vat = /*amount.divide(BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate()),RoundingMode.DOWN);*/ accountingPeriod.getSaleConfiguration().getValueAddedTaxRate().multiply(amount);
 		logDebug("VAT of amount {} is {}", amount,vat);
 		return vat;
 	}
@@ -87,12 +89,21 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public BigDecimal computeTurnover(AccountingPeriod accountingPeriod,BigDecimal amount,BigDecimal valueAddedTax) {
 		BigDecimal turnover;
-		if(Boolean.TRUE.equals(accountingPeriod.getValueAddedTaxIncludedInCost()))
+		if(Boolean.TRUE.equals(accountingPeriod.getSaleConfiguration().getValueAddedTaxIncludedInCost()))
 			turnover = amount.subtract(valueAddedTax);
 		else
 			turnover = amount;
 		logDebug("Turnover of amount {} is {}", amount,turnover);
 		return turnover;
+	}
+	
+	@Override
+	public void consume(Sale sale) {
+		commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE);
+		commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_VALUE, sale.getCost().getValue());
+		commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_TAX, sale.getCost().getTax());
+		commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_TURNOVER, sale.getCost().getTurnover());
+		dao.update(sale.getAccountingPeriod());
 	}
 	
 }

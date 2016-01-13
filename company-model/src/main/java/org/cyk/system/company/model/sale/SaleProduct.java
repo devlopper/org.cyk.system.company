@@ -42,11 +42,11 @@ public class SaleProduct extends AbstractIdentifiable implements Serializable {
 	
 	@Override
 	public String getLogMessage() {
-		return String.format(DEBUG_FORMAT,salableProduct.getLogMessage(),quantity,commission,reduction,cost.getLogMessage(),sale.getComputedIdentifier());
+		return String.format(LOG_FORMAT,salableProduct.getLogMessage(),quantity,commission,reduction,cost.getLogMessage(),sale.getComputedIdentifier());
 	}
 	
 	/**/
 	
-	private static final String DEBUG_FORMAT = "SaleProduct(%s Q=%s C=%s R=%s %s S=%s)";
+	private static final String LOG_FORMAT = "SaleProduct(%s Q=%s C=%s R=%s %s S=%s)";
 
 }

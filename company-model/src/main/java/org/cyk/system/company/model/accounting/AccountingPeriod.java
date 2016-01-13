@@ -1,7 +1,6 @@
 package org.cyk.system.company.model.accounting;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -15,7 +14,6 @@ import lombok.Setter;
 
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.model.event.AbstractIdentifiablePeriod;
-import org.cyk.system.root.model.file.File;
 
 @Getter @Setter @NoArgsConstructor @Entity
 public class AccountingPeriod extends AbstractIdentifiablePeriod implements Serializable {
@@ -24,31 +22,19 @@ public class AccountingPeriod extends AbstractIdentifiablePeriod implements Seri
 
 	@ManyToOne @NotNull private OwnedCompany ownedCompany;
 	
-	@ManyToOne private File pointOfSaleReportFile;
-	@Column(nullable=false) @NotNull private Boolean showPointOfSaleReportCashier = Boolean.FALSE;
-	
-	/**
-	 * Zero means no taxes are collected
-	 */
-	@Column(precision=PERCENT_PRECISION,scale=PERCENT_SCALE,nullable=false)
-	@NotNull
-	private BigDecimal valueAddedTaxRate = BigDecimal.ZERO;
-	@Column(nullable=false) @NotNull private Boolean valueAddedTaxIncludedInCost = Boolean.TRUE;
-	
 	@Embedded private SaleConfiguration saleConfiguration = new SaleConfiguration();
+	@Embedded private SaleResults saleResults = new SaleResults();
 	
 	@Embedded private StockConfiguration stockConfiguration = new StockConfiguration();
+	@Embedded private StockResults stockResults = new StockResults();
 	
 	@Column(nullable=false) @NotNull private Boolean closed = Boolean.FALSE;
 	
-	@Embedded private SalesResults salesResults = new SalesResults();
-
-	/**/
-	
 	@Override
 	public String getLogMessage() {
-		return String.format(DEBUG_FORMAT,valueAddedTaxRate,valueAddedTaxIncludedInCost);
+		return String.format(LOG_FORMAT,saleConfiguration,saleResults);
 	}
 	
-	private static final String DEBUG_FORMAT = "AccountingPeriod(VAT_RATE=%s IN_COST=%s)";
+	private static final String LOG_FORMAT = AccountingPeriod.class.getSimpleName()+"(%s %s)";
+
 }

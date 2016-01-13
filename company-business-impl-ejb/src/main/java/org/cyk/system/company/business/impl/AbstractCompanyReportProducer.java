@@ -58,7 +58,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		SaleReport saleReport = new SaleReport();
 		saleReport.setTitle(languageBusiness.findText(Boolean.TRUE.equals(paymentOnly)?"company.report.pointofsale.paymentreceipt":"company.report.pointofsale.invoice"));
 		saleReport.setIdentifier(sale.getComputedIdentifier());
-		saleReport.setCashRegisterIdentifier(Boolean.TRUE.equals(sale.getAccountingPeriod().getShowPointOfSaleReportCashier())?cashRegisterMovement.getCashRegister().getCode():null);
+		saleReport.setCashRegisterIdentifier(Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getShowPointOfSaleReportCashier())?cashRegisterMovement.getCashRegister().getCode():null);
 		saleReport.setDate(timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN));
 		saleReport.setNumberOfProducts(numberBusiness.format(numberOfProducts));
 		saleReport.setCost(numberBusiness.format(sale.getCost().getValue()));
@@ -73,7 +73,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		
 		labelValue(saleReport.getHeaderInfos(),"company.report.pointofsale.invoicenumber", saleReport.getIdentifier());
 		labelValue(saleReport.getHeaderInfos(),"company.report.pointofsale.paymentreceiptnumber", cashRegisterMovement.getComputedIdentifier(),paymentExist);
-		labelValue("cashier",cashRegisterMovement.getCashRegister().getCode(),Boolean.TRUE.equals(sale.getAccountingPeriod().getShowPointOfSaleReportCashier()));
+		labelValue("cashier",cashRegisterMovement.getCashRegister().getCode(),Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getShowPointOfSaleReportCashier()));
 		labelValue("date", timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN));
 		if(sale.getCustomer()!=null)
 			labelValue("customer", sale.getCustomer().getRegistration().getCode(),sale.getCustomer()!=null);
@@ -156,7 +156,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	}
 	
 	protected void valueAddedTaxesPart(SaleReport saleReport,Sale sale){
-		labelValue(saleReport.getTaxInfos(),LABEL_VAT_RATE, format(sale.getAccountingPeriod().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
+		labelValue(saleReport.getTaxInfos(),LABEL_VAT_RATE, format(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
 		labelValue(LABEL_AMOUNT_VAT_EXCLUDED, format(sale.getCost().getValue().subtract(sale.getCost().getTax()).setScale(2,RoundingMode.HALF_DOWN)));
 		labelValue(LABEL_VAT_AMOUNT, format(sale.getCost().getTax().setScale(2,RoundingMode.HALF_DOWN)));
 	}

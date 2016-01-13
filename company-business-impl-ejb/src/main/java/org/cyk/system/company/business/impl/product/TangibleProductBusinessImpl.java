@@ -11,7 +11,6 @@ import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
-import org.cyk.system.root.business.impl.validation.ExceptionUtils;
 
 @Stateless
 public class TangibleProductBusinessImpl extends AbstractProductBusinessImpl<TangibleProduct,TangibleProductDao> implements TangibleProductBusiness {

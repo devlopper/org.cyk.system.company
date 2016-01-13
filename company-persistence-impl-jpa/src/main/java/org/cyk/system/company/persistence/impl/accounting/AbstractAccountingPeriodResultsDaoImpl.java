@@ -19,8 +19,8 @@ public abstract class AbstractAccountingPeriodResultsDaoImpl<RESULTS extends Abs
 	private static final long serialVersionUID = 7904009035909460023L;
 
 	protected static final String SELECT_NUMBER_OF_SALES_FORMAT = 
-			"SELECT record.salesResults.count FROM %s record WHERE record.accountingPeriod = :accountingPeriod AND record.entity.identifier IN :identifiers "
-			+ "ORDER BY record.salesResults.count %s";
+			"SELECT record.saleResults.cost.numberOfProceedElements FROM %s record WHERE record.accountingPeriod = :accountingPeriod AND record.entity.identifier IN :identifiers "
+			+ "ORDER BY record.saleResults.cost.numberOfProceedElements %s";
 	
 	protected String readByAccountingPeriodByProduct,readByAccountingPeriod,readByAccountingPeriodByProducts;
 	protected String readHighestNumberOfSales,readLowestNumberOfSales,readByAccountingPeriodByProductCategoriesByNumberOfSales;
@@ -29,13 +29,13 @@ public abstract class AbstractAccountingPeriodResultsDaoImpl<RESULTS extends Abs
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
 		registerNamedQuery(readByAccountingPeriodByProduct, _select().where("accountingPeriod").and("entity"));
-		registerNamedQuery(readByAccountingPeriodByProducts, _select().whereIdentifierIn("entity").and("accountingPeriod").orderBy("salesResults.count", Boolean.FALSE));
+		registerNamedQuery(readByAccountingPeriodByProducts, _select().whereIdentifierIn("entity").and("accountingPeriod").orderBy("saleResults.cost.numberOfProceedElements", Boolean.FALSE));
 		registerNamedQuery(readByAccountingPeriod, _select().where("accountingPeriod"));
 		
 		registerNamedQuery(readHighestNumberOfSales, String.format(SELECT_NUMBER_OF_SALES_FORMAT ,clazz.getSimpleName(),"DESC"));
 		registerNamedQuery(readLowestNumberOfSales, String.format(SELECT_NUMBER_OF_SALES_FORMAT, clazz.getSimpleName(),"ASC"));
 		registerNamedQuery(readByAccountingPeriodByProductCategoriesByNumberOfSales, _select().whereIdentifierIn("entity").and("accountingPeriod")
-				.and("salesResults.count","numberOfSales",ArithmeticOperator.EQ));
+				.and("saleResults.cost.numberOfProceedElements","numberOfSales",ArithmeticOperator.EQ));
 	}
 	
 	@Override

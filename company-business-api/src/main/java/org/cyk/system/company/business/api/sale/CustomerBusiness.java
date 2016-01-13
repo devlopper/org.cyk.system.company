@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 import org.cyk.system.company.model.sale.Customer;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.business.api.party.person.AbstractActorBusiness;
 
 public interface CustomerBusiness extends AbstractActorBusiness<Customer> {
@@ -12,5 +13,7 @@ public interface CustomerBusiness extends AbstractActorBusiness<Customer> {
 	Collection<Customer> findByBalanceNotEquals(BigDecimal balance);
 	Collection<Customer> findByBalanceGreaterThanOrEquals(BigDecimal balance);
 	Collection<Customer> findByBalanceLowerThanOrEquals(BigDecimal balance);
+	
+	void consume(Sale sale);
 	
 }

@@ -30,12 +30,12 @@ public class SalableProduct extends AbstractIdentifiable implements Serializable
 	
 	@Override
 	public String getLogMessage() {
-		return String.format(DEBUG_FORMAT,product.getCode(),price);
+		return String.format(LOG_FORMAT,product.getCode(),price);
 	}
 	
 	/**/
 	
-	private static final String DEBUG_FORMAT = "Product(C=%s P=%s)";
+	private static final String LOG_FORMAT = "Product(C=%s P=%s)";
 
 	
 	/**/

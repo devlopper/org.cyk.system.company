@@ -87,7 +87,7 @@ import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImplListener;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
-import org.cyk.system.root.model.file.File;
+import org.cyk.system.root.model.file.report.ReportTemplate;
 import org.cyk.system.root.model.geography.ContactCollection;
 import org.cyk.system.root.model.security.Installation;
 import org.cyk.system.root.model.time.Period;
@@ -226,9 +226,12 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	}
 	
 	private void company(){ 
-		File pointOfSaleReportFile = new File();
+		ReportTemplate pointOfSaleReportTemplate = new ReportTemplate("POINT_OF_SALE",createFile("report/payment/pos_a4.jrxml", "pointofsale.jrxml"),null);
+		create(pointOfSaleReportTemplate);
+		
+		/*File pointOfSaleReportFile = new File();*/
 		byte[] bytes = null;
-		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS){
+		/*for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS){
 			byte[] value = listener.getCompanyPointOfSaleBytes();
 			if(value!=null)
 				bytes = value;
@@ -242,7 +245,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			listener.handlePointOfSaleToInstall(pointOfSaleReportFile);
 		
 		installObject(PRODUCT_POINT_OF_SALE,fileBusiness,pointOfSaleReportFile);
-		
+		*/
 		Company company = new Company();
 		company.setCode("C01");
 		String companyName = null;
@@ -281,12 +284,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		accountingPeriod.setOwnedCompany(ownedCompany);
 		Integer currentYear = new DateTime().getYear();
 		accountingPeriod.setPeriod(new Period(new DateTime(currentYear, 1, 1, 0, 0).toDate(), new DateTime(currentYear, 12, 31, 23, 59).toDate()));
-		accountingPeriod.setPointOfSaleReportFile(pointOfSaleReportFile);
-		accountingPeriod.setValueAddedTaxRate(BigDecimal.ZERO);
-		accountingPeriod.getSaleConfiguration().setSaleIdentifierGenerator(stringGenerator("FACT","0", 8l, null, null,8l));
+		
+		accountingPeriod.getSaleConfiguration().setPointOfSaleReportTemplate(pointOfSaleReportTemplate);
+		accountingPeriod.getSaleConfiguration().setValueAddedTaxRate(BigDecimal.ZERO);
+		accountingPeriod.getSaleConfiguration().setIdentifierGenerator(stringGenerator("FACT","0", 8l, null, null,8l));
 		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(stringGenerator("PAIE","0", 8l, null, null,8l));
 		
-		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getSaleIdentifierGenerator());
+		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getIdentifierGenerator());
 		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());
 		//accountingPeriodBusiness.create(accountingPeriod);
 		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)

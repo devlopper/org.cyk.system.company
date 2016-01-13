@@ -174,8 +174,8 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     
     protected void updateAccountingPeriod(BigDecimal valueAddedTaxRate, Boolean valueAddedTaxIncludedInCost){
     	AccountingPeriod accountingPeriod = accountingPeriodBusiness.findCurrent();
-    	accountingPeriod.setValueAddedTaxRate(valueAddedTaxRate);
-    	accountingPeriod.setValueAddedTaxIncludedInCost(valueAddedTaxIncludedInCost);
+    	accountingPeriod.getSaleConfiguration().setValueAddedTaxRate(valueAddedTaxRate);
+    	accountingPeriod.getSaleConfiguration().setValueAddedTaxIncludedInCost(valueAddedTaxIncludedInCost);
     	accountingPeriodBusiness.update(accountingPeriod);
     }
     

@@ -67,7 +67,7 @@ public class AbstractAccountingPeriodResultsBusinessImpl<RESULTS extends Abstrac
 	public PieModel findNumberOfSalesPieModel(Collection<RESULTS> resultsCollection) {
 		PieModel pieModel = new PieModel(languageBusiness.findText("field.number.of.sales"));
 		for(RESULTS results : resultsCollection)
-			pieModel.getSeries().getItems().add(new SeriesItem(results.getEntity().getName(), results.getSalesResults().getCount()));
+			pieModel.getSeries().getItems().add(new SeriesItem(results.getEntity().getName(), results.getSaleResults().getCost().getNumberOfProceedElements()));
 		return pieModel;
 	}
 	
@@ -75,7 +75,7 @@ public class AbstractAccountingPeriodResultsBusinessImpl<RESULTS extends Abstrac
 	public PieModel findTurnoverPieModel(Collection<RESULTS> resultsCollection) {
 		PieModel pieModel = new PieModel(languageBusiness.findText("field.turnover"));
 		for(RESULTS results : resultsCollection)
-			pieModel.getSeries().getItems().add(new SeriesItem(results.getEntity().getName(), results.getSalesResults().getTurnover()));
+			pieModel.getSeries().getItems().add(new SeriesItem(results.getEntity().getName(), results.getSaleResults().getCost().getTurnover()));
 		return pieModel;
 	}
 
@@ -83,7 +83,7 @@ public class AbstractAccountingPeriodResultsBusinessImpl<RESULTS extends Abstrac
 	public BigDecimal findHighestNumberOfSalesValue(Collection<RESULTS> resultsCollection) {
 		List<BigDecimal> values = new ArrayList<>();
 		for(RESULTS results : resultsCollection)
-			values.add(results.getSalesResults().getCount());
+			values.add(results.getSaleResults().getCost().getNumberOfProceedElements());
 		Collections.sort(values);
 		return values.get(values.size()-1);
 	}
@@ -92,7 +92,7 @@ public class AbstractAccountingPeriodResultsBusinessImpl<RESULTS extends Abstrac
 	public BigDecimal findLowestNumberOfSalesValue(Collection<RESULTS> resultsCollection) {
 		List<BigDecimal> values = new ArrayList<>();
 		for(RESULTS results : resultsCollection)
-			values.add(results.getSalesResults().getCount());
+			values.add(results.getSaleResults().getCost().getNumberOfProceedElements());
 		Collections.sort(values);
 		return values.get(0);
 	}	

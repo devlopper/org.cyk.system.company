@@ -20,7 +20,7 @@ public abstract class AbstractAccountingPeriodResults<ENTITY extends AbstractIde
 	@ManyToOne protected AccountingPeriod accountingPeriod;
 	@ManyToOne protected ENTITY entity;
 	
-	@Embedded protected SalesResults salesResults = new SalesResults();
+	@Embedded protected SaleResults saleResults = new SaleResults();
 	
 	@Embedded protected ProductResults results;
 
@@ -32,7 +32,7 @@ public abstract class AbstractAccountingPeriodResults<ENTITY extends AbstractIde
 	
 	@Override
 	public String toString() {
-		return entity+"/"+salesResults;
+		return entity+"/"+saleResults;
 	}
 	
 	@Override

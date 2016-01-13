@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.sale.AbstractSaleStockSearchCriteria;
-import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleStock;
 import org.cyk.system.company.model.sale.SaleStockInput;
 import org.cyk.system.company.persistence.api.sale.AbstractSaleStockDao;
@@ -88,6 +87,5 @@ public abstract class AbstractSaleStockDaoImpl<SALE_STOCK extends SaleStock,SEAR
 		String externalIdentifier = saleStockSearchCriteria.getExternalIdentifierStringSearchCriteria().getPreparedValue();
 		queryWrapper.parameterLike(SaleStockInput.FIELD_EXTERNAL_IDENTIFIER, externalIdentifier);
 		queryWrapper.parameter(AbstractSaleStockSearchCriteria.FIELD_MINIMUM_QUANTITY, saleStockSearchCriteria.getMinimumQuantity());
-		//queryWrapper.parameter(Sale.FIELD_DONE, saleStockSearchCriteria.getSaleSearchCriteria().getDone());
 	}
 }

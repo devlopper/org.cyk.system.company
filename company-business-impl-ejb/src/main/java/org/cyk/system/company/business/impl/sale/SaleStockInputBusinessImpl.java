@@ -100,7 +100,7 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 		}
 		
 		SaleReport saleReport = reportProducer.produceInvoice(previous,new InvoiceParameters(saleStockInput, saleCashRegisterMovement));
-		reportBusiness.buildBinaryContent(saleStockInput.getSale(), saleReport, saleStockInput.getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE);
+		//reportBusiness.buildBinaryContent(saleStockInput.getSale(), saleReport, saleStockInput.getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE);
 	
 		create(saleStockInput);
 		
@@ -123,7 +123,7 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 		InvoiceParameters previous = new InvoiceParameters(saleStockInput, saleCashRegisterMovement);
 		
 		SaleReport saleReport = reportProducer.produceInvoice(previous,new InvoiceParameters(saleStockInput, saleCashRegisterMovement));
-		reportBusiness.buildBinaryContent(saleStockInput.getSale(), saleReport, saleStockInput.getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE);
+		//reportBusiness.buildBinaryContent(saleStockInput.getSale(), saleReport, saleStockInput.getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE);
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)

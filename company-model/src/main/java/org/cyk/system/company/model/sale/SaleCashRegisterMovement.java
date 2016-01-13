@@ -50,12 +50,12 @@ public class SaleCashRegisterMovement extends AbstractIdentifiable implements Se
 	
 	@Override
 	public String getLogMessage() {
-		return String.format(DEBUG_FORMAT,sale.getIdentifier(),amountIn,amountOut,cashRegisterMovement.getLogMessage(),balance.getLogMessage());
+		return String.format(LOG_FORMAT,sale.getIdentifier(),amountIn,amountOut,cashRegisterMovement.getLogMessage(),balance.getLogMessage());
 	}
 	
 	/**/
 	
-	private static final String DEBUG_FORMAT = "SaleCashRegisterMovement(S=%s I=%s O=%s %s %s)";
+	private static final String LOG_FORMAT = "SaleCashRegisterMovement(S=%s I=%s O=%s %s %s)";
 	
 	public static final String FIELD_SALE = "sale";
 	public static final String FIELD_CASH_REGISTER_MOVEMENT = "cashRegisterMovement";

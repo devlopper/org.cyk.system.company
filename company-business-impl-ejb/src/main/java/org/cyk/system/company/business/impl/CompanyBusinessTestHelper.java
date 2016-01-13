@@ -22,6 +22,8 @@ import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
+import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
+import org.cyk.system.company.model.accounting.SaleResults;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.product.Product;
@@ -38,6 +40,7 @@ import org.cyk.system.company.model.sale.SaleStockOutput;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.system.company.model.sale.SalesDetails;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
+import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
@@ -72,6 +75,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     @Inject private CashierDao cashierDao;
     @Inject private PersonDao personDao;
     @Inject private AccountingPeriodDao accountingPeriodDao;
+    @Inject private AccountingPeriodProductDao accountingPeriodProductDao;
     
     @Getter @Setter private Boolean saleAutoCompleted = Boolean.TRUE;
 	
@@ -389,6 +393,19 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     		assertBigDecimalEquals("Turnover of "+infos[0]+" with VAT = "+vat, infos[2]
     				, CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(accountingPeriod, commonUtils.getBigDecimal(infos[0]), vat));
     	}
+    }
+    
+    public void assertSaleResults(SaleResults saleResults,String expectedNumberOfProceedElements,String expectedCost,String expectedTax,String expectedTurnover){
+    	assertBigDecimalEquals("Number of proceed elements", expectedNumberOfProceedElements, saleResults.getCost().getNumberOfProceedElements());
+    	assertCost(saleResults.getCost(), expectedCost, expectedTax, expectedTurnover);
+    }
+    public void assertCurrentAccountingPeriodSaleResults(String expectedNumberOfProceedElements,String expectedCost,String expectedTax,String expectedTurnover){
+    	assertSaleResults(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleResults(), expectedNumberOfProceedElements, expectedCost, expectedTax, expectedTurnover);
+    }
+    public void assertCurrentAccountingPeriodProductSaleResults(String productCode,String expectedNumberOfProceedElements,String expectedCost,String expectedTax,String expectedTurnover){
+    	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByProduct(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
+    	SaleResults saleResults = accountingPeriodProduct.getSaleResults();
+    	assertSaleResults(saleResults, expectedNumberOfProceedElements, expectedCost, expectedTax, expectedTurnover);
     }
 	
 	/**/

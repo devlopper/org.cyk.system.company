@@ -69,7 +69,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	@Override
 	public String getLogMessage() {
-		return String.format(DEBUG_FORMAT,identifier,computedIdentifier,cost.getLogMessage(),balance.getLogMessage()
+		return String.format(LOG_FORMAT,identifier,computedIdentifier,autoComputeValueAddedTax,cost.getLogMessage(),balance.getLogMessage()
 				,customer==null?"":customer.getRegistration().getCode(),accountingPeriod.getLogMessage());
 	}
 	
@@ -83,5 +83,5 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	public static final String FIELD_COST = "cost";
 	public static final String FIELD_BALANCE = "balance";
 	
-	private static final String DEBUG_FORMAT = "Sale(ID=%s|%s %s %s CUST=%s %s)";
+	private static final String LOG_FORMAT = "Sale(ID=%s|%s ATX=%s %s %s CUST=%s %s)";
 }

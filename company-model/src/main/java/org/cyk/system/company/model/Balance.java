@@ -32,10 +32,10 @@ public class Balance extends AbstractModelElement implements Serializable {
 	
 	@Override
 	public String getLogMessage() {
-		return String.format(DEBUG_FORMAT,value,cumul);
+		return String.format(LOG_FORMAT,value,cumul);
 	}
 	
-	private static final String DEBUG_FORMAT = "Balance(V=%s C=%s)";
+	private static final String LOG_FORMAT = "Balance(V=%s C=%s)";
 	
 	/**/
 	

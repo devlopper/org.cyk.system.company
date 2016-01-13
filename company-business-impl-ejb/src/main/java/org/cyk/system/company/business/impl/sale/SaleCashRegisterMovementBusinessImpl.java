@@ -115,7 +115,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		if(Boolean.TRUE.equals(generatePos)){
 			SaleReport saleReport = CompanyBusinessLayer.getInstance().getSaleReportProducer().producePaymentReceipt(previous,new ReceiptParameters(null,saleCashRegisterMovement));
 			rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement, saleReport
-					,saleCashRegisterMovement.getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE); //(saleCashRegisterMovement, saleReport); 
+					,saleCashRegisterMovement.getSale().getAccountingPeriod().getSaleConfiguration().getPointOfSaleReportTemplate().getTemplate(), Boolean.TRUE); 
 		}
 		return saleCashRegisterMovement;
 	}

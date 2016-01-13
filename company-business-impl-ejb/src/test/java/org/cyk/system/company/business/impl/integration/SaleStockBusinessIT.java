@@ -44,8 +44,8 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     private void init(){
     	installApplication();
     	AccountingPeriod accountingPeriod = accountingPeriodBusiness.findCurrent();
-    	accountingPeriod.setValueAddedTaxRate(new BigDecimal("0.18"));
-    	accountingPeriod.setValueAddedTaxIncludedInCost(Boolean.TRUE);
+    	//accountingPeriod.setValueAddedTaxRate(new BigDecimal("0.18"));
+    	//accountingPeriod.setValueAddedTaxIncludedInCost(Boolean.TRUE);
     	accountingPeriod.getStockConfiguration().setZeroQuantityAllowed(Boolean.TRUE);
     	accountingPeriodBusiness.update(accountingPeriod);
     	

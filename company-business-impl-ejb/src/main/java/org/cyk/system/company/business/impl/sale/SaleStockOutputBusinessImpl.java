@@ -90,8 +90,8 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 		//debug(previous);
 		//debug(new ReceiptParameters(saleStockOutput));
 		SaleReport saleReport = CompanyBusinessLayer.getInstance().getSaleReportProducer().producePaymentReceipt(previous,new ReceiptParameters(saleStockOutput));
-		reportBusiness.buildBinaryContent(saleStockOutput.getSaleCashRegisterMovement(), saleReport,
-				saleStockOutput.getSaleCashRegisterMovement().getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE); 
+		//reportBusiness.buildBinaryContent(saleStockOutput.getSaleCashRegisterMovement(), saleReport,
+		//		saleStockOutput.getSaleCashRegisterMovement().getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE); 
 		
 		return saleStockOutput;
 	}
