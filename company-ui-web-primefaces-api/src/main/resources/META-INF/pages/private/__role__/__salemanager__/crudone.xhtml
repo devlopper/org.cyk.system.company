@@ -9,10 +9,21 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component"
       xmlns:company="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.company/component">
-
+	
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
         <ui:param name="pageController" value="#{saleCrudOnePage}" />
         <ui:define name="body">
+        	
+        	<style>
+				.quantityClass{
+					
+				}
+				.quantityClass input{
+					background: red;
+					width: 85px !important;
+				}
+			</style>
+        	
         	<p:panelGrid id="optionsPanel" columns="7">
         		<p:outputLabel value="#{uiManager.text('model.entity.customer')}" for="customer" />
         		<p:selectOneMenu id="customer" value="#{saleCrudOnePage.selectedCustomer}" var="customer"  converter="#{objectConverter}" 
@@ -22,10 +33,10 @@
 		            <p:column><h:outputText value="#{customer.person.names}" /></p:column>
         		</p:selectOneMenu>
         		
-        		<p:outputLabel value="#{uiManager.text('model.entity.product')}" for="product" />
-        		<p:selectOneMenu id="product" value="#{saleCrudOnePage.selectedProduct}" var="salableProduct" converter="#{objectConverter}" 
+        		<p:outputLabel value="#{uiManager.text('model.entity.product')}" for="salableProduct" />
+        		<p:selectOneMenu id="salableProduct" value="#{saleCrudOnePage.selectedProduct}" var="salableProduct" converter="#{objectConverter}" 
         			filter="true" filterMatchMode="contains" disabled="#{saleCrudOnePage.collectMoney}">
-        			<f:selectItems value="#{saleCrudOnePage.products}"  />
+        			<f:selectItems value="#{saleCrudOnePage.salableProducts}"  />
         			<p:column><h:outputText value="#{salableProduct.product.code}" /></p:column>
 		            <p:column><h:outputText value="#{salableProduct.product.name}" /></p:column>
         		</p:selectOneMenu>
@@ -60,18 +71,18 @@
         		-->
         		        		
         		<p:commandButton id="cashButton" value="#{uiManager.text('command.cash')}" title="#{uiManager.text('command.cash')}" icon="ui-icon-calculator" 
-        			actionListener="#{saleCrudOnePage.cash}" update="optionsPanel,datatable,moneyPanel" 
+        			actionListener="#{saleCrudOnePage.cash}" update="optionsPanel,:form:collection:datatable,moneyPanel" 
         			disabled="#{saleCrudOnePage.identifiable.saleProducts.size()==0 or saleCrudOnePage.collectMoney}" />
         		
         		<p:commandButton id="collectButton" value="#{uiManager.text('command.collect')}" title="#{uiManager.text('command.collect')}" icon="ui-icon-cart" 
-        			actionListener="#{saleCrudOnePage.sell}" update="optionsPanel,datatable,moneyPanel" disabled="#{saleCrudOnePage.collectProduct}" 
+        			actionListener="#{saleCrudOnePage.sell}" update="optionsPanel,:form:collection:datatable,moneyPanel" disabled="#{saleCrudOnePage.collectProduct}" 
         			immediate="true" />	
         			
         		<!--h:outputText value="#{saleCrudOnePage.cashRegisterController.cashier.e}" /-->	
         		 		
         	</p:panelGrid>
         	
-        	<!--p:remoteCommand name="refreshFooter" update=":form:datatable:grandtotal"/-->
+        	<p:remoteCommand name="refreshFooter" update=":form:collection:datatable:grandtotal"/>
         	
         	
         	<!--p:dataTable id="datatable" value="#{saleCrudOnePage.identifiable.saleProducts}" var="saleProduct" rowIndexVar="index" >
@@ -108,7 +119,7 @@
         		
         	</p:dataTable-->
         	
-        	<cyk:itemCollection id="datatable" value="#{saleCrudOnePage.saleProductCollection}" >
+        	<cyk:itemCollection id="collection" value="#{saleCrudOnePage.saleProductCollection}" >
  				<p:column headerText="#{uiManager.text('field.code')}" width="7%">
  					<h:outputText value="#{item.code}" />
  				</p:column>
@@ -120,18 +131,18 @@
  				</p:column>
  				<p:column headerText="#{uiManager.text('field.quantity')}" rendered="#{saleCrudOnePage.showQuantityColumn}" width="10%">
         			<pe:inputNumber id="quantity" value="#{item.quantity}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}" 
-        				minValue="1" decimalPlaces="0" rendered="#{saleCrudOnePage.collectProduct}" >
-        				<p:ajax event="change" listener="#{saleCrudOnePage.productQuantityChanged(saleProduct)}" process="quantity" update="total,grandtotal" 
+        				minValue="1" decimalPlaces="0" rendered="#{saleCrudOnePage.collectProduct}" styleClass="quantityClass">
+        				<p:ajax event="change" listener="#{saleCrudOnePage.productQuantityChanged(item)}" process="quantity" update="total,grandtotal" 
         					oncomplete="refreshFooter();"/>
         			</pe:inputNumber>
         			<h:outputText value="#{saleProduct.quantity}" rendered="#{saleCrudOnePage.collectMoney}" />
         		</p:column>
         		
-        		<p:column headerText="#{uiManager.text('field.price.total')}" width="10%">
+        		<p:column headerText="#{uiManager.text('field.price.total')}" width="12%">
         			<h:outputText id="total" value="#{item.totalPrice}" rendered="#{item.identifiable.salableProduct.price!=null}" />
         			<pe:inputNumber id="totalInput" value="#{item.totalPrice}" required="true" requiredMessage="#{item.name} - #{uiManager.textInputValueRequired('field.value')}" 
         				minValue="1" decimalPlaces="0" rendered="#{item.identifiable.salableProduct.price==null}">
-        				<p:ajax event="change" listener="#{saleCrudOnePage.productQuantityChanged(saleProduct)}" process="totalInput" update="grandtotal" oncomplete="refreshFooter();"/>
+        				<p:ajax event="change" listener="#{saleCrudOnePage.productQuantityChanged(item)}" process="totalInput" update="grandtotal" oncomplete="refreshFooter();"/>
         			</pe:inputNumber>
         			<f:facet name="footer">
         				<h:outputText id="grandtotal" value="#{saleCrudOnePage.identifiable.cost.value}" />

@@ -20,7 +20,6 @@ import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
-import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
@@ -47,7 +46,7 @@ public class SaleCrudOnePage extends AbstractCrudOnePage<Sale> implements Serial
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
 	
-	private List<SalableProduct> products,intangibleProducts,tangibleProducts;
+	private List<SalableProduct> salableProducts,intangibleProducts,tangibleProducts;
 	private List<Customer> customers;
 
 	private SalableProduct selectedProduct,selectedIntangibleProduct,selectedTangibleProduct;
@@ -66,15 +65,31 @@ public class SaleCrudOnePage extends AbstractCrudOnePage<Sale> implements Serial
 				,new ItemCollectionWebAdapter<SaleProductItem,SaleProduct>(){
 			private static final long serialVersionUID = -3872058204105902514L;
 			@Override
+			public SaleProduct instanciate(AbstractItemCollection<SaleProductItem, SaleProduct, SelectItem> itemCollection) {
+				return saleBusiness.selectProduct(identifiable, selectedProduct);
+			}
+			
+			@Override
 			public void instanciated(AbstractItemCollection<SaleProductItem, SaleProduct,SelectItem> itemCollection,SaleProductItem item) {
 				super.instanciated(itemCollection, item);
-				item.setIdentifiable(saleBusiness.selectProduct(identifiable, selectedProduct));
-				//item.getIdentifiable().set
+				
+			}
+			
+			@Override
+			public void read(SaleProductItem item) {
+				super.read(item);
 				item.setCode(item.getIdentifiable().getSalableProduct().getProduct().getCode());
 				item.setName(item.getIdentifiable().getSalableProduct().getProduct().getName());
 				item.setUnitPrice(numberBusiness.format(item.getIdentifiable().getSalableProduct().getPrice()));
 				item.setQuantity(item.getIdentifiable().getQuantity());
-			}	
+				item.setTotalPrice(numberBusiness.format(item.getIdentifiable().getCost().getValue()));
+			}
+			
+			@Override
+			public void delete(AbstractItemCollection<SaleProductItem, SaleProduct, SelectItem> itemCollection,SaleProductItem item) {
+				super.delete(itemCollection, item);
+				saleBusiness.unselectProduct(identifiable, item.getIdentifiable());
+			}
 		});
 		saleProductCollection.setLabel(null);
 		
@@ -85,10 +100,10 @@ public class SaleCrudOnePage extends AbstractCrudOnePage<Sale> implements Serial
 			return;
 		}
 		
-		products = new ArrayList<SalableProduct>(CompanyBusinessLayer.getInstance().getSalableProductBusiness().findAll());
+		salableProducts = new ArrayList<SalableProduct>(CompanyBusinessLayer.getInstance().getSalableProductBusiness().findAll());
 		intangibleProducts = new ArrayList<SalableProduct>();
 		tangibleProducts = new ArrayList<SalableProduct>();
-		for(SalableProduct salableProduct : products)
+		for(SalableProduct salableProduct : salableProducts)
 			( salableProduct.getProduct() instanceof TangibleProduct ? tangibleProducts : intangibleProducts ).add(salableProduct);	
 		customers = new ArrayList<Customer>(customerBusiness.findAll());
 		cashRegisterController.init(CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().newInstance(identifiable, identifiable.getCashier().getPerson(), Boolean.TRUE),Boolean.TRUE);
@@ -129,11 +144,7 @@ public class SaleCrudOnePage extends AbstractCrudOnePage<Sale> implements Serial
 			saleBusiness.selectProduct(identifiable, selectedTangibleProduct);
 		//saleProductCollection.add(selectedProduct);
 	}
-	
-	public void deleteProduct(SaleProduct saleProduct){
-		saleBusiness.unselectProduct(identifiable, saleProduct);
-	}
-	
+		
 	public void cash(){
 		collectProduct = Boolean.FALSE;
 		collectMoney = Boolean.TRUE;
@@ -144,14 +155,12 @@ public class SaleCrudOnePage extends AbstractCrudOnePage<Sale> implements Serial
 		collectMoney = Boolean.FALSE;
 	}
 		
-	public void productQuantityChanged(SaleProduct saleProduct){
-		saleBusiness.applyChange(identifiable, saleProduct);
+	public void productQuantityChanged(SaleProductItem saleProductItem){
+		saleProductItem.getIdentifiable().setQuantity(saleProductItem.getQuantity());
+		saleBusiness.applyChange(identifiable, saleProductItem.getIdentifiable());
+		saleProductCollection.read(saleProductItem);	
 	}
-	
-	public void productPriceChanged(SaleProduct saleProduct){
-		saleBusiness.applyChange(identifiable, saleProduct);
-	}
-	
+			
 	@Getter @Setter
 	public static class SaleProductItem extends AbstractItemCollectionItem<SaleProduct> implements Serializable {
 		private static final long serialVersionUID = 3828481396841243726L;
