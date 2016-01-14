@@ -1,4 +1,4 @@
-package org.cyk.system.company.ui.web.primefaces.page.product;
+package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
 
@@ -12,7 +12,7 @@ import org.cyk.system.company.model.sale.SaleStockInput;
 import org.cyk.system.company.model.sale.SaleStockOutput;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.model.SaleStockOutputFormModel;
-import org.cyk.system.company.ui.web.primefaces.page.product.AbstractSaleStockInputConsultPage.Details;
+import org.cyk.system.company.ui.web.primefaces.sale.AbstractSaleStockInputConsultPage.Details;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.model.AbstractIdentifiable;

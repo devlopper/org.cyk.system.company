@@ -25,6 +25,7 @@ import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.sale.Customer;
+import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.structure.Company;
@@ -107,24 +108,25 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		}
 		SystemMenu systemMenu = new SystemMenu();
 		UICommandable group = uiProvider.createCommandable("department", null);
+		/*
 		group.addChild(menuManager.crudMany(DivisionType.class, null));	
 		group.addChild(menuManager.crudMany(Division.class, null));	
 		group.addChild(menuManager.crudMany(Division.class, null));	
 		group.addChild("command.ownedcompany", null, "ownedCompanyCrudOne", null);
 		systemMenu.getReferenceEntities().add(group);
-		
+		*/
 		group = uiProvider.createCommandable("product", null);
-		group.addChild(menuManager.crudMany(ProductCategory.class, null));
+		//group.addChild(menuManager.crudMany(ProductCategory.class, null));
 		group.addChild(menuManager.crudMany(IntangibleProduct.class, null));	
 		group.addChild(menuManager.crudMany(TangibleProduct.class, null));	
-		group.addChild(menuManager.crudMany(ProductCollection.class, null));
+		//group.addChild(menuManager.crudMany(ProductCollection.class, null));
 		systemMenu.getReferenceEntities().add(group);
 		
 		group = uiProvider.createCommandable("sale", null);
-		group.addChild(menuManager.crudMany(CashRegister.class, null));	
+		group.addChild(menuManager.crudMany(SalableProduct.class, null));	
 		systemMenu.getReferenceEntities().add(group);
 		
-		systemMenu.getBusinesses().add(menuManager.crudMany(Company.class, null));	
+		//systemMenu.getBusinesses().add(menuManager.crudMany(Company.class, null));	
 		
 		/**/
 		

@@ -35,6 +35,7 @@ import org.cyk.system.company.business.api.production.ResellerBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductBusiness;
@@ -130,6 +131,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
 	@Inject private IntangibleProductBusiness intangibleProductBusiness;
 	@Inject private SaleBusiness saleBusiness;
+	@Inject private SalableProductBusiness salableProductBusiness;
 	@Inject private SaleProductBusiness saleProductBusiness;
 	@Inject private SaleStockInputBusiness saleStockInputBusiness;
 	@Inject private SaleStockOutputBusiness saleStockOutputBusiness;

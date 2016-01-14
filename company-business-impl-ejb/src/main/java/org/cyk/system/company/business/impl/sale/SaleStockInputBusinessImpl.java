@@ -119,7 +119,7 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 	
 	@Override
 	public void complete(SaleStockInput saleStockInput, SaleCashRegisterMovement saleCashRegisterMovement) {
-		saleBusiness.complete(saleStockInput.getSale(), saleCashRegisterMovement,Boolean.FALSE);
+		//saleBusiness.complete(saleStockInput.getSale(), saleCashRegisterMovement,Boolean.FALSE);
 		InvoiceParameters previous = new InvoiceParameters(saleStockInput, saleCashRegisterMovement);
 		
 		SaleReport saleReport = reportProducer.produceInvoice(previous,new InvoiceParameters(saleStockInput, saleCashRegisterMovement));

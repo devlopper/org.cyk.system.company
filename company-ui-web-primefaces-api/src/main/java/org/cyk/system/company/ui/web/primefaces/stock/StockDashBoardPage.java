@@ -1,4 +1,4 @@
-package org.cyk.system.company.ui.web.primefaces.page.product;
+package org.cyk.system.company.ui.web.primefaces.stock;
 
 import java.io.Serializable;
 import java.util.ArrayList;

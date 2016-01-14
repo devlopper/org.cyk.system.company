@@ -24,9 +24,7 @@ import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.sale.SalesDetails;
-import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
-import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
@@ -39,9 +37,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 
 	public static Boolean AUTO_SET_SALE_DATE = Boolean.TRUE;
 	
-	@Inject private SaleProductDao saleProductDao;
-	@Inject private SaleCashRegisterMovementDao saleCashRegisterMovementDao;
-	
 	@Inject
 	public SaleBusinessImpl(SaleDao dao) {
 		super(dao);
@@ -49,19 +44,16 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Sale newInstance(Person person) {
-		//logInstanciate();
 		Sale sale = new Sale();
 		sale.setAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent());
 		sale.setCashier(CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson(person));
 		sale.setAutoComputeValueAddedTax(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().signum()!=0);
 		logInstanceCreated(sale);
-		//logDebug("Sale instanciated. Cashier={} VAT in={}.",sale.getCashier().getIdentifier(),Boolean.TRUE.equals(sale.getAccountingPeriod().getValueAddedTaxIncludedInCost()));
 		return sale;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public SaleProduct selectProduct(Sale sale, SalableProduct salableProduct,BigDecimal quantity) {
-		//logTrace("Select Sale product {}",salableProduct.getProduct().getCode());
 		SaleProduct saleProduct = new SaleProduct();
 		saleProduct.setSale(sale);
 		saleProduct.setSalableProduct(salableProduct);
@@ -70,6 +62,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		sale.getSaleProducts().add(saleProduct);
 		if(saleProduct.getCost().getValue()!=null)
 			sale.getCost().setValue(sale.getCost().getValue().add(saleProduct.getCost().getValue()));
+		logIdentifiable("Selected", saleProduct);
 		return saleProduct;
 	}
 	
@@ -92,12 +85,14 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			}
 		}
 		sale.getCost().setValue(sale.getCost().getValue().subtract(saleProduct.getCost().getValue()));
+		logIdentifiable("Unselected", saleProduct);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public void applyChange(Sale sale, SaleProduct saleProduct) {
 		CompanyBusinessLayer.getInstance().getSaleProductBusiness().process(saleProduct);
 		updateCost(sale);
+		logIdentifiable("Change applied", saleProduct);
 	}
 	
 	private void updateCost(Sale sale){
@@ -117,28 +112,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		if(sale.getAccountingPeriod()==null)
 			sale.setAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent());
 		
-		save(sale,Boolean.TRUE);
-		
-		if(sale.getComputedIdentifier()==null)
-			sale.setComputedIdentifier(generateIdentifier(sale,CompanyBusinessLayerListener.SALE_IDENTIFIER,CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent()
-				.getSaleConfiguration().getIdentifierGenerator()));
-		sale = dao.update(sale);
-		//notifyCrudDone(Crud.CREATE, sale);
-		logIdentifiable("Created",sale);
-		return sale;
-	}
-	
-	private void save(Sale sale,Boolean creation){
-		if(Boolean.TRUE.equals(creation)){
-			
-		}else{
-			for(SaleProduct saleProduct : sale.getSaleProducts()){
-				CompanyBusinessLayer.getInstance().getSaleProductBusiness().process(saleProduct);				
-			}
-			updateCost(sale);
-		}
-		
-		
 		if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))
 			sale.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(sale.getAccountingPeriod(), sale.getCost().getValue()));
 		sale.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(sale.getAccountingPeriod(), sale.getCost().getValue(), sale.getCost().getTax()));
@@ -148,16 +121,11 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE
 				,Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxIncludedInCost()) ? BigDecimal.ZERO:sale.getCost().getTax());
 		
-		if(Boolean.TRUE.equals(creation))
-			sale = super.create(sale);
-		else
-			sale = super.update(sale);
+		sale = super.create(sale);
+		
 		for(SaleProduct saleProduct : sale.getSaleProducts()){
 			saleProduct.setSale(sale);
-			if(Boolean.TRUE.equals(creation)){
-				genericDao.create(saleProduct);
-			}else
-				genericDao.update(saleProduct);
+			genericDao.create(saleProduct);
 		}
 	
 		CompanyBusinessLayer.getInstance().getProductBusiness().consume(sale.getSaleProducts());
@@ -166,9 +134,17 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			sale.getBalance().setCumul(sale.getCustomer().getBalance());//to keep track of evolution
 		}
 		CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().consume(sale);
-		CompanyBusinessLayer.getInstance().getAccountingPeriodProductBusiness().consume(sale.getAccountingPeriod(), sale.getSaleProducts());
+		CompanyBusinessLayer.getInstance().getAccountingPeriodProductBusiness().consume(sale);
+		
+		if(sale.getComputedIdentifier()==null)
+			sale.setComputedIdentifier(generateIdentifier(sale,CompanyBusinessLayerListener.SALE_IDENTIFIER,CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent()
+				.getSaleConfiguration().getIdentifierGenerator()));
+		sale = dao.update(sale);
+		//notifyCrudDone(Crud.CREATE, sale);
+		logIdentifiable("Created",sale);
+		return sale;
 	}
-	
+		
 	@Override
 	public void create(Sale sale, SaleCashRegisterMovement saleCashRegisterMovement,Boolean produceReport) {
 		//Firstly we create the sale
@@ -191,22 +167,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	@Override
 	public void create(Sale sale, SaleCashRegisterMovement saleCashRegisterMovement) {
 		create(sale, saleCashRegisterMovement,Boolean.TRUE);
-	}
-	
-	@Override
-	public void complete(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement,Boolean produceReport) {
-		logIdentifiable("Completing",sale);
-		InvoiceParameters previous = new InvoiceParameters(sale, null, saleCashRegisterMovement);
-		save(sale, Boolean.FALSE);
-		if(Boolean.TRUE.equals(produceReport))
-			createReport(previous,new InvoiceParameters(sale, null, saleCashRegisterMovement));
-		update(sale);
-		logIdentifiable("Completed",sale);
-	}
-	
-	@Override
-	public void complete(Sale sale, SaleCashRegisterMovement saleCashRegisterMovement) {
-		complete(sale, saleCashRegisterMovement, Boolean.TRUE);
 	}
 	
 	private void createReport(InvoiceParameters previous,InvoiceParameters current){
@@ -237,7 +197,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	/**/
 	
 	 
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	/*@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public void load(Sale sale) {
 		sale.setSaleProducts(saleProductDao.readBySale(sale));
 		for(SaleProduct saleProduct : sale.getSaleProducts())
@@ -245,7 +205,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		sale.setSaleCashRegisterMovements(saleCashRegisterMovementDao.readBySale(sale));
 		for(SaleCashRegisterMovement saleCashRegisterMovement : sale.getSaleCashRegisterMovements())
 			saleCashRegisterMovement.setSale(sale);
-	}
+	}*/
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public ReportBasedOnTemplateFile<SaleReport> findReport(Collection<Sale> sales) {

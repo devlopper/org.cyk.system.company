@@ -23,7 +23,6 @@ import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
-import org.cyk.system.company.model.accounting.SaleResults;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.product.Product;
@@ -33,6 +32,7 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleReport;
+import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockInput;
 import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
@@ -51,6 +51,7 @@ import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
+import org.cyk.utility.common.test.ExpectedValues;
 import org.cyk.utility.common.test.TestEnvironmentListener.Try;
 
 @Singleton
@@ -406,6 +407,12 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByProduct(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
     	SaleResults saleResults = accountingPeriodProduct.getSaleResults();
     	assertSaleResults(saleResults, expectedNumberOfProceedElements, expectedCost, expectedTax, expectedTurnover);
+    }
+    
+    public void assertCustomer(String registrationCode,ExpectedValues expectedValues){
+    	Customer customer = customerDao.readByRegistrationCode(registrationCode);
+    	//assertBigDecimalEquals("Sale count", expectedValues.get(Customer.FIELD_SALE_COUNT), customer.getSaleCount());
+    	doAssertions(customer, expectedValues);
     }
 	
 	/**/

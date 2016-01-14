@@ -1,4 +1,4 @@
-package org.cyk.system.company.model.accounting;
+package org.cyk.system.company.model.product;
 
 import java.io.Serializable;
 
@@ -20,9 +20,17 @@ public class ProductResults extends AbstractModelElement implements Serializable
 	
 	@Embedded private Sort numberOfSalesSort = new Sort();
 	
+	public Sort getNumberOfSalesSort(){
+		if(numberOfSalesSort==null)
+			numberOfSalesSort = new Sort();
+		return numberOfSalesSort;
+	}
+	
 	@Override
 	public String getUiString() {
 		return null;
 	}
+	
+	public static final String FIELD_NUMBER_OF_SALES_SORT = "numberOfSalesSort";
 	
 }

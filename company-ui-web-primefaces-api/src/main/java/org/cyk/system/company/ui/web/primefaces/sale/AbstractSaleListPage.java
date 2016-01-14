@@ -1,4 +1,4 @@
-package org.cyk.system.company.ui.web.primefaces.page.product;
+package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -40,6 +40,7 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 		else
 			balanceType = null;
 		
+		/*
 		table.setShowHeader(Boolean.FALSE);
 		table.setShowFooter(Boolean.TRUE);
 		
@@ -49,48 +50,33 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 			public Boolean isColumn(Field field) {
 				return field.getName().equals("balance") && BalanceType.ZERO.equals(balanceType);
 			}
-			/*
-			@Override
-			public void fields(List<Field> fields) {
-				super.fields(fields);
-				for(int i=0;i<fields.size();i++){
-					if(fields.get(i).getName().equals("balance") && BalanceType.ZERO.equals(balanceType)){
-						fields.remove(i);
-						break;
-					}
-				}
-			}*/
 		});
 		
 		rowAdapter.setOpenable(Boolean.TRUE);
+		*/
+		
+		rowAdapter.setOpenable(Boolean.TRUE);
+		rowAdapter.setUpdatable(Boolean.TRUE);
+		table.setShowHeader(Boolean.TRUE);
+		table.setShowToolBar(Boolean.TRUE);
 	}
 	
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
-
+		/*
 		table.setShowEditColumn(Boolean.FALSE);		
 		
 		((Commandable)table.getOpenRowCommandable()).getButton().setRendered(Boolean.TRUE);
 		((Commandable)table.getRemoveRowCommandable()).getButton().setRendered(Boolean.FALSE);
-		//TODO to be deleted : auto called by super
-		/*
-		table.getOpenRowCommandable().getCommand().getCommandListeners().add(new CommandAdapter(){
-			private static final long serialVersionUID = 1120566504648934547L;
-			@Override
-			public void serve(UICommand command, Object parameter) {
-				@SuppressWarnings("unchecked")
-				Sale sale = ((Row<SaleQueryResultFormModel>)parameter).getData().getIdentifiable();
-				WebNavigationManager.getInstance().redirectTo(businessEntityInfos.getUiConsultViewId(), 
-						new Object[]{webManager.getRequestParameterIdentifiable(),sale.getIdentifier().toString()});
-			}
-		});
-		*/
+		
 		table.setShowToolBar(Boolean.TRUE);
 		
 		table.setShowEditColumn(Boolean.FALSE);
 		table.setShowAddRemoveColumn(Boolean.FALSE);
 		table.getPrintCommandable().setRendered(Boolean.TRUE);
+		*/
+		table.setShowOpenCommand(Boolean.TRUE);
 	}
 		
 	@Override
@@ -119,10 +105,10 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 		criteria.getReadConfig().setFirstResultIndex(queryFirst);
 		criteria.getReadConfig().setMaximumResultCount(20l);
 		SalesDetails results = saleBusiness.computeByCriteria(criteria); 
-		table.getColumn("cost").setFooter(numberBusiness.format(results.getCost()));
-		if(!BalanceType.ZERO.equals(balanceType)){
+		//table.getColumn("cost").setFooter(numberBusiness.format(results.getCost()));
+		/*if(!BalanceType.ZERO.equals(balanceType)){
 			table.getColumn("balance").setFooter(numberBusiness.format(results.getBalance()));
-		}
+		}*/
 		
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterFromDate(),criteria.getFromDateSearchCriteria().getPreparedValue().getTime());
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterToDate(),criteria.getToDateSearchCriteria().getPreparedValue().getTime());

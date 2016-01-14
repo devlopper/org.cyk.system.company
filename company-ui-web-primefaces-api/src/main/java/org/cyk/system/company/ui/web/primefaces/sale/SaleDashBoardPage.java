@@ -1,4 +1,4 @@
-package org.cyk.system.company.ui.web.primefaces.page.product;
+package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -32,12 +32,12 @@ import org.cyk.system.company.model.accounting.AbstractAccountingPeriodResults;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
 import org.cyk.system.company.model.accounting.AccountingPeriodProductCategory;
-import org.cyk.system.company.model.accounting.SalesResults;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleProduct;
+import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.Crud;
@@ -95,7 +95,7 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 			productCategory = productCategoryBusiness.find(productCategoryId);
 		
 		accountingPeriod = accountingPeriodBusiness.findCurrent();
-		taxesCollected = accountingPeriod.getValueAddedTaxRate().compareTo(BigDecimal.ZERO)!=0;
+		taxesCollected = accountingPeriod.getSaleConfiguration().getValueAddedTaxRate().compareTo(BigDecimal.ZERO)!=0;
 		TimeDivisionType selectedTimeDivisionType = timeDivisionTypeBusiness.find(TimeDivisionType.MONTH);
 		Date exerciceBegin = accountingPeriod.getPeriod().getFromDate();
 		Date exerciceEnd = accountingPeriod.getPeriod().getToDate();
@@ -103,7 +103,7 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 		
 		contentTitle = text("sale")+" - "+text("dashboard")+" - "+timeBusiness.formatDate(exerciceBegin,exerciceEnd);
 		
-		SalesResults salesResults = null;
+		SaleResults salesResults = null;
 		saleSearchCriteria = new SaleSearchCriteria(exerciceBegin,exerciceEnd);
 		
 		credence = numberBusiness.format(saleBusiness.computeByCriteria(new SaleSearchCriteria(exerciceBegin,exerciceEnd,BalanceType.POSITIVE)).getBalance());
@@ -111,11 +111,11 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 		
 		if(productCategory==null){
 			productCategories = productCategoryBusiness.findHierarchies();
-			salesResults = accountingPeriod.getSalesResults();
+			salesResults = accountingPeriod.getSaleResults();
 		}else{
 			productCategoryBusiness.findHierarchy(productCategory);
 			AccountingPeriodProductCategory accountingPeriodProductCategory = accountingPeriodProductCategoryBusiness.findByAccountingPeriodByProduct(accountingPeriod, productCategory);
-			salesResults = accountingPeriodProductCategory.getSalesResults();
+			salesResults = accountingPeriodProductCategory.getSaleResults();
 			contentTitle = productCategory.getName()+" / "+contentTitle;
 			if(productCategory.getChildren()==null){
 				products = productBusiness.findByCategory(productCategory);
@@ -138,7 +138,7 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 			turnoverBarChartModel = chartManager.barModel(configureCartesianModel(saleProductBusiness.findCartesianModelTurnOver(salesResultsCartesianModelParameters)));
 	        countBarChartModel = chartManager.barModel(configureCartesianModel(saleProductBusiness.findCartesianModelCount(salesResultsCartesianModelParameters)));
 	        
-			salesResultsDetails = (FormOneData<SalesResultsDetails>) createFormOneData(new SalesResultsDetails(salesResults), Crud.READ);
+			//salesResultsDetails = (FormOneData<SalesResultsDetails>) createFormOneData(new SaleResultsDetails(salesResults), Crud.READ);
 			configureDetailsForm(salesResultsDetails);
 			salesResultsDetails.getControlSetListeners().add(new ControlSetAdapter<SalesResultsDetails>(){
 				@Override
@@ -228,9 +228,9 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 	public class SalesResultsDetails implements Serializable {
 		private static final long serialVersionUID = -1498269103849317057L;
 		@Input @InputText private String turnover,valueAddedTaxes;
-		public SalesResultsDetails(SalesResults salesResults) {
-			turnover = numberBusiness.format(salesResults.getTurnover());
-			valueAddedTaxes = numberBusiness.format(salesResults.getValueAddedTaxes());
+		public SalesResultsDetails(SaleResults salesResults) {
+			turnover = numberBusiness.format(salesResults.getCost().getTurnover());
+			valueAddedTaxes = numberBusiness.format(salesResults.getCost().getTax());
 		}
 	}
 	
@@ -246,8 +246,8 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 				this.code = ((AccountingPeriodProduct)product).getEntity().getCode();
 				this.name = ((AccountingPeriodProduct)product).getEntity().getName();
 			}
-			this.numberOfSales = numberBusiness.format(product.getSalesResults().getCount());
-			this.turnover = numberBusiness.format(product.getSalesResults().getTurnover());
+			this.numberOfSales = numberBusiness.format(product.getSaleResults().getCost().getValue());
+			this.turnover = numberBusiness.format(product.getSaleResults().getCost().getTurnover());
 		}
 	}
 		

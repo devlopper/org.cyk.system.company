@@ -1,7 +1,8 @@
-package org.cyk.system.company.ui.web.primefaces.page.product;
+package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.CustomerReportTableRow;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.ui.api.model.table.ColumnAdapter;
@@ -20,7 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
-public class CustomerSaleStockPage extends AbstractPrimefacesPage implements Serializable {
+public class CustomerBalancePage extends AbstractPrimefacesPage implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
@@ -31,36 +33,45 @@ public class CustomerSaleStockPage extends AbstractPrimefacesPage implements Ser
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		contentTitle = text("company.command.customer.salestock");
+		
 	}
 	
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
 		Collection<CustomerReportTableRow> details = new ArrayList<>();
-		for(Customer customer : customerBusiness.findAll())
+		String balanceType = requestParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType());
+		final Boolean all = CompanyReportRepository.getInstance().getParameterCustomerBalanceAll().equals(balanceType);
+		contentTitle = all?text("company.command.customer.balance"):text("field.credence");
+		/*
+		Collection<Customer> customers = all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
+		for(Customer customer : customers)
 			details.add(new CustomerReportTableRow(customer));
-		
-		table = createDetailsTable(CustomerReportTableRow.class, new DetailsConfigurationListener.Table.Adapter<Customer, CustomerReportTableRow>(Customer.class, CustomerReportTableRow.class){
-			private static final long serialVersionUID = 1L;
+		*/
+		table = createDetailsTable(CustomerReportTableRow.class, new DetailsConfigurationListener.Table.Adapter<Customer,CustomerReportTableRow>(Customer.class, CustomerReportTableRow.class){
+			private static final long serialVersionUID = -6570916902889942385L;
+			@Override
+			public Collection<Customer> getIdentifiables() {
+				return all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
+			}
 			@Override
 			public ColumnAdapter getColumnAdapter() {
 				return new ColumnAdapter(){
 					@Override
 					public Boolean isColumn(Field field) {
-						return CustomerReportTableRow.saleStockFieldIgnored(field);
+						return all?CustomerReportTableRow.balanceFieldIgnored(field):
+							CustomerReportTableRow.credenceFieldIgnored(field);
 					}
 				};
 			}
 		});	
-		/*
 		table.setShowHeader(Boolean.FALSE);
 		table.setShowFooter(Boolean.FALSE);
 		table.setShowToolBar(Boolean.TRUE);
 		table.setIdentifiableClass(Customer.class);
 		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerReportType(), 
-				CompanyReportRepository.getInstance().getParameterCustomerReportSaleStock());
-				*/
+				CompanyReportRepository.getInstance().getParameterCustomerReportBalance());
+		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), balanceType);
 	}
 	
 }

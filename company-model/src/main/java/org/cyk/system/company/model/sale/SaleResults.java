@@ -1,4 +1,4 @@
-package org.cyk.system.company.model.accounting;
+package org.cyk.system.company.model.sale;
 
 import java.io.Serializable;
 
@@ -22,6 +22,12 @@ public class SaleResults extends AbstractModelElement implements Serializable {
 	public String getUiString() {
 		return toString();
 	}
+	
+	public Cost getCost(){
+		if(cost==null)
+			cost = new Cost();
+		return cost;
+	}
 
 	@Override
 	public String getLogMessage() {
@@ -30,4 +36,5 @@ public class SaleResults extends AbstractModelElement implements Serializable {
 	
 	private static final String LOG_FORMAT = SaleResults.class.getSimpleName()+"(%s)";
 	
+	public static final String FIELD_COST = "cost";
 }

@@ -29,9 +29,6 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 	void create(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement,Boolean produceReport);
 	void create(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement);
 	
-	void complete(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement,Boolean produceReport);
-	void complete(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement);
-	
 	Collection<Sale> findByCriteria(SaleSearchCriteria criteria);
 	Long countByCriteria(SaleSearchCriteria criteria);
 	

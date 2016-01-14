@@ -12,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import org.cyk.system.company.model.sale.SaleResults;
+import org.cyk.system.company.model.stock.StockResults;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.model.event.AbstractIdentifiablePeriod;
 

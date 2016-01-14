@@ -3,6 +3,7 @@ package org.cyk.system.company.business.impl.integration;
 import java.math.BigDecimal;
 
 import org.cyk.system.company.model.sale.Customer;
+import org.cyk.utility.common.test.ExpectedValues;
 
 public class SaleResultsIT extends AbstractBusinessIT {
 
@@ -22,6 +23,8 @@ public class SaleResultsIT extends AbstractBusinessIT {
     	companyBusinessTestHelper.createSale("nt1", null, null, "C1", new String[][]{{"TP1","2"}}, "0","false", "2000", "0", "2000", "2000", "2000");
     	companyBusinessTestHelper.assertCurrentAccountingPeriodSaleResults("1", "2000", "0", "2000");
     	companyBusinessTestHelper.assertCurrentAccountingPeriodProductSaleResults("TP1", "2", "2000", "0", "2000");
+    	companyBusinessTestHelper.assertCustomer("C1", new ExpectedValues().setClass(Customer.class).setValues(
+    			Customer.FIELD_SALE_COUNT,"1",Customer.FIELD_BALANCE,"2000",Customer.FIELD_TURNOVER,"2000"));
     	
     	companyBusinessTestHelper.createSale("nt2", null, null, "C2", new String[][]{{"IP2","3"}}, "2100","false", "2100", "0", "2100", "0", "0");
     	companyBusinessTestHelper.assertCurrentAccountingPeriodProductSaleResults("IP2", "3", "2100", "0", "2100");
@@ -33,8 +36,7 @@ public class SaleResultsIT extends AbstractBusinessIT {
     	companyBusinessTestHelper.createSale("nt4", null, null, "C4", new String[][]{{"TP3","2"}}, "1800","false", "1000", "0", "1000", "-800", "-800");
     	companyBusinessTestHelper.assertCurrentAccountingPeriodProductSaleResults("TP3", "5", "2500", "0", "2500");
     	
-    	companyBusinessTestHelper.createSale("nt5", null, null, "C5"
-    			, new String[][]{{"TP3","2"},{"IP2","1"},{"TP1","3"}}, "5000","false", "4700", "0", "4700", "-300", "-300");
+    	companyBusinessTestHelper.createSale("nt5", null, null, "C5", new String[][]{{"TP3","2"},{"IP2","1"},{"TP1","3"}}, "5000","false", "4700", "0", "4700", "-300", "-300");
     	//companyBusinessTestHelper.assertCurrentAccountingPeriodProductSaleResults("TP1", "2", "2000", "0", "2000");
     	
     	companyBusinessTestHelper.createSale("nt6", null, null, "C5", new String[][]{{"TP3","2"}}, "1800","false", "1000", "0", "1000", "-800", "-1100");

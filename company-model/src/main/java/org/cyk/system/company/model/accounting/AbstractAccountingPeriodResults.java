@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import org.cyk.system.company.model.product.ProductResults;
+import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.root.model.AbstractIdentifiable;
 
 @Getter @Setter @NoArgsConstructor @MappedSuperclass
@@ -22,7 +24,7 @@ public abstract class AbstractAccountingPeriodResults<ENTITY extends AbstractIde
 	
 	@Embedded protected SaleResults saleResults = new SaleResults();
 	
-	@Embedded protected ProductResults results;
+	@Embedded protected ProductResults productResults = new ProductResults();
 
 	public AbstractAccountingPeriodResults(AccountingPeriod accountingPeriod,ENTITY entity) {
 		super();
@@ -30,14 +32,21 @@ public abstract class AbstractAccountingPeriodResults<ENTITY extends AbstractIde
 		this.entity = entity;
 	}	
 	
-	@Override
-	public String toString() {
-		return entity+"/"+saleResults;
+	public SaleResults getSaleResults(){
+		if(saleResults==null)
+			saleResults = new SaleResults();
+		return saleResults;
 	}
 	
-	@Override
-	public String getUiString() {
-		return toString();
+	public ProductResults getProductResults(){
+		if(productResults==null)
+			productResults = new ProductResults();
+		return productResults;
 	}
+	
+	public static final String FIELD_ACCOUNTING_PERIOD = "accountingPeriod";
+	public static final String FIELD_ENTITY = "entity";
+	public static final String FIELD_SALE_RESULTS = "saleResults";
+	public static final String FIELD_PRODUCT_RESULTS = "productResults";
 	
 }
