@@ -77,7 +77,7 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 	@Override
 	public void create(SaleStockInput saleStockInput,SaleCashRegisterMovement saleCashRegisterMovement) {
 		logDebug("Create sale stock input");
-		saleBusiness.create(saleStockInput.getSale(), saleCashRegisterMovement,Boolean.FALSE);
+		//saleBusiness.create(saleStockInput.getSale(), saleCashRegisterMovement,Boolean.FALSE);
 		InvoiceParameters previous = new InvoiceParameters(saleStockInput, saleCashRegisterMovement);
 		
 		saleStockInput.getTangibleProductStockMovement().setDate(saleStockInput.getSale().getDate());

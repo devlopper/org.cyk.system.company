@@ -42,25 +42,25 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     @Override
     protected void businesses() {
     	updateAccountingPeriod(new BigDecimal("0.18"), Boolean.TRUE);
-    	companyBusinessTestHelper.createSale("nt1", null, null, "C1", new String[][]{{"TP1","2"}}, "0","false", "2000", "0", "2000", "2000", "2000");
+    	companyBusinessTestHelper.createSale("nt1", null, null, "C1", new String[][]{{"TP1","2"}}, "0","false");
     	noTax1NotPaid();
     
-    	companyBusinessTestHelper.createSale("nt2", null, null, "C2", new String[][]{{"IP2","3"}}, "2100","false", "2100", "0", "2100", "0", "0");
+    	companyBusinessTestHelper.createSale("nt2", null, null, "C2", new String[][]{{"IP2","3"}}, "2100","false");
     	noTax2AllPaid();	
     
-    	companyBusinessTestHelper.createSale("nt3", null, null, "C3", new String[][]{{"TP3","3"}}, "600","false", "1500", "0", "1500", "900", "900");
+    	companyBusinessTestHelper.createSale("nt3", null, null, "C3", new String[][]{{"TP3","3"}}, "600","false");
     	noTax3SomePaid();
     	
-    	companyBusinessTestHelper.createSale("nt4", null, null, "C4", new String[][]{{"TP3","2"}}, "1800","false", "1000", "0", "1000", "-800", "-800");
+    	companyBusinessTestHelper.createSale("nt4", null, null, "C4", new String[][]{{"TP3","2"}}, "1800","false");
     	noTax4MorePaid1();
     	
-    	companyBusinessTestHelper.createSale("nt5", null, null, "C5", new String[][]{{"TP3","2"},{"IP2","1"},{"TP1","3"}}, "5000","false", "4700", "0", "4700", "-300", "-300");
+    	companyBusinessTestHelper.createSale("nt5", null, null, "C5", new String[][]{{"TP3","2"},{"IP2","1"},{"TP1","3"}}, "5000","false");
     	noTax5MorePaid2();
     	
-    	companyBusinessTestHelper.createSale("nt6", null, null, "C5", new String[][]{{"TP3","2"}}, "1800","false", "1000", "0", "1000", "-800", "-1100");
+    	companyBusinessTestHelper.createSale("nt6", null, null, "C5", new String[][]{{"TP3","2"}}, "1800","false");
     	noTax6MorePaid3();
     	
-    	companyBusinessTestHelper.createSale("nt7", null, null, "C5np", new String[][]{{"TP4","1","3700"}}, "3700","false", "3700", "0", "3700", "0", "0");
+    	companyBusinessTestHelper.createSale("nt7", null, null, "C5np", new String[][]{{"TP4","1","3700"}}, "3700","false");
     	noTax7AllPaidNoUnitPrice();
     	
     	//TODO to be handled

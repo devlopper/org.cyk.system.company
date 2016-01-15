@@ -15,7 +15,6 @@ import lombok.Setter;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness.SaleBusinessAdapter;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockBusiness;
@@ -33,7 +32,6 @@ import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
-import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockInput;
@@ -52,8 +50,10 @@ import org.cyk.system.root.business.impl.AbstractBusinessTestHelper;
 import org.cyk.system.root.business.impl.RootDataProducerHelper;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.party.person.Person;
+import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineAlphabetDao;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.test.ExpectedValues;
@@ -83,20 +83,11 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     @Inject private AccountingPeriodDao accountingPeriodDao;
     @Inject private AccountingPeriodProductDao accountingPeriodProductDao;
     @Inject private FiniteStateMachineStateDao finiteStateMachineStateDao;
+    @Inject private FiniteStateMachineAlphabetDao finiteStateMachineAlphabetDao;
     @Inject private SaleDao saleDao;
     
     @Getter @Setter private Boolean saleAutoCompleted = Boolean.TRUE;
 	
-    static{
-    	SaleBusiness.LISTENERS.add(new SaleBusinessAdapter(){
-			private static final long serialVersionUID = -6866817416681636762L;
-    		@Override
-    		public void reportCreated(SaleBusiness saleBusiness, SaleReport saleReport, Boolean invoice) {
-    			//assertSaleReport(saleReport, invoice);
-    		}
-    	});
-    }
-    
 	@Override
 	protected void initialisation() {
 		INSTANCE = this; 
@@ -127,7 +118,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		cashRegisterMovement.getMovement().setValue(new BigDecimal(amount));
 	}
 	
-	public void set(Sale sale,String identifier,String date,String cashierCode,String customerCode,String[][] products,String taxable,String finiteStateMachineStateCode){
+	public void set(Sale sale,String identifier,String date,String cashierCode,String customerCode,String[][] products,String taxable){
 		sale.setComputedIdentifier(identifier);
 		sale.setAccountingPeriod(accountingPeriodDao.select().one());
 		if(cashierCode==null)
@@ -150,8 +141,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	sale.setComments(RandomStringUtils.randomAlphabetic(10));
     	if(customerCode!=null)
     		sale.setCustomer(customerDao.readByRegistrationCode(customerCode));
-    	if(finiteStateMachineStateCode!=null)
-    		sale.setFiniteStateMachineState(finiteStateMachineStateDao.read(finiteStateMachineStateCode));
     }
 	
 	public void set(SaleStockInput saleStockInput,Customer customer,String externalIdentifier,String cost,String commission,String quantity,Date date){
@@ -221,19 +210,12 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	
 	/* Sale */
 	
-    public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable
-    		,String finiteStateMachineStateCode,String expectedCost,String expectedTax,String expectedTurnover,String expectedBalance,String expectedCumulBalance){
+    public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable){
     	Sale sale = saleBusiness.newInstance(cashierDao.select().one().getPerson());
-    	set(sale,identifier,date, cashierCode, customerCode, products, taxable,finiteStateMachineStateCode);
+    	set(sale,identifier,date, cashierCode, customerCode, products, taxable);
     	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, sale.getCashier().getPerson(),Boolean.TRUE);
     	set(saleCashRegisterMovement, paid);
     	saleBusiness.create(sale,saleCashRegisterMovement);
-    	
-    	sale = saleBusiness.load(sale.getIdentifier());
-    	
-    	assertCost(sale.getCost(), expectedCost, expectedTax, expectedTurnover);
-    	assertBalance(sale.getBalance(), expectedBalance, expectedCumulBalance);
-    	
     	   	
     	/*if(Boolean.TRUE.equals(printPos)){
     		writeReport(saleBusiness.findReport(sale));
@@ -243,9 +225,11 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	}*/
     	return sale;
     }
-    public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable
-    		,String expectedCost,String expectedTax,String expectedTurnover,String expectedBalance,String expectedCumulBalance){
-    	return createSale(identifier, date, cashierCode, customerCode, products, paid, taxable,null, expectedCost, expectedTax, expectedTurnover, expectedBalance, expectedCumulBalance);
+    
+    public void updateSale(String identifier,String finiteStateMachineAlphabetCode){
+    	Sale sale = saleDao.readByComputedIdentifier(identifier);
+    	FiniteStateMachineAlphabet finiteStateMachineAlphabet = finiteStateMachineAlphabetDao.read(finiteStateMachineAlphabetCode);
+    	CompanyBusinessLayer.getInstance().getSaleBusiness().update(sale, finiteStateMachineAlphabet);
     }
     
 	public Sale sell(Date date,Person person,Customer customer,String[] products,String paid,Boolean printPos,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
