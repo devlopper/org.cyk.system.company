@@ -13,6 +13,7 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.sale.SalesDetails;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
+import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;
@@ -29,7 +30,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	private static final BigDecimal BALANCE_ZERO_MIN=new BigDecimal("-0."+StringUtils.repeat('0', 18)+"1"),BALANCE_ZERO_MAX=new BigDecimal("0."+StringUtils.repeat('0', 18)+"1");
 	
 	private String readAllSortedByDate,readByComputedIdentifier,readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,computeByCriteria
-		,computeByCriteriaWhereCashRegisterMovementNotExists,computeByCriteriaWhereCashRegisterMovementExists/*,readByComputedIdentifier/*,sumBalanceByCustomerCriteria*/;
+		,computeByCriteriaWhereCashRegisterMovementNotExists,computeByCriteriaWhereCashRegisterMovementExists;
 	
 	@Override
     protected void namedQueriesInitialisation() {
@@ -76,6 +77,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 		.and().between(Sale.FIELD_DATE)
 		.and()
 		.between(commonUtils.attributePath(Sale.FIELD_BALANCE,Balance.FIELD_VALUE), Constant.CHARACTER_COLON+PARAM_BALANCE_MIN, Constant.CHARACTER_COLON+PARAM_BALANCE_MAX)
+		.and().in(commonUtils.attributePath(Sale.FIELD_FINITE_STATE_MACHINE_STATE,AbstractIdentifiable.FIELD_IDENTIFIER), PARAM_FINITE_STATE_MACHINE_STATE_IDENTIFIERS)
 		;
 	}
 	
@@ -90,12 +92,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	public Sale readByComputedIdentifier(String identifier) {
 		return namedQuery(readByComputedIdentifier).parameter(Sale.FIELD_COMPUTED_IDENTIFIER, identifier).ignoreThrowable(NoResultException.class).resultOne();
 	}
-	/*
-	@Override
-	public Collection<Sale> readByPeriod(Period period) {
-		return namedQuery(readByPeriod).resultMany();
-	}
-	*/
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Sale> readByCriteria(SaleSearchCriteria searchCriteria) {
@@ -142,6 +139,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 		super.applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		SaleSearchCriteria saleSearchCriteria = (SaleSearchCriteria) searchCriteria;
 		queryWrapper.parameterLike(Sale.FIELD_COMPUTED_IDENTIFIER,saleSearchCriteria.getIdentifierStringSearchCriteria().getPreparedValue());
+		queryWrapper.parameterIdentifiers(PARAM_FINITE_STATE_MACHINE_STATE_IDENTIFIERS, saleSearchCriteria.getFiniteStateMachineStates());
 		//queryWrapper.parameterIdentifiers(saleSearchCriteria.getCustomers());
 		BigDecimal minBalance=BALANCE_ZERO_MIN,maxBalance=BALANCE_ZERO_MAX;
 		if(saleSearchCriteria.getBalanceTypes().contains(BalanceType.NEGAITVE)){
@@ -161,6 +159,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 		queryWrapper.parameter(PARAM_BALANCE_MAX,maxBalance);
 	}
 	
+	public static final String PARAM_FINITE_STATE_MACHINE_STATE_IDENTIFIERS = "finiteStateMachineStateIdentifiers";
 	public static final String PARAM_BALANCE_MIN = "minBalance";
 	public static final String PARAM_BALANCE_MAX = "maxBalance";
 

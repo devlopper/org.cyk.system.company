@@ -27,6 +27,7 @@ import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
+import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
@@ -47,17 +48,14 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	@Embedded private Cost cost = new Cost();
 	
 	@Temporal(TemporalType.TIMESTAMP) @Column(nullable=false) @NotNull private Date date;
+	
 	@Embedded private Balance balance = new Balance();
 	
-	@ManyToOne private FiniteStateMachineState finiteStateMachineState;
+	@ManyToOne @NotNull private FiniteStateMachineState finiteStateMachineState;
 	
 	@OneToOne private File report;
 	
-	//@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.MERGE,orphanRemoval=true)
-	//private Set<ProductEmployee> performers = new HashSet<>();
-	
-	@Column(length=1024*1)
-	private String comments;
+	@Column(length=1024*1) private String comments;
 	
 	/**/
 	
@@ -69,7 +67,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	@Override
 	public String getLogMessage() {
-		return String.format(LOG_FORMAT,identifier,computedIdentifier,autoComputeValueAddedTax,cost.getLogMessage(),balance.getLogMessage()
+		return String.format(LOG_FORMAT,identifier,computedIdentifier,finiteStateMachineState==null?Constant.EMPTY_STRING:finiteStateMachineState.getCode(),autoComputeValueAddedTax,cost.getLogMessage(),balance.getLogMessage()
 				,customer==null?"":customer.getRegistration().getCode(),accountingPeriod.getLogMessage());
 	}
 	
@@ -82,6 +80,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	public static final String FIELD_DATE = "date";
 	public static final String FIELD_COST = "cost";
 	public static final String FIELD_BALANCE = "balance";
+	public static final String FIELD_FINITE_STATE_MACHINE_STATE = "finiteStateMachineState";
 	
-	private static final String LOG_FORMAT = "Sale(ID=%s|%s ATX=%s %s %s CUST=%s %s)";
+	private static final String LOG_FORMAT = "Sale(ID=%s|%s STATE=%s ATX=%s %s %s CUST=%s %s)";
 }

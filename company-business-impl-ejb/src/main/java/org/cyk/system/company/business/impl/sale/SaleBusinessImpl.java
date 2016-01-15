@@ -48,6 +48,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		sale.setAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent());
 		sale.setCashier(CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson(person));
 		sale.setAutoComputeValueAddedTax(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().signum()!=0);
+		sale.setFiniteStateMachineState(sale.getAccountingPeriod().getSaleConfiguration().getFiniteStateMachine().getInitialState());
 		logInstanceCreated(sale);
 		return sale;
 	}

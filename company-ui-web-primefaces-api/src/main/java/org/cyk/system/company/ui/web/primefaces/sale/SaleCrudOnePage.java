@@ -121,7 +121,7 @@ public class SaleCrudOnePage extends AbstractCrudOnePage<Sale> implements Serial
 	@Override
 	protected void create() {
 		identifiable.setCustomer(selectedCustomer);
-		//saleBusiness.create(identifiable, cashRegisterController.getSaleCashRegisterMovement());
+		saleBusiness.create(identifiable, cashRegisterController.getSaleCashRegisterMovement());
 	}
 	
 	@Override

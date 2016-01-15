@@ -9,9 +9,9 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
-import org.cyk.system.company.model.accounting.StockConfiguration;
 import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.product.TangibleProductStockMovementSearchCriteria;
+import org.cyk.system.company.model.stock.StockConfiguration;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.product.TangibleProductStockMovementDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;

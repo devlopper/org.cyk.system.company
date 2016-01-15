@@ -282,6 +282,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		//ownedCompanyBusiness.create(ownedCompany);
 		installObject(-1,ownedCompanyBusiness,ownedCompany);
 		
+		rootDataProducerHelper.createFiniteStateMachine("SALE_FINITE_MACHINE_STATE"
+    			, new String[]{"SALE_FINITE_MACHINE_ALPHABET_VALID"}
+    		, new String[]{"SALE_FINITE_MACHINE_STATE_FINAL"}
+    		, "SALE_FINITE_MACHINE_STATE_FINAL", new String[]{"SALE_FINITE_MACHINE_STATE_FINAL"}, new String[][]{
+    			{"SALE_FINITE_MACHINE_STATE_FINAL","SALE_FINITE_MACHINE_ALPHABET_VALID","SALE_FINITE_MACHINE_STATE_FINAL"}
+    	});
+		
 		AccountingPeriod accountingPeriod = new AccountingPeriod();
 		accountingPeriod.setOwnedCompany(ownedCompany);
 		Integer currentYear = new DateTime().getYear();
@@ -291,6 +298,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		accountingPeriod.getSaleConfiguration().setValueAddedTaxRate(BigDecimal.ZERO);
 		accountingPeriod.getSaleConfiguration().setIdentifierGenerator(stringGenerator("FACT","0", 8l, null, null,8l));
 		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(stringGenerator("PAIE","0", 8l, null, null,8l));
+		
 		
 		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getIdentifierGenerator());
 		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());

@@ -27,7 +27,7 @@ public abstract class AbstractSaleStockSearchCriteria extends DefaultSearchCrite
 		super(fromDate,toDate);
 		this.minimumQuantity = minimumQuantity;
 		saleSearchCriteria = new SaleSearchCriteria(fromDate,toDate);
-		saleSearchCriteria.setDone(saleDone);
+		//saleSearchCriteria.setDone(saleDone);
 	}
 	
 	public AbstractSaleStockSearchCriteria(Date fromDate,Date toDate) {

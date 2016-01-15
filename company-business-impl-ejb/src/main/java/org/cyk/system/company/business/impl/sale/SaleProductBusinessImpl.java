@@ -51,10 +51,13 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 
 	@Override
 	public void process(SaleProduct saleProduct) {
-		logIdentifiable("Processing",saleProduct);
+		//logIdentifiable("Processing",saleProduct);
 		if(saleProduct.getSalableProduct().getPrice()==null){
 		
 		}else{
+			/*
+			 * This product has a unit price so we can compute the cost to be paid
+			 */
 			BigDecimal cost = saleProduct.getSalableProduct().getPrice()
 					.multiply(saleProduct.getQuantity())
 					.subtract(saleProduct.getReduction())
@@ -62,13 +65,19 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 			saleProduct.getCost().setValue(cost);
 		}
 		
-		if(Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax())){
-			saleProduct.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getCost().getValue()));
-		}else if(saleProduct.getCost().getTax()==null)
-			saleProduct.getCost().setTax(BigDecimal.ZERO);
-		saleProduct.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(saleProduct.getSale().getAccountingPeriod()
-				, saleProduct.getCost().getValue(),saleProduct.getCost().getTax()));
-		
+		if(saleProduct.getCost().getValue()==null){
+			
+		}else{
+			/*
+			 * This product has a cost so we can compute the taxes to be paid
+			 */
+			if(Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax())){
+				saleProduct.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getCost().getValue()));
+			}else if(saleProduct.getCost().getTax()==null)
+				saleProduct.getCost().setTax(BigDecimal.ZERO);
+			saleProduct.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(saleProduct.getSale().getAccountingPeriod()
+					, saleProduct.getCost().getValue(),saleProduct.getCost().getTax()));	
+		}
 		logIdentifiable("Processed",saleProduct);
 	}
 	

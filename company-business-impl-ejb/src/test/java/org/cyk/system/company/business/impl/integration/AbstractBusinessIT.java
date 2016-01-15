@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.UserTransaction;
 
 
+
 //import static org.hamcrest.Matchers.*;
 //import static org.hamcrest.MatcherAssert.*;
 import org.apache.commons.io.IOUtils;
@@ -51,6 +52,7 @@ import org.cyk.system.root.business.impl.validation.ValidatorMap;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.report.AbstractReport;
 import org.cyk.system.root.model.security.Installation;
+import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.system.root.persistence.impl.GenericDaoImpl;
 import org.cyk.system.root.persistence.impl.PersistenceIntegrationTestHelper;
 import org.cyk.utility.common.test.TestEnvironmentListener;
@@ -101,6 +103,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 	@Inject protected SaleDao saleDao;
 	@Inject protected AccountingPeriodProductDao accountingPeriodProductDao;
 	@Inject protected SalableProductDao salableProductDao;
+	@Inject protected FiniteStateMachineStateDao finiteStateMachineStateDao;
 	@Inject protected UserTransaction userTransaction;
     
 	static {
@@ -276,7 +279,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 			Sale sale = new Sale();
 			int i = 0;
 			companyBusinessTestHelper.set(sale, (String)infos[i++],(String)infos[i++], (String)infos[i++], (String)infos[i++],(String[][])infos[i++]
-					,(String)infos[i++]);
+					,(String)infos[i++],null);
 			create(sale);
 		}
 	}

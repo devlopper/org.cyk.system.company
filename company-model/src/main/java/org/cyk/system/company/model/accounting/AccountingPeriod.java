@@ -12,7 +12,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import org.cyk.system.company.model.sale.SaleConfiguration;
 import org.cyk.system.company.model.sale.SaleResults;
+import org.cyk.system.company.model.stock.StockConfiguration;
 import org.cyk.system.company.model.stock.StockResults;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.model.event.AbstractIdentifiablePeriod;
@@ -34,7 +36,7 @@ public class AccountingPeriod extends AbstractIdentifiablePeriod implements Seri
 	
 	@Override
 	public String getLogMessage() {
-		return String.format(LOG_FORMAT,saleConfiguration,saleResults);
+		return String.format(LOG_FORMAT,saleConfiguration.getLogMessage(),saleResults.getLogMessage());
 	}
 	
 	private static final String LOG_FORMAT = AccountingPeriod.class.getSimpleName()+"(%s %s)";

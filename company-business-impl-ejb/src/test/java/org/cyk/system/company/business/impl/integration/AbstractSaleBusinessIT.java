@@ -2,37 +2,86 @@ package org.cyk.system.company.business.impl.integration;
 
 import java.math.BigDecimal;
 
-import org.cyk.system.company.model.Balance;
-import org.cyk.system.company.model.Cost;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.sale.Customer;
-import org.cyk.utility.common.test.ExpectedValues;
+import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.impl.RootDataProducerHelper;
 
-public class SaleResultsIT extends AbstractSaleBusinessIT {
+public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
     
-    protected void businesses2() {
+    protected static final String SALE_FINITE_MACHINE_STATE = "custom_sale_finitemachinestate";
+    
+    protected static final String SALE_FINITE_MACHINE_ALPHABET_VALID = "custom_sale_finitemachinestate_valid";
+    
+    protected static final String SALE_FINITE_MACHINE_STATE_START = "custom_sale_finitemachinestate_start";
+    protected static final String SALE_FINITE_MACHINE_STATE_MIDDLE = "custom_sale_finitemachinestate_middle";
+    protected static final String SALE_FINITE_MACHINE_STATE_FINAL = "custom_sale_finitemachinestate_final";
+    
+    @Override
+    protected void populate() {
+    	super.populate();
+    	RootDataProducerHelper.getInstance().createFiniteStateMachine(SALE_FINITE_MACHINE_STATE
+    			, new String[]{SALE_FINITE_MACHINE_ALPHABET_VALID}
+    		, new String[]{SALE_FINITE_MACHINE_STATE_START,SALE_FINITE_MACHINE_STATE_MIDDLE,SALE_FINITE_MACHINE_STATE_FINAL}
+    		, SALE_FINITE_MACHINE_STATE_START, new String[]{SALE_FINITE_MACHINE_STATE_FINAL}, new String[][]{
+    			{SALE_FINITE_MACHINE_STATE_START,SALE_FINITE_MACHINE_ALPHABET_VALID,SALE_FINITE_MACHINE_STATE_MIDDLE}
+    			,{SALE_FINITE_MACHINE_STATE_MIDDLE,SALE_FINITE_MACHINE_ALPHABET_VALID,SALE_FINITE_MACHINE_STATE_FINAL}
+    	});
+    	AccountingPeriod accountingPeriod = accountingPeriodBusiness.findCurrent();
+    	accountingPeriod.getSaleConfiguration().setFiniteStateMachine(RootBusinessLayer.getInstance().getFiniteStateMachineBusiness().find(SALE_FINITE_MACHINE_STATE));
+    	CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().update(accountingPeriod);
+    	
+    	rootBusinessTestHelper.createActors(Customer.class, new String[]{"C1","C2","C3","C4","C5","C5np","C6","C7","C8","C9","C10","C11","C12","C13","C14","C15"});
+    	createProducts(4, 4);
+    	createSalableProducts(new String[][]{ {"TP1", "1000"},{"TP3", "500"},{"TP4", null},{"IP2", "700"} });
+    }
+           
+    @Override
+    protected void businesses() {
     	updateAccountingPeriod(new BigDecimal("0.18"), Boolean.TRUE);
     	companyBusinessTestHelper.createSale("nt1", null, null, "C1", new String[][]{{"TP1","2"}}, "0","false", "2000", "0", "2000", "2000", "2000");
-    	    	
-    	/*
+    	noTax1NotPaid();
+    
     	companyBusinessTestHelper.createSale("nt2", null, null, "C2", new String[][]{{"IP2","3"}}, "2100","false", "2100", "0", "2100", "0", "0");
-    	companyBusinessTestHelper.assertCurrentAccountingPeriodProductSaleResults("IP2", "3", "2100", "0", "2100");
-    	
+    	noTax2AllPaid();	
+    
     	companyBusinessTestHelper.createSale("nt3", null, null, "C3", new String[][]{{"TP3","3"}}, "600","false", "1500", "0", "1500", "900", "900");
+    	noTax3SomePaid();
+    	
+    	companyBusinessTestHelper.createSale("nt4", null, null, "C4", new String[][]{{"TP3","2"}}, "1800","false", "1000", "0", "1000", "-800", "-800");
+    	noTax4MorePaid1();
+    	
+    	companyBusinessTestHelper.createSale("nt5", null, null, "C5", new String[][]{{"TP3","2"},{"IP2","1"},{"TP1","3"}}, "5000","false", "4700", "0", "4700", "-300", "-300");
+    	noTax5MorePaid2();
+    	
+    	companyBusinessTestHelper.createSale("nt6", null, null, "C5", new String[][]{{"TP3","2"}}, "1800","false", "1000", "0", "1000", "-800", "-1100");
+    	noTax6MorePaid3();
+    	
+    	companyBusinessTestHelper.createSale("nt7", null, null, "C5np", new String[][]{{"TP4","1","3700"}}, "3700","false", "3700", "0", "3700", "0", "0");
+    	noTax7AllPaidNoUnitPrice();
+    	
+    	//TODO to be handled
+    	//companyBusinessTestHelper.createSale("nt8", null, null, "C5np", new String[][]{{"TP1","3","2500"}}, "2500","false", "3700", "0", "3700", "0", "0");
+    	//noTax8AllPaidUnitPriceButCostValueSet();
+    	
+    	/*
+    	
     	companyBusinessTestHelper.assertCurrentAccountingPeriodSaleResults("3", "5600", "0", "5600");
     	companyBusinessTestHelper.assertCurrentAccountingPeriodProductSaleResults("TP3", "3", "1500", "0", "1500");
     	
-    	companyBusinessTestHelper.createSale("nt4", null, null, "C4", new String[][]{{"TP3","2"}}, "1800","false", "1000", "0", "1000", "-800", "-800");
+    	
     	companyBusinessTestHelper.assertCurrentAccountingPeriodProductSaleResults("TP3", "5", "2500", "0", "2500");
     	
-    	companyBusinessTestHelper.createSale("nt5", null, null, "C5", new String[][]{{"TP3","2"},{"IP2","1"},{"TP1","3"}}, "5000","false", "4700", "0", "4700", "-300", "-300");
+    	
     	//companyBusinessTestHelper.assertCurrentAccountingPeriodProductSaleResults("TP1", "2", "2000", "0", "2000");
     	
-    	companyBusinessTestHelper.createSale("nt6", null, null, "C5", new String[][]{{"TP3","2"}}, "1800","false", "1000", "0", "1000", "-800", "-1100");
+    	
     	//companyBusinessTestHelper.assertCurrentAccountingPeriodProductSaleResults("TP1", "2", "2000", "0", "2000");
     	
-    	//companyBusinessTestHelper.createSale("nt7", null, null, "C5np", new String[][]{{"TP4","1","3700"}}, "3700","false", "3700", "0", "3700", "0", "0");
+    	//
     	
     	companyBusinessTestHelper.assertCurrentAccountingPeriodSaleResults("6", "12300", "0", "12300");
     	//companyBusinessTestHelper.assertCurrentAccountingPeriodProductSaleResults("TP1", "2", "2000", "0", "2000");
@@ -79,65 +128,14 @@ public class SaleResultsIT extends AbstractSaleBusinessIT {
     	//companyBusinessTestHelper.assertCurrentAccountingPeriodSaleResults("18", "26600", "2239", "24721");
     	*/
     }
-
-	@Override
-	protected void noTax1NotPaid() {
-		companyBusinessTestHelper.assertSale("nt1", new ExpectedValues()
-		.setClass(Cost.class).setValues(Cost.FIELD_VALUE, "2000",Cost.FIELD_TAX, "0",Cost.FIELD_TURNOVER, "2000")
-		.setClass(Balance.class).setValues(Balance.FIELD_VALUE, "2000",Balance.FIELD_CUMUL, "2000"));
-		companyBusinessTestHelper.assertAccountingPeriod(new ExpectedValues()
-			.setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,"1",Cost.FIELD_VALUE, "2000",Cost.FIELD_TAX, "0",Cost.FIELD_TURNOVER, "2000"));
-		companyBusinessTestHelper.assertAccountingPeriodProduct("TP1",new ExpectedValues()
-			.setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,"2",Cost.FIELD_VALUE, "2000",Cost.FIELD_TAX, "0",Cost.FIELD_TURNOVER, "2000"));
-		companyBusinessTestHelper.assertCustomer("C1", new ExpectedValues()
-			.setClass(Customer.class).setValues(Customer.FIELD_SALE_COUNT,"1",Customer.FIELD_BALANCE,"2000",Customer.FIELD_TURNOVER,"2000"));
-		
-		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount("1");
-		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new String[]{SALE_FINITE_MACHINE_STATE_START}, "1");
-		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new String[]{SALE_FINITE_MACHINE_STATE_MIDDLE}, "0");
-		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new String[]{SALE_FINITE_MACHINE_STATE_FINAL}, "0");
-	}
-
-	@Override
-	protected void noTax2AllPaid() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void noTax3SomePaid() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void noTax4MorePaid1() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void noTax5MorePaid2() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void noTax6MorePaid3() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void noTax7AllPaidNoUnitPrice() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void noTax8AllPaidUnitPriceButCostValueSet() {
-		// TODO Auto-generated method stub
-		
-	}
+    
+    protected abstract void noTax1NotPaid();
+    protected abstract void noTax2AllPaid();
+    protected abstract void noTax3SomePaid();
+    protected abstract void noTax4MorePaid1();
+    protected abstract void noTax5MorePaid2();
+    protected abstract void noTax6MorePaid3();
+    protected abstract void noTax7AllPaidNoUnitPrice();
+    protected abstract void noTax8AllPaidUnitPriceButCostValueSet();
                 
 }

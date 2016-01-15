@@ -32,8 +32,11 @@ public class SalableProduct extends AbstractIdentifiable implements Serializable
 	@Input @InputChoice @InputOneChoice @InputOneCombo
 	@ManyToOne @NotNull private Product product;
 	
+	/**
+	 * The unit price of the product. null means the price will be determine at runtime
+	 */
 	@Input @InputNumber
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal price;
+	@Column(precision=10,scale=FLOAT_SCALE) private BigDecimal price;
 	
 	@Override
 	public String getLogMessage() {

@@ -47,6 +47,6 @@ public class SaleProduct extends AbstractIdentifiable implements Serializable {
 	
 	/**/
 	
-	private static final String LOG_FORMAT = "SaleProduct(%s Q=%s C=%s R=%s %s S=%s)";
+	private static final String LOG_FORMAT = SaleProduct.class.getSimpleName()+"(%s Q=%s C=%s R=%s %s S=%s)";
 
 }

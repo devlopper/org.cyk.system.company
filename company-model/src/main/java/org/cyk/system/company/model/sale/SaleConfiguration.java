@@ -1,4 +1,4 @@
-package org.cyk.system.company.model.accounting;
+package org.cyk.system.company.model.sale;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -33,7 +33,7 @@ public class SaleConfiguration extends AbstractModelElement implements Serializa
 
 	@OneToOne private StringGenerator cashRegisterMovementIdentifierGenerator;
 	
-	@OneToOne private FiniteStateMachine finiteStateMachine;
+	@OneToOne @NotNull private FiniteStateMachine finiteStateMachine;
 	
 	@OneToOne private ReportTemplate pointOfSaleReportTemplate;
 	

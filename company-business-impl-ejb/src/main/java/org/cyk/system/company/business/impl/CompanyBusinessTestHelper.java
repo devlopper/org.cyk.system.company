@@ -3,6 +3,8 @@ package org.cyk.system.company.business.impl;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -45,11 +47,14 @@ import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
+import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.impl.AbstractBusinessTestHelper;
 import org.cyk.system.root.business.impl.RootDataProducerHelper;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.party.person.Person;
+import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.test.ExpectedValues;
 import org.cyk.utility.common.test.TestEnvironmentListener.Try;
@@ -77,6 +82,8 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     @Inject private PersonDao personDao;
     @Inject private AccountingPeriodDao accountingPeriodDao;
     @Inject private AccountingPeriodProductDao accountingPeriodProductDao;
+    @Inject private FiniteStateMachineStateDao finiteStateMachineStateDao;
+    @Inject private SaleDao saleDao;
     
     @Getter @Setter private Boolean saleAutoCompleted = Boolean.TRUE;
 	
@@ -120,7 +127,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		cashRegisterMovement.getMovement().setValue(new BigDecimal(amount));
 	}
 	
-	public void set(Sale sale,String identifier,String date,String cashierCode,String customerCode,String[][] products,String taxable){
+	public void set(Sale sale,String identifier,String date,String cashierCode,String customerCode,String[][] products,String taxable,String finiteStateMachineStateCode){
 		sale.setComputedIdentifier(identifier);
 		sale.setAccountingPeriod(accountingPeriodDao.select().one());
 		if(cashierCode==null)
@@ -132,11 +139,19 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	if(products!=null)
 	    	for(String[] infos : products){
 	    		SalableProduct salableProduct = salableProductDao.readByProduct(productDao.read(infos[0]));
-	    		saleBusiness.selectProduct(sale, salableProduct,commonUtils.getBigDecimal(infos[1]));
+	    		SaleProduct saleProduct = saleBusiness.selectProduct(sale, salableProduct,commonUtils.getBigDecimal(infos[1]));
+	    		if(salableProduct.getPrice()==null){
+	    			saleProduct.getCost().setValue(commonUtils.getBigDecimal(infos[2]));
+	    			saleBusiness.applyChange(sale, saleProduct);
+	    		}else{
+	    				
+	    		}
 	    	}
     	sale.setComments(RandomStringUtils.randomAlphabetic(10));
     	if(customerCode!=null)
     		sale.setCustomer(customerDao.readByRegistrationCode(customerCode));
+    	if(finiteStateMachineStateCode!=null)
+    		sale.setFiniteStateMachineState(finiteStateMachineStateDao.read(finiteStateMachineStateCode));
     }
 	
 	public void set(SaleStockInput saleStockInput,Customer customer,String externalIdentifier,String cost,String commission,String quantity,Date date){
@@ -207,9 +222,9 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	/* Sale */
 	
     public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable
-    		,String expectedCost,String expectedTax,String expectedTurnover,String expectedBalance,String expectedCumulBalance){
+    		,String finiteStateMachineStateCode,String expectedCost,String expectedTax,String expectedTurnover,String expectedBalance,String expectedCumulBalance){
     	Sale sale = saleBusiness.newInstance(cashierDao.select().one().getPerson());
-    	set(sale,identifier,date, cashierCode, customerCode, products, taxable);
+    	set(sale,identifier,date, cashierCode, customerCode, products, taxable,finiteStateMachineStateCode);
     	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, sale.getCashier().getPerson(),Boolean.TRUE);
     	set(saleCashRegisterMovement, paid);
     	saleBusiness.create(sale,saleCashRegisterMovement);
@@ -227,6 +242,10 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     			writeReport(saleCashRegisterMovementBusiness.findReport(saleCashRegisterMovement));
     	}*/
     	return sale;
+    }
+    public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable
+    		,String expectedCost,String expectedTax,String expectedTurnover,String expectedBalance,String expectedCumulBalance){
+    	return createSale(identifier, date, cashierCode, customerCode, products, paid, taxable,null, expectedCost, expectedTax, expectedTurnover, expectedBalance, expectedCumulBalance);
     }
     
 	public Sale sell(Date date,Person person,Customer customer,String[] products,String paid,Boolean printPos,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
@@ -411,8 +430,41 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     
     public void assertCustomer(String registrationCode,ExpectedValues expectedValues){
     	Customer customer = customerDao.readByRegistrationCode(registrationCode);
-    	//assertBigDecimalEquals("Sale count", expectedValues.get(Customer.FIELD_SALE_COUNT), customer.getSaleCount());
     	doAssertions(customer, expectedValues);
+    }
+    
+    public void assertSale(String computedIdentifier,ExpectedValues expectedValues){
+    	Sale sale = saleDao.readByComputedIdentifier(computedIdentifier);
+    	doAssertions(sale, expectedValues);
+    	doAssertions(sale.getBalance(), expectedValues);
+    	doAssertions(sale.getCost(), expectedValues);
+    }
+    public void assertSaleFiniteStateMachineStateCount(String[] finiteStateMachineStateCodes,String expectedCount){
+    	SaleSearchCriteria saleSearchCriteria = new SaleSearchCriteria();
+    	for(String finiteStateMachineStateCode : finiteStateMachineStateCodes){
+    		saleSearchCriteria.getFiniteStateMachineStates().add(finiteStateMachineStateDao.read(finiteStateMachineStateCode));
+    	}
+    	assertEquals("Sale search criteria "+StringUtils.join(finiteStateMachineStateCodes)+" count", expectedCount
+    			, CompanyBusinessLayer.getInstance().getSaleBusiness().countByCriteria(saleSearchCriteria).toString());
+    }
+    public void assertSaleFiniteStateMachineStateCount(String expectedCount){
+    	Set<String> codes = new HashSet<>();
+    	for(FiniteStateMachineState finiteStateMachineState : finiteStateMachineStateDao.readAll())
+    		codes.add(finiteStateMachineState.getCode());
+    	assertSaleFiniteStateMachineStateCount(codes.toArray(new String[]{}),expectedCount);
+    }
+    
+    public void assertAccountingPeriodProduct(String productCode,ExpectedValues expectedValues){
+    	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByProduct(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
+    	doAssertions(accountingPeriodProduct.getSaleResults().getCost(), expectedValues);
+    	doAssertions(accountingPeriodProduct.getProductResults().getNumberOfSalesSort(), expectedValues);
+    }
+    
+    public void assertAccountingPeriod(AccountingPeriod accountingPeriod,ExpectedValues expectedValues){
+    	doAssertions(accountingPeriod.getSaleResults().getCost(), expectedValues);
+    }
+    public void assertAccountingPeriod(ExpectedValues expectedValues){
+    	assertAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), expectedValues);
     }
 	
 	/**/

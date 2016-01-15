@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.model.payment.BalanceType;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.search.DefaultSearchCriteria;
 
 @Getter @Setter
@@ -18,7 +19,8 @@ public class SaleSearchCriteria extends DefaultSearchCriteria implements Seriali
 
 	private Collection<BalanceType> balanceTypes = new ArrayList<>();
 	private Collection<Customer> customers = new ArrayList<>();
-	private Boolean done = Boolean.TRUE,hasAtLeastOneCashRegisterMovement;
+	private Boolean hasAtLeastOneCashRegisterMovement;
+	private Collection<FiniteStateMachineState> finiteStateMachineStates = new ArrayList<>();
 	
 	public SaleSearchCriteria(){
 		this(null,null,null);
@@ -38,7 +40,8 @@ public class SaleSearchCriteria extends DefaultSearchCriteria implements Seriali
 		super(criteria);
 		balanceTypes = new ArrayList<>(criteria.balanceTypes);
 		customers = new ArrayList<>(criteria.customers);
-		done = criteria.done;
+		hasAtLeastOneCashRegisterMovement = criteria.hasAtLeastOneCashRegisterMovement;
+		finiteStateMachineStates = new ArrayList<>(criteria.finiteStateMachineStates);
 	}
 	
 	public SaleSearchCriteria(DefaultSearchCriteria criteria){

@@ -1,4 +1,4 @@
-package org.cyk.system.company.model.accounting;
+package org.cyk.system.company.model.stock;
 
 import java.io.Serializable;
 
