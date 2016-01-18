@@ -39,7 +39,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne @NotNull private AccountingPeriod accountingPeriod;
-	@Column(unique=true,nullable=false) @NotNull private String computedIdentifier;
+	@Column(unique=true/*,nullable=false*/) /*@NotNull*/ private String computedIdentifier;
 	@ManyToOne @NotNull private Cashier cashier;
 	@ManyToOne private Customer customer;
 	
@@ -67,7 +67,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	@Override
 	public String getLogMessage() {
-		return String.format(LOG_FORMAT,identifier,computedIdentifier,finiteStateMachineState==null?Constant.EMPTY_STRING:finiteStateMachineState.getCode(),autoComputeValueAddedTax,cost.getLogMessage(),balance.getLogMessage()
+		return String.format(LOG_FORMAT,identifier,computedIdentifier,date,finiteStateMachineState==null?Constant.EMPTY_STRING:finiteStateMachineState.getCode(),autoComputeValueAddedTax,cost.getLogMessage(),balance.getLogMessage()
 				,customer==null?"":customer.getRegistration().getCode(),accountingPeriod.getLogMessage());
 	}
 	
@@ -82,5 +82,5 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	public static final String FIELD_BALANCE = "balance";
 	public static final String FIELD_FINITE_STATE_MACHINE_STATE = "finiteStateMachineState";
 	
-	private static final String LOG_FORMAT = "Sale(ID=%s|%s STATE=%s ATX=%s %s %s CUST=%s %s)";
+	private static final String LOG_FORMAT = Sale.class.getSimpleName()+"(ID=%s|%s Date=%s STATE=%s ATX=%s %s %s CUST=%s %s)";
 }

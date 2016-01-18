@@ -1,10 +1,5 @@
 package org.cyk.system.company.business.impl.integration;
 
-import org.cyk.system.company.model.Balance;
-import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.sale.Customer;
-import org.cyk.utility.common.test.ExpectedValues;
-
 public class SaleResultsIT extends AbstractSaleBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
@@ -79,36 +74,35 @@ public class SaleResultsIT extends AbstractSaleBusinessIT {
 	@Override
 	protected void noTax1NotPaid() {
 		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount("1");
-		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new String[]{SALE_FINITE_MACHINE_STATE_START}, "1");
-		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new String[]{SALE_FINITE_MACHINE_STATE_MIDDLE}, "0");
-		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new String[]{SALE_FINITE_MACHINE_STATE_FINAL}, "0");
+		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new Object[][]{ 
+			new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_START}, "1"},new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_MIDDLE}, "0"}
+			,new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_FINAL}, "0"}
+		});
+		companyBusinessTestHelper.assertSale("nt1",SALE_FINITE_MACHINE_STATE_START,"1","2000", "0", "0","0");
+		companyBusinessTestHelper.assertCurrentAccountingPeriod("0", "0", "0","0");
+		companyBusinessTestHelper.assertCurrentAccountingPeriodProduct("TP1","0", "0","0","0");
+		companyBusinessTestHelper.assertCustomer("C1","0","0","0","0","0" );
 		
-		companyBusinessTestHelper.assertSale("nt1", new ExpectedValues()
-		.setClass(Cost.class).setValues(Cost.FIELD_VALUE, "2000",Cost.FIELD_TAX, "0",Cost.FIELD_TURNOVER, "2000")
-		.setClass(Balance.class).setValues(Balance.FIELD_VALUE, "2000",Balance.FIELD_CUMUL, "0"));
-		companyBusinessTestHelper.assertAccountingPeriod(new ExpectedValues()
-			.setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,"0",Cost.FIELD_VALUE, "0",Cost.FIELD_TAX, "0",Cost.FIELD_TURNOVER, "0"));
-		companyBusinessTestHelper.assertAccountingPeriodProduct("TP1",new ExpectedValues()
-			.setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,"0",Cost.FIELD_VALUE, "0",Cost.FIELD_TAX, "0",Cost.FIELD_TURNOVER, "0"));
-		companyBusinessTestHelper.assertCustomer("C1", new ExpectedValues()
-			.setClass(Customer.class).setValues(Customer.FIELD_SALE_COUNT,"0",Customer.FIELD_BALANCE,"0",Customer.FIELD_TURNOVER,"0"));
+		companyBusinessTestHelper.updateSale("nt1", SALE_FINITE_MACHINE_ALPHABET_VALID,"false");
+		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new Object[][]{ 
+			new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_START}, "0"},new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_MIDDLE}, "1"}
+			,new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_FINAL}, "0"}
+		});
+		companyBusinessTestHelper.assertSale("nt1",SALE_FINITE_MACHINE_STATE_MIDDLE,"1","2000", "0", "0","0");
+		companyBusinessTestHelper.assertCurrentAccountingPeriod("0", "0", "0","0");
+		companyBusinessTestHelper.assertCurrentAccountingPeriodProduct("TP1","0", "0","0","0");
+		companyBusinessTestHelper.assertCustomer("C1","0","0","0","0","0" );
 		
-		companyBusinessTestHelper.updateSale("nt1", SALE_FINITE_MACHINE_ALPHABET_VALID);
+		companyBusinessTestHelper.updateSale("nt1", SALE_FINITE_MACHINE_ALPHABET_VALID,"false");
+		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new Object[][]{ 
+			new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_START}, "0"},new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_MIDDLE}, "0"}
+			,new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_FINAL}, "1"}
+		});
+		companyBusinessTestHelper.assertSale("nt1",SALE_FINITE_MACHINE_STATE_FINAL,"1","2000", "0", "2000","2000");
+		companyBusinessTestHelper.assertCurrentAccountingPeriod("1", "2000", "0","2000");
+		companyBusinessTestHelper.assertCurrentAccountingPeriodProduct("TP1","2", "2000","0","2000");
+		companyBusinessTestHelper.assertCustomer("C1","1","2000","0","0","2000" );
 		
-		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount("1");
-		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new String[]{SALE_FINITE_MACHINE_STATE_START}, "0");
-		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new String[]{SALE_FINITE_MACHINE_STATE_MIDDLE}, "1");
-		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new String[]{SALE_FINITE_MACHINE_STATE_FINAL}, "0");
-		
-		companyBusinessTestHelper.assertSale("nt1", new ExpectedValues()
-		.setClass(Cost.class).setValues(Cost.FIELD_VALUE, "2000",Cost.FIELD_TAX, "0",Cost.FIELD_TURNOVER, "2000")
-		.setClass(Balance.class).setValues(Balance.FIELD_VALUE, "2000",Balance.FIELD_CUMUL, "2000"));
-		companyBusinessTestHelper.assertAccountingPeriod(new ExpectedValues()
-			.setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,"1",Cost.FIELD_VALUE, "2000",Cost.FIELD_TAX, "0",Cost.FIELD_TURNOVER, "2000"));
-		companyBusinessTestHelper.assertAccountingPeriodProduct("TP1",new ExpectedValues()
-			.setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,"2",Cost.FIELD_VALUE, "2000",Cost.FIELD_TAX, "0",Cost.FIELD_TURNOVER, "2000"));
-		companyBusinessTestHelper.assertCustomer("C1", new ExpectedValues()
-			.setClass(Customer.class).setValues(Customer.FIELD_SALE_COUNT,"1",Customer.FIELD_BALANCE,"2000",Customer.FIELD_TURNOVER,"2000"));
 	}
 
 	@Override

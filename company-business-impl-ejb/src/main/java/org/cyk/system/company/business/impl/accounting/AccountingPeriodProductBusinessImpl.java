@@ -2,6 +2,7 @@ package org.cyk.system.company.business.impl.accounting;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductCategoryDao;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.product.ProductCategoryDao;
+import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 
 public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPeriodResultsBusinessImpl<AccountingPeriodProduct, AccountingPeriodProductDao,Product> implements AccountingPeriodProductBusiness, Serializable {
 
@@ -27,6 +29,7 @@ public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPerio
 	
 	@Inject private ProductCategoryDao productCategoryDao;
 	@Inject private AccountingPeriodProductCategoryDao accountingPeriodProductCategoryDao;
+	@Inject private SaleProductDao saleProductDao;
 	
 	@Inject
 	public AccountingPeriodProductBusinessImpl(AccountingPeriodProductDao dao) {
@@ -35,13 +38,14 @@ public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPerio
 
 	@Override
 	public void consume(Sale sale) {
+		Collection<SaleProduct> saleProducts = saleProductDao.readBySale(sale);
 		Set<SalableProduct> products = new HashSet<>();
-		for(SaleProduct saleProduct : sale.getSaleProducts())
+		for(SaleProduct saleProduct : saleProducts)
 			products.add(saleProduct.getSalableProduct());
 		
 		for(SalableProduct salableProduct : products){
 			BigDecimal usedCount = BigDecimal.ZERO,cost = BigDecimal.ZERO,vat = BigDecimal.ZERO,turnover = BigDecimal.ZERO;
-			for(SaleProduct saleProduct : sale.getSaleProducts())
+			for(SaleProduct saleProduct : saleProducts)
 				if(saleProduct.getSalableProduct().equals(salableProduct)){
 					usedCount = usedCount.add(saleProduct.getQuantity());
 					cost = turnover.add(saleProduct.getCost().getValue());

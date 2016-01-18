@@ -9,9 +9,6 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
@@ -32,7 +29,6 @@ import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
-import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockInput;
 import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
@@ -54,10 +50,14 @@ import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineAlphabetDao;
+import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineFinalStateDao;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.test.ExpectedValues;
 import org.cyk.utility.common.test.TestEnvironmentListener.Try;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Singleton
 public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implements Serializable {
@@ -84,6 +84,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     @Inject private AccountingPeriodProductDao accountingPeriodProductDao;
     @Inject private FiniteStateMachineStateDao finiteStateMachineStateDao;
     @Inject private FiniteStateMachineAlphabetDao finiteStateMachineAlphabetDao;
+    @Inject private FiniteStateMachineFinalStateDao finiteStateMachineFinalStateDao;
     @Inject private SaleDao saleDao;
     
     @Getter @Setter private Boolean saleAutoCompleted = Boolean.TRUE;
@@ -126,7 +127,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		else
 			sale.setCashier(cashierDao.readByPerson(personDao.readByCode(cashierCode)));
     	sale.setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
-    	sale.setDate(getDate(date));
+    	sale.setDate(getDate(date,Boolean.FALSE));
     	if(products!=null)
 	    	for(String[] infos : products){
 	    		SalableProduct salableProduct = salableProductDao.readByProduct(productDao.read(infos[0]));
@@ -210,12 +211,17 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	
 	/* Sale */
 	
-    public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable){
+    public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable,Boolean finalState){
     	Sale sale = saleBusiness.newInstance(cashierDao.select().one().getPerson());
     	set(sale,identifier,date, cashierCode, customerCode, products, taxable);
-    	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, sale.getCashier().getPerson(),Boolean.TRUE);
-    	set(saleCashRegisterMovement, paid);
-    	saleBusiness.create(sale,saleCashRegisterMovement);
+    	if(paid==null || !Boolean.TRUE.equals(finalState)){
+    		saleBusiness.create(sale);
+    	}else{
+    		SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, sale.getCashier().getPerson(),Boolean.TRUE);
+        	set(saleCashRegisterMovement, paid);
+        	saleBusiness.create(sale,saleCashRegisterMovement);
+    	}
+    	
     	   	
     	/*if(Boolean.TRUE.equals(printPos)){
     		writeReport(saleBusiness.findReport(sale));
@@ -225,10 +231,15 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	}*/
     	return sale;
     }
+    public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable){
+    	return createSale(identifier, date, cashierCode, customerCode, products, paid, taxable,
+    			finiteStateMachineFinalStateDao.readByState(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getFiniteStateMachine().getInitialState())!=null);
+    }
     
-    public void updateSale(String identifier,String finiteStateMachineAlphabetCode){
+    public void updateSale(String identifier,String finiteStateMachineAlphabetCode,String taxable){
     	Sale sale = saleDao.readByComputedIdentifier(identifier);
     	FiniteStateMachineAlphabet finiteStateMachineAlphabet = finiteStateMachineAlphabetDao.read(finiteStateMachineAlphabetCode);
+    	sale.setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
     	CompanyBusinessLayer.getInstance().getSaleBusiness().update(sale, finiteStateMachineAlphabet);
     }
     
@@ -380,7 +391,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     
     /*Assertions*/
     
-    public void assertCost(Cost cost,String expectedValue,String expectedTax,String expectedTurnover){
+    /*public void assertCost(Cost cost,String expectedValue,String expectedTax,String expectedTurnover){
     	assertBigDecimalEquals("Cost", expectedValue, cost.getValue());
     	assertBigDecimalEquals("Tax", expectedTax, cost.getTax());
     	assertBigDecimalEquals("Turnover", expectedTurnover, cost.getTurnover());
@@ -388,18 +399,60 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     public void assertBalance(Balance balance,String expectedValue,String expectedCumul){
     	assertBigDecimalEquals("Balance", expectedValue, balance.getValue());
     	assertBigDecimalEquals("Balance Cumul", expectedCumul, balance.getCumul());
+    }*/
+    
+    public void assertSale(String computedIdentifier,ExpectedValues expectedValues){
+    	Sale sale = saleDao.readByComputedIdentifier(computedIdentifier);
+    	doAssertions(sale, expectedValues);
+    	doAssertions(sale.getCost(), expectedValues);
+    	doAssertions(sale.getBalance(), expectedValues);
+    }
+    public void assertSale(String computedIdentifier,String finiteStateMachineStateCode,String numberOfProceedElements,String cost,String tax,String turnover,String balance){
+    	assertSale(computedIdentifier, new ExpectedValues()
+    		.setClass(FiniteStateMachineState.class).setValues(FiniteStateMachineState.FIELD_CODE,finiteStateMachineStateCode)
+    		.setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,numberOfProceedElements,Cost.FIELD_VALUE, cost,Cost.FIELD_TAX, tax,Cost.FIELD_TURNOVER, turnover)
+    		.setClass(Balance.class).setValues(Balance.FIELD_VALUE,balance)
+    		);
     }
     
-    public void assertCostComputation(AccountingPeriod accountingPeriod,String[][] values){
+    public void assertCustomer(String registrationCode,ExpectedValues expectedValues){
+    	Customer customer = customerDao.readByRegistrationCode(registrationCode);
+    	doAssertions(customer, expectedValues);
+    }
+    public void assertCustomer(String registrationCode,String saleCount,String turnover,String paymentCount,String paid,String balance){
+    	assertCustomer(registrationCode, new ExpectedValues()
+    		.setClass(Customer.class).setValues(Customer.FIELD_SALE_COUNT,saleCount,Customer.FIELD_BALANCE,balance,Customer.FIELD_TURNOVER,turnover
+    				,Customer.FIELD_PAYMENT_COUNT,paymentCount,Customer.FIELD_PAID,paid));
+    }
+    
+    public void assertCurrentAccountingPeriod(ExpectedValues expectedValues){
+    	AccountingPeriod accountingPeriod = CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent();
+    	doAssertions(accountingPeriod.getSaleResults().getCost(), expectedValues);
+    }
+    public void assertCurrentAccountingPeriod(String numberOfProceedElements,String cost,String tax,String turnover){
+    	assertCurrentAccountingPeriod(new ExpectedValues()
+			.setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,numberOfProceedElements,Cost.FIELD_VALUE, cost,Cost.FIELD_TAX, tax,Cost.FIELD_TURNOVER, turnover));
+    }
+    
+    public void assertCurrentAccountingPeriodProduct(String productCode,ExpectedValues expectedValues){
+    	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByProduct(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
+    	doAssertions(accountingPeriodProduct.getSaleResults().getCost(), expectedValues);
+    }
+    public void assertCurrentAccountingPeriodProduct(String productCode,String numberOfProceedElements,String cost,String tax,String turnover){
+    	assertCurrentAccountingPeriodProduct(productCode,new ExpectedValues()
+    			.setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,numberOfProceedElements,Cost.FIELD_VALUE, cost,Cost.FIELD_TAX, tax,Cost.FIELD_TURNOVER, turnover));
+    }
+    
+    /*public void assertCostComputation(AccountingPeriod accountingPeriod,String[][] values){
     	for(String[] infos : values){
     		BigDecimal vat = CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(accountingPeriod, commonUtils.getBigDecimal(infos[0]));
     		assertBigDecimalEquals("Value Added Tax of "+infos[0], infos[1], vat);
     		assertBigDecimalEquals("Turnover of "+infos[0]+" with VAT = "+vat, infos[2]
     				, CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(accountingPeriod, commonUtils.getBigDecimal(infos[0]), vat));
     	}
-    }
+    }*/
     
-    public void assertSaleResults(SaleResults saleResults,String expectedNumberOfProceedElements,String expectedCost,String expectedTax,String expectedTurnover){
+    /*public void assertSaleResults(SaleResults saleResults,String expectedNumberOfProceedElements,String expectedCost,String expectedTax,String expectedTurnover){
     	assertBigDecimalEquals("Number of proceed elements", expectedNumberOfProceedElements, saleResults.getCost().getNumberOfProceedElements());
     	assertCost(saleResults.getCost(), expectedCost, expectedTax, expectedTurnover);
     }
@@ -410,18 +463,13 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByProduct(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
     	SaleResults saleResults = accountingPeriodProduct.getSaleResults();
     	assertSaleResults(saleResults, expectedNumberOfProceedElements, expectedCost, expectedTax, expectedTurnover);
-    }
+    }*/
     
-    public void assertCustomer(String registrationCode,ExpectedValues expectedValues){
-    	Customer customer = customerDao.readByRegistrationCode(registrationCode);
-    	doAssertions(customer, expectedValues);
-    }
     
-    public void assertSale(String computedIdentifier,ExpectedValues expectedValues){
-    	Sale sale = saleDao.readByComputedIdentifier(computedIdentifier);
-    	doAssertions(sale, expectedValues);
-    	doAssertions(sale.getBalance(), expectedValues);
-    	doAssertions(sale.getCost(), expectedValues);
+    public void assertSaleFiniteStateMachineStateCount(Object[][] datas){
+    	for(Object[] data : datas){
+    		assertSaleFiniteStateMachineStateCount((String[])data[0],(String)data[1]);
+    	}
     }
     public void assertSaleFiniteStateMachineStateCount(String[] finiteStateMachineStateCodes,String expectedCount){
     	SaleSearchCriteria saleSearchCriteria = new SaleSearchCriteria();
@@ -430,6 +478,9 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	}
     	assertEquals("Sale search criteria "+StringUtils.join(finiteStateMachineStateCodes)+" count", expectedCount
     			, CompanyBusinessLayer.getInstance().getSaleBusiness().countByCriteria(saleSearchCriteria).toString());
+    }
+    public void assertSaleFiniteStateMachineStateCount(String finiteStateMachineStateCode,String expectedCount){
+    	assertSaleFiniteStateMachineStateCount(new String[]{finiteStateMachineStateCode},expectedCount);
     }
     public void assertSaleFiniteStateMachineStateCount(String expectedCount){
     	Set<String> codes = new HashSet<>();

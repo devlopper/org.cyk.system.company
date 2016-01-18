@@ -12,6 +12,8 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
     
+    public static enum TestMethod{_1_NO_TAX_NOT_PAID}
+    
     protected static final String SALE_FINITE_MACHINE_STATE = "custom_sale_finitemachinestate";
     
     protected static final String SALE_FINITE_MACHINE_ALPHABET_VALID = "custom_sale_finitemachinestate_valid";
@@ -42,6 +44,7 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     @Override
     protected void businesses() {
     	updateAccountingPeriod(new BigDecimal("0.18"), Boolean.TRUE);
+    	
     	companyBusinessTestHelper.createSale("nt1", null, null, "C1", new String[][]{{"TP1","2"}}, "0","false");
     	noTax1NotPaid();
     
