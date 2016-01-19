@@ -11,12 +11,11 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.CompanyReportProducer.ReceiptParameters;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
@@ -24,6 +23,7 @@ import org.cyk.system.company.model.sale.SaleStockInput;
 import org.cyk.system.company.model.sale.SaleStockOutput;
 import org.cyk.system.company.model.sale.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockInputDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockOutputDao;
@@ -39,7 +39,7 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 	
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
-	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
+	@Inject private StockTangibleProductMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private EventBusiness eventBusiness;
 	@Inject private SaleStockInputDao saleStockInputDao;
 	@Inject private CustomerDao customerDao;
@@ -53,14 +53,14 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public SaleStockOutput newInstance(Person person,SaleStockInput saleStockInput) {
 		SaleCashRegisterMovement saleCashRegisterMovement = null;//saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person);
-		SaleStockOutput saleStockOutput = new SaleStockOutput(saleStockInput,saleCashRegisterMovement,new TangibleProductStockMovement());
-		saleStockOutput.getTangibleProductStockMovement().setTangibleProduct(tangibleProductBusiness.find(TangibleProduct.SALE_STOCK));
+		SaleStockOutput saleStockOutput = new SaleStockOutput(saleStockInput,saleCashRegisterMovement,new StockTangibleProductMovement());
+		//saleStockOutput.getTangibleProductStockMovement().setTangibleProduct(tangibleProductBusiness.find(TangibleProduct.SALE_STOCK));
 		return saleStockOutput;
 	}
 
 	@Override
 	public SaleStockOutput create(SaleStockOutput saleStockOutput) {
-		BigDecimal outputQuantity = saleStockOutput.getTangibleProductStockMovement().getQuantity();
+		BigDecimal outputQuantity = null;//saleStockOutput.getTangibleProductStockMovement().getQuantity();
 		exceptionUtils().exception(outputQuantity.signum()>0, "salestockoutput.quantitymustbenegative");
 		SaleStockInput saleStockInput = saleStockInputDao.read(saleStockOutput.getSaleStockInput().getIdentifier());
 		exceptionUtils().exception(outputQuantity.abs().compareTo(saleStockInput.getRemainingNumberOfGoods())>0, "salestockoutput.quantitymustbelessthanorequalsinstock");
@@ -68,8 +68,8 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 		saleCashRegisterMovementBusiness.create(saleStockOutput.getSaleCashRegisterMovement(),Boolean.FALSE);
 		//saleStockOutput.getTangibleProductStockMovement().setDate(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
 		tangibleProductStockMovementBusiness.create(saleStockOutput.getTangibleProductStockMovement());
-		saleStockOutput.getSaleStockInput().setRemainingNumberOfGoods(
-				saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().add(saleStockOutput.getTangibleProductStockMovement().getQuantity()));
+		//saleStockOutput.getSaleStockInput().setRemainingNumberOfGoods(
+		//		saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().add(saleStockOutput.getTangibleProductStockMovement().getQuantity()));
 		saleStockOutput.setRemainingNumberOfGoods(saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods());
 		saleStockInputDao.update(saleStockOutput.getSaleStockInput());
 		

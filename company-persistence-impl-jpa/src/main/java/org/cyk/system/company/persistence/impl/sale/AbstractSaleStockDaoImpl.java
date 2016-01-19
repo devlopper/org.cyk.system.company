@@ -6,10 +6,10 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.sale.AbstractSaleStockSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStock;
 import org.cyk.system.company.model.sale.SaleStockInput;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.sale.AbstractSaleStockDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
@@ -28,9 +28,9 @@ public abstract class AbstractSaleStockDaoImpl<SALE_STOCK extends SaleStock,SEAR
 	@Override
     protected void namedQueriesInitialisation() {
     	super.namedQueriesInitialisation();
-    	registerNamedQuery(readAllSortedByDate,
-    			_select().orderBy(fieldPath(SaleStock.FIELD_TANGIBLE_PRODUCT_STOCK_MOVEMENT,TangibleProductStockMovement.FIELD_DATE), Boolean.TRUE));
-    	registerNamedQuery(readByTangibleProductStockMovements,_select().whereIdentifierIn(SaleStock.FIELD_TANGIBLE_PRODUCT_STOCK_MOVEMENT) );
+    	//registerNamedQuery(readAllSortedByDate,
+    	//		_select().orderBy(fieldPath(SaleStock.FIELD_TANGIBLE_PRODUCT_STOCK_MOVEMENT,TangibleProductStockMovement.FIELD_DATE), Boolean.TRUE));
+    	//registerNamedQuery(readByTangibleProductStockMovements,_select().whereIdentifierIn(SaleStock.FIELD_TANGIBLE_PRODUCT_STOCK_MOVEMENT) );
     }
 	
 	@Override
@@ -60,14 +60,14 @@ public abstract class AbstractSaleStockDaoImpl<SALE_STOCK extends SaleStock,SEAR
 	}	
 	
 	@Override
-	public Collection<SALE_STOCK> readByTangibleProductStockMovements(Collection<TangibleProductStockMovement> tangibleProductStockMovements) {
+	public Collection<SALE_STOCK> readByTangibleProductStockMovements(Collection<StockTangibleProductMovement> tangibleProductStockMovements) {
 		if(tangibleProductStockMovements==null || tangibleProductStockMovements.isEmpty())
 			return new ArrayList<SALE_STOCK>();
 		return namedQuery(readByTangibleProductStockMovements).parameterIdentifiers(tangibleProductStockMovements).resultMany();
 	}
 
 	@Override
-	public SALE_STOCK readByTangibleProductStockMovement(TangibleProductStockMovement tangibleProductStockMovement) {
+	public SALE_STOCK readByTangibleProductStockMovement(StockTangibleProductMovement tangibleProductStockMovement) {
 		if(tangibleProductStockMovement==null)
 			return null;
 		Collection<SALE_STOCK> collection = readByTangibleProductStockMovements(Arrays.asList(tangibleProductStockMovement));

@@ -7,7 +7,7 @@ import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 
-public class SalableDaoImpl extends AbstractTypedDao<SalableProduct> implements SalableProductDao {
+public class SalableProductDaoImpl extends AbstractTypedDao<SalableProduct> implements SalableProductDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
 

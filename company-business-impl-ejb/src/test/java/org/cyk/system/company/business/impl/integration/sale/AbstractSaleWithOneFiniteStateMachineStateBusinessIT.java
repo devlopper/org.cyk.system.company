@@ -1,70 +1,42 @@
-package org.cyk.system.company.business.impl.integration;
+package org.cyk.system.company.business.impl.integration.sale;
 
 import java.math.BigDecimal;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
-import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.sale.Customer;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
-import org.cyk.system.root.business.impl.RootDataProducerHelper;
-
-public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
+public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT extends AbstractSaleBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
-    
-    public static enum TestMethod{_1_NO_TAX_NOT_PAID}
-    
-    protected static final String SALE_FINITE_MACHINE_STATE = "custom_sale_finitemachinestate";
-    
-    protected static final String SALE_FINITE_MACHINE_ALPHABET_VALID = "custom_sale_finitemachinestate_valid";
-    
-    protected static final String SALE_FINITE_MACHINE_STATE_START = "custom_sale_finitemachinestate_start";
-    protected static final String SALE_FINITE_MACHINE_STATE_MIDDLE = "custom_sale_finitemachinestate_middle";
-    protected static final String SALE_FINITE_MACHINE_STATE_FINAL = "custom_sale_finitemachinestate_final";
-    
-    @Override
-    protected void populate() {
-    	super.populate();
-    	RootDataProducerHelper.getInstance().createFiniteStateMachine(SALE_FINITE_MACHINE_STATE
-    			, new String[]{SALE_FINITE_MACHINE_ALPHABET_VALID}
-    		, new String[]{SALE_FINITE_MACHINE_STATE_START,SALE_FINITE_MACHINE_STATE_MIDDLE,SALE_FINITE_MACHINE_STATE_FINAL}
-    		, SALE_FINITE_MACHINE_STATE_START, new String[]{SALE_FINITE_MACHINE_STATE_FINAL}, new String[][]{
-    			{SALE_FINITE_MACHINE_STATE_START,SALE_FINITE_MACHINE_ALPHABET_VALID,SALE_FINITE_MACHINE_STATE_MIDDLE}
-    			,{SALE_FINITE_MACHINE_STATE_MIDDLE,SALE_FINITE_MACHINE_ALPHABET_VALID,SALE_FINITE_MACHINE_STATE_FINAL}
-    	});
-    	AccountingPeriod accountingPeriod = accountingPeriodBusiness.findCurrent();
-    	accountingPeriod.getSaleConfiguration().setFiniteStateMachine(RootBusinessLayer.getInstance().getFiniteStateMachineBusiness().find(SALE_FINITE_MACHINE_STATE));
-    	CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().update(accountingPeriod);
-    	
-    	rootBusinessTestHelper.createActors(Customer.class, new String[]{"C1","C2","C3","C4","C5","C5np","C6","C7","C8","C9","C10","C11","C12","C13","C14","C15"});
-    	createProducts(4, 4);
-    	createSalableProducts(new String[][]{ {"TP1", "1000"},{"TP3", "500"},{"TP4", null},{"IP2", "700"} });
-    }
            
     @Override
     protected void businesses() {
     	updateAccountingPeriod(new BigDecimal("0.18"), Boolean.TRUE);
     	
-    	companyBusinessTestHelper.createSale("nt1", null, null, "C1", new String[][]{{"TP1","2"}}, "0","false");
-    	noTax1NotPaid();
+    	CreateSaleParameters p = new CreateSaleParameters("nt1", null, null, "C1", new String[][]{{"TP1","2"}}, "0","false");
+    	createSale(p);
+    	noTax1NotPaid(p);
     
-    	companyBusinessTestHelper.createSale("nt2", null, null, "C2", new String[][]{{"IP2","3"}}, "2100","false");
-    	noTax2AllPaid();	
+    	p = new CreateSaleParameters("nt2", null, null, "C2", new String[][]{{"IP2","3"}}, "2100","false");
+    	createSale(p);
+    	noTax2AllPaid(p);	
     
-    	companyBusinessTestHelper.createSale("nt3", null, null, "C3", new String[][]{{"TP3","3"}}, "600","false");
-    	noTax3SomePaid();
+    	p = new CreateSaleParameters("nt3", null, null, "C3", new String[][]{{"TP3","3"}}, "600","false");
+    	createSale(p);
+    	noTax3SomePaid(p);
     	
-    	companyBusinessTestHelper.createSale("nt4", null, null, "C4", new String[][]{{"TP3","2"}}, "1800","false");
-    	noTax4MorePaid1();
+    	p = new CreateSaleParameters("nt4", null, null, "C4", new String[][]{{"TP3","2"}}, "1800","false");
+    	createSale(p);
+    	noTax4MorePaid1(p);
     	
-    	companyBusinessTestHelper.createSale("nt5", null, null, "C5", new String[][]{{"TP3","2"},{"IP2","1"},{"TP1","3"}}, "5000","false");
-    	noTax5MorePaid2();
+    	p = new CreateSaleParameters("nt5", null, null, "C5", new String[][]{{"TP3","2"},{"IP2","1"},{"TP1","3"}}, "5000","false");
+    	createSale(p);
+    	noTax5MorePaid2(p);
     	
-    	companyBusinessTestHelper.createSale("nt6", null, null, "C5", new String[][]{{"TP3","2"}}, "1800","false");
-    	noTax6MorePaid3();
+    	p = new CreateSaleParameters("nt6", null, null, "C5", new String[][]{{"TP3","2"}}, "1800","false");
+    	createSale(p);
+    	noTax6MorePaid3(p);
     	
-    	companyBusinessTestHelper.createSale("nt7", null, null, "C5np", new String[][]{{"TP4","1","3700"}}, "3700","false");
-    	noTax7AllPaidNoUnitPrice();
+    	p = new CreateSaleParameters("nt7", null, null, "C5np", new String[][]{{"TP4","1","3700"}}, "3700","false");
+    	createSale(p);
+    	noTax7AllPaidNoUnitPrice(p);
     	
     	//TODO to be handled
     	//companyBusinessTestHelper.createSale("nt8", null, null, "C5np", new String[][]{{"TP1","3","2500"}}, "2500","false", "3700", "0", "3700", "0", "0");
@@ -132,13 +104,13 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     	*/
     }
     
-    protected abstract void noTax1NotPaid();
-    protected abstract void noTax2AllPaid();
-    protected abstract void noTax3SomePaid();
-    protected abstract void noTax4MorePaid1();
-    protected abstract void noTax5MorePaid2();
-    protected abstract void noTax6MorePaid3();
-    protected abstract void noTax7AllPaidNoUnitPrice();
-    protected abstract void noTax8AllPaidUnitPriceButCostValueSet();
+    protected abstract void noTax1NotPaid(CreateSaleParameters parameters);
+    protected abstract void noTax2AllPaid(CreateSaleParameters parameters);
+    protected abstract void noTax3SomePaid(CreateSaleParameters parameters);
+    protected abstract void noTax4MorePaid1(CreateSaleParameters parameters);
+    protected abstract void noTax5MorePaid2(CreateSaleParameters parameters);
+    protected abstract void noTax6MorePaid3(CreateSaleParameters parameters);
+    protected abstract void noTax7AllPaidNoUnitPrice(CreateSaleParameters parameters);
+    protected abstract void noTax8AllPaidUnitPriceButCostValueSet(CreateSaleParameters parameters);
                 
 }

@@ -9,9 +9,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
@@ -25,7 +22,6 @@ import org.cyk.system.company.business.api.product.ProductCategoryBusiness;
 import org.cyk.system.company.business.api.product.ProductCollectionBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
 import org.cyk.system.company.business.api.production.ProductionBusiness;
 import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
 import org.cyk.system.company.business.api.production.ProductionPlanResourceBusiness;
@@ -41,6 +37,8 @@ import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness
 import org.cyk.system.company.business.api.sale.SaleProductBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
+import org.cyk.system.company.business.api.stock.StockableTangibleProductBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
 import org.cyk.system.company.business.api.structure.DivisionBusiness;
 import org.cyk.system.company.business.api.structure.DivisionTypeBusiness;
@@ -55,7 +53,6 @@ import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.ProductCollection;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanResource;
@@ -69,6 +66,8 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleStockInput;
 import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
+import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
@@ -90,6 +89,7 @@ import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.report.ReportTemplate;
 import org.cyk.system.root.model.geography.ContactCollection;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.security.Installation;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
@@ -98,6 +98,9 @@ import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.cyk.utility.common.computation.DataReadConfiguration;
 import org.joda.time.DateTime;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER) @Getter
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
@@ -142,7 +145,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private DivisionTypeBusiness divisionTypeBusiness;
 	@Inject private DivisionBusiness divisionBusiness;
 	@Inject private TangibleProductInventoryBusiness tangibleProductInventoryBusiness;
-	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
+	@Inject private StockTangibleProductMovementBusiness stockTangibleProductMovementBusiness;
+	@Inject private StockableTangibleProductBusiness stockableTangibleProductBusiness;
 	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
 	@Inject private ProductionBusiness productionBusiness;
 	@Inject private ProductionUnitBusiness productionUnitBusiness;
@@ -282,7 +286,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		//ownedCompanyBusiness.create(ownedCompany);
 		installObject(-1,ownedCompanyBusiness,ownedCompany);
 		
-		rootDataProducerHelper.createFiniteStateMachine("SALE_FINITE_MACHINE_STATE"
+		FiniteStateMachine finiteStateMachine = rootDataProducerHelper.createFiniteStateMachine("SALE_FINITE_MACHINE_STATE"
     			, new String[]{"SALE_FINITE_MACHINE_ALPHABET_VALID"}
     		, new String[]{"SALE_FINITE_MACHINE_STATE_FINAL"}
     		, "SALE_FINITE_MACHINE_STATE_FINAL", new String[]{"SALE_FINITE_MACHINE_STATE_FINAL"}, new String[][]{
@@ -298,7 +302,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		accountingPeriod.getSaleConfiguration().setValueAddedTaxRate(BigDecimal.ZERO);
 		accountingPeriod.getSaleConfiguration().setIdentifierGenerator(stringGenerator("FACT","0", 8l, null, null,8l));
 		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(stringGenerator("PAIE","0", 8l, null, null,8l));
-		
+		accountingPeriod.getSaleConfiguration().setFiniteStateMachine(finiteStateMachine);
 		
 		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getIdentifierGenerator());
 		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());
@@ -308,7 +312,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		installObject(ACCOUNTING_PERIOD,accountingPeriodBusiness,accountingPeriod);
 		
 		
-
+		
 		
 		//intangibleProductBusiness.create(new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null, null));
 		//installObject(PRODUCT_INTANGIBLE_SALE_STOCK,intangibleProductBusiness,new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null));
@@ -341,7 +345,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)Sale.class, (TypedBusiness)saleBusiness);
         beansMap.put((Class)SaleCashRegisterMovement.class, (TypedBusiness)saleCashRegisterMovementBusiness);
         beansMap.put((Class)TangibleProductInventory.class, (TypedBusiness)tangibleProductInventoryBusiness); 
-        beansMap.put((Class)TangibleProductStockMovement.class, (TypedBusiness)tangibleProductStockMovementBusiness);
+        beansMap.put((Class)StockableTangibleProduct.class, (TypedBusiness)stockableTangibleProductBusiness);
+        beansMap.put((Class)StockTangibleProductMovement.class, (TypedBusiness)stockTangibleProductMovementBusiness);
         beansMap.put((Class)ProductCategory.class, (TypedBusiness)productCategoryBusiness);
         beansMap.put((Class)OwnedCompany.class, (TypedBusiness)ownedCompanyBusiness);
         beansMap.put((Class)Company.class, (TypedBusiness)companyBusiness);

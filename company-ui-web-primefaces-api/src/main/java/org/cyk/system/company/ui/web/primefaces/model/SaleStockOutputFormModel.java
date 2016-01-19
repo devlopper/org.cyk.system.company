@@ -25,7 +25,7 @@ public class SaleStockOutputFormModel extends AbstractFormModel<SaleStockOutput>
 	@Override
 	public void write() {
 		super.write();
-		identifiable.getTangibleProductStockMovement().setQuantity(numberOfGoods.abs().negate());
+		//identifiable.getTangibleProductStockMovement().setQuantity(numberOfGoods.abs().negate());
 		identifiable.getSaleCashRegisterMovement().setAmountIn(paid);
 	}
 }

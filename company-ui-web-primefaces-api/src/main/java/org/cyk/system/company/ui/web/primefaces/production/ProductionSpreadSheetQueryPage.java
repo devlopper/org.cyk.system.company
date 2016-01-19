@@ -11,8 +11,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.business.api.production.ProductionBusiness;
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.production.Production;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadSheetQueryFormModel;
 import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadSheetQueryResultFormModel;

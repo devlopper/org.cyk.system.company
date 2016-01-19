@@ -16,11 +16,11 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.Cashier;
@@ -29,13 +29,13 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductInventoryDetail;
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleStockInput;
 import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
@@ -51,7 +51,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 	//private RootBusinessLayer rootBusinessLayer = RootBusinessLayer.getInstance();
 	@Inject private RootRandomDataProvider rootRandomDataProvider;
 	
-	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
+	@Inject private StockTangibleProductMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
 	@Inject private TangibleProductDao tangibleProductDao;
 	@Inject private SaleBusiness saleBusiness;
@@ -71,7 +71,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 		do{
 			quantity = randomDataProvider.randomInt(-10, 10);
 		}while(quantity==0);
-		TangibleProductStockMovement tangibleProductStockMovement = new TangibleProductStockMovement(tangibleProduct, date, new BigDecimal(quantity), null);
+		StockTangibleProductMovement tangibleProductStockMovement = null;// new TangibleProductStockMovement(tangibleProduct, date, new BigDecimal(quantity), null);
 		tangibleProductStockMovementBusiness.create(tangibleProductStockMovement);
 		if(randomDataProvider.randomInt(1, 10)!=5){
 			TangibleProduct lTangibleProduct = tangibleProductDao.read(tangibleProduct.getIdentifier());
@@ -143,7 +143,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 			sale.setAutoComputeValueAddedTax(Boolean.TRUE);
 			sale.setComments(randomDataProvider.randomText(5, 5, 5, 5));
 
-			saleStockInput.getTangibleProductStockMovement().setQuantity(new BigDecimal(randomDataProvider.randomInt(1, 10)));
+			//saleStockInput.getTangibleProductStockMovement().setQuantity(new BigDecimal(randomDataProvider.randomInt(1, 10)));
 			SaleProduct saleProduct = sale.getSaleProducts().iterator().next();
 			//saleProduct.setPrice(new BigDecimal(randomDataProvider.randomInt(10000, 1000000)));
 			//saleProduct.setCommission(new BigDecimal(randomDataProvider.randomInt(0, saleProduct.getPrice().intValue())));
@@ -157,7 +157,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 			for(int j=0;j<randomDataProvider.randomInt(1,2);j++){
 				SaleStockOutput saleStockOutput = saleStockOutputBusiness.newInstance(cashier.getPerson(), saleStockInput);
 				saleCashRegisterMovement(saleStockOutput.getSaleCashRegisterMovement(),sale.getBalance().getValue(),1.3f);
-				saleStockOutput.getTangibleProductStockMovement().setQuantity(new BigDecimal(randomDataProvider.randomInt(1, saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().intValue())));
+				//saleStockOutput.getTangibleProductStockMovement().setQuantity(new BigDecimal(randomDataProvider.randomInt(1, saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().intValue())));
 				saleStockOutputBusiness.create(saleStockOutput);
 				if(sale.getBalance().getValue().signum()<=0)
 					break;

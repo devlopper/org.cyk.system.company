@@ -17,25 +17,23 @@ import lombok.Getter;
 
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.product.TangibleProductInventoryReportTableDetails;
-import org.cyk.system.company.business.impl.product.TangibleProductStockMovementLineReport;
 import org.cyk.system.company.business.impl.sale.CustomerReportTableRow;
 import org.cyk.system.company.business.impl.sale.SaleReportTableDetail;
 import org.cyk.system.company.business.impl.sale.SaleStockReportTableRow;
 import org.cyk.system.company.business.impl.sale.StockDashBoardReportTableDetails;
+import org.cyk.system.company.business.impl.stock.TangibleProductStockMovementLineReport;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductInventoryDetail;
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
-import org.cyk.system.company.model.product.TangibleProductStockMovementSearchCriteria;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
@@ -49,6 +47,8 @@ import org.cyk.system.company.model.sale.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.system.company.model.sale.SalesDetails;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
+import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
@@ -96,7 +96,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	@Getter private final String parameterSaleDone = "saledone";
 	
 	@Inject private OwnedCompanyBusiness ownedCompanyBusiness;
-	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
+	@Inject private StockTangibleProductMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private SaleBusiness saleBusiness;
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	@Inject private SaleStockBusiness saleStockBusiness;
@@ -123,11 +123,11 @@ public class CompanyReportRepository extends AbstractReportRepository implements
         });
 		
 		addConfiguration(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
-	    		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),TangibleProductStockMovement.class,TangibleProductStockMovementLineReport.class) {
+	    		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),StockTangibleProductMovement.class,TangibleProductStockMovementLineReport.class) {
 			private static final long serialVersionUID = -1966207854828857772L;
 			@Override
 			public Object model(AbstractIdentifiable identifiable) {
-				return new TangibleProductStockMovementLineReport((TangibleProductStockMovement) identifiable);
+				return new TangibleProductStockMovementLineReport((StockTangibleProductMovement) identifiable);
 			}
 			@Override
 			public Boolean useCustomIdentifiableCollection() {
@@ -135,7 +135,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			}
 			@Override
 			public Collection<? extends AbstractIdentifiable> identifiables(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
-				TangibleProductStockMovementSearchCriteria searchCriteria = new TangibleProductStockMovementSearchCriteria(getParameterFromDate(parameters)
+				StockTangibleProductMovementSearchCriteria searchCriteria = new StockTangibleProductMovementSearchCriteria(getParameterFromDate(parameters)
 						,getParameterToDate(parameters));
 				return tangibleProductStockMovementBusiness.findByCriteria(searchCriteria);
 			}
@@ -335,7 +335,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			for(Object object : initialRows){
 				SaleStockReportTableRow row = (SaleStockReportTableRow) object;
 				if(row.getSaleStock() instanceof SaleStockOutput){
-					output = output.add( ((SaleStockOutput)row.getSaleStock()).getTangibleProductStockMovement().getQuantity().abs());
+					//output = output.add( ((SaleStockOutput)row.getSaleStock()).getTangibleProductStockMovement().getQuantity().abs());
 					paid = paid.add( ((SaleStockOutput)row.getSaleStock()).getSaleCashRegisterMovement().getCashRegisterMovement().getMovement().getValue());
 					//balance = saleBusiness.sumBalanceByCriteria(criteria) 
 							//balance.add(((SaleStockOutput)row.getSaleStock()).getSaleStockInput().getS.getBalance().getValue());
@@ -381,11 +381,11 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			set(totals, BigDecimal.ZERO);
 			for(SaleStockReportTableRow row : entry.getValue()){
 				if(row.getSaleStock() instanceof SaleStockInput){
-					incrementTotal(totals, STOCK_IN, ((SaleStockInput)row.getSaleStock()).getTangibleProductStockMovement().getQuantity());
+					//incrementTotal(totals, STOCK_IN, ((SaleStockInput)row.getSaleStock()).getTangibleProductStockMovement().getQuantity());
 					incrementTotal(totals, AMOUNT, ((SaleStockInput)row.getSaleStock()).getSale().getCost().getValue());
 					set(totals, CUMUL,0, ((SaleStockInput)row.getSaleStock()).getSale().getBalance().getCumul());
 				}else if(row.getSaleStock() instanceof SaleStockOutput){
-					incrementTotal(totals, STOCK_OUT, ((SaleStockOutput)row.getSaleStock()).getTangibleProductStockMovement().getQuantity().abs());
+					//incrementTotal(totals, STOCK_OUT, ((SaleStockOutput)row.getSaleStock()).getTangibleProductStockMovement().getQuantity().abs());
 					incrementTotal(totals, PAID, ((SaleStockOutput)row.getSaleStock()).getSaleCashRegisterMovement().getCashRegisterMovement().getMovement().getValue());
 					set(totals, CUMUL,0, ((SaleStockOutput)row.getSaleStock()).getSaleCashRegisterMovement().getBalance().getCumul());
 				}

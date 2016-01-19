@@ -8,7 +8,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
@@ -25,7 +25,7 @@ public class SaleStock extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@OneToOne @NotNull
-	protected TangibleProductStockMovement tangibleProductStockMovement;
+	protected StockTangibleProductMovement tangibleProductStockMovement;
 
 	/**/
 	

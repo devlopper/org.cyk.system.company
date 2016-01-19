@@ -19,7 +19,6 @@ import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.ProductCollection;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
@@ -28,6 +27,7 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
@@ -88,8 +88,8 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		businessEntityInfos(TangibleProductInventory.class).getUserInterface().setListViewId("tangibleProductInventoryListView");
 		businessEntityInfos(TangibleProductInventory.class).getUserInterface().setConsultViewId("tangibleProductInventoryConsultView");
 		
-		businessEntityInfos(TangibleProductStockMovement.class).getUserInterface().setEditViewId("tangibleProductStockMovementCrudManyView");
-		businessEntityInfos(TangibleProductStockMovement.class).getUserInterface().setListViewId(outcomeTangibleProductStockMovementList);
+		businessEntityInfos(StockTangibleProductMovement.class).getUserInterface().setEditViewId("tangibleProductStockMovementCrudManyView");
+		businessEntityInfos(StockTangibleProductMovement.class).getUserInterface().setListViewId(outcomeTangibleProductStockMovementList);
 		
 		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Employee.class, ActorConsultFormModel.class);
 		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Customer.class, ActorConsultFormModel.class);
@@ -227,7 +227,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	public Collection<UICommandable> stockContextCommandables(AbstractUserSession userSession){
 		Collection<UICommandable> commandables = new ArrayList<>();
 		commandables.add(uiProvider.createCommandable("dashboard", null, "stockDashBoardView"));
-		commandables.add(menuManager.crudMany(TangibleProductStockMovement.class, null));
+		commandables.add(menuManager.crudMany(StockTangibleProductMovement.class, null));
 		commandables.add(uiProvider.createCommandable("command.quantityinuse", null, "tangibleProductQuantityInUseUpdateManyView"));
 		commandables.add(menuManager.crudMany(TangibleProductInventory.class, null));
 		return commandables;

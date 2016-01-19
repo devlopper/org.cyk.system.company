@@ -7,9 +7,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import org.cyk.system.company.business.api.sale.AbstractSaleStockBusiness;
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.sale.AbstractSaleStockSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStock;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.sale.AbstractSaleStockDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
@@ -33,12 +33,12 @@ public abstract class AbstractSaleStockBusinessImpl<SALE_STOCK extends SaleStock
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Collection<SALE_STOCK> findByTangibleProductStockMovements(Collection<TangibleProductStockMovement> tangibleProductStockMovements) {
+	public Collection<SALE_STOCK> findByTangibleProductStockMovements(Collection<StockTangibleProductMovement> tangibleProductStockMovements) {
 		return dao.readByTangibleProductStockMovements(tangibleProductStockMovements);
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public SALE_STOCK findByTangibleProductStockMovement(TangibleProductStockMovement tangibleProductStockMovement) {
+	public SALE_STOCK findByTangibleProductStockMovement(StockTangibleProductMovement tangibleProductStockMovement) {
 		return dao.readByTangibleProductStockMovement(tangibleProductStockMovement);
 	}
 	

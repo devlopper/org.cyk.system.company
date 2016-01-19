@@ -12,7 +12,7 @@ import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.StockDashBoardReportTableDetails;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.web.primefaces.Table;
@@ -48,7 +48,7 @@ public class StockDashBoardPage extends AbstractDashboardPage implements Seriali
 		tangibleProductTable.setShowFooter(Boolean.FALSE);
 		tangibleProductTable.setShowToolBar(Boolean.TRUE);
 		tangibleProductTable.setReportIdentifier(CompanyReportRepository.getInstance().getReportStockDashboard());
-		tangibleProductTable.setIdentifiableClass(TangibleProductStockMovement.class);
+		tangibleProductTable.setIdentifiableClass(StockTangibleProductMovement.class);
 	}
 	
 	@Override

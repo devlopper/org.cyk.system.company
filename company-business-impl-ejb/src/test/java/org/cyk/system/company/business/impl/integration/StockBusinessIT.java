@@ -1,56 +1,59 @@
 package org.cyk.system.company.business.impl.integration;
 
-import java.math.BigDecimal;
-
-import javax.inject.Inject;
-
-import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
-import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class StockBusinessIT extends AbstractBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
-
-    @Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
-     
-    @Deployment
-    public static Archive<?> createDeployment() {
-    	return createRootDeployment();
-    } 
-       
+    
+    @Override
+    protected void populate() {
+    	super.populate();
+    	createProducts(4, 4);
+    	createStockableTangibleProducts(new String[][]{ {"TP1", "0","100"},{"TP3", "5","35"},{"TP4", null,null} });
+    }
+    
     @Override
     protected void businesses() {
-    	installApplication();
-    	assertStockMovement("tprod01", "5", "5");
-    	assertStockMovement("tprod01", "9", "14");
-    	assertStockMovement("tprod01", "10", "24");
-    	assertStockMovement("tprod01", "-5", "19");
+    	super.businesses();
+    	companyBusinessTestHelper.createStockTangibleProductMovement("TP1", "5");
+    	companyBusinessTestHelper.assertStockableTangibleProduct("TP1", "5");
+    	companyBusinessTestHelper.createStockTangibleProductMovement("TP1", "5");
+    	companyBusinessTestHelper.assertStockableTangibleProduct("TP1", "10");
+    	companyBusinessTestHelper.createStockTangibleProductMovement("TP1", "-3");
+    	companyBusinessTestHelper.assertStockableTangibleProduct("TP1", "7");
+    	
+    	//companyBusinessTestHelper.createStockTangibleProductMovement("TP1", "99");
+    	//companyBusinessTestHelper.assertStockableTangibleProduct("TP1", "106");
     }
     
-    @Test(expected=Exception.class)
-    public void noZeroMovement(){
-    	assertStockMovement("tprod02", "0", "0");
+    /* Exceptions */
+    
+    //@Test
+    public void incrementValueMustNotBeLessThanIntervalLow(){
+    	rootBusinessTestHelper.incrementValueMustNotBeLessThanIntervalLow("TP1_movcol");
+    }
+    @Test
+    public void incrementValueMustNotBeGreaterThanIntervalHigh(){
+    	rootBusinessTestHelper.incrementValueMustNotBeGreaterThanIntervalHigh("TP1_movcol");
+    }
+    //@Test
+    public void decrementValueMustNotBeLessThanIntervalLow(){
+    	rootBusinessTestHelper.decrementValueMustNotBeLessThanIntervalLow("TP1_movcol");
+    }
+    //@Test
+    public void decrementValueMustNotBeGreaterThanIntervalHigh(){
+    	rootBusinessTestHelper.decrementValueMustNotBeGreaterThanIntervalHigh("TP1_movcol");
     }
     
-    @Test(expected=Exception.class)
-    public void noNegativeStock(){
-    	assertStockMovement("tprod02", "-5", "-5");
+    //@Test
+    public void collectionValueMustNotBeLessThanIntervalLow(){
+    	rootBusinessTestHelper.collectionValueMustNotBeLessThanIntervalLow("TP1_movcol");
     }
     
-    private void assertStockMovement(String tpCode,String quantity,String totalStock){
-    	TangibleProduct tangibleProduct = (TangibleProduct) productDao.read(tpCode);
-    	tangibleProductStockMovementBusiness.create(new TangibleProductStockMovement(tangibleProduct, null, new BigDecimal(quantity), null));
-    	//Assert.assertEquals(new BigDecimal(totalStock), tangibleProduct.getStockQuantity());
+    //@Test
+    public void collectionValueMustNotBeGreaterThanIntervalHigh(){
+    	rootBusinessTestHelper.collectionValueMustNotBeGreaterThanIntervalHigh("TP1_movcol");
     }
-
-    @Override protected void finds() {}
-    @Override protected void create() {}
-    @Override protected void delete() {}
-    @Override protected void read() {}
-    @Override protected void update() {}
+    
 }

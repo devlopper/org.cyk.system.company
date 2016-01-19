@@ -74,7 +74,7 @@ public interface CompanyReportProducer extends RootReportProducer {
 			this.saleStockOutput = saleStockOutput;
 			if(saleStockOutput!=null){
 				numberOfGoodsInStock = saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods();
-				numberOfGoodsDelivered = saleStockOutput.getTangibleProductStockMovement().getQuantity().abs();
+				//numberOfGoodsDelivered = saleStockOutput.getTangibleProductStockMovement().getQuantity().abs();
 			}
 		}
 		

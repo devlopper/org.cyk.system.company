@@ -14,19 +14,19 @@ import org.cyk.system.company.business.api.CompanyReportProducer.InvoiceParamete
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
+import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleStockInput;
 import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockInputDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockOutputDao;
@@ -47,7 +47,7 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 	@Inject private SaleBusiness saleBusiness;
 	@Inject private IntangibleProductBusiness intangibleProductBusiness;
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
-	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
+	@Inject private StockTangibleProductMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private CashierBusiness cashierBusiness;
 	@Inject private EventBusiness eventBusiness;
 	@Inject private ReportBusiness reportBusiness;
@@ -67,8 +67,8 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 		logDebug("Instanciate sale stock input");
 		SaleStockInput saleStockInput = new SaleStockInput();
 		saleStockInput.setSale(saleBusiness.newInstance(person));
-		saleStockInput.setTangibleProductStockMovement(new TangibleProductStockMovement());
-		saleStockInput.getTangibleProductStockMovement().setTangibleProduct(tangibleProductBusiness.find(TangibleProduct.SALE_STOCK));
+		saleStockInput.setTangibleProductStockMovement(new StockTangibleProductMovement());
+		//saleStockInput.getTangibleProductStockMovement().setTangibleProduct(tangibleProductBusiness.find(TangibleProduct.SALE_STOCK));
 		//saleBusiness.selectProduct(saleStockInput.getSale(), intangibleProductBusiness.find(IntangibleProduct.SALE_STOCK));
 		logDebug("Sale stock input instanciated");
 		return saleStockInput;
@@ -80,8 +80,8 @@ public class SaleStockInputBusinessImpl extends AbstractSaleStockBusinessImpl<Sa
 		//saleBusiness.create(saleStockInput.getSale(), saleCashRegisterMovement,Boolean.FALSE);
 		InvoiceParameters previous = new InvoiceParameters(saleStockInput, saleCashRegisterMovement);
 		
-		saleStockInput.getTangibleProductStockMovement().setDate(saleStockInput.getSale().getDate());
-		saleStockInput.setRemainingNumberOfGoods(saleStockInput.getTangibleProductStockMovement().getQuantity());
+		//saleStockInput.getTangibleProductStockMovement().setDate(saleStockInput.getSale().getDate());
+		//saleStockInput.setRemainingNumberOfGoods(saleStockInput.getTangibleProductStockMovement().getQuantity());
 		tangibleProductStockMovementBusiness.create(saleStockInput.getTangibleProductStockMovement());
 		
 		Date start = new DateTime(saleStockInput.getSale().getDate()).plusDays(7).withTimeAtStartOfDay().toDate();

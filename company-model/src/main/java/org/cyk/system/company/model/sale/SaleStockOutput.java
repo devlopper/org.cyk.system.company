@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +29,7 @@ public class SaleStockOutput extends SaleStock implements Serializable {
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal remainingNumberOfGoods;
 	
 	public SaleStockOutput(SaleStockInput saleStockInput,
-			SaleCashRegisterMovement saleCashRegisterMovement,TangibleProductStockMovement tangibleProductStockMovement) {
+			SaleCashRegisterMovement saleCashRegisterMovement,StockTangibleProductMovement tangibleProductStockMovement) {
 		super(tangibleProductStockMovement);
 		this.saleStockInput = saleStockInput;
 		this.saleCashRegisterMovement = saleCashRegisterMovement;

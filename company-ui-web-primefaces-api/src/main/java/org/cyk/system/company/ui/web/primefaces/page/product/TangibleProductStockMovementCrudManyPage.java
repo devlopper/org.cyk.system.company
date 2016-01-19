@@ -11,17 +11,17 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
+import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 
 @Named @ViewScoped @Getter @Setter
-public class TangibleProductStockMovementCrudManyPage extends AbstractTangibleProductStockManyPage<TangibleProductStockMovement> implements Serializable {
+public class TangibleProductStockMovementCrudManyPage extends AbstractTangibleProductStockManyPage<StockTangibleProductMovement> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
+	@Inject private StockTangibleProductMovementBusiness tangibleProductStockMovementBusiness;
 	
 	@Override
 	protected void initialisation() {
@@ -30,27 +30,27 @@ public class TangibleProductStockMovementCrudManyPage extends AbstractTangiblePr
 	}
 	
 	@Override
-	protected TangibleProductStockMovement detail(TangibleProduct tangibleProduct) {
-		return new TangibleProductStockMovement(tangibleProduct, null, BigDecimal.ZERO, null);
+	protected StockTangibleProductMovement detail(TangibleProduct tangibleProduct) {
+		return null;//new TangibleProductStockMovement(tangibleProduct, null, BigDecimal.ZERO, null);
 	}
 
 	@Override
-	protected TangibleProduct tangibleProduct(TangibleProductStockMovement detail) {
+	protected TangibleProduct tangibleProduct(StockTangibleProductMovement detail) {
 		return detail.getTangibleProduct();
 	}
 
 	@Override
-	protected void __serve__(List<TangibleProductStockMovement> details) {
+	protected void __serve__(List<StockTangibleProductMovement> details) {
 		tangibleProductStockMovementBusiness.create(details);
 	}
 	
 	
 	
-	public BigDecimal maxValue(TangibleProductStockMovement tangibleProductStockMovement){
+	public BigDecimal maxValue(StockTangibleProductMovement tangibleProductStockMovement){
 		return null;
 	}
 	
-	public BigDecimal minValue(TangibleProductStockMovement tangibleProductStockMovement){
+	public BigDecimal minValue(StockTangibleProductMovement tangibleProductStockMovement){
 		return null;//tangibleProductStockMovement.getTangibleProduct().getStockQuantity().negate();
 	}
 

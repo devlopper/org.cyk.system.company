@@ -36,7 +36,7 @@ public class CashRegisterMovement extends AbstractIdentifiable implements Serial
 		return String.format(LOG_FORMAT, computedIdentifier,cashRegister.getCode(),movement.getValue());
 	}
 	
-	private static final String LOG_FORMAT = "CashRegisterMovement(I=%S C=%s M=%s)";
+	private static final String LOG_FORMAT = CashRegisterMovement.class.getSimpleName()+"(I=%S C=%s M=%s)";
 	
 	/**/
 	

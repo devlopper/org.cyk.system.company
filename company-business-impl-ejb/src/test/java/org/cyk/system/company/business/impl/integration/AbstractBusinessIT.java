@@ -28,6 +28,7 @@ import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
@@ -283,4 +284,12 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 			create(sale);
 		}
 	}
+	
+	protected void createStockableTangibleProducts(String[][] stockableTangibleProducts) {
+    	for(String[] infos : stockableTangibleProducts){
+			StockableTangibleProduct stockableTangibleProduct = new StockableTangibleProduct();
+			companyBusinessTestHelper.set(stockableTangibleProduct, infos[0], infos[1], infos[2]);
+			create(stockableTangibleProduct);
+		}	
+    }
 }

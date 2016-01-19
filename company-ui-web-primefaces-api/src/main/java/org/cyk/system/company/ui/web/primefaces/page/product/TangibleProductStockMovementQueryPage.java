@@ -9,10 +9,10 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.cyk.system.company.business.api.product.TangibleProductStockMovementBusiness;
+import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.product.TangibleProductStockMovement;
-import org.cyk.system.company.model.product.TangibleProductStockMovementSearchCriteria;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
+import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.ui.api.command.UICommandable;
@@ -31,12 +31,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
-public class TangibleProductStockMovementQueryPage extends AbstractBusinessQueryPage<TangibleProductStockMovement, TangibleProductStockMovementQueryPage.TangibleProductStockMovementQueryFormModel, 
+public class TangibleProductStockMovementQueryPage extends AbstractBusinessQueryPage<StockTangibleProductMovement, TangibleProductStockMovementQueryPage.TangibleProductStockMovementQueryFormModel, 
 	TangibleProductStockMovementQueryPage.TangibleProductStockMovementQueryResultFormModel> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	@Inject private TangibleProductStockMovementBusiness tangibleProductStockMovementBusiness;
+	@Inject private StockTangibleProductMovementBusiness tangibleProductStockMovementBusiness;
 
 	@Override
 	protected void initialisation() {
@@ -54,9 +54,9 @@ public class TangibleProductStockMovementQueryPage extends AbstractBusinessQuery
 	}
 		
 	@Override
-	protected Collection<TangibleProductStockMovement> __query__() {
-		TangibleProductStockMovementSearchCriteria searchCriteria = searchCriteria();
-		Collection<TangibleProductStockMovement> collection = tangibleProductStockMovementBusiness.findByCriteria(searchCriteria);
+	protected Collection<StockTangibleProductMovement> __query__() {
+		StockTangibleProductMovementSearchCriteria searchCriteria = searchCriteria();
+		Collection<StockTangibleProductMovement> collection = tangibleProductStockMovementBusiness.findByCriteria(searchCriteria);
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterFromDate(),searchCriteria.getFromDateSearchCriteria().getPreparedValue().getTime());
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterToDate(),searchCriteria.getToDateSearchCriteria().getPreparedValue().getTime());
 		return collection;
@@ -72,13 +72,13 @@ public class TangibleProductStockMovementQueryPage extends AbstractBusinessQuery
 		return Boolean.TRUE;
 	}
 	
-	private TangibleProductStockMovementSearchCriteria searchCriteria() {
-		return new TangibleProductStockMovementSearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
+	private StockTangibleProductMovementSearchCriteria searchCriteria() {
+		return new StockTangibleProductMovementSearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
 	}
 
 	@Override
-	protected Class<TangibleProductStockMovement> __entityClass__() {
-		return TangibleProductStockMovement.class;
+	protected Class<StockTangibleProductMovement> __entityClass__() {
+		return StockTangibleProductMovement.class;
 	}
 
 	@Override
@@ -107,7 +107,7 @@ public class TangibleProductStockMovementQueryPage extends AbstractBusinessQuery
 	}
 	
 	@Getter @Setter
-	public static class TangibleProductStockMovementQueryResultFormModel extends AbstractFormModel<TangibleProductStockMovement> implements Serializable {
+	public static class TangibleProductStockMovementQueryResultFormModel extends AbstractFormModel<StockTangibleProductMovement> implements Serializable {
 
 		private static final long serialVersionUID = -3328823824725030136L;
 

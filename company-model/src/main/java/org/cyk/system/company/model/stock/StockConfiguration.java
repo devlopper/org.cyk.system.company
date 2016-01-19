@@ -14,7 +14,7 @@ public class StockConfiguration extends AbstractModelElement implements Serializ
 
 	private static final long serialVersionUID = 2700928054823690772L;
 
-	private Boolean zeroQuantityAllowed = Boolean.FALSE;
+	//private Boolean zeroQuantityAllowed = Boolean.FALSE;
 	
 	@Override
 	public String getUiString() {

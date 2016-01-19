@@ -1,6 +1,6 @@
-package org.cyk.system.company.business.impl.integration;
+package org.cyk.system.company.business.impl.integration.sale;
 
-public class SaleResultsIT extends AbstractSaleBusinessIT {
+public class SaleWithManyFiniteStateMachineStateBusinessIT extends AbstractSaleWithManyFiniteStateMachineStateBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
     
@@ -72,7 +72,7 @@ public class SaleResultsIT extends AbstractSaleBusinessIT {
     }
 
 	@Override
-	protected void noTax1NotPaid() {
+	protected void noTax1_1CreateSaleInitialState(CreateSaleParameters parameters) {
 		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount("1");
 		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new Object[][]{ 
 			new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_START}, "1"},new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_MIDDLE}, "0"}
@@ -82,8 +82,10 @@ public class SaleResultsIT extends AbstractSaleBusinessIT {
 		companyBusinessTestHelper.assertCurrentAccountingPeriod("0", "0", "0","0");
 		companyBusinessTestHelper.assertCurrentAccountingPeriodProduct("TP1","0", "0","0","0");
 		companyBusinessTestHelper.assertCustomer("C1","0","0","0","0","0" );
-		
-		companyBusinessTestHelper.updateSale("nt1", SALE_FINITE_MACHINE_ALPHABET_VALID,"false");
+	}
+	
+	@Override
+	protected void noTax1_2UpdateSaleMiddleState(UpdateSaleParameters parameters) {
 		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new Object[][]{ 
 			new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_START}, "0"},new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_MIDDLE}, "1"}
 			,new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_FINAL}, "0"}
@@ -92,8 +94,10 @@ public class SaleResultsIT extends AbstractSaleBusinessIT {
 		companyBusinessTestHelper.assertCurrentAccountingPeriod("0", "0", "0","0");
 		companyBusinessTestHelper.assertCurrentAccountingPeriodProduct("TP1","0", "0","0","0");
 		companyBusinessTestHelper.assertCustomer("C1","0","0","0","0","0" );
-		
-		companyBusinessTestHelper.updateSale("nt1", SALE_FINITE_MACHINE_ALPHABET_VALID,"false");
+	}
+
+	@Override
+    protected void noTax1_3UpdateSaleFinalState(UpdateSaleParameters parameters) {
 		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount(new Object[][]{ 
 			new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_START}, "0"},new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_MIDDLE}, "0"}
 			,new Object[]{ new String[]{SALE_FINITE_MACHINE_STATE_FINAL}, "1"}
@@ -102,49 +106,5 @@ public class SaleResultsIT extends AbstractSaleBusinessIT {
 		companyBusinessTestHelper.assertCurrentAccountingPeriod("1", "2000", "0","2000");
 		companyBusinessTestHelper.assertCurrentAccountingPeriodProduct("TP1","2", "2000","0","2000");
 		companyBusinessTestHelper.assertCustomer("C1","1","2000","0","0","2000" );
-		
-	}
-
-	@Override
-	protected void noTax2AllPaid() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void noTax3SomePaid() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void noTax4MorePaid1() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void noTax5MorePaid2() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void noTax6MorePaid3() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void noTax7AllPaidNoUnitPrice() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void noTax8AllPaidUnitPriceButCostValueSet() {
-		// TODO Auto-generated method stub
-		
-	}
-                
+    }            
 }

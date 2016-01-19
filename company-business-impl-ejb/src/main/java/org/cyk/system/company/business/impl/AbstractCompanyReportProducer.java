@@ -31,7 +31,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		SaleReport saleReport = prepare(currentStateParameters.getSale(), currentStateParameters.getSaleStockInput(), 
 				currentStateParameters.getSaleCashRegisterMovement().getCashRegisterMovement(),previousStateParameters.getAmountToPay(),
 				previousStateParameters.getAmountPaid(),previousStateParameters.getAmountToOut(),Boolean.FALSE
-				,previousStateParameters.getSaleStockInput()==null?null:previousStateParameters.getSaleStockInput().getTangibleProductStockMovement().getQuantity(),null);
+				,previousStateParameters.getSaleStockInput()==null?null:previousStateParameters.getSaleStockInput().getTangibleProductStockMovement().getMovement().getValue(),null);
 		return saleReport;
 	}
 	

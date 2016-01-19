@@ -35,7 +35,7 @@ public class SaleStockDaoImpl extends AbstractSaleStockDaoImpl<SaleStock,SaleSto
 			.parenthesis(Boolean.FALSE)
 			.and().between("tangibleProductStockMovement.date").and().whereString("ABS(r.tangibleProductStockMovement.quantity) >= :minimumQuantity");*/
     	whereSearchCriteria(queryStringBuilder);
-    	
+    	/*
     	String readByCriteriaDateAscendingOrderQuery = queryStringBuilder.orderBy("tangibleProductStockMovement.date", Boolean.TRUE).getValue();
     	registerNamedQuery(readByCriteria,readByCriteriaDateAscendingOrderQuery);	
     	registerNamedQuery(readByCriteriaDateAscendingOrder,readByCriteriaDateAscendingOrderQuery );
@@ -50,7 +50,7 @@ public class SaleStockDaoImpl extends AbstractSaleStockDaoImpl<SaleStock,SaleSto
     	);
     	whereSearchCriteria(queryStringBuilder);
     	registerNamedQuery(computeByCriteria,queryStringBuilder);
-    	
+    	*/
     }
 	
 	private void whereSearchCriteria(QueryStringBuilder queryStringBuilder){

@@ -87,15 +87,15 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		
 		cumulatedBalance = formatNumber(saleStockInput.getSale().getBalance().getCumul());
 		//cumulatedBalance = formatNumber(saleStockInput.getSale().getCost());
-		numberOfGoods = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity());
+		//numberOfGoods = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity());
 		
-		remainingNumberOfGoods = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity());
+		//remainingNumberOfGoods = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity());
 		//remainingNumberOfGoods = numberOfGoods;
 		//remainingNumberOfGoods = formatNumber(saleStockInput.getRemainingNumberOfGoods());
 		
 		date = formatDate(saleStockInput.getSale().getDate());
 		
-		stockIn = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity().abs());
+		//stockIn = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity().abs());
 		comments = saleStockInput.getSale().getComments();
 	}
 	
@@ -110,19 +110,19 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		//amountPaid = formatNumber(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
 		balance = formatNumber(saleStockOutput.getSaleCashRegisterMovement().getBalance().getValue());
 		cumulatedBalance = formatNumber(saleStockOutput.getSaleCashRegisterMovement().getBalance().getCumul());
-		numberOfGoods = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity());
+		//numberOfGoods = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity());
 		remainingNumberOfGoods = formatNumber(saleStockOutput.getRemainingNumberOfGoods());
 		
-		takenNumberOfGoods = formatNumber(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());
+		//takenNumberOfGoods = formatNumber(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());
 		
 		//date = formatDate(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
-		
+		/*
 		Integer sign = saleStockOutput.getTangibleProductStockMovement().getQuantity().signum();
 		if(sign==-1)
 			stockOut = formatNumber(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());
 		else if(sign==1)
 			stockIn = formatNumber(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());
-		
+		*/
 		comments = saleStockOutput.getSaleStockInput().getSale().getComments();
 	}
 	

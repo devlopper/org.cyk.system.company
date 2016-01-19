@@ -24,6 +24,7 @@ import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.product.Product;
+import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
@@ -35,6 +36,8 @@ import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockOutput;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.system.company.model.sale.SalesDetails;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
+import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
@@ -42,6 +45,7 @@ import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
+import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.impl.AbstractBusinessTestHelper;
 import org.cyk.system.root.business.impl.RootDataProducerHelper;
 import org.cyk.system.root.model.mathematics.Movement;
@@ -86,6 +90,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     @Inject private FiniteStateMachineAlphabetDao finiteStateMachineAlphabetDao;
     @Inject private FiniteStateMachineFinalStateDao finiteStateMachineFinalStateDao;
     @Inject private SaleDao saleDao;
+    @Inject private StockableTangibleProductDao stockableTangibleProductDao;
     
     @Getter @Setter private Boolean saleAutoCompleted = Boolean.TRUE;
 	
@@ -105,6 +110,12 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		salableProduct.setPrice(commonUtils.getBigDecimal(price));
 	}
 	
+	public void set(StockableTangibleProduct stockableTangibleProduct,String tangibleProductCode,String minimum,String maximum){
+		stockableTangibleProduct.setTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode));
+		stockableTangibleProduct.setMovementCollection(new MovementCollection()); 
+		set(stockableTangibleProduct.getMovementCollection(), tangibleProductCode+"_movcol","Le stock", "0", minimum, maximum,"Input","Output");
+	}
+	
 	public void set(CashRegister cashRegister,String code){
 		cashRegister.setCode(code);
 		cashRegister.setName(code);
@@ -117,6 +128,12 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		cashRegisterMovement.setMovement(new Movement());
 		set(cashRegisterMovement.getMovement(), cashRegisterMovement.getCashRegister().getMovementCollection().getCode(), amount);
 		cashRegisterMovement.getMovement().setValue(new BigDecimal(amount));
+	}
+	
+	public void set(StockTangibleProductMovement stockTangibleProductMovement,String tangibleProductCode,String amount){
+		stockTangibleProductMovement.setStockableTangibleProduct(stockableTangibleProductDao.readByTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode)));
+		stockTangibleProductMovement.setMovement(new Movement());
+		set(stockTangibleProductMovement.getMovement(), stockTangibleProductMovement.getStockableTangibleProduct().getMovementCollection().getCode(), amount);
 	}
 	
 	public void set(Sale sale,String identifier,String date,String cashierCode,String customerCode,String[][] products,String taxable){
@@ -147,7 +164,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	public void set(SaleStockInput saleStockInput,Customer customer,String externalIdentifier,String cost,String commission,String quantity,Date date){
     	saleStockInput.getSale().setDate(date);
     	saleStockInput.setExternalIdentifier(externalIdentifier);
-    	saleStockInput.getTangibleProductStockMovement().setQuantity(new BigDecimal(quantity));
+    	//saleStockInput.getTangibleProductStockMovement().setQuantity(new BigDecimal(quantity));
     	
     	SaleProduct saleProduct = saleStockInput.getSale().getSaleProducts().iterator().next();
     	
@@ -163,7 +180,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	}
 	
 	public void set(SaleStockOutput saleStockOutput,String quantity,Date date){
-		saleStockOutput.getTangibleProductStockMovement().setQuantity(new BigDecimal(quantity).negate());
+		//saleStockOutput.getTangibleProductStockMovement().setQuantity(new BigDecimal(quantity).negate());
 	}
 	
 	public void set(SaleStockOutput saleStockOutput,String quantity){
@@ -209,6 +226,12 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	assertEquals("Cash register balance",new BigDecimal(expectedBalance), cashRegister.getMovementCollection().getValue());
     }    
 	
+    public void createStockTangibleProductMovement(String tangibleProductCode,String quantity){
+    	StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement();
+    	set(stockTangibleProductMovement, tangibleProductCode, quantity);
+    	CompanyBusinessLayer.getInstance().getStockTangibleProductMovementBusiness().create(stockTangibleProductMovement);
+    }
+    
 	/* Sale */
 	
     public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable,Boolean finalState){
@@ -443,28 +466,14 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     			.setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,numberOfProceedElements,Cost.FIELD_VALUE, cost,Cost.FIELD_TAX, tax,Cost.FIELD_TURNOVER, turnover));
     }
     
-    /*public void assertCostComputation(AccountingPeriod accountingPeriod,String[][] values){
+    public void assertCostComputation(AccountingPeriod accountingPeriod,String[][] values){
     	for(String[] infos : values){
     		BigDecimal vat = CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(accountingPeriod, commonUtils.getBigDecimal(infos[0]));
     		assertBigDecimalEquals("Value Added Tax of "+infos[0], infos[1], vat);
     		assertBigDecimalEquals("Turnover of "+infos[0]+" with VAT = "+vat, infos[2]
     				, CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(accountingPeriod, commonUtils.getBigDecimal(infos[0]), vat));
     	}
-    }*/
-    
-    /*public void assertSaleResults(SaleResults saleResults,String expectedNumberOfProceedElements,String expectedCost,String expectedTax,String expectedTurnover){
-    	assertBigDecimalEquals("Number of proceed elements", expectedNumberOfProceedElements, saleResults.getCost().getNumberOfProceedElements());
-    	assertCost(saleResults.getCost(), expectedCost, expectedTax, expectedTurnover);
     }
-    public void assertCurrentAccountingPeriodSaleResults(String expectedNumberOfProceedElements,String expectedCost,String expectedTax,String expectedTurnover){
-    	assertSaleResults(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleResults(), expectedNumberOfProceedElements, expectedCost, expectedTax, expectedTurnover);
-    }
-    public void assertCurrentAccountingPeriodProductSaleResults(String productCode,String expectedNumberOfProceedElements,String expectedCost,String expectedTax,String expectedTurnover){
-    	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByProduct(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
-    	SaleResults saleResults = accountingPeriodProduct.getSaleResults();
-    	assertSaleResults(saleResults, expectedNumberOfProceedElements, expectedCost, expectedTax, expectedTurnover);
-    }*/
-    
     
     public void assertSaleFiniteStateMachineStateCount(Object[][] datas){
     	for(Object[] data : datas){
@@ -500,6 +509,15 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     }
     public void assertAccountingPeriod(ExpectedValues expectedValues){
     	assertAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), expectedValues);
+    }
+    
+    public void assertStockableTangibleProduct(String tangibleProductCode,ExpectedValues expectedValues){
+    	StockableTangibleProduct stockableTangibleProduct = stockableTangibleProductDao.readByTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode));
+    	doAssertions(stockableTangibleProduct, expectedValues);
+    }
+    public void assertStockableTangibleProduct(String tangibleProductCode,String value){
+    	assertStockableTangibleProduct(tangibleProductCode, new ExpectedValues()
+    			.setClass(MovementCollection.class).setValues(MovementCollection.FIELD_VALUE,value));
     }
 	
 	/**/

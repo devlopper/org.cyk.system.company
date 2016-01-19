@@ -13,7 +13,7 @@ public class PaymentBusinessIT extends AbstractBusinessIT {
     	super.populate();
     	CashRegister  cashRegister = new CashRegister();
     	companyBusinessTestHelper.set(cashRegister, cashRegisterUnlimitedIdentifier);
-    	rootBusinessTestHelper.set(cashRegister.getMovementCollection(), "cr001", "0", "0", null, "Entrée", "Sortie");
+    	rootBusinessTestHelper.set(cashRegister.getMovementCollection(), "cr001","Le montant de la caisse", "0", "0", null, "Entrée", "Sortie");
     	create(cashRegister);
     	
     	/*
