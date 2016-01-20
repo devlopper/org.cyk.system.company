@@ -288,9 +288,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 		FiniteStateMachine finiteStateMachine = rootDataProducerHelper.createFiniteStateMachine("SALE_FINITE_MACHINE_STATE"
     			, new String[]{"SALE_FINITE_MACHINE_ALPHABET_VALID"}
-    		, new String[]{"SALE_FINITE_MACHINE_STATE_FINAL"}
-    		, "SALE_FINITE_MACHINE_STATE_FINAL", new String[]{"SALE_FINITE_MACHINE_STATE_FINAL"}, new String[][]{
-    			{"SALE_FINITE_MACHINE_STATE_FINAL","SALE_FINITE_MACHINE_ALPHABET_VALID","SALE_FINITE_MACHINE_STATE_FINAL"}
+    		, new String[]{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}
+    		, Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE, new String[]{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}, new String[][]{
+    			{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE,"SALE_FINITE_MACHINE_ALPHABET_VALID",Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}
     	});
 		
 		AccountingPeriod accountingPeriod = new AccountingPeriod();

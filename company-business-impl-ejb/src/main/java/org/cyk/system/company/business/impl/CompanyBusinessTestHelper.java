@@ -2,12 +2,16 @@ package org.cyk.system.company.business.impl;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,12 +34,12 @@ import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
+import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockInput;
 import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockOutput;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
-import org.cyk.system.company.model.sale.SalesDetails;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
@@ -59,9 +63,6 @@ import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachin
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.test.ExpectedValues;
 import org.cyk.utility.common.test.TestEnvironmentListener.Try;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Singleton
 public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implements Serializable {
@@ -110,10 +111,10 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		salableProduct.setPrice(commonUtils.getBigDecimal(price));
 	}
 	
-	public void set(StockableTangibleProduct stockableTangibleProduct,String tangibleProductCode,String minimum,String maximum){
+	public void set(StockableTangibleProduct stockableTangibleProduct,String tangibleProductCode,String minimum,String maximum,String value){
 		stockableTangibleProduct.setTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode));
 		stockableTangibleProduct.setMovementCollection(new MovementCollection()); 
-		set(stockableTangibleProduct.getMovementCollection(), tangibleProductCode+"_movcol","Le stock", "0", minimum, maximum,"Input","Output");
+		set(stockableTangibleProduct.getMovementCollection(), tangibleProductCode+"_movcol","Le stock",value==null?"0":value, minimum, maximum,"Input","Output");
 	}
 	
 	public void set(CashRegister cashRegister,String code){
@@ -292,27 +293,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	}
     	return sale;
     }
-	
-	public void saleComputeByCriteria(SaleSearchCriteria criteria,String expectedCost,String expectedVat,String expectedTurnover,String expectedBalance){
-		SalesDetails actual = saleBusiness.computeByCriteria(criteria);
-		saleComputeByCriteria(actual, expectedCost, expectedVat, expectedTurnover, expectedBalance);
-	}
-	
-	private void saleComputeByCriteria(SalesDetails actual,String expectedCost,String expectedVat,String expectedTurnover,String expectedBalance){
-		assertBigDecimalEquals("Cost", expectedCost, actual.getCost());
-		assertBigDecimalEquals("VAT", expectedVat, actual.getValueAddedTax());
-		assertBigDecimalEquals("Turnover", expectedTurnover, actual.getTurnover());
-    	assertBigDecimalEquals("Balance", expectedBalance, actual.getBalance());
-	}
-	
-	/*
-	private static void assertSaleReport(SaleReport saleReport,String[] payments,Boolean invoice){
-		contains(LabelValue.class, saleReport.getPaymentInfos().getCollection(), new Object[]{LabelValue.FIELD_LABEL,LabelValue.FIELD_VALUE}, new Object[][]{
-			{DefaultSaleReportProducer.LABEL_AMOUNT_TO_PAY,payments[0]}
-		});
-	}
-	*/
-	
+		
 	public SaleCashRegisterMovement pay(Date date,Person person,Sale sale,String paid,Boolean printPos,String expectedBalance,String expectedCumulBalance){
     	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, person,Boolean.TRUE);
     	set(saleCashRegisterMovement, paid);
@@ -407,7 +388,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     public void saleStockInputComputeByCriteria(SaleStockInputSearchCriteria criteria,String expectedIn,String expectedRemaining,String expectedCost,String expectedVat,String expectedTurnover,String expectedBalance){
 		//System.out.println(saleBusiness.findByCriteria(criteria));
     	SaleStocksDetails actual = saleStockInputBusiness.computeByCriteria(criteria);
-    	saleComputeByCriteria(actual.getSalesDetails(), expectedCost, expectedVat, expectedTurnover, expectedBalance);
+    	//saleComputeByCriteria(actual.getSalesDetails(), expectedCost, expectedVat, expectedTurnover, expectedBalance);
 		assertBigDecimalEquals("In", expectedIn, actual.getIn());
 		assertBigDecimalEquals("Remaining", expectedRemaining, actual.getRemaining());
 	}
@@ -498,6 +479,23 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	assertSaleFiniteStateMachineStateCount(codes.toArray(new String[]{}),expectedCount);
     }
     
+    public void assertSaleByCriteria(String fromDate,String toDate,String[] saleFiniteStateMachineStateCodes,String[] expectedComputedIdentifiers,String expectedCost,String expectedTax,String expectedTurnover
+    		,String expectedBalance,String expectedPaid){
+    	SaleSearchCriteria criteria = new SaleSearchCriteria(getDate(fromDate, Boolean.FALSE), getDate(toDate, Boolean.FALSE));
+    	for(String saleFiniteStateMachineStateCode : saleFiniteStateMachineStateCodes)
+    		criteria.getFiniteStateMachineStates().add(finiteStateMachineStateDao.read(saleFiniteStateMachineStateCode));
+    	Collection<Sale> sales = CompanyBusinessLayer.getInstance().getSaleBusiness().findByCriteria(criteria);
+    	assertEquals("Find sale by criteria count using collection", expectedComputedIdentifiers.length, sales.size());
+    	assertEquals("Find sale by criteria count using fonction", expectedComputedIdentifiers.length, CompanyBusinessLayer.getInstance().getSaleBusiness().countByCriteria(criteria).intValue());
+    	int i = 0;
+    	for(Sale sale : sales)
+    		assertEquals("Find sale by criteria computed identifier",expectedComputedIdentifiers[i++],sale.getComputedIdentifier());
+    	SaleResults saleResults = CompanyBusinessLayer.getInstance().getSaleBusiness().computeByCriteria(criteria);
+    	doAssertions(saleResults, new ExpectedValues().setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,expectedComputedIdentifiers.length+""
+    			,Cost.FIELD_VALUE,expectedCost,Cost.FIELD_TAX,expectedTax,Cost.FIELD_TURNOVER,expectedTurnover)
+    			.setClass(SaleResults.class).setValues(SaleResults.FIELD_BALANCE,expectedBalance,SaleResults.FIELD_PAID,expectedPaid));
+    }
+    
     public void assertAccountingPeriodProduct(String productCode,ExpectedValues expectedValues){
     	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByProduct(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
     	doAssertions(accountingPeriodProduct.getSaleResults().getCost(), expectedValues);
@@ -513,11 +511,19 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     
     public void assertStockableTangibleProduct(String tangibleProductCode,ExpectedValues expectedValues){
     	StockableTangibleProduct stockableTangibleProduct = stockableTangibleProductDao.readByTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode));
-    	doAssertions(stockableTangibleProduct, expectedValues);
+    	doAssertions(stockableTangibleProduct.getMovementCollection(), expectedValues);
     }
     public void assertStockableTangibleProduct(String tangibleProductCode,String value){
     	assertStockableTangibleProduct(tangibleProductCode, new ExpectedValues()
     			.setClass(MovementCollection.class).setValues(MovementCollection.FIELD_VALUE,value));
+    }
+    
+    /**/
+    
+    public SaleSearchCriteria getSaleSearchCriteria(String fromDate,String toDate){
+    	SaleSearchCriteria saleSearchCriteria = new SaleSearchCriteria(getDate(fromDate,Boolean.FALSE),getDate(toDate,Boolean.FALSE));
+    	
+    	return saleSearchCriteria;
     }
 	
 	/**/

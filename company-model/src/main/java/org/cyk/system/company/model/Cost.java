@@ -34,15 +34,15 @@ public class Cost extends AbstractModelElement implements Serializable {
 	
 	@Override
 	public String getLogMessage() {
-		return String.format(LOG_FORMAT,value,tax,turnover);
+		return String.format(LOG_FORMAT,numberOfProceedElements,value,tax,turnover);
 	}
 	
 	@Override
 	public String toString() {
-		return String.format(LOG_FORMAT,value,tax,turnover);
+		return String.format(LOG_FORMAT,numberOfProceedElements,value,tax,turnover);
 	}
 	
-	private static final String LOG_FORMAT = Cost.class.getSimpleName()+"(V=%s TAX=%s T=%s)";
+	private static final String LOG_FORMAT = Cost.class.getSimpleName()+"(#=%s V=%s TAX=%s T=%s)";
 
 	public static final String FIELD_NUMBER_OF_PROCEED_ELEMENTS = "numberOfProceedElements";
 	public static final String FIELD_VALUE = "value";

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -18,15 +19,19 @@ import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
+import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleReport;
+import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
-import org.cyk.system.company.model.sale.SalesDetails;
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
+import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleProductDao;
+import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
@@ -43,6 +48,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	public static Boolean AUTO_SET_SALE_DATE = Boolean.TRUE;
 	
 	@Inject private SaleProductDao saleProductDao;
+	@Inject private StockableTangibleProductDao stockableTangibleProductDao;
 	@Inject private FiniteStateMachineFinalStateDao finiteStateMachineFinalStateDao;
 	
 	@Inject
@@ -178,6 +184,30 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			/*
 			 * It is a final state so we can compute the derived values
 			 */
+			
+			Collection<SaleProduct> saleProducts = saleProductDao.readBySale(sale);
+			Collection<TangibleProduct> tangibleProducts = new LinkedHashSet<>();
+			for(SaleProduct saleProduct : saleProducts)
+				if(saleProduct.getSalableProduct().getProduct() instanceof TangibleProduct)
+					tangibleProducts.add((TangibleProduct) saleProduct.getSalableProduct().getProduct());
+				
+			for(TangibleProduct tangibleProduct : tangibleProducts){
+				StockableTangibleProduct stockableTangibleProduct = stockableTangibleProductDao.readByTangibleProduct(tangibleProduct);
+				if(stockableTangibleProduct==null)
+					;
+				else{
+					BigDecimal count = BigDecimal.ZERO;
+					for(SaleProduct saleProduct : saleProducts)
+						if(saleProduct.getSalableProduct().getProduct().equals(stockableTangibleProduct.getTangibleProduct()))
+							count = count.add(saleProduct.getQuantity());
+					StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement(stockableTangibleProduct
+							,RootBusinessLayer.getInstance().getMovementBusiness().instanciate(stockableTangibleProduct.getMovementCollection(), Boolean.FALSE));
+					stockTangibleProductMovement.getMovement().setValue(count.negate());
+					CompanyBusinessLayer.getInstance().getStockTangibleProductMovementBusiness().create(stockTangibleProductMovement);
+					logIdentifiable("Updated",stockableTangibleProduct);
+				}
+			}
+			
 			if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))
 				sale.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(sale.getAccountingPeriod(), sale.getCost().getValue()));
 			sale.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(sale.getAccountingPeriod(), sale.getCost().getValue(), sale.getCost().getTax()));
@@ -197,7 +227,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			logIdentifiable("Derived values computed",sale);
 		}
 	}
-	
+
 	private void createReport(InvoiceParameters previous,InvoiceParameters current){
 		SaleReport saleReport = CompanyBusinessLayer.getInstance().getSaleReportProducer().produceInvoice(previous,current);
 		for(SaleBusinessImplListener listener : LISTENERS)
@@ -219,7 +249,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public SalesDetails computeByCriteria(SaleSearchCriteria criteria) {
+	public SaleResults computeByCriteria(SaleSearchCriteria criteria) {
 		return dao.computeByCriteria(criteria);
 	}
 	

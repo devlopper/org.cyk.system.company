@@ -83,4 +83,9 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	public static final String FIELD_FINITE_STATE_MACHINE_STATE = "finiteStateMachineState";
 	
 	private static final String LOG_FORMAT = Sale.class.getSimpleName()+"(ID=%s|%s Date=%s STATE=%s ATX=%s %s %s CUST=%s %s)";
+	
+	/**/
+	
+	public static final String FINITE_STATE_MACHINE_FINAL_STATE_CODE = "FINITE_STATE_MACHINE_FINAL";
+	
 }

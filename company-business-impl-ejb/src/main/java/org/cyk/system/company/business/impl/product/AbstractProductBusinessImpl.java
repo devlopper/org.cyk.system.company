@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Set;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
@@ -32,7 +34,7 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
         super(dao);
     }
      
-    @Override
+    @Override @TransactionAttribute(TransactionAttributeType.NEVER)
     public Collection<PRODUCT> findByCategory(ProductCategory category) {
     	return dao.readByCategory(category);
     }

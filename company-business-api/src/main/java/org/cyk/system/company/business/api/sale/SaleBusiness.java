@@ -8,8 +8,8 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleReport;
+import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
-import org.cyk.system.company.model.sale.SalesDetails;
 import org.cyk.system.root.business.api.TypedBusiness;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
@@ -30,7 +30,7 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 	Collection<Sale> findByCriteria(SaleSearchCriteria criteria);
 	Long countByCriteria(SaleSearchCriteria criteria);
 	
-	SalesDetails computeByCriteria(SaleSearchCriteria criteria);
+	SaleResults computeByCriteria(SaleSearchCriteria criteria);
 	
 	ReportBasedOnTemplateFile<SaleReport> findReport(Collection<Sale> sales);
 	ReportBasedOnTemplateFile<SaleReport> findReport(Sale sale);

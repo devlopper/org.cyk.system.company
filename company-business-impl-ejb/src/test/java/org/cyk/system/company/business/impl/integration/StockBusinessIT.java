@@ -23,13 +23,16 @@ public class StockBusinessIT extends AbstractBusinessIT {
     	companyBusinessTestHelper.createStockTangibleProductMovement("TP1", "-3");
     	companyBusinessTestHelper.assertStockableTangibleProduct("TP1", "7");
     	
-    	//companyBusinessTestHelper.createStockTangibleProductMovement("TP1", "99");
-    	//companyBusinessTestHelper.assertStockableTangibleProduct("TP1", "106");
+    	companyBusinessTestHelper.createStockTangibleProductMovement("TP4", "-1000000000000");
+    	companyBusinessTestHelper.assertStockableTangibleProduct("TP4", "-1000000000000");
+    	
+    	companyBusinessTestHelper.createStockTangibleProductMovement("TP4", "3000000000000");
+    	companyBusinessTestHelper.assertStockableTangibleProduct("TP4", "2000000000000");
     }
     
     /* Exceptions */
     
-    //@Test
+    @Test
     public void incrementValueMustNotBeLessThanIntervalLow(){
     	rootBusinessTestHelper.incrementValueMustNotBeLessThanIntervalLow("TP1_movcol");
     }
@@ -37,21 +40,21 @@ public class StockBusinessIT extends AbstractBusinessIT {
     public void incrementValueMustNotBeGreaterThanIntervalHigh(){
     	rootBusinessTestHelper.incrementValueMustNotBeGreaterThanIntervalHigh("TP1_movcol");
     }
-    //@Test
+    @Test
     public void decrementValueMustNotBeLessThanIntervalLow(){
     	rootBusinessTestHelper.decrementValueMustNotBeLessThanIntervalLow("TP1_movcol");
     }
-    //@Test
+    @Test
     public void decrementValueMustNotBeGreaterThanIntervalHigh(){
     	rootBusinessTestHelper.decrementValueMustNotBeGreaterThanIntervalHigh("TP1_movcol");
     }
     
-    //@Test
+    @Test
     public void collectionValueMustNotBeLessThanIntervalLow(){
     	rootBusinessTestHelper.collectionValueMustNotBeLessThanIntervalLow("TP1_movcol");
     }
     
-    //@Test
+    @Test
     public void collectionValueMustNotBeGreaterThanIntervalHigh(){
     	rootBusinessTestHelper.collectionValueMustNotBeGreaterThanIntervalHigh("TP1_movcol");
     }

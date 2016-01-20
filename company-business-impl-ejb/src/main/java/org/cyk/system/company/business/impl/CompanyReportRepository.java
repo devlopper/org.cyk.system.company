@@ -38,6 +38,7 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
+import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStock;
 import org.cyk.system.company.model.sale.SaleStockInput;
@@ -46,7 +47,6 @@ import org.cyk.system.company.model.sale.SaleStockOutput;
 import org.cyk.system.company.model.sale.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
-import org.cyk.system.company.model.sale.SalesDetails;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
@@ -341,7 +341,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 							//balance.add(((SaleStockOutput)row.getSaleStock()).getSaleStockInput().getS.getBalance().getValue());
 				}
 			}
-			SalesDetails results = saleBusiness.computeByCriteria(new SaleSearchCriteria(fromDate,toDate));
+			SaleResults results = saleBusiness.computeByCriteria(new SaleSearchCriteria(fromDate,toDate));
 			balance = results.getBalance();
 			SaleStockReportTableRow totalRow = new SaleStockReportTableRow();
 			//totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));

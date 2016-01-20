@@ -10,8 +10,8 @@ import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
-import org.cyk.system.company.model.sale.SalesDetails;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
@@ -115,7 +115,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	}
 	
 	@Override
-	public SalesDetails computeByCriteria(SaleSearchCriteria criteria) {
+	public SaleResults computeByCriteria(SaleSearchCriteria criteria) {
 		QueryWrapper<?> queryWrapper = namedQuery(
 				criteria.getHasAtLeastOneCashRegisterMovement()==null?computeByCriteria
 						:Boolean.TRUE.equals(criteria.getHasAtLeastOneCashRegisterMovement())?
@@ -123,12 +123,13 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 		applyPeriodSearchCriteriaParameters(queryWrapper, criteria);
 		
 		Object[] values = (Object[]) queryWrapper.resultOne();
-		SalesDetails results = new SalesDetails();
-		results.setCost(values[0]==null?BigDecimal.ZERO:(BigDecimal) values[0]);
-		results.setTurnover(values[1]==null?BigDecimal.ZERO:(BigDecimal) values[1]);
-		results.setValueAddedTax(values[2]==null?BigDecimal.ZERO:(BigDecimal) values[2]);
+		SaleResults results = new SaleResults();
+		results.getCost().setNumberOfProceedElements(new BigDecimal(countByCriteria(criteria)));
+		results.getCost().setValue(values[0]==null?BigDecimal.ZERO:(BigDecimal) values[0]);
+		results.getCost().setTurnover(values[1]==null?BigDecimal.ZERO:(BigDecimal) values[1]);
+		results.getCost().setTax(values[2]==null?BigDecimal.ZERO:(BigDecimal) values[2]);
 		results.setBalance(values[3]==null?BigDecimal.ZERO:(BigDecimal) values[3]);
-		results.setPaid(results.getCost().subtract(results.getBalance()));
+		results.setPaid(results.getCost().getValue().subtract(results.getBalance()));
 		return results;
 	}
 	

@@ -3,8 +3,8 @@ package org.cyk.system.company.persistence.api.sale;
 import java.util.Collection;
 
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
-import org.cyk.system.company.model.sale.SalesDetails;
 import org.cyk.system.root.persistence.api.TypedDao;
 
 public interface SaleDao extends TypedDao<Sale> {
@@ -13,7 +13,7 @@ public interface SaleDao extends TypedDao<Sale> {
 	
 	Long countByCriteria(SaleSearchCriteria criteria);
 	
-	SalesDetails computeByCriteria(SaleSearchCriteria criteria);
+	SaleResults computeByCriteria(SaleSearchCriteria criteria);
 	
 	Sale readByComputedIdentifier(String identifier);
 }

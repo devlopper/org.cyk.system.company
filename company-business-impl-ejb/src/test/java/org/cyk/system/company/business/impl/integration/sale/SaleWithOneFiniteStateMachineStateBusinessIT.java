@@ -1,5 +1,7 @@
 package org.cyk.system.company.business.impl.integration.sale;
 
+import org.cyk.system.company.model.sale.Sale;
+
 public class SaleWithOneFiniteStateMachineStateBusinessIT extends AbstractSaleWithOneFiniteStateMachineStateBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
@@ -78,6 +80,10 @@ public class SaleWithOneFiniteStateMachineStateBusinessIT extends AbstractSaleWi
 		companyBusinessTestHelper.assertCurrentAccountingPeriod("1", "2000", "0","2000");
 		companyBusinessTestHelper.assertCurrentAccountingPeriodProduct("TP1","2", "2000","0","2000");
 		companyBusinessTestHelper.assertCustomer("C1","1","2000","0","0","2000" );
+		companyBusinessTestHelper.assertSaleByCriteria(null,null, new String[]{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}
+			, new String[]{"nt1"}, "2000", "0", "2000", "2000", "0");
+		
+		companyBusinessTestHelper.assertStockableTangibleProduct("TP1", "98");
 	}
 
 	@Override

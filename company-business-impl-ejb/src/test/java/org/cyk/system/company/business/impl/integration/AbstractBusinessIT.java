@@ -288,7 +288,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 	protected void createStockableTangibleProducts(String[][] stockableTangibleProducts) {
     	for(String[] infos : stockableTangibleProducts){
 			StockableTangibleProduct stockableTangibleProduct = new StockableTangibleProduct();
-			companyBusinessTestHelper.set(stockableTangibleProduct, infos[0], infos[1], infos[2]);
+			companyBusinessTestHelper.set(stockableTangibleProduct, infos[0], infos[1], infos[2], infos[3]);
 			create(stockableTangibleProduct);
 		}	
     }

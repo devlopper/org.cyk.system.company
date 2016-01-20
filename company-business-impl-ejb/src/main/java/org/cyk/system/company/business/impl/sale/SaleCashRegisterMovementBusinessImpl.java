@@ -51,7 +51,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	public SaleCashRegisterMovement newInstance(Sale sale,Person person,Boolean input) {
 		Cashier cashier = cashierDao.readByPerson(person);
 		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement(cashier.getCashRegister(),new Movement());
-		cashRegisterMovement.setMovement(RootBusinessLayer.getInstance().getMovementBusiness().newInstance(cashier.getCashRegister().getMovementCollection(),input));
+		cashRegisterMovement.setMovement(RootBusinessLayer.getInstance().getMovementBusiness().instanciate(cashier.getCashRegister().getMovementCollection(),input));
 		SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement(sale,cashRegisterMovement);
 		logInstanceCreated(saleCashRegisterMovement);
 		return saleCashRegisterMovement;
