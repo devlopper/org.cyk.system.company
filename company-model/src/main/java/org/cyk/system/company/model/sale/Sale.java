@@ -32,6 +32,12 @@ import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
 
+/**
+ * The exchange of a commodity or money as the price of a good or a service.<br/>
+ * A transaction between two parties where the buyer receives goods (tangible or intangible)
+ * @author Christian Yao Komenan
+ *
+ */
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
 @ModelBean(genderType=GenderType.FEMALE,crudStrategy=CrudStrategy.BUSINESS)
 public class Sale extends AbstractIdentifiable implements Serializable {

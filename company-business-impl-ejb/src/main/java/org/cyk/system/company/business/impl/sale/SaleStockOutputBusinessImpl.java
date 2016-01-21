@@ -19,13 +19,13 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
-import org.cyk.system.company.model.sale.SaleStockInput;
-import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.company.model.sale.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
-import org.cyk.system.company.persistence.api.sale.SaleStockInputDao;
+import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementInputDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockOutputDao;
 import org.cyk.system.root.business.api.event.EventBusiness;
 import org.cyk.system.root.business.api.file.report.ReportBusiness;
@@ -33,7 +33,7 @@ import org.cyk.system.root.model.event.Event;
 import org.cyk.system.root.model.party.person.Person;
 
 @Stateless
-public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<SaleStockOutput, SaleStockOutputDao,SaleStockOutputSearchCriteria> implements SaleStockOutputBusiness,Serializable {
+public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<SaleStockTangibleProductMovementOutput, SaleStockOutputDao,SaleStockOutputSearchCriteria> implements SaleStockOutputBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 	
@@ -41,7 +41,7 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
 	@Inject private StockTangibleProductMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private EventBusiness eventBusiness;
-	@Inject private SaleStockInputDao saleStockInputDao;
+	@Inject private SaleStockTangibleProductMovementInputDao saleStockInputDao;
 	@Inject private CustomerDao customerDao;
 	@Inject private ReportBusiness reportBusiness;
 	
@@ -51,25 +51,25 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public SaleStockOutput newInstance(Person person,SaleStockInput saleStockInput) {
+	public SaleStockTangibleProductMovementOutput newInstance(Person person,SaleStockTangibleProductMovementInput saleStockInput) {
 		SaleCashRegisterMovement saleCashRegisterMovement = null;//saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person);
-		SaleStockOutput saleStockOutput = new SaleStockOutput(saleStockInput,saleCashRegisterMovement,new StockTangibleProductMovement());
-		//saleStockOutput.getTangibleProductStockMovement().setTangibleProduct(tangibleProductBusiness.find(TangibleProduct.SALE_STOCK));
+		SaleStockTangibleProductMovementOutput saleStockOutput = new SaleStockTangibleProductMovementOutput(saleStockInput,saleCashRegisterMovement,new StockTangibleProductMovement());
+		//saleStockOutput.getStockTangibleProductStockMovement().setTangibleProduct(tangibleProductBusiness.find(TangibleProduct.SALE_STOCK));
 		return saleStockOutput;
 	}
 
 	@Override
-	public SaleStockOutput create(SaleStockOutput saleStockOutput) {
-		BigDecimal outputQuantity = null;//saleStockOutput.getTangibleProductStockMovement().getQuantity();
+	public SaleStockTangibleProductMovementOutput create(SaleStockTangibleProductMovementOutput saleStockOutput) {
+		BigDecimal outputQuantity = null;//saleStockOutput.getStockTangibleProductStockMovement().getQuantity();
 		exceptionUtils().exception(outputQuantity.signum()>0, "salestockoutput.quantitymustbenegative");
-		SaleStockInput saleStockInput = saleStockInputDao.read(saleStockOutput.getSaleStockInput().getIdentifier());
+		SaleStockTangibleProductMovementInput saleStockInput = saleStockInputDao.read(saleStockOutput.getSaleStockInput().getIdentifier());
 		exceptionUtils().exception(outputQuantity.abs().compareTo(saleStockInput.getRemainingNumberOfGoods())>0, "salestockoutput.quantitymustbelessthanorequalsinstock");
 		ReceiptParameters previous = new ReceiptParameters(saleStockOutput);
 		saleCashRegisterMovementBusiness.create(saleStockOutput.getSaleCashRegisterMovement(),Boolean.FALSE);
-		//saleStockOutput.getTangibleProductStockMovement().setDate(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
-		tangibleProductStockMovementBusiness.create(saleStockOutput.getTangibleProductStockMovement());
+		//saleStockOutput.getStockTangibleProductStockMovement().setDate(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
+		//tangibleProductStockMovementBusiness.create(saleStockOutput.getStockTangibleProductStockMovement());
 		//saleStockOutput.getSaleStockInput().setRemainingNumberOfGoods(
-		//		saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().add(saleStockOutput.getTangibleProductStockMovement().getQuantity()));
+		//		saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().add(saleStockOutput.getStockTangibleProductStockMovement().getQuantity()));
 		saleStockOutput.setRemainingNumberOfGoods(saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods());
 		saleStockInputDao.update(saleStockOutput.getSaleStockInput());
 		
@@ -79,12 +79,12 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 			customerDao.update(customer);
 		}
 		
-		if(saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().equals(BigDecimal.ZERO) && saleStockOutput.getSaleStockInput().getEvent()!=null){
+		/*if(saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().equals(BigDecimal.ZERO) && saleStockOutput.getSaleStockInput().getEvent()!=null){
 			Event event = saleStockOutput.getSaleStockInput().getEvent();
 			saleStockOutput.getSaleStockInput().setEvent(null);
 			saleStockInputDao.update(saleStockOutput.getSaleStockInput());
 			eventBusiness.delete(event);
-		}
+		}*/
 		
 		saleStockOutput = super.create(saleStockOutput);
 		//debug(previous);
@@ -97,7 +97,7 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Collection<SaleStockOutput> findBySaleStockInput(SaleStockInput saleStockInput) {
+	public Collection<SaleStockTangibleProductMovementOutput> findBySaleStockInput(SaleStockTangibleProductMovementInput saleStockInput) {
 		return dao.readBySaleStockInput(saleStockInput);
 	}
 

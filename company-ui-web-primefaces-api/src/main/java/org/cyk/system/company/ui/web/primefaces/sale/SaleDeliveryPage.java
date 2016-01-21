@@ -59,7 +59,7 @@ public class SaleDeliveryPage extends AbstractBusinessEntityFormOnePage<Sale> im
 		for(Assignment assignment : assignments)
 			productEmployees.addAll(assignment.productEmployees());
 		
-		saleBusiness.updateDelivery(identifiable,productEmployees);
+		//saleBusiness.updateDelivery(identifiable,productEmployees);
 	}
 	
 	public void addProductEmployee(Integer index){

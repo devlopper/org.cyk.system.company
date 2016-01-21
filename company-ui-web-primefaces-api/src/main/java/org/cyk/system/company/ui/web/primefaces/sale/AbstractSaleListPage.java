@@ -104,7 +104,7 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 		
 		criteria.getReadConfig().setFirstResultIndex(queryFirst);
 		criteria.getReadConfig().setMaximumResultCount(20l);
-		SalesDetails results = saleBusiness.computeByCriteria(criteria); 
+		SalesDetails results = null;//saleBusiness.computeByCriteria(criteria); 
 		//table.getColumn("cost").setFooter(numberBusiness.format(results.getCost()));
 		/*if(!BalanceType.ZERO.equals(balanceType)){
 			table.getColumn("balance").setFooter(numberBusiness.format(results.getBalance()));

@@ -7,8 +7,8 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.sale.SaleStockInput;
-import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.company.model.sale.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.system.company.model.sale.SalesDetails;
@@ -21,7 +21,7 @@ import org.cyk.system.root.persistence.impl.QueryWrapper;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 import org.cyk.utility.common.computation.LogicalOperator;
 
-public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOutput,SaleStockOutputSearchCriteria> implements SaleStockOutputDao {
+public class SaleStockTangibleProductMovementOutputDaoImpl extends AbstractSaleStockTangibleProductMovementDaoImpl<SaleStockTangibleProductMovementOutput,SaleStockOutputSearchCriteria> implements SaleStockOutputDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
@@ -31,7 +31,7 @@ public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOu
 	@Override
     protected void namedQueriesInitialisation() {
     	super.namedQueriesInitialisation();
-    	
+    	/*
     	QueryStringBuilder queryStringBuilder = _select();
     	whereSearchCriteria(queryStringBuilder);
     		
@@ -42,7 +42,7 @@ public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOu
         registerNamedQuery(readByCriteriaDateDescendingOrder,queryStringBuilder.orderBy("tangibleProductStockMovement.date", Boolean.FALSE));	
         
         registerNamedQuery(readBySaleStockInput,_select().where("saleStockInput"));
-        
+        */
         /*queryStringBuilder = _selectString(sumAttributes(
         		commonUtils.attributePath(SaleStockOutput.FIELD_TANGIBLE_PRODUCT_STOCK_MOVEMENT, TangibleProductStockMovement.FIELD_QUANTITY)
         		,commonUtils.attributePath(SaleStockOutput.FIELD_SALE_CASH_REGISTER_MOVEMENT, SaleCashRegisterMovement.FIELD_CASH_REGISTER_MOVEMENT,CashRegisterMovement.FIELD_AMOUNT)
@@ -69,7 +69,7 @@ public class SaleStockOutputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockOu
 	}
 
 	@Override
-	public Collection<SaleStockOutput> readBySaleStockInput(SaleStockInput saleStockInput) {
+	public Collection<SaleStockTangibleProductMovementOutput> readBySaleStockInput(SaleStockTangibleProductMovementInput saleStockInput) {
 		return namedQuery(readBySaleStockInput).parameter("saleStockInput", saleStockInput).resultMany();
 	}
 

@@ -17,7 +17,7 @@ import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementInputBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
@@ -87,7 +87,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 	@Inject protected CompanyBusinessLayer companyBusinessLayer;
 	@Inject protected CompanyBusinessTestHelper companyBusinessTestHelper;
 	
-	@Inject protected SaleStockInputBusiness saleStockInputBusiness;
+	@Inject protected SaleStockTangibleProductMovementInputBusiness saleStockInputBusiness;
     @Inject protected SaleStockOutputBusiness saleStockOutputBusiness;
     @Inject protected SaleStockBusiness saleStockBusiness;
     @Inject protected SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;

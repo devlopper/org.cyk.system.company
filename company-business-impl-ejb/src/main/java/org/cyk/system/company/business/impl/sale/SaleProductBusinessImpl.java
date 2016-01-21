@@ -53,7 +53,9 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 	public void process(SaleProduct saleProduct) {
 		//logIdentifiable("Processing",saleProduct);
 		if(saleProduct.getSalableProduct().getPrice()==null){
-		
+			/*
+			 * This product has no unit price then the price to be paid must be specified by user
+			 */
 		}else{
 			/*
 			 * This product has a unit price so we can compute the cost to be paid
@@ -72,6 +74,8 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 			 * This product has a cost so we can compute the taxes to be paid
 			 */
 			if(Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax())){
+				System.out.println("SaleProductBusinessImpl.process()---------------------------");
+				debug(saleProduct.getSale());
 				saleProduct.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getCost().getValue()));
 			}else if(saleProduct.getCost().getTax()==null)
 				saleProduct.getCost().setTax(BigDecimal.ZERO);

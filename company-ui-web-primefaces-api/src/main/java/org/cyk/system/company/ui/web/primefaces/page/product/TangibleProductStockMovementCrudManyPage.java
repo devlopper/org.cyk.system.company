@@ -36,7 +36,7 @@ public class TangibleProductStockMovementCrudManyPage extends AbstractTangiblePr
 
 	@Override
 	protected TangibleProduct tangibleProduct(StockTangibleProductMovement detail) {
-		return detail.getTangibleProduct();
+		return null;//detail.getTangibleProduct();
 	}
 
 	@Override

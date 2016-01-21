@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class SaleStockOutputSearchCriteria extends AbstractSaleStockSearchCriteria implements Serializable {
+public class SaleStockOutputSearchCriteria extends AbstractSaleStockTangibleProductMovementSearchCriteria implements Serializable {
 
 	private static final long serialVersionUID = 6796076474234170332L;
 

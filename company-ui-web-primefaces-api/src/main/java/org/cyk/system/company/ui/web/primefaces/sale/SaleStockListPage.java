@@ -12,15 +12,15 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.sale.AbstractSaleStockBusiness;
+import org.cyk.system.company.business.api.sale.AbstractSaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockBusiness;
 import org.cyk.system.company.business.impl.sale.SaleStockReportTableRow;
-import org.cyk.system.company.model.sale.SaleStock;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
 import org.cyk.system.company.model.sale.SaleStockSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
 
 @Named @ViewScoped @Getter @Setter
-public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, SaleStockSearchCriteria> implements Serializable {
+public class SaleStockListPage extends AbstractSaleStockListPage<SaleStockTangibleProductMovement, SaleStockSearchCriteria> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
@@ -41,7 +41,7 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 		
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Collection<SaleStockReportTableRow> __results__(Collection<SaleStock> saleStocks) {
+	protected Collection<SaleStockReportTableRow> __results__(Collection<SaleStockTangibleProductMovement> saleStocks) {
 		Collection<Object> rows = new ArrayList<>();
 		for(SaleStockReportTableRow saleStock : super.__results__(saleStocks)){
 			rows.add(saleStock);
@@ -71,7 +71,7 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 	}
 	
 	@Override
-	protected void __afterFindByCriteria__(SaleStockSearchCriteria criteria,Collection<SaleStock> results) {
+	protected void __afterFindByCriteria__(SaleStockSearchCriteria criteria,Collection<SaleStockTangibleProductMovement> results) {
 		super.__afterFindByCriteria__(criteria, results);
 		table.getPrintCommandable().setParameter(companyReportRepository.getParameterSaleStockReportType(),type);
 		SaleStocksDetails details = saleStockBusiness.computeByCriteria(criteria);
@@ -88,8 +88,8 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 	}
 	
 	@Override
-	protected Class<SaleStock> __entityClass__() {
-		return SaleStock.class;
+	protected Class<SaleStockTangibleProductMovement> __entityClass__() {
+		return SaleStockTangibleProductMovement.class;
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStock, Sale
 	}
 
 	@Override
-	protected AbstractSaleStockBusiness<SaleStock, SaleStockSearchCriteria> business() {
+	protected AbstractSaleStockTangibleProductMovementBusiness<SaleStockTangibleProductMovement, SaleStockSearchCriteria> business() {
 		return saleStockBusiness;
 	}
 	

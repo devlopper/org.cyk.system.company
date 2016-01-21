@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleStock;
-import org.cyk.system.company.model.sale.SaleStockInput;
-import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.root.business.impl.file.report.AbstractReportTableRow;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
@@ -24,7 +24,7 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 
 	public static Boolean FIELD_IDENTIFIER_VISIBLE = Boolean.TRUE;
 	
-	private SaleStock saleStock;
+	private SaleStockTangibleProductMovement saleStock;
 	
 	@Input @InputText @ReportColumn private String date;
 	
@@ -52,29 +52,29 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		constructor(null);
 	}
 	
-	public SaleStockReportTableRow(SaleStockOutput saleStock) {
+	public SaleStockReportTableRow(SaleStockTangibleProductMovementOutput saleStock) {
 		constructor(saleStock);
 	}
 	
-	public SaleStockReportTableRow(SaleStockInput saleStock) {
+	public SaleStockReportTableRow(SaleStockTangibleProductMovementInput saleStock) {
 		constructor(saleStock);
 	}
 	
-	public SaleStockReportTableRow(SaleStock saleStock) {
+	public SaleStockReportTableRow(SaleStockTangibleProductMovement saleStock) {
 		constructor(saleStock);
 	}
 	
-	private void constructor(SaleStock saleStock) {
+	private void constructor(SaleStockTangibleProductMovement saleStock) {
 		this.saleStock = saleStock;
 		//TODO refactor same code in functions
-		if(saleStock instanceof SaleStockInput){
-			saleStockIntput((SaleStockInput) saleStock);
-		}else if(saleStock instanceof SaleStockOutput){
-			saleStockOutput((SaleStockOutput) saleStock);
+		if(saleStock instanceof SaleStockTangibleProductMovementInput){
+			saleStockIntput((SaleStockTangibleProductMovementInput) saleStock);
+		}else if(saleStock instanceof SaleStockTangibleProductMovementOutput){
+			saleStockOutput((SaleStockTangibleProductMovementOutput) saleStock);
 		}
 	}
 	
-	private void saleStockIntput(SaleStockInput saleStockInput){
+	private void saleStockIntput(SaleStockTangibleProductMovementInput saleStockInput){
 		Sale sale = saleStockInput.getSale();
 		saleStockInputExternalIdentifier = saleStockInput.getExternalIdentifier();
 		identifier = saleStockInput.getSale().getComputedIdentifier();
@@ -87,20 +87,20 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		
 		cumulatedBalance = formatNumber(saleStockInput.getSale().getBalance().getCumul());
 		//cumulatedBalance = formatNumber(saleStockInput.getSale().getCost());
-		//numberOfGoods = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity());
+		//numberOfGoods = formatNumber(saleStockInput.getStockTangibleProductStockMovement().getQuantity());
 		
-		//remainingNumberOfGoods = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity());
+		//remainingNumberOfGoods = formatNumber(saleStockInput.getStockTangibleProductStockMovement().getQuantity());
 		//remainingNumberOfGoods = numberOfGoods;
 		//remainingNumberOfGoods = formatNumber(saleStockInput.getRemainingNumberOfGoods());
 		
 		date = formatDate(saleStockInput.getSale().getDate());
 		
-		//stockIn = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity().abs());
+		//stockIn = formatNumber(saleStockInput.getStockTangibleProductStockMovement().getQuantity().abs());
 		comments = saleStockInput.getSale().getComments();
 	}
 	
-	private void saleStockOutput(SaleStockOutput saleStockOutput){
-		SaleStockInput saleStockInput = saleStockOutput.getSaleStockInput();
+	private void saleStockOutput(SaleStockTangibleProductMovementOutput saleStockOutput){
+		SaleStockTangibleProductMovementInput saleStockInput = saleStockOutput.getSaleStockInput();
 		Sale sale = saleStockInput.getSale();
 		saleStockInputExternalIdentifier = saleStockInput.getExternalIdentifier();
 		identifier = saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getComputedIdentifier();
@@ -110,18 +110,18 @@ public class SaleStockReportTableRow extends AbstractReportTableRow implements S
 		//amountPaid = formatNumber(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
 		balance = formatNumber(saleStockOutput.getSaleCashRegisterMovement().getBalance().getValue());
 		cumulatedBalance = formatNumber(saleStockOutput.getSaleCashRegisterMovement().getBalance().getCumul());
-		//numberOfGoods = formatNumber(saleStockInput.getTangibleProductStockMovement().getQuantity());
+		//numberOfGoods = formatNumber(saleStockInput.getStockTangibleProductStockMovement().getQuantity());
 		remainingNumberOfGoods = formatNumber(saleStockOutput.getRemainingNumberOfGoods());
 		
-		//takenNumberOfGoods = formatNumber(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());
+		//takenNumberOfGoods = formatNumber(saleStockOutput.getStockTangibleProductStockMovement().getQuantity().abs());
 		
 		//date = formatDate(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
 		/*
-		Integer sign = saleStockOutput.getTangibleProductStockMovement().getQuantity().signum();
+		Integer sign = saleStockOutput.getStockTangibleProductStockMovement().getQuantity().signum();
 		if(sign==-1)
-			stockOut = formatNumber(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());
+			stockOut = formatNumber(saleStockOutput.getStockTangibleProductStockMovement().getQuantity().abs());
 		else if(sign==1)
-			stockIn = formatNumber(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());
+			stockIn = formatNumber(saleStockOutput.getStockTangibleProductStockMovement().getQuantity().abs());
 		*/
 		comments = saleStockOutput.getSaleStockInput().getSale().getComments();
 	}

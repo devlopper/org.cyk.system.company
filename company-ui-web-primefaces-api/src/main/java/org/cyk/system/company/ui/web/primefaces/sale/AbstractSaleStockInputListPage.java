@@ -9,21 +9,21 @@ import javax.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.sale.AbstractSaleStockBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
+import org.cyk.system.company.business.api.sale.AbstractSaleStockTangibleProductMovementBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementInputBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SaleStockReportTableRow;
-import org.cyk.system.company.model.sale.SaleStockInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
 import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.ui.web.primefaces.Commandable;
 
 @Getter @Setter
-public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockListPage<SaleStockInput, SaleStockInputSearchCriteria> implements Serializable {
+public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockListPage<SaleStockTangibleProductMovementInput, SaleStockInputSearchCriteria> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	@Inject protected SaleStockInputBusiness saleStockInputBusiness;
+	@Inject protected SaleStockTangibleProductMovementInputBusiness saleStockInputBusiness;
 	
 	@Override
 	protected Boolean ignoreField(Field field) {
@@ -58,7 +58,7 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 	}
 		
 	@Override
-	protected void __afterFindByCriteria__(SaleStockInputSearchCriteria criteria,Collection<SaleStockInput> results) {
+	protected void __afterFindByCriteria__(SaleStockInputSearchCriteria criteria,Collection<SaleStockTangibleProductMovementInput> results) {
 		super.__afterFindByCriteria__(criteria, results);
 		table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterSaleStockReportType(),
 				CompanyReportRepository.getInstance().getParameterSaleStockReportInput());
@@ -71,8 +71,8 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 	}
 		
 	@Override
-	protected Class<SaleStockInput> __entityClass__() {
-		return SaleStockInput.class;
+	protected Class<SaleStockTangibleProductMovementInput> __entityClass__() {
+		return SaleStockTangibleProductMovementInput.class;
 	}
 	
 	@Override
@@ -81,7 +81,7 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 	}
 	
 	@Override
-	protected AbstractSaleStockBusiness<SaleStockInput, SaleStockInputSearchCriteria> business() {
+	protected AbstractSaleStockTangibleProductMovementBusiness<SaleStockTangibleProductMovementInput, SaleStockInputSearchCriteria> business() {
 		return saleStockInputBusiness;
 	}
 	

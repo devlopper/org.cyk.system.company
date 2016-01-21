@@ -5,40 +5,47 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-
-import org.cyk.system.root.model.event.Event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import org.cyk.system.company.model.stock.StockTangibleProductMovement;
+
 /**
- * To rent stock space to customer
+ * A sale linked to a stock movement of a tangible product.
+ * @see Sale
+ * @see StockTangibleProductMovement
  * @author Christian Yao Komenan
  *
  */
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
-public class SaleStockInput extends SaleStock implements Serializable {
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity @DiscriminatorValue(value="I")
+public class SaleStockTangibleProductMovementInput extends SaleStockTangibleProductMovement implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@OneToOne @NotNull
-	private Sale sale; 
+	@ManyToOne @NotNull 
+	private Sale sale;
 	
-	@Column private String externalIdentifier;//This value is used to link to another system
+	private String externalIdentifier;
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal remainingNumberOfGoods = BigDecimal.ZERO;
 	
-	@OneToOne
-	private Event event;
-	
 	@Transient
-	private Collection<SaleStockOutput> saleStockOutputs;
+	private Collection<SaleStockTangibleProductMovementOutput> saleStockOutputs;
+	
+	@Override
+	public String getLogMessage() {
+		return String.format(LOG_FORMAT,externalIdentifier, sale,stockTangibleProductMovement,remainingNumberOfGoods);
+	}
+	
+	private static final String LOG_FORMAT = SaleStockTangibleProductMovementInput.class.getSimpleName()+"(EI=%s %s %s R=%s)";
 	
 	/**/
 	

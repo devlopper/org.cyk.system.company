@@ -115,7 +115,7 @@ public class SaleCrudOnePage extends AbstractCrudOnePage<Sale> implements Serial
 	@SuppressWarnings("unchecked")
 	@Override
 	protected <T extends AbstractIdentifiable> T identifiableFromRequestParameter(Class<T> aClass) {
-		return (T) saleBusiness.newInstance((Person) getUserSession().getUser()); //super.identifiableFromRequestParameter(aClass);
+		return (T) saleBusiness.instanciate((Person) getUserSession().getUser()); //super.identifiableFromRequestParameter(aClass);
 	}
 	
 	@Override

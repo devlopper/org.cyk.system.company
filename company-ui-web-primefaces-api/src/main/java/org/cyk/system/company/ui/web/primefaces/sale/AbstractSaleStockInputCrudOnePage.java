@@ -8,14 +8,14 @@ import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementInputBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
-import org.cyk.system.company.model.sale.SaleStockInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.api.Crud;
@@ -43,11 +43,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOnePage<SaleStockInput> implements Serializable {
+public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOnePage<SaleStockTangibleProductMovementInput> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	@Inject protected SaleStockInputBusiness saleStockInputBusiness;
+	@Inject protected SaleStockTangibleProductMovementInputBusiness saleStockInputBusiness;
 	@Inject protected SaleBusiness saleBusiness;
 	@Inject protected AccountingPeriodBusiness accountingPeriodBusiness;
 	//@Inject private CustomerBusiness customerBusiness;
@@ -138,7 +138,7 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 	@Override
 	protected <T extends AbstractIdentifiable> T identifiableFromRequestParameter(Class<T> aClass) {
 		if(Crud.CREATE.equals(crudFromRequestParameter()))
-			return (T) saleStockInputBusiness.newInstance((Person) getUserSession().getUser());
+			return (T) saleStockInputBusiness.instanciate((Person) getUserSession().getUser());
 		return super.identifiableFromRequestParameter(aClass);
 	}
 	
@@ -149,7 +149,7 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 	
 	@Override
 	protected BusinessEntityInfos fetchBusinessEntityInfos() {
-		return uiManager.businessEntityInfos(SaleStockInput.class);
+		return uiManager.businessEntityInfos(SaleStockTangibleProductMovementInput.class);
 	}
 	
 	@Override
@@ -159,22 +159,22 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 	
 	@Override
 	protected void create() {
-		SaleProduct saleProduct = identifiable.getSale().getSaleProducts().iterator().next();
+		/*SaleProduct saleProduct = identifiable.getSale().getSaleProducts().iterator().next();
 		saleBusiness.applyChange(identifiable.getSale(), saleProduct);
-		saleStockInputBusiness.create(identifiable, cashRegisterController.getSaleCashRegisterMovement());
+		saleStockInputBusiness.create(identifiable, cashRegisterController.getSaleCashRegisterMovement());*/
 	}
 	
 	@Override
 	public Object succeed(UICommand command, Object parameter) {
 		super.succeed(command, parameter);
-		messageDialogOkButtonOnClick = javaScriptHelper.add(messageDialogOkButtonOnClick, companyWebManager.javascriptShowPointOfSale(identifiable.getSale()));
+		//messageDialogOkButtonOnClick = javaScriptHelper.add(messageDialogOkButtonOnClick, companyWebManager.javascriptShowPointOfSale(identifiable.getSale()));
 		return null;
 	}
 	
 	/**/
 	
 	@Getter @Setter
-	public static class SaleStockInputFormModel extends AbstractFormModel<SaleStockInput> implements Serializable {
+	public static class SaleStockInputFormModel extends AbstractFormModel<SaleStockTangibleProductMovementInput> implements Serializable {
 
 		private static final long serialVersionUID = -7403076234556118486L;
 		
@@ -211,7 +211,7 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 		@Override
 		public void read() {
 			super.read();
-			this.customer = identifiable.getSale().getCustomer();
+			/*this.customer = identifiable.getSale().getCustomer();
 			this.externalIdentifier = identifiable.getExternalIdentifier();
 			//this.price = identifiable.getSale().getCost();
 			this.quantity = identifiable.getTangibleProductStockMovement().getQuantity();
@@ -219,13 +219,13 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 			this.commission = saleProduct.getCommission();
 			//this.valueAddedTaxable = BigDecimal.ZERO.compareTo(identifiable.getSale().getValueAddedTax()) != 0;
 			//this.valueAddedTax = numberBusiness.format(identifiable.getSale().getValueAddedTax());
-			this.comments = identifiable.getSale().getComments();
+			this.comments = identifiable.getSale().getComments();*/
 		}
 		
 		@Override
 		public void write() {
 			super.write();
-			identifiable.getSale().setCustomer(customer);
+			/*identifiable.getSale().setCustomer(customer);
 			identifiable.setExternalIdentifier(externalIdentifier);
 			identifiable.getSale().setAutoComputeValueAddedTax(valueAddedTaxable);
 			identifiable.getSale().setComments(comments);
@@ -234,7 +234,7 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 			}else
 				saleProduct.setCommission(commission);
 			identifiable.getTangibleProductStockMovement().setQuantity(quantity);
-			SaleProduct saleProduct = identifiable.getSale().getSaleProducts().iterator().next();
+			SaleProduct saleProduct = identifiable.getSale().getSaleProducts().iterator().next();*/
 			//saleProduct.setPrice(price);
 		}
 	}

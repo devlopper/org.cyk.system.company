@@ -10,12 +10,12 @@ import javax.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.sale.AbstractSaleStockBusiness;
+import org.cyk.system.company.business.api.sale.AbstractSaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SaleStockReportTableRow;
-import org.cyk.system.company.model.sale.AbstractSaleStockSearchCriteria;
-import org.cyk.system.company.model.sale.SaleStock;
+import org.cyk.system.company.model.sale.AbstractSaleStockTangibleProductMovementSearchCriteria;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.search.DefaultQueryFormModel;
@@ -38,7 +38,7 @@ import org.primefaces.extensions.model.dynaform.DynaFormModel;
 import org.primefaces.extensions.model.dynaform.DynaFormRow;
 
 @Getter @Setter
-public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEARCH_CRITERIA extends AbstractSaleStockSearchCriteria> extends AbstractBusinessQueryPage<SALE_STOCK, AbstractSaleStockListPage.SaleStockQueryFormModel, SaleStockReportTableRow> implements Serializable {
+public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStockTangibleProductMovement,SEARCH_CRITERIA extends AbstractSaleStockTangibleProductMovementSearchCriteria> extends AbstractBusinessQueryPage<SALE_STOCK, AbstractSaleStockListPage.SaleStockQueryFormModel, SaleStockReportTableRow> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
@@ -103,7 +103,7 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 		table.setShowEditColumn(Boolean.FALSE);
 		table.setShowAddRemoveColumn(Boolean.FALSE);
 		table.getPrintCommandable().setRendered(Boolean.TRUE);
-		table.getPrintCommandable().setParameter(uiManager.getClassParameter(),uiManager.businessEntityInfos(SaleStock.class).getIdentifier());
+		table.getPrintCommandable().setParameter(uiManager.getClassParameter(),uiManager.businessEntityInfos(SaleStockTangibleProductMovement.class).getIdentifier());
 		table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterSaleDone(),Boolean.TRUE);
 	}
 	
@@ -133,7 +133,7 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStock,SEA
 	}
 	
 	protected abstract Class<SEARCH_CRITERIA> searchCriteriaClass();
-	protected abstract AbstractSaleStockBusiness<SALE_STOCK, SEARCH_CRITERIA> business();
+	protected abstract AbstractSaleStockTangibleProductMovementBusiness<SALE_STOCK, SEARCH_CRITERIA> business();
 
 	@Override
 	protected Collection<SALE_STOCK> __query__() {

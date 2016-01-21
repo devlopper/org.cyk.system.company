@@ -18,7 +18,7 @@ import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementInputBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
@@ -33,8 +33,8 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
-import org.cyk.system.company.model.sale.SaleStockInput;
-import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
@@ -55,7 +55,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
 	@Inject private TangibleProductDao tangibleProductDao;
 	@Inject private SaleBusiness saleBusiness;
-	@Inject private SaleStockInputBusiness saleStockInputBusiness;
+	@Inject private SaleStockTangibleProductMovementInputBusiness saleStockInputBusiness;
 	@Inject private AccountingPeriodDao accountingPeriodDao;
 	@Inject private CashierDao cashierDao;
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
@@ -65,7 +65,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 
 	public void createTangibleProductStockMovement(List<TangibleProduct> tangibleProducts,Date date){
 		TangibleProduct tangibleProduct = (TangibleProduct)randomDataProvider.randomFromList(tangibleProducts);
-		if(tangibleProduct.getCode().equals(TangibleProduct.SALE_STOCK))
+		if(tangibleProduct.getCode().equals(TangibleProduct.STOCKING))
 			return;
 		Integer quantity;
 		do{
@@ -97,7 +97,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 		Date lastSaleDate = null;
 		int stock = randomDataProvider.randomInt(0, count*2);
 		for(int i=0;i<count;i++){
-			Sale sale = saleBusiness.newInstance(cashier.getPerson());
+			Sale sale = saleBusiness.instanciate(cashier.getPerson());
 			//sale.setAccountingPeriod(accountingPeriod);
 			sale.setCustomer(rootRandomDataProvider.oneFromDatabase(Customer.class));
 			//sale.setCashier(cashier);
@@ -105,9 +105,9 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 			lastSaleDate = sale.getDate();
 			for(int pc=0;pc<RandomDataProvider.getInstance().randomInt(1, 10);pc++){
 				Product product = (Product)randomDataProvider.randomFromList(products);
-				if(product.getCode().equals(TangibleProduct.SALE_STOCK))
+				if(product.getCode().equals(TangibleProduct.STOCKING))
 					continue;
-				if(product.getCode().equals(IntangibleProduct.SALE_STOCK))
+				if(product.getCode().equals(IntangibleProduct.STOCKING))
 					;//product.setPrice(new BigDecimal(randomDataProvider.randomInt(100000, 500000)));
 				//saleBusiness.selectProduct(sale, product, new BigDecimal(randomDataProvider.randomInt(1, 10)));
 			}
@@ -133,7 +133,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 		AccountingPeriod accountingPeriod = accountingPeriodDao.select().one();
 		Cashier cashier = cashierDao.select().one();
 		for(int i=0;i<count;i++){
-			SaleStockInput saleStockInput = saleStockInputBusiness.newInstance(cashier.getPerson());
+			SaleStockTangibleProductMovementInput saleStockInput = saleStockInputBusiness.instanciate(cashier.getPerson());
 			saleStockInput.setExternalIdentifier(RandomStringUtils.randomNumeric(3)+RandomStringUtils.randomAlphabetic(1).toUpperCase());
 			Sale sale = saleStockInput.getSale();
 			sale.setCustomer(rootRandomDataProvider.oneFromDatabase(Customer.class));
@@ -143,7 +143,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 			sale.setAutoComputeValueAddedTax(Boolean.TRUE);
 			sale.setComments(randomDataProvider.randomText(5, 5, 5, 5));
 
-			//saleStockInput.getTangibleProductStockMovement().setQuantity(new BigDecimal(randomDataProvider.randomInt(1, 10)));
+			//saleStockInput.getStockTangibleProductStockMovement().setQuantity(new BigDecimal(randomDataProvider.randomInt(1, 10)));
 			SaleProduct saleProduct = sale.getSaleProducts().iterator().next();
 			//saleProduct.setPrice(new BigDecimal(randomDataProvider.randomInt(10000, 1000000)));
 			//saleProduct.setCommission(new BigDecimal(randomDataProvider.randomInt(0, saleProduct.getPrice().intValue())));
@@ -152,12 +152,12 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 			SaleCashRegisterMovement saleCashRegisterMovement = null;//new SaleCashRegisterMovement(sale,new CashRegisterMovement(sale.getCashier().getCashRegister()));
 			saleCashRegisterMovement(saleCashRegisterMovement,sale.getCost().getValue(),1.3f);
 		
-			saleStockInputBusiness.create(saleStockInput, saleCashRegisterMovement);
+			//saleStockInputBusiness.create(saleStockInput, saleCashRegisterMovement);
 			
 			for(int j=0;j<randomDataProvider.randomInt(1,2);j++){
-				SaleStockOutput saleStockOutput = saleStockOutputBusiness.newInstance(cashier.getPerson(), saleStockInput);
+				SaleStockTangibleProductMovementOutput saleStockOutput = saleStockOutputBusiness.newInstance(cashier.getPerson(), saleStockInput);
 				saleCashRegisterMovement(saleStockOutput.getSaleCashRegisterMovement(),sale.getBalance().getValue(),1.3f);
-				//saleStockOutput.getTangibleProductStockMovement().setQuantity(new BigDecimal(randomDataProvider.randomInt(1, saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().intValue())));
+				//saleStockOutput.getStockTangibleProductStockMovement().setQuantity(new BigDecimal(randomDataProvider.randomInt(1, saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().intValue())));
 				saleStockOutputBusiness.create(saleStockOutput);
 				if(sale.getBalance().getValue().signum()<=0)
 					break;

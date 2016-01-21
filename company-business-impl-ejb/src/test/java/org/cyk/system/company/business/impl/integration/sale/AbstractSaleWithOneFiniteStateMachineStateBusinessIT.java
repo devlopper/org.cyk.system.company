@@ -9,7 +9,7 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     @Override
     protected void businesses() {
     	updateAccountingPeriod(new BigDecimal("0.18"), Boolean.TRUE);
-    	
+    	/*
     	CreateSaleParameters p = new CreateSaleParameters("nt1", null, null, "C1", new String[][]{{"TP1","2"}}, "0","false");
     	createSale(p);
     	noTax1NotPaid(p);
@@ -37,6 +37,10 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     	p = new CreateSaleParameters("nt7", null, null, "C5np", new String[][]{{"TP4","1","3700"}}, "3700","false");
     	createSale(p);
     	noTax7AllPaidNoUnitPrice(p);
+    	*/
+    	CreateSaleStockParameters sp = new CreateSaleStockParameters("stock_input_1", null, null, "C6", "2000", "false","1");
+    	createSaleStock(sp);
+    	stock_1_noTax_input(sp);
     	
     	//TODO to be handled
     	//companyBusinessTestHelper.createSale("nt8", null, null, "C5np", new String[][]{{"TP1","3","2500"}}, "2500","false", "3700", "0", "3700", "0", "0");
@@ -112,5 +116,11 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     protected abstract void noTax6MorePaid3(CreateSaleParameters parameters);
     protected abstract void noTax7AllPaidNoUnitPrice(CreateSaleParameters parameters);
     protected abstract void noTax8AllPaidUnitPriceButCostValueSet(CreateSaleParameters parameters);
-                
+    
+    protected abstract void stock_1_noTax_input(CreateSaleParameters parameters);
+   /* protected abstract void stock_2_noTax_input(CreateSaleParameters parameters);
+    protected abstract void stock_3_noTax_output(CreateSaleParameters parameters);
+    protected abstract void stock_4_noTax_input(CreateSaleParameters parameters);
+    protected abstract void stock_5_noTax_output(CreateSaleParameters parameters);
+    protected abstract void stock_6_noTax_output(CreateSaleParameters parameters);*/
 }

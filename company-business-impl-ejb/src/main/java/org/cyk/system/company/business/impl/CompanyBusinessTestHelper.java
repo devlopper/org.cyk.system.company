@@ -15,12 +15,6 @@ import lombok.Setter;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleProductBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
@@ -36,9 +30,9 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
-import org.cyk.system.company.model.sale.SaleStockInput;
 import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
-import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
@@ -71,14 +65,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	
 	private static CompanyBusinessTestHelper INSTANCE;
 	
-	@Inject private SaleBusiness saleBusiness;
 	@Inject private RootDataProducerHelper rootDataProducerHelper;
-	
-	@Inject protected SaleStockInputBusiness saleStockInputBusiness;
-    @Inject protected SaleStockOutputBusiness saleStockOutputBusiness;
-    @Inject protected SaleStockBusiness saleStockBusiness;
-    @Inject protected SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
-    @Inject protected SaleProductBusiness saleProductBusiness;
     
     @Inject private ProductDao productDao;
     @Inject private SalableProductDao salableProductDao;
@@ -92,6 +79,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     @Inject private FiniteStateMachineFinalStateDao finiteStateMachineFinalStateDao;
     @Inject private SaleDao saleDao;
     @Inject private StockableTangibleProductDao stockableTangibleProductDao;
+    //@Inject private SaleStockt aleDao;
     
     @Getter @Setter private Boolean saleAutoCompleted = Boolean.TRUE;
 	
@@ -100,6 +88,8 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		INSTANCE = this; 
 		super.initialisation();
 	}
+	
+	/* Setters */
 	
 	public void set(Product product,String code){
 		product.setCode(code);
@@ -131,60 +121,52 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		cashRegisterMovement.getMovement().setValue(new BigDecimal(amount));
 	}
 	
-	public void set(StockTangibleProductMovement stockTangibleProductMovement,String tangibleProductCode,String amount){
-		stockTangibleProductMovement.setStockableTangibleProduct(stockableTangibleProductDao.readByTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode)));
+	public void set(StockTangibleProductMovement stockTangibleProductMovement,String tangibleProductCode,String quantity){
+		if(tangibleProductCode!=null)
+			stockTangibleProductMovement.setStockableTangibleProduct(stockableTangibleProductDao.readByTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode)));
 		stockTangibleProductMovement.setMovement(new Movement());
-		set(stockTangibleProductMovement.getMovement(), stockTangibleProductMovement.getStockableTangibleProduct().getMovementCollection().getCode(), amount);
+		set(stockTangibleProductMovement.getMovement(), stockTangibleProductMovement.getStockableTangibleProduct().getMovementCollection().getCode(), quantity);
 	}
 	
 	public void set(Sale sale,String identifier,String date,String cashierCode,String customerCode,String[][] products,String taxable){
-		sale.setComputedIdentifier(identifier);
-		sale.setAccountingPeriod(accountingPeriodDao.select().one());
-		if(cashierCode==null)
-			sale.setCashier(cashierDao.select().one());
-		else
-			sale.setCashier(cashierDao.readByPerson(personDao.readByCode(cashierCode)));
+		if(sale.getComputedIdentifier()==null)
+			sale.setComputedIdentifier(identifier);
+		if(sale.getAccountingPeriod()==null)
+			sale.setAccountingPeriod(accountingPeriodDao.select().one());
+		if(sale.getCashier()==null)
+			if(cashierCode==null)
+				sale.setCashier(cashierDao.select().one());
+			else
+				sale.setCashier(cashierDao.readByPerson(personDao.readByCode(cashierCode)));
     	sale.setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
     	sale.setDate(getDate(date,Boolean.FALSE));
     	if(products!=null)
 	    	for(String[] infos : products){
 	    		SalableProduct salableProduct = salableProductDao.readByProduct(productDao.read(infos[0]));
-	    		SaleProduct saleProduct = saleBusiness.selectProduct(sale, salableProduct,commonUtils.getBigDecimal(infos[1]));
+	    		SaleProduct saleProduct = getCompanyBusinessLayer().getSaleBusiness().selectProduct(sale, salableProduct,commonUtils.getBigDecimal(infos[1]));
 	    		if(salableProduct.getPrice()==null){
 	    			saleProduct.getCost().setValue(commonUtils.getBigDecimal(infos[2]));
-	    			saleBusiness.applyChange(sale, saleProduct);
+	    			 getCompanyBusinessLayer().getSaleBusiness().applyChange(sale, saleProduct);
 	    		}else{
 	    				
 	    		}
 	    	}
-    	sale.setComments(RandomStringUtils.randomAlphabetic(10));
+    	if(sale.getComments()==null)
+    		sale.setComments(RandomStringUtils.randomAlphabetic(10));
     	if(customerCode!=null)
     		sale.setCustomer(customerDao.readByRegistrationCode(customerCode));
     }
 	
-	public void set(SaleStockInput saleStockInput,Customer customer,String externalIdentifier,String cost,String commission,String quantity,Date date){
-    	saleStockInput.getSale().setDate(date);
-    	saleStockInput.setExternalIdentifier(externalIdentifier);
-    	//saleStockInput.getTangibleProductStockMovement().setQuantity(new BigDecimal(quantity));
-    	
-    	SaleProduct saleProduct = saleStockInput.getSale().getSaleProducts().iterator().next();
-    	
-    	saleProduct.setQuantity(new BigDecimal("1"));
-    	//saleProduct.setPrice(new BigDecimal(cost));
-    	saleProduct.setCommission(new BigDecimal(commission));
-    	
-    	saleBusiness.applyChange(saleStockInput.getSale(), saleProduct);
-    	saleStockInput.getSale().setCustomer(customer);
-    }
-	public void set(SaleStockInput saleStockInput,Customer customer,String externalIdentifier,String cost,String commission,String quantity){
-		set(saleStockInput, customer, externalIdentifier,cost, commission, quantity, null);
+	public void set(SaleStockTangibleProductMovementInput saleStockTangibleProductMovementInput,String identifier,String date,String cashierCode,String customerCode,String taxable,String quantity){
+		set(saleStockTangibleProductMovementInput.getSale(), identifier, date, cashierCode, customerCode, null, taxable);
+		set(saleStockTangibleProductMovementInput.getStockTangibleProductMovement(), null, quantity);
+	}
+		
+	public void set(SaleStockTangibleProductMovementOutput saleStockOutput,String quantity,Date date){
+		//saleStockOutput.getStockTangibleProductStockMovement().setQuantity(new BigDecimal(quantity).negate());
 	}
 	
-	public void set(SaleStockOutput saleStockOutput,String quantity,Date date){
-		//saleStockOutput.getTangibleProductStockMovement().setQuantity(new BigDecimal(quantity).negate());
-	}
-	
-	public void set(SaleStockOutput saleStockOutput,String quantity){
+	public void set(SaleStockTangibleProductMovementOutput saleStockOutput,String quantity){
 		set(saleStockOutput, quantity, null);
 	}
 	
@@ -192,7 +174,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		saleCashRegisterMovement.setAmountIn(new BigDecimal(amountIn));
 		saleCashRegisterMovement.setAmountOut(new BigDecimal(amountOut));
 		//saleCashRegisterMovement.getCashRegisterMovement().setDate(date);
-		saleCashRegisterMovementBusiness.in(saleCashRegisterMovement);
+		 getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().in(saleCashRegisterMovement);
 	}
 	public void set(SaleCashRegisterMovement saleCashRegisterMovement,String amountIn,Date date){
 		set(saleCashRegisterMovement,amountIn,"0",date);
@@ -201,7 +183,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		set(saleCashRegisterMovement,amountIn,"0",null);
 	}
 	
-	/* Payment */
+	/* Creators */
 	
 	public void createCashRegisterMovement(String cashRegisterCode,String amount,String expectedBalance,String expectedThrowableMessage){
     	final CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
@@ -236,14 +218,14 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	/* Sale */
 	
     public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable,Boolean finalState){
-    	Sale sale = saleBusiness.newInstance(cashierDao.select().one().getPerson());
+    	Sale sale =  getCompanyBusinessLayer().getSaleBusiness().instanciate(cashierDao.select().one().getPerson());
     	set(sale,identifier,date, cashierCode, customerCode, products, taxable);
     	if(paid==null || !Boolean.TRUE.equals(finalState)){
-    		saleBusiness.create(sale);
+    		 getCompanyBusinessLayer().getSaleBusiness().create(sale);
     	}else{
-    		SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, sale.getCashier().getPerson(),Boolean.TRUE);
+    		SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().newInstance(sale, sale.getCashier().getPerson(),Boolean.TRUE);
         	set(saleCashRegisterMovement, paid);
-        	saleBusiness.create(sale,saleCashRegisterMovement);
+        	getCompanyBusinessLayer().getSaleBusiness().create(sale,saleCashRegisterMovement);
     	}
     	
     	   	
@@ -267,14 +249,28 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	CompanyBusinessLayer.getInstance().getSaleBusiness().update(sale, finiteStateMachineAlphabet);
     }
     
+    public SaleStockTangibleProductMovementInput createSaleStockTangibleProductMovementInput(String identifier,String date,String cashierCode,String customerCode,String price,String taxable,String quantity){
+    	SaleStockTangibleProductMovementInput input = CompanyBusinessLayer.getInstance().getSaleStockInputBusiness()
+    			.instanciate(cashierDao.readAll().iterator().next().getPerson());
+    	if(price!=null){
+    		SaleProduct saleProduct = input.getSale().getSaleProducts().iterator().next();
+    		saleProduct.getCost().setValue(commonUtils.getBigDecimal(price));
+    		CompanyBusinessLayer.getInstance().getSaleBusiness().applyChange(input.getSale(), saleProduct);
+    	}
+    	set(input, identifier, date, cashierCode, customerCode, taxable, quantity);
+    	debug(input.getSale());
+    	CompanyBusinessLayer.getInstance().getSaleStockInputBusiness().create(input);
+    	return input;
+    }
+    
 	public Sale sell(Date date,Person person,Customer customer,String[] products,String paid,Boolean printPos,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
-    	Sale sale = saleBusiness.newInstance(person);
-    	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, person,Boolean.TRUE);
+    	Sale sale =  getCompanyBusinessLayer().getSaleBusiness().instanciate(person);
+    	SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().newInstance(sale, person,Boolean.TRUE);
     	//set(sale, customerBusiness.load(customer.getIdentifier()), products,date);
     	set(saleCashRegisterMovement, paid);
-    	saleBusiness.create(sale,saleCashRegisterMovement);
+    	 getCompanyBusinessLayer().getSaleBusiness().create(sale,saleCashRegisterMovement);
     	
-    	sale = saleBusiness.load(sale.getIdentifier());
+    	sale =  getCompanyBusinessLayer().getSaleBusiness().load(sale.getIdentifier());
     	
     	if(expectedCost!=null)
     		assertBigDecimalEquals("Cost", expectedCost, sale.getCost().getValue());
@@ -286,24 +282,24 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     		assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, sale.getBalance().getCumul());
     	   	
     	if(Boolean.TRUE.equals(printPos)){
-    		writeReport(saleBusiness.findReport(sale));
+    		writeReport( getCompanyBusinessLayer().getSaleBusiness().findReport(sale));
     		pause(1000);
     		if(saleCashRegisterMovement.getIdentifier()!=null)
-    			writeReport(saleCashRegisterMovementBusiness.findReport(saleCashRegisterMovement));
+    			writeReport( getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().findReport(saleCashRegisterMovement));
     	}
     	return sale;
     }
 		
 	public SaleCashRegisterMovement pay(Date date,Person person,Sale sale,String paid,Boolean printPos,String expectedBalance,String expectedCumulBalance){
-    	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(sale, person,Boolean.TRUE);
+    	SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().newInstance(sale, person,Boolean.TRUE);
     	set(saleCashRegisterMovement, paid);
-    	saleCashRegisterMovementBusiness.create(saleCashRegisterMovement);
+    	 getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().create(saleCashRegisterMovement);
     	
     	assertBigDecimalEquals("Balance", expectedBalance, sale.getBalance().getValue());
     	assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, sale.getBalance().getCumul());
     	
     	if(Boolean.TRUE.equals(printPos)){
-    		writeReport(saleCashRegisterMovementBusiness.findReport(saleCashRegisterMovement));
+    		writeReport( getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().findReport(saleCashRegisterMovement));
     	}
     	
     	return saleCashRegisterMovement;
@@ -311,15 +307,15 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	
 	/* Sale Stock */
 	
-	public SaleStockInput drop(Date date,Person person,Customer customer,String externalIdentifier,String cost,String commission,String quantity,Boolean printPos,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
-    	SaleStockInput saleStockInput = saleStockInputBusiness.newInstance(person);
-    	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person,Boolean.TRUE);
+	public SaleStockTangibleProductMovementInput drop(Date date,Person person,Customer customer,String externalIdentifier,String cost,String commission,String quantity,Boolean printPos,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
+    	SaleStockTangibleProductMovementInput saleStockInput =  getCompanyBusinessLayer().getSaleStockInputBusiness().instanciate(person);
+    	SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().newInstance(saleStockInput.getSale(), person,Boolean.TRUE);
     	//set(saleStockInput, customerBusiness.load(customer.getIdentifier()),externalIdentifier, cost, commission, quantity,date);
     	set(saleCashRegisterMovement, "0");
-    	saleStockInputBusiness.create(saleStockInput,saleCashRegisterMovement);
+    	//getCompanyBusinessLayer().getSaleStockInputBusiness().create(saleStockInput,saleCashRegisterMovement);
     	
     	if(Boolean.TRUE.equals(printPos)){
-    		writeReport(saleBusiness.findReport(saleStockInput.getSale()));
+    		writeReport( getCompanyBusinessLayer().getSaleBusiness().findReport(saleStockInput.getSale()));
     		//writeReport(saleCashRegisterMovementBusiness.findReport(saleCashRegisterMovement));
     	}
     	
@@ -328,8 +324,8 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	return saleStockInput;
     }
 	
-	private void assertSaleStockInput(SaleStockInput saleStockInput,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
-		saleStockInput = saleStockInputBusiness.load(saleStockInput.getIdentifier());
+	private void assertSaleStockInput(SaleStockTangibleProductMovementInput saleStockInput,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
+		saleStockInput =  getCompanyBusinessLayer().getSaleStockInputBusiness().load(saleStockInput.getIdentifier());
 		if(expectedCost!=null)
     		assertBigDecimalEquals("Cost", expectedCost, saleStockInput.getSale().getCost().getValue());
     	if(expectedVat!=null)
@@ -340,38 +336,38 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     		assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, saleStockInput.getSale().getBalance().getCumul());
 	}
 	
-	public SaleStockInput drop(Date date,Person person,Customer customer,String externalIdentifier,String cost,String commission,String quantity,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
+	public SaleStockTangibleProductMovementInput drop(Date date,Person person,Customer customer,String externalIdentifier,String cost,String commission,String quantity,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
 		return drop(date, person, customer, externalIdentifier, cost, commission, quantity,Boolean.FALSE ,expectedCost, expectedVat, expectedBalance, expectedCumulBalance);
 	}
 	
-	public SaleStockInput complete(Date date,Person person,SaleStockInput saleStockInput,String commission,Boolean printPos,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
-		saleStockInput = saleStockInputBusiness.load(saleStockInput.getIdentifier());
+	public SaleStockTangibleProductMovementInput complete(Date date,Person person,SaleStockTangibleProductMovementInput saleStockInput,String commission,Boolean printPos,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
+		saleStockInput =  getCompanyBusinessLayer().getSaleStockInputBusiness().load(saleStockInput.getIdentifier());
 		saleStockInput.getSale().setAutoComputeValueAddedTax(Boolean.TRUE);
 		saleStockInput.getSale().getSaleProducts().iterator().next().setCommission(new BigDecimal(commission));
-		saleBusiness.applyChange(saleStockInput.getSale(), saleStockInput.getSale().getSaleProducts().iterator().next());
-		SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person,Boolean.TRUE);
+		getCompanyBusinessLayer().getSaleBusiness().applyChange(saleStockInput.getSale(), saleStockInput.getSale().getSaleProducts().iterator().next());
+		SaleCashRegisterMovement saleCashRegisterMovement = getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().newInstance(saleStockInput.getSale(), person,Boolean.TRUE);
 		set(saleCashRegisterMovement, "0");
-		saleStockInputBusiness.complete(saleStockInput, saleCashRegisterMovement);
+		//getCompanyBusinessLayer().getSaleStockInputBusiness().complete(saleStockInput, saleCashRegisterMovement);
     	
     	if(Boolean.TRUE.equals(printPos))
-    		writeReport(saleBusiness.findReport(saleStockInput.getSale()));
+    		writeReport(getCompanyBusinessLayer().getSaleBusiness().findReport(saleStockInput.getSale()));
     	
     	assertSaleStockInput(saleStockInput, expectedCost, expectedVat, expectedBalance, expectedCumulBalance);
     	
     	return saleStockInput;
 	}
     
-    public void taking(Date date,Person person,SaleStockInput saleStockInput,String quantity,String paid,Boolean printPos,String expectedRemainingGoods,String expectedBalance,String expectedCumulBalance){
-    	saleStockInput = saleStockInputBusiness.load(saleStockInput.getIdentifier());
-    	SaleStockOutput saleStockOutput = saleStockOutputBusiness.newInstance(person, saleStockInput);
+    public void taking(Date date,Person person,SaleStockTangibleProductMovementInput saleStockInput,String quantity,String paid,Boolean printPos,String expectedRemainingGoods,String expectedBalance,String expectedCumulBalance){
+    	saleStockInput = getCompanyBusinessLayer().getSaleStockInputBusiness().load(saleStockInput.getIdentifier());
+    	SaleStockTangibleProductMovementOutput saleStockOutput = getCompanyBusinessLayer().getSaleStockOutputBusiness().newInstance(person, saleStockInput);
     	set(saleStockOutput, quantity);
     	set(saleStockOutput.getSaleCashRegisterMovement(), paid,date);
-    	saleStockOutputBusiness.create(saleStockOutput);
+    	getCompanyBusinessLayer().getSaleStockOutputBusiness().create(saleStockOutput);
     	
     	if(Boolean.TRUE.equals(printPos))
-    		writeReport(saleCashRegisterMovementBusiness.findReport(saleStockOutput.getSaleCashRegisterMovement()));
+    		writeReport(getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().findReport(saleStockOutput.getSaleCashRegisterMovement()));
     	
-    	saleStockOutput = saleStockOutputBusiness.load(saleStockOutput.getIdentifier());
+    	saleStockOutput = getCompanyBusinessLayer().getSaleStockOutputBusiness().load(saleStockOutput.getIdentifier());
     	//Matchers
     	if(expectedRemainingGoods!=null)
     		assertBigDecimalEquals("Remaining number of goods", expectedRemainingGoods, saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods());
@@ -381,13 +377,13 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     		assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, saleStockOutput.getSaleCashRegisterMovement().getBalance().getCumul());
     }
     
-    public void taking(Date date,Person person,SaleStockInput saleStockInput,String quantity,String paid,String expectedRemainingGoods,String expectedBalance,String expectedCumulBalance){
+    public void taking(Date date,Person person,SaleStockTangibleProductMovementInput saleStockInput,String quantity,String paid,String expectedRemainingGoods,String expectedBalance,String expectedCumulBalance){
     	taking(date, person, saleStockInput, quantity, paid, Boolean.FALSE, expectedRemainingGoods, expectedBalance, expectedCumulBalance);
     }
     
     public void saleStockInputComputeByCriteria(SaleStockInputSearchCriteria criteria,String expectedIn,String expectedRemaining,String expectedCost,String expectedVat,String expectedTurnover,String expectedBalance){
 		//System.out.println(saleBusiness.findByCriteria(criteria));
-    	SaleStocksDetails actual = saleStockInputBusiness.computeByCriteria(criteria);
+    	SaleStocksDetails actual = getCompanyBusinessLayer().getSaleStockInputBusiness().computeByCriteria(criteria);
     	//saleComputeByCriteria(actual.getSalesDetails(), expectedCost, expectedVat, expectedTurnover, expectedBalance);
 		assertBigDecimalEquals("In", expectedIn, actual.getIn());
 		assertBigDecimalEquals("Remaining", expectedRemaining, actual.getRemaining());
@@ -528,6 +524,10 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	
 	/**/
 	
+    private CompanyBusinessLayer getCompanyBusinessLayer(){
+    	return CompanyBusinessLayer.getInstance();
+    }
+    
 	public static CompanyBusinessTestHelper getInstance() {
 		return INSTANCE;
 	}

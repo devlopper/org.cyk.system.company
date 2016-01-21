@@ -17,7 +17,7 @@ import org.cyk.system.root.model.party.person.Person;
 
 public interface SaleBusiness extends TypedBusiness<Sale> {
 
-	Sale newInstance(Person person);
+	Sale instanciate(Person person);
 	
 	SaleProduct selectProduct(Sale sale,SalableProduct salableProduct,BigDecimal quantity);
 	SaleProduct selectProduct(Sale sale,SalableProduct salableProduct);

@@ -27,8 +27,8 @@ public class SaleCashRegisterMovement extends AbstractIdentifiable implements Se
 
 	@ManyToOne @NotNull private Sale sale;
 	@OneToOne @NotNull private CashRegisterMovement cashRegisterMovement;
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) private BigDecimal amountIn = BigDecimal.ZERO;
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) private BigDecimal amountOut = BigDecimal.ZERO;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountIn = BigDecimal.ZERO;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountOut = BigDecimal.ZERO;
 	
 	@Embedded private Balance balance = new Balance();
 
@@ -55,7 +55,7 @@ public class SaleCashRegisterMovement extends AbstractIdentifiable implements Se
 	
 	/**/
 	
-	private static final String LOG_FORMAT = "SaleCashRegisterMovement(S=%s I=%s O=%s %s %s)";
+	private static final String LOG_FORMAT = SaleCashRegisterMovement.class.getSimpleName()+"(S=%s I=%s O=%s %s %s)";
 	
 	public static final String FIELD_SALE = "sale";
 	public static final String FIELD_CASH_REGISTER_MOVEMENT = "cashRegisterMovement";

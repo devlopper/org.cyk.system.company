@@ -4,17 +4,17 @@ import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
-import org.cyk.system.company.model.sale.SaleStock;
-import org.cyk.system.company.model.sale.SaleStockInput;
-import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.company.model.sale.SaleStockSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
-import org.cyk.system.company.persistence.api.sale.SaleStockDao;
+import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 
-public class SaleStockDaoImpl extends AbstractSaleStockDaoImpl<SaleStock,SaleStockSearchCriteria> implements SaleStockDao {
+public class SaleStockTangibleProductMovementDaoImpl extends AbstractSaleStockTangibleProductMovementDaoImpl<SaleStockTangibleProductMovement,SaleStockSearchCriteria> implements SaleStockTangibleProductMovementDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
@@ -56,10 +56,10 @@ public class SaleStockDaoImpl extends AbstractSaleStockDaoImpl<SaleStock,SaleSto
 	private void whereSearchCriteria(QueryStringBuilder queryStringBuilder){
 		queryStringBuilder.where()
 			.parenthesis(Boolean.TRUE)
-			.exists().openSubQueryStringBuilder(SaleStockInput.class,null,"ssi")
+			.exists().openSubQueryStringBuilder(SaleStockTangibleProductMovementInput.class,null,"ssi")
 				.and("externalIdentifier", ArithmeticOperator.LIKE)
 				.closeSubQueryStringBuilder()	
-			.or().exists().openSubQueryStringBuilder(SaleStockOutput.class,null,"sso")
+			.or().exists().openSubQueryStringBuilder(SaleStockTangibleProductMovementOutput.class,null,"sso")
 				.and("saleStockInput.externalIdentifier","externalIdentifier", ArithmeticOperator.LIKE)
 				//.and("saleStockInput.sale.done", "done",ArithmeticOperator.EQ)
 				.closeSubQueryStringBuilder()

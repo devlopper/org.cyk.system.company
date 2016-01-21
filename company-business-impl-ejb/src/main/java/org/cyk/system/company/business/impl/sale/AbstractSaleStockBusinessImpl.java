@@ -6,14 +6,14 @@ import java.util.Collection;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import org.cyk.system.company.business.api.sale.AbstractSaleStockBusiness;
-import org.cyk.system.company.model.sale.AbstractSaleStockSearchCriteria;
-import org.cyk.system.company.model.sale.SaleStock;
+import org.cyk.system.company.business.api.sale.AbstractSaleStockTangibleProductMovementBusiness;
+import org.cyk.system.company.model.sale.AbstractSaleStockTangibleProductMovementSearchCriteria;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
-import org.cyk.system.company.persistence.api.sale.AbstractSaleStockDao;
+import org.cyk.system.company.persistence.api.sale.AbstractSaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
-public abstract class AbstractSaleStockBusinessImpl<SALE_STOCK extends SaleStock,DAO extends AbstractSaleStockDao<SALE_STOCK, SEARCH_CRITERIA>,SEARCH_CRITERIA extends AbstractSaleStockSearchCriteria> extends AbstractTypedBusinessService<SALE_STOCK, DAO> implements AbstractSaleStockBusiness<SALE_STOCK,SEARCH_CRITERIA>,Serializable {
+public abstract class AbstractSaleStockBusinessImpl<SALE extends SaleStockTangibleProductMovement,DAO extends AbstractSaleStockTangibleProductMovementDao<SALE, SEARCH_CRITERIA>,SEARCH_CRITERIA extends AbstractSaleStockTangibleProductMovementSearchCriteria> extends AbstractTypedBusinessService<SALE, DAO> implements AbstractSaleStockTangibleProductMovementBusiness<SALE,SEARCH_CRITERIA>,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 	
@@ -22,7 +22,7 @@ public abstract class AbstractSaleStockBusinessImpl<SALE_STOCK extends SaleStock
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Collection<SALE_STOCK> findByCriteria(SEARCH_CRITERIA criteria) {
+	public Collection<SALE> findByCriteria(SEARCH_CRITERIA criteria) {
 		prepareFindByCriteria(criteria);
 		return dao.readByCriteria(criteria);
 	}
@@ -33,16 +33,13 @@ public abstract class AbstractSaleStockBusinessImpl<SALE_STOCK extends SaleStock
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Collection<SALE_STOCK> findByTangibleProductStockMovements(Collection<StockTangibleProductMovement> tangibleProductStockMovements) {
-		return dao.readByTangibleProductStockMovements(tangibleProductStockMovements);
+	public Collection<SALE> findByStockTangibleProductStockMovements(Collection<StockTangibleProductMovement> stockTangibleProductStockMovements) {
+		return dao.readByStockTangibleProductStockMovements(stockTangibleProductStockMovements);
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public SALE_STOCK findByTangibleProductStockMovement(StockTangibleProductMovement tangibleProductStockMovement) {
-		return dao.readByTangibleProductStockMovement(tangibleProductStockMovement);
+	public SALE findByStockTangibleProductStockMovement(StockTangibleProductMovement stockTangibleProductStockMovement) {
+		return dao.readByStockTangibleProductStockMovement(stockTangibleProductStockMovement);
 	}
 	
-	
-	
-
 }

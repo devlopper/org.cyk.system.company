@@ -57,7 +57,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Sale newInstance(Person person) {
+	public Sale instanciate(Person person) {
 		Sale sale = new Sale();
 		sale.setAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent());
 		sale.setCashier(CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson(person));
@@ -122,7 +122,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override
 	public Sale create(Sale sale) {
-		logIdentifiable("Create",sale);
+		//logIdentifiable("Create",sale);
 		if(Boolean.TRUE.equals(AUTO_SET_SALE_DATE))
 			if(sale.getDate()==null)
 				sale.setDate(universalTimeCoordinated());

@@ -8,8 +8,8 @@ import javax.inject.Named;
 
 import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
-import org.cyk.system.company.model.sale.SaleStockInput;
-import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.model.SaleStockOutputFormModel;
 import org.cyk.system.company.ui.web.primefaces.sale.AbstractSaleStockInputConsultPage.Details;
@@ -26,7 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
-public class SaleStockOutputCrudOnePage extends AbstractCrudOnePage<SaleStockOutput> implements Serializable {
+public class SaleStockOutputCrudOnePage extends AbstractCrudOnePage<SaleStockTangibleProductMovementOutput> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
@@ -34,14 +34,14 @@ public class SaleStockOutputCrudOnePage extends AbstractCrudOnePage<SaleStockOut
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
 	
 	@Inject private SaleCashRegisterMovementController cashRegisterController;
-	private SaleStockInput saleStockInput;
+	private SaleStockTangibleProductMovementInput saleStockInput;
 	
 	private FormOneData<Details> details;
 	
 	@Override
 	protected void initialisation() {
-		BusinessEntityInfos b = uiManager.businessEntityInfos(SaleStockInput.class);
-		saleStockInput = (SaleStockInput) uiManager.getGenericBusiness().use(SaleStockInput.class).find(Long.parseLong(requestParameter(b.getIdentifier())));
+		BusinessEntityInfos b = uiManager.businessEntityInfos(SaleStockTangibleProductMovementInput.class);
+		saleStockInput = (SaleStockTangibleProductMovementInput) uiManager.getGenericBusiness().use(SaleStockTangibleProductMovementInput.class).find(Long.parseLong(requestParameter(b.getIdentifier())));
 		super.initialisation();
 		cashRegisterController.init(identifiable.getSaleCashRegisterMovement(),Boolean.TRUE);
 		
@@ -68,7 +68,7 @@ public class SaleStockOutputCrudOnePage extends AbstractCrudOnePage<SaleStockOut
 	
 	@Override
 	protected BusinessEntityInfos fetchBusinessEntityInfos() {
-		return uiManager.businessEntityInfos(SaleStockOutput.class);
+		return uiManager.businessEntityInfos(SaleStockTangibleProductMovementOutput.class);
 	}
 	
 	@Override

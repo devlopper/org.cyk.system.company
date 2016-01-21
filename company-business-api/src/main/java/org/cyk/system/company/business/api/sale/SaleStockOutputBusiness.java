@@ -2,15 +2,15 @@ package org.cyk.system.company.business.api.sale;
 
 import java.util.Collection;
 
-import org.cyk.system.company.model.sale.SaleStockInput;
-import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.company.model.sale.SaleStockOutputSearchCriteria;
 import org.cyk.system.root.model.party.person.Person;
 
-public interface SaleStockOutputBusiness extends AbstractSaleStockBusiness<SaleStockOutput,SaleStockOutputSearchCriteria> {
+public interface SaleStockOutputBusiness extends AbstractSaleStockTangibleProductMovementBusiness<SaleStockTangibleProductMovementOutput,SaleStockOutputSearchCriteria> {
 
-	SaleStockOutput newInstance(Person person,SaleStockInput saleStockInput);
+	SaleStockTangibleProductMovementOutput newInstance(Person person,SaleStockTangibleProductMovementInput saleStockInput);
 
-	Collection<SaleStockOutput> findBySaleStockInput(SaleStockInput saleStockInput);
+	Collection<SaleStockTangibleProductMovementOutput> findBySaleStockInput(SaleStockTangibleProductMovementInput saleStockInput);
 	
 }

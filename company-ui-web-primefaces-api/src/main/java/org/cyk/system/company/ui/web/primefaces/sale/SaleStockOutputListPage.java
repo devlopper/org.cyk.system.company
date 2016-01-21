@@ -11,16 +11,16 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.sale.AbstractSaleStockBusiness;
+import org.cyk.system.company.business.api.sale.AbstractSaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
 import org.cyk.system.company.business.impl.sale.SaleStockReportTableRow;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
-import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.company.model.sale.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
 
 @Named @ViewScoped @Getter @Setter
-public class SaleStockOutputListPage extends AbstractSaleStockListPage<SaleStockOutput, SaleStockOutputSearchCriteria> implements Serializable {
+public class SaleStockOutputListPage extends AbstractSaleStockListPage<SaleStockTangibleProductMovementOutput, SaleStockOutputSearchCriteria> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
@@ -40,12 +40,12 @@ public class SaleStockOutputListPage extends AbstractSaleStockListPage<SaleStock
 	}
 		
 	@Override
-	protected Class<SaleStockOutput> __entityClass__() {
-		return SaleStockOutput.class;
+	protected Class<SaleStockTangibleProductMovementOutput> __entityClass__() {
+		return SaleStockTangibleProductMovementOutput.class;
 	}
 	
 	@Override
-	protected void __afterFindByCriteria__(SaleStockOutputSearchCriteria criteria,Collection<SaleStockOutput> results) {
+	protected void __afterFindByCriteria__(SaleStockOutputSearchCriteria criteria,Collection<SaleStockTangibleProductMovementOutput> results) {
 		super.__afterFindByCriteria__(criteria, results);
 		SaleStocksDetails details = saleStockOutputBusiness.computeByCriteria(criteria);
 		table.setColumnFooter(SaleStockReportTableRow.FIELD_TAKEN_NUMBER_OF_GOODS,details.getOut().abs());
@@ -74,7 +74,7 @@ public class SaleStockOutputListPage extends AbstractSaleStockListPage<SaleStock
 	}
 
 	@Override
-	protected AbstractSaleStockBusiness<SaleStockOutput, SaleStockOutputSearchCriteria> business() {
+	protected AbstractSaleStockTangibleProductMovementBusiness<SaleStockTangibleProductMovementOutput, SaleStockOutputSearchCriteria> business() {
 		return saleStockOutputBusiness;
 	}
 

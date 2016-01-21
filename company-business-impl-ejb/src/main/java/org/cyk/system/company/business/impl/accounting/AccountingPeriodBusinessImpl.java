@@ -81,7 +81,7 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 		if(Boolean.TRUE.equals(accountingPeriod.getSaleConfiguration().getValueAddedTaxIncludedInCost()))
 			vat = amount.subtract(amount.divide(BigDecimal.ONE.add(accountingPeriod.getSaleConfiguration().getValueAddedTaxRate()),RoundingMode.DOWN));
 		else
-			vat = /*amount.divide(BigDecimal.ONE.add(accountingPeriod.getValueAddedTaxRate()),RoundingMode.DOWN);*/ accountingPeriod.getSaleConfiguration().getValueAddedTaxRate().multiply(amount);
+			vat = accountingPeriod.getSaleConfiguration().getValueAddedTaxRate().multiply(amount);
 		logDebug("VAT of amount {} is {}", amount,vat);
 		return vat;
 	}

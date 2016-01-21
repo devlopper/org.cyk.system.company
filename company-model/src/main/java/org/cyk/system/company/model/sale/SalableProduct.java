@@ -45,7 +45,7 @@ public class SalableProduct extends AbstractIdentifiable implements Serializable
 	
 	/**/
 	
-	private static final String LOG_FORMAT = SalableProduct.class.getSimpleName()+"(C=%s P=%s)";
+	private static final String LOG_FORMAT = SalableProduct.class.getSimpleName()+"(Code=%s Price=%s)";
 
 	
 	/**/

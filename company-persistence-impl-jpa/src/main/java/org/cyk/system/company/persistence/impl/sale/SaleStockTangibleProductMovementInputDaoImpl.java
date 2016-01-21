@@ -5,20 +5,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleStockInput;
 import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
-import org.cyk.system.company.model.stock.StockTangibleProductMovement;
-import org.cyk.system.company.persistence.api.sale.SaleStockInputDao;
+import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementInputDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
 import org.cyk.utility.common.computation.ArithmeticOperator;
-import org.cyk.utility.common.computation.LogicalOperator;
 
-public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInput,SaleStockInputSearchCriteria> implements SaleStockInputDao {
+public class SaleStockTangibleProductMovementInputDaoImpl extends AbstractSaleStockTangibleProductMovementDaoImpl<SaleStockTangibleProductMovementInput,SaleStockInputSearchCriteria> implements SaleStockTangibleProductMovementInputDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
@@ -27,8 +24,8 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 	@Override
     protected void namedQueriesInitialisation() {
     	super.namedQueriesInitialisation();
-    	String saleDateAttribute = commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_DATE);
-    	
+    	String saleDateAttribute = commonUtils.attributePath(SaleStockTangibleProductMovementInput.FIELD_SALE, Sale.FIELD_DATE);
+    	/*
     	QueryStringBuilder queryStringBuilder = _select();
     	whereSearchCriteria(queryStringBuilder);
     	
@@ -37,9 +34,9 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
         registerNamedQuery(readByCriteriaDateAscendingOrder,readByCriteriaDateAscendingOrderQuery );
         registerNamedQuery(readByCriteriaDateDescendingOrder,queryStringBuilder.orderBy(saleDateAttribute, Boolean.FALSE));
         
-        registerNamedQuery(readBySaleComputedIdentifier,_select().where(commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_COMPUTED_IDENTIFIER),Sale.FIELD_COMPUTED_IDENTIFIER) );
-        registerNamedQuery(readBySales,_select().whereIdentifierIn(SaleStockInput.FIELD_SALE) );
-        
+        registerNamedQuery(readBySaleComputedIdentifier,_select().where(commonUtils.attributePath(SaleStockTangibleProductMovementInput.FIELD_SALE, Sale.FIELD_COMPUTED_IDENTIFIER),Sale.FIELD_COMPUTED_IDENTIFIER) );
+        registerNamedQuery(readBySales,_select().whereIdentifierIn(SaleStockTangibleProductMovementInput.FIELD_SALE) );
+        */
         /*queryStringBuilder = _selectString(sumAttributes(commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_COST)
         		,commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_TURNOVER)
         		,commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_VALUE_ADDED_TAX)
@@ -47,15 +44,15 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
         		,commonUtils.attributePath(SaleStockInput.FIELD_TANGIBLE_PRODUCT_STOCK_MOVEMENT,TangibleProductStockMovement.FIELD_QUANTITY)
         		,SaleStockInput.FIELD_REMAINING_NUMBER_OF_GOODS
         		));*/
-    	whereSearchCriteria(queryStringBuilder);
-    	registerNamedQuery(computeByCriteria,queryStringBuilder);
+    	//whereSearchCriteria(queryStringBuilder);
+    	//registerNamedQuery(computeByCriteria,queryStringBuilder);
     }
 	
 	private void whereSearchCriteria(QueryStringBuilder queryStringBuilder){
-		queryStringBuilder.where(SaleStockInput.FIELD_EXTERNAL_IDENTIFIER,ArithmeticOperator.LIKE)
-		.and().between(commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_DATE))
+		queryStringBuilder.where(SaleStockTangibleProductMovementInput.FIELD_EXTERNAL_IDENTIFIER,ArithmeticOperator.LIKE)
+		.and().between(commonUtils.attributePath(SaleStockTangibleProductMovementInput.FIELD_SALE, Sale.FIELD_DATE))
 		//.where(LogicalOperator.AND,commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_DONE),Sale.FIELD_DONE,ArithmeticOperator.EQ)
-		.and(SaleStockInput.FIELD_REMAINING_NUMBER_OF_GOODS, PARAM_MINIMUM_REMAINING_GOODS, ArithmeticOperator.GTE)
+		.and(SaleStockTangibleProductMovementInput.FIELD_REMAINING_NUMBER_OF_GOODS, PARAM_MINIMUM_REMAINING_GOODS, ArithmeticOperator.GTE)
 		.and().whereString("ABS(r.tangibleProductStockMovement.quantity) >= :minimumQuantity");
 	}
 
@@ -68,17 +65,17 @@ public class SaleStockInputDaoImpl extends AbstractSaleStockDaoImpl<SaleStockInp
 	}
 
 	@Override
-	public Collection<SaleStockInput> readBySales(Collection<Sale> sales) {
+	public Collection<SaleStockTangibleProductMovementInput> readBySales(Collection<Sale> sales) {
 		if(sales==null || sales.isEmpty())
-			return new ArrayList<SaleStockInput>();
+			return new ArrayList<SaleStockTangibleProductMovementInput>();
 		return namedQuery(readBySales).parameterIdentifiers(sales).resultMany();
 	}
 
 	@Override
-	public SaleStockInput readBySale(Sale sale) {
+	public SaleStockTangibleProductMovementInput readBySale(Sale sale) {
 		if(sale==null)
 			return null;
-		Collection<SaleStockInput> collection = readBySales(Arrays.asList(sale));
+		Collection<SaleStockTangibleProductMovementInput> collection = readBySales(Arrays.asList(sale));
 		return collection.isEmpty()?null:collection.iterator().next();
 	}
 

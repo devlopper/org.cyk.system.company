@@ -15,7 +15,7 @@ public class IntangibleProduct extends Product implements Serializable  {
 
 	private static final long serialVersionUID = -6128937819261060725L;
 
-	public static final String SALE_STOCK = "STOCKING";
+	public static final String STOCKING = IntangibleProduct.class.getSimpleName()+"_STOCKING";
 	
 	public IntangibleProduct(String code, String name, Division division,ProductCategory category) {
 		super(code, name, division, category);

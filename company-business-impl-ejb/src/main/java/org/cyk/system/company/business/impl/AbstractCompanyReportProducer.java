@@ -11,8 +11,8 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleReport;
-import org.cyk.system.company.model.sale.SaleStockInput;
-import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.api.time.TimeBusiness;
 import org.cyk.system.root.business.impl.AbstractRootReportProducer;
@@ -31,14 +31,14 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		SaleReport saleReport = prepare(currentStateParameters.getSale(), currentStateParameters.getSaleStockInput(), 
 				currentStateParameters.getSaleCashRegisterMovement().getCashRegisterMovement(),previousStateParameters.getAmountToPay(),
 				previousStateParameters.getAmountPaid(),previousStateParameters.getAmountToOut(),Boolean.FALSE
-				,previousStateParameters.getSaleStockInput()==null?null:previousStateParameters.getSaleStockInput().getTangibleProductStockMovement().getMovement().getValue(),null);
+				,previousStateParameters.getSaleStockInput()==null?null:previousStateParameters.getSaleStockInput().getStockTangibleProductMovement().getMovement().getValue(),null);
 		return saleReport;
 	}
 	
 	@Override
 	public SaleReport producePaymentReceipt(ReceiptParameters previousStateParameters,ReceiptParameters currentStateParameters) {
 		logDebug("Prepare Payment report");
-		SaleStockOutput saleStockOutput = currentStateParameters.getSaleStockOutput();
+		SaleStockTangibleProductMovementOutput saleStockOutput = currentStateParameters.getSaleStockOutput();
 		SaleCashRegisterMovement saleCashRegisterMovement = saleStockOutput==null?previousStateParameters.getSaleCashRegisterMovement():saleStockOutput.getSaleCashRegisterMovement();
 		Sale sale = saleStockOutput==null?saleCashRegisterMovement.getSale():saleStockOutput.getSaleStockInput().getSale();
 		SaleReport saleReport = prepare(sale, saleStockOutput==null?null:saleStockOutput.getSaleStockInput(), saleCashRegisterMovement.getCashRegisterMovement()
@@ -47,7 +47,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		return saleReport;
 	}
 	
-	private SaleReport prepare(Sale sale, SaleStockInput saleStockInput,CashRegisterMovement cashRegisterMovement,BigDecimal amountToPay,BigDecimal amountPaid,BigDecimal amountToOut,Boolean paymentOnly
+	private SaleReport prepare(Sale sale, SaleStockTangibleProductMovementInput saleStockInput,CashRegisterMovement cashRegisterMovement,BigDecimal amountToPay,BigDecimal amountPaid,BigDecimal amountToOut,Boolean paymentOnly
 			,BigDecimal previousNumberOfGoodsInStock,BigDecimal deliveredNumberOfGoodsInStock){
 		Boolean paymentExist = cashRegisterMovement.getIdentifier()!=null;
 		Company company = cashRegisterMovement.getCashRegister().getOwnedCompany().getCompany();

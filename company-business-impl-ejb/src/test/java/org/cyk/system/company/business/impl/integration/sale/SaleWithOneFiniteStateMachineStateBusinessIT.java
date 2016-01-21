@@ -1,5 +1,6 @@
 package org.cyk.system.company.business.impl.integration.sale;
 
+import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Sale;
 
 public class SaleWithOneFiniteStateMachineStateBusinessIT extends AbstractSaleWithOneFiniteStateMachineStateBusinessIT {
@@ -125,6 +126,19 @@ public class SaleWithOneFiniteStateMachineStateBusinessIT extends AbstractSaleWi
 	@Override
 	protected void noTax8AllPaidUnitPriceButCostValueSet(CreateSaleParameters parameters) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void stock_1_noTax_input(CreateSaleParameters parameters) {
+		debug(parameters);
+		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount("1");
+		companyBusinessTestHelper.assertSale(parameters.getComputedIdentifier(),"","1","2000", "0", "2000","2000");
+		companyBusinessTestHelper.assertCustomer(parameters.getCustomerRegistrationCode(),"1","2000","0","0","2000" );
+		companyBusinessTestHelper.assertSaleByCriteria(null,null, new String[]{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}
+			, new String[]{parameters.getComputedIdentifier()}, "2000", "0", "2000", "2000", "0");
+		
+		companyBusinessTestHelper.assertStockableTangibleProduct(TangibleProduct.STOCKING, "1");
 		
 	}
                 

@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class SaleStockInputReport extends AbstractGeneratable<SaleStockInput> implements Serializable {
+public class SaleStockInputReport extends AbstractGeneratable<SaleStockTangibleProductMovementInput> implements Serializable {
 
 	private static final long serialVersionUID = 7332510774063666925L;
 

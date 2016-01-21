@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
-import org.cyk.system.company.model.sale.SaleStockInput;
-import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.root.business.api.RootReportProducer;
 
 import lombok.Getter;
@@ -47,15 +47,15 @@ public interface CompanyReportProducer extends RootReportProducer {
 		private static final long serialVersionUID = 6982660096264368704L;
 		
 		private Sale sale;
-		private SaleStockInput saleStockInput;
+		private SaleStockTangibleProductMovementInput saleStockInput;
 		
-		public InvoiceParameters(Sale sale,SaleStockInput saleStockInput,SaleCashRegisterMovement saleCashRegisterMovement) {
+		public InvoiceParameters(Sale sale,SaleStockTangibleProductMovementInput saleStockInput,SaleCashRegisterMovement saleCashRegisterMovement) {
 			super(saleCashRegisterMovement);
 			this.sale = sale;
 			this.saleStockInput = saleStockInput;
 		}
 		
-		public InvoiceParameters(SaleStockInput saleStockInput,SaleCashRegisterMovement saleCashRegisterMovement) {
+		public InvoiceParameters(SaleStockTangibleProductMovementInput saleStockInput,SaleCashRegisterMovement saleCashRegisterMovement) {
 			this(saleCashRegisterMovement.getSale(),saleStockInput,saleCashRegisterMovement);
 		}
 	}
@@ -65,11 +65,11 @@ public interface CompanyReportProducer extends RootReportProducer {
 
 		private static final long serialVersionUID = 6982660096264368704L;
 		
-		private SaleStockOutput saleStockOutput;
+		private SaleStockTangibleProductMovementOutput saleStockOutput;
 		protected BigDecimal numberOfGoodsInStock;
 		protected BigDecimal numberOfGoodsDelivered;
 		
-		public ReceiptParameters(SaleStockOutput saleStockOutput,SaleCashRegisterMovement saleCashRegisterMovement) {
+		public ReceiptParameters(SaleStockTangibleProductMovementOutput saleStockOutput,SaleCashRegisterMovement saleCashRegisterMovement) {
 			super(saleCashRegisterMovement);
 			this.saleStockOutput = saleStockOutput;
 			if(saleStockOutput!=null){
@@ -78,7 +78,7 @@ public interface CompanyReportProducer extends RootReportProducer {
 			}
 		}
 		
-		public ReceiptParameters(SaleStockOutput saleStockOutput) {
+		public ReceiptParameters(SaleStockTangibleProductMovementOutput saleStockOutput) {
 			this(saleStockOutput,saleStockOutput.getSaleCashRegisterMovement());
 		}
 	}

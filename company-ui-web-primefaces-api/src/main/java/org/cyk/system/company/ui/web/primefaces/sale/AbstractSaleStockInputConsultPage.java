@@ -11,11 +11,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementInputBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
-import org.cyk.system.company.model.sale.SaleStockInput;
-import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.ui.api.UIManager;
 import org.cyk.ui.api.UIProvider;
@@ -31,13 +31,13 @@ import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 
 @Getter @Setter
-public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultPage<SaleStockInput> implements Serializable {
+public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultPage<SaleStockTangibleProductMovementInput> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
 	public static final String COMMANDABLE_WITHDRAW_IDENTIFIER = "withdraw";
 	
-	@Inject protected SaleStockInputBusiness saleStockInputBusiness;
+	@Inject protected SaleStockTangibleProductMovementInputBusiness saleStockInputBusiness;
 	
 	@Inject protected SaleBusiness saleBusiness;
 	@Inject protected CompanyBusinessLayer companyBusinessLayer;
@@ -48,12 +48,12 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		details = (FormOneData<Details>) createDetailsForm(Details.class,identifiable, new DetailsConfigurationListener.Form.Adapter<>(SaleStockInput.class, Details.class));
+		details = (FormOneData<Details>) createDetailsForm(Details.class,identifiable, new DetailsConfigurationListener.Form.Adapter<>(SaleStockTangibleProductMovementInput.class, Details.class));
 		
-		outputsTable = (Table<OutputDetails>) createDetailsTable(OutputDetails.class, new DetailsConfigurationListener.Table.Adapter<SaleStockOutput,OutputDetails>(SaleStockOutput.class, OutputDetails.class){
+		outputsTable = (Table<OutputDetails>) createDetailsTable(OutputDetails.class, new DetailsConfigurationListener.Table.Adapter<SaleStockTangibleProductMovementOutput,OutputDetails>(SaleStockTangibleProductMovementOutput.class, OutputDetails.class){
 			private static final long serialVersionUID = -2147502075453340486L;
 			@Override
-			public Collection<SaleStockOutput> getIdentifiables() {
+			public Collection<SaleStockTangibleProductMovementOutput> getIdentifiables() {
 				return identifiable.getSaleStockOutputs();
 			}
 		});
@@ -91,14 +91,14 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 			outputsTable.addRow(new OutputDetails(output));
 		*/
 		//outputsTable.getColumn("amount").setFooter(numberBusiness.format(identifiable.getSale().getCost().subtract(identifiable.getSale().getBalance().getValue())));
-		outputsTable.getColumn("numberOfStockGoods").setFooter(numberBusiness.format(identifiable.getTangibleProductStockMovement().getQuantity()
-				.subtract(identifiable.getRemainingNumberOfGoods())));
+		//outputsTable.getColumn("numberOfStockGoods").setFooter(numberBusiness.format(identifiable.getTangibleProductStockMovement().getQuantity()
+		//		.subtract(identifiable.getRemainingNumberOfGoods())));
 		
 	}
 	
 	@Override
 	protected Collection<UICommandable> contextualCommandables() {
-		Integer balance = identifiable.getSale().getBalance().getValue().compareTo(BigDecimal.ZERO);
+		Integer balance = null;//identifiable.getSale().getBalance().getValue().compareTo(BigDecimal.ZERO);
 		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null),c;
 		contextualMenu.setLabel(contentTitle); 
 		/*if(Boolean.TRUE.equals(identifiable.getSale().getDone()) && balance!=0){
@@ -111,8 +111,8 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		UICommandable printReceipt = UIProvider.getInstance().createCommandable("command.see.invoice", null);
 		printReceipt.setCommandRequestType(CommandRequestType.UI_VIEW);
 		printReceipt.setViewType(ViewType.TOOLS_REPORT);
-		printReceipt.getParameters().addAll(navigationManager.reportParameters(identifiable.getSale(), 
-				CompanyReportRepository.getInstance().getReportPointOfSale(),Boolean.FALSE));
+		//printReceipt.getParameters().addAll(navigationManager.reportParameters(identifiable.getSale(), 
+		//		CompanyReportRepository.getInstance().getReportPointOfSale(),Boolean.FALSE));
 		contextualMenu.getChildren().add(printReceipt);
 		
 		return Arrays.asList(contextualMenu);
@@ -120,7 +120,7 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 
 	@Override
 	protected BusinessEntityInfos fetchBusinessEntityInfos() {
-		return uiManager.businessEntityInfos(SaleStockInput.class);
+		return uiManager.businessEntityInfos(SaleStockTangibleProductMovementInput.class);
 	}
 	
 	
@@ -131,29 +131,29 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 		@Input @InputText
 		private String identifier,cost,balance,customer,date,numberOfStockGoods,remainingNumberOfGoods;
 		
-		public Details(SaleStockInput saleStockInput) {
-			this.identifier = saleStockInput.getSale().getComputedIdentifier();
+		public Details(SaleStockTangibleProductMovementInput saleStockInput) {
+			/*this.identifier = saleStockInput.getSale().getComputedIdentifier();
 			//this.cost = UIManager.getInstance().getNumberBusiness().format(saleStockInput.getSale().getCost());
 			this.balance = UIManager.getInstance().getNumberBusiness().format(saleStockInput.getSale().getBalance().getValue().abs());
 			this.customer = saleStockInput.getSale().getCustomer()==null?"":saleStockInput.getSale().getCustomer().getPerson().getNames();
 			this.date = UIManager.getInstance().getTimeBusiness().formatDateTime(saleStockInput.getSale().getDate());
 			this.numberOfStockGoods = UIManager.getInstance().getNumberBusiness().format(saleStockInput.getTangibleProductStockMovement().getQuantity());
-			this.remainingNumberOfGoods = UIManager.getInstance().getNumberBusiness().format(saleStockInput.getRemainingNumberOfGoods());
+			this.remainingNumberOfGoods = UIManager.getInstance().getNumberBusiness().format(saleStockInput.getRemainingNumberOfGoods());*/
 		}
 	}
 	
 	@Getter @Setter
-	public static class OutputDetails extends AbstractOutputDetails<SaleStockOutput> implements Serializable {
+	public static class OutputDetails extends AbstractOutputDetails<SaleStockTangibleProductMovementOutput> implements Serializable {
 		private static final long serialVersionUID = -1498269103849317057L;
 		
 		@Input @InputText
 		private String identifier,date,amount,numberOfStockGoods;
 		
-		public OutputDetails(SaleStockOutput saleStockOutput) {
+		public OutputDetails(SaleStockTangibleProductMovementOutput saleStockOutput) {
 			super(saleStockOutput);
 			this.identifier = saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getComputedIdentifier();
 			//this.amount = UIManager.getInstance().getNumberBusiness().format(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getAmount());
-			this.numberOfStockGoods = UIManager.getInstance().getNumberBusiness().format(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());
+			//this.numberOfStockGoods = UIManager.getInstance().getNumberBusiness().format(saleStockOutput.getTangibleProductStockMovement().getQuantity().abs());
 			//this.date = UIManager.getInstance().getTimeBusiness().formatDateTime(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
 		}
 	}

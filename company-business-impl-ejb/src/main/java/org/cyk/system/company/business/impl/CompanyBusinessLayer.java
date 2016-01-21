@@ -35,7 +35,7 @@ import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockInputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementInputBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.stock.StockableTangibleProductBusiness;
@@ -64,8 +64,8 @@ import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.sale.SaleStockInput;
-import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Company;
@@ -136,7 +136,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private SaleBusiness saleBusiness;
 	@Inject private SalableProductBusiness salableProductBusiness;
 	@Inject private SaleProductBusiness saleProductBusiness;
-	@Inject private SaleStockInputBusiness saleStockInputBusiness;
+	@Inject private SaleStockTangibleProductMovementInputBusiness saleStockInputBusiness;
 	@Inject private SaleStockOutputBusiness saleStockOutputBusiness;
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	@Inject private CompanyBusiness companyBusiness;
@@ -350,8 +350,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)ProductCategory.class, (TypedBusiness)productCategoryBusiness);
         beansMap.put((Class)OwnedCompany.class, (TypedBusiness)ownedCompanyBusiness);
         beansMap.put((Class)Company.class, (TypedBusiness)companyBusiness);
-        beansMap.put((Class)SaleStockInput.class, (TypedBusiness)saleStockInputBusiness);
-        beansMap.put((Class)SaleStockOutput.class, (TypedBusiness)saleStockOutputBusiness);
+        beansMap.put((Class)SaleStockTangibleProductMovementInput.class, (TypedBusiness)saleStockInputBusiness);
+        beansMap.put((Class)SaleStockTangibleProductMovementOutput.class, (TypedBusiness)saleStockOutputBusiness);
         beansMap.put((Class)Production.class, (TypedBusiness)productionBusiness);
         beansMap.put((Class)ProductionUnit.class, (TypedBusiness)productionUnitBusiness);
         beansMap.put((Class)ProductionValue.class, (TypedBusiness)productionInputBusiness);
@@ -365,8 +365,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Override
 	protected void setConstants(){
     	departmentDivisiontype = divisionTypeBusiness.find(DivisionType.DEPARTMENT);
-    	intangibleProductSaleStock = getEnumeration(IntangibleProduct.class,IntangibleProduct.SALE_STOCK);
-    	tangibleProductSaleStock = getEnumeration(TangibleProduct.class,TangibleProduct.SALE_STOCK);
+    	intangibleProductSaleStock = getEnumeration(IntangibleProduct.class,IntangibleProduct.STOCKING);
+    	tangibleProductSaleStock = getEnumeration(TangibleProduct.class,TangibleProduct.STOCKING);
     }
 
 	public static CompanyBusinessLayer getInstance() {

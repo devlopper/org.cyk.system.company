@@ -5,18 +5,18 @@ import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.cyk.system.company.business.api.sale.AbstractSaleStockBusiness;
+import org.cyk.system.company.business.api.sale.AbstractSaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.CustomerReportTableRow;
 import org.cyk.system.company.business.impl.sale.SaleStockReportTableRow;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
-import org.cyk.system.company.model.sale.AbstractSaleStockSearchCriteria;
+import org.cyk.system.company.model.sale.AbstractSaleStockTangibleProductMovementSearchCriteria;
 import org.cyk.system.company.model.sale.Customer;
-import org.cyk.system.company.model.sale.SaleStock;
-import org.cyk.system.company.model.sale.SaleStockInput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
 import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
-import org.cyk.system.company.model.sale.SaleStockOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.company.model.sale.SaleStockOutputSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockSearchCriteria;
 import org.cyk.system.root.business.impl.RootRandomDataProvider;
@@ -97,7 +97,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	Boolean print = PRINT_REPORT && Boolean.TRUE;
     	Boolean value = companyBusinessTestHelper.getSaleAutoCompleted();
     	companyBusinessTestHelper.setSaleAutoCompleted(Boolean.FALSE);
-    	SaleStockInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 1),person, customer1,"A", "1000", "0", "3",print, "1000", "0", "0","0");
+    	SaleStockTangibleProductMovementInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 1),person, customer1,"A", "1000", "0", "3",print, "1000", "0", "0","0");
     	companyBusinessTestHelper.setSaleAutoCompleted(value);
     	
     	companyBusinessTestHelper.complete(date(2015, 1, 1),person, saleStockInput, "0",print, "1000", "153", "1000","1000");
@@ -109,7 +109,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     
     private void dropAndTakeInOne(Person person){
     	Boolean print = PRINT_REPORT && Boolean.TRUE;
-    	SaleStockInput saleStockInput = companyBusinessTestHelper
+    	SaleStockTangibleProductMovementInput saleStockInput = companyBusinessTestHelper
         		.drop(date(2015, 1, 1),person, customer1,"A", "1000", "100", "3",print, "1100", "168", "1100","1100");
     	companyBusinessTestHelper.taking(date(2015, 1, 2),person, saleStockInput, "3", "1100",print, "0", "0","0");
     	
@@ -120,7 +120,7 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     
     private void dropAndTakeInMany(Person person){
     	Boolean print = PRINT_REPORT && Boolean.TRUE;
-    	SaleStockInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 3),person, customer1,"B", "1000", "100", "3",print, "1100", "168", "1100","1100");
+    	SaleStockTangibleProductMovementInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 3),person, customer1,"B", "1000", "100", "3",print, "1100", "168", "1100","1100");
     	companyBusinessTestHelper.taking(date(2015, 1, 4),person, saleStockInput, "2", "800",print, "1", "300","300");
     	companyBusinessTestHelper.taking(date(2015, 1, 5),person, saleStockInput, "1", "300",print, "0", "0","0");
     	
@@ -130,30 +130,30 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     }
     
     private void dropAndTakeInManyWithZeroQuantity(Person person){
-    	SaleStockInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 6),person, customer1,"C", "1000", "100", "3", "1100", "168", "1100","1100");
+    	SaleStockTangibleProductMovementInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 6),person, customer1,"C", "1000", "100", "3", "1100", "168", "1100","1100");
     	companyBusinessTestHelper.taking(date(2015, 1, 7),person, saleStockInput, "0", "800", "3", "300","300");
     	companyBusinessTestHelper.taking(date(2015, 1, 8),person, saleStockInput, "2", "100", "1", "200","200");
     	companyBusinessTestHelper.taking(date(2015, 1, 9),person, saleStockInput, "1", "200", "0", "0","0");
     }
     
     private void dropAndTakeInManyWithZeroPayment(Person person){
-    	SaleStockInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 10),person, customer1,"D", "1000", "100", "3", "1100", "168", "1100","1100");
+    	SaleStockTangibleProductMovementInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 10),person, customer1,"D", "1000", "100", "3", "1100", "168", "1100","1100");
     	companyBusinessTestHelper.taking(date(2015, 1, 11),person, saleStockInput, "1", "0", "2", "1100","1100");
     	companyBusinessTestHelper.taking(date(2015, 1, 12),person, saleStockInput, "1", "1000", "1", "100","100");
     	companyBusinessTestHelper.taking(date(2015, 1, 13),person, saleStockInput, "1", "100", "0", "0","0");
     }
     
     private  void dropAndTakeInManyWithPaymentAtZeroQuantity(Person person){
-    	SaleStockInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 10),person, customer3,"DK", "1000", "100", "3", "1100", "168", "1100","1100");
+    	SaleStockTangibleProductMovementInput saleStockInput = companyBusinessTestHelper.drop(date(2015, 1, 10),person, customer3,"DK", "1000", "100", "3", "1100", "168", "1100","1100");
     	companyBusinessTestHelper.taking(date(2015, 1, 11),person, saleStockInput, "3", "600", "0", "500","500");
     	companyBusinessTestHelper.taking(date(2015, 1, 12),person, saleStockInput, "0", "500", "0", "0","0");
     }
     
     private void dropManyAndTakeInMany(Person person){
-    	SaleStockInput saleStockInput1 = companyBusinessTestHelper.drop(date(2015, 2, 1),person, customer1,"E", "1000", "100", "3", "1100", "168", "1100","1100");
+    	SaleStockTangibleProductMovementInput saleStockInput1 = companyBusinessTestHelper.drop(date(2015, 2, 1),person, customer1,"E", "1000", "100", "3", "1100", "168", "1100","1100");
     	companyBusinessTestHelper.taking(date(2015, 2, 2),person, saleStockInput1, "1", "400", "2", "700","700");
     	
-    	SaleStockInput saleStockInput2 = companyBusinessTestHelper.drop(date(2015, 2, 3),person, customer1,"F", "1500", "100", "5", "1600", "245", "1600","2300");
+    	SaleStockTangibleProductMovementInput saleStockInput2 = companyBusinessTestHelper.drop(date(2015, 2, 3),person, customer1,"F", "1500", "100", "5", "1600", "245", "1600","2300");
     	companyBusinessTestHelper.taking(date(2015, 2, 4),person, saleStockInput2, "2", "1000", "3", "600","1300");
     	
     	companyBusinessTestHelper.taking(date(2015, 2, 5),person, saleStockInput1, "1", "300", "1", "400","1000");
@@ -161,54 +161,54 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     
     private void searchByCriterias(){
     	//SaleStock
-    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,null, date(2015,1,1), date(2015,12,31), 23l);
-    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,null, null, null, 23l);
-    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,null, date(2015,1,1), date(2015,1,31), 18l);
+    	searchByCriteria(SaleStockTangibleProductMovement.class,SaleStockSearchCriteria.class,saleStockBusiness,null, date(2015,1,1), date(2015,12,31), 23l);
+    	searchByCriteria(SaleStockTangibleProductMovement.class,SaleStockSearchCriteria.class,saleStockBusiness,null, null, null, 23l);
+    	searchByCriteria(SaleStockTangibleProductMovement.class,SaleStockSearchCriteria.class,saleStockBusiness,null, date(2015,1,1), date(2015,1,31), 18l);
     	
-    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,"A", date(2015,1,1), date(2015,12,31), 2l);
-    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,"A", date(2015,1,2), date(2015,1,3), 1l);
-    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,"A", date(2016,1,1), date(2016,12,31), 0l);
-    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,"A", null, null, 2l);
+    	searchByCriteria(SaleStockTangibleProductMovement.class,SaleStockSearchCriteria.class,saleStockBusiness,"A", date(2015,1,1), date(2015,12,31), 2l);
+    	searchByCriteria(SaleStockTangibleProductMovement.class,SaleStockSearchCriteria.class,saleStockBusiness,"A", date(2015,1,2), date(2015,1,3), 1l);
+    	searchByCriteria(SaleStockTangibleProductMovement.class,SaleStockSearchCriteria.class,saleStockBusiness,"A", date(2016,1,1), date(2016,12,31), 0l);
+    	searchByCriteria(SaleStockTangibleProductMovement.class,SaleStockSearchCriteria.class,saleStockBusiness,"A", null, null, 2l);
     	
-    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,"B", date(2015,1,1), date(2015,12,31), 3l);
-    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,"B", date(2015,1,3), date(2015,1,3), 1l);
-    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,"B", date(2016,1,1), date(2016,12,31), 0l);
-    	searchByCriteria(SaleStock.class,SaleStockSearchCriteria.class,saleStockBusiness,"B", null, null, 3l);
+    	searchByCriteria(SaleStockTangibleProductMovement.class,SaleStockSearchCriteria.class,saleStockBusiness,"B", date(2015,1,1), date(2015,12,31), 3l);
+    	searchByCriteria(SaleStockTangibleProductMovement.class,SaleStockSearchCriteria.class,saleStockBusiness,"B", date(2015,1,3), date(2015,1,3), 1l);
+    	searchByCriteria(SaleStockTangibleProductMovement.class,SaleStockSearchCriteria.class,saleStockBusiness,"B", date(2016,1,1), date(2016,12,31), 0l);
+    	searchByCriteria(SaleStockTangibleProductMovement.class,SaleStockSearchCriteria.class,saleStockBusiness,"B", null, null, 3l);
     	
     	//Sale Stock Input
-    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,null, date(2015,1,1), date(2015,12,31), 8l);
-    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,null, null, null, 8l);
-    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,null, date(2015,1,1), date(2015,1,31), 6l);
+    	searchByCriteria(SaleStockTangibleProductMovementInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,null, date(2015,1,1), date(2015,12,31), 8l);
+    	searchByCriteria(SaleStockTangibleProductMovementInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,null, null, null, 8l);
+    	searchByCriteria(SaleStockTangibleProductMovementInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,null, date(2015,1,1), date(2015,1,31), 6l);
     	
-    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"A", date(2015,1,1), date(2015,12,31), 1l);
-    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"A", date(2015,1,2), date(2015,1,3), 0l);
-    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"A", date(2016,1,1), date(2016,12,31), 0l);
-    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"A", null, null, 1l);
+    	searchByCriteria(SaleStockTangibleProductMovementInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"A", date(2015,1,1), date(2015,12,31), 1l);
+    	searchByCriteria(SaleStockTangibleProductMovementInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"A", date(2015,1,2), date(2015,1,3), 0l);
+    	searchByCriteria(SaleStockTangibleProductMovementInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"A", date(2016,1,1), date(2016,12,31), 0l);
+    	searchByCriteria(SaleStockTangibleProductMovementInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"A", null, null, 1l);
     	
-    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"B", date(2015,1,1), date(2015,12,31), 1l);
-    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"B", date(2015,1,3), date(2015,1,3), 1l);
-    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"B", date(2016,1,1), date(2016,12,31), 0l);
-    	searchByCriteria(SaleStockInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"B", null, null, 1l);
+    	searchByCriteria(SaleStockTangibleProductMovementInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"B", date(2015,1,1), date(2015,12,31), 1l);
+    	searchByCriteria(SaleStockTangibleProductMovementInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"B", date(2015,1,3), date(2015,1,3), 1l);
+    	searchByCriteria(SaleStockTangibleProductMovementInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"B", date(2016,1,1), date(2016,12,31), 0l);
+    	searchByCriteria(SaleStockTangibleProductMovementInput.class,SaleStockInputSearchCriteria.class,saleStockInputBusiness,"B", null, null, 1l);
     	
     	//Sale Stock Output
-    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,null, date(2015,1,1), date(2015,12,31), 15l);
-    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,null, null, null, 15l);
-    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,null, date(2015,1,1), date(2015,1,31), 12l);
+    	searchByCriteria(SaleStockTangibleProductMovementOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,null, date(2015,1,1), date(2015,12,31), 15l);
+    	searchByCriteria(SaleStockTangibleProductMovementOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,null, null, null, 15l);
+    	searchByCriteria(SaleStockTangibleProductMovementOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,null, date(2015,1,1), date(2015,1,31), 12l);
     	
-    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"A", date(2015,1,1), date(2015,12,31), 1l);
-    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"A", date(2015,1,2), date(2015,1,3), 1l);
-    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"A", date(2016,1,1), date(2016,12,31), 0l);
-    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"A", null, null, 1l);
+    	searchByCriteria(SaleStockTangibleProductMovementOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"A", date(2015,1,1), date(2015,12,31), 1l);
+    	searchByCriteria(SaleStockTangibleProductMovementOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"A", date(2015,1,2), date(2015,1,3), 1l);
+    	searchByCriteria(SaleStockTangibleProductMovementOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"A", date(2016,1,1), date(2016,12,31), 0l);
+    	searchByCriteria(SaleStockTangibleProductMovementOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"A", null, null, 1l);
     	
-    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"B", date(2015,1,1), date(2015,12,31), 2l);
-    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"B", date(2015,1,3), date(2015,1,3), 0l);
-    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"B", date(2016,1,1), date(2016,12,31), 0l);
-    	searchByCriteria(SaleStockOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"B", null, null, 2l);
+    	searchByCriteria(SaleStockTangibleProductMovementOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"B", date(2015,1,1), date(2015,12,31), 2l);
+    	searchByCriteria(SaleStockTangibleProductMovementOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"B", date(2015,1,3), date(2015,1,3), 0l);
+    	searchByCriteria(SaleStockTangibleProductMovementOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"B", date(2016,1,1), date(2016,12,31), 0l);
+    	searchByCriteria(SaleStockTangibleProductMovementOutput.class,SaleStockOutputSearchCriteria.class,saleStockOutputBusiness,"B", null, null, 2l);
     	
     }
     
-    private <ENTITY extends SaleStock,SEARCH_CRITERIA extends AbstractSaleStockSearchCriteria> void searchByCriteria(Class<ENTITY> saleStockClass,
-    		Class<SEARCH_CRITERIA> searchCriteriaClass,AbstractSaleStockBusiness<ENTITY, SEARCH_CRITERIA> business,String externalIdentifier,Date fromDate,Date toDate,Long expectedCount){
+    private <ENTITY extends SaleStockTangibleProductMovement,SEARCH_CRITERIA extends AbstractSaleStockTangibleProductMovementSearchCriteria> void searchByCriteria(Class<ENTITY> saleStockClass,
+    		Class<SEARCH_CRITERIA> searchCriteriaClass,AbstractSaleStockTangibleProductMovementBusiness<ENTITY, SEARCH_CRITERIA> business,String externalIdentifier,Date fromDate,Date toDate,Long expectedCount){
     	SEARCH_CRITERIA searchCriteria = null;
 		try {
 			searchCriteria = searchCriteriaClass.newInstance();
@@ -223,8 +223,8 @@ public class SaleStockBusinessIT extends AbstractBusinessIT {
     	Assert.assertEquals("Count by search criteria", expectedCount, business.countByCriteria(searchCriteria));
     	if(StringUtils.isNotBlank(externalIdentifier))
 	    	for(ENTITY saleStock : business.findByCriteria(searchCriteria)){
-	    		SaleStockInput saleStockInput = saleStock instanceof SaleStockInput?((SaleStockInput)saleStock):
-	    			((SaleStockOutput)saleStock).getSaleStockInput();
+	    		SaleStockTangibleProductMovementInput saleStockInput = saleStock instanceof SaleStockTangibleProductMovementInput?((SaleStockTangibleProductMovementInput)saleStock):
+	    			((SaleStockTangibleProductMovementOutput)saleStock).getSaleStockInput();
 	    		Assert.assertEquals("External identifier",externalIdentifier, saleStockInput.getExternalIdentifier());
 	    	}
     		

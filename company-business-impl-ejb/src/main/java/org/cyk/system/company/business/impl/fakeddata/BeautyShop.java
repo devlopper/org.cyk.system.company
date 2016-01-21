@@ -1,33 +1,14 @@
 package org.cyk.system.company.business.impl.fakeddata;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.business.api.product.ProductBusiness;
-import org.cyk.system.company.business.api.product.ProductCategoryBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.system.company.model.payment.Cashier;
-import org.cyk.system.company.model.product.IntangibleProduct;
-import org.cyk.system.company.model.product.ProductCategory;
-import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.sale.SaleProduct;
-import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.utility.common.cdi.AbstractBean;
-import org.joda.time.DateTime;
 
 public class BeautyShop extends AbstractBean implements Serializable {
-/*
+
 	private static final long serialVersionUID = -4180196113740218243L;
 
-	@Inject private TangibleProductBusiness tangibleProductBusiness;
+	/*@Inject private TangibleProductBusiness tangibleProductBusiness;
 	@Inject private ProductBusiness productBusiness;
 	@Inject private ProductCategoryBusiness productCategoryBusiness;
 	
