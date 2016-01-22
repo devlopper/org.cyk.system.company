@@ -6,7 +6,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementOutputBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
@@ -30,7 +30,7 @@ public class SaleStockOutputCrudOnePage extends AbstractCrudOnePage<SaleStockTan
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	@Inject private SaleStockOutputBusiness saleStockOutputBusiness;
+	@Inject private SaleStockTangibleProductMovementOutputBusiness saleStockOutputBusiness;
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
 	
 	@Inject private SaleCashRegisterMovementController cashRegisterController;
@@ -58,7 +58,7 @@ public class SaleStockOutputCrudOnePage extends AbstractCrudOnePage<SaleStockTan
 	@SuppressWarnings("unchecked")
 	@Override
 	protected <T extends AbstractIdentifiable> T identifiableFromRequestParameter(Class<T> aClass) {
-		return (T) saleStockOutputBusiness.newInstance((Person) userSession.getUser(),saleStockInput);
+		return (T) saleStockOutputBusiness.instanciate((Person) userSession.getUser(),saleStockInput);
 	}
 	
 	@Override

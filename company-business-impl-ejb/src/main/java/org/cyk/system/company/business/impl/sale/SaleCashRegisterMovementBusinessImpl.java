@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import org.cyk.system.company.business.api.CompanyReportProducer.ReceiptParameters;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.sale.Customer;
@@ -47,8 +48,8 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		super(dao);
 	}
 
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public SaleCashRegisterMovement newInstance(Sale sale,Person person,Boolean input) {
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public SaleCashRegisterMovement instanciate(Sale sale,Person person,Boolean input) {
 		Cashier cashier = cashierDao.readByPerson(person);
 		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement(cashier.getCashRegister(),new Movement());
 		cashRegisterMovement.setMovement(RootBusinessLayer.getInstance().getMovementBusiness().instanciate(cashier.getCashRegister().getMovementCollection(),input));
@@ -77,8 +78,9 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		companyBusinessLayer.getCashRegisterMovementBusiness().create(saleCashRegisterMovement.getCashRegisterMovement());
 		
 		ReceiptParameters previous = new ReceiptParameters(null,saleCashRegisterMovement);
-		sale.getBalance().setValue(sale.getBalance().getValue().subtract(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
-		logTrace("New balance is {}", sale.getBalance().getValue());
+		BigDecimal oldBalance = sale.getBalance().getValue(),increment=saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate();
+		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE,increment);
+		logTrace("Old balance={} , Increment={} , New balance={}",oldBalance,increment, sale.getBalance().getValue());
 		//cumul balance must be link to a date , so do not update a cumulated balance
 		//sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
 		

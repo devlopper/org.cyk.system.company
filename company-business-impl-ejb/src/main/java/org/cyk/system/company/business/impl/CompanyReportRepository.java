@@ -20,9 +20,9 @@ import org.cyk.system.company.business.api.product.TangibleProductInventoryBusin
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementInputBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementOutputBusiness;
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.product.TangibleProductInventoryReportTableDetails;
@@ -99,9 +99,9 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	@Inject private StockTangibleProductMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private SaleBusiness saleBusiness;
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
-	@Inject private SaleStockBusiness saleStockBusiness;
+	@Inject private SaleStockTangibleProductMovementBusiness saleStockBusiness;
 	@Inject private SaleStockTangibleProductMovementInputBusiness saleStockInputBusiness;
-	@Inject private SaleStockOutputBusiness saleStockOutputBusiness;
+	@Inject private SaleStockTangibleProductMovementOutputBusiness saleStockOutputBusiness;
 	@Inject private TangibleProductInventoryBusiness tangibleProductInventoryBusiness;
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
@@ -411,9 +411,9 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			totalRow.setStockIn(format(saleStocksDetails.getIn()));
 			totalRow.setStockOut(format(saleStocksDetails.getOut()));	
 			totalRow.setRemainingNumberOfGoods(format(saleStocksDetails.getRemaining()));
-			totalRow.setAmount(format(saleStocksDetails.getSalesDetails().getCost()));
-			totalRow.setAmountPaid(format(saleStocksDetails.getSalesDetails().getPaid()));	
-			totalRow.setCumulatedBalance(format(saleStocksDetails.getSalesDetails().getBalance()));
+			totalRow.setAmount(format(saleStocksDetails.getSaleResults().getCost().getValue()));
+			totalRow.setAmountPaid(format(saleStocksDetails.getSaleResults().getPaid()));	
+			totalRow.setCumulatedBalance(format(saleStocksDetails.getSaleResults().getBalance()));
 			rows.add(totalRow);
 		}
 		return rows;

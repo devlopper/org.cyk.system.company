@@ -27,7 +27,7 @@ public class SaleStockTangibleProductMovementOutput extends SaleStockTangiblePro
 	@ManyToOne @NotNull
 	private SaleCashRegisterMovement saleCashRegisterMovement;
 
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal remainingNumberOfGoods;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal remainingNumberOfGoods = BigDecimal.ZERO;
 	
 	public SaleStockTangibleProductMovementOutput(SaleStockTangibleProductMovementInput saleStockInput,SaleCashRegisterMovement saleCashRegisterMovement,StockTangibleProductMovement tangibleProductStockMovement) {
 		super(tangibleProductStockMovement);

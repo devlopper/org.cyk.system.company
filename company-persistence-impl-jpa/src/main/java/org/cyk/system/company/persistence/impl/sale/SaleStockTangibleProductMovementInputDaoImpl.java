@@ -33,10 +33,10 @@ public class SaleStockTangibleProductMovementInputDaoImpl extends AbstractSaleSt
     	registerNamedQuery(readByCriteria,readByCriteriaDateAscendingOrderQuery);
         registerNamedQuery(readByCriteriaDateAscendingOrder,readByCriteriaDateAscendingOrderQuery );
         registerNamedQuery(readByCriteriaDateDescendingOrder,queryStringBuilder.orderBy(saleDateAttribute, Boolean.FALSE));
-        
+        */
         registerNamedQuery(readBySaleComputedIdentifier,_select().where(commonUtils.attributePath(SaleStockTangibleProductMovementInput.FIELD_SALE, Sale.FIELD_COMPUTED_IDENTIFIER),Sale.FIELD_COMPUTED_IDENTIFIER) );
         registerNamedQuery(readBySales,_select().whereIdentifierIn(SaleStockTangibleProductMovementInput.FIELD_SALE) );
-        */
+        
         /*queryStringBuilder = _selectString(sumAttributes(commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_COST)
         		,commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_TURNOVER)
         		,commonUtils.attributePath(SaleStockInput.FIELD_SALE, Sale.FIELD_VALUE_ADDED_TAX)
@@ -83,10 +83,10 @@ public class SaleStockTangibleProductMovementInputDaoImpl extends AbstractSaleSt
 	public SaleStocksDetails computeByCriteria(SaleStockInputSearchCriteria criteria) {
 		Object[] values = getComputeByCriteriaResults(criteria);
 		SaleStocksDetails results = new SaleStocksDetails();
-		results.getSalesDetails().setCost(values[0]==null?BigDecimal.ZERO:(BigDecimal) values[0]);
-		results.getSalesDetails().setTurnover(values[1]==null?BigDecimal.ZERO:(BigDecimal) values[1]);
-		results.getSalesDetails().setValueAddedTax(values[2]==null?BigDecimal.ZERO:(BigDecimal) values[2]);
-		results.getSalesDetails().setBalance(values[3]==null?BigDecimal.ZERO:(BigDecimal) values[3]);
+		results.getSaleResults().getCost().setValue(values[0]==null?BigDecimal.ZERO:(BigDecimal) values[0]);
+		results.getSaleResults().getCost().setTurnover(values[1]==null?BigDecimal.ZERO:(BigDecimal) values[1]);
+		results.getSaleResults().getCost().setTax(values[2]==null?BigDecimal.ZERO:(BigDecimal) values[2]);
+		results.getSaleResults().setBalance(values[3]==null?BigDecimal.ZERO:(BigDecimal) values[3]);
 		results.setIn(values[4]==null?BigDecimal.ZERO:(BigDecimal) values[4]);
 		results.setRemaining(values[5]==null?BigDecimal.ZERO:(BigDecimal) values[5]);
 		return results;

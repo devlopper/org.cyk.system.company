@@ -30,10 +30,8 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
-import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
-import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
@@ -43,6 +41,7 @@ import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
+import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementInputDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.impl.AbstractBusinessTestHelper;
 import org.cyk.system.root.business.impl.RootDataProducerHelper;
@@ -50,13 +49,11 @@ import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
-import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineAlphabetDao;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineFinalStateDao;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.test.ExpectedValues;
-import org.cyk.utility.common.test.TestEnvironmentListener.Try;
 
 @Singleton
 public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implements Serializable {
@@ -79,7 +76,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     @Inject private FiniteStateMachineFinalStateDao finiteStateMachineFinalStateDao;
     @Inject private SaleDao saleDao;
     @Inject private StockableTangibleProductDao stockableTangibleProductDao;
-    //@Inject private SaleStockt aleDao;
+    @Inject private SaleStockTangibleProductMovementInputDao saleStockTangibleProductMovementInputDao;
     
     @Getter @Setter private Boolean saleAutoCompleted = Boolean.TRUE;
 	
@@ -90,12 +87,9 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	}
 	
 	/* Setters */
-	
 	public void set(Product product,String code){
-		product.setCode(code);
-		product.setName(code);
+		setEnumeration(product, code);
 	}
-	
 	public void set(SalableProduct salableProduct,String code,String price){
 		salableProduct.setProduct(productDao.read(code));
 		salableProduct.setPrice(commonUtils.getBigDecimal(price));
@@ -104,12 +98,11 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	public void set(StockableTangibleProduct stockableTangibleProduct,String tangibleProductCode,String minimum,String maximum,String value){
 		stockableTangibleProduct.setTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode));
 		stockableTangibleProduct.setMovementCollection(new MovementCollection()); 
-		set(stockableTangibleProduct.getMovementCollection(), tangibleProductCode+"_movcol","Le stock",value==null?"0":value, minimum, maximum,"Input","Output");
+		set(stockableTangibleProduct.getMovementCollection(), tangibleProductCode,"Le stock",value==null?"0":value, minimum, maximum,"Input","Output");
 	}
 	
 	public void set(CashRegister cashRegister,String code){
-		cashRegister.setCode(code);
-		cashRegister.setName(code);
+		setEnumeration(cashRegister, code);
 		cashRegister.setOwnedCompany(CompanyBusinessLayer.getInstance().getOwnedCompanyBusiness().findDefaultOwnedCompany());
 		cashRegister.setMovementCollection(new MovementCollection());
 	}
@@ -157,8 +150,8 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     		sale.setCustomer(customerDao.readByRegistrationCode(customerCode));
     }
 	
-	public void set(SaleStockTangibleProductMovementInput saleStockTangibleProductMovementInput,String identifier,String date,String cashierCode,String customerCode,String taxable,String quantity){
-		set(saleStockTangibleProductMovementInput.getSale(), identifier, date, cashierCode, customerCode, null, taxable);
+	public void set(SaleStockTangibleProductMovementInput saleStockTangibleProductMovementInput,String quantity){
+		//set(saleStockTangibleProductMovementInput.getSale(), identifier, date, cashierCode, customerCode, null, taxable);
 		set(saleStockTangibleProductMovementInput.getStockTangibleProductMovement(), null, quantity);
 	}
 		
@@ -188,26 +181,11 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	public void createCashRegisterMovement(String cashRegisterCode,String amount,String expectedBalance,String expectedThrowableMessage){
     	final CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
     	set(cashRegisterMovement, cashRegisterCode, amount);
-    	
-    	if(StringUtils.isBlank(expectedThrowableMessage)){
-    		CompanyBusinessLayer.getInstance().getCashRegisterMovementBusiness().create(cashRegisterMovement);
-    		assertCashRegister(cashRegisterMovement.getCashRegister(), expectedBalance);
-    	}else{
-    		new Try(expectedThrowableMessage){ 
-    			private static final long serialVersionUID = -8176804174113453706L;
-    			@Override protected void code() {CompanyBusinessLayer.getInstance().getCashRegisterMovementBusiness().create(cashRegisterMovement);}
-    		}.execute();
-    	}
+    	CompanyBusinessLayer.getInstance().getCashRegisterMovementBusiness().create(cashRegisterMovement);
     }
 	public void createCashRegisterMovement(String cashRegisterCode,String amount,String expectedBalance){
 		createCashRegisterMovement(cashRegisterCode, amount, expectedBalance,null);
 	}
-	
-    
-    private void assertCashRegister(CashRegister cashRegister,String expectedBalance){
-    	cashRegister = (CashRegister) genericBusiness.use(CashRegister.class).find(cashRegister.getIdentifier());
-    	assertEquals("Cash register balance",new BigDecimal(expectedBalance), cashRegister.getMovementCollection().getValue());
-    }    
 	
     public void createStockTangibleProductMovement(String tangibleProductCode,String quantity){
     	StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement();
@@ -223,7 +201,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	if(paid==null || !Boolean.TRUE.equals(finalState)){
     		 getCompanyBusinessLayer().getSaleBusiness().create(sale);
     	}else{
-    		SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().newInstance(sale, sale.getCashier().getPerson(),Boolean.TRUE);
+    		SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().instanciate(sale, sale.getCashier().getPerson(),Boolean.TRUE);
         	set(saleCashRegisterMovement, paid);
         	getCompanyBusinessLayer().getSaleBusiness().create(sale,saleCashRegisterMovement);
     	}
@@ -250,157 +228,32 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     }
     
     public SaleStockTangibleProductMovementInput createSaleStockTangibleProductMovementInput(String identifier,String date,String cashierCode,String customerCode,String price,String taxable,String quantity){
-    	SaleStockTangibleProductMovementInput input = CompanyBusinessLayer.getInstance().getSaleStockInputBusiness()
-    			.instanciate(cashierDao.readAll().iterator().next().getPerson());
+    	Sale sale = CompanyBusinessLayer.getInstance().getSaleBusiness().instanciate(cashierDao.readAll().iterator().next().getPerson());
+    	set(sale, identifier, date, cashierCode, customerCode, null, taxable);
+    	SaleStockTangibleProductMovementInput input = CompanyBusinessLayer.getInstance().getSaleStockInputBusiness().instanciate(sale);
+    	set(input, quantity);
     	if(price!=null){
     		SaleProduct saleProduct = input.getSale().getSaleProducts().iterator().next();
     		saleProduct.getCost().setValue(commonUtils.getBigDecimal(price));
+    		saleProduct.setQuantity(commonUtils.getBigDecimal(quantity));
     		CompanyBusinessLayer.getInstance().getSaleBusiness().applyChange(input.getSale(), saleProduct);
     	}
-    	set(input, identifier, date, cashierCode, customerCode, taxable, quantity);
-    	debug(input.getSale());
+    	
     	CompanyBusinessLayer.getInstance().getSaleStockInputBusiness().create(input);
     	return input;
     }
     
-	public Sale sell(Date date,Person person,Customer customer,String[] products,String paid,Boolean printPos,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
-    	Sale sale =  getCompanyBusinessLayer().getSaleBusiness().instanciate(person);
-    	SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().newInstance(sale, person,Boolean.TRUE);
-    	//set(sale, customerBusiness.load(customer.getIdentifier()), products,date);
-    	set(saleCashRegisterMovement, paid);
-    	 getCompanyBusinessLayer().getSaleBusiness().create(sale,saleCashRegisterMovement);
-    	
-    	sale =  getCompanyBusinessLayer().getSaleBusiness().load(sale.getIdentifier());
-    	
-    	if(expectedCost!=null)
-    		assertBigDecimalEquals("Cost", expectedCost, sale.getCost().getValue());
-    	if(expectedVat!=null)
-    		assertBigDecimalEquals("Tax", expectedVat, sale.getCost().getTax());
-    	if(expectedBalance!=null)
-    		assertBigDecimalEquals("Balance", expectedBalance, sale.getBalance().getValue());
-    	if(expectedCumulBalance!=null)
-    		assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, sale.getBalance().getCumul());
-    	   	
-    	if(Boolean.TRUE.equals(printPos)){
-    		writeReport( getCompanyBusinessLayer().getSaleBusiness().findReport(sale));
-    		pause(1000);
-    		if(saleCashRegisterMovement.getIdentifier()!=null)
-    			writeReport( getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().findReport(saleCashRegisterMovement));
-    	}
-    	return sale;
+    public SaleStockTangibleProductMovementOutput createSaleStockTangibleProductMovementOutput(String identifier,String date,String cashierCode,String paid,String quantity){
+    	Sale sale = saleDao.readByComputedIdentifier(identifier);
+    	SaleStockTangibleProductMovementOutput output = CompanyBusinessLayer.getInstance().getSaleStockOutputBusiness().instanciate(cashierDao.readAll().iterator().next().getPerson()
+    			,saleStockTangibleProductMovementInputDao.readBySale(sale));
+    	output.getSaleCashRegisterMovement().getCashRegisterMovement().getMovement().setValue(commonUtils.getBigDecimal(paid));
+    	output.getStockTangibleProductMovement().getMovement().setValue(commonUtils.getBigDecimal(quantity));
+    	return CompanyBusinessLayer.getInstance().getSaleStockOutputBusiness().create(output);
     }
-		
-	public SaleCashRegisterMovement pay(Date date,Person person,Sale sale,String paid,Boolean printPos,String expectedBalance,String expectedCumulBalance){
-    	SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().newInstance(sale, person,Boolean.TRUE);
-    	set(saleCashRegisterMovement, paid);
-    	 getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().create(saleCashRegisterMovement);
-    	
-    	assertBigDecimalEquals("Balance", expectedBalance, sale.getBalance().getValue());
-    	assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, sale.getBalance().getCumul());
-    	
-    	if(Boolean.TRUE.equals(printPos)){
-    		writeReport( getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().findReport(saleCashRegisterMovement));
-    	}
-    	
-    	return saleCashRegisterMovement;
-    }
-	
-	/* Sale Stock */
-	
-	public SaleStockTangibleProductMovementInput drop(Date date,Person person,Customer customer,String externalIdentifier,String cost,String commission,String quantity,Boolean printPos,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
-    	SaleStockTangibleProductMovementInput saleStockInput =  getCompanyBusinessLayer().getSaleStockInputBusiness().instanciate(person);
-    	SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().newInstance(saleStockInput.getSale(), person,Boolean.TRUE);
-    	//set(saleStockInput, customerBusiness.load(customer.getIdentifier()),externalIdentifier, cost, commission, quantity,date);
-    	set(saleCashRegisterMovement, "0");
-    	//getCompanyBusinessLayer().getSaleStockInputBusiness().create(saleStockInput,saleCashRegisterMovement);
-    	
-    	if(Boolean.TRUE.equals(printPos)){
-    		writeReport( getCompanyBusinessLayer().getSaleBusiness().findReport(saleStockInput.getSale()));
-    		//writeReport(saleCashRegisterMovementBusiness.findReport(saleCashRegisterMovement));
-    	}
-    	
-    	assertSaleStockInput(saleStockInput, expectedCost, expectedVat, expectedBalance, expectedCumulBalance);
-    	
-    	return saleStockInput;
-    }
-	
-	private void assertSaleStockInput(SaleStockTangibleProductMovementInput saleStockInput,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
-		saleStockInput =  getCompanyBusinessLayer().getSaleStockInputBusiness().load(saleStockInput.getIdentifier());
-		if(expectedCost!=null)
-    		assertBigDecimalEquals("Cost", expectedCost, saleStockInput.getSale().getCost().getValue());
-    	if(expectedVat!=null)
-    		assertBigDecimalEquals("VAT", expectedVat, saleStockInput.getSale().getCost().getTax());
-    	if(expectedBalance!=null)
-    		assertBigDecimalEquals("Balance", expectedBalance, saleStockInput.getSale().getBalance().getValue());
-    	if(expectedCumulBalance!=null)
-    		assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, saleStockInput.getSale().getBalance().getCumul());
-	}
-	
-	public SaleStockTangibleProductMovementInput drop(Date date,Person person,Customer customer,String externalIdentifier,String cost,String commission,String quantity,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
-		return drop(date, person, customer, externalIdentifier, cost, commission, quantity,Boolean.FALSE ,expectedCost, expectedVat, expectedBalance, expectedCumulBalance);
-	}
-	
-	public SaleStockTangibleProductMovementInput complete(Date date,Person person,SaleStockTangibleProductMovementInput saleStockInput,String commission,Boolean printPos,String expectedCost,String expectedVat,String expectedBalance,String expectedCumulBalance){
-		saleStockInput =  getCompanyBusinessLayer().getSaleStockInputBusiness().load(saleStockInput.getIdentifier());
-		saleStockInput.getSale().setAutoComputeValueAddedTax(Boolean.TRUE);
-		saleStockInput.getSale().getSaleProducts().iterator().next().setCommission(new BigDecimal(commission));
-		getCompanyBusinessLayer().getSaleBusiness().applyChange(saleStockInput.getSale(), saleStockInput.getSale().getSaleProducts().iterator().next());
-		SaleCashRegisterMovement saleCashRegisterMovement = getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().newInstance(saleStockInput.getSale(), person,Boolean.TRUE);
-		set(saleCashRegisterMovement, "0");
-		//getCompanyBusinessLayer().getSaleStockInputBusiness().complete(saleStockInput, saleCashRegisterMovement);
-    	
-    	if(Boolean.TRUE.equals(printPos))
-    		writeReport(getCompanyBusinessLayer().getSaleBusiness().findReport(saleStockInput.getSale()));
-    	
-    	assertSaleStockInput(saleStockInput, expectedCost, expectedVat, expectedBalance, expectedCumulBalance);
-    	
-    	return saleStockInput;
-	}
-    
-    public void taking(Date date,Person person,SaleStockTangibleProductMovementInput saleStockInput,String quantity,String paid,Boolean printPos,String expectedRemainingGoods,String expectedBalance,String expectedCumulBalance){
-    	saleStockInput = getCompanyBusinessLayer().getSaleStockInputBusiness().load(saleStockInput.getIdentifier());
-    	SaleStockTangibleProductMovementOutput saleStockOutput = getCompanyBusinessLayer().getSaleStockOutputBusiness().newInstance(person, saleStockInput);
-    	set(saleStockOutput, quantity);
-    	set(saleStockOutput.getSaleCashRegisterMovement(), paid,date);
-    	getCompanyBusinessLayer().getSaleStockOutputBusiness().create(saleStockOutput);
-    	
-    	if(Boolean.TRUE.equals(printPos))
-    		writeReport(getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().findReport(saleStockOutput.getSaleCashRegisterMovement()));
-    	
-    	saleStockOutput = getCompanyBusinessLayer().getSaleStockOutputBusiness().load(saleStockOutput.getIdentifier());
-    	//Matchers
-    	if(expectedRemainingGoods!=null)
-    		assertBigDecimalEquals("Remaining number of goods", expectedRemainingGoods, saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods());
-    	if(expectedBalance!=null)
-    		assertBigDecimalEquals("Balance", expectedBalance, saleStockOutput.getSaleStockInput().getSale().getBalance().getValue());
-    	if(expectedCumulBalance!=null)
-    		assertBigDecimalEquals("Cumul Balance", expectedCumulBalance, saleStockOutput.getSaleCashRegisterMovement().getBalance().getCumul());
-    }
-    
-    public void taking(Date date,Person person,SaleStockTangibleProductMovementInput saleStockInput,String quantity,String paid,String expectedRemainingGoods,String expectedBalance,String expectedCumulBalance){
-    	taking(date, person, saleStockInput, quantity, paid, Boolean.FALSE, expectedRemainingGoods, expectedBalance, expectedCumulBalance);
-    }
-    
-    public void saleStockInputComputeByCriteria(SaleStockInputSearchCriteria criteria,String expectedIn,String expectedRemaining,String expectedCost,String expectedVat,String expectedTurnover,String expectedBalance){
-		//System.out.println(saleBusiness.findByCriteria(criteria));
-    	SaleStocksDetails actual = getCompanyBusinessLayer().getSaleStockInputBusiness().computeByCriteria(criteria);
-    	//saleComputeByCriteria(actual.getSalesDetails(), expectedCost, expectedVat, expectedTurnover, expectedBalance);
-		assertBigDecimalEquals("In", expectedIn, actual.getIn());
-		assertBigDecimalEquals("Remaining", expectedRemaining, actual.getRemaining());
-	}
-    
+    				    
     /*Assertions*/
-    
-    /*public void assertCost(Cost cost,String expectedValue,String expectedTax,String expectedTurnover){
-    	assertBigDecimalEquals("Cost", expectedValue, cost.getValue());
-    	assertBigDecimalEquals("Tax", expectedTax, cost.getTax());
-    	assertBigDecimalEquals("Turnover", expectedTurnover, cost.getTurnover());
-    }
-    public void assertBalance(Balance balance,String expectedValue,String expectedCumul){
-    	assertBigDecimalEquals("Balance", expectedValue, balance.getValue());
-    	assertBigDecimalEquals("Balance Cumul", expectedCumul, balance.getCumul());
-    }*/
-    
+       
     public void assertSale(String computedIdentifier,ExpectedValues expectedValues){
     	Sale sale = saleDao.readByComputedIdentifier(computedIdentifier);
     	doAssertions(sale, expectedValues);

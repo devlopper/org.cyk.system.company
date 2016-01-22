@@ -7,6 +7,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.UserTransaction;
 
+
+
 //import static org.hamcrest.Matchers.*;
 //import static org.hamcrest.MatcherAssert.*;
 import org.apache.commons.io.IOUtils;
@@ -16,9 +18,9 @@ import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementInputBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementOutputBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
@@ -31,7 +33,9 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
+import org.cyk.system.company.persistence.api.product.IntangibleProductDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
+import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.AbstractBusinessException;
@@ -78,8 +82,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 	@Inject protected DefaultValidator defaultValidator;
 	@Inject private GenericDaoImpl g;
 	@Inject protected GenericBusiness genericBusiness;
-	@Inject protected ProductDao productDao;
-
+	
 	@Inject protected ValidatorMap validatorMap;// = ValidatorMap.getInstance();
 	@Inject protected RootBusinessLayer rootBusinessLayer;
 	@Inject protected RootBusinessTestHelper rootBusinessTestHelper;
@@ -88,8 +91,8 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 	@Inject protected CompanyBusinessTestHelper companyBusinessTestHelper;
 	
 	@Inject protected SaleStockTangibleProductMovementInputBusiness saleStockInputBusiness;
-    @Inject protected SaleStockOutputBusiness saleStockOutputBusiness;
-    @Inject protected SaleStockBusiness saleStockBusiness;
+    @Inject protected SaleStockTangibleProductMovementOutputBusiness saleStockOutputBusiness;
+    @Inject protected SaleStockTangibleProductMovementBusiness saleStockBusiness;
     @Inject protected SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
     @Inject protected CustomerBusiness customerBusiness;
     @Inject protected EmployeeBusiness employeeBusiness;
@@ -98,6 +101,10 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     @Inject protected OwnedCompanyBusiness ownedCompanyBusiness;
     @Inject protected ProductBusiness productBusiness;
 	@Inject protected TangibleProductBusiness tangibleProductBusiness;
+	
+	@Inject protected ProductDao productDao;
+	@Inject protected TangibleProductDao tangibleProductDao;
+	@Inject protected IntangibleProductDao intangibleProductDao;
 	
 	@Inject protected CashRegisterDao cashRegisterDao;
 	@Inject protected SaleDao saleDao;

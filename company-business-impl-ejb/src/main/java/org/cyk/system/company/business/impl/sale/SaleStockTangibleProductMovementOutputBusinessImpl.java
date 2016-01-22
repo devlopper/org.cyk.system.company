@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import org.cyk.system.company.business.api.CompanyReportProducer.ReceiptParameters;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementOutputBusiness;
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.TangibleProduct;
@@ -29,11 +29,12 @@ import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovem
 import org.cyk.system.company.persistence.api.sale.SaleStockOutputDao;
 import org.cyk.system.root.business.api.event.EventBusiness;
 import org.cyk.system.root.business.api.file.report.ReportBusiness;
+import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.event.Event;
 import org.cyk.system.root.model.party.person.Person;
 
 @Stateless
-public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<SaleStockTangibleProductMovementOutput, SaleStockOutputDao,SaleStockOutputSearchCriteria> implements SaleStockOutputBusiness,Serializable {
+public class SaleStockTangibleProductMovementOutputBusinessImpl extends AbstractSaleStockBusinessImpl<SaleStockTangibleProductMovementOutput, SaleStockOutputDao,SaleStockOutputSearchCriteria> implements SaleStockTangibleProductMovementOutputBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 	
@@ -46,30 +47,43 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 	@Inject private ReportBusiness reportBusiness;
 	
 	@Inject
-	public SaleStockOutputBusinessImpl(SaleStockOutputDao dao) {
+	public SaleStockTangibleProductMovementOutputBusinessImpl(SaleStockOutputDao dao) {
 		super(dao);
 	}
 
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public SaleStockTangibleProductMovementOutput newInstance(Person person,SaleStockTangibleProductMovementInput saleStockInput) {
-		SaleCashRegisterMovement saleCashRegisterMovement = null;//saleCashRegisterMovementBusiness.newInstance(saleStockInput.getSale(), person);
-		SaleStockTangibleProductMovementOutput saleStockOutput = new SaleStockTangibleProductMovementOutput(saleStockInput,saleCashRegisterMovement,new StockTangibleProductMovement());
-		//saleStockOutput.getStockTangibleProductStockMovement().setTangibleProduct(tangibleProductBusiness.find(TangibleProduct.SALE_STOCK));
-		return saleStockOutput;
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public SaleStockTangibleProductMovementOutput instanciate(Person person,SaleStockTangibleProductMovementInput input) {
+		SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.instanciate(input.getSale(), person,Boolean.TRUE);
+		SaleStockTangibleProductMovementOutput output = new SaleStockTangibleProductMovementOutput(input,saleCashRegisterMovement,new StockTangibleProductMovement());
+		output.getStockTangibleProductMovement().setStockableTangibleProduct(CompanyBusinessLayer.getInstance().getStockableTangibleProductStocking());
+		output.getStockTangibleProductMovement().setMovement(RootBusinessLayer.getInstance().getMovementBusiness().instanciate(
+				output.getStockTangibleProductMovement().getStockableTangibleProduct().getMovementCollection(), Boolean.FALSE));
+		return output;
 	}
 
 	@Override
 	public SaleStockTangibleProductMovementOutput create(SaleStockTangibleProductMovementOutput saleStockOutput) {
+		CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().create(saleStockOutput.getSaleCashRegisterMovement());
+		
+		CompanyBusinessLayer.getInstance().getStockTangibleProductMovementBusiness().create(saleStockOutput.getStockTangibleProductMovement());
+		
+		//commonUtils.increment(BigDecimal.class, saleStockOutput, SaleStockTangibleProductMovementOutput.FIELD_REMAINING_NUMBER_OF_GOODS
+		//		, saleStockOutput.getStockTangibleProductMovement().getStockableTangibleProduct().getMovementCollection().getValue());
+		//saleStockOutput.setRemainingNumberOfGoods(saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().add(saleStockOutput.getStockTangibleProductMovement().getQuantity()));
+		/*
 		BigDecimal outputQuantity = null;//saleStockOutput.getStockTangibleProductStockMovement().getQuantity();
 		exceptionUtils().exception(outputQuantity.signum()>0, "salestockoutput.quantitymustbenegative");
 		SaleStockTangibleProductMovementInput saleStockInput = saleStockInputDao.read(saleStockOutput.getSaleStockInput().getIdentifier());
 		exceptionUtils().exception(outputQuantity.abs().compareTo(saleStockInput.getRemainingNumberOfGoods())>0, "salestockoutput.quantitymustbelessthanorequalsinstock");
 		ReceiptParameters previous = new ReceiptParameters(saleStockOutput);
 		saleCashRegisterMovementBusiness.create(saleStockOutput.getSaleCashRegisterMovement(),Boolean.FALSE);
+		*/
 		//saleStockOutput.getStockTangibleProductStockMovement().setDate(saleStockOutput.getSaleCashRegisterMovement().getCashRegisterMovement().getDate());
 		//tangibleProductStockMovementBusiness.create(saleStockOutput.getStockTangibleProductStockMovement());
 		//saleStockOutput.getSaleStockInput().setRemainingNumberOfGoods(
 		//		saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().add(saleStockOutput.getStockTangibleProductStockMovement().getQuantity()));
+		
+		/*
 		saleStockOutput.setRemainingNumberOfGoods(saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods());
 		saleStockInputDao.update(saleStockOutput.getSaleStockInput());
 		
@@ -78,6 +92,7 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 			customer.setSaleStockOutputCount(customer.getSaleStockOutputCount().add(BigDecimal.ONE));
 			customerDao.update(customer);
 		}
+		*/
 		
 		/*if(saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().equals(BigDecimal.ZERO) && saleStockOutput.getSaleStockInput().getEvent()!=null){
 			Event event = saleStockOutput.getSaleStockInput().getEvent();
@@ -89,7 +104,7 @@ public class SaleStockOutputBusinessImpl extends AbstractSaleStockBusinessImpl<S
 		saleStockOutput = super.create(saleStockOutput);
 		//debug(previous);
 		//debug(new ReceiptParameters(saleStockOutput));
-		SaleReport saleReport = CompanyBusinessLayer.getInstance().getSaleReportProducer().producePaymentReceipt(previous,new ReceiptParameters(saleStockOutput));
+		//SaleReport saleReport = CompanyBusinessLayer.getInstance().getSaleReportProducer().producePaymentReceipt(previous,new ReceiptParameters(saleStockOutput));
 		//reportBusiness.buildBinaryContent(saleStockOutput.getSaleCashRegisterMovement(), saleReport,
 		//		saleStockOutput.getSaleCashRegisterMovement().getSale().getAccountingPeriod().getPointOfSaleReportFile(), Boolean.TRUE); 
 		

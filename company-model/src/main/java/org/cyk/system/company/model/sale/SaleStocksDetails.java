@@ -10,7 +10,7 @@ import lombok.Setter;
 public class SaleStocksDetails implements Serializable {
 	private static final long serialVersionUID = 2804518082667973573L;
 	
-	private SalesDetails salesDetails = new SalesDetails();
+	private SaleResults saleResults = new SaleResults();
 	
 	private BigDecimal in, out, remaining;
 	

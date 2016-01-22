@@ -1,7 +1,6 @@
 package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -9,16 +8,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.CompanyReportProducer;
-import org.cyk.system.company.business.api.CompanyReportProducer.InvoiceParameters;
-import org.cyk.system.company.business.api.payment.CashierBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementInputBusiness;
-import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.sale.SaleReport;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
@@ -30,14 +24,6 @@ import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockOutputDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementInputDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
-import org.cyk.system.root.business.api.event.EventBusiness;
-import org.cyk.system.root.business.api.file.report.ReportBusiness;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
-import org.cyk.system.root.model.event.Event;
-import org.cyk.system.root.model.event.EventParticipation;
-import org.cyk.system.root.model.party.person.Person;
-import org.cyk.system.root.model.time.Period;
-import org.joda.time.DateTime;
 
 @Stateless
 public class SaleStockTangibleProductMovementInputBusinessImpl extends AbstractSaleStockBusinessImpl<SaleStockTangibleProductMovementInput, SaleStockTangibleProductMovementInputDao,SaleStockInputSearchCriteria> implements SaleStockTangibleProductMovementInputBusiness,Serializable {
@@ -59,13 +45,12 @@ public class SaleStockTangibleProductMovementInputBusinessImpl extends AbstractS
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public SaleStockTangibleProductMovementInput instanciate(Person person) {
+	public SaleStockTangibleProductMovementInput instanciate(Sale sale) {
 		SaleStockTangibleProductMovementInput saleStockInput = new SaleStockTangibleProductMovementInput();
-		saleStockInput.setSale(CompanyBusinessLayer.getInstance().getSaleBusiness().instanciate(person));
+		saleStockInput.setSale(sale);
 		saleStockInput.setStockTangibleProductMovement(new StockTangibleProductMovement());
-		saleStockInput.getStockTangibleProductMovement().setStockableTangibleProduct(stockableTangibleProductDao.readByTangibleProduct(tangibleProductDao
-				.read(TangibleProduct.STOCKING)));
-		CompanyBusinessLayer.getInstance().getSaleBusiness().selectProduct(saleStockInput.getSale(), salableProductDao.readByProduct( intangibleProductDao.read(IntangibleProduct.STOCKING)));
+		saleStockInput.getStockTangibleProductMovement().setStockableTangibleProduct(CompanyBusinessLayer.getInstance().getStockableTangibleProductStocking());
+		CompanyBusinessLayer.getInstance().getSaleBusiness().selectProduct(saleStockInput.getSale(), CompanyBusinessLayer.getInstance().getSalableProductStocking());
 		logInstanceCreated(saleStockInput);
 		return saleStockInput;
 	}

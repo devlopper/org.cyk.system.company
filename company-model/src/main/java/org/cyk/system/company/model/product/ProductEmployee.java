@@ -15,6 +15,8 @@ import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.root.model.AbstractIdentifiable;
 
 @Getter @Setter @NoArgsConstructor @Entity @EqualsAndHashCode(callSuper=false,of={"product","employee"})
+@Deprecated
+//FIWME to be deleted or re think
 public class ProductEmployee extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;

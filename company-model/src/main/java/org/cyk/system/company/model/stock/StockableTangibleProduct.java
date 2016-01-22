@@ -39,6 +39,11 @@ public class StockableTangibleProduct extends AbstractIdentifiable implements Se
 	/**/
 	
 	@Override
+	public String getUiString() {
+		return tangibleProduct.getUiString();
+	}
+	
+	@Override
 	public String getLogMessage() {
 		return String.format(LOG_FORMAT, tangibleProduct.getCode(),movementCollection.getLogMessage());
 	}

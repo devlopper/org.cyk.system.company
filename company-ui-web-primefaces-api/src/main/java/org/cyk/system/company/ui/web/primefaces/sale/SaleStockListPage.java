@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.business.api.sale.AbstractSaleStockTangibleProductMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.impl.sale.SaleStockReportTableRow;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
 import org.cyk.system.company.model.sale.SaleStockSearchCriteria;
@@ -24,7 +24,7 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStockTangib
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	@Inject protected SaleStockBusiness saleStockBusiness;
+	@Inject protected SaleStockTangibleProductMovementBusiness saleStockBusiness;
 	
 	private String type;
 	
@@ -80,9 +80,9 @@ public class SaleStockListPage extends AbstractSaleStockListPage<SaleStockTangib
 			table.getColumn(SaleStockReportTableRow.FIELD_STOCK_OUT).setFooter(numberBusiness.format(details.getOut()));
 			table.getColumn(SaleStockReportTableRow.FIELD_REMAINING_NUMBER_OF_GOODS).setFooter(numberBusiness.format(details.getRemaining()));	
 		}else if(companyReportRepository.getParameterSaleStockReportCustomer().equals(type)) {
-			table.getColumn(SaleStockReportTableRow.FIELD_AMOUNT).setFooter(numberBusiness.format(details.getSalesDetails().getCost()));
-			table.getColumn(SaleStockReportTableRow.FIELD_AMOUNT_PAID).setFooter(numberBusiness.format(details.getSalesDetails().getPaid()));
-			table.getColumn(SaleStockReportTableRow.FIELD_CUMULATED_BALANCE).setFooter(numberBusiness.format(details.getSalesDetails().getBalance()));
+			table.getColumn(SaleStockReportTableRow.FIELD_AMOUNT).setFooter(numberBusiness.format(details.getSaleResults().getCost().getValue()));
+			table.getColumn(SaleStockReportTableRow.FIELD_AMOUNT_PAID).setFooter(numberBusiness.format(details.getSaleResults().getPaid()));
+			table.getColumn(SaleStockReportTableRow.FIELD_CUMULATED_BALANCE).setFooter(numberBusiness.format(details.getSaleResults().getBalance()));
 		}
 		
 	}

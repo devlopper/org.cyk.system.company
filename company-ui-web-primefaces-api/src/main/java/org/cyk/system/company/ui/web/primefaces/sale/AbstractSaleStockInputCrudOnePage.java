@@ -138,7 +138,7 @@ public abstract class AbstractSaleStockInputCrudOnePage extends AbstractCrudOneP
 	@Override
 	protected <T extends AbstractIdentifiable> T identifiableFromRequestParameter(Class<T> aClass) {
 		if(Crud.CREATE.equals(crudFromRequestParameter()))
-			return (T) saleStockInputBusiness.instanciate((Person) getUserSession().getUser());
+			return (T) null;//saleStockInputBusiness.instanciate((Person) getUserSession().getUser());
 		return super.identifiableFromRequestParameter(aClass);
 	}
 	

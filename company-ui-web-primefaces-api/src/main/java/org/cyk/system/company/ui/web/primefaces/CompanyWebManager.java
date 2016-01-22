@@ -11,11 +11,11 @@ import lombok.Getter;
 
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
+import org.cyk.system.company.business.impl.stock.StockableTangibleProductDetails;
 import org.cyk.system.company.model.payment.BalanceType;
-import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
-import org.cyk.system.company.model.product.ProductCategory;
+import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCollection;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
@@ -27,17 +27,18 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
-import org.cyk.system.company.model.structure.Company;
-import org.cyk.system.company.model.structure.Division;
-import org.cyk.system.company.model.structure.DivisionType;
+import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.ui.web.primefaces.model.ProductCollectionFormModel;
+import org.cyk.system.company.ui.web.primefaces.stock.StockableTangibleProductEditPage;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.AbstractUserSession;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.UICommandable.IconType;
 import org.cyk.ui.api.command.menu.SystemMenu;
+import org.cyk.ui.api.config.IdentifiableConfiguration;
 import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
@@ -93,7 +94,11 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		
 		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Employee.class, ActorConsultFormModel.class);
 		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Customer.class, ActorConsultFormModel.class);
-				
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(StockableTangibleProduct.class, StockableTangibleProductEditPage.Form.class, StockableTangibleProductDetails.class
+				,null));
+		uiManager.configBusinessIdentifiable(StockableTangibleProduct.class, null);
+		//webNavigationManager.useDynamicSelectView(StockableTangibleProduct.class);
 	}
 		
 	public static CompanyWebManager getInstance() {
@@ -115,29 +120,41 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		group.addChild("command.ownedcompany", null, "ownedCompanyCrudOne", null);
 		systemMenu.getReferenceEntities().add(group);
 		*/
-		group = uiProvider.createCommandable("product", null);
+		group = uiProvider.createCommandable(uiManager.businessEntityInfos(Product.class).getUserInterface().getLabelId(), null);
 		//group.addChild(menuManager.crudMany(ProductCategory.class, null));
 		group.addChild(menuManager.crudMany(IntangibleProduct.class, null));	
 		group.addChild(menuManager.crudMany(TangibleProduct.class, null));	
 		//group.addChild(menuManager.crudMany(ProductCollection.class, null));
 		systemMenu.getReferenceEntities().add(group);
 		
-		group = uiProvider.createCommandable("sale", null);
-		group.addChild(menuManager.crudMany(SalableProduct.class, null));	
+		group = uiProvider.createCommandable(uiManager.businessEntityInfos(Sale.class).getUserInterface().getLabelId(), null);
+		group.addChild(menuManager.crudMany(SalableProduct.class, null));
+		group.addChild(menuManager.crudMany(Customer.class, null));
+		
 		systemMenu.getReferenceEntities().add(group);
 		
 		//systemMenu.getBusinesses().add(menuManager.crudMany(Company.class, null));	
 		
+		addBusinessMenu(systemMenu,productCommandables(userSession,systemMenu.getMobileBusinesses())); 
+		addBusinessMenu(systemMenu,stockCommandables(userSession));
+		//addBusinessMenu(systemMenu,saleCommandables(userSession,systemMenu.getMobileBusinesses(), cashier)); 
 		/**/
 		
-		addBusinessMenu(systemMenu,humanResourcesManagerCommandables(userSession,systemMenu.getMobileBusinesses())); 
-		addBusinessMenu(systemMenu,customerManagerCommandables(userSession,systemMenu.getMobileBusinesses())); 
-		addBusinessMenu(systemMenu,saleCommandables(userSession,systemMenu.getMobileBusinesses(), cashier)); 
-		addBusinessMenu(systemMenu,stockCommandables(userSession));
-		addBusinessMenu(systemMenu,goodsDepositCommandables(userSession, systemMenu.getMobileBusinesses(), cashier));
-		addBusinessMenu(systemMenu,productionCommandables(userSession, systemMenu.getMobileBusinesses()));
+		//addBusinessMenu(systemMenu,humanResourcesManagerCommandables(userSession,systemMenu.getMobileBusinesses())); 
+		//addBusinessMenu(systemMenu,customerManagerCommandables(userSession,systemMenu.getMobileBusinesses())); 
+		
+		//addBusinessMenu(systemMenu,goodsDepositCommandables(userSession, systemMenu.getMobileBusinesses(), cashier));
+		//addBusinessMenu(systemMenu,productionCommandables(userSession, systemMenu.getMobileBusinesses()));
 		
 		return systemMenu;
+	}
+	
+	public UICommandable productCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables){
+		UICommandable module = null;
+		module = uiProvider.createCommandable(uiManager.businessEntityInfos(Product.class).getUserInterface().getLabelId(), null);
+		module.addChild(menuManager.crudMany(TangibleProduct.class, null));
+		module.addChild(menuManager.crudMany(IntangibleProduct.class, null));
+		return module;
 	}
 	
 	public UICommandable humanResourcesManagerCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables){
@@ -156,9 +173,13 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	}
 	
 	public UICommandable saleCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables,Cashier cashier){
-		UICommandable sale = uiProvider.createCommandable("command.sale", null);
+		UICommandable sale = uiProvider.createCommandable(uiManager.businessEntityInfos(Sale.class).getUserInterface().getLabelId(), null);
 		UICommandable c;
-		if(cashier!=null){
+		
+		sale.addChild(menuManager.crudMany(Sale.class, null));
+		sale.addChild(menuManager.crudMany(SaleStockTangibleProductMovementInput.class, null));
+		
+		/*if(cashier!=null){
 			sale.getChildren().add(c = menuManager.crudOne(Sale.class, IconType.ACTION_ADD));
 			c.setLabel(uiManager.text("command.sale.new"));
 			
@@ -188,11 +209,6 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		
 		sale.getChildren().add(c = uiProvider.createCommandable("company.command.salestock.list", null, outcomeSaleStockList));
 		//sale.getChildren().add(uiProvider.createCommandable("prodPlan", null, "productionPlanModelListView"));
-		
-		/*
-		sale.addChild("command.sale.negativebalance", null, "saleNegativeBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterNegativeBalance)));
-		sale.addChild("command.sale.zerobalance", null, "saleZeroBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterZeroBalance)));
-		sale.addChild("command.sale.positivebalance", null, "salePositiveBalanceListView", Arrays.asList(new UICommandable.Parameter(requestParameterBalanceType, requestParameterPositiveBalance)));
 		*/
 		
 		
@@ -227,9 +243,10 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	public Collection<UICommandable> stockContextCommandables(AbstractUserSession userSession){
 		Collection<UICommandable> commandables = new ArrayList<>();
 		commandables.add(uiProvider.createCommandable("dashboard", null, "stockDashBoardView"));
-		commandables.add(menuManager.crudMany(StockTangibleProductMovement.class, null));
-		commandables.add(uiProvider.createCommandable("command.quantityinuse", null, "tangibleProductQuantityInUseUpdateManyView"));
-		commandables.add(menuManager.crudMany(TangibleProductInventory.class, null));
+		commandables.add(menuManager.crudMany(StockableTangibleProduct.class, null));
+		//commandables.add(menuManager.crudMany(StockTangibleProductMovement.class, null));
+		//commandables.add(uiProvider.createCommandable("command.quantityinuse", null, "tangibleProductQuantityInUseUpdateManyView"));
+		//commandables.add(menuManager.crudMany(TangibleProductInventory.class, null));
 		return commandables;
 	}
 	

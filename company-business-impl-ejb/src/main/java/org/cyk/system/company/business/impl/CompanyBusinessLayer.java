@@ -36,7 +36,7 @@ import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementInputBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementOutputBusiness;
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.stock.StockableTangibleProductBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
@@ -62,6 +62,7 @@ import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.sale.Customer;
+import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
@@ -73,6 +74,8 @@ import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.OwnedCompany;
+import org.cyk.system.company.persistence.api.sale.SalableProductDao;
+import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.api.FormatterBusiness;
 import org.cyk.system.root.business.api.TypedBusiness;
 import org.cyk.system.root.business.api.file.FileBusiness;
@@ -137,7 +140,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private SalableProductBusiness salableProductBusiness;
 	@Inject private SaleProductBusiness saleProductBusiness;
 	@Inject private SaleStockTangibleProductMovementInputBusiness saleStockInputBusiness;
-	@Inject private SaleStockOutputBusiness saleStockOutputBusiness;
+	@Inject private SaleStockTangibleProductMovementOutputBusiness saleStockOutputBusiness;
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	@Inject private CompanyBusiness companyBusiness;
 	@Inject private OwnedCompanyBusiness ownedCompanyBusiness;
@@ -163,13 +166,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private UserAccountBusiness userAccountBusiness;
 	@Inject private RoleDao roleDao;
 	@Inject private PersonDao personDao;
+	@Inject private SalableProductDao salableProductDao;
+	@Inject private StockableTangibleProductDao stockableTangibleProductDao;
 	@Inject private ProductCategoryBusiness productCategoryBusiness;
 	@Inject private StringGeneratorBusiness stringGeneratorBusiness;
 	@Setter private CompanyReportProducer saleReportProducer = new DefaultSaleReportProducer();
 	//private Role roleSaleManager,roleStockManager,roleHumanResourcesManager,customerManager,productionManager;
-	@Setter private TangibleProduct tangibleProductSaleStock;
-	private IntangibleProduct intangibleProductSaleStock;
-
+	
 	@Inject private CompanyReportRepository companyReportRepository;
 	@Inject private FormatterBusiness formatterBusiness;
 	
@@ -229,6 +232,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		security();
 		structure();
 		company();
+		
+		create(new IntangibleProduct(IntangibleProduct.STOCKING, IntangibleProduct.STOCKING, null, null));
+    	create(new TangibleProduct(TangibleProduct.STOCKING, TangibleProduct.STOCKING, null, null));
+    	
+    	create(new SalableProduct(getEnumeration(IntangibleProduct.class, IntangibleProduct.STOCKING), null));
+    	create(new StockableTangibleProduct(getEnumeration(TangibleProduct.class, TangibleProduct.STOCKING)
+    			, rootDataProducerHelper.createMovementCollection(TangibleProduct.STOCKING, "Input", "Output")));
 	}
 	
 	private void company(){ 
@@ -365,9 +375,20 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Override
 	protected void setConstants(){
     	departmentDivisiontype = divisionTypeBusiness.find(DivisionType.DEPARTMENT);
-    	intangibleProductSaleStock = getEnumeration(IntangibleProduct.class,IntangibleProduct.STOCKING);
-    	tangibleProductSaleStock = getEnumeration(TangibleProduct.class,TangibleProduct.STOCKING);
     }
+	
+	public IntangibleProduct getIntangibleProductStocking(){
+		return getEnumeration(IntangibleProduct.class,IntangibleProduct.STOCKING);
+	}
+	public TangibleProduct getTangibleProductStocking(){
+		return getEnumeration(TangibleProduct.class,TangibleProduct.STOCKING);
+	}
+	public SalableProduct getSalableProductStocking(){
+		return salableProductDao.readByProduct(getIntangibleProductStocking());
+	}
+	public StockableTangibleProduct getStockableTangibleProductStocking(){
+		return stockableTangibleProductDao.readByTangibleProduct(getTangibleProductStocking());
+	}
 
 	public static CompanyBusinessLayer getInstance() {
 		return INSTANCE;

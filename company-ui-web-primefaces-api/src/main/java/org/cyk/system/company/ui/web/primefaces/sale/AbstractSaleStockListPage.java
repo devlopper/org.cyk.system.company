@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.business.api.sale.AbstractSaleStockTangibleProductMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SaleStockReportTableRow;
 import org.cyk.system.company.model.sale.AbstractSaleStockTangibleProductMovementSearchCriteria;
@@ -42,7 +42,7 @@ public abstract class AbstractSaleStockListPage<SALE_STOCK extends SaleStockTang
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	@Inject protected SaleStockBusiness saleStockBusiness;
+	@Inject protected SaleStockTangibleProductMovementBusiness saleStockBusiness;
 	@Inject protected CompanyReportRepository companyReportRepository;
 	
 	@Override

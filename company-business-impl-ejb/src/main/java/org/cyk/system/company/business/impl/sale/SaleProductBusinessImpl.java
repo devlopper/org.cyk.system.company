@@ -74,8 +74,6 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 			 * This product has a cost so we can compute the taxes to be paid
 			 */
 			if(Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax())){
-				System.out.println("SaleProductBusinessImpl.process()---------------------------");
-				debug(saleProduct.getSale());
 				saleProduct.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getCost().getValue()));
 			}else if(saleProduct.getCost().getTax()==null)
 				saleProduct.getCost().setTax(BigDecimal.ZERO);

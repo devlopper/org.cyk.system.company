@@ -73,7 +73,7 @@ public class TangibleProductStockMovementQueryPage extends AbstractBusinessQuery
 	}
 	
 	private StockTangibleProductMovementSearchCriteria searchCriteria() {
-		return new StockTangibleProductMovementSearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
+		return null;//new StockTangibleProductMovementSearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
 	}
 
 	@Override

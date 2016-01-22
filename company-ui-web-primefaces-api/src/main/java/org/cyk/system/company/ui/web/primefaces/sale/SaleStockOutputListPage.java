@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.business.api.sale.AbstractSaleStockTangibleProductMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementOutputBusiness;
 import org.cyk.system.company.business.impl.sale.SaleStockReportTableRow;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
@@ -24,7 +24,7 @@ public class SaleStockOutputListPage extends AbstractSaleStockListPage<SaleStock
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	@Inject protected SaleStockOutputBusiness saleStockOutputBusiness;
+	@Inject protected SaleStockTangibleProductMovementOutputBusiness saleStockOutputBusiness;
 	
 	@Override
 	protected void initialisation() {
@@ -49,8 +49,8 @@ public class SaleStockOutputListPage extends AbstractSaleStockListPage<SaleStock
 		super.__afterFindByCriteria__(criteria, results);
 		SaleStocksDetails details = saleStockOutputBusiness.computeByCriteria(criteria);
 		table.setColumnFooter(SaleStockReportTableRow.FIELD_TAKEN_NUMBER_OF_GOODS,details.getOut().abs());
-		table.setColumnFooter(SaleStockReportTableRow.FIELD_AMOUNT_PAID,details.getSalesDetails().getPaid());
-		table.setColumnFooter(SaleStockReportTableRow.FIELD_BALANCE,details.getSalesDetails().getBalance());
+		table.setColumnFooter(SaleStockReportTableRow.FIELD_AMOUNT_PAID,details.getSaleResults().getPaid());
+		table.setColumnFooter(SaleStockReportTableRow.FIELD_BALANCE,details.getSaleResults().getBalance());
 	}
 		
 	@Override

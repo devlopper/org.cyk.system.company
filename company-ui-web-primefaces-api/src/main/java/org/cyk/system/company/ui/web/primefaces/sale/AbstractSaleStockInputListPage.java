@@ -66,8 +66,8 @@ public abstract class AbstractSaleStockInputListPage extends AbstractSaleStockLi
 		
 		table.setColumnFooter(SaleStockReportTableRow.FIELD_NUMBER_OF_GOODS, details.getIn());
 		table.setColumnFooter(SaleStockReportTableRow.FIELD_REMAINING_NUMBER_OF_GOODS, details.getRemaining());
-		table.setColumnFooter(SaleStockReportTableRow.FIELD_AMOUNT, details.getSalesDetails().getCost());
-		table.setColumnFooter(SaleStockReportTableRow.FIELD_BALANCE, details.getSalesDetails().getBalance());
+		table.setColumnFooter(SaleStockReportTableRow.FIELD_AMOUNT, details.getSaleResults().getCost().getValue());
+		table.setColumnFooter(SaleStockReportTableRow.FIELD_BALANCE, details.getSaleResults().getBalance());
 	}
 		
 	@Override

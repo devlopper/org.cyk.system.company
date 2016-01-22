@@ -11,18 +11,15 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementInputBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockOutputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementOutputBusiness;
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
@@ -55,13 +52,12 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
 	@Inject private TangibleProductDao tangibleProductDao;
 	@Inject private SaleBusiness saleBusiness;
-	@Inject private SaleStockTangibleProductMovementInputBusiness saleStockInputBusiness;
 	@Inject private AccountingPeriodDao accountingPeriodDao;
 	@Inject private CashierDao cashierDao;
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	@Inject private ProductBusiness productBusiness;
 	@Inject private TangibleProductInventoryBusiness tangibleProductInventoryBusiness;
-	@Inject private SaleStockOutputBusiness saleStockOutputBusiness;
+	@Inject private SaleStockTangibleProductMovementOutputBusiness saleStockOutputBusiness;
 
 	public void createTangibleProductStockMovement(List<TangibleProduct> tangibleProducts,Date date){
 		TangibleProduct tangibleProduct = (TangibleProduct)randomDataProvider.randomFromList(tangibleProducts);
@@ -74,7 +70,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 		StockTangibleProductMovement tangibleProductStockMovement = null;// new TangibleProductStockMovement(tangibleProduct, date, new BigDecimal(quantity), null);
 		tangibleProductStockMovementBusiness.create(tangibleProductStockMovement);
 		if(randomDataProvider.randomInt(1, 10)!=5){
-			TangibleProduct lTangibleProduct = tangibleProductDao.read(tangibleProduct.getIdentifier());
+			//TangibleProduct lTangibleProduct = tangibleProductDao.read(tangibleProduct.getIdentifier());
 			//lTangibleProduct.setUseQuantity(lTangibleProduct.getUseQuantity().add(tangibleProductStockMovement.getQuantity()));
 			tangibleProductBusiness.update(tangibleProduct);
 			//tangibleProduct.setUseQuantity(lTangibleProduct.getUseQuantity());
@@ -112,7 +108,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 				//saleBusiness.selectProduct(sale, product, new BigDecimal(randomDataProvider.randomInt(1, 10)));
 			}
 				
-			SaleCashRegisterMovement saleCashRegisterMovement = null;//new SaleCashRegisterMovement(sale,new CashRegisterMovement(sale.getCashier().getCashRegister()));
+			SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement();//new SaleCashRegisterMovement(sale,new CashRegisterMovement(sale.getCashier().getCashRegister()));
 			saleCashRegisterMovement.setAmountIn(new BigDecimal(randomDataProvider.randomPositiveInt(sale.getCost().getValue().intValue())*1.3));
 			saleCashRegisterMovement.setAmountIn(saleCashRegisterMovement.getAmountIn().round(new MathContext(0, RoundingMode.DOWN)));
 			saleCashRegisterMovementBusiness.in(saleCashRegisterMovement);
@@ -133,8 +129,8 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 		AccountingPeriod accountingPeriod = accountingPeriodDao.select().one();
 		Cashier cashier = cashierDao.select().one();
 		for(int i=0;i<count;i++){
-			SaleStockTangibleProductMovementInput saleStockInput = saleStockInputBusiness.instanciate(cashier.getPerson());
-			saleStockInput.setExternalIdentifier(RandomStringUtils.randomNumeric(3)+RandomStringUtils.randomAlphabetic(1).toUpperCase());
+			SaleStockTangibleProductMovementInput saleStockInput = new SaleStockTangibleProductMovementInput(); //null;//saleStockInputBusiness.instanciate(cashier.getPerson());
+			//saleStockInput.setExternalIdentifier(RandomStringUtils.randomNumeric(3)+RandomStringUtils.randomAlphabetic(1).toUpperCase());
 			Sale sale = saleStockInput.getSale();
 			sale.setCustomer(rootRandomDataProvider.oneFromDatabase(Customer.class));
 			sale.setDate(date(accountingPeriod));
@@ -155,7 +151,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 			//saleStockInputBusiness.create(saleStockInput, saleCashRegisterMovement);
 			
 			for(int j=0;j<randomDataProvider.randomInt(1,2);j++){
-				SaleStockTangibleProductMovementOutput saleStockOutput = saleStockOutputBusiness.newInstance(cashier.getPerson(), saleStockInput);
+				SaleStockTangibleProductMovementOutput saleStockOutput = saleStockOutputBusiness.instanciate(cashier.getPerson(), saleStockInput);
 				saleCashRegisterMovement(saleStockOutput.getSaleCashRegisterMovement(),sale.getBalance().getValue(),1.3f);
 				//saleStockOutput.getStockTangibleProductStockMovement().setQuantity(new BigDecimal(randomDataProvider.randomInt(1, saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().intValue())));
 				saleStockOutputBusiness.create(saleStockOutput);
