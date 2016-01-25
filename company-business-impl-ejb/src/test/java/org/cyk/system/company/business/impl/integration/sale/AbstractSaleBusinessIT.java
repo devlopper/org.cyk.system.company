@@ -24,6 +24,7 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     
     protected void createSale(CreateSaleParameters p){
     	companyBusinessTestHelper.createSale(p.getComputedIdentifier(), p.getDate(), p.getCashierCode(), p.getCustomerRegistrationCode(), p.getProducts(), p.getPaid(),p.getTaxable());
+    	writeReport(companyBusinessLayer.getSaleBusiness().findReport(saleDao.readByComputedIdentifier(p.getComputedIdentifier())));
     }
     
     protected void updateSale(UpdateSaleParameters p){
