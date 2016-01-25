@@ -260,6 +260,9 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     
     /**/
     
+    
+    /**/
+    
     protected void createProducts(Integer tangibleProductCount,Integer intangibleProductCount) {
 		for(int i=1;i<=tangibleProductCount;i++){
 			TangibleProduct tangibleProduct = new TangibleProduct();

@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import lombok.Getter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.production.ProductionBusiness;
 import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
@@ -18,8 +17,8 @@ import org.cyk.system.company.business.api.production.ProductionPlanMetricBusine
 import org.cyk.system.company.business.api.production.ProductionPlanResourceBusiness;
 import org.cyk.system.company.business.api.production.ProductionUnitBusiness;
 import org.cyk.system.company.business.api.production.ResellerBusiness;
-import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
+import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
@@ -33,8 +32,8 @@ import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.model.production.Reseller;
-import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.production.ResellerProduction;
+import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.production.ResourceProduct;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
@@ -42,7 +41,6 @@ import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.system.root.model.userinterface.InputName;
-import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.generator.RandomDataProvider;
 
 @Getter
@@ -50,7 +48,7 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 
 	private static final long serialVersionUID = -1832900422621121762L;
 
-	private CompanyBusinessLayer companyBusinessLayer = CompanyBusinessLayer.getInstance();
+	protected CompanyBusinessLayer companyBusinessLayer = CompanyBusinessLayer.getInstance();
 	@Inject protected OwnedCompanyBusiness ownedCompanyBusiness;
 	@Inject protected ProductBusiness productBusiness;
 	@Inject protected ProductionPlanResourceBusiness productionPlanResourceBusiness;
@@ -81,10 +79,16 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 		});
 	}
 	
+	@Override
+	protected Package getBasePackage() {
+		return CompanyBusinessLayer.class.getPackage();
+	}
+	
 	protected Company getCompany(){
 		return ownedCompanyBusiness.findDefaultOwnedCompany().getCompany();
 	}
 	
+	//TODO those following method should be deleted because they should accessible using business service
 	protected TangibleProduct createTangibleProduct(String name,String price,Collection<Product> products){
 		TangibleProduct product = null;//new TangibleProduct(StringUtils.remove(name, Constant.CHARACTER_SPACE),name,null,null,price==null?null:new BigDecimal(price));
 		products.add(product);

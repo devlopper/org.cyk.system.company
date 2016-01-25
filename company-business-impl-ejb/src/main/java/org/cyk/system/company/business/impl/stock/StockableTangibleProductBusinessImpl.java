@@ -1,6 +1,8 @@
 package org.cyk.system.company.business.impl.stock;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -9,6 +11,7 @@ import javax.inject.Inject;
 import org.cyk.system.company.business.api.stock.StockableTangibleProductBusiness;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
+import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
@@ -19,6 +22,8 @@ public class StockableTangibleProductBusinessImpl extends AbstractTypedBusinessS
 
 	private static final String INPUT_LABEL = "Input";
 	private static final String OUTPUT_LABEL = "Output";
+	
+	@Inject private TangibleProductDao tangibleProductDao;
 	
 	@Inject
 	public StockableTangibleProductBusinessImpl(StockableTangibleProductDao dao) {
@@ -31,6 +36,19 @@ public class StockableTangibleProductBusinessImpl extends AbstractTypedBusinessS
 		stockableTangibleProduct.setTangibleProduct(tangibleProduct);
 		stockableTangibleProduct.setMovementCollection(RootBusinessLayer.getInstance().getMovementCollectionBusiness().instanciate(tangibleProduct.getCode(), INPUT_LABEL,OUTPUT_LABEL));
 		return stockableTangibleProduct;
+	}
+	
+	@Override
+	public StockableTangibleProduct instanciate(String tangibleProductCode) {
+		return instanciate(tangibleProductDao.read(tangibleProductCode));
+	}
+	
+	@Override
+	public List<StockableTangibleProduct> instanciate(String[][] arguments) {
+		List<StockableTangibleProduct> list = new ArrayList<>();
+		for(String[] info : arguments)
+			list.add(instanciate(info[0]));
+		return list;
 	}
 	
 	@Override

@@ -31,6 +31,7 @@ import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.model.AbstractItemCollection;
 import org.cyk.ui.api.model.AbstractItemCollectionItem;
 import org.cyk.ui.web.api.ItemCollectionWebAdapter;
+import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.ItemCollection;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
 
@@ -147,11 +148,13 @@ public class SaleCrudOnePage extends AbstractCrudOnePage<Sale> implements Serial
 		
 	public void cash(){
 		collectProduct = Boolean.FALSE;
+		((Commandable)saleProductCollection.getAddCommandable()).getButton().setDisabled(Boolean.TRUE);
 		collectMoney = Boolean.TRUE;
 	}
 	
 	public void sell(){
 		collectProduct = Boolean.TRUE;
+		((Commandable)saleProductCollection.getAddCommandable()).getButton().setDisabled(Boolean.FALSE);
 		collectMoney = Boolean.FALSE;
 	}
 		

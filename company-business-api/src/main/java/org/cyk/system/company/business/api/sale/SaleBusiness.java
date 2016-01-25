@@ -18,6 +18,7 @@ import org.cyk.system.root.model.party.person.Person;
 public interface SaleBusiness extends TypedBusiness<Sale> {
 
 	Sale instanciate(Person person);
+	Sale instanciate(String computedIdentifier,String cashierPersonCode,String customerRegistrationCode,String date,String taxable,String[][] salableProductInfos);
 	
 	SaleProduct selectProduct(Sale sale,SalableProduct salableProduct,BigDecimal quantity);
 	SaleProduct selectProduct(Sale sale,SalableProduct salableProduct);

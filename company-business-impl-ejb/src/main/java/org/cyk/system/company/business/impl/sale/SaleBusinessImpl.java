@@ -29,6 +29,10 @@ import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
+import org.cyk.system.company.persistence.api.payment.CashierDao;
+import org.cyk.system.company.persistence.api.product.ProductDao;
+import org.cyk.system.company.persistence.api.sale.CustomerDao;
+import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
@@ -38,6 +42,7 @@ import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineFinalStateDao;
+import org.cyk.system.root.persistence.api.party.person.PersonDao;
 
 @Stateless
 public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao> implements SaleBusiness,Serializable {
@@ -48,26 +53,54 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	public static Boolean AUTO_SET_SALE_DATE = Boolean.TRUE;
 	
 	@Inject private SaleProductDao saleProductDao;
+	@Inject private SalableProductDao salableProductDao;
+	@Inject private ProductDao productDao;
 	@Inject private StockableTangibleProductDao stockableTangibleProductDao;
 	@Inject private FiniteStateMachineFinalStateDao finiteStateMachineFinalStateDao;
+	@Inject private PersonDao personDao;
+	@Inject private CashierDao cashierDao;
+	@Inject private CustomerDao customerDao;
 	
 	@Inject
 	public SaleBusinessImpl(SaleDao dao) {
 		super(dao);
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Sale instanciate(Person person) {
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public Sale instanciate() {
 		Sale sale = new Sale();
 		sale.setAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent());
-		sale.setCashier(CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson(person));
 		sale.setAutoComputeValueAddedTax(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().signum()!=0);
 		sale.setFiniteStateMachineState(sale.getAccountingPeriod().getSaleConfiguration().getFiniteStateMachine().getInitialState());
-		logInstanceCreated(sale);
 		return sale;
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public Sale instanciate(Person person) {
+		Sale sale = instanciate();
+		sale.setCashier(CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson(person));
+		return sale;
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public Sale instanciate(String computedIdentifier,String cashierPersonCode, String customerRegistrationCode,String date,String taxable, String[][] salableProductInfos) {
+		Sale sale = instanciate();
+		sale.setComputedIdentifier(computedIdentifier);
+		sale.setCashier(cashierPersonCode==null?cashierDao.select().one():cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)));
+		sale.setCustomer(customerRegistrationCode==null?null:customerDao.readByRegistrationCode(customerRegistrationCode));
+		sale.setDate(timeBusiness.parse(date));
+		sale.setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
+		for(String[] info : salableProductInfos){
+			SaleProduct saleProduct =  selectProduct(sale, salableProductDao.readByProduct(productDao.read(info[0])), numberBusiness.parseBigDecimal(info[1]));
+			if(info.length>2){
+				saleProduct.getCost().setValue(numberBusiness.parseBigDecimal(info[2]));
+				applyChange(sale, saleProduct);
+			}
+		}
+		return sale;
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public SaleProduct selectProduct(Sale sale, SalableProduct salableProduct,BigDecimal quantity) {
 		SaleProduct saleProduct = new SaleProduct();
 		saleProduct.setSale(sale);
@@ -83,12 +116,12 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		return saleProduct;
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public SaleProduct selectProduct(Sale sale, SalableProduct salableProduct) {
 		return selectProduct(sale, salableProduct, BigDecimal.ONE);
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void unselectProduct(Sale sale, SaleProduct saleProduct) {
 		if(sale.getSaleProducts() instanceof List<?>){
 			List<SaleProduct> list = (List<SaleProduct>) sale.getSaleProducts();
@@ -106,7 +139,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		logIdentifiable("Unselected", saleProduct);
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void applyChange(Sale sale, SaleProduct saleProduct) {
 		CompanyBusinessLayer.getInstance().getSaleProductBusiness().process(saleProduct);
 		updateCost(sale);

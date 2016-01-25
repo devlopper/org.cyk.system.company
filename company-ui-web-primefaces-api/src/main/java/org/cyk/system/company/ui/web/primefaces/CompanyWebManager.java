@@ -135,9 +135,9 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		
 		//systemMenu.getBusinesses().add(menuManager.crudMany(Company.class, null));	
 		
-		addBusinessMenu(systemMenu,productCommandables(userSession,systemMenu.getMobileBusinesses())); 
-		addBusinessMenu(systemMenu,stockCommandables(userSession));
-		//addBusinessMenu(systemMenu,saleCommandables(userSession,systemMenu.getMobileBusinesses(), cashier)); 
+		//addBusinessMenu(systemMenu,productCommandables(userSession,systemMenu.getMobileBusinesses())); 
+		//addBusinessMenu(systemMenu,stockCommandables(userSession));
+		addBusinessMenu(systemMenu,saleCommandables(userSession,systemMenu.getMobileBusinesses(), cashier)); 
 		/**/
 		
 		//addBusinessMenu(systemMenu,humanResourcesManagerCommandables(userSession,systemMenu.getMobileBusinesses())); 
@@ -177,7 +177,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		UICommandable c;
 		
 		sale.addChild(menuManager.crudMany(Sale.class, null));
-		sale.addChild(menuManager.crudMany(SaleStockTangibleProductMovementInput.class, null));
+		//sale.addChild(menuManager.crudMany(SaleStockTangibleProductMovementInput.class, null));
 		
 		/*if(cashier!=null){
 			sale.getChildren().add(c = menuManager.crudOne(Sale.class, IconType.ACTION_ADD));

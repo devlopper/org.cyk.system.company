@@ -13,15 +13,12 @@ import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.production.ManufacturedProduct;
-import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionEnergy;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanMetric;
 import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
-import org.cyk.system.company.model.production.ResellerProductionPlan;
-import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.model.production.ResourceProduct;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.time.TimeDivisionType;
@@ -45,8 +42,9 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 	private InputName inputNameQuantity;
 	private ProductionUnit productionUnit1;
 	private Collection<Reseller> resellers;
-	
-	private void parameters(){
+		
+	@Override
+	protected void structure(){
 		createEnumerations(ProductionEnergy.class, new Object[]{ProductionEnergy.GAS,ProductionEnergy.FUEL,ProductionEnergy.WOOD});
 		createEnumerations(InputName.class, new Object[]{"Quantité"});
 		
@@ -71,10 +69,6 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 		createResourceProducts(candidateResourceProducts, resourceProducts);
 		flush(ResourceProduct.class, resourceProducts);
 		
-		
-	}
-	
-	private void structure(){
 		Collection<ProductionUnit> productionUnits = new ArrayList<>();
 		productionUnit1 = createProductionUnit(getCompany(), productionUnits);
 		//createProductionUnit(company, getEnumeration(ProductionEnergy.class, ProductionEnergy.GAS), productionUnits);
@@ -95,7 +89,8 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 		
 	}
 	
-	private void business(){
+	@Override
+	protected void doBusiness(FakedDataProducerListener listener){
 		/*
 		rootRandomDataProvider.createActor(Reseller.class, 10);
 		flush("Resellers");
@@ -118,17 +113,7 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 		flush(ResellerProduction.class, resellerProductionBusiness, resellerProductions);
 		*/	
 	}
-	
-	@Override
-	public void produce(FakedDataProducerListener listener) {
-		this.listener =listener;
-		rootDataProducerHelper.setBasePackage(CompanyBusinessLayer.class.getPackage());
-		parameters();
-    	structure();
-    	business();
-    	
-	}
-	
+		
 	/**/
 	
 	
