@@ -12,21 +12,18 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
-import org.cyk.system.company.model.product.ProductEmployee;
+import org.cyk.system.company.business.impl.sale.PaymentDetails;
+import org.cyk.system.company.business.impl.sale.SaleDetails;
+import org.cyk.system.company.business.impl.sale.SaleProductDetails;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.root.business.api.Crud;
 import org.cyk.ui.api.UIProvider;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.UICommandable.CommandRequestType;
-import org.cyk.ui.api.command.UICommandable.IconType;
 import org.cyk.ui.api.command.UICommandable.Parameter;
 import org.cyk.ui.api.command.UICommandable.ViewType;
 import org.cyk.ui.api.data.collector.form.ControlSet;
@@ -34,12 +31,13 @@ import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
-import org.cyk.utility.common.annotation.user.interfaces.Input;
-import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.primefaces.extensions.model.dynaform.DynaFormControl;
 import org.primefaces.extensions.model.dynaform.DynaFormLabel;
 import org.primefaces.extensions.model.dynaform.DynaFormModel;
 import org.primefaces.extensions.model.dynaform.DynaFormRow;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serializable {
@@ -49,22 +47,21 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
 	@Inject private CompanyWebManager companyWebManager;
 	
-	private FormOneData<SaleDetails> saleDetails;
-	private Table<ProductDetails> productTable;
-	private Table<ProductExecutionDetails> productExecutionTable;
+	private FormOneData<SaleDetails> details;
+	private Table<SaleProductDetails> productTable;
 	private Table<PaymentDetails> paymentTable;
 	
-	private UICommandable editExecutionDetails;
-	
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		contentTitle += " - "+identifiable.getComputedIdentifier();
-		
-		saleDetails = (FormOneData<SaleDetails>) createFormOneData(new SaleDetails(identifiable), Crud.READ);
-		configureDetailsForm(saleDetails);
-		saleDetails.getControlSetListeners().add(new ControlSetAdapter<SaleDetails>(){
+		details = createDetailsForm(SaleDetails.class, identifiable, new DetailsConfigurationListener.Form.Adapter<Sale,SaleDetails>(Sale.class, SaleDetails.class){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public Boolean getEnabledInDefaultTab() {
+				return Boolean.TRUE;
+			}
+		});
+		details.getControlSetListeners().add(new ControlSetAdapter<SaleDetails>(){
 			@Override
 			public String fiedLabel(
 					ControlSet<SaleDetails, DynaFormModel, DynaFormRow, DynaFormLabel, DynaFormControl, SelectItem> controlSet,
@@ -78,7 +75,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 			}
 		}); 
 		
-		productTable = createDetailsTable(ProductDetails.class, new DetailsConfigurationListener.Table.Adapter<SaleProduct, ProductDetails>(SaleProduct.class, ProductDetails.class){
+		productTable = createDetailsTable(SaleProductDetails.class, new DetailsConfigurationListener.Table.Adapter<SaleProduct, SaleProductDetails>(SaleProduct.class, SaleProductDetails.class){
 			private static final long serialVersionUID = 1L;
 			
 		});
@@ -99,7 +96,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 	protected void afterInitialisation() {
 		super.afterInitialisation();
 		for(SaleProduct saleProduct : identifiable.getSaleProducts())
-			productTable.addRow(new ProductDetails(saleProduct));
+			productTable.addRow(new SaleProductDetails(saleProduct));
 		/*
 		for(ProductEmployee productEmployee : identifiable.getPerformers())
 			productExecutionTable.addRow(new ProductExecutionDetails(productEmployee));
@@ -132,15 +129,8 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 				contextualMenu.addChild("command.payback", null, "paymentEditView", p);	
 			}
 		}
-		
-		editExecutionDetails = UIProvider.getInstance().createCommandable("command.edit.executiondetails", IconType.ACTION_EDIT);
-		editExecutionDetails.setCommandRequestType(CommandRequestType.UI_VIEW);
-		editExecutionDetails.setViewId(CompanyWebManager.getInstance().getOutcomeEditSaleDeliveryDetails());
-		editExecutionDetails.getParameters().add(new Parameter(webManager.getRequestParameterIdentifiable(), identifiable.getIdentifier()));
-		editExecutionDetails.getParameters().add(new Parameter(webManager.getRequestParameterPreviousUrl(), url));
-		contextualMenu.getChildren().add(editExecutionDetails);
-		
-		UICommandable printReceipt = UIProvider.getInstance().createCommandable("command.see.receipt", null);
+	
+		UICommandable printReceipt = UIProvider.getInstance().createCommandable("command.see.invoice", null);
 		printReceipt.setCommandRequestType(CommandRequestType.UI_VIEW);
 		printReceipt.setViewType(ViewType.TOOLS_REPORT);
 		printReceipt.getParameters().addAll(navigationManager.reportParameters(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale(),Boolean.FALSE));
@@ -150,65 +140,6 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 	}
 	
 	/**/
-	
-	@Getter @Setter
-	private class SaleDetails implements Serializable {
-		private static final long serialVersionUID = -1498269103849317057L;
-		
-		@Input @InputText
-		private String identifier,cost,balance,customer,date;
-		
-		public SaleDetails(Sale sale) {
-			this.identifier = sale.getComputedIdentifier();
-			//this.cost = numberBusiness.format(sale.getCost());
-			this.balance = numberBusiness.format(sale.getBalance().getValue().abs());
-			this.customer = sale.getCustomer()==null?"":sale.getCustomer().getPerson().getNames();
-			this.date = timeBusiness.formatDateTime(sale.getDate());
-		}
-	}
-	
-	@Getter @Setter
-	private class ProductDetails implements Serializable {
-		private static final long serialVersionUID = -1498269103849317057L;
-		
-		@Input @InputText
-		private String name,unitPrice,quantity,price;
-		
-		public ProductDetails(SaleProduct saleProduct) {
-			//this.name = saleProduct.getProduct().getCode()+" - "+saleProduct.getProduct().getName();
-			//this.unitPrice = saleProduct.getProduct().getPrice()==null?"":numberBusiness.format(saleProduct.getProduct().getPrice());
-			this.quantity = numberBusiness.format(saleProduct.getQuantity());
-			//this.price = numberBusiness.format(saleProduct.getPrice());
-		}
-	}
-	
-	@Getter @Setter
-	private class ProductExecutionDetails implements Serializable {
-		private static final long serialVersionUID = -1498269103849317057L;
-		
-		@Input @InputText
-		private String name,deliveredBy,comments;
-		
-		public ProductExecutionDetails(ProductEmployee productEmployee) {
-			this.name = productEmployee.getProduct().getCode()+" - "+productEmployee.getProduct().getName();
-			this.deliveredBy = productEmployee.getEmployee().getPerson().getNames();
-			this.comments = productEmployee.getComments();
-		}
-	}
-	
-	@Getter @Setter
-	private class PaymentDetails implements Serializable {
-		private static final long serialVersionUID = -6341285110719947720L;
-		
-		@Input @InputText
-		private String identifier,paid,date;
-		
-		public PaymentDetails(SaleCashRegisterMovement payment) {
-			this.identifier = payment.getCashRegisterMovement().getComputedIdentifier();
-			//this.paid = numberBusiness.format(payment.getCashRegisterMovement().getAmount());
-			//this.date = timeBusiness.formatDateTime(payment.getCashRegisterMovement().getDate());
-		}
-	}
 	
 	@Override
 	public Boolean getShowContextualMenu() {

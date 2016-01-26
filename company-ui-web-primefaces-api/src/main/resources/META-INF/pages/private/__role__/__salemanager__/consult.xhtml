@@ -13,26 +13,9 @@
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
  		<ui:param name="pageController" value="#{saleConsultPage}" />
  		<ui:define name="body">
- 			<p:tabView>
- 				<p:tab title="#{uiManager.text('accounting')}">
-	 				<table>
-		 				<tr style="vertical-align: top;">
-		 					<td width="65%">
-		 						<cyk:formOneData value="#{saleConsultPage.saleDetails}"/>
-		 					</td>
-		 					<td><cyk:table value="#{saleConsultPage.paymentTable}"/></td>
-		 				</tr>
-		 				<tr style="vertical-align: top;">
-		 					<td colspan="2">
-		 						<cyk:table value="#{saleConsultPage.productTable}"/>
-		 					</td>
-		 				</tr>
-		 			</table>
- 				</p:tab>
- 				<p:tab title="#{uiManager.text('execution')}">
- 					<cyk:table value="#{saleConsultPage.productExecutionTable}"/>
- 				</p:tab>
- 			</p:tabView>
+ 			<cyk:formOneData value="#{saleConsultPage.details}"/>
+	 		<cyk:table value="#{saleConsultPage.productTable}"/>
+	 		<cyk:table value="#{saleConsultPage.paymentTable}"/>
  		</ui:define>
  	</ui:decorate>
  

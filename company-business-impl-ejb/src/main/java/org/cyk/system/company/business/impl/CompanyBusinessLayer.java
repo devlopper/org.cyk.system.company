@@ -189,6 +189,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 				return rootBusinessLayer.getTimeBusiness().formatDate(production.getPeriod().getFromDate());
 			}
 		});
+		
 		pointOfSaleInvoiceReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.invoice");
 		pointOfSalePaymentReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.paymentreceipt");
 		

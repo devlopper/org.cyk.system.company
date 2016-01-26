@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
@@ -75,6 +76,11 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	public String getLogMessage() {
 		return String.format(LOG_FORMAT,identifier,computedIdentifier,date,finiteStateMachineState==null?Constant.EMPTY_STRING:finiteStateMachineState.getCode(),autoComputeValueAddedTax,cost.getLogMessage(),balance.getLogMessage()
 				,customer==null?"":customer.getRegistration().getCode(),accountingPeriod.getLogMessage());
+	}
+	
+	@Override
+	public String getUiString() {
+		return StringUtils.defaultString(getComputedIdentifier(), getIdentifier().toString());
 	}
 	
 	/**/
