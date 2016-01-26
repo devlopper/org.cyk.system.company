@@ -13,20 +13,17 @@ import org.cyk.system.root.model.party.person.Person;
 public interface SaleCashRegisterMovementBusiness extends TypedBusiness<SaleCashRegisterMovement> {
 
 	SaleCashRegisterMovement instanciate(Sale sale,Person person,Boolean input);
+	SaleCashRegisterMovement instanciate(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode,String amount);
 	
 	Collection<SaleCashRegisterMovement> findBySale(Sale sale);
 
 	void in(SaleCashRegisterMovement saleCashRegisterMovement);
 	void out(SaleCashRegisterMovement saleCashRegisterMovement);
 	
-	
-	//SaleCashRegisterMovement create(SaleCashRegisterMovement payment,Boolean payback);
-	
 	SaleCashRegisterMovement create(SaleCashRegisterMovement saleCashRegisterMovement,Boolean generatePos);
 	
 	BigDecimal computeBalance(SaleCashRegisterMovement payment);
 	
-	ReportBasedOnTemplateFile<SaleReport> findReport(Collection<SaleCashRegisterMovement> saleCashRegisterMovements);
 	ReportBasedOnTemplateFile<SaleReport> findReport(SaleCashRegisterMovement saleCashRegisterMovement);
 	
 }

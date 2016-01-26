@@ -33,7 +33,7 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 	
 	SaleResults computeByCriteria(SaleSearchCriteria criteria);
 	
-	ReportBasedOnTemplateFile<SaleReport> findReport(Collection<Sale> sales);
+	//ReportBasedOnTemplateFile<SaleReport> findReport(Collection<Sale> sales);
 	ReportBasedOnTemplateFile<SaleReport> findReport(Sale sale);
 	
 	/**/

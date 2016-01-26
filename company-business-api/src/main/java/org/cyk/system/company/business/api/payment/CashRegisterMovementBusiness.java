@@ -5,4 +5,5 @@ import org.cyk.system.root.business.api.TypedBusiness;
 
 public interface CashRegisterMovementBusiness extends TypedBusiness<CashRegisterMovement> {
 
+	
 }

@@ -2,7 +2,6 @@ package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collection;
 
 import javax.ejb.Stateless;
@@ -30,6 +29,7 @@ import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.party.person.Person;
+import org.cyk.system.root.persistence.api.party.person.PersonDao;
 
 @Stateless
 public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessService<SaleCashRegisterMovement, SaleCashRegisterMovementDao> implements SaleCashRegisterMovementBusiness,Serializable {
@@ -42,10 +42,24 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	@Inject private SaleDao saleDao;
 	@Inject private CustomerDao customerDao;
 	@Inject private CashierDao cashierDao;
+	@Inject private PersonDao personDao;
 	
 	@Inject
 	public SaleCashRegisterMovementBusinessImpl(SaleCashRegisterMovementDao dao) {
 		super(dao);
+	}
+	
+	@Override
+	public SaleCashRegisterMovement instanciate(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode, String amount) {
+		SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement();
+		saleCashRegisterMovement.setSale(saleDao.readByComputedIdentifier(saleComputedIdentifier));
+		saleCashRegisterMovement.setAmountIn(numberBusiness.parseBigDecimal(amount));
+		saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement());
+		saleCashRegisterMovement.getCashRegisterMovement().setComputedIdentifier(computedIdentifier);
+		saleCashRegisterMovement.getCashRegisterMovement().setCashRegister(cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)).getCashRegister());
+		saleCashRegisterMovement.getCashRegisterMovement().setMovement(RootBusinessLayer.getInstance().getMovementBusiness().instanciate(
+				saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection(),amount));
+		return saleCashRegisterMovement;
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -152,14 +166,9 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public ReportBasedOnTemplateFile<SaleReport> findReport(Collection<SaleCashRegisterMovement> saleCashRegisterMovements) {
-		return rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovements.iterator().next().getReport(),
-				CompanyBusinessLayer.getInstance().getPointOfSalePaymentReportName());//TODO many receipt print must be handled
-	}
-
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public ReportBasedOnTemplateFile<SaleReport> findReport(SaleCashRegisterMovement saleCashRegisterMovement) {
-		return findReport(Arrays.asList(saleCashRegisterMovement));
+		return rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement.getReport(),
+				CompanyBusinessLayer.getInstance().getPointOfSalePaymentReportName());
 	}
 
 }

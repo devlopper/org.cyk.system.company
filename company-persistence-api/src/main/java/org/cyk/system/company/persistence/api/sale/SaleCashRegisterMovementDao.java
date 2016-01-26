@@ -13,5 +13,6 @@ public interface SaleCashRegisterMovementDao extends TypedDao<SaleCashRegisterMo
 	Long countBySale(Sale sale);
 	
 	BigDecimal sumAmount(Sale sale);
+	SaleCashRegisterMovement readByCashRegisterMovementComputedIdentifier(String identifier);
 
 }

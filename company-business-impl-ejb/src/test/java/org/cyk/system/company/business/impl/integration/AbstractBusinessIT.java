@@ -1,17 +1,11 @@
 package org.cyk.system.company.business.impl.integration;
 
-import java.io.FileOutputStream;
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.UserTransaction;
 
-
-
-//import static org.hamcrest.Matchers.*;
-//import static org.hamcrest.MatcherAssert.*;
-import org.apache.commons.io.IOUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.ProductBusiness;
@@ -53,7 +47,6 @@ import org.cyk.system.root.business.impl.validation.DefaultValidator;
 import org.cyk.system.root.business.impl.validation.ExceptionUtils;
 import org.cyk.system.root.business.impl.validation.ValidatorMap;
 import org.cyk.system.root.model.AbstractIdentifiable;
-import org.cyk.system.root.model.file.report.AbstractReport;
 import org.cyk.system.root.model.security.Installation;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineFinalStateDao;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
@@ -66,6 +59,8 @@ import org.cyk.utility.test.integration.AbstractIntegrationTestJpaBased;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Assert;
+//import static org.hamcrest.Matchers.*;
+//import static org.hamcrest.MatcherAssert.*;
 
 public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased {
 
@@ -237,15 +232,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     		}
     	};
     }
-    
-    protected void writeReport(AbstractReport<?> report){
-    	try {
-			IOUtils.write(report.getBytes(), new FileOutputStream( System.getProperty("user.dir")+"/target/"+report.getFileName()+System.currentTimeMillis()+"."+report.getFileExtension()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    }
-    
+        
     public static Archive<?> createRootDeployment() {
         return  
                 new ArchiveBuilder().create().getArchive().

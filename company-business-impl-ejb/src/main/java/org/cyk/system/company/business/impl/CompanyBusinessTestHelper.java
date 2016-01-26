@@ -40,6 +40,7 @@ import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
+import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementInputDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
@@ -75,6 +76,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     @Inject private FiniteStateMachineAlphabetDao finiteStateMachineAlphabetDao;
     @Inject private FiniteStateMachineFinalStateDao finiteStateMachineFinalStateDao;
     @Inject private SaleDao saleDao;
+    @Inject private SaleCashRegisterMovementDao saleCashRegisterMovementDao;
     @Inject private StockableTangibleProductDao stockableTangibleProductDao;
     @Inject private SaleStockTangibleProductMovementInputDao saleStockTangibleProductMovementInputDao;
     
@@ -205,14 +207,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
         	set(saleCashRegisterMovement, paid);
         	getCompanyBusinessLayer().getSaleBusiness().create(sale,saleCashRegisterMovement);
     	}
-    	
-    	   	
-    	/*if(Boolean.TRUE.equals(printPos)){
-    		writeReport(saleBusiness.findReport(sale));
-    		pause(1000);
-    		if(saleCashRegisterMovement.getIdentifier()!=null)
-    			writeReport(saleCashRegisterMovementBusiness.findReport(saleCashRegisterMovement));
-    	}*/
     	return sale;
     }
     public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable){
@@ -220,11 +214,25 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     			finiteStateMachineFinalStateDao.readByState(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getFiniteStateMachine().getInitialState())!=null);
     }
     
+    public void writeSaleReport(String identifier){
+    	writeReport(CompanyBusinessLayer.getInstance().getSaleBusiness().findReport(saleDao.readByComputedIdentifier(identifier)));
+    }
+    
     public void updateSale(String identifier,String finiteStateMachineAlphabetCode,String taxable){
     	Sale sale = saleDao.readByComputedIdentifier(identifier);
     	FiniteStateMachineAlphabet finiteStateMachineAlphabet = finiteStateMachineAlphabetDao.read(finiteStateMachineAlphabetCode);
     	sale.setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
     	CompanyBusinessLayer.getInstance().getSaleBusiness().update(sale, finiteStateMachineAlphabet);
+    }
+    
+    public void createSaleCashRegisterMovement(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode,String amount){
+    	SaleCashRegisterMovement saleCashRegisterMovement = CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness()
+    			.instanciate(saleComputedIdentifier,computedIdentifier, cashierPersonCode==null?cashierDao.readOneRandomly().getPerson().getCode():cashierPersonCode, amount);
+    	CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().create(saleCashRegisterMovement);
+    }
+    
+    public void writeSaleCashRegisterMovementReport(String identifier){
+    	writeReport(CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().findReport(saleCashRegisterMovementDao.readByCashRegisterMovementComputedIdentifier(identifier)));
     }
     
     public SaleStockTangibleProductMovementInput createSaleStockTangibleProductMovementInput(String identifier,String date,String cashierCode,String customerCode,String price,String taxable,String quantity){

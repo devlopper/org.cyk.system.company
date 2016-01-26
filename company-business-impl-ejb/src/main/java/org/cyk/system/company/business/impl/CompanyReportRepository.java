@@ -296,18 +296,24 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 		});
 	
 		registerConfiguration(new ReportBasedOnTemplateFileConfiguration<Sale, ReportBasedOnTemplateFile<SaleReport>>(reportPointOfSale) {
-			@SuppressWarnings("unchecked")
 			@Override
 			public <MODEL> ReportBasedOnTemplateFile<SaleReport> build(Class<MODEL> arg0, Collection<MODEL> sales, String arg2,Boolean arg3, Map<String, String[]> arg4) {
-				return saleBusiness.findReport((Collection<Sale>) sales);
+				if(sales.size()>1)
+					;
+				else
+					return saleBusiness.findReport((Sale) sales.iterator().next());
+				return null;
 			}
 		});
 		
 		registerConfiguration(new ReportBasedOnTemplateFileConfiguration<Sale, ReportBasedOnTemplateFile<SaleReport>>(reportPointOfSaleReceipt) {
-			@SuppressWarnings("unchecked")
 			@Override
-			public <MODEL> ReportBasedOnTemplateFile<SaleReport> build(Class<MODEL> arg0, Collection<MODEL> sales, String arg2,Boolean arg3, Map<String, String[]> arg4) {
-				return saleCashRegisterMovementBusiness.findReport((Collection<SaleCashRegisterMovement>) sales);
+			public <MODEL> ReportBasedOnTemplateFile<SaleReport> build(Class<MODEL> arg0, Collection<MODEL> saleCashRegisterMovements, String arg2,Boolean arg3, Map<String, String[]> arg4) {
+				if(saleCashRegisterMovements.size()>1)
+					;
+				else
+					return saleCashRegisterMovementBusiness.findReport((SaleCashRegisterMovement) saleCashRegisterMovements.iterator().next());
+				return null;
 			}
 		});
 		

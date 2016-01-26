@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
-import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
@@ -17,8 +17,6 @@ import org.cyk.system.root.business.impl.RootBusinessLayer;
 public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessService<CashRegisterMovement, CashRegisterMovementDao> implements CashRegisterMovementBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
-
-	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
 	
 	@Inject
 	public CashRegisterMovementBusinessImpl(CashRegisterMovementDao dao) {
@@ -29,7 +27,9 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	public CashRegisterMovement create(CashRegisterMovement cashRegisterMovement) {
 		RootBusinessLayer.getInstance().getMovementBusiness().create(cashRegisterMovement.getMovement());
 		super.create(cashRegisterMovement);
-		cashRegisterMovement.setComputedIdentifier(generateIdentifier(cashRegisterMovement,CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFIER,accountingPeriodBusiness.findCurrent()
+		if(cashRegisterMovement.getComputedIdentifier()==null)
+			cashRegisterMovement.setComputedIdentifier(generateIdentifier(cashRegisterMovement,CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFIER
+					,CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent()
 				.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator()));
 		dao.update(cashRegisterMovement);
 		return cashRegisterMovement;

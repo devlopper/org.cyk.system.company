@@ -11,6 +11,8 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
     
+    protected static final String TP1="TP1",TP2="TP2",TP3="TP3",TP4="TP4",TP5="TP5";
+    protected static final String IP1="IP1",IP2="IP2",IP3="IP3",IP4="IP4",IP5="IP5";
     protected static final String CUST1="C1",CUST2="C2",CUST3="C3",CUST4="C4",CUST5="C5",CUST6="C6",CUST7="C7",CUST8="C8",CUST9="C9",CUST10="C10",CUST11="C11",CUST12="C12";
     
     @Override
@@ -18,13 +20,13 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     	super.populate();
     	rootBusinessTestHelper.createActors(Customer.class, new String[]{CUST1,CUST2,CUST3,CUST4,CUST5,"C5np",CUST6,CUST7,CUST8,CUST9,CUST10,CUST11,CUST12,"C13","C14","C15"});
     	createProducts(4, 4);
-    	createSalableProducts(new String[][]{ {"TP1", "1000"},{"TP3", "500"},{"TP4", null},{"IP2", "700"} });
-    	createStockableTangibleProducts(new String[][]{ {"TP1", "0","100","100"},{"TP3", "5","95","90"},{"TP4", null,null,null} });
+    	createSalableProducts(new String[][]{ {TP1, "1000"},{TP3, "500"},{TP4, null},{IP2, "700"} });
+    	createStockableTangibleProducts(new String[][]{ {TP1, "0","100","100"},{TP3, "5","95","90"},{TP4, null,null,null} });
     }
     
     protected void createSale(CreateSaleParameters p){
     	companyBusinessTestHelper.createSale(p.getComputedIdentifier(), p.getDate(), p.getCashierCode(), p.getCustomerRegistrationCode(), p.getProducts(), p.getPaid(),p.getTaxable());
-    	writeReport(companyBusinessLayer.getSaleBusiness().findReport(saleDao.readByComputedIdentifier(p.getComputedIdentifier())));
+    	companyBusinessTestHelper.writeSaleReport(p.getComputedIdentifier());
     }
     
     protected void updateSale(UpdateSaleParameters p){
@@ -37,6 +39,11 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     
     protected void createSaleStock(CreateSaleStockOutputParameters p){
     	companyBusinessTestHelper.createSaleStockTangibleProductMovementOutput(p.getComputedIdentifier(), p.getDate(), p.getCashierCode(), p.getPaid(),p.getQuantity());
+    }
+    
+    protected void createSaleCashRegisterMovement(CreateSaleCashRegisterMovementParameters p){
+    	companyBusinessTestHelper.createSaleCashRegisterMovement(p.getComputedIdentifier(), p.getSaleCashRegisterMovementComputedIdentifier(), p.getCashierPersonCode(), p.getAmount());
+    	companyBusinessTestHelper.writeSaleCashRegisterMovementReport(p.getSaleCashRegisterMovementComputedIdentifier());
     }
       
     /**/
@@ -77,6 +84,17 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
 			super(computedIdentifier);
 			this.finiteStateMachineAlphabetCode = finiteStateMachineAlphabetCode;
 			this.taxable = taxable;
+		}
+    }
+    
+    @Getter @Setter
+    public static class CreateSaleCashRegisterMovementParameters extends AbstractSaleParameters{
+    	private String saleCashRegisterMovementComputedIdentifier,cashierPersonCode,amount;
+		public CreateSaleCashRegisterMovementParameters(String saleComputedIdentifier,String saleCashRegisterMovementComputedIdentifier,String cashierPersonCode, String amount) {
+			super(saleComputedIdentifier);
+			this.saleCashRegisterMovementComputedIdentifier = saleCashRegisterMovementComputedIdentifier;
+			this.cashierPersonCode = cashierPersonCode;
+			this.amount = amount;
 		}
     }
     

@@ -3,7 +3,6 @@ package org.cyk.system.company.business.impl.sale;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -13,6 +12,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.CompanyReportProducer.InvoiceParameters;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
@@ -43,6 +43,7 @@ import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineFinalStateDao;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
+import org.cyk.utility.common.Constant;
 
 @Stateless
 public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao> implements SaleBusiness,Serializable {
@@ -286,14 +287,15 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		return dao.computeByCriteria(criteria);
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	/*@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public ReportBasedOnTemplateFile<SaleReport> findReport(Collection<Sale> sales) {
 		return RootBusinessLayer.getInstance().getReportBusiness().buildBinaryContent(sales.iterator().next().getReport(),CompanyBusinessLayer.getInstance().getPointOfSaleInvoiceReportName());//TODO many receipt print must be handled
-	}
+	}*/
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public ReportBasedOnTemplateFile<SaleReport> findReport(Sale sale) {
-		return findReport(Arrays.asList(sale));
+		return RootBusinessLayer.getInstance().getReportBusiness().buildBinaryContent(sale.getReport()
+				,CompanyBusinessLayer.getInstance().getPointOfSaleInvoiceReportName()+Constant.CHARACTER_UNDESCORE+StringUtils.defaultString(sale.getComputedIdentifier(),sale.getIdentifier().toString()));//TODO many receipt print must be handled
 	}
 		
 	/**/

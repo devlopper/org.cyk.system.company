@@ -6,24 +6,26 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
 
     private static final long serialVersionUID = -6691092648665798471L;
     
-    protected static final String SS1 = "sale_stock_1",SS2 = "sale_stock_2",SS3 = "sale_stock_3",SS4 = "sale_stock_4",SS5 = "sale_stock_5";
+    protected static final String S1 = "sale_1",S2 = "sale_2",S3 = "sale_3",S4 = "sale_4",S5 = "sale_5";
+    protected static final String S1_P1 = "sale_1_pay_1",S1_P2 = "sale_1_pay_2";
     
     @Override
     protected void businesses() {
     	updateAccountingPeriod(new BigDecimal("0.18"), Boolean.TRUE);
     	
-    	CreateSaleParameters p = new CreateSaleParameters("nt1", null, null, "C1", new String[][]{{"TP1","2"}}, "0","false");
+    	CreateSaleParameters p = new CreateSaleParameters(S1, null, null, CUST1, new String[][]{{TP1,"2"}}, "0","false");
     	createSale(p);
-    	noTax1NotPaid(p);
-    	/*
-    	p = new CreateSaleParameters("nt2", null, null, "C2", new String[][]{{"IP2","3"}}, "2100","false");
-    	createSale(p);
-    	noTax2AllPaid(p);	
-    
-    	p = new CreateSaleParameters("nt3", null, null, "C3", new String[][]{{"TP3","3"}}, "600","false");
-    	createSale(p);
-    	noTax3SomePaid(p);
+    	_1(p);
     	
+    	CreateSaleCashRegisterMovementParameters cashRegisterMovementParameters = new CreateSaleCashRegisterMovementParameters(S1, S1_P1, null, "500");
+    	createSaleCashRegisterMovement(cashRegisterMovementParameters);
+    	_2(cashRegisterMovementParameters);	
+    
+    	cashRegisterMovementParameters = new CreateSaleCashRegisterMovementParameters(S1, S1_P2, null, "1000");
+    	createSaleCashRegisterMovement(cashRegisterMovementParameters);
+    	_3(cashRegisterMovementParameters);
+    	
+    	/*
     	p = new CreateSaleParameters("nt4", null, null, "C4", new String[][]{{"TP3","2"}}, "1800","false");
     	createSale(p);
     	noTax4MorePaid1(p);
@@ -40,19 +42,7 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     	createSale(p);
     	noTax7AllPaidNoUnitPrice(p);
     	*/
-    	/*
-    	CreateSaleStockInputParameters sp = new CreateSaleStockInputParameters(SS1, null, null, CUST6, "2000", "false","1");
-    	createSaleStock(sp);
-    	stock_1_noTax_input(sp);
-    	
-    	sp = new CreateSaleStockInputParameters(SS2, null, null, CUST7, "3500", "false","3");
-    	createSaleStock(sp);
-    	stock_2_noTax_input(sp);
-    	
-    	CreateSaleStockOutputParameters ssop = new CreateSaleStockOutputParameters(SS2, null,null, "250","-1");
-    	createSaleStock(ssop);
-    	stock_3_noTax_output(ssop);
-    	*/
+
     	//TODO to be handled
     	//companyBusinessTestHelper.createSale("nt8", null, null, "C5np", new String[][]{{"TP1","3","2500"}}, "2500","false", "3700", "0", "3700", "0", "0");
     	//noTax8AllPaidUnitPriceButCostValueSet();
@@ -119,19 +109,17 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     	*/
     }
     
-    protected abstract void noTax1NotPaid(CreateSaleParameters parameters);
-    protected abstract void noTax2AllPaid(CreateSaleParameters parameters);
-    protected abstract void noTax3SomePaid(CreateSaleParameters parameters);
+    /**
+     * No tax , no payment
+     * @param parameters
+     */
+    protected abstract void _1(CreateSaleParameters parameters);
+    protected abstract void _2(CreateSaleCashRegisterMovementParameters parameters);
+    protected abstract void _3(CreateSaleCashRegisterMovementParameters parameters);
     protected abstract void noTax4MorePaid1(CreateSaleParameters parameters);
     protected abstract void noTax5MorePaid2(CreateSaleParameters parameters);
     protected abstract void noTax6MorePaid3(CreateSaleParameters parameters);
     protected abstract void noTax7AllPaidNoUnitPrice(CreateSaleParameters parameters);
     protected abstract void noTax8AllPaidUnitPriceButCostValueSet(CreateSaleParameters parameters);
     
-    protected abstract void stock_1_noTax_input(CreateSaleStockInputParameters parameters);
-    protected abstract void stock_2_noTax_input(CreateSaleStockInputParameters parameters);
-    protected abstract void stock_3_noTax_output(CreateSaleStockOutputParameters parameters);
-    /*protected abstract void stock_4_noTax_input(CreateSaleStockParameters parameters);
-    protected abstract void stock_5_noTax_output(CreateSaleParameters parameters);
-    protected abstract void stock_6_noTax_output(CreateSaleParameters parameters);*/
 }
