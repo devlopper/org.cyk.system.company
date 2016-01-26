@@ -12,6 +12,7 @@ import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 
@@ -51,7 +52,10 @@ public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer imple
 
 	@Override
 	protected void doBusiness(FakedDataProducerListener listener) {
-		
+		Collection<Sale> sales = companyBusinessLayer.getSaleBusiness().instanciate(new Object[][]{
+				new Object[]{"sale001",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getRegistration().getCode(),"1/1/2000","false",new String[][]{ new String[]{"TP2","2"} }}
+		});
+		flush(Sale.class, sales);
 	}
 
 	

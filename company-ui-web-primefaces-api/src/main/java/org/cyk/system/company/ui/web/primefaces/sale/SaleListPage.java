@@ -29,7 +29,7 @@ public class SaleListPage extends AbstractSaleListPage<SaleQueryFormModel, SaleQ
 
 	@Override
 	protected SaleSearchCriteria searchCriteria() {
-		return new SaleSearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
+		return new SaleSearchCriteria(/*form.getData().getFromDate(),form.getData().getToDate()*/);
 	}
 	
 }

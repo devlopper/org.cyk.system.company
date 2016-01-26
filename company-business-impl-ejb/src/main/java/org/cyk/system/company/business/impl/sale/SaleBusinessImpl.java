@@ -102,6 +102,15 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public List<Sale> instanciate(Object[][] arguments) {
+		List<Sale> list = new ArrayList<>();
+		for(Object[] argument : arguments)
+			list.add(instanciate((String)argument[0], (String)argument[1], (String)argument[2], (String)argument[3], (String)argument[4]
+					, (String[][])argument[5]));
+		return list;
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public SaleProduct selectProduct(Sale sale, SalableProduct salableProduct,BigDecimal quantity) {
 		SaleProduct saleProduct = new SaleProduct();
 		saleProduct.setSale(sale);

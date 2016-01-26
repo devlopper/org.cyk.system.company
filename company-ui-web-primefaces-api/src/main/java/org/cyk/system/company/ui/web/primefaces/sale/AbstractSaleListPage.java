@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.sale.Sale;
@@ -59,6 +60,7 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 		rowAdapter.setUpdatable(Boolean.TRUE);
 		table.setShowHeader(Boolean.TRUE);
 		table.setShowToolBar(Boolean.TRUE);
+		
 	}
 	
 	@Override
@@ -98,12 +100,14 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 	@Override
 	protected Collection<Sale> __query__() {
 		SaleSearchCriteria criteria = searchCriteria();
-		criteria.getBalanceTypes().clear();
-		if(balanceType!=null)
-			criteria.getBalanceTypes().add(balanceType);
+		if(criteria.getFiniteStateMachineStates().isEmpty())
+			criteria.getFiniteStateMachineStates().add(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getFiniteStateMachine().getInitialState());
+		//criteria.getBalanceTypes().clear();
+		//if(balanceType!=null)
+		//	criteria.getBalanceTypes().add(balanceType);
 		
-		criteria.getReadConfig().setFirstResultIndex(queryFirst);
-		criteria.getReadConfig().setMaximumResultCount(20l);
+		//criteria.getReadConfig().setFirstResultIndex(queryFirst);
+		//criteria.getReadConfig().setMaximumResultCount(20l);
 		SalesDetails results = null;//saleBusiness.computeByCriteria(criteria); 
 		//table.getColumn("cost").setFooter(numberBusiness.format(results.getCost()));
 		/*if(!BalanceType.ZERO.equals(balanceType)){
@@ -120,6 +124,8 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 	@Override
 	protected Long __count__() {
 		SaleSearchCriteria criteria = searchCriteria();
+		if(criteria.getFiniteStateMachineStates().isEmpty())
+			criteria.getFiniteStateMachineStates().add(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getFiniteStateMachine().getInitialState());
 		criteria.getBalanceTypes().clear();
 		if(balanceType!=null)
 			criteria.getBalanceTypes().add(balanceType);

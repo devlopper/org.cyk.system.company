@@ -2,6 +2,7 @@ package org.cyk.system.company.business.api.sale;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.List;
 
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
@@ -19,6 +20,7 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 
 	Sale instanciate(Person person);
 	Sale instanciate(String computedIdentifier,String cashierPersonCode,String customerRegistrationCode,String date,String taxable,String[][] salableProductInfos);
+	List<Sale> instanciate(Object[][] arguments);
 	
 	SaleProduct selectProduct(Sale sale,SalableProduct salableProduct,BigDecimal quantity);
 	SaleProduct selectProduct(Sale sale,SalableProduct salableProduct);
