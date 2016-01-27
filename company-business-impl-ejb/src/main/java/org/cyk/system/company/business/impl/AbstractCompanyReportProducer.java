@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyReportProducer;
+import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
@@ -29,9 +30,11 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	public SaleReport produceInvoice(InvoiceParameters previousStateParameters,InvoiceParameters currentStateParameters) {
 		logDebug("Prepare Sale report");
 		SaleReport saleReport = prepare(currentStateParameters.getSale(), currentStateParameters.getSaleStockInput(), 
-				currentStateParameters.getSaleCashRegisterMovement().getCashRegisterMovement(),previousStateParameters.getAmountToPay(),
-				previousStateParameters.getAmountPaid(),previousStateParameters.getAmountToOut(),Boolean.FALSE
-				,previousStateParameters.getSaleStockInput()==null?null:previousStateParameters.getSaleStockInput().getStockTangibleProductMovement().getMovement().getValue(),null);
+				currentStateParameters.getSaleCashRegisterMovement()==null?null:currentStateParameters.getSaleCashRegisterMovement().getCashRegisterMovement()
+						,previousStateParameters==null?currentStateParameters.getSale().getBalance().getValue():previousStateParameters.getAmountToPay()
+						,previousStateParameters==null?null:previousStateParameters.getAmountPaid()
+						,previousStateParameters==null?null:previousStateParameters.getAmountToOut(),Boolean.FALSE
+				,(previousStateParameters==null || previousStateParameters.getSaleStockInput()==null)?null:previousStateParameters.getSaleStockInput().getStockTangibleProductMovement().getMovement().getValue(),null);
 		return saleReport;
 	}
 	
@@ -49,8 +52,9 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	
 	private SaleReport prepare(Sale sale, SaleStockTangibleProductMovementInput saleStockInput,CashRegisterMovement cashRegisterMovement,BigDecimal amountToPay,BigDecimal amountPaid,BigDecimal amountToOut,Boolean paymentOnly
 			,BigDecimal previousNumberOfGoodsInStock,BigDecimal deliveredNumberOfGoodsInStock){
-		Boolean paymentExist = cashRegisterMovement.getIdentifier()!=null;
-		Company company = cashRegisterMovement.getCashRegister().getOwnedCompany().getCompany();
+		Boolean paymentExist = cashRegisterMovement!=null && cashRegisterMovement.getIdentifier()!=null;
+		CashRegister cashRegister = paymentExist ? cashRegisterMovement.getCashRegister():sale.getCashier().getCashRegister();
+		Company company = cashRegister.getOwnedCompany().getCompany();
 		BigDecimal numberOfProducts = BigDecimal.ZERO;
 		for(SaleProduct sp : sale.getSaleProducts())
 			numberOfProducts = numberOfProducts.add(sp.getQuantity());
@@ -58,7 +62,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		SaleReport saleReport = new SaleReport();
 		saleReport.setTitle(languageBusiness.findText(Boolean.TRUE.equals(paymentOnly)?"company.report.pointofsale.paymentreceipt":"company.report.pointofsale.invoice"));
 		saleReport.setIdentifier(sale.getComputedIdentifier());
-		saleReport.setCashRegisterIdentifier(Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getShowPointOfSaleReportCashier())?cashRegisterMovement.getCashRegister().getCode():null);
+		saleReport.setCashRegisterIdentifier(Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getShowPointOfSaleReportCashier())?cashRegister.getCode():null);
 		saleReport.setDate(timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN));
 		saleReport.setNumberOfProducts(numberBusiness.format(numberOfProducts));
 		saleReport.setCost(numberBusiness.format(sale.getCost().getValue()));
@@ -72,8 +76,9 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		saleReport.getAccountingPeriod().getCompany().getContact().setPhoneNumbers(StringUtils.join(company.getContactCollection().getPhoneNumbers()," - "));
 		
 		labelValue(saleReport.getHeaderInfos(),"company.report.pointofsale.invoicenumber", saleReport.getIdentifier());
-		labelValue(saleReport.getHeaderInfos(),"company.report.pointofsale.paymentreceiptnumber", cashRegisterMovement.getComputedIdentifier(),paymentExist);
-		labelValue("cashier",cashRegisterMovement.getCashRegister().getCode(),Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getShowPointOfSaleReportCashier()));
+		if(paymentExist)
+			labelValue(saleReport.getHeaderInfos(),"company.report.pointofsale.paymentreceiptnumber", cashRegisterMovement.getComputedIdentifier(),paymentExist);
+		labelValue("cashier",cashRegister.getCode(),Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getShowPointOfSaleReportCashier()));
 		labelValue("date", timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN));
 		if(sale.getCustomer()!=null)
 			labelValue("customer", sale.getCustomer().getRegistration().getCode(),sale.getCustomer()!=null);
@@ -90,8 +95,9 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 			
 		}
 		
-		labelValue(LABEL_CASH, format(amountPaid),amountPaid.signum()>0);
+		
 		if(paymentExist){
+			labelValue(LABEL_CASH, format(amountPaid),amountPaid.signum()>0);
 			//BigDecimal amountToOut = saleCashRegisterMovement.getAmountIn().subtract(sale.getCost());
 			if(sale.getBalance().getValue().signum()>0)
 				labelValue(LABEL_AMOUNT_DU, format(sale.getBalance().getValue()));

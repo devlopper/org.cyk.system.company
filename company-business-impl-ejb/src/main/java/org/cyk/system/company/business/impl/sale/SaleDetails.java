@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.business.impl.AbstractOutputDetails;
+import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 
@@ -20,9 +21,17 @@ public class SaleDetails extends AbstractOutputDetails<Sale> implements Serializ
 	public SaleDetails(Sale sale) {
 		super(sale);
 		this.identifier = sale.getComputedIdentifier();
-		//this.cost = numberBusiness.format(sale.getCost());
-		this.balance = numberBusiness.format(sale.getBalance().getValue().abs());
-		this.customer = sale.getCustomer()==null?"":sale.getCustomer().getPerson().getNames();
-		this.date = timeBusiness.formatDateTime(sale.getDate());
+		this.cost = formatNumber(sale.getCost().getValue());
+		this.balance = formatNumber(sale.getBalance().getValue().abs());
+		this.customer = sale.getCustomer()==null?Constant.EMPTY_STRING:(sale.getCustomer().getRegistration().getCode()+Constant.CHARACTER_SLASH+sale.getCustomer().getPerson().getNames());
+		this.date = formatDateTime(sale.getDate());
 	}
+	
+	/**/
+	
+	public static final String FIELD_IDENTIFIER = "identifier";
+	public static final String FIELD_COST = "cost";
+	public static final String FIELD_BALANCE = "balance";
+	public static final String FIELD_CUSTOMER = "customer";
+	public static final String FIELD_DATE = "date";
 }

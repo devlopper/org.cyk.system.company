@@ -170,7 +170,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private StockableTangibleProductDao stockableTangibleProductDao;
 	@Inject private ProductCategoryBusiness productCategoryBusiness;
 	@Inject private StringGeneratorBusiness stringGeneratorBusiness;
-	@Setter private CompanyReportProducer saleReportProducer = new DefaultSaleReportProducer();
+	@Setter private CompanyReportProducer companyReportProducer = new DefaultSaleReportProducer();
 	//private Role roleSaleManager,roleStockManager,roleHumanResourcesManager,customerManager,productionManager;
 	
 	@Inject private CompanyReportRepository companyReportRepository;

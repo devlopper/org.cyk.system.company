@@ -10,24 +10,26 @@
       xmlns:company="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.company/component">
 
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
-        <ui:param name="pageController" value="#{saleCashRegisterMovementCrudOnePage}" />
+        <ui:param name="pageController" value="#{saleCashRegisterMovementEditPage}" />
         <ui:define name="body">
+        	<cyk:formOneData value="#{saleCashRegisterMovementEditPage.form}"/>
+        	<!--
         	<p:panelGrid columns="2">
         		<h:outputText value="#{uiManager.text('field.cost')}" />
-        		<h:outputText value="#{saleCashRegisterMovementCrudOnePage.identifiable.sale.cost}" />
+        		<h:outputText value="#{saleCashRegisterMovementEditPage.identifiable.sale.cost}" />
         		
         		<h:outputText value="#{uiManager.text('field.balance')}" />
-        		<h:outputText value="#{saleCashRegisterMovementCrudOnePage.identifiable.sale.balance}" />	
+        		<h:outputText value="#{saleCashRegisterMovementEditPage.identifiable.sale.balance}" />	
         	</p:panelGrid>
         	
         	<p:separator/>
         	
-        	<company:saleCashRegisterMovement value="#{saleCashRegisterMovementCrudOnePage.cashRegisterController}" />
-        		
+        	<company:saleCashRegisterMovement value="#{saleCashRegisterMovementEditPage.cashRegisterController}" />
+        	-->	
         </ui:define>
         
         <ui:define name="contentMenuBar">
- 			<cyk:command value="#{saleCashRegisterMovementCrudOnePage.form.submitCommandable}" executeParameter="#{saleCashRegisterMovementCrudOnePage.identifiable}" />
+ 			<cyk:command value="#{saleCashRegisterMovementEditPage.form.submitCommandable}" executeParameter="#{saleCashRegisterMovementEditPage.identifiable}" />
  		</ui:define>
     </ui:decorate>
  

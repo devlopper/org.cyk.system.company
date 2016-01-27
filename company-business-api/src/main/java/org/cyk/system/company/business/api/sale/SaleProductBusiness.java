@@ -23,6 +23,7 @@ public interface SaleProductBusiness extends TypedBusiness<SaleProduct> {
 	CartesianModel findCartesianModelCount(SalesResultsCartesianModelParameters parameters);
 	
 	Collection<SaleProduct> findBySales(Collection<Sale> sales);
+	Collection<SaleProduct> findBySale(Sale identifiable);
 	Collection<SaleProduct> findBySalesByCategories(Collection<Sale> sales,Collection<ProductCategory> productCategories);
 	
 	/**/
@@ -37,4 +38,6 @@ public interface SaleProductBusiness extends TypedBusiness<SaleProduct> {
 		private Collection<ProductCategory> categories;
 		private TimeDivisionType timeDivisionType;
 	}
+
+	
 }

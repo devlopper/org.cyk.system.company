@@ -1,7 +1,6 @@
 package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.Collection;
 
 import javax.inject.Inject;
@@ -13,18 +12,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
+import org.cyk.system.company.business.impl.sale.SaleDetails;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
-import org.cyk.system.company.model.sale.SalesDetails;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
+import org.cyk.system.company.ui.web.primefaces.model.SaleQueryFormModel;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
-import org.cyk.ui.api.model.table.ColumnAdapter;
-import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessQueryPage;
 
 @Getter @Setter
-public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusinessQueryPage<Sale, QUERY, RESULT> implements Serializable {
+public abstract class AbstractSaleListPage extends AbstractBusinessQueryPage<Sale,SaleQueryFormModel, SaleDetails> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
@@ -85,6 +84,17 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 	protected Boolean autoLoad() {
 		return Boolean.TRUE;
 	}
+	
+	@Override
+	protected Class<SaleQueryFormModel> __queryClass__() {
+		return SaleQueryFormModel.class;
+	}
+
+	@Override
+	protected Class<SaleDetails> __resultClass__() {
+		return SaleDetails.class;
+	}
+	
 	/*
 	@Override
 	protected String componentId() {
@@ -96,23 +106,17 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 	protected Class<Sale> __entityClass__() {
 		return Sale.class;
 	}
-
+	
 	@Override
 	protected Collection<Sale> __query__() {
 		SaleSearchCriteria criteria = searchCriteria();
-		if(criteria.getFiniteStateMachineStates().isEmpty())
-			criteria.getFiniteStateMachineStates().add(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getFiniteStateMachine().getInitialState());
-		//criteria.getBalanceTypes().clear();
-		//if(balanceType!=null)
-		//	criteria.getBalanceTypes().add(balanceType);
-		
-		//criteria.getReadConfig().setFirstResultIndex(queryFirst);
-		//criteria.getReadConfig().setMaximumResultCount(20l);
-		SalesDetails results = null;//saleBusiness.computeByCriteria(criteria); 
-		//table.getColumn("cost").setFooter(numberBusiness.format(results.getCost()));
-		/*if(!BalanceType.ZERO.equals(balanceType)){
-			table.getColumn("balance").setFooter(numberBusiness.format(results.getBalance()));
-		}*/
+		criteria.getReadConfig().setFirstResultIndex(queryFirst);
+		criteria.getReadConfig().setMaximumResultCount(20l);
+		SaleResults results = saleBusiness.computeByCriteria(criteria); 
+		table.getColumn(SaleDetails.FIELD_COST).setFooter(numberBusiness.format(results.getCost().getValue()));
+		if(!BalanceType.ZERO.equals(balanceType)){
+			table.getColumn(SaleDetails.FIELD_BALANCE).setFooter(numberBusiness.format(results.getBalance()));
+		}
 		
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterFromDate(),criteria.getFromDateSearchCriteria().getPreparedValue().getTime());
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterToDate(),criteria.getToDateSearchCriteria().getPreparedValue().getTime());
@@ -123,15 +127,22 @@ public abstract class AbstractSaleListPage<QUERY,RESULT> extends AbstractBusines
 	
 	@Override
 	protected Long __count__() {
-		SaleSearchCriteria criteria = searchCriteria();
-		if(criteria.getFiniteStateMachineStates().isEmpty())
-			criteria.getFiniteStateMachineStates().add(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getFiniteStateMachine().getInitialState());
+		return saleBusiness.countByCriteria(searchCriteria());
+	}
+
+	protected SaleSearchCriteria searchCriteria(){
+		SaleSearchCriteria criteria = new SaleSearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
 		criteria.getBalanceTypes().clear();
 		if(balanceType!=null)
 			criteria.getBalanceTypes().add(balanceType);
-		return saleBusiness.countByCriteria(criteria);
+		processSearchCriteria(criteria);
+		if(criteria.getFiniteStateMachineStates().isEmpty())
+			criteria.getFiniteStateMachineStates().add(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getFiniteStateMachine().getInitialState());
+		return criteria;
 	}
-
-	protected abstract SaleSearchCriteria searchCriteria();
+	
+	protected void processSearchCriteria(SaleSearchCriteria saleSearchCriteria){
+		
+	}
 		
 }

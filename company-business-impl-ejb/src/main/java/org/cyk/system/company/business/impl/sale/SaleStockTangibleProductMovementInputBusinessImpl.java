@@ -37,7 +37,7 @@ public class SaleStockTangibleProductMovementInputBusinessImpl extends AbstractS
 	@Inject private SaleStockOutputDao saleStockOutputDao;
 	@Inject private CustomerDao customerDao;
 	
-	private CompanyReportProducer reportProducer = CompanyBusinessLayer.getInstance().getSaleReportProducer();
+	private CompanyReportProducer reportProducer = CompanyBusinessLayer.getInstance().getCompanyReportProducer();
 	
 	@Inject
 	public SaleStockTangibleProductMovementInputBusinessImpl(SaleStockTangibleProductMovementInputDao dao) {

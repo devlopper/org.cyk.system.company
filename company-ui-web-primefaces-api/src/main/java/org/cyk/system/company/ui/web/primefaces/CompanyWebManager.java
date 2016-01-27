@@ -27,7 +27,6 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Employee;
@@ -177,6 +176,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		UICommandable c;
 		
 		sale.addChild(menuManager.crudMany(Sale.class, null));
+		sale.addChild(menuManager.crudMany(SaleCashRegisterMovement.class, null));
 		//sale.addChild(menuManager.crudMany(SaleStockTangibleProductMovementInput.class, null));
 		
 		/*if(cashier!=null){

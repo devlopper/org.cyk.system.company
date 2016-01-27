@@ -38,6 +38,7 @@ import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.party.person.Person;
@@ -165,41 +166,44 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override
 	public Sale create(Sale sale) {
+		return create(sale, null);
+	}
+		
+	@Override
+	public Sale create(Sale sale, SaleCashRegisterMovement saleCashRegisterMovement) {
+		exceptionUtils().exception(saleCashRegisterMovement!=null && finiteStateMachineFinalStateDao.readByState(sale.getFiniteStateMachineState())==null
+				, "exception.sale.finitestatemachinestate.notfinal");
 		//logIdentifiable("Create",sale);
+		//Firstly we create the sale
 		if(Boolean.TRUE.equals(AUTO_SET_SALE_DATE))
 			if(sale.getDate()==null)
 				sale.setDate(universalTimeCoordinated());
 		sale = super.create(sale);
 		for(SaleProduct saleProduct : sale.getSaleProducts())
 			genericDao.create(saleProduct);
-		
 		consume(sale);
-		
 		if(sale.getComputedIdentifier()==null)
 			sale.setComputedIdentifier(generateIdentifier(sale,CompanyBusinessLayerListener.SALE_IDENTIFIER,sale.getAccountingPeriod().getSaleConfiguration()
 				.getIdentifierGenerator()));
-		
 		sale = dao.update(sale);
-		logIdentifiable("Created",sale);
-		return sale;
-	}
 		
-	@Override
-	public void create(Sale sale, SaleCashRegisterMovement saleCashRegisterMovement) {
-		//Firstly we create the sale
-		create(sale);
-		exceptionUtils().exception(finiteStateMachineFinalStateDao.readByState(sale.getFiniteStateMachineState())==null, "exception.sale.finitestatemachinestate.notfinal");
 		//Secondly we pay
-		InvoiceParameters previous = new InvoiceParameters(sale, null, saleCashRegisterMovement);
-		//FIXME has be done to handled sale stock issue : 0 amount and X stock out. think another better way
-		if(saleCashRegisterMovement.getAmountIn().equals(saleCashRegisterMovement.getAmountOut()) && saleCashRegisterMovement.getAmountIn().equals(BigDecimal.ZERO)){
-			//logDebug("No sale cash register movement");
-		}else if(finiteStateMachineFinalStateDao.readByState(sale.getFiniteStateMachineState())!=null) {
-			saleCashRegisterMovement.setSale(sale);
-			CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().create(saleCashRegisterMovement);
-			sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));	 
+		InvoiceParameters previous = null;
+		if(saleCashRegisterMovement==null){
+			
+		}else {
+			previous = new InvoiceParameters(sale, null, saleCashRegisterMovement);
+			//FIXME has be done to handled sale stock issue : 0 amount and X stock out. think another better way
+			if(saleCashRegisterMovement.getAmountIn().equals(saleCashRegisterMovement.getAmountOut()) && saleCashRegisterMovement.getAmountIn().equals(BigDecimal.ZERO)){
+				//logDebug("No sale cash register movement");
+			}else if(finiteStateMachineFinalStateDao.readByState(sale.getFiniteStateMachineState())!=null) {
+				saleCashRegisterMovement.setSale(sale);
+				CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().create(saleCashRegisterMovement);
+				sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));	 
+			}
 		}
 		
+		//Third we generate report
 		Boolean updateReport = Boolean.TRUE;
 		for(SaleBusinessImplListener listener : LISTENERS){
 			Boolean v = listener.isReportUpdatable(this, sale);
@@ -210,6 +214,8 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		if(Boolean.TRUE.equals(updateReport)){
 			createReport(previous,new InvoiceParameters(sale, null, saleCashRegisterMovement));
 		}
+		logIdentifiable("Created",sale);
+		return sale;
 	}
 	
 	@Override
@@ -272,12 +278,14 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 
 	private void createReport(InvoiceParameters previous,InvoiceParameters current){
-		SaleReport saleReport = CompanyBusinessLayer.getInstance().getSaleReportProducer().produceInvoice(previous,current);
+		SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().produceInvoice(previous,current);
 		for(SaleBusinessImplListener listener : LISTENERS)
 			listener.reportUpdated(this, saleReport, Boolean.TRUE);
 		
+		if(current.getSale().getReport()==null)
+			current.getSale().setReport(new File());
 		RootBusinessLayer.getInstance().getReportBusiness().buildBinaryContent(current.getSale(), saleReport, current.getSale().getAccountingPeriod().getSaleConfiguration().getPointOfSaleReportTemplate().getTemplate(), Boolean.TRUE); 
-		update(current.getSale());
+		current.setSale(dao.update(current.getSale()));
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
@@ -295,12 +303,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	public SaleResults computeByCriteria(SaleSearchCriteria criteria) {
 		return dao.computeByCriteria(criteria);
 	}
-	
-	/*@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public ReportBasedOnTemplateFile<SaleReport> findReport(Collection<Sale> sales) {
-		return RootBusinessLayer.getInstance().getReportBusiness().buildBinaryContent(sales.iterator().next().getReport(),CompanyBusinessLayer.getInstance().getPointOfSaleInvoiceReportName());//TODO many receipt print must be handled
-	}*/
-	
+		
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public ReportBasedOnTemplateFile<SaleReport> findReport(Sale sale) {
 		return RootBusinessLayer.getInstance().getReportBusiness().buildBinaryContent(sale.getReport()

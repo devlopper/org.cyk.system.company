@@ -27,7 +27,7 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 	void unselectProduct(Sale sale,SaleProduct saleProduct);
 	void applyChange(Sale sale, SaleProduct saleProduct);
 	
-	void create(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement);
+	Sale create(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement);
 	void update(Sale sale,FiniteStateMachineAlphabet finiteStateMachineAlphabet);
 	
 	Collection<Sale> findByCriteria(SaleSearchCriteria criteria);

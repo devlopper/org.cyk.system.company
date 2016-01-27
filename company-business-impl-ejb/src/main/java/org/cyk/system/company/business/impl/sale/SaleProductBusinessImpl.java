@@ -3,6 +3,7 @@ package org.cyk.system.company.business.impl.sale;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import javax.inject.Inject;
@@ -47,6 +48,11 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 				results.add(saleProduct);
 		}
 		return results;
+	}
+	
+	@Override
+	public Collection<SaleProduct> findBySale(Sale sale) {
+		return findBySales(Arrays.asList(sale));
 	}
 
 	@Override

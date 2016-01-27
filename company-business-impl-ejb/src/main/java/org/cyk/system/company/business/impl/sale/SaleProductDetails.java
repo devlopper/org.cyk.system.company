@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.root.business.impl.AbstractOutputDetails;
+import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 
@@ -15,13 +16,14 @@ public class SaleProductDetails extends AbstractOutputDetails<SaleProduct> imple
 	private static final long serialVersionUID = -1498269103849317057L;
 	
 	@Input @InputText
-	private String name,unitPrice,quantity,price;
+	private String code,name,unitPrice,quantity,price;
 	
 	public SaleProductDetails(SaleProduct saleProduct) {
 		super(saleProduct);
-		//this.name = saleProduct.getProduct().getCode()+" - "+saleProduct.getProduct().getName();
-		//this.unitPrice = saleProduct.getProduct().getPrice()==null?"":numberBusiness.format(saleProduct.getProduct().getPrice());
-		this.quantity = numberBusiness.format(saleProduct.getQuantity());
-		//this.price = numberBusiness.format(saleProduct.getPrice());
+		this.code = saleProduct.getSalableProduct().getProduct().getCode();
+		this.name = saleProduct.getSalableProduct().getProduct().getName();
+		this.unitPrice = saleProduct.getSalableProduct().getPrice()==null?Constant.EMPTY_STRING:formatNumber(saleProduct.getSalableProduct().getPrice());
+		this.quantity = formatNumber(saleProduct.getQuantity());
+		this.price = formatNumber(saleProduct.getCost().getValue());
 	}
 }

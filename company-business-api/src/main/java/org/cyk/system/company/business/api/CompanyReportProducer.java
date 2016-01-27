@@ -26,17 +26,24 @@ public interface CompanyReportProducer extends RootReportProducer {
 
 		private static final long serialVersionUID = 6982660096264368704L;
 		
+		protected Sale sale;
 		protected SaleCashRegisterMovement saleCashRegisterMovement;
 		protected BigDecimal amountToPay;
 		protected BigDecimal amountPaid;
 		protected BigDecimal amountToOut;
 		
-		public AbstractParameters(SaleCashRegisterMovement saleCashRegisterMovement) {
+		public AbstractParameters(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement) {
 			super();
+			this.sale =  sale;
 			this.saleCashRegisterMovement = saleCashRegisterMovement;
-			amountToPay = saleCashRegisterMovement.getSale().getBalance().getValue();
-			amountPaid = saleCashRegisterMovement.getAmountIn();
-			amountToOut = amountPaid.subtract(amountToPay);
+			amountToPay = sale.getBalance().getValue();
+			if(saleCashRegisterMovement==null){
+				
+			}else{
+				amountPaid = saleCashRegisterMovement.getAmountIn();
+				amountToOut = amountPaid.subtract(amountToPay);
+			}
+			
 		}
 		
 	}
@@ -46,12 +53,10 @@ public interface CompanyReportProducer extends RootReportProducer {
 
 		private static final long serialVersionUID = 6982660096264368704L;
 		
-		private Sale sale;
 		private SaleStockTangibleProductMovementInput saleStockInput;
 		
 		public InvoiceParameters(Sale sale,SaleStockTangibleProductMovementInput saleStockInput,SaleCashRegisterMovement saleCashRegisterMovement) {
-			super(saleCashRegisterMovement);
-			this.sale = sale;
+			super(sale,saleCashRegisterMovement);
 			this.saleStockInput = saleStockInput;
 		}
 		
@@ -70,7 +75,7 @@ public interface CompanyReportProducer extends RootReportProducer {
 		protected BigDecimal numberOfGoodsDelivered;
 		
 		public ReceiptParameters(SaleStockTangibleProductMovementOutput saleStockOutput,SaleCashRegisterMovement saleCashRegisterMovement) {
-			super(saleCashRegisterMovement);
+			super(saleCashRegisterMovement.getSale(),saleCashRegisterMovement);
 			this.saleStockOutput = saleStockOutput;
 			if(saleStockOutput!=null){
 				numberOfGoodsInStock = saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods();
@@ -78,7 +83,7 @@ public interface CompanyReportProducer extends RootReportProducer {
 			}
 		}
 		
-		public ReceiptParameters(SaleStockTangibleProductMovementOutput saleStockOutput) {
+		public ReceiptParameters(Sale sale,SaleStockTangibleProductMovementOutput saleStockOutput) {
 			this(saleStockOutput,saleStockOutput.getSaleCashRegisterMovement());
 		}
 	}
