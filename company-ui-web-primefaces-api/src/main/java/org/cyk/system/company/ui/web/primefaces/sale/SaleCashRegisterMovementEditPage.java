@@ -14,8 +14,10 @@ import lombok.Setter;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
@@ -83,6 +85,8 @@ public class SaleCashRegisterMovementEditPage extends AbstractCrudOnePage<SaleCa
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private Sale sale;
+		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private CashRegister cashRegister;
+		@Input @InputChoice(load=false) @InputOneChoice @InputOneCombo @NotNull private MovementAction action;
 		//@Input(readOnly=true) @InputNumber private BigDecimal initialBalance;
 		//@Input(readOnly=true) @InputText private String initialBalance;
 		@Input(disabled=true) @InputNumber @NotNull private BigDecimal initialBalance;
@@ -94,6 +98,8 @@ public class SaleCashRegisterMovementEditPage extends AbstractCrudOnePage<SaleCa
 		/**/
 		
 		public static final String FIELD_SALE = "sale";
+		public static final String FIELD_CASH_REGISTER = "cashRegister";
+		public static final String FIELD_ACTION = "action";
 		public static final String FIELD_INITIAL_BALANCE = "initialBalance";
 		public static final String FIELD_AMOUNT_IN = "amountIn";
 		public static final String FIELD_AMOUNT_TO_OUT = "amountToOut";

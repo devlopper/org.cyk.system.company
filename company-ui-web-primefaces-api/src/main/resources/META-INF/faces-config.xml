@@ -8,6 +8,23 @@
 	<navigation-rule>
 		<from-view-id>*</from-view-id>
 		
+		<!-- Payment -->
+		<navigation-case>
+			<from-outcome>cashRegisterMovementEditView</from-outcome>
+			<to-view-id>/private/payment/cashregistermovement/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cashRegisterMovementListView</from-outcome>
+			<to-view-id>/private/payment/cashregistermovement/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cashRegisterMovementConsultView</from-outcome>
+			<to-view-id>/private/payment/cashregistermovement/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
 		<!-- Stock -->
 		<navigation-case>
 			<from-outcome>stockableTangibleProductConsultView</from-outcome>
