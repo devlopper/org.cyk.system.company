@@ -10,13 +10,17 @@ import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementDao;
+import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.model.party.person.Person;
 
 @Stateless
 public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessService<CashRegisterMovement, CashRegisterMovementDao> implements CashRegisterMovementBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
+	
+	@Inject private CashierDao cashierDao;
 	
 	@Inject
 	public CashRegisterMovementBusinessImpl(CashRegisterMovementDao dao) {
@@ -32,6 +36,15 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 					,CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent()
 				.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator()));
 		dao.update(cashRegisterMovement);
+		return cashRegisterMovement;
+	}
+	
+	@Override
+	public CashRegisterMovement instanciate(Person person) {
+		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
+		cashRegisterMovement.setCashRegister(cashierDao.readByPerson(person).getCashRegister());
+		cashRegisterMovement.setMovement(RootBusinessLayer.getInstance().getMovementBusiness()
+				.instanciate(cashRegisterMovement.getCashRegister().getMovementCollection(), Boolean.TRUE));
 		return cashRegisterMovement;
 	}
 

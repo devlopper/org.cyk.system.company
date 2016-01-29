@@ -14,9 +14,7 @@ import lombok.Setter;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.mathematics.MovementAction;
-import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
@@ -44,6 +42,7 @@ public class CashRegisterMovementEditPage extends AbstractCrudOnePage<CashRegist
 			}
 		}).build();
 		
+		setChoices(Form.FIELD_ACTION, Arrays.asList(identifiable.getMovement().getCollection().getIncrementAction(),identifiable.getMovement().getCollection().getDecrementAction()));
 		//((Form)form.getData()).setCollection(identifiable.getCollection());
 		selectMovementAction(identifiable.getMovement().getAction());
 		
@@ -51,9 +50,7 @@ public class CashRegisterMovementEditPage extends AbstractCrudOnePage<CashRegist
 	
 	@Override
 	protected CashRegisterMovement instanciateIdentifiable() {
-		CashRegisterMovement cashRegisterMovement = super.instanciateIdentifiable();
-		CashRegister cashRegister = CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson((Person) userSession.getUser()).getCashRegister();
-		cashRegisterMovement.setMovement(RootBusinessLayer.getInstance().getMovementBusiness().instanciate(cashRegister.getMovementCollection(), Boolean.TRUE));
+		return CompanyBusinessLayer.getInstance().getCashRegisterMovementBusiness().instanciate((Person) userSession.getUser());
 	}
 	
 	private void selectMovementAction(MovementAction movementAction){
