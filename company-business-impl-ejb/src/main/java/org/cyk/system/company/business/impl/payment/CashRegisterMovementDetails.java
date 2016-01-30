@@ -17,6 +17,8 @@ public class CashRegisterMovementDetails extends AbstractOutputDetails<CashRegis
 	
 	public CashRegisterMovementDetails(CashRegisterMovement cashRegisterMovement) {
 		super(cashRegisterMovement);
+		computedIdentifier = cashRegisterMovement.getComputedIdentifier();
+		cashRegister = formatUsingBusiness(cashRegisterMovement.getCashRegister());
 		movementDetails = new MovementDetails(cashRegisterMovement.getMovement());
 	}
 }

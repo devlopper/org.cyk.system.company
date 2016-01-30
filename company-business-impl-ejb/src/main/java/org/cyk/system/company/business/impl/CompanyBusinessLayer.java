@@ -46,6 +46,7 @@ import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
+import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
@@ -369,6 +370,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)ProductionPlan.class, (TypedBusiness)productionPlanBusiness);
         beansMap.put((Class)ProductionPlanResource.class, (TypedBusiness)productionPlanResourceBusiness);
         beansMap.put((Class)CashRegister.class, (TypedBusiness)cashRegisterBusiness);
+        beansMap.put((Class)CashRegisterMovement.class, (TypedBusiness)cashRegisterMovementBusiness);
     }
 	
 	/**/

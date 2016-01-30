@@ -3,6 +3,8 @@ package org.cyk.system.company.business.impl.payment;
 import java.io.Serializable;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
@@ -39,7 +41,7 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 		return cashRegisterMovement;
 	}
 	
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public CashRegisterMovement instanciate(Person person) {
 		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
 		cashRegisterMovement.setCashRegister(cashierDao.readByPerson(person).getCashRegister());

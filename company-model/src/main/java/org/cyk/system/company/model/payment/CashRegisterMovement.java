@@ -9,12 +9,15 @@ import javax.validation.constraints.NotNull;
 
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.mathematics.Movement;
+import org.cyk.utility.common.annotation.ModelBean;
+import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
+import org.cyk.utility.common.annotation.ModelBean.GenderType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor @Entity
+@Getter @Setter @NoArgsConstructor @Entity @ModelBean(genderType=GenderType.MALE,crudStrategy=CrudStrategy.BUSINESS)
 public class CashRegisterMovement extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
