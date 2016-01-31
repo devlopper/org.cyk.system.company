@@ -2,10 +2,10 @@ package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
 
+import org.cyk.system.company.business.impl.payment.CashRegisterMovementDetails;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.root.business.impl.AbstractOutputDetails;
-import org.cyk.utility.common.annotation.user.interfaces.Input;
-import org.cyk.utility.common.annotation.user.interfaces.InputText;
+import org.cyk.utility.common.annotation.user.interfaces.IncludeInputs;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,12 +14,10 @@ import lombok.Setter;
 public class SaleCashRegisterMovementDetails extends AbstractOutputDetails<SaleCashRegisterMovement> implements Serializable {
 	private static final long serialVersionUID = -6341285110719947720L;
 	
-	@Input @InputText private String identifier,paid,date;
+	@IncludeInputs private CashRegisterMovementDetails cashRegisterMovementDetails;
 	
 	public SaleCashRegisterMovementDetails(SaleCashRegisterMovement saleCashRegisterMovement) {
 		super(saleCashRegisterMovement);
-		this.identifier = saleCashRegisterMovement.getCashRegisterMovement().getComputedIdentifier();
-		this.paid = formatNumber(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue());
-		this.date = formatDateTime(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getDate());
+		cashRegisterMovementDetails = new CashRegisterMovementDetails(saleCashRegisterMovement.getCashRegisterMovement());
 	}
 }

@@ -19,6 +19,7 @@ import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
+import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
@@ -53,7 +54,7 @@ public class SaleCashRegisterMovement extends AbstractIdentifiable implements Se
 	
 	@Override
 	public String getLogMessage() {
-		return String.format(LOG_FORMAT,sale.getIdentifier(),amountIn,amountOut,cashRegisterMovement.getLogMessage(),balance.getLogMessage());
+		return String.format(LOG_FORMAT,sale==null?Constant.EMPTY_STRING:sale.getIdentifier(),amountIn,amountOut,cashRegisterMovement.getLogMessage(),balance.getLogMessage());
 	}
 	
 	/**/

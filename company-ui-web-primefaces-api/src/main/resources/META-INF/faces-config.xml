@@ -10,6 +10,21 @@
 		
 		<!-- Payment -->
 		<navigation-case>
+			<from-outcome>cashRegisterEditView</from-outcome>
+			<to-view-id>/private/payment/cashregister/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cashRegisterListView</from-outcome>
+			<to-view-id>/private/payment/cashregister/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cashRegisterConsultView</from-outcome>
+			<to-view-id>/private/payment/cashregister/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
 			<from-outcome>cashRegisterMovementEditView</from-outcome>
 			<to-view-id>/private/payment/cashregistermovement/edit.xhtml</to-view-id>
 			<redirect />

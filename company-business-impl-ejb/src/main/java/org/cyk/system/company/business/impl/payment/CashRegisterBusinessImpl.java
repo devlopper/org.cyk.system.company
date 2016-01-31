@@ -1,10 +1,7 @@
 package org.cyk.system.company.business.impl.payment;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
@@ -26,11 +23,6 @@ public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashR
 	public CashRegister create(CashRegister cashRegister) {
 		RootBusinessLayer.getInstance().getMovementCollectionBusiness().create(cashRegister.getMovementCollection());
 		return super.create(cashRegister);
-	}
-
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public BigDecimal sumBalance() {
-		return dao.sumBalance();
 	}
 	
 }

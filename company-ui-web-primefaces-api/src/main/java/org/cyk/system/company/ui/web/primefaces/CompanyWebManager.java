@@ -7,12 +7,11 @@ import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.stock.StockableTangibleProductDetails;
 import org.cyk.system.company.model.payment.BalanceType;
+import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
@@ -42,6 +41,8 @@ import org.cyk.ui.api.config.IdentifiableConfiguration;
 import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
+
+import lombok.Getter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyWebManager.DEPLOYMENT_ORDER) @Getter
 public class CompanyWebManager extends AbstractPrimefacesManager implements Serializable {
@@ -175,6 +176,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	
 	public UICommandable paymentCommandables(AbstractUserSession userSession,Collection<UICommandable> mobileCommandables,Cashier cashier){
 		UICommandable module = uiProvider.createCommandable(uiManager.businessEntityInfos(CashRegisterMovement.class).getUserInterface().getLabelId(), null);
+		module.addChild(menuManager.crudMany(CashRegister.class, null));
 		module.addChild(menuManager.crudMany(CashRegisterMovement.class, null));
 		return module;
 	}
@@ -184,7 +186,6 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		UICommandable c;
 		
 		sale.addChild(menuManager.crudMany(Sale.class, null));
-		sale.addChild(menuManager.crudMany(SaleCashRegisterMovement.class, null));
 		sale.addChild(menuManager.crudMany(SaleCashRegisterMovement.class, null));
 		//sale.addChild(menuManager.crudMany(SaleStockTangibleProductMovementInput.class, null));
 		

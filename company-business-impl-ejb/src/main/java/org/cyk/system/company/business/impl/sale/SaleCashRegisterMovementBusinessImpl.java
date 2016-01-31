@@ -52,7 +52,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		super(dao);
 	}
 	
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public SaleCashRegisterMovement instanciate(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode, String amount) {
 		SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement();
 		saleCashRegisterMovement.setSale(saleDao.readByComputedIdentifier(saleComputedIdentifier));
