@@ -156,6 +156,16 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public BigDecimal computeBalance(SaleCashRegisterMovement saleCashRegisterMovement, MovementAction movementAction,BigDecimal increment) {
+		increment = increment.abs();
+		if(movementAction.equals(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction()))
+			return saleCashRegisterMovement.getSale().getBalance().getValue().subtract(increment);
+		else if(movementAction.equals(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getDecrementAction()))
+			return saleCashRegisterMovement.getSale().getBalance().getValue().add(increment);
+		return null;
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<SaleCashRegisterMovement> findBySale(Sale sale) {
 		return dao.readBySale(sale);
 	}

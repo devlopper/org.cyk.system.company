@@ -16,12 +16,12 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.payment.AbstractCashRegisterMovementEditPage;
 import org.cyk.system.root.model.party.person.Person;
-import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
-import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
+import org.cyk.utility.common.annotation.user.interfaces.Sequence;
+import org.cyk.utility.common.annotation.user.interfaces.Sequence.Direction;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -49,16 +49,10 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		*/
 	}
 	
-	@Override
-	protected void afterInitialisation() {
-		super.afterInitialisation();
-		createAjaxBuilder(Form.FIELD_SALE)/*.crossedFieldNames("number2")*/.updatedFieldNames(Form.FIELD_INITIAL_BALANCE).method(Sale.class,new ListenValueMethod<Sale>() {
-			@Override
-			public void execute(Sale sale) {
-				setFieldValue(Form.FIELD_INITIAL_BALANCE, sale.getBalance().getValue());
-			}
-		}).build();
-	}
+	/*@Override
+	protected Boolean showCashRegisterField() {
+		return Boolean.FALSE;
+	}*/
 	
 	@Override
 	protected SaleCashRegisterMovement instanciateIdentifiable() {
@@ -77,6 +71,16 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 	}
 	
 	@Override
+	protected BigDecimal getCurrentTotal() {
+		return identifiable.getBalance().getValue();
+	}
+	@Override
+	protected BigDecimal computeNextTotal(BigDecimal increment) {
+		return CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().computeBalance(identifiable,((AbstractMovementForm<?>)form.getData()).getAction()
+				,((AbstractMovementForm<?>)form.getData()).getValue());
+	}
+	
+	@Override
 	protected void create() {
 		super.create();
 	}
@@ -86,13 +90,9 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 	public static class Form extends AbstractCashRegisterMovementForm<SaleCashRegisterMovement> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
+		@Sequence(direction=Direction.BEFORE,field=AbstractCashRegisterMovementForm.FIELD_CURRENT_TOTAL)
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private Sale sale;
-		
-		//@Input(readOnly=true) @InputNumber private BigDecimal initialBalance;
-		//@Input(readOnly=true) @InputText private String initialBalance;
-		@Input(disabled=true) @InputNumber @NotNull private BigDecimal initialBalance;
-		@Input(disabled=true) @InputNumber @NotNull private BigDecimal finalBalance;
-		
+				
 		@Override
 		protected CashRegisterMovement getCashRegisterMovement() {
 			return identifiable.getCashRegisterMovement();
@@ -101,8 +101,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		/**/
 		
 		public static final String FIELD_SALE = "sale";
-		public static final String FIELD_INITIAL_BALANCE = "initialBalance";
-		public static final String FIELD_FINAL_BALANCE = "finalBalance";
+		
 	}
 	
 

@@ -3,7 +3,6 @@ package org.cyk.system.company.ui.web.primefaces.sale;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -11,9 +10,6 @@ import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
@@ -24,9 +20,9 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.ui.api.UIProvider;
 import org.cyk.ui.api.command.UICommandable;
-import org.cyk.ui.api.command.UICommandable.Parameter;
 import org.cyk.ui.api.data.collector.form.ControlSet;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
@@ -36,6 +32,9 @@ import org.primefaces.extensions.model.dynaform.DynaFormControl;
 import org.primefaces.extensions.model.dynaform.DynaFormLabel;
 import org.primefaces.extensions.model.dynaform.DynaFormModel;
 import org.primefaces.extensions.model.dynaform.DynaFormRow;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serializable {
@@ -88,6 +87,10 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 			public Collection<SaleCashRegisterMovement> getIdentifiables() {
 				return CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().findBySale(identifiable);
 			}
+			@Override
+			public Crud[] getCruds() {
+				return new Crud[]{Crud.CREATE};
+			}
 		});
 		
 	}
@@ -97,7 +100,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		Integer balance = identifiable.getBalance().getValue().compareTo(BigDecimal.ZERO);
 		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null);
 		contextualMenu.setLabel(contentTitle); 
-		if(balance!=0){
+		/*if(balance!=0){
 			Collection<Parameter> parameters = Arrays.asList(new Parameter(uiManager.getClassParameter(), uiManager.keyFromClass(SaleCashRegisterMovement.class)),
 					new Parameter(uiManager.getCrudParameter(), uiManager.getCrudCreateParameter())
 			,new UICommandable.Parameter(uiManager.keyFromClass(Sale.class), identifiable.getIdentifier()));
@@ -110,7 +113,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 				p.add(new Parameter(CompanyWebManager.getInstance().getRequestParameterPaymentType(), CompanyWebManager.getInstance().getRequestParameterPayback() ));
 				contextualMenu.addChild("command.payback", null, "paymentEditView", p);	
 			}
-		}
+		}*/
 	
 		contextualMenu.getChildren().add(navigationManager.createReportCommandable(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale()
 				,"command.see.invoice", null));

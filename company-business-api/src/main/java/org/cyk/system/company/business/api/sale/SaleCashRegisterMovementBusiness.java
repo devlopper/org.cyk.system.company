@@ -8,6 +8,7 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.root.business.api.TypedBusiness;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
+import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.party.person.Person;
 
 public interface SaleCashRegisterMovementBusiness extends TypedBusiness<SaleCashRegisterMovement> {
@@ -23,6 +24,7 @@ public interface SaleCashRegisterMovementBusiness extends TypedBusiness<SaleCash
 	SaleCashRegisterMovement create(SaleCashRegisterMovement saleCashRegisterMovement,Boolean generatePos);
 	
 	BigDecimal computeBalance(SaleCashRegisterMovement payment);
+	BigDecimal computeBalance(SaleCashRegisterMovement saleCashRegisterMovement,MovementAction movementAction,BigDecimal increment);
 	
 	ReportBasedOnTemplateFile<SaleReport> findReport(SaleCashRegisterMovement saleCashRegisterMovement);
 	
