@@ -11,11 +11,9 @@
       xmlns:kwordz="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.kwordz/component">
 
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
- 		<ui:param name="pageController" value="#{saleConsultPage}" />
+ 		<ui:param name="pageController" value="#{saleCashRegisterMovementConsultPage}" />
  		<ui:define name="body">
- 			<cyk:formOneData value="#{saleConsultPage.details}"/>
-	 		<cyk:table value="#{saleConsultPage.saleProductTable}"/>
-	 		<cyk:table value="#{saleConsultPage.saleCashRegisterMovementTable}"/>
+ 			<cyk:formOneData value="#{saleCashRegisterMovementConsultPage.details}"/>
  		</ui:define>
  	</ui:decorate>
  

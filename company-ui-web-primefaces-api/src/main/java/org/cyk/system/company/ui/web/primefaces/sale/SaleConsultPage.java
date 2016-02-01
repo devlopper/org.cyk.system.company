@@ -2,8 +2,6 @@ package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collection;
 
 import javax.faces.model.SelectItem;
@@ -11,6 +9,10 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SaleCashRegisterMovementDetails;
@@ -21,9 +23,11 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.ui.api.UIProvider;
+import org.cyk.system.root.business.impl.mathematics.MovementDetails;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.data.collector.form.ControlSet;
+import org.cyk.ui.api.model.table.Column;
+import org.cyk.ui.api.model.table.ColumnAdapter;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
@@ -32,9 +36,6 @@ import org.primefaces.extensions.model.dynaform.DynaFormControl;
 import org.primefaces.extensions.model.dynaform.DynaFormLabel;
 import org.primefaces.extensions.model.dynaform.DynaFormModel;
 import org.primefaces.extensions.model.dynaform.DynaFormRow;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serializable {
@@ -89,18 +90,36 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 			}
 			@Override
 			public Crud[] getCruds() {
-				return new Crud[]{Crud.CREATE};
+				return new Crud[]{Crud.CREATE,Crud.READ};
 			}
 		});
-		
+		saleCashRegisterMovementTable.getColumnListeners().add(new ColumnAdapter(){
+			@Override
+			public Boolean isColumn(Field field) {
+				return !ArrayUtils.contains(SaleCashRegisterMovementDetails.getFieldsToHide(), field.getName());
+			}
+			@Override
+			public void added(Column column) {
+				super.added(column);
+				if(column.getField().getName().equals(MovementDetails.FIELD_VALUE))
+					column.setTitle(text("field.amount"));
+			}
+		});
+	}
+	
+	@Override
+	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
+		super.processIdentifiableContextualCommandable(commandable);
+		commandable.addChild(navigationManager.createReportCommandable(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale()
+				,"command.see.invoice", null));
 	}
 		
-	@Override
+	/*@Override
 	protected Collection<UICommandable> contextualCommandables() {
 		Integer balance = identifiable.getBalance().getValue().compareTo(BigDecimal.ZERO);
 		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null);
 		contextualMenu.setLabel(contentTitle); 
-		/*if(balance!=0){
+		if(balance!=0){
 			Collection<Parameter> parameters = Arrays.asList(new Parameter(uiManager.getClassParameter(), uiManager.keyFromClass(SaleCashRegisterMovement.class)),
 					new Parameter(uiManager.getCrudParameter(), uiManager.getCrudCreateParameter())
 			,new UICommandable.Parameter(uiManager.keyFromClass(Sale.class), identifiable.getIdentifier()));
@@ -113,12 +132,12 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 				p.add(new Parameter(CompanyWebManager.getInstance().getRequestParameterPaymentType(), CompanyWebManager.getInstance().getRequestParameterPayback() ));
 				contextualMenu.addChild("command.payback", null, "paymentEditView", p);	
 			}
-		}*/
+		}
 	
 		contextualMenu.getChildren().add(navigationManager.createReportCommandable(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale()
 				,"command.see.invoice", null));
 		
 		return Arrays.asList(contextualMenu);
-	}
+	}*/
 		
 }

@@ -3,6 +3,7 @@ package org.cyk.system.company.ui.web.primefaces.sale;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,6 +16,7 @@ import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.payment.AbstractCashRegisterMovementEditPage;
+import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
@@ -49,10 +51,17 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		*/
 	}
 	
-	/*@Override
+	@Override
+	protected void afterInitialisation() {
+		super.afterInitialisation();
+		((SelectItem)getChoice(Form.FIELD_ACTION, 1)).setLabel(text("payment"));
+		((SelectItem)getChoice(Form.FIELD_ACTION, 2)).setLabel(text("paybak"));
+	}
+	
+	@Override
 	protected Boolean showCashRegisterField() {
 		return Boolean.FALSE;
-	}*/
+	}
 	
 	@Override
 	protected SaleCashRegisterMovement instanciateIdentifiable() {
@@ -72,20 +81,21 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 	
 	@Override
 	protected BigDecimal getCurrentTotal() {
-		return identifiable.getBalance().getValue();
+		return identifiable.getSale().getBalance().getValue();
 	}
 	@Override
 	protected BigDecimal computeNextTotal(BigDecimal increment) {
-		return CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().computeBalance(identifiable,((AbstractMovementForm<?>)form.getData()).getAction()
-				,((AbstractMovementForm<?>)form.getData()).getValue());
+		return CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().computeBalance(identifiable,(MovementAction) form.findInputByFieldName(Form.FIELD_ACTION).getValue()
+				,increment);
 	}
+		
+	/**/
 	
 	@Override
 	protected void create() {
+		// TODO Auto-generated method stub
 		super.create();
 	}
-	
-	/**/
 	
 	public static class Form extends AbstractCashRegisterMovementForm<SaleCashRegisterMovement> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
@@ -97,7 +107,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		protected CashRegisterMovement getCashRegisterMovement() {
 			return identifiable.getCashRegisterMovement();
 		}
-		
+				
 		/**/
 		
 		public static final String FIELD_SALE = "sale";

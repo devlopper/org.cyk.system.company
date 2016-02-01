@@ -71,6 +71,12 @@ public abstract class AbstractCashRegisterMovementEditPage<MOVEMENT extends Abst
 		}
 		
 		@Override
+		public void write() {
+			super.write();
+			getCashRegisterMovement().setCashRegister(cashRegister);
+		}
+		
+		@Override
 		protected Movement getMovement() {
 			return getCashRegisterMovement().getMovement();
 		}
