@@ -25,9 +25,9 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleProduct;
-import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.command.UICommand;
+import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.api.model.AbstractItemCollection;
 import org.cyk.ui.api.model.AbstractItemCollectionItem;
 import org.cyk.ui.web.api.ItemCollectionWebAdapter;
@@ -36,7 +36,7 @@ import org.cyk.ui.web.primefaces.ItemCollection;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
 
 @Named @ViewScoped @Getter @Setter
-public class SaleCrudOnePage extends AbstractCrudOnePage<Sale> implements Serializable {
+public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
@@ -113,11 +113,16 @@ public class SaleCrudOnePage extends AbstractCrudOnePage<Sale> implements Serial
 	
 	/**/
 	
-	@SuppressWarnings("unchecked")
+	@Override
+	protected Sale instanciateIdentifiable() {
+		return saleBusiness.instanciate((Person) getUserSession().getUser());
+	}
+	
+	/*@SuppressWarnings("unchecked")
 	@Override
 	protected <T extends AbstractIdentifiable> T identifiableFromRequestParameter(Class<T> aClass) {
 		return (T) saleBusiness.instanciate((Person) getUserSession().getUser()); //super.identifiableFromRequestParameter(aClass);
-	}
+	}*/
 	
 	@Override
 	protected void create() {
@@ -171,4 +176,10 @@ public class SaleCrudOnePage extends AbstractCrudOnePage<Sale> implements Serial
 		private BigDecimal quantity;
 	}
 	
+	/**/
+	
+	public static class Form extends AbstractFormModel<Sale> implements Serializable{
+		private static final long serialVersionUID = -4741435164709063863L;
+		
+	}
 }

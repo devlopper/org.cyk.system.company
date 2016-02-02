@@ -62,6 +62,11 @@ public class SaleCashRegisterMovement extends AbstractIdentifiable implements Se
 		return cashRegisterMovement.getComputedIdentifier();
 	}
 	
+	@Override
+	public String getUiString() {
+		return cashRegisterMovement.getComputedIdentifier();
+	}
+	
 	/**/
 	
 	private static final String LOG_FORMAT = SaleCashRegisterMovement.class.getSimpleName()+"(S=%s I=%s O=%s %s %s)";

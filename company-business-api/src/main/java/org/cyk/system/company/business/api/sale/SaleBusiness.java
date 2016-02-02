@@ -38,6 +38,8 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 	//ReportBasedOnTemplateFile<SaleReport> findReport(Collection<Sale> sales);
 	ReportBasedOnTemplateFile<SaleReport> findReport(Sale sale);
 	
+	Sale findByComputedIdentifier(String identifier);
+	
 	/**/
 	/*
 	CartesianModel findTurnOverStatistics(SaleSearchCriteria saleSearchCriteria,TimeDivisionType timeDivisionType);

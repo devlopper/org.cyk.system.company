@@ -33,6 +33,7 @@ import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.Constant;
+import org.cyk.utility.common.computation.ArithmeticOperator;
 
 @Stateless
 public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessService<SaleCashRegisterMovement, SaleCashRegisterMovementDao> implements SaleCashRegisterMovementBusiness,Serializable {
@@ -82,7 +83,6 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	
 	@Override
 	public SaleCashRegisterMovement create(SaleCashRegisterMovement saleCashRegisterMovement,Boolean generatePos) {
-		logIdentifiable("Creating",saleCashRegisterMovement);
 		Sale sale = saleCashRegisterMovement.getSale();
 		Customer customer = sale.getCustomer();
 		Integer soldOut = BigDecimal.ZERO.compareTo(sale.getBalance().getValue());
@@ -97,6 +97,9 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		ReceiptParameters previous = new ReceiptParameters(null,saleCashRegisterMovement);
 		BigDecimal oldBalance = sale.getBalance().getValue(),increment=saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate();
 		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE,increment);
+		exceptionUtils().comparison(!Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getBalanceCanBeNegative()) 
+				&& sale.getBalance().getValue().signum() == -1
+				, "field.amount",ArithmeticOperator.GTE,BigDecimal.ZERO);
 		logTrace("Old balance={} , Increment={} , New balance={}",oldBalance,increment, sale.getBalance().getValue());
 		//cumul balance must be link to a date , so do not update a cumulated balance
 		//sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));

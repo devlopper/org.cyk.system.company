@@ -309,7 +309,12 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		return RootBusinessLayer.getInstance().getReportBusiness().buildBinaryContent(sale.getReport()
 				,CompanyBusinessLayer.getInstance().getPointOfSaleInvoiceReportName()+Constant.CHARACTER_UNDESCORE+StringUtils.defaultString(sale.getComputedIdentifier(),sale.getIdentifier().toString()));//TODO many receipt print must be handled
 	}
-		
+	
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public Sale findByComputedIdentifier(String identifier) {
+		return dao.readByComputedIdentifier(identifier);
+	}
+	
 	/**/
 	
 }

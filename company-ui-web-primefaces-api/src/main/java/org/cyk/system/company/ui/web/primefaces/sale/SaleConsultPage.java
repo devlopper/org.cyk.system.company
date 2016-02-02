@@ -2,6 +2,7 @@ package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.Collection;
 
 import javax.faces.model.SelectItem;
@@ -93,6 +94,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 				return new Crud[]{Crud.CREATE,Crud.READ};
 			}
 		});
+		
 		saleCashRegisterMovementTable.getColumnListeners().add(new ColumnAdapter(){
 			@Override
 			public Boolean isColumn(Field field) {
@@ -110,34 +112,19 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 	@Override
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
 		super.processIdentifiableContextualCommandable(commandable);
+		UICommandable c;
+		Integer balance = identifiable.getBalance().getValue().compareTo(BigDecimal.ZERO);
+		if(balance!=0){
+			if(balance>0){
+				commandable.addChild(c = navigationManager.createCreateCommandable(identifiable,SaleCashRegisterMovement.class, "command.pay", null));
+				c.addParameter(CompanyWebManager.getInstance().getRequestParameterPaymentType(), CompanyWebManager.getInstance().getRequestParameterPay());
+			}else{
+				commandable.addChild(c = navigationManager.createCreateCommandable(identifiable,SaleCashRegisterMovement.class, "command.payback", null));
+				c.addParameter(CompanyWebManager.getInstance().getRequestParameterPaymentType(), CompanyWebManager.getInstance().getRequestParameterPayback());
+			}
+		}
 		commandable.addChild(navigationManager.createReportCommandable(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale()
 				,"command.see.invoice", null));
 	}
-		
-	/*@Override
-	protected Collection<UICommandable> contextualCommandables() {
-		Integer balance = identifiable.getBalance().getValue().compareTo(BigDecimal.ZERO);
-		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null);
-		contextualMenu.setLabel(contentTitle); 
-		if(balance!=0){
-			Collection<Parameter> parameters = Arrays.asList(new Parameter(uiManager.getClassParameter(), uiManager.keyFromClass(SaleCashRegisterMovement.class)),
-					new Parameter(uiManager.getCrudParameter(), uiManager.getCrudCreateParameter())
-			,new UICommandable.Parameter(uiManager.keyFromClass(Sale.class), identifiable.getIdentifier()));
-			Collection<Parameter> p  = new ArrayList<>(parameters);
-			p.add(new Parameter(webManager.getRequestParameterPreviousUrl(), url));
-			if(balance>0){
-				p.add(new Parameter(CompanyWebManager.getInstance().getRequestParameterPaymentType(), CompanyWebManager.getInstance().getRequestParameterPay() ));
-				contextualMenu.addChild("command.pay", null, "paymentEditView", p);	
-			}else{
-				p.add(new Parameter(CompanyWebManager.getInstance().getRequestParameterPaymentType(), CompanyWebManager.getInstance().getRequestParameterPayback() ));
-				contextualMenu.addChild("command.payback", null, "paymentEditView", p);	
-			}
-		}
-	
-		contextualMenu.getChildren().add(navigationManager.createReportCommandable(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale()
-				,"command.see.invoice", null));
-		
-		return Arrays.asList(contextualMenu);
-	}*/
-		
+				
 }

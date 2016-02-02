@@ -39,6 +39,10 @@ public class SaleConfiguration extends AbstractModelElement implements Serializa
 	
 	@Column(nullable=false) @NotNull private Boolean showPointOfSaleReportCashier = Boolean.FALSE;
 	
+	@Column(nullable=false) @NotNull private Boolean balanceCanBeNegative = Boolean.FALSE;
+	
+	@Column(nullable=false) @NotNull private Boolean balanceCanBeGreaterThanCost = Boolean.FALSE;
+	
 	@Override
 	public String getUiString() {
 		return toString();

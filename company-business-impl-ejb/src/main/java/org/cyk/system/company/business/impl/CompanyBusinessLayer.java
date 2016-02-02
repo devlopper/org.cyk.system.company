@@ -118,6 +118,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	private String pointOfSalePaymentReportName;
 	private final String pointOfSaleReportExtension = "pdf";
 	
+	private final String actionCreateSaleCashRegisterMovementInput = "acscrmi";
+	private final String actionCreateSaleCashRegisterMovementOutput = "acscrmo";
+	
 	public static final Integer PRODUCT_POINT_OF_SALE = 1000;
 	public static final Integer PRODUCT_TANGIBLE_SALE_STOCK = 1001;
 	public static final Integer PRODUCT_INTANGIBLE_SALE_STOCK = 1002;

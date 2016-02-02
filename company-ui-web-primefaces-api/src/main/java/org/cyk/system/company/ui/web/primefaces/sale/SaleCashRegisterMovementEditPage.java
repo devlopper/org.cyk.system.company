@@ -3,14 +3,16 @@ package org.cyk.system.company.ui.web.primefaces.sale;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import javax.faces.model.SelectItem;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
-import org.cyk.system.company.business.api.payment.CashierBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.Sale;
@@ -18,6 +20,8 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.payment.AbstractCashRegisterMovementEditPage;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.party.person.Person;
+import org.cyk.ui.api.UIManager;
+import org.cyk.ui.web.api.WebInputListener;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
@@ -25,18 +29,10 @@ import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 import org.cyk.utility.common.annotation.user.interfaces.Sequence;
 import org.cyk.utility.common.annotation.user.interfaces.Sequence.Direction;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @Named @ViewScoped @Getter @Setter
 public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMovementEditPage<SaleCashRegisterMovement> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
-
-	@Inject private SaleBusiness saleBusiness;
-	@Inject private CashierBusiness cashierBusiness;
-	
-	@Inject private SaleCashRegisterMovementController cashRegisterController;
 	
 	@Override
 	protected void initialisation() {
@@ -50,17 +46,39 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 				requestParameter(CompanyWebManager.getInstance().getRequestParameterPaymentType())));
 		*/
 	}
+		
+	/*@Override
+	protected String buildContentTitle() {
+		String string =  super.buildContentTitle();
+		if(Crud.CREATE.equals(crud))
+			if(getCashRegisterMovement().getMovement().getAction().equals(getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction()))
+				string += Constant.CHARACTER_SLASH+text("command.pay");
+			else if(getCashRegisterMovement().getMovement().getAction().equals(getCashRegisterMovement().getCashRegister().getMovementCollection().getDecrementAction()))
+				string += Constant.CHARACTER_SLASH+text("command.payback");
+		return string;
+	}*/
 	
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
-		((SelectItem)getChoice(Form.FIELD_ACTION, 1)).setLabel(text("payment"));
-		((SelectItem)getChoice(Form.FIELD_ACTION, 2)).setLabel(text("paybak"));
+		addInputListener(Form.FIELD_VALUE, new WebInputListener.Adapter(){
+			private static final long serialVersionUID = 7526066306750441853L;
+			@Override
+			public void validate(FacesContext facesContext,UIComponent uiComponent, Object value) throws ValidatorException {
+				BigDecimal total = computeNextTotal((BigDecimal) value);
+				if(total.signum() == -1)
+					webManager.throwValidationException("invalidvalue", new Object[]{});
+			}
+		});
 	}
-	
+		
 	@Override
 	protected Boolean showCashRegisterField() {
 		return Boolean.FALSE;
+	}
+	@Override
+	protected Boolean showActionField() {
+		return Boolean.TRUE;
 	}
 	
 	@Override
@@ -71,7 +89,16 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 			;
 		else
 			sale = CompanyBusinessLayer.getInstance().getSaleBusiness().find(saleIdentifier);
-		return CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().instanciate(sale, (Person) userSession.getUser(), Boolean.TRUE);
+		SaleCashRegisterMovement saleCashRegisterMovement = 
+				CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().instanciate(sale, (Person) userSession.getUser(), Boolean.TRUE);
+		String action = requestParameter(UIManager.getInstance().getActionIdentifierParameter());
+		if(CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementInput().equals(action))
+			saleCashRegisterMovement.getCashRegisterMovement().getMovement().setAction(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction());
+		else if(CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementOutput().equals(action))
+			saleCashRegisterMovement.getCashRegisterMovement().getMovement().setAction(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getDecrementAction());
+		else
+			saleCashRegisterMovement.getCashRegisterMovement().getMovement().setAction(null);
+		return saleCashRegisterMovement;
 	}
 	
 	@Override
@@ -91,23 +118,24 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		
 	/**/
 	
-	@Override
-	protected void create() {
-		// TODO Auto-generated method stub
-		super.create();
-	}
-	
 	public static class Form extends AbstractCashRegisterMovementForm<SaleCashRegisterMovement> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		@Sequence(direction=Direction.BEFORE,field=AbstractCashRegisterMovementForm.FIELD_CURRENT_TOTAL)
-		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private Sale sale;
+		@Input(readOnly=true) @InputChoice @InputOneChoice @InputOneCombo @NotNull private Sale sale;
 				
 		@Override
 		protected CashRegisterMovement getCashRegisterMovement() {
 			return identifiable.getCashRegisterMovement();
 		}
-				
+		
+		@Override
+		public void write() {
+			super.write();
+			identifiable.setAmountIn(getCashRegisterMovement().getMovement().getValue());
+			identifiable.setAmountOut(BigDecimal.ZERO);
+		}
+		
 		/**/
 		
 		public static final String FIELD_SALE = "sale";

@@ -53,7 +53,12 @@ public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer imple
 	@Override
 	protected void doBusiness(FakedDataProducerListener listener) {
 		Collection<Sale> sales = companyBusinessLayer.getSaleBusiness().instanciate(new Object[][]{
-				new Object[]{"sale001",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getRegistration().getCode(),"1/1/2000","false",new String[][]{ new String[]{"TP2","2"} }}
+				new Object[]{"sale001",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getRegistration().getCode(),"1/1/2000 05:00","false"
+						,new String[][]{ new String[]{"TP2","2"} }}
+				,new Object[]{"sale002",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getRegistration().getCode(),"1/1/2000 05:15","false"
+						,new String[][]{ new String[]{"TP2","1"} }}
+				,new Object[]{"sale003",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getRegistration().getCode(),"1/1/2000 08:00","false"
+						,new String[][]{ new String[]{"TP2","1"},new String[]{"TP5","3"} }}
 		});
 		flush(Sale.class, sales);
 	}

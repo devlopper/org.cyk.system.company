@@ -186,7 +186,8 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		UICommandable c;
 		
 		sale.addChild(menuManager.crudMany(Sale.class, null));
-		sale.addChild(menuManager.crudMany(SaleCashRegisterMovement.class, null));
+		sale.addChild(menuManager.createSelect(Sale.class,CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementInput() ,null));
+		sale.addChild(menuManager.createSelect(Sale.class,CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementOutput() ,null));
 		//sale.addChild(menuManager.crudMany(SaleStockTangibleProductMovementInput.class, null));
 		
 		/*if(cashier!=null){
