@@ -91,7 +91,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		if(deposit)
 			exceptionUtils().exception(soldOut>=0, "exception.salecashregistermovement.in.soldout.yes");
 		else
-			exceptionUtils().exception(soldOut<=0, "exception.salecashregistermovement.in.soldout.no");
+			exceptionUtils().exception(soldOut<0, "exception.salecashregistermovement.in.soldout.no");
 		companyBusinessLayer.getCashRegisterMovementBusiness().create(saleCashRegisterMovement.getCashRegisterMovement());
 		
 		ReceiptParameters previous = new ReceiptParameters(null,saleCashRegisterMovement);
@@ -99,7 +99,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE,increment);
 		exceptionUtils().comparison(!Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getBalanceCanBeNegative()) 
 				&& sale.getBalance().getValue().signum() == -1
-				, "field.amount",ArithmeticOperator.GTE,BigDecimal.ZERO);
+				, RootBusinessLayer.getInstance().getLanguageBusiness().findText("field.balance"),ArithmeticOperator.GTE,BigDecimal.ZERO);
 		logTrace("Old balance={} , Increment={} , New balance={}",oldBalance,increment, sale.getBalance().getValue());
 		//cumul balance must be link to a date , so do not update a cumulated balance
 		//sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));

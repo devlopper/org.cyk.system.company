@@ -25,8 +25,9 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     }
     
     protected void createSale(CreateSaleParameters p){
-    	companyBusinessTestHelper.createSale(p.getComputedIdentifier(), p.getDate(), p.getCashierCode(), p.getCustomerRegistrationCode(), p.getProducts(), p.getPaid(),p.getTaxable());
-    	companyBusinessTestHelper.writeSaleReport(p.getComputedIdentifier());
+    	companyBusinessTestHelper.createSale(p.getComputedIdentifier(), p.getDate(), p.getCashierCode(), p.getCustomerRegistrationCode(), p.getProducts(), p.getPaid(),p.getTaxable(),p.getFinalState(),p.getExpectedThrowableMessage());
+    	if(Boolean.TRUE.equals(p.getWriteReport()))
+    		companyBusinessTestHelper.writeSaleReport(p.getComputedIdentifier());
     }
     
     protected void updateSale(UpdateSaleParameters p){
@@ -42,8 +43,10 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     }
     
     protected void createSaleCashRegisterMovement(CreateSaleCashRegisterMovementParameters p){
-    	companyBusinessTestHelper.createSaleCashRegisterMovement(p.getComputedIdentifier(), p.getSaleCashRegisterMovementComputedIdentifier(), p.getCashierPersonCode(), p.getAmount());
-    	companyBusinessTestHelper.writeSaleCashRegisterMovementReport(p.getSaleCashRegisterMovementComputedIdentifier());
+    	companyBusinessTestHelper.createSaleCashRegisterMovement(p.getComputedIdentifier(), p.getSaleCashRegisterMovementComputedIdentifier(), p.getCashierPersonCode()
+    			, p.getAmount(),p.getExpectedThrowableMessage());
+    	if(Boolean.TRUE.equals(p.getWriteReport()))
+    		companyBusinessTestHelper.writeSaleCashRegisterMovementReport(p.getSaleCashRegisterMovementComputedIdentifier());
     }
       
     /**/
@@ -51,8 +54,12 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     @Getter @Setter @AllArgsConstructor
     public static class AbstractSaleParameters{
     	/* inputs */
-    	protected String computedIdentifier;
-  
+    	protected String computedIdentifier,expectedThrowableMessage;
+    	protected Boolean writeReport;
+		public AbstractSaleParameters(String computedIdentifier) {
+			super();
+			this.computedIdentifier = computedIdentifier;
+		}
     	
     }
     
@@ -61,7 +68,8 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     	private String date,cashierCode;
     	private String customerRegistrationCode;
     	private String[][] products;
-    	private String paid,taxable;
+    	private String paid,taxable,finalState;
+    	
 		public CreateSaleParameters(String computedIdentifier, String date,
 				String cashierCode, String customerRegistrationCode,
 				String[][] products, String paid, String taxable) {

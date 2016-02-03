@@ -1,7 +1,5 @@
 package org.cyk.system.company.business.impl.integration.sale;
 
-import java.math.BigDecimal;
-
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
@@ -36,7 +34,7 @@ public abstract class AbstractSaleWithManyFiniteStateMachineStateBusinessIT exte
            
     @Override
     protected void businesses() {
-    	updateAccountingPeriod(new BigDecimal("0.18"), Boolean.TRUE);
+    	updateAccountingPeriod("0.18", "true","false","false");
     	
     	CreateSaleParameters p = new CreateSaleParameters("nt1", null, null, "C1", new String[][]{{"TP1","2"}}, null,"false");
     	createSale(p);

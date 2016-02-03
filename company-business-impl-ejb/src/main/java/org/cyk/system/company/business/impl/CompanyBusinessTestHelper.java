@@ -10,9 +10,6 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.model.Balance;
@@ -51,10 +48,13 @@ import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineAlphabetDao;
-import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineFinalStateDao;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.test.ExpectedValues;
+import org.cyk.utility.common.test.TestEnvironmentListener.Try;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Singleton
 public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implements Serializable {
@@ -74,7 +74,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     @Inject private AccountingPeriodProductDao accountingPeriodProductDao;
     @Inject private FiniteStateMachineStateDao finiteStateMachineStateDao;
     @Inject private FiniteStateMachineAlphabetDao finiteStateMachineAlphabetDao;
-    @Inject private FiniteStateMachineFinalStateDao finiteStateMachineFinalStateDao;
     @Inject private SaleDao saleDao;
     @Inject private SaleCashRegisterMovementDao saleCashRegisterMovementDao;
     @Inject private StockableTangibleProductDao stockableTangibleProductDao;
@@ -197,22 +196,30 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     
 	/* Sale */
 	
-    public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable,Boolean finalState){
-    	Sale sale =  getCompanyBusinessLayer().getSaleBusiness().instanciate(cashierDao.select().one().getPerson());
+    public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable,String finalState,String expectedThrowableMessage){
+    	final Sale sale =  getCompanyBusinessLayer().getSaleBusiness().instanciate(cashierDao.select().one().getPerson());
     	set(sale,identifier,date, cashierCode, customerCode, products, taxable);
-    	if(paid==null || !Boolean.TRUE.equals(finalState)){
+    	if(paid==null || !Boolean.TRUE.equals(Boolean.parseBoolean(StringUtils.defaultString(finalState,"true")))){
     		 getCompanyBusinessLayer().getSaleBusiness().create(sale);
     	}else{
-    		SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().instanciate(sale, sale.getCashier().getPerson(),Boolean.TRUE);
+    		final SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().instanciate(sale, sale.getCashier().getPerson(),Boolean.TRUE);
         	set(saleCashRegisterMovement, paid);
-        	getCompanyBusinessLayer().getSaleBusiness().create(sale,saleCashRegisterMovement);
+        	if(expectedThrowableMessage!=null){
+        		new Try(expectedThrowableMessage){ 
+        			private static final long serialVersionUID = -8176804174113453706L;
+        			@Override protected void code() {getCompanyBusinessLayer().getSaleBusiness().create(sale,saleCashRegisterMovement);}
+        		}.execute();
+        	}else{
+        		getCompanyBusinessLayer().getSaleBusiness().create(sale,saleCashRegisterMovement);
+        	}	
     	}
     	return sale;
     }
-    public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable){
+    /*public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable,String expectedThrowableMessage){
     	return createSale(identifier, date, cashierCode, customerCode, products, paid, taxable,
-    			finiteStateMachineFinalStateDao.readByState(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getFiniteStateMachine().getInitialState())!=null);
-    }
+    			finiteStateMachineFinalStateDao.readByState(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
+    					.getFiniteStateMachine().getInitialState())!=null,expectedThrowableMessage);
+    }*/
     
     public void writeSaleReport(String identifier){
     	writeReport(CompanyBusinessLayer.getInstance().getSaleBusiness().findReport(saleDao.readByComputedIdentifier(identifier)));
@@ -225,10 +232,17 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	CompanyBusinessLayer.getInstance().getSaleBusiness().update(sale, finiteStateMachineAlphabet);
     }
     
-    public void createSaleCashRegisterMovement(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode,String amount){
-    	SaleCashRegisterMovement saleCashRegisterMovement = CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness()
+    public void createSaleCashRegisterMovement(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode,String amount,String expectedThrowableMessage){
+    	final SaleCashRegisterMovement saleCashRegisterMovement = CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness()
     			.instanciate(saleComputedIdentifier,computedIdentifier, cashierPersonCode==null?cashierDao.readOneRandomly().getPerson().getCode():cashierPersonCode, amount);
-    	CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().create(saleCashRegisterMovement);
+    	if(expectedThrowableMessage!=null){
+    		new Try(expectedThrowableMessage){ 
+    			private static final long serialVersionUID = -8176804174113453706L;
+    			@Override protected void code() {CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().create(saleCashRegisterMovement);}
+    		}.execute();
+    	}else{
+    		CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().create(saleCashRegisterMovement);
+    	}	
     }
     
     public void writeSaleCashRegisterMovementReport(String identifier){
@@ -392,5 +406,36 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	public static CompanyBusinessTestHelper getInstance() {
 		return INSTANCE;
 	}
+
+	public void balanceMustBeGreaterThanZero() {
+		SalableProduct salableProduct = null;
+		do{
+		 salableProduct = salableProductDao.readOneRandomly();
+		}while(salableProduct.getPrice()==null);
+		createSale("sale999", "1/1/2000", null, null, new String[][]{ new String[]{salableProduct.getProduct().getCode(),"1"} }
+			, salableProduct.getPrice().multiply(new BigDecimal("2")).toString(), "false", null, "Balance doit être supérieur ou égal à 0");
+	}
 	
+	public void balanceCannotBeIncrementedBeforeSoldOut() {
+		SalableProduct salableProduct = null;
+		do{
+		 salableProduct = salableProductDao.readOneRandomly();
+		}while(salableProduct.getPrice()==null);
+		createSale("sale999_0", "1/1/2000", null, null, new String[][]{ new String[]{salableProduct.getProduct().getCode(),"1"} }, null, "false", null, null);
+		
+		createSaleCashRegisterMovement("sale999_0", "pay999", null, salableProduct.getPrice().multiply(new BigDecimal("2")).negate().toString(),
+				"La vente n'est pas encore soldée");
+	}
+	
+	public void balanceMustBeLowerThanCost() {
+		SalableProduct salableProduct = null;
+		do{
+		 salableProduct = salableProductDao.readOneRandomly();
+		}while(salableProduct.getPrice()==null);
+		createSale("sale999_1", "1/1/2000", null, null, new String[][]{ new String[]{salableProduct.getProduct().getCode(),"1"} }, null, "false", null, null);
+		
+		createSaleCashRegisterMovement("sale999_1", "pay999_1_0", null, salableProduct.getPrice().toString(),null);
+		
+		createSaleCashRegisterMovement("sale999_1", "pay999_1_1", null, "-100","Balance doit être inférieur ou égal à");
+	}
 }

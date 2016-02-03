@@ -56,8 +56,7 @@ public class SaleWithOneFiniteStateMachineStateBusinessIT extends AbstractSaleWi
 	}
 
 	@Override
-	protected void noTax8AllPaidUnitPriceButCostValueSet(
-			CreateSaleParameters parameters) {
+	protected void noTax8AllPaidUnitPriceButCostValueSet(CreateSaleParameters parameters) {
 		// TODO Auto-generated method stub
 		
 	}

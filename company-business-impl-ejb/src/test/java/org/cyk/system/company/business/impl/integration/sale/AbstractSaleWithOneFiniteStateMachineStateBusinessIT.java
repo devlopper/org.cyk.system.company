@@ -1,6 +1,6 @@
 package org.cyk.system.company.business.impl.integration.sale;
 
-import java.math.BigDecimal;
+import org.junit.Test;
 
 public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT extends AbstractSaleBusinessIT {
 
@@ -11,7 +11,7 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     
     @Override
     protected void businesses() {
-    	updateAccountingPeriod(new BigDecimal("0.18"), Boolean.TRUE);
+    	updateAccountingPeriod("0.18", "true","false","false");
     	
     	CreateSaleParameters p = new CreateSaleParameters(S1, null, null, CUST1, new String[][]{{TP1,"2"}}, "0","false");
     	createSale(p);
@@ -122,4 +122,34 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     protected abstract void noTax7AllPaidNoUnitPrice(CreateSaleParameters parameters);
     protected abstract void noTax8AllPaidUnitPriceButCostValueSet(CreateSaleParameters parameters);
     
+    /* Exceptions */
+    
+    @Test
+    public void balanceMustBeGreaterThanZero(){
+    	companyBusinessTestHelper.balanceMustBeGreaterThanZero();
+    }
+    
+    @Test
+    public void balanceCannotBeIncrementedBeforeSoldOut(){
+    	companyBusinessTestHelper.balanceCannotBeIncrementedBeforeSoldOut();
+    }
+    
+    @Test
+    public void balanceMustBeLowerThanCost(){
+    	companyBusinessTestHelper.balanceMustBeLowerThanCost();
+    }
+    
+    /**/
+    
+    @Override
+    protected void createSale(CreateSaleParameters p) {
+    	p.setWriteReport(Boolean.FALSE);
+    	super.createSale(p);
+    }
+    
+    @Override
+    protected void createSaleCashRegisterMovement(CreateSaleCashRegisterMovementParameters p) {
+    	p.setWriteReport(Boolean.FALSE);
+    	super.createSaleCashRegisterMovement(p);
+    }
 }

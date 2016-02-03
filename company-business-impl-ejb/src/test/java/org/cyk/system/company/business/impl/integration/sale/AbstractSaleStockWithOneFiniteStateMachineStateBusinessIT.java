@@ -1,7 +1,5 @@
 package org.cyk.system.company.business.impl.integration.sale;
 
-import java.math.BigDecimal;
-
 public abstract class AbstractSaleStockWithOneFiniteStateMachineStateBusinessIT extends AbstractSaleBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
@@ -10,7 +8,7 @@ public abstract class AbstractSaleStockWithOneFiniteStateMachineStateBusinessIT 
     
     @Override
     protected void businesses() {
-    	updateAccountingPeriod(new BigDecimal("0.18"), Boolean.TRUE);
+    	updateAccountingPeriod("0.18", "true","false","false");
     	    	
     	CreateSaleStockInputParameters sp = new CreateSaleStockInputParameters(SS1, null, null, CUST6, "2000", "false","1");
     	createSaleStock(sp);

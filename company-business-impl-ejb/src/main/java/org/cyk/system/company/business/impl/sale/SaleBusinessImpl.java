@@ -276,6 +276,12 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			logIdentifiable("Derived values computed",sale);
 		}
 	}
+	
+	@Override
+	public Sale delete(Sale object) {
+		// TODO Auto-generated method stub
+		return super.delete(object);
+	}
 
 	private void createReport(InvoiceParameters previous,InvoiceParameters current){
 		SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().produceInvoice(previous,current);
