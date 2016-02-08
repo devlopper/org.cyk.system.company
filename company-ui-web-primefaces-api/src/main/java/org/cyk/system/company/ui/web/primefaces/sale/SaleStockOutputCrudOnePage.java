@@ -58,7 +58,7 @@ public class SaleStockOutputCrudOnePage extends AbstractCrudOnePage<SaleStockTan
 	@SuppressWarnings("unchecked")
 	@Override
 	protected <T extends AbstractIdentifiable> T identifiableFromRequestParameter(Class<T> aClass) {
-		return (T) saleStockOutputBusiness.instanciate((Person) userSession.getUser(),saleStockInput);
+		return (T) saleStockOutputBusiness.instanciateOne((Person) userSession.getUser(),saleStockInput);
 	}
 	
 	@Override

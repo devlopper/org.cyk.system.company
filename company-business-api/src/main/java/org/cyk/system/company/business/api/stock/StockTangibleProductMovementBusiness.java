@@ -9,8 +9,8 @@ import org.cyk.system.root.business.api.TypedBusiness;
 
 public interface StockTangibleProductMovementBusiness extends TypedBusiness<StockTangibleProductMovement> {
 
-	StockTangibleProductMovement instanciate(String[] arguments);
-	List<StockTangibleProductMovement> instanciate(String[][] arguments);
+	StockTangibleProductMovement instanciateOne(String[] arguments);
+	List<StockTangibleProductMovement> instanciateMany(String[][] arguments);
 	
 	Collection<StockTangibleProductMovement> findByCriteria(StockTangibleProductMovementSearchCriteria criteria);
 	Long countByCriteria(StockTangibleProductMovementSearchCriteria criteria);

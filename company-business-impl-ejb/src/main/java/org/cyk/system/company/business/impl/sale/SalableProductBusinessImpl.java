@@ -26,7 +26,7 @@ public class SalableProductBusinessImpl extends AbstractTypedBusinessService<Sal
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public SalableProduct instanciate(String productCode, String unitPrice) {
+	public SalableProduct instanciateOne(String productCode, String unitPrice) {
 		SalableProduct salableProduct = new SalableProduct();
 		salableProduct.setProduct(productDao.read(productCode));
 		salableProduct.setPrice(commonUtils.getBigDecimal(unitPrice));
@@ -34,10 +34,10 @@ public class SalableProductBusinessImpl extends AbstractTypedBusinessService<Sal
 	}
 
 	@Override
-	public List<SalableProduct> instanciate(String[][] arguments) {
+	public List<SalableProduct> instanciateMany(String[][] arguments) {
 		List<SalableProduct> list = new ArrayList<>();
 		for(String[] info : arguments)
-			list.add(instanciate(info[0], info.length>1?info[1]:null));
+			list.add(instanciateOne(info[0], info.length>1?info[1]:null));
 		return list;
 	}
 }

@@ -45,7 +45,7 @@ public class SaleStockTangibleProductMovementInputBusinessImpl extends AbstractS
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public SaleStockTangibleProductMovementInput instanciate(Sale sale) {
+	public SaleStockTangibleProductMovementInput instanciateOne(Sale sale) {
 		SaleStockTangibleProductMovementInput saleStockInput = new SaleStockTangibleProductMovementInput();
 		saleStockInput.setSale(sale);
 		saleStockInput.setStockTangibleProductMovement(new StockTangibleProductMovement());

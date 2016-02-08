@@ -93,7 +93,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 		Date lastSaleDate = null;
 		int stock = randomDataProvider.randomInt(0, count*2);
 		for(int i=0;i<count;i++){
-			Sale sale = saleBusiness.instanciate(cashier.getPerson());
+			Sale sale = saleBusiness.instanciateOne(cashier.getPerson());
 			//sale.setAccountingPeriod(accountingPeriod);
 			sale.setCustomer(rootRandomDataProvider.oneFromDatabase(Customer.class));
 			//sale.setCashier(cashier);
@@ -151,7 +151,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 			//saleStockInputBusiness.create(saleStockInput, saleCashRegisterMovement);
 			
 			for(int j=0;j<randomDataProvider.randomInt(1,2);j++){
-				SaleStockTangibleProductMovementOutput saleStockOutput = saleStockOutputBusiness.instanciate(cashier.getPerson(), saleStockInput);
+				SaleStockTangibleProductMovementOutput saleStockOutput = saleStockOutputBusiness.instanciateOne(cashier.getPerson(), saleStockInput);
 				saleCashRegisterMovement(saleStockOutput.getSaleCashRegisterMovement(),sale.getBalance().getValue(),1.3f);
 				//saleStockOutput.getStockTangibleProductStockMovement().setQuantity(new BigDecimal(randomDataProvider.randomInt(1, saleStockOutput.getSaleStockInput().getRemainingNumberOfGoods().intValue())));
 				saleStockOutputBusiness.create(saleStockOutput);

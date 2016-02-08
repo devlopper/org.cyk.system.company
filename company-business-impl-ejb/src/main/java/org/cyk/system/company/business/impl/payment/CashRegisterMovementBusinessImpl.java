@@ -42,11 +42,11 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public CashRegisterMovement instanciate(Person person) {
+	public CashRegisterMovement instanciateOne(Person person) {
 		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
 		cashRegisterMovement.setCashRegister(cashierDao.readByPerson(person).getCashRegister());
 		cashRegisterMovement.setMovement(RootBusinessLayer.getInstance().getMovementBusiness()
-				.instanciate(cashRegisterMovement.getCashRegister().getMovementCollection(), Boolean.TRUE));
+				.instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection(), Boolean.TRUE));
 		return cashRegisterMovement;
 	}
 

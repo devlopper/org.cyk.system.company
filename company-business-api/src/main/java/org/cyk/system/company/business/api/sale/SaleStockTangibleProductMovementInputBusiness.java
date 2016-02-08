@@ -6,7 +6,7 @@ import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
 
 public interface SaleStockTangibleProductMovementInputBusiness extends AbstractSaleStockTangibleProductMovementBusiness<SaleStockTangibleProductMovementInput,SaleStockInputSearchCriteria> {
 
-	SaleStockTangibleProductMovementInput instanciate(Sale sale);
+	SaleStockTangibleProductMovementInput instanciateOne(Sale sale);
 	
 	//void create(SaleStockTangibleProductMovementInput saleStock,SaleCashRegisterMovement saleCashRegisterMovement);
 	

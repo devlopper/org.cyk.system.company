@@ -38,7 +38,7 @@ public class ProductionBusinessImpl extends AbstractSpreadSheetBusinessImpl<Prod
 	}
 	
 	@Override
-	public Production instanciate(ProductionPlan productionPlan) {
+	public Production instanciateOne(ProductionPlan productionPlan) {
 		Production production = new Production();
 		production.setTemplate(productionPlan);
 		CompanyBusinessLayer.getInstance().getProductionPlanBusiness().load(productionPlan);

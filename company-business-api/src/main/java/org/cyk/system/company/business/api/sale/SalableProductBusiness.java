@@ -7,7 +7,7 @@ import org.cyk.system.root.business.api.TypedBusiness;
 
 public interface SalableProductBusiness extends TypedBusiness<SalableProduct> {
 
-	SalableProduct instanciate(String productCode,String unitPrice);
-	List<SalableProduct> instanciate(String[][] arguments);
+	SalableProduct instanciateOne(String productCode,String unitPrice);
+	List<SalableProduct> instanciateMany(String[][] arguments);
 	
 }

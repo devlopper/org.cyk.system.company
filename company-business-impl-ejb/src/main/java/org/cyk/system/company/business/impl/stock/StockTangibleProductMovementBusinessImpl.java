@@ -32,21 +32,21 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 	}
 	
 	@Override
-	public StockTangibleProductMovement instanciate(String[] arguments) {
+	public StockTangibleProductMovement instanciateOne(String[] arguments) {
 		StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement();
 		stockTangibleProductMovement.setStockableTangibleProduct(stockableTangibleProductDao.readByTangibleProduct(tangibleProductDao.read(arguments[0])));
 		BigDecimal value = numberBusiness.parseBigDecimal(arguments[1]);
 		stockTangibleProductMovement.setMovement(RootBusinessLayer.getInstance().getMovementBusiness()
-				.instanciate(stockTangibleProductMovement.getStockableTangibleProduct().getMovementCollection(), value.compareTo(BigDecimal.ZERO) >= 0));
+				.instanciateOne(stockTangibleProductMovement.getStockableTangibleProduct().getMovementCollection(), value.compareTo(BigDecimal.ZERO) >= 0));
 		stockTangibleProductMovement.getMovement().setValue(value);
 		return stockTangibleProductMovement;
 	}
 	
 	@Override
-	public List<StockTangibleProductMovement> instanciate(String[][] arguments) {
+	public List<StockTangibleProductMovement> instanciateMany(String[][] arguments) {
 		List<StockTangibleProductMovement> list = new ArrayList<>();
 		for(String[] info : arguments)
-			list.add(instanciate(info));
+			list.add(instanciateOne(info));
 		return list;
 	}
 	

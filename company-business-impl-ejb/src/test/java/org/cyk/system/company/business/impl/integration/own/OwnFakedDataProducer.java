@@ -32,17 +32,17 @@ public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer imple
 		});
 		flush(IntangibleProduct.class, intangibleProducts);
 		
-		Collection<StockableTangibleProduct> stockableTangibleProducts = companyBusinessLayer.getStockableTangibleProductBusiness().instanciate(new String[][]{
+		Collection<StockableTangibleProduct> stockableTangibleProducts = companyBusinessLayer.getStockableTangibleProductBusiness().instanciateMany(new String[][]{
 				new String[]{"TP2"},new String[]{"TP3"},new String[]{"TP5"}
 		});
 		flush(StockableTangibleProduct.class, stockableTangibleProducts);
 		
-		Collection<StockTangibleProductMovement> stockTangibleProductMovements = companyBusinessLayer.getStockTangibleProductMovementBusiness().instanciate(new String[][]{
+		Collection<StockTangibleProductMovement> stockTangibleProductMovements = companyBusinessLayer.getStockTangibleProductMovementBusiness().instanciateMany(new String[][]{
 				new String[]{"TP2","100"},new String[]{"TP3","100"},new String[]{"TP5","100"}
 		});
 		flush(StockTangibleProductMovement.class, stockTangibleProductMovements);
 		
-		Collection<SalableProduct> salableProducts = companyBusinessLayer.getSalableProductBusiness().instanciate(new String[][]{
+		Collection<SalableProduct> salableProducts = companyBusinessLayer.getSalableProductBusiness().instanciateMany(new String[][]{
 				new String[]{"TP2","1000"},new String[]{"TP5","2500"},new String[]{"IP5"}
 		});
 		flush(SalableProduct.class, salableProducts);
@@ -52,7 +52,7 @@ public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer imple
 
 	@Override
 	protected void doBusiness(FakedDataProducerListener listener) {
-		Collection<Sale> sales = companyBusinessLayer.getSaleBusiness().instanciate(new Object[][]{
+		Collection<Sale> sales = companyBusinessLayer.getSaleBusiness().instanciateMany(new Object[][]{
 				new Object[]{"sale001",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getRegistration().getCode(),"1/1/2000 05:00","false"
 						,new String[][]{ new String[]{"TP2","2"} }}
 				,new Object[]{"sale002",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getRegistration().getCode(),"1/1/2000 05:15","false"

@@ -54,23 +54,23 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public SaleCashRegisterMovement instanciate(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode, String amount) {
+	public SaleCashRegisterMovement instanciateOne(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode, String amount) {
 		SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement();
 		saleCashRegisterMovement.setSale(saleDao.readByComputedIdentifier(saleComputedIdentifier));
 		saleCashRegisterMovement.setAmountIn(numberBusiness.parseBigDecimal(amount));
 		saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement());
 		saleCashRegisterMovement.getCashRegisterMovement().setComputedIdentifier(computedIdentifier);
 		saleCashRegisterMovement.getCashRegisterMovement().setCashRegister(cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)).getCashRegister());
-		saleCashRegisterMovement.getCashRegisterMovement().setMovement(RootBusinessLayer.getInstance().getMovementBusiness().instanciate(
+		saleCashRegisterMovement.getCashRegisterMovement().setMovement(RootBusinessLayer.getInstance().getMovementBusiness().instanciateOne(
 				saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection(),amount));
 		return saleCashRegisterMovement;
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public SaleCashRegisterMovement instanciate(Sale sale,Person person,Boolean input) {
+	public SaleCashRegisterMovement instanciateOne(Sale sale,Person person,Boolean input) {
 		Cashier cashier = cashierDao.readByPerson(person);
 		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement(cashier.getCashRegister(),new Movement());
-		cashRegisterMovement.setMovement(RootBusinessLayer.getInstance().getMovementBusiness().instanciate(cashier.getCashRegister().getMovementCollection(),input));
+		cashRegisterMovement.setMovement(RootBusinessLayer.getInstance().getMovementBusiness().instanciateOne(cashier.getCashRegister().getMovementCollection(),input));
 		SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement(sale,cashRegisterMovement);
 		logInstanceCreated(saleCashRegisterMovement);
 		return saleCashRegisterMovement;

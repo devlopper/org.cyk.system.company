@@ -6,5 +6,5 @@ import org.cyk.system.root.model.party.person.Person;
 
 public interface CashRegisterMovementBusiness extends TypedBusiness<CashRegisterMovement> {
 
-	CashRegisterMovement instanciate(Person person);
+	CashRegisterMovement instanciateOne(Person person);
 }

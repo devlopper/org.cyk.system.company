@@ -52,11 +52,11 @@ public class SaleStockTangibleProductMovementOutputBusinessImpl extends Abstract
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public SaleStockTangibleProductMovementOutput instanciate(Person person,SaleStockTangibleProductMovementInput input) {
-		SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.instanciate(input.getSale(), person,Boolean.TRUE);
+	public SaleStockTangibleProductMovementOutput instanciateOne(Person person,SaleStockTangibleProductMovementInput input) {
+		SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness.instanciateOne(input.getSale(), person,Boolean.TRUE);
 		SaleStockTangibleProductMovementOutput output = new SaleStockTangibleProductMovementOutput(input,saleCashRegisterMovement,new StockTangibleProductMovement());
 		output.getStockTangibleProductMovement().setStockableTangibleProduct(CompanyBusinessLayer.getInstance().getStockableTangibleProductStocking());
-		output.getStockTangibleProductMovement().setMovement(RootBusinessLayer.getInstance().getMovementBusiness().instanciate(
+		output.getStockTangibleProductMovement().setMovement(RootBusinessLayer.getInstance().getMovementBusiness().instanciateOne(
 				output.getStockTangibleProductMovement().getStockableTangibleProduct().getMovementCollection(), Boolean.FALSE));
 		return output;
 	}

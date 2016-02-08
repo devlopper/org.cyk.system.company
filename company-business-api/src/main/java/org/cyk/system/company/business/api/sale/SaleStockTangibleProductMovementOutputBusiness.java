@@ -9,7 +9,7 @@ import org.cyk.system.root.model.party.person.Person;
 
 public interface SaleStockTangibleProductMovementOutputBusiness extends AbstractSaleStockTangibleProductMovementBusiness<SaleStockTangibleProductMovementOutput,SaleStockOutputSearchCriteria> {
 
-	SaleStockTangibleProductMovementOutput instanciate(Person person,SaleStockTangibleProductMovementInput input);
+	SaleStockTangibleProductMovementOutput instanciateOne(Person person,SaleStockTangibleProductMovementInput input);
 
 	Collection<SaleStockTangibleProductMovementOutput> findBySaleStockInput(SaleStockTangibleProductMovementInput input);
 	

@@ -8,7 +8,7 @@ import org.cyk.system.root.business.api.TypedBusiness;
 
 public interface StockableTangibleProductBusiness extends TypedBusiness<StockableTangibleProduct> {
 
-	StockableTangibleProduct instanciate(TangibleProduct tangibleProduct);
-	StockableTangibleProduct instanciate(String tangibleProductCode);
-	List<StockableTangibleProduct> instanciate(String[][] arguments);
+	StockableTangibleProduct instanciateOne(TangibleProduct tangibleProduct);
+	StockableTangibleProduct instanciateOne(String tangibleProductCode);
+	List<StockableTangibleProduct> instanciateMany(String[][] arguments);
 }

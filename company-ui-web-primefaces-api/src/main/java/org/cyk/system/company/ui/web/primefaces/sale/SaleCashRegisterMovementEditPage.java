@@ -90,7 +90,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		else
 			sale = CompanyBusinessLayer.getInstance().getSaleBusiness().find(saleIdentifier);
 		SaleCashRegisterMovement saleCashRegisterMovement = 
-				CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().instanciate(sale, (Person) userSession.getUser(), Boolean.TRUE);
+				CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().instanciateOne(sale, (Person) userSession.getUser(), Boolean.TRUE);
 		String action = requestParameter(UIManager.getInstance().getActionIdentifierParameter());
 		if(CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementInput().equals(action))
 			saleCashRegisterMovement.getCashRegisterMovement().getMovement().setAction(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction());

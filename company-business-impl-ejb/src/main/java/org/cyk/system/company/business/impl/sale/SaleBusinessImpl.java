@@ -69,8 +69,8 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public Sale instanciate() {
-		Sale sale = new Sale();
+	public Sale instanciateOne() {
+		Sale sale = super.instanciateOne();
 		sale.setAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent());
 		sale.setAutoComputeValueAddedTax(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().signum()!=0);
 		sale.setFiniteStateMachineState(sale.getAccountingPeriod().getSaleConfiguration().getFiniteStateMachine().getInitialState());
@@ -78,15 +78,15 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public Sale instanciate(Person person) {
-		Sale sale = instanciate();
+	public Sale instanciateOne(Person person) {
+		Sale sale = super.instanciateOne();
 		sale.setCashier(CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson(person));
 		return sale;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public Sale instanciate(String computedIdentifier,String cashierPersonCode, String customerRegistrationCode,String date,String taxable, String[][] salableProductInfos) {
-		Sale sale = instanciate();
+	public Sale instanciateOne(String computedIdentifier,String cashierPersonCode, String customerRegistrationCode,String date,String taxable, String[][] salableProductInfos) {
+		Sale sale = super.instanciateOne();
 		sale.setComputedIdentifier(computedIdentifier);
 		sale.setCashier(cashierPersonCode==null?cashierDao.select().one():cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)));
 		sale.setCustomer(customerRegistrationCode==null?null:customerDao.readByRegistrationCode(customerRegistrationCode));
@@ -103,10 +103,10 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<Sale> instanciate(Object[][] arguments) {
+	public List<Sale> instanciateMany(Object[][] arguments) {
 		List<Sale> list = new ArrayList<>();
 		for(Object[] argument : arguments)
-			list.add(instanciate((String)argument[0], (String)argument[1], (String)argument[2], (String)argument[3], (String)argument[4]
+			list.add(instanciateOne((String)argument[0], (String)argument[1], (String)argument[2], (String)argument[3], (String)argument[4]
 					, (String[][])argument[5]));
 		return list;
 	}
@@ -250,7 +250,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 						if(saleProduct.getSalableProduct().getProduct().equals(stockableTangibleProduct.getTangibleProduct()))
 							count = count.add(saleProduct.getQuantity());
 					StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement(stockableTangibleProduct
-							,RootBusinessLayer.getInstance().getMovementBusiness().instanciate(stockableTangibleProduct.getMovementCollection(), Boolean.FALSE));
+							,RootBusinessLayer.getInstance().getMovementBusiness().instanciateOne(stockableTangibleProduct.getMovementCollection(), Boolean.FALSE));
 					stockTangibleProductMovement.getMovement().setValue(count.negate());
 					CompanyBusinessLayer.getInstance().getStockTangibleProductMovementBusiness().create(stockTangibleProductMovement);
 					logIdentifiable("Updated",stockableTangibleProduct);

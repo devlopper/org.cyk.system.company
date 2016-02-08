@@ -197,12 +197,12 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	/* Sale */
 	
     public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable,String finalState,String expectedThrowableMessage){
-    	final Sale sale =  getCompanyBusinessLayer().getSaleBusiness().instanciate(cashierDao.select().one().getPerson());
+    	final Sale sale =  getCompanyBusinessLayer().getSaleBusiness().instanciateOne(cashierDao.select().one().getPerson());
     	set(sale,identifier,date, cashierCode, customerCode, products, taxable);
     	if(paid==null || !Boolean.TRUE.equals(Boolean.parseBoolean(StringUtils.defaultString(finalState,"true")))){
     		 getCompanyBusinessLayer().getSaleBusiness().create(sale);
     	}else{
-    		final SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().instanciate(sale, sale.getCashier().getPerson(),Boolean.TRUE);
+    		final SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().instanciateOne(sale, sale.getCashier().getPerson(),Boolean.TRUE);
         	set(saleCashRegisterMovement, paid);
         	if(expectedThrowableMessage!=null){
         		new Try(expectedThrowableMessage){ 
@@ -234,7 +234,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     
     public void createSaleCashRegisterMovement(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode,String amount,String expectedThrowableMessage){
     	final SaleCashRegisterMovement saleCashRegisterMovement = CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness()
-    			.instanciate(saleComputedIdentifier,computedIdentifier, cashierPersonCode==null?cashierDao.readOneRandomly().getPerson().getCode():cashierPersonCode, amount);
+    			.instanciateOne(saleComputedIdentifier,computedIdentifier, cashierPersonCode==null?cashierDao.readOneRandomly().getPerson().getCode():cashierPersonCode, amount);
     	if(expectedThrowableMessage!=null){
     		new Try(expectedThrowableMessage){ 
     			private static final long serialVersionUID = -8176804174113453706L;
@@ -250,9 +250,9 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     }
     
     public SaleStockTangibleProductMovementInput createSaleStockTangibleProductMovementInput(String identifier,String date,String cashierCode,String customerCode,String price,String taxable,String quantity){
-    	Sale sale = CompanyBusinessLayer.getInstance().getSaleBusiness().instanciate(cashierDao.readAll().iterator().next().getPerson());
+    	Sale sale = CompanyBusinessLayer.getInstance().getSaleBusiness().instanciateOne(cashierDao.readAll().iterator().next().getPerson());
     	set(sale, identifier, date, cashierCode, customerCode, null, taxable);
-    	SaleStockTangibleProductMovementInput input = CompanyBusinessLayer.getInstance().getSaleStockInputBusiness().instanciate(sale);
+    	SaleStockTangibleProductMovementInput input = CompanyBusinessLayer.getInstance().getSaleStockInputBusiness().instanciateOne(sale);
     	set(input, quantity);
     	if(price!=null){
     		SaleProduct saleProduct = input.getSale().getSaleProducts().iterator().next();
@@ -267,7 +267,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     
     public SaleStockTangibleProductMovementOutput createSaleStockTangibleProductMovementOutput(String identifier,String date,String cashierCode,String paid,String quantity){
     	Sale sale = saleDao.readByComputedIdentifier(identifier);
-    	SaleStockTangibleProductMovementOutput output = CompanyBusinessLayer.getInstance().getSaleStockOutputBusiness().instanciate(cashierDao.readAll().iterator().next().getPerson()
+    	SaleStockTangibleProductMovementOutput output = CompanyBusinessLayer.getInstance().getSaleStockOutputBusiness().instanciateOne(cashierDao.readAll().iterator().next().getPerson()
     			,saleStockTangibleProductMovementInputDao.readBySale(sale));
     	output.getSaleCashRegisterMovement().getCashRegisterMovement().getMovement().setValue(commonUtils.getBigDecimal(paid));
     	output.getStockTangibleProductMovement().getMovement().setValue(commonUtils.getBigDecimal(quantity));

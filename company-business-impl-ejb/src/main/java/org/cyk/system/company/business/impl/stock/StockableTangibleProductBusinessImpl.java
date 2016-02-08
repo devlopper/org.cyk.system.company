@@ -31,23 +31,23 @@ public class StockableTangibleProductBusinessImpl extends AbstractTypedBusinessS
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public StockableTangibleProduct instanciate(TangibleProduct tangibleProduct) {
+	public StockableTangibleProduct instanciateOne(TangibleProduct tangibleProduct) {
 		StockableTangibleProduct stockableTangibleProduct = new StockableTangibleProduct();
 		stockableTangibleProduct.setTangibleProduct(tangibleProduct);
-		stockableTangibleProduct.setMovementCollection(RootBusinessLayer.getInstance().getMovementCollectionBusiness().instanciate(tangibleProduct.getCode(), INPUT_LABEL,OUTPUT_LABEL));
+		stockableTangibleProduct.setMovementCollection(RootBusinessLayer.getInstance().getMovementCollectionBusiness().instanciateOne(tangibleProduct.getCode(), INPUT_LABEL,OUTPUT_LABEL));
 		return stockableTangibleProduct;
 	}
 	
 	@Override
-	public StockableTangibleProduct instanciate(String tangibleProductCode) {
-		return instanciate(tangibleProductDao.read(tangibleProductCode));
+	public StockableTangibleProduct instanciateOne(String tangibleProductCode) {
+		return instanciateOne(tangibleProductDao.read(tangibleProductCode));
 	}
 	
 	@Override
-	public List<StockableTangibleProduct> instanciate(String[][] arguments) {
+	public List<StockableTangibleProduct> instanciateMany(String[][] arguments) {
 		List<StockableTangibleProduct> list = new ArrayList<>();
 		for(String[] info : arguments)
-			list.add(instanciate(info[0]));
+			list.add(instanciateOne(info[0]));
 		return list;
 	}
 	
@@ -55,7 +55,7 @@ public class StockableTangibleProductBusinessImpl extends AbstractTypedBusinessS
 	public StockableTangibleProduct create(StockableTangibleProduct stockableTangibleProduct) {
 		if(stockableTangibleProduct.getMovementCollection()==null)
 			stockableTangibleProduct.setMovementCollection(RootBusinessLayer.getInstance().getMovementCollectionBusiness()
-					.instanciate(stockableTangibleProduct.getTangibleProduct().getCode(), INPUT_LABEL,OUTPUT_LABEL));
+					.instanciateOne(stockableTangibleProduct.getTangibleProduct().getCode(), INPUT_LABEL,OUTPUT_LABEL));
 		RootBusinessLayer.getInstance().getMovementCollectionBusiness().create(stockableTangibleProduct.getMovementCollection());
 		return super.create(stockableTangibleProduct);
 	}

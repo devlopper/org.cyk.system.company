@@ -39,7 +39,7 @@ public class ProductionEditPage extends AbstractCrudOnePage<Production> implemen
 	
 	@Override
 	protected Production instanciateIdentifiable() {
-		return CompanyBusinessLayer.getInstance().getProductionBusiness().instanciate(
+		return CompanyBusinessLayer.getInstance().getProductionBusiness().instanciateOne(
 				CompanyBusinessLayer.getInstance().getProductionPlanBusiness().find(requestParameterLong(ProductionPlan.class)));
 	}
 				

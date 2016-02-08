@@ -13,8 +13,8 @@ import org.cyk.system.root.model.party.person.Person;
 
 public interface SaleCashRegisterMovementBusiness extends TypedBusiness<SaleCashRegisterMovement> {
 
-	SaleCashRegisterMovement instanciate(Sale sale,Person person,Boolean input);
-	SaleCashRegisterMovement instanciate(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode,String amount);
+	SaleCashRegisterMovement instanciateOne(Sale sale,Person person,Boolean input);
+	SaleCashRegisterMovement instanciateOne(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode,String amount);
 	
 	Collection<SaleCashRegisterMovement> findBySale(Sale sale);
 

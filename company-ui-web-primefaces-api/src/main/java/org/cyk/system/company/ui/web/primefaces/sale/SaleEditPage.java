@@ -107,7 +107,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		for(SalableProduct salableProduct : salableProducts)
 			( salableProduct.getProduct() instanceof TangibleProduct ? tangibleProducts : intangibleProducts ).add(salableProduct);	
 		customers = new ArrayList<Customer>(customerBusiness.findAll());
-		cashRegisterController.init(CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().instanciate(identifiable, identifiable.getCashier().getPerson(), Boolean.TRUE),Boolean.TRUE);
+		cashRegisterController.init(CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().instanciateOne(identifiable, identifiable.getCashier().getPerson(), Boolean.TRUE),Boolean.TRUE);
 		sell();
 	}
 	
@@ -115,7 +115,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	
 	@Override
 	protected Sale instanciateIdentifiable() {
-		return saleBusiness.instanciate((Person) getUserSession().getUser());
+		return saleBusiness.instanciateOne((Person) getUserSession().getUser());
 	}
 	
 	/*@SuppressWarnings("unchecked")
