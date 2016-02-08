@@ -10,6 +10,9 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.model.Balance;
@@ -50,11 +53,8 @@ import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineAlphabetDao;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
-import org.cyk.utility.common.test.ExpectedValues;
+import org.cyk.utility.common.ObjectFieldValues;
 import org.cyk.utility.common.test.TestEnvironmentListener.Try;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Singleton
 public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implements Serializable {
@@ -276,46 +276,43 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     				    
     /*Assertions*/
        
-    public void assertSale(String computedIdentifier,ExpectedValues expectedValues){
+    public void assertSale(String computedIdentifier,ObjectFieldValues expectedValues){
     	Sale sale = saleDao.readByComputedIdentifier(computedIdentifier);
     	doAssertions(sale, expectedValues);
-    	doAssertions(sale.getCost(), expectedValues);
-    	doAssertions(sale.getBalance(), expectedValues);
     }
     public void assertSale(String computedIdentifier,String finiteStateMachineStateCode,String numberOfProceedElements,String cost,String tax,String turnover,String balance){
-    	assertSale(computedIdentifier, new ExpectedValues()
-    		.setClass(FiniteStateMachineState.class).setValues(FiniteStateMachineState.FIELD_CODE,finiteStateMachineStateCode)
-    		.setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,numberOfProceedElements,Cost.FIELD_VALUE, cost,Cost.FIELD_TAX, tax,Cost.FIELD_TURNOVER, turnover)
-    		.setClass(Balance.class).setValues(Balance.FIELD_VALUE,balance)
-    		);
+    	assertSale(computedIdentifier, new ObjectFieldValues(Sale.class)
+		.set(FiniteStateMachineState.FIELD_CODE,finiteStateMachineStateCode)
+		.setBaseName(Sale.FIELD_COST).set(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,numberOfProceedElements,Cost.FIELD_VALUE, cost,Cost.FIELD_TAX, tax,Cost.FIELD_TURNOVER, turnover)
+		.setBaseName(Sale.FIELD_BALANCE).set(Balance.FIELD_VALUE,balance));
     }
     
-    public void assertCustomer(String registrationCode,ExpectedValues expectedValues){
+    public void assertCustomer(String registrationCode,ObjectFieldValues expectedValues){
     	Customer customer = customerDao.readByRegistrationCode(registrationCode);
     	doAssertions(customer, expectedValues);
     }
     public void assertCustomer(String registrationCode,String saleCount,String turnover,String paymentCount,String paid,String balance){
-    	assertCustomer(registrationCode, new ExpectedValues()
-    		.setClass(Customer.class).setValues(Customer.FIELD_SALE_COUNT,saleCount,Customer.FIELD_BALANCE,balance,Customer.FIELD_TURNOVER,turnover
-    				,Customer.FIELD_PAYMENT_COUNT,paymentCount,Customer.FIELD_PAID,paid));
+    	assertCustomer(registrationCode, new ObjectFieldValues(Customer.class)
+		.set(Customer.FIELD_SALE_COUNT,saleCount,Customer.FIELD_BALANCE,balance,Customer.FIELD_TURNOVER,turnover
+				,Customer.FIELD_PAYMENT_COUNT,paymentCount,Customer.FIELD_PAID,paid));
     }
     
-    public void assertCurrentAccountingPeriod(ExpectedValues expectedValues){
+    public void assertCurrentAccountingPeriod(ObjectFieldValues expectedValues){
     	AccountingPeriod accountingPeriod = CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent();
     	doAssertions(accountingPeriod.getSaleResults().getCost(), expectedValues);
     }
     public void assertCurrentAccountingPeriod(String numberOfProceedElements,String cost,String tax,String turnover){
-    	assertCurrentAccountingPeriod(new ExpectedValues()
-			.setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,numberOfProceedElements,Cost.FIELD_VALUE, cost,Cost.FIELD_TAX, tax,Cost.FIELD_TURNOVER, turnover));
+    	assertCurrentAccountingPeriod(new ObjectFieldValues(Cost.class)
+			.set(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,numberOfProceedElements,Cost.FIELD_VALUE, cost,Cost.FIELD_TAX, tax,Cost.FIELD_TURNOVER, turnover));
     }
     
-    public void assertCurrentAccountingPeriodProduct(String productCode,ExpectedValues expectedValues){
+    public void assertCurrentAccountingPeriodProduct(String productCode,ObjectFieldValues expectedValues){
     	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByProduct(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
     	doAssertions(accountingPeriodProduct.getSaleResults().getCost(), expectedValues);
     }
     public void assertCurrentAccountingPeriodProduct(String productCode,String numberOfProceedElements,String cost,String tax,String turnover){
-    	assertCurrentAccountingPeriodProduct(productCode,new ExpectedValues()
-    			.setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,numberOfProceedElements,Cost.FIELD_VALUE, cost,Cost.FIELD_TAX, tax,Cost.FIELD_TURNOVER, turnover));
+    	assertCurrentAccountingPeriodProduct(productCode,new ObjectFieldValues(Cost.class)
+    		.set(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,numberOfProceedElements,Cost.FIELD_VALUE, cost,Cost.FIELD_TAX, tax,Cost.FIELD_TURNOVER, turnover));
     }
     
     public void assertCostComputation(AccountingPeriod accountingPeriod,String[][] values){
@@ -362,31 +359,31 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	for(Sale sale : sales)
     		assertEquals("Find sale by criteria computed identifier",expectedComputedIdentifiers[i++],sale.getComputedIdentifier());
     	SaleResults saleResults = CompanyBusinessLayer.getInstance().getSaleBusiness().computeByCriteria(criteria);
-    	doAssertions(saleResults, new ExpectedValues().setClass(Cost.class).setValues(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,expectedComputedIdentifiers.length+""
-    			,Cost.FIELD_VALUE,expectedCost,Cost.FIELD_TAX,expectedTax,Cost.FIELD_TURNOVER,expectedTurnover)
-    			.setClass(SaleResults.class).setValues(SaleResults.FIELD_BALANCE,expectedBalance,SaleResults.FIELD_PAID,expectedPaid));
+    	doAssertions(saleResults, new ObjectFieldValues(SaleResults.class).set(SaleResults.FIELD_BALANCE,expectedBalance,SaleResults.FIELD_PAID,expectedPaid)
+    		.setBaseName(SaleResults.FIELD_COST).set(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,expectedComputedIdentifiers.length+""
+    			,Cost.FIELD_VALUE,expectedCost,Cost.FIELD_TAX,expectedTax,Cost.FIELD_TURNOVER,expectedTurnover));
     }
     
-    public void assertAccountingPeriodProduct(String productCode,ExpectedValues expectedValues){
+    public void assertAccountingPeriodProduct(String productCode,ObjectFieldValues expectedValues){
     	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByProduct(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
     	doAssertions(accountingPeriodProduct.getSaleResults().getCost(), expectedValues);
     	doAssertions(accountingPeriodProduct.getProductResults().getNumberOfSalesSort(), expectedValues);
     }
     
-    public void assertAccountingPeriod(AccountingPeriod accountingPeriod,ExpectedValues expectedValues){
+    public void assertAccountingPeriod(AccountingPeriod accountingPeriod,ObjectFieldValues expectedValues){
     	doAssertions(accountingPeriod.getSaleResults().getCost(), expectedValues);
     }
-    public void assertAccountingPeriod(ExpectedValues expectedValues){
+    public void assertAccountingPeriod(ObjectFieldValues expectedValues){
     	assertAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), expectedValues);
     }
     
-    public void assertStockableTangibleProduct(String tangibleProductCode,ExpectedValues expectedValues){
+    public void assertStockableTangibleProduct(String tangibleProductCode,ObjectFieldValues expectedValues){
     	StockableTangibleProduct stockableTangibleProduct = stockableTangibleProductDao.readByTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode));
     	doAssertions(stockableTangibleProduct.getMovementCollection(), expectedValues);
     }
     public void assertStockableTangibleProduct(String tangibleProductCode,String value){
-    	assertStockableTangibleProduct(tangibleProductCode, new ExpectedValues()
-    			.setClass(MovementCollection.class).setValues(MovementCollection.FIELD_VALUE,value));
+    	assertStockableTangibleProduct(tangibleProductCode, new ObjectFieldValues(StockableTangibleProduct.class)
+    			.setBaseName(StockableTangibleProduct.FIELD_MOVEMENT_COLLECTION).set(MovementCollection.FIELD_VALUE,value));
     }
     
     /**/

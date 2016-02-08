@@ -54,5 +54,6 @@ public class StockableTangibleProduct extends AbstractIdentifiable implements Se
 	
 	public static final String FIELD_TANGIBLE_PRODUCT = "tangibleProduct";
 	public static final String FIELD_QUANTITY_INTERVAL = "quantityInterval";
+	public static final String FIELD_MOVEMENT_COLLECTION = "movementCollection";
 	
 }
