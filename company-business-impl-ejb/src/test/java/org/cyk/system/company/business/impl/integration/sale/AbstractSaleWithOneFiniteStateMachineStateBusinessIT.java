@@ -16,7 +16,7 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     	CreateSaleParameters p = new CreateSaleParameters(S1, null, null, CUST1, new String[][]{{TP1,"2"}}, "0","false");
     	createSale(p);
     	_1(p);
-    	
+    	/*
     	CreateSaleCashRegisterMovementParameters cashRegisterMovementParameters = new CreateSaleCashRegisterMovementParameters(S1, S1_P1, null, "500");
     	createSaleCashRegisterMovement(cashRegisterMovementParameters);
     	_2(cashRegisterMovementParameters);	
@@ -24,7 +24,7 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     	cashRegisterMovementParameters = new CreateSaleCashRegisterMovementParameters(S1, S1_P2, null, "1000");
     	createSaleCashRegisterMovement(cashRegisterMovementParameters);
     	_3(cashRegisterMovementParameters);
-    	
+    	*/
     	/*
     	p = new CreateSaleParameters("nt4", null, null, "C4", new String[][]{{"TP3","2"}}, "1800","false");
     	createSale(p);
@@ -124,17 +124,17 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     
     /* Exceptions */
     
-    @Test
+    //@Test
     public void balanceMustBeGreaterThanZero(){
     	companyBusinessTestHelper.balanceMustBeGreaterThanZero();
     }
     
-    @Test
+    //@Test
     public void balanceCannotBeIncrementedBeforeSoldOut(){
     	companyBusinessTestHelper.balanceCannotBeIncrementedBeforeSoldOut();
     }
     
-    @Test
+    //@Test
     public void balanceMustBeLowerThanCost(){
     	companyBusinessTestHelper.balanceMustBeLowerThanCost();
     }

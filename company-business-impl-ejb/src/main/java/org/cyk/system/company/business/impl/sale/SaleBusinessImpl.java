@@ -79,14 +79,14 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Sale instanciateOne(Person person) {
-		Sale sale = super.instanciateOne();
+		Sale sale = instanciateOne();
 		sale.setCashier(CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson(person));
 		return sale;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Sale instanciateOne(String computedIdentifier,String cashierPersonCode, String customerRegistrationCode,String date,String taxable, String[][] salableProductInfos) {
-		Sale sale = super.instanciateOne();
+		Sale sale = instanciateOne();
 		sale.setComputedIdentifier(computedIdentifier);
 		sale.setCashier(cashierPersonCode==null?cashierDao.select().one():cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)));
 		sale.setCustomer(customerRegistrationCode==null?null:customerDao.readByRegistrationCode(customerRegistrationCode));
