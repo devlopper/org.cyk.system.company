@@ -2,16 +2,9 @@ package org.cyk.system.company.business.impl.unit;
 
 import java.util.Collection;
 
+import org.cyk.system.company.business.impl.model.Sale;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
-import org.cyk.system.company.model.Balance;
-import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.root.business.impl.geography.PhoneNumberTypeBusinessImpl;
-import org.cyk.system.root.model.geography.PhoneNumberType;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.utility.common.ObjectFieldValues;
-import org.cyk.utility.common.test.TestEnvironmentListener;
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 
