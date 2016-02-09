@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.CompanyReportProducer.InvoiceParameters;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
+import org.cyk.system.company.business.api.sale.SaleProductBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
@@ -36,6 +37,7 @@ import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.file.File;
@@ -179,8 +181,11 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			if(sale.getDate()==null)
 				sale.setDate(universalTimeCoordinated());
 		sale = super.create(sale);
+		cascade(sale, sale.getSaleProducts(), Crud.CREATE);
+		/*
 		for(SaleProduct saleProduct : sale.getSaleProducts())
 			genericDao.create(saleProduct);
+		*/
 		consume(sale);
 		if(sale.getComputedIdentifier()==null)
 			sale.setComputedIdentifier(generateIdentifier(sale,CompanyBusinessLayerListener.SALE_IDENTIFIER,sale.getAccountingPeriod().getSaleConfiguration()
@@ -216,6 +221,11 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		}
 		logIdentifiable("Created",sale);
 		return sale;
+	}
+	
+	private void cascade(Sale sale,Collection<SaleProduct> saleProducts,Crud crud){
+		new CascadeOperationListener.Adapter.Default<SaleProduct,SaleProductDao,SaleProductBusiness>(saleProductDao,CompanyBusinessLayer.getInstance().getSaleProductBusiness())
+			.operate(saleProducts, crud);
 	}
 	
 	@Override
@@ -276,12 +286,12 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			logIdentifiable("Derived values computed",sale);
 		}
 	}
-	
+	/*
 	@Override
-	public Sale delete(Sale object) {
-		// TODO Auto-generated method stub
-		return super.delete(object);
-	}
+	public Sale delete(Sale sale) {
+		cascade(sale, saleProductDao.readBySale(sale), Crud.DELETE);
+		return super.delete(sale);
+	}*/
 
 	private void createReport(InvoiceParameters previous,InvoiceParameters current){
 		SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().produceInvoice(previous,current);

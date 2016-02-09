@@ -1,6 +1,5 @@
 package org.cyk.system.company.business.impl.integration.sale;
 
-import org.junit.Test;
 
 public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT extends AbstractSaleBusinessIT {
 
@@ -121,23 +120,6 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     protected abstract void noTax6MorePaid3(CreateSaleParameters parameters);
     protected abstract void noTax7AllPaidNoUnitPrice(CreateSaleParameters parameters);
     protected abstract void noTax8AllPaidUnitPriceButCostValueSet(CreateSaleParameters parameters);
-    
-    /* Exceptions */
-    
-    //@Test
-    public void balanceMustBeGreaterThanZero(){
-    	companyBusinessTestHelper.balanceMustBeGreaterThanZero();
-    }
-    
-    //@Test
-    public void balanceCannotBeIncrementedBeforeSoldOut(){
-    	companyBusinessTestHelper.balanceCannotBeIncrementedBeforeSoldOut();
-    }
-    
-    //@Test
-    public void balanceMustBeLowerThanCost(){
-    	companyBusinessTestHelper.balanceMustBeLowerThanCost();
-    }
     
     /**/
     

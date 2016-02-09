@@ -7,7 +7,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
-import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -15,26 +14,19 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.StringUtils;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.payment.Cashier;
-import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
-import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * The exchange of a commodity or money as the price of a good or a service.<br/>
@@ -42,16 +34,16 @@ import lombok.Setter;
  * @author Christian Yao Komenan
  *
  */
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
+@Getter @Setter 
 @ModelBean(genderType=GenderType.FEMALE,crudStrategy=CrudStrategy.BUSINESS)
 public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @NotNull private AccountingPeriod accountingPeriod;
+	//@ManyToOne @NotNull private AccountingPeriod accountingPeriod;
 	@Column(unique=true) private String computedIdentifier;
-	@ManyToOne @NotNull private Cashier cashier;
-	@ManyToOne private Customer customer;
+	//@ManyToOne @NotNull private Cashier cashier;
+	//@ManyToOne private Customer customer;
 	
 	//@Column private String externalIdentifier;//This value is used to link to another system (Example : Accounting System)
 	
