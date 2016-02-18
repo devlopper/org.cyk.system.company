@@ -97,7 +97,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Customer.class, ActorConsultFormModel.class);
 		
 		uiManager.registerConfiguration(new IdentifiableConfiguration(StockableTangibleProduct.class, StockableTangibleProductEditPage.Form.class, StockableTangibleProductDetails.class
-				,null));
+				,null,null));
 		uiManager.configBusinessIdentifiable(StockableTangibleProduct.class, null);
 		//webNavigationManager.useDynamicSelectView(StockableTangibleProduct.class);
 	}
@@ -186,8 +186,8 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		UICommandable c;
 		
 		sale.addChild(menuManager.crudMany(Sale.class, null));
-		sale.addChild(menuManager.createSelect(Sale.class,CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementInput() ,null));
-		sale.addChild(menuManager.createSelect(Sale.class,CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementOutput() ,null));
+		sale.addChild(menuManager.createSelectOne(Sale.class,CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementInput() ,null));
+		sale.addChild(menuManager.createSelectOne(Sale.class,CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementOutput() ,null));
 		//sale.addChild(menuManager.crudMany(SaleStockTangibleProductMovementInput.class, null));
 		
 		/*if(cashier!=null){

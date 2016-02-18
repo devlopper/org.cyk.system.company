@@ -12,15 +12,15 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.ui.api.UIManager;
 import org.cyk.ui.api.command.UICommandable.Parameter;
-import org.cyk.ui.api.model.AbstractQueryFormModel;
+import org.cyk.ui.api.model.AbstractQueryOneFormModel;
 import org.cyk.ui.web.api.WebNavigationManager;
-import org.cyk.ui.web.primefaces.page.SelectPageListener;
+import org.cyk.ui.web.primefaces.page.AbstractSelectOnePage;
 import org.cyk.utility.common.annotation.user.interfaces.FieldOverride;
 import org.cyk.utility.common.annotation.user.interfaces.FieldOverrides;
 import org.cyk.utility.common.cdi.AbstractBean;
 
-@Getter @Setter @FieldOverrides(value={@FieldOverride(name=AbstractQueryFormModel.FIELD_IDENTIFIABLE,type=Sale.class)})
-public class SaleQueryFormModel extends AbstractQueryFormModel.Default<Sale> implements Serializable {
+@Getter @Setter @FieldOverrides(value={@FieldOverride(name=AbstractQueryOneFormModel.FIELD_IDENTIFIABLE,type=Sale.class)})
+public class SaleQueryFormModel extends AbstractQueryOneFormModel.Default<Sale> implements Serializable {
 	private static final long serialVersionUID = -3756660150800681378L;
 	
 	@Override
@@ -31,7 +31,7 @@ public class SaleQueryFormModel extends AbstractQueryFormModel.Default<Sale> imp
 	/**/
 	
 	@Getter @Setter
-	public static class PageAdapter extends SelectPageListener.Adapter.Default<Sale,String> implements Serializable {
+	public static class PageAdapter extends AbstractSelectOnePage.Listener.Adapter.Default<Sale,String> implements Serializable {
 
 		private static final long serialVersionUID = -7392513843271510254L;
 		
@@ -47,7 +47,7 @@ public class SaleQueryFormModel extends AbstractQueryFormModel.Default<Sale> imp
 		}
 		
 		@Override
-		public org.cyk.ui.web.primefaces.page.SelectPageListener.Type getType() {
+		public AbstractSelectOnePage.Listener.Type getType() {
 			return Type.IDENTIFIER;
 		}
 		

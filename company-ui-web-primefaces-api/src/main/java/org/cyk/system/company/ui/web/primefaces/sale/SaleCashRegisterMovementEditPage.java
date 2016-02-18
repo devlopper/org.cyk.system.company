@@ -21,7 +21,7 @@ import org.cyk.system.company.ui.web.primefaces.payment.AbstractCashRegisterMove
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.UIManager;
-import org.cyk.ui.web.api.WebInputListener;
+import org.cyk.ui.web.api.data.collector.control.WebInput;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
@@ -61,7 +61,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
-		addInputListener(Form.FIELD_VALUE, new WebInputListener.Adapter(){
+		addInputListener(Form.FIELD_VALUE, new WebInput.Listener.Adapter(){
 			private static final long serialVersionUID = 7526066306750441853L;
 			@Override
 			public void validate(FacesContext facesContext,UIComponent uiComponent, Object value) throws ValidatorException {

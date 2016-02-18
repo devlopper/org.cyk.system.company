@@ -30,22 +30,22 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 	@Override
 	protected void identifiableConfiguration(ServletContextEvent event) {
 		super.identifiableConfiguration(event);
-		uiManager.registerConfiguration(new IdentifiableConfiguration(Company.class, CompanyEditPage.Form.class, CompanyDetails.class,null));
+		uiManager.registerConfiguration(new IdentifiableConfiguration(Company.class, CompanyEditPage.Form.class, CompanyDetails.class,null,null));
 		uiManager.configBusinessIdentifiable(Company.class, null);
 		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(CashRegister.class, CashRegisterEditPage.Form.class, CashRegisterDetails.class,null));
+		uiManager.registerConfiguration(new IdentifiableConfiguration(CashRegister.class, CashRegisterEditPage.Form.class, CashRegisterDetails.class,null,null));
 		uiManager.configBusinessIdentifiable(CashRegister.class, null);
 		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(CashRegisterMovement.class, CashRegisterMovementEditPage.Form.class, CashRegisterMovementDetails.class,null));
+		uiManager.registerConfiguration(new IdentifiableConfiguration(CashRegisterMovement.class, CashRegisterMovementEditPage.Form.class, CashRegisterMovementDetails.class,null,null));
 		uiManager.configBusinessIdentifiable(CashRegisterMovement.class, null);
 		
 		/* Sale */
-		uiManager.registerConfiguration(new IdentifiableConfiguration(Sale.class, SaleEditPage.Form.class, SaleDetails.class,SaleQueryFormModel.class));
+		uiManager.registerConfiguration(new IdentifiableConfiguration(Sale.class, SaleEditPage.Form.class, SaleDetails.class,SaleQueryFormModel.class,null));
 		uiManager.configBusinessIdentifiable(Sale.class, null);
-		primefacesManager.getSelectPageListeners().add(new SaleQueryFormModel.PageAdapter());
+		primefacesManager.getSelectOnePageListeners().add(new SaleQueryFormModel.PageAdapter());
 		webNavigationManager.useDynamicSelectView(Sale.class);
 		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(SaleCashRegisterMovement.class, SaleCashRegisterMovementEditPage.Form.class, SaleCashRegisterMovementDetails.class,null));
+		uiManager.registerConfiguration(new IdentifiableConfiguration(SaleCashRegisterMovement.class, SaleCashRegisterMovementEditPage.Form.class, SaleCashRegisterMovementDetails.class,null,null));
 		uiManager.configBusinessIdentifiable(SaleCashRegisterMovement.class, null);
 		
 	}
