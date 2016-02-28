@@ -247,7 +247,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	}
 	
 	private void company(){ 
-		ReportTemplate pointOfSaleReportTemplate = new ReportTemplate("POINT_OF_SALE",createFile("report/payment/pos_a4.jrxml", "pointofsale.jrxml"),null);
+		ReportTemplate pointOfSaleReportTemplate = new ReportTemplate("POINT_OF_SALE",createFile("report/payment/pos_a4.jrxml", "pointofsale.jrxml"),null,null);
 		create(pointOfSaleReportTemplate);
 		
 		/*File pointOfSaleReportFile = new File();*/
