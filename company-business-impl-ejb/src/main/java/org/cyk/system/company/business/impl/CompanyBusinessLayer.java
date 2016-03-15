@@ -96,6 +96,7 @@ import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.report.ReportTemplate;
 import org.cyk.system.root.model.geography.ContactCollection;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
+import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Installation;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
@@ -202,7 +203,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			public void installationEnded(Installation installation) {
 				super.installationEnded(installation);
 				OwnedCompany ownedCompany = ownedCompanyBusiness.findDefaultOwnedCompany();
-				ownedCompany.getCompany().setManager(personDao.select().one());
+				Collection<Person> persons = personDao.select().all();
+				ownedCompany.getCompany().setManager(persons.isEmpty() ? null : persons.iterator().next());
 				companyBusiness.update(ownedCompany.getCompany());
 				CashRegister cashRegister = create(new CashRegister("CashRegister01",ownedCompany,createMovementCollection("CashRegisterMovementCollection01", "Entrée", "Sortie")));
 				cashierBusiness.create(new Cashier(ownedCompany.getCompany().getManager(),cashRegister));
