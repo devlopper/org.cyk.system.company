@@ -41,8 +41,10 @@ import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.api.config.IdentifiableConfiguration;
 import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
+import org.cyk.ui.web.primefaces.HierarchyNode;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
+import org.primefaces.model.TreeNode;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyWebManager.DEPLOYMENT_ORDER) @Getter
 public class CompanyWebManager extends AbstractPrimefacesManager implements Serializable {
@@ -107,7 +109,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	}
 	
 	@Override
-	public SystemMenu systemMenu(AbstractUserSession userSession) {
+	public SystemMenu systemMenu(AbstractUserSession<TreeNode,HierarchyNode> userSession) {
 		Cashier cashier = null;
 		if(userSession.getUser() instanceof Person){
 			cashier = companyBusinessLayer.getCashierBusiness().findByPerson((Person) userSession.getUser());
