@@ -7,6 +7,8 @@ import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import lombok.Getter;
+
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.stock.StockableTangibleProductDetails;
@@ -34,15 +36,13 @@ import org.cyk.system.company.ui.web.primefaces.model.ProductCollectionFormModel
 import org.cyk.system.company.ui.web.primefaces.stock.StockableTangibleProductEditPage;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.AbstractUserSession;
+import org.cyk.ui.api.command.IconType;
 import org.cyk.ui.api.command.UICommandable;
-import org.cyk.ui.api.command.UICommandable.IconType;
 import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.api.config.IdentifiableConfiguration;
 import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
-
-import lombok.Getter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyWebManager.DEPLOYMENT_ORDER) @Getter
 public class CompanyWebManager extends AbstractPrimefacesManager implements Serializable {

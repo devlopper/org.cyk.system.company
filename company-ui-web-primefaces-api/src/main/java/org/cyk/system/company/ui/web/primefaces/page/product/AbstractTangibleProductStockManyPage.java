@@ -14,9 +14,9 @@ import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.ui.api.UIProvider;
 import org.cyk.ui.api.command.CommandAdapter;
+import org.cyk.ui.api.command.IconType;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.command.UICommandable;
-import org.cyk.ui.api.command.UICommandable.IconType;
 import org.cyk.ui.web.primefaces.page.AbstractPrimefacesPage;
 
 @Getter @Setter
