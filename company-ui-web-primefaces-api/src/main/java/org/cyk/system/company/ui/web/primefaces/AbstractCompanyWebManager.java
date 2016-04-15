@@ -44,7 +44,7 @@ import org.cyk.ui.web.primefaces.HierarchyNode;
 import org.primefaces.model.TreeNode;
 
 @Getter
-public class AbstractCompanyWebManager extends AbstractPrimefacesManager implements Serializable {
+public abstract class AbstractCompanyWebManager extends AbstractPrimefacesManager implements Serializable {
 
 	private static final long serialVersionUID = 7231721191071228908L;
 	
