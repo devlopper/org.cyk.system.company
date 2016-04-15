@@ -25,6 +25,7 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleProduct;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
@@ -34,6 +35,7 @@ import org.cyk.ui.web.api.ItemCollectionWebAdapter;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.ItemCollection;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
+import org.omnifaces.util.Faces;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializable {
@@ -75,7 +77,14 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 				super.instanciated(itemCollection, item);
 				
 			}
-			
+			@Override
+			public Crud getCrud() {
+				return crud;
+			}
+			@Override
+			public Boolean isShowAddButton() {
+				return Boolean.TRUE;
+			}
 			@Override
 			public void read(SaleProductItem item) {
 				super.read(item);
@@ -93,10 +102,10 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			}
 		});
 		saleProductCollection.setLabel(null);
-		
+	
 		identifiable.setAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent());
 		identifiable.setCashier(CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson((Person) getUserSession().getUser()));
-		if(identifiable.getCashier()==null){
+		if(identifiable.getCashier()==null && !Boolean.TRUE.equals(roleManager.isAdministrator(Faces.getRequest()))){
 			renderViewErrorMessage("View Init Error!!!", "View Init Error Details!!!");
 			return;
 		}
@@ -115,7 +124,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	
 	@Override
 	protected Sale instanciateIdentifiable() {
-		return saleBusiness.instanciateOne((Person) getUserSession().getUser());
+		return roleManager.isAdministrator(Faces.getRequest()) ? saleBusiness.instanciateOne() : saleBusiness.instanciateOne((Person) getUserSession().getUser());
 	}
 	
 	/*@SuppressWarnings("unchecked")
