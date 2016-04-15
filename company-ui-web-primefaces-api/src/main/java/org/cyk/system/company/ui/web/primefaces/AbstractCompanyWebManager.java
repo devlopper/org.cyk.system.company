@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import lombok.Getter;
 
@@ -42,11 +41,9 @@ import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.api.config.IdentifiableConfiguration;
 import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.ui.web.primefaces.HierarchyNode;
-import org.cyk.utility.common.annotation.Deployment;
-import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.primefaces.model.TreeNode;
 
-@Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=AbstractCompanyWebManager.DEPLOYMENT_ORDER) @Getter
+@Getter
 public class AbstractCompanyWebManager extends AbstractPrimefacesManager implements Serializable {
 
 	private static final long serialVersionUID = 7231721191071228908L;
