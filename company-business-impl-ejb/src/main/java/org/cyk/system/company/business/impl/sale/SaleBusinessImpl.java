@@ -92,7 +92,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		sale.setComputedIdentifier(computedIdentifier);
 		sale.setCashier(cashierPersonCode==null?cashierDao.select().one():cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)));
 		sale.setCustomer(customerRegistrationCode==null?null:customerDao.readByRegistrationCode(customerRegistrationCode));
-		sale.setDate(timeBusiness.parse(date));
+		sale.setDate(StringUtils.isBlank(date) ? null : timeBusiness.parse(date));
 		sale.setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
 		for(String[] info : salableProductInfos){
 			SaleProduct saleProduct =  selectProduct(sale, salableProductDao.readByProduct(productDao.read(info[0])), numberBusiness.parseBigDecimal(info[1]));

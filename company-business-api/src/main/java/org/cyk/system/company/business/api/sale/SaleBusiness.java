@@ -21,7 +21,7 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 	Sale instanciateOne(Person person);
 	Sale instanciateOne(String computedIdentifier,String cashierPersonCode,String customerRegistrationCode,String date,String taxable,String[][] salableProductInfos);
 	List<Sale> instanciateMany(Object[][] arguments);
-	
+
 	SaleProduct selectProduct(Sale sale,SalableProduct salableProduct,BigDecimal quantity);
 	SaleProduct selectProduct(Sale sale,SalableProduct salableProduct);
 	void unselectProduct(Sale sale,SaleProduct saleProduct);
