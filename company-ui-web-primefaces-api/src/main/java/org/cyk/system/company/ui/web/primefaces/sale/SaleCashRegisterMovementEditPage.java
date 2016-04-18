@@ -45,6 +45,9 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		cashRegisterController.init(identifiable,!StringUtils.equals(CompanyWebManager.getInstance().getRequestParameterPayback(), 
 				requestParameter(CompanyWebManager.getInstance().getRequestParameterPaymentType())));
 		*/
+		
+		//if(identifiable.getSale()==null)
+		//	identifiable.setSale(webManager.getIdentifiableFromRequestParameter(Sale.class, Boolean.TRUE));
 	}
 		
 	/*@Override
@@ -61,6 +64,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
+		form.findInputByFieldName(Form.FIELD_SALE).setDisabled(identifiable.getSale()!=null);
 		addInputListener(Form.FIELD_VALUE, new WebInput.Listener.Adapter(){
 			private static final long serialVersionUID = 7526066306750441853L;
 			@Override
@@ -76,19 +80,18 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 	protected Boolean showCashRegisterField() {
 		return Boolean.FALSE;
 	}
-	@Override
-	protected Boolean showActionField() {
-		return Boolean.TRUE;
-	}
-	
+
 	@Override
 	protected SaleCashRegisterMovement instanciateIdentifiable() {
-		Sale sale = null;
+		/*Sale sale = null;
 		Long saleIdentifier = requestParameterLong(Sale.class);
 		if(saleIdentifier==null)
 			;
 		else
 			sale = CompanyBusinessLayer.getInstance().getSaleBusiness().find(saleIdentifier);
+		*/
+		Sale sale = webManager.getIdentifiableFromRequestParameter(Sale.class, Boolean.TRUE);
+		//identifiable.setSale();
 		SaleCashRegisterMovement saleCashRegisterMovement = 
 				CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().instanciateOne(sale, (Person) userSession.getUser(), Boolean.TRUE);
 		String action = requestParameter(UIManager.getInstance().getActionIdentifierParameter());
@@ -110,6 +113,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 	protected BigDecimal getCurrentTotal() {
 		return identifiable.getSale().getBalance().getValue();
 	}
+	
 	@Override
 	protected BigDecimal computeNextTotal(BigDecimal increment) {
 		return CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().computeBalance(identifiable,(MovementAction) form.findInputByFieldName(Form.FIELD_ACTION).getValue()

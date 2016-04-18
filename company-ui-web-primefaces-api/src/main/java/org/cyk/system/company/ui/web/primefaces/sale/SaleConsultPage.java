@@ -19,12 +19,16 @@ import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SaleCashRegisterMovementDetails;
 import org.cyk.system.company.business.impl.sale.SaleDetails;
 import org.cyk.system.company.business.impl.sale.SaleProductDetails;
+import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.mathematics.MovementDetails;
+import org.cyk.system.root.model.mathematics.MovementAction;
+import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.data.collector.form.ControlSet;
 import org.cyk.ui.api.model.table.Column;
@@ -43,6 +47,8 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
+	public static Boolean SHOW_SALE_PRODUCT_TABLE = Boolean.TRUE;
+	
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
 	@Inject private CompanyWebManager companyWebManager;
 	
@@ -74,13 +80,14 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 			}
 		}); 
 		
-		saleProductTable = createDetailsTable(SaleProductDetails.class, new DetailsConfigurationListener.Table.Adapter<SaleProduct, SaleProductDetails>(SaleProduct.class, SaleProductDetails.class){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public Collection<SaleProduct> getIdentifiables() {
-				return CompanyBusinessLayer.getInstance().getSaleProductBusiness().findBySale(identifiable);
-			}
-		});
+		if(Boolean.TRUE.equals(SHOW_SALE_PRODUCT_TABLE))
+			saleProductTable = createDetailsTable(SaleProductDetails.class, new DetailsConfigurationListener.Table.Adapter<SaleProduct, SaleProductDetails>(SaleProduct.class, SaleProductDetails.class){
+				private static final long serialVersionUID = 1L;
+				@Override
+				public Collection<SaleProduct> getIdentifiables() {
+					return CompanyBusinessLayer.getInstance().getSaleProductBusiness().findBySale(identifiable);
+				}
+			});
 		
 		
 		saleCashRegisterMovementTable = createDetailsTable(SaleCashRegisterMovementDetails.class,new DetailsConfigurationListener.Table.Adapter<SaleCashRegisterMovement, SaleCashRegisterMovementDetails>(SaleCashRegisterMovement.class, SaleCashRegisterMovementDetails.class){
@@ -110,19 +117,39 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 	}
 	
 	@Override
+	protected Boolean showContextualEditCommandable() {
+		return Boolean.FALSE;
+	}
+	
+	@Override
+	protected Boolean showContextualDeleteCommandable() {
+		return Boolean.FALSE;
+	}
+	
+	@Override
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
 		super.processIdentifiableContextualCommandable(commandable);
-		UICommandable c;
-		Integer balance = identifiable.getBalance().getValue().compareTo(BigDecimal.ZERO);
-		if(balance!=0){
-			if(balance>0){
-				commandable.addChild(c = navigationManager.createCreateCommandable(identifiable,SaleCashRegisterMovement.class, "command.pay", null));
-				c.addParameter(CompanyWebManager.getInstance().getRequestParameterPaymentType(), CompanyWebManager.getInstance().getRequestParameterPay());
-			}else{
-				commandable.addChild(c = navigationManager.createCreateCommandable(identifiable,SaleCashRegisterMovement.class, "command.payback", null));
-				c.addParameter(CompanyWebManager.getInstance().getRequestParameterPaymentType(), CompanyWebManager.getInstance().getRequestParameterPayback());
+		Cashier cashier = null;
+		if(userSession.getUser() instanceof Person){
+			cashier = CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson((Person)userSession.getUser());
+			
+			UICommandable c;
+			Integer balance = identifiable.getBalance().getValue().compareTo(BigDecimal.ZERO);
+			if(balance!=0){
+				MovementCollection movementCollection = cashier==null?null:cashier.getCashRegister().getMovementCollection();
+				MovementAction action;
+				if(balance>0){
+					action = movementCollection.getIncrementAction();
+					
+				}else{
+					action = movementCollection.getDecrementAction();
+				}
+				commandable.addChild(c = navigationManager.createCreateCommandable(identifiable,SaleCashRegisterMovement.class, action.getName(), null));
+				c.addParameter(uiManager.businessEntityInfos(MovementAction.class).getIdentifier(), action.getIdentifier());
+				c.setLabel(action.getName());
 			}
 		}
+		
 		commandable.addChild(navigationManager.createReportCommandable(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale()
 				,"command.see.invoice", null));
 	}
