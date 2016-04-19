@@ -36,7 +36,7 @@ import org.cyk.system.root.business.api.AbstractBusinessException;
 import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.api.party.ApplicationBusiness;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
-import org.cyk.system.root.business.impl.AbstractFakedDataProducer.FakedDataProducerAdapter;
+import org.cyk.system.root.business.impl.AbstractFakedDataProducer.Listener.Adapter;
 import org.cyk.system.root.business.impl.BusinessIntegrationTestHelper;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.RootBusinessTestHelper;
@@ -224,9 +224,11 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     	}.run();
     }
     
-    protected FakedDataProducerAdapter fakedDataProducerAdapter(){
-    	return new FakedDataProducerAdapter(){
-    		@Override
+    protected Adapter fakedDataProducerAdapter(){
+    	return new Adapter(){
+			private static final long serialVersionUID = -6856905751394551672L;
+
+			@Override
     		public void flush() {
     			super.flush();
     			getEntityManager().flush();

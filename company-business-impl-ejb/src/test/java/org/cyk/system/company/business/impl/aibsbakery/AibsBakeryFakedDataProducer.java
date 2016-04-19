@@ -90,7 +90,7 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 	}
 	
 	@Override
-	protected void doBusiness(FakedDataProducerListener listener){
+	protected void doBusiness(Listener listener){
 		/*
 		rootRandomDataProvider.createActor(Reseller.class, 10);
 		flush("Resellers");
