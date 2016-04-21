@@ -4,21 +4,22 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.impl.structure.CompanyDetails;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.ui.web.primefaces.structure.AbstractCompanyConsultPage.DetailsAdapter;
-import org.cyk.ui.api.UIProvider;
+import org.cyk.system.root.business.api.Crud;
+import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.model.geography.ContactDetails;
 import org.cyk.ui.api.model.party.DefaultPersonEditFormModel;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.ContactDetailsAdapter;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter @Setter
 public abstract class AbstractOwnedCompanyConsultPage extends AbstractConsultPage<OwnedCompany> implements Serializable {
@@ -58,10 +59,10 @@ public abstract class AbstractOwnedCompanyConsultPage extends AbstractConsultPag
 	
 	@Override
 	protected Collection<UICommandable> contextualCommandables() {
-		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null),commandable=null;
+		UICommandable contextualMenu = instanciateCommandableBuilder().setLabel(contentTitle).create();
 		contextualMenu.setLabel(contentTitle); 
 		
-		commandable = navigationManager.createUpdateCommandable(identifiable, "command.edit", null);
+		UICommandable commandable = Builder.createCrud(Crud.UPDATE,identifiable, "command.edit", null);
 		
 		if(StringUtils.isEmpty(selectedTabId))
 			;
