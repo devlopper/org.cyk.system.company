@@ -35,7 +35,8 @@ import org.cyk.system.company.ui.web.primefaces.model.ProductCollectionFormModel
 import org.cyk.system.company.ui.web.primefaces.stock.StockableTangibleProductEditPage;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.AbstractUserSession;
-import org.cyk.ui.api.command.IconType;
+import org.cyk.ui.api.Icon;
+import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.api.config.IdentifiableConfiguration;
@@ -107,25 +108,25 @@ public abstract class AbstractCompanyWebManager extends AbstractPrimefacesManage
 		}
 		SystemMenu systemMenu = new SystemMenu();
 		/*
-		UICommandable group = uiProvider.createCommandable("department", null);
+		UICommandable group = Builder.create("department", null);
 
-		group.addChild(menuManager.crudMany(DivisionType.class, null));	
-		group.addChild(menuManager.crudMany(Division.class, null));	
-		group.addChild(menuManager.crudMany(Division.class, null));	
+		group.addChild(Builder.createList(DivisionType.class, null));	
+		group.addChild(Builder.createList(Division.class, null));	
+		group.addChild(Builder.createList(Division.class, null));	
 		group.addChild("command.ownedcompany", null, "ownedCompanyCrudOne", null);
 		systemMenu.getReferenceEntities().add(group);
 		*/
 		/*
-		group = uiProvider.createCommandable(uiManager.businessEntityInfos(Product.class).getUserInterface().getLabelId(), null);
-		//group.addChild(menuManager.crudMany(ProductCategory.class, null));
-		group.addChild(menuManager.crudMany(IntangibleProduct.class, null));	
-		group.addChild(menuManager.crudMany(TangibleProduct.class, null));	
-		//group.addChild(menuManager.crudMany(ProductCollection.class, null));
+		group = Builder.create(uiManager.businessEntityInfos(Product.class).getUserInterface().getLabelId(), null);
+		//group.addChild(Builder.createList(ProductCategory.class, null));
+		group.addChild(Builder.createList(IntangibleProduct.class, null));	
+		group.addChild(Builder.createList(TangibleProduct.class, null));	
+		//group.addChild(Builder.createList(ProductCollection.class, null));
 		systemMenu.getReferenceEntities().add(group);
 		
-		group = uiProvider.createCommandable(uiManager.businessEntityInfos(Sale.class).getUserInterface().getLabelId(), null);
-		group.addChild(menuManager.crudMany(SalableProduct.class, null));
-		group.addChild(menuManager.crudMany(Customer.class, null));
+		group = Builder.create(uiManager.businessEntityInfos(Sale.class).getUserInterface().getLabelId(), null);
+		group.addChild(Builder.createList(SalableProduct.class, null));
+		group.addChild(Builder.createList(Customer.class, null));
 		
 		systemMenu.getReferenceEntities().add(group);
 		*/
@@ -139,32 +140,32 @@ public abstract class AbstractCompanyWebManager extends AbstractPrimefacesManage
 	
 	public UICommandable getProductCommandable(AbstractUserSession<TreeNode,HierarchyNode> userSession,Collection<UICommandable> mobileCommandables){
 		UICommandable module = null;
-		module = uiProvider.createCommandable(uiManager.businessEntityInfos(Product.class).getUserInterface().getLabelId(), null);
-		module.addChild(menuManager.crudMany(TangibleProduct.class, null));
-		module.addChild(menuManager.crudMany(IntangibleProduct.class, null));
-		module.addChild(menuManager.crudMany(SalableProduct.class, null));
+		module = Builder.create(uiManager.businessEntityInfos(Product.class).getUserInterface().getLabelId(), null);
+		module.addChild(Builder.createList(TangibleProduct.class, null));
+		module.addChild(Builder.createList(IntangibleProduct.class, null));
+		module.addChild(Builder.createList(SalableProduct.class, null));
 		return module;
 	}
 	
 	public UICommandable humanResourcesManagerCommandables(AbstractUserSession<TreeNode,HierarchyNode> userSession,Collection<UICommandable> mobileCommandables){
 		UICommandable hr = null;
-		hr = uiProvider.createCommandable("command.humanresources", null);
-		hr.addChild(menuManager.crudMany(Employee.class, null));
-		hr.addChild(menuManager.crudMany(Cashier.class, null));
+		hr = Builder.create("command.humanresources", null);
+		hr.addChild(Builder.createList(Employee.class, null));
+		hr.addChild(Builder.createList(Cashier.class, null));
 		return hr;
 	}
 	
 	public UICommandable getCustomerCommandable(AbstractUserSession<TreeNode,HierarchyNode> userSession,Collection<UICommandable> mobileCommandables){
 		UICommandable module = null;
-		module = uiProvider.createCommandable(uiManager.businessEntityInfos(Customer.class).getUserInterface().getLabelId(), IconType.PERSON);
-		module.addChild(menuManager.crudMany(Customer.class, null));
+		module = Builder.create(uiManager.businessEntityInfos(Customer.class).getUserInterface().getLabelId(), Icon.PERSON);
+		module.addChild(Builder.createList(Customer.class, null));
 		
 		UICommandable c;
-		module.addChild(c = uiProvider.createCommandable("field.credence", null, outcomeCustomerBalance));
+		module.addChild(c = Builder.create("field.credence", null, outcomeCustomerBalance));
 		c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportBalance());
 		c.addParameter(companyReportRepository.getParameterCustomerBalanceType(), companyReportRepository.getParameterCustomerBalanceCredence());
 		
-		module.addChild(c = uiProvider.createCommandable("company.command.customer.balance", null, outcomeCustomerBalance));
+		module.addChild(c = Builder.create("company.command.customer.balance", null, outcomeCustomerBalance));
 		c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportBalance());
 		c.addParameter(companyReportRepository.getParameterCustomerBalanceType(), companyReportRepository.getParameterCustomerBalanceAll());
 		
@@ -172,66 +173,66 @@ public abstract class AbstractCompanyWebManager extends AbstractPrimefacesManage
 	}
 	
 	public UICommandable paymentCommandables(AbstractUserSession<TreeNode,HierarchyNode> userSession,Collection<UICommandable> mobileCommandables,Cashier cashier){
-		UICommandable module = uiProvider.createCommandable(uiManager.businessEntityInfos(CashRegisterMovement.class).getUserInterface().getLabelId(), null);
-		module.addChild(menuManager.crudMany(CashRegister.class, null));
-		module.addChild(menuManager.crudMany(CashRegisterMovement.class, null));
+		UICommandable module = Builder.create(uiManager.businessEntityInfos(CashRegisterMovement.class).getUserInterface().getLabelId(), null);
+		module.addChild(Builder.createList(CashRegister.class, null));
+		module.addChild(Builder.createList(CashRegisterMovement.class, null));
 		return module;
 	}
 	
 	public UICommandable getSaleCommandable(AbstractUserSession<TreeNode,HierarchyNode> userSession,Collection<UICommandable> mobileCommandables,Cashier cashier){
-		UICommandable module = uiProvider.createCommandable(uiManager.businessEntityInfos(Sale.class).getUserInterface().getLabelId(), null);
-		module.addChild(menuManager.crudMany(Sale.class, null));
-		module.addChild(menuManager.createSelectOne(Sale.class,CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementInput() ,null));
-		module.addChild(menuManager.createSelectOne(Sale.class,CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementOutput() ,null));
+		UICommandable module = Builder.create(uiManager.businessEntityInfos(Sale.class).getUserInterface().getLabelId(), null);
+		module.addChild(Builder.createList(Sale.class, null));
+		module.addChild(Builder.createSelectOne(Sale.class,CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementInput() ,null));
+		module.addChild(Builder.createSelectOne(Sale.class,CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementOutput() ,null));
 		return module;
 	}
 	
 	public void reportCommandables(Collection<UICommandable> collection){
 		UICommandable c;
-		/*collection.add(c = uiProvider.createCommandable("field.credence", null, outcomeCustomerBalance));
+		/*collection.add(c = Builder.create("field.credence", null, outcomeCustomerBalance));
 		c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportBalance());
 		c.addParameter(companyReportRepository.getParameterCustomerBalanceType(), companyReportRepository.getParameterCustomerBalanceCredence());
 		
-		collection.add(c = uiProvider.createCommandable("company.command.customer.balance", null, outcomeCustomerBalance));
+		collection.add(c = Builder.create("company.command.customer.balance", null, outcomeCustomerBalance));
 		c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportBalance());
 		c.addParameter(companyReportRepository.getParameterCustomerBalanceType(), companyReportRepository.getParameterCustomerBalanceAll());
 		*/
-		collection.add(c = uiProvider.createCommandable("company.command.customer.salestock", null, outcomeCustomerSaleStock));
+		collection.add(c = Builder.create("company.command.customer.salestock", null, outcomeCustomerSaleStock));
 		c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportSaleStock());
 		
-		collection.add(c = uiProvider.createCommandable("company.command.salestock.instock", null, outcomeSaleStockInStock));
+		collection.add(c = Builder.create("company.command.salestock.instock", null, outcomeSaleStockInStock));
 		c.addParameter(companyReportRepository.getParameterCustomerReportType(), companyReportRepository.getParameterCustomerReportSaleStock());
 		
 		
 	}
 	
 	public UICommandable stockCommandables(AbstractUserSession<TreeNode,HierarchyNode> userSession){
-		UICommandable stock = uiProvider.createCommandable("command.stock", null);
+		UICommandable stock = Builder.create("command.stock", null);
 		stock.getChildren().addAll(stockContextCommandables(userSession));
 		return stock;
 	}
 	
 	public Collection<UICommandable> stockContextCommandables(AbstractUserSession<TreeNode,HierarchyNode> userSession){
 		Collection<UICommandable> commandables = new ArrayList<>();
-		commandables.add(uiProvider.createCommandable("dashboard", null, "stockDashBoardView"));
-		commandables.add(menuManager.crudMany(StockableTangibleProduct.class, null));
-		//commandables.add(menuManager.crudMany(StockTangibleProductMovement.class, null));
-		//commandables.add(uiProvider.createCommandable("command.quantityinuse", null, "tangibleProductQuantityInUseUpdateManyView"));
-		//commandables.add(menuManager.crudMany(TangibleProductInventory.class, null));
+		commandables.add(Builder.create("dashboard", null, "stockDashBoardView"));
+		commandables.add(Builder.createList(StockableTangibleProduct.class, null));
+		//commandables.add(Builder.createList(StockTangibleProductMovement.class, null));
+		//commandables.add(Builder.create("command.quantityinuse", null, "tangibleProductQuantityInUseUpdateManyView"));
+		//commandables.add(Builder.createList(TangibleProductInventory.class, null));
 		return commandables;
 	}
 	
 	public Collection<UICommandable> productionContextCommandables(AbstractUserSession<TreeNode,HierarchyNode> userSession){
 		Collection<UICommandable> commandables = new ArrayList<>();
-		//commandables.add(uiProvider.createCommandable("dashboard", null, "productionDashBoardView"));
-		commandables.add(menuManager.crudOne(Production.class, null));
+		//commandables.add(Builder.create("dashboard", null, "productionDashBoardView"));
+		commandables.add(Builder.createCreate(Production.class));
 		return commandables;
 	}
 	
 	public UICommandable goodsDepositCommandables(AbstractUserSession<TreeNode,HierarchyNode> userSession,Collection<UICommandable> mobileCommandables,Cashier cashier){
 		UICommandable goods = null;
-		goods = uiProvider.createCommandable("goods", null);
-		goods.getChildren().add(uiProvider.createCommandable("deposits", null, "saleStockInputListView"));
+		goods = Builder.create("goods", null);
+		goods.getChildren().add(Builder.create("deposits", null, "saleStockInputListView"));
 		
 		saleStockReportCommandables(userSession, goods.getChildren(), mobileCommandables);
 		
@@ -240,11 +241,11 @@ public abstract class AbstractCompanyWebManager extends AbstractPrimefacesManage
 	
 	public UICommandable productionCommandables(AbstractUserSession<TreeNode,HierarchyNode> userSession,Collection<UICommandable> mobileCommandables){
 		UICommandable production = null;
-		production = uiProvider.createCommandable("production", null);
-		production.getChildren().add(menuManager.crudMany(Reseller.class, null));
-		production.getChildren().add(menuManager.crudMany(ResellerProductionPlan.class, null));
-		production.getChildren().add(menuManager.crudMany(ProductionUnit.class, null));
-		//production.getChildren().add(menuManager.crudMany(Production.class, null));
+		production = Builder.create("production", null);
+		production.getChildren().add(Builder.createList(Reseller.class, null));
+		production.getChildren().add(Builder.createList(ResellerProductionPlan.class, null));
+		production.getChildren().add(Builder.createList(ProductionUnit.class, null));
+		//production.getChildren().add(Builder.createList(Production.class, null));
 		
 		return production;
 	}
@@ -252,13 +253,13 @@ public abstract class AbstractCompanyWebManager extends AbstractPrimefacesManage
 	public void saleStockReportCommandables(AbstractUserSession<TreeNode,HierarchyNode> userSession,Collection<UICommandable> commandables,Collection<UICommandable> mobileCommandables){
 		UICommandable c;
 			
-		commandables.add(c = uiProvider.createCommandable("company.report.salestockoutput.cashregister.title", null, outcomeSaleStockOutputList));
+		commandables.add(c = Builder.create("company.report.salestockoutput.cashregister.title", null, outcomeSaleStockOutputList));
 		c.addParameter(companyReportRepository.getParameterSaleStockReportType(), companyReportRepository.getParameterSaleStockReportCashRegister());
 		
-		commandables.add(c = uiProvider.createCommandable("company.report.salestock.inventory.title", null, outcomeSaleStockList));
+		commandables.add(c = Builder.create("company.report.salestock.inventory.title", null, outcomeSaleStockList));
 		c.addParameter(companyReportRepository.getParameterSaleStockReportType(), companyReportRepository.getParameterSaleStockReportInventory());
 		
-		commandables.add(c = uiProvider.createCommandable("company.report.salestock.customer.title", null, outcomeSaleStockList));
+		commandables.add(c = Builder.create("company.report.salestock.customer.title", null, outcomeSaleStockList));
 		c.addParameter(companyReportRepository.getParameterSaleStockReportType(), companyReportRepository.getParameterSaleStockReportCustomer());
 		
 	}

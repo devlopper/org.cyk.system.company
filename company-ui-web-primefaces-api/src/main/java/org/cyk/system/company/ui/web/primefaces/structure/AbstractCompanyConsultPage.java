@@ -4,11 +4,14 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.impl.structure.CompanyDetails;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.impl.AbstractOutputDetails;
-import org.cyk.ui.api.UIProvider;
+import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.model.geography.ContactDetails;
 import org.cyk.ui.api.model.party.DefaultPersonEditFormModel;
@@ -18,9 +21,6 @@ import org.cyk.ui.web.primefaces.page.ConsultPageListener;
 import org.cyk.ui.web.primefaces.page.ContactDetailsAdapter;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
 import org.cyk.utility.common.cdi.AbstractBean;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter @Setter
 public abstract class AbstractCompanyConsultPage extends AbstractConsultPage<Company> implements Serializable {
@@ -60,10 +60,10 @@ public abstract class AbstractCompanyConsultPage extends AbstractConsultPage<Com
 	
 	@Override
 	protected Collection<UICommandable> contextualCommandables() {
-		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null),commandable=null;
+		UICommandable contextualMenu = instanciateCommandableBuilder().setLabel(contentTitle).create();
 		contextualMenu.setLabel(contentTitle); 
 		
-		commandable = navigationManager.createUpdateCommandable(identifiable, "command.edit", null);
+		UICommandable commandable = Builder.createUpdate(identifiable);
 		
 		if(StringUtils.isEmpty(selectedTabId))
 			;

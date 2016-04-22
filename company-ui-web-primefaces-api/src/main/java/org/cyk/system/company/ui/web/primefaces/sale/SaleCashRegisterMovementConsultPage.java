@@ -13,6 +13,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SaleCashRegisterMovementDetails;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
@@ -46,8 +47,7 @@ public class SaleCashRegisterMovementConsultPage extends AbstractConsultPage<Sal
 	@Override
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
 		super.processIdentifiableContextualCommandable(commandable);
-		commandable.addChild(navigationManager.createReportCommandable(identifiable, CompanyReportRepository.getInstance().getReportPointOfSaleReceipt()
-				,"command.see.receipt", null));
+		commandable.addChild(Builder.createReport(identifiable, CompanyReportRepository.getInstance().getReportPointOfSaleReceipt(),"command.see.receipt", null));
 	}
 			
 }

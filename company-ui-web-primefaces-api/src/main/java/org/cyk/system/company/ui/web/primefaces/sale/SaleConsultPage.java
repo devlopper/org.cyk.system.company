@@ -29,6 +29,7 @@ import org.cyk.system.root.business.impl.mathematics.MovementDetails;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.party.person.Person;
+import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.data.collector.form.ControlSet;
 import org.cyk.ui.api.model.table.Column;
@@ -144,14 +145,13 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 				}else{
 					action = movementCollection.getDecrementAction();
 				}
-				commandable.addChild(c = navigationManager.createCreateCommandable(identifiable,SaleCashRegisterMovement.class, action.getName(), null));
+				commandable.addChild(c = Builder.createCreate(identifiable,SaleCashRegisterMovement.class, action.getName(), null));
 				c.addParameter(uiManager.businessEntityInfos(MovementAction.class).getIdentifier(), action.getIdentifier());
 				c.setLabel(action.getName());
 			}
 		}
 		
-		commandable.addChild(navigationManager.createReportCommandable(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale()
-				,"command.see.invoice", null));
+		commandable.addChild(Builder.createReport(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale(),"command.see.invoice", null));
 	}
 				
 }

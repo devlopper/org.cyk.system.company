@@ -1,7 +1,6 @@
 package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -13,17 +12,14 @@ import lombok.Setter;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementInputBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
-import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
-import org.cyk.ui.api.UIManager;
-import org.cyk.ui.api.UIProvider;
+import org.cyk.system.root.business.impl.AbstractOutputDetails;
+import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.UICommandable.CommandRequestType;
-import org.cyk.ui.api.command.UICommandable.Parameter;
 import org.cyk.ui.api.command.UICommandable.ViewType;
-import org.cyk.system.root.business.impl.AbstractOutputDetails;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
@@ -98,23 +94,11 @@ public abstract class AbstractSaleStockInputConsultPage extends AbstractConsultP
 	
 	@Override
 	protected Collection<UICommandable> contextualCommandables() {
-		Integer balance = null;//identifiable.getSale().getBalance().getValue().compareTo(BigDecimal.ZERO);
-		UICommandable contextualMenu = UIProvider.getInstance().createCommandable("button", null),c;
-		contextualMenu.setLabel(contentTitle); 
-		/*if(Boolean.TRUE.equals(identifiable.getSale().getDone()) && balance!=0){
-			Collection<Parameter> parameters = Arrays.asList(new Parameter(uiManager.keyFromClass(SaleStockInput.class), identifiable.getIdentifier()),
-					new Parameter(webManager.getRequestParameterPreviousUrl(), url));
-			c = contextualMenu.addChild("command.widthdraw", null, "saleStockOutputEditView", parameters);	
-			c.setIdentifier(COMMANDABLE_WITHDRAW_IDENTIFIER);
-		}*/
-		
-		UICommandable printReceipt = UIProvider.getInstance().createCommandable("command.see.invoice", null);
+		UICommandable contextualMenu = instanciateCommandableBuilder().setLabel(contentTitle).create();
+		UICommandable printReceipt = Builder.create("command.see.invoice", null);
 		printReceipt.setCommandRequestType(CommandRequestType.UI_VIEW);
 		printReceipt.setViewType(ViewType.TOOLS_REPORT);
-		//printReceipt.getParameters().addAll(navigationManager.reportParameters(identifiable.getSale(), 
-		//		CompanyReportRepository.getInstance().getReportPointOfSale(),Boolean.FALSE));
 		contextualMenu.getChildren().add(printReceipt);
-		
 		return Arrays.asList(contextualMenu);
 	}
 

@@ -12,9 +12,9 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.ui.api.UIProvider;
+import org.cyk.ui.api.Icon;
+import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.CommandAdapter;
-import org.cyk.ui.api.command.IconType;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.web.primefaces.page.AbstractPrimefacesPage;
@@ -35,7 +35,7 @@ public abstract class AbstractTangibleProductStockManyPage<DETAIL> extends Abstr
 	protected void initialisation() {
 		super.initialisation();
 		tangibleProducts = new ArrayList<TangibleProduct>(tangibleProductBusiness.findAll());
-		submitCommandable = UIProvider.getInstance().createCommandable("command.save", IconType.ACTION_SAVE);
+		submitCommandable = Builder.create("command.save", Icon.ACTION_SAVE);
 		submitCommandable.getCommand().getCommandListeners().add(new CommandAdapter(){
 			private static final long serialVersionUID = 4174035599491586029L;
 			@Override
