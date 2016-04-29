@@ -16,7 +16,7 @@ import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
 
 @Stateless
-public class CustomerBusinessImpl extends AbstractActorBusinessImpl<Customer, CustomerDao> implements CustomerBusiness,Serializable {
+public class CustomerBusinessImpl extends AbstractActorBusinessImpl<Customer, CustomerDao,Customer.SearchCriteria> implements CustomerBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 

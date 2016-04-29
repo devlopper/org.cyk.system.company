@@ -6,7 +6,7 @@ import java.util.Collection;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.root.persistence.api.party.person.AbstractActorDao;
 
-public interface CustomerDao extends AbstractActorDao<Customer> {
+public interface CustomerDao extends AbstractActorDao<Customer,Customer.SearchCriteria> {
 
 	Collection<Customer> readByBalance(BigDecimal balance);
 

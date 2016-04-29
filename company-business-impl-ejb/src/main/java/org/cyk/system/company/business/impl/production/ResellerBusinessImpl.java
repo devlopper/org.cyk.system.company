@@ -13,7 +13,7 @@ import org.cyk.system.company.persistence.api.production.ResellerDao;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
 
 @Stateless
-public class ResellerBusinessImpl extends AbstractActorBusinessImpl<Reseller, ResellerDao> implements ResellerBusiness,Serializable {
+public class ResellerBusinessImpl extends AbstractActorBusinessImpl<Reseller, ResellerDao,Reseller.SearchCriteria> implements ResellerBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 

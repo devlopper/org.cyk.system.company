@@ -33,4 +33,21 @@ public class Reseller extends AbstractActor implements Serializable {
 	/**/
 	
 	public static final String FIELD_PRODUCTION_UNIT = "productionUnit";
+	
+	/**/
+	
+	public static class SearchCriteria extends AbstractSearchCriteria<Reseller> {
+
+		private static final long serialVersionUID = -7909506438091294611L;
+
+		public SearchCriteria() {
+			this(null);
+		}
+
+		public SearchCriteria(String name) {
+			super(name);
+		}
+		
+		
+	}
 }

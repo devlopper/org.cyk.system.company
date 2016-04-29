@@ -7,7 +7,7 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.business.api.party.person.AbstractActorBusiness;
 
-public interface CustomerBusiness extends AbstractActorBusiness<Customer> {
+public interface CustomerBusiness extends AbstractActorBusiness<Customer,Customer.SearchCriteria> {
 
 	Collection<Customer> findByBalance(BigDecimal balance);
 	Collection<Customer> findByBalanceNotEquals(BigDecimal balance);

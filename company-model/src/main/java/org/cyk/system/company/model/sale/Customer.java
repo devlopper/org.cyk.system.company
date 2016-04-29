@@ -7,9 +7,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Getter;
 
 import org.cyk.system.root.model.party.person.AbstractActor;
 
@@ -36,4 +36,21 @@ public class Customer extends AbstractActor implements Serializable {
 	public static final String FIELD_BALANCE = "balance";
 	public static final String FIELD_PAID = "paid";
 	public static final String FIELD_PAYMENT_COUNT = "paymentCount";
+	
+	/**/
+	
+	public static class SearchCriteria extends AbstractSearchCriteria<Customer> {
+
+		private static final long serialVersionUID = -7909506438091294611L;
+
+		public SearchCriteria() {
+			this(null);
+		}
+
+		public SearchCriteria(String name) {
+			super(name);
+		}
+		
+		
+	}
 }

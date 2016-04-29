@@ -87,10 +87,12 @@ import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.security.UserAccountBusiness;
 import org.cyk.system.root.business.impl.AbstractBusinessLayer;
 import org.cyk.system.root.business.impl.AbstractFormatter;
-import org.cyk.system.root.business.impl.BusinessListener;
+import org.cyk.system.root.business.impl.BusinessServiceProvider;
+import org.cyk.system.root.business.impl.BusinessServiceProvider.Service;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
+import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.report.ReportTemplate;
@@ -211,20 +213,15 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			}
 		});
 		
-		BusinessListener.LISTENERS.add(new BusinessListener.Adapter.Default(){
-			private static final long serialVersionUID = 2105514784569748009L;
-			@Override
-			public <T extends AbstractIdentifiable> Collection<T> find(Class<T> dataClass,DataReadConfiguration configuration) {
-				
-				return super.find(dataClass, configuration);
-			}
+		BusinessServiceProvider.Identifiable.COLLECTION.add(new AbstractActorBusinessImpl.BusinessServiceProviderIdentifiable<Customer,Customer.SearchCriteria>(Customer.class){
+			private static final long serialVersionUID = 1322416788278558869L;
 			
 			@Override
-			public <T extends AbstractIdentifiable> Long count(Class<T> dataClass,DataReadConfiguration configuration) {
-				
-				return super.count(dataClass, configuration);
+			protected Customer.SearchCriteria createSearchCriteria(Service service,DataReadConfiguration dataReadConfiguration) {
+				return new Customer.SearchCriteria(dataReadConfiguration.getGlobalFilter());
 			}
         });
+		
 	}
 	
 	

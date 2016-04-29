@@ -9,7 +9,7 @@ import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.root.persistence.impl.party.person.AbstractActorDaoImpl;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 
-public class CustomerDaoImpl extends AbstractActorDaoImpl<Customer> implements CustomerDao,Serializable {
+public class CustomerDaoImpl extends AbstractActorDaoImpl<Customer,Customer.SearchCriteria> implements CustomerDao,Serializable {
 
 	private static final long serialVersionUID = -1712788156426144935L;
 

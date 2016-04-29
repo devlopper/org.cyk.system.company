@@ -9,7 +9,7 @@ import org.cyk.system.company.business.api.structure.CompanyBusiness;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.persistence.api.structure.CompanyDao;
 import org.cyk.system.root.business.impl.party.AbstractPartyBusinessImpl;
-import org.cyk.system.root.model.party.PartySearchCriteria;
+import org.cyk.system.root.model.party.Party.PartySearchCriteria;
 import org.cyk.system.root.model.party.person.Person;
 
 public class CompanyBusinessImpl extends AbstractPartyBusinessImpl<Company, CompanyDao,PartySearchCriteria> implements CompanyBusiness,Serializable {

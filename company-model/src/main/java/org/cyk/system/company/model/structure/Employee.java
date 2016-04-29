@@ -18,4 +18,20 @@ public class Employee extends AbstractActor implements Serializable {
 
 	@ManyToOne private Division division;
 
+	/**/
+	
+	public static class SearchCriteria extends AbstractSearchCriteria<Employee> {
+
+		private static final long serialVersionUID = -7909506438091294611L;
+
+		public SearchCriteria() {
+			this(null);
+		}
+
+		public SearchCriteria(String name) {
+			super(name);
+		}
+		
+		
+	}
 }
