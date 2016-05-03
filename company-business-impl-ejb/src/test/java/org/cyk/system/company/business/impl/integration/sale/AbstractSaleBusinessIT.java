@@ -34,6 +34,10 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     	companyBusinessTestHelper.updateSale(p.getComputedIdentifier(), p.getFiniteStateMachineAlphabetCode(),p.getTaxable());
     }
     
+    protected void deleteSale(DeleteSaleParameters p){
+    	companyBusinessTestHelper.deleteSale(p.getComputedIdentifier());
+    }
+    
     protected void createSaleStock(CreateSaleStockInputParameters p){
     	companyBusinessTestHelper.createSaleStockTangibleProductMovementInput(p.getComputedIdentifier(), p.getDate(), p.getCashierCode(), p.getCustomerRegistrationCode(), p.getPrice(),p.getTaxable(),p.getQuantity());
     }
@@ -92,6 +96,13 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
 			super(computedIdentifier);
 			this.finiteStateMachineAlphabetCode = finiteStateMachineAlphabetCode;
 			this.taxable = taxable;
+		}
+    }
+    
+    @Getter @Setter
+    public static class DeleteSaleParameters extends AbstractSaleParameters{
+		public DeleteSaleParameters(String computedIdentifier) {
+			super(computedIdentifier);
 		}
     }
     

@@ -47,6 +47,7 @@ import org.cyk.system.company.business.api.structure.DivisionBusiness;
 import org.cyk.system.company.business.api.structure.DivisionTypeBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
+import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
@@ -79,6 +80,7 @@ import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
+import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.api.FormatterBusiness;
 import org.cyk.system.root.business.api.TypedBusiness;
@@ -144,6 +146,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private IntangibleProductBusiness intangibleProductBusiness;
 	@Inject private SaleBusiness saleBusiness;
 	@Inject private SalableProductBusiness salableProductBusiness;
+	@Inject private SaleProductDao saleProductDao;
 	@Inject private SaleProductBusiness saleProductBusiness;
 	@Inject private SaleStockTangibleProductMovementInputBusiness saleStockInputBusiness;
 	@Inject private SaleStockTangibleProductMovementOutputBusiness saleStockOutputBusiness;
@@ -222,6 +225,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			}
         });
 		
+		SaleBusinessImpl.Listener.COLLECTION.add(new SaleBusinessImpl.Listener.Adapter.Default());
 	}
 	
 	

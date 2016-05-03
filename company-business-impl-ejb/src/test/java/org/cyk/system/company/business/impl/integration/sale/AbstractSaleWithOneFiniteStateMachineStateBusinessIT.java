@@ -16,6 +16,11 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     	createSale(p);
     	_1(p);
     	/*
+    	DeleteSaleParameters deleteSaleParameters = new DeleteSaleParameters(S1);
+    	deleteSale(deleteSaleParameters);
+    	_2(deleteSaleParameters);
+    	*/
+    	/*
     	CreateSaleCashRegisterMovementParameters cashRegisterMovementParameters = new CreateSaleCashRegisterMovementParameters(S1, S1_P1, null, "500");
     	createSaleCashRegisterMovement(cashRegisterMovementParameters);
     	_2(cashRegisterMovementParameters);	
@@ -113,7 +118,8 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
      * @param parameters
      */
     protected abstract void _1(CreateSaleParameters parameters);
-    protected abstract void _2(CreateSaleCashRegisterMovementParameters parameters);
+    protected abstract void _2(DeleteSaleParameters parameters);
+    //protected abstract void _2(CreateSaleCashRegisterMovementParameters parameters);
     protected abstract void _3(CreateSaleCashRegisterMovementParameters parameters);
     protected abstract void noTax4MorePaid1(CreateSaleParameters parameters);
     protected abstract void noTax5MorePaid2(CreateSaleParameters parameters);

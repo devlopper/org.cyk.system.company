@@ -6,6 +6,18 @@ public class SaleWithOneFiniteStateMachineStateBusinessIT extends AbstractSaleWi
 
     private static final long serialVersionUID = -6691092648665798471L;
     
+    @Override
+    protected void businesses() {
+    	companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount("0");
+		assertEquals("Number of sales", 0l, saleDao.countAll());
+		companyBusinessTestHelper.assertCurrentAccountingPeriod("0", "0", "0","0");
+		companyBusinessTestHelper.assertCurrentAccountingPeriodProduct(TP1,"0", "0","0","0");
+		companyBusinessTestHelper.assertCustomer(CUST1,"0","0","0","0","0" );
+		
+    	super.businesses();
+    	
+    }
+    
 	@Override
 	protected void _1(CreateSaleParameters parameters) {
 		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount("1");
@@ -21,9 +33,12 @@ public class SaleWithOneFiniteStateMachineStateBusinessIT extends AbstractSaleWi
 	}
 
 	@Override
-	protected void _2(CreateSaleCashRegisterMovementParameters parameters) {
-		// TODO Auto-generated method stub
-		
+	protected void _2(DeleteSaleParameters parameters) {
+		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount("0");
+		assertEquals("Number of sales", 0l, saleDao.countAll());
+		companyBusinessTestHelper.assertCurrentAccountingPeriod("0", "0", "0","0");
+		companyBusinessTestHelper.assertCurrentAccountingPeriodProduct(TP1,"0", "0","0","0");
+		companyBusinessTestHelper.assertCustomer(CUST1,"0","0","0","0","0" );
 	}
 
 	@Override

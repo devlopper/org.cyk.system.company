@@ -47,6 +47,7 @@ import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineFinalStateDao;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.Constant;
+import org.cyk.utility.common.cdi.BeanAdapter;
 
 @Stateless
 public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao> implements SaleBusiness,Serializable {
@@ -175,18 +176,15 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	public Sale create(Sale sale, SaleCashRegisterMovement saleCashRegisterMovement) {
 		exceptionUtils().exception(saleCashRegisterMovement!=null && finiteStateMachineFinalStateDao.readByState(sale.getFiniteStateMachineState())==null
 				, "exception.sale.finitestatemachinestate.notfinal");
-		//logIdentifiable("Create",sale);
 		//Firstly we create the sale
 		if(Boolean.TRUE.equals(AUTO_SET_SALE_DATE))
 			if(sale.getDate()==null)
 				sale.setDate(universalTimeCoordinated());
+		
 		sale = super.create(sale);
 		cascade(sale, sale.getSaleProducts(), Crud.CREATE);
-		/*
-		for(SaleProduct saleProduct : sale.getSaleProducts())
-			genericDao.create(saleProduct);
-		*/
-		consume(sale);
+		consume(sale,Crud.CREATE);
+		
 		if(sale.getComputedIdentifier()==null)
 			sale.setComputedIdentifier(generateIdentifier(sale,CompanyBusinessLayerListener.SALE_IDENTIFIER,sale.getAccountingPeriod().getSaleConfiguration()
 				.getIdentifierGenerator()));
@@ -232,11 +230,11 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	public void update(Sale sale,FiniteStateMachineAlphabet finiteStateMachineAlphabet) {
 		exceptionUtils().exception(finiteStateMachineFinalStateDao.readByState(sale.getFiniteStateMachineState())!=null, "exception.sale_state_cannotbeupdated");
 		sale.setFiniteStateMachineState(RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness().findByFromStateByAlphabet(sale.getFiniteStateMachineState(), finiteStateMachineAlphabet));
-		consume(sale);
+		consume(sale,Crud.UPDATE);
 		dao.update(sale);
 	}
 	
-	private void consume(Sale sale){
+	private void consume(Sale sale,Crud crud){
 		if(finiteStateMachineFinalStateDao.readByState(sale.getFiniteStateMachineState())==null){
 			
 		}else{
@@ -244,12 +242,15 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			 * It is a final state so we can compute the derived values
 			 */
 			
+			for(Listener listener : Listener.COLLECTION)
+				listener.processOnConsume(sale, crud);
+			/*
 			Collection<SaleProduct> saleProducts = saleProductDao.readBySale(sale);
 			Collection<TangibleProduct> tangibleProducts = new LinkedHashSet<>();
 			for(SaleProduct saleProduct : saleProducts)
 				if(saleProduct.getSalableProduct().getProduct() instanceof TangibleProduct)
 					tangibleProducts.add((TangibleProduct) saleProduct.getSalableProduct().getProduct());
-				
+			
 			for(TangibleProduct tangibleProduct : tangibleProducts){
 				StockableTangibleProduct stockableTangibleProduct = stockableTangibleProductDao.readByTangibleProduct(tangibleProduct);
 				if(stockableTangibleProduct==null)
@@ -266,6 +267,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 					logIdentifiable("Updated",stockableTangibleProduct);
 				}
 			}
+			*/
 			
 			if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))
 				sale.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(sale.getAccountingPeriod(), sale.getCost().getValue()));
@@ -275,23 +277,26 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE
 					,Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxIncludedInCost()) ? BigDecimal.ZERO:sale.getCost().getTax());
 			
+			/*
 			CompanyBusinessLayer.getInstance().getProductBusiness().consume(saleProductDao.readBySale(sale));
 			if(sale.getCustomer()!=null){
 				CompanyBusinessLayer.getInstance().getCustomerBusiness().consume(sale);
 				sale.getBalance().setCumul(sale.getCustomer().getBalance());//to keep track of evolution
 			}
+			
+			
 			CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().consume(sale);
 			CompanyBusinessLayer.getInstance().getAccountingPeriodProductBusiness().consume(sale);
-			
+			*/
 			logIdentifiable("Derived values computed",sale);
 		}
 	}
-	/*
+	
 	@Override
 	public Sale delete(Sale sale) {
 		cascade(sale, saleProductDao.readBySale(sale), Crud.DELETE);
 		return super.delete(sale);
-	}*/
+	}
 
 	private void createReport(InvoiceParameters previous,InvoiceParameters current){
 		SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().produceInvoice(previous,current);
@@ -332,5 +337,88 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	/**/
+	
+	public static interface Listener{
+		
+		Collection<Listener> COLLECTION = new ArrayList<>();
+		
+		/**/
+		
+		void processOnConsume(Sale sale,Crud crud);
+		
+		public static class Adapter extends BeanAdapter implements Listener, Serializable {
+			private static final long serialVersionUID = -1625238619828187690L;
+			
+			/**/
+		
+			@Override
+			public void processOnConsume(Sale sale, Crud crud) {}
+			
+			public static class Default extends Adapter implements Serializable {
+				private static final long serialVersionUID = -1625238619828187690L;
+				
+				/**/
+				
+				@Override
+				public void processOnConsume(Sale sale, Crud crud) {
+					super.processOnConsume(sale, crud);
+					
+					Collection<SaleProduct> saleProducts = CompanyBusinessLayer.getInstance().getSaleProductDao().readBySale(sale);
+					Collection<TangibleProduct> tangibleProducts = new LinkedHashSet<>();
+					for(SaleProduct saleProduct : saleProducts)
+						if(saleProduct.getSalableProduct().getProduct() instanceof TangibleProduct)
+							tangibleProducts.add((TangibleProduct) saleProduct.getSalableProduct().getProduct());
+					/*
+					 * We update the stock
+					 */
+					for(TangibleProduct tangibleProduct : tangibleProducts){
+						StockableTangibleProduct stockableTangibleProduct = CompanyBusinessLayer.getInstance().getStockableTangibleProductDao().readByTangibleProduct(tangibleProduct);
+						if(stockableTangibleProduct==null)
+							;
+						else{
+							BigDecimal count = BigDecimal.ZERO;
+							for(SaleProduct saleProduct : saleProducts)
+								if(saleProduct.getSalableProduct().getProduct().equals(stockableTangibleProduct.getTangibleProduct()))
+									count = count.add(saleProduct.getQuantity());
+							StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement(stockableTangibleProduct
+									,RootBusinessLayer.getInstance().getMovementBusiness().instanciateOne(stockableTangibleProduct.getMovementCollection(), Boolean.FALSE));
+							stockTangibleProductMovement.getMovement().setValue(count.negate());
+							CompanyBusinessLayer.getInstance().getStockTangibleProductMovementBusiness().create(stockTangibleProductMovement);
+							logTrace("Updated : {}",stockableTangibleProduct.getLogMessage());
+						}
+					}
+					
+					/*
+					 * We update sale
+					 */
+					/*
+					if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))
+						sale.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(sale.getAccountingPeriod(), sale.getCost().getValue()));
+					sale.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(sale.getAccountingPeriod(), sale.getCost().getValue(), sale.getCost().getTax()));
+					sale.getBalance().setValue(sale.getCost().getValue());
+					
+					commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE
+							,Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxIncludedInCost()) ? BigDecimal.ZERO:sale.getCost().getTax());
+					*/
+					/*
+					 * We update product
+					 */
+					CompanyBusinessLayer.getInstance().getProductBusiness().consume(CompanyBusinessLayer.getInstance().getSaleProductDao().readBySale(sale));
+					if(sale.getCustomer()!=null){
+						CompanyBusinessLayer.getInstance().getCustomerBusiness().consume(sale);
+						sale.getBalance().setCumul(sale.getCustomer().getBalance());//to keep track of evolution
+					}
+					
+					/*
+					 * We update accounting period
+					 */
+					CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().consume(sale);
+					CompanyBusinessLayer.getInstance().getAccountingPeriodProductBusiness().consume(sale);
+				}
+			}
+			
+		}
+		
+	}
 	
 }

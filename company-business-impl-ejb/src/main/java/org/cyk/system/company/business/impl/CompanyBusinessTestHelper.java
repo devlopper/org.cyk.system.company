@@ -232,6 +232,11 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	CompanyBusinessLayer.getInstance().getSaleBusiness().update(sale, finiteStateMachineAlphabet);
     }
     
+    public void deleteSale(String identifier){
+    	Sale sale = saleDao.readByComputedIdentifier(identifier);
+    	CompanyBusinessLayer.getInstance().getSaleBusiness().delete(sale);
+    }
+    
     public void createSaleCashRegisterMovement(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode,String amount,String expectedThrowableMessage){
     	final SaleCashRegisterMovement saleCashRegisterMovement = CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness()
     			.instanciateOne(saleComputedIdentifier,computedIdentifier, cashierPersonCode==null?cashierDao.readOneRandomly().getPerson().getCode():cashierPersonCode, amount);
