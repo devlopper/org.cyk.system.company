@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
+import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
 import org.cyk.system.company.model.accounting.AccountingPeriodProductCategory;
@@ -22,6 +23,7 @@ import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProduct
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.product.ProductCategoryDao;
 import org.cyk.system.company.persistence.api.sale.SaleProductDao;
+import org.cyk.system.root.business.api.Crud;
 
 public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPeriodResultsBusinessImpl<AccountingPeriodProduct, AccountingPeriodProductDao,Product> implements AccountingPeriodProductBusiness, Serializable {
 
@@ -72,6 +74,17 @@ public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPerio
 		commonUtils.increment(BigDecimal.class, salesResults.getCost(), Cost.FIELD_VALUE, cost);
 		commonUtils.increment(BigDecimal.class, salesResults.getCost(), Cost.FIELD_TAX, vat);
 		commonUtils.increment(BigDecimal.class, salesResults.getCost(), Cost.FIELD_TURNOVER, turnover);
+	}
+	
+	/**/
+	
+	public static class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter implements Serializable {
+		private static final long serialVersionUID = 5585791722273454192L;
+		
+		@Override
+		public void processOnConsume(Sale sale, Crud crud) {
+			companyBusinessLayer.getAccountingPeriodProductBusiness().consume(sale);
+		}
 	}
 	
 }

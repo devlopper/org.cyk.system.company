@@ -4,17 +4,27 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
+import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
+import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockTangibleProductMovementDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 
@@ -31,7 +41,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 		super(dao);
 	}
 	
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public StockTangibleProductMovement instanciateOne(String[] arguments) {
 		StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement();
 		stockTangibleProductMovement.setStockableTangibleProduct(stockableTangibleProductDao.readByTangibleProduct(tangibleProductDao.read(arguments[0])));
@@ -42,7 +52,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 		return stockTangibleProductMovement;
 	}
 	
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<StockTangibleProductMovement> instanciateMany(String[][] arguments) {
 		List<StockTangibleProductMovement> list = new ArrayList<>();
 		for(String[] info : arguments)
@@ -58,6 +68,36 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 		logIdentifiable("Created", stockTangibleProductMovement);
 		return stockTangibleProductMovement;
 	}
+	
+	@Override
+	public void consume(Sale sale) {
+		/*
+		 * We need to update the stock
+		 */
+		Collection<SaleProduct> saleProducts = CompanyBusinessLayer.getInstance().getSaleProductDao().readBySale(sale);
+		Collection<TangibleProduct> tangibleProducts = new LinkedHashSet<>();
+		for(SaleProduct saleProduct : saleProducts)
+			if(saleProduct.getSalableProduct().getProduct() instanceof TangibleProduct)
+				tangibleProducts.add((TangibleProduct) saleProduct.getSalableProduct().getProduct());
+	
+		for(TangibleProduct tangibleProduct : tangibleProducts){
+			StockableTangibleProduct stockableTangibleProduct = CompanyBusinessLayer.getInstance().getStockableTangibleProductDao().readByTangibleProduct(tangibleProduct);
+			if(stockableTangibleProduct==null)
+				;
+			else{
+				BigDecimal count = BigDecimal.ZERO;
+				for(SaleProduct saleProduct : saleProducts)
+					if(saleProduct.getSalableProduct().getProduct().equals(stockableTangibleProduct.getTangibleProduct()))
+						count = count.add(saleProduct.getQuantity());
+				StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement(stockableTangibleProduct
+						,RootBusinessLayer.getInstance().getMovementBusiness().instanciateOne(stockableTangibleProduct.getMovementCollection(), Boolean.FALSE));
+				stockTangibleProductMovement.getMovement().setValue(count.negate());
+				CompanyBusinessLayer.getInstance().getStockTangibleProductMovementBusiness().create(stockTangibleProductMovement);
+				//logTrace("Updated : {}",stockableTangibleProduct.getLogMessage());
+			}
+		}
+	}
+	
 	/*
 	private void updateStock(TangibleProductStockMovement tangibleProductStockMovement){
 		StockConfiguration stockConfiguration = accountingPeriodBusiness.findCurrent().getStockConfiguration();
@@ -70,15 +110,25 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 		productDao.update(tangibleProductStockMovement.getTangibleProduct());
 	}*/
 
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<StockTangibleProductMovement> findByCriteria(StockTangibleProductMovementSearchCriteria criteria) {
 		prepareFindByCriteria(criteria);
 		return dao.readByCriteria(criteria);
 	}
 
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Long countByCriteria(StockTangibleProductMovementSearchCriteria criteria) {
 		return dao.countByCriteria(criteria);
 	}
 	
+	/**/
+	
+	public static class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter implements Serializable {
+		private static final long serialVersionUID = 5585791722273454192L;
+		
+		@Override
+		public void processOnConsume(Sale sale, Crud crud) {
+			companyBusinessLayer.getStockTangibleProductMovementBusiness().consume(sale);
+		}
+	}
 }

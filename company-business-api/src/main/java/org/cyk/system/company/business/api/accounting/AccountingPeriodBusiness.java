@@ -3,7 +3,6 @@ package org.cyk.system.company.business.api.accounting;
 import java.math.BigDecimal;
 
 import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.business.api.event.AbstractIdentifiablePeriodBusiness;
 
@@ -26,5 +25,4 @@ public interface AccountingPeriodBusiness extends AbstractIdentifiablePeriodBusi
 	BigDecimal computeTurnover(Sale sale);
 	*/
 	
-	void consume(Sale sale);
 }

@@ -47,6 +47,9 @@ import org.cyk.system.company.business.api.structure.DivisionBusiness;
 import org.cyk.system.company.business.api.structure.DivisionTypeBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
+import org.cyk.system.company.business.impl.accounting.AccountingPeriodBusinessImpl;
+import org.cyk.system.company.business.impl.accounting.AccountingPeriodProductBusinessImpl;
+import org.cyk.system.company.business.impl.sale.CustomerBusinessImpl;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
@@ -79,6 +82,7 @@ import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.OwnedCompany;
+import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
@@ -160,6 +164,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private StockTangibleProductMovementBusiness stockTangibleProductMovementBusiness;
 	@Inject private StockableTangibleProductBusiness stockableTangibleProductBusiness;
 	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
+	@Inject private AccountingPeriodDao accountingPeriodDao;
 	@Inject private ProductionBusiness productionBusiness;
 	@Inject private ProductionUnitBusiness productionUnitBusiness;
 	@Inject private ProductionSpreadSheetCellBusiness productionInputBusiness;
@@ -225,7 +230,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			}
         });
 		
-		SaleBusinessImpl.Listener.COLLECTION.add(new SaleBusinessImpl.Listener.Adapter.Default());
+		//SaleBusinessImpl.Listener.COLLECTION.add(new SaleBusinessImpl.Listener.Adapter.Default());
+		SaleBusinessImpl.Listener.COLLECTION.add(new AccountingPeriodBusinessImpl.SaleBusinessAdapter());
+		SaleBusinessImpl.Listener.COLLECTION.add(new AccountingPeriodProductBusinessImpl.SaleBusinessAdapter());
+		SaleBusinessImpl.Listener.COLLECTION.add(new CustomerBusinessImpl.SaleBusinessAdapter());
 	}
 	
 	

@@ -13,6 +13,8 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
@@ -22,6 +24,7 @@ import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.event.AbstractIdentifiablePeriodBusinessImpl;
 
 @Stateless
@@ -97,13 +100,18 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 		return turnover;
 	}
 	
-	@Override
-	public void consume(Sale sale) {
-		commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE);
-		commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_VALUE, sale.getCost().getValue());
-		commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_TAX, sale.getCost().getTax());
-		commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_TURNOVER, sale.getCost().getTurnover());
-		dao.update(sale.getAccountingPeriod());
-	}
+	/**/
 	
+	public static class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter implements Serializable {
+		private static final long serialVersionUID = 5585791722273454192L;
+		
+		@Override
+		public void processOnConsume(Sale sale, Crud crud) {
+			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE);
+			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_VALUE, sale.getCost().getValue());
+			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_TAX, sale.getCost().getTax());
+			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_TURNOVER, sale.getCost().getTurnover());
+			CompanyBusinessLayer.getInstance().getAccountingPeriodDao().update(sale.getAccountingPeriod());
+		}
+	}
 }

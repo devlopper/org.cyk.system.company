@@ -10,9 +10,12 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
+import org.cyk.system.company.persistence.api.sale.SaleDao;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
 
 @Stateless
@@ -20,6 +23,8 @@ public class CustomerBusinessImpl extends AbstractActorBusinessImpl<Customer, Cu
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
+	@Inject private SaleDao saleDao;
+	
 	@Inject
 	public CustomerBusinessImpl(CustomerDao dao) {
 		super(dao);
@@ -46,12 +51,32 @@ public class CustomerBusinessImpl extends AbstractActorBusinessImpl<Customer, Cu
 	}
 	
 	@Override
-	public void consume(Sale sale) {
-		Customer customer = sale.getCustomer();
-		customer.setSaleCount(customer.getSaleCount().add(BigDecimal.ONE));
-		customer.setTurnover(customer.getTurnover().add(sale.getCost().getTurnover()));
-		customer.setBalance(customer.getBalance().add(sale.getBalance().getValue()));
-		dao.update(customer);	
+	public Sale consume(Sale sale) {
+		if(sale.getCustomer()==null){
+			
+		}else{
+			Customer customer = sale.getCustomer();
+			customer.setSaleCount(customer.getSaleCount().add(BigDecimal.ONE));
+			customer.setTurnover(customer.getTurnover().add(sale.getCost().getTurnover()));
+			customer.setBalance(customer.getBalance().add(sale.getBalance().getValue()));
+			dao.update(customer);	
+		
+			sale.getBalance().setCumul(sale.getCustomer().getBalance());//to keep track of evolution
+			sale = saleDao.update(sale);
+		}
+		
+		return sale;
+	}
+	
+	/**/
+	
+	public static class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter implements Serializable {
+		private static final long serialVersionUID = 5585791722273454192L;
+		
+		@Override
+		public void processOnConsume(Sale sale, Crud crud) {
+			CompanyBusinessLayer.getInstance().getCustomerBusiness().consume(sale);
+		}
 	}
 
 }

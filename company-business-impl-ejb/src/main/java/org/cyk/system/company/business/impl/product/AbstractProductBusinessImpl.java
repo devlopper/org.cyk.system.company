@@ -12,14 +12,18 @@ import javax.inject.Inject;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.product.AbstractProductBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.product.AbstractProductDao;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractEnumerationBusinessImpl;
 
 public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO extends AbstractProductDao<PRODUCT>> extends AbstractEnumerationBusinessImpl<PRODUCT,DAO> implements AbstractProductBusiness<PRODUCT>,Serializable {
@@ -77,5 +81,16 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
     protected abstract Set<PRODUCT> products(Collection<SaleProduct> saleProducts);
     
     protected abstract void beforeUpdate(PRODUCT product,BigDecimal usedCount);
- 
+
+    /**/
+    
+    public static class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter implements Serializable {
+		private static final long serialVersionUID = 5585791722273454192L;
+		
+		@Override
+		public void processOnConsume(Sale sale, Crud crud) {
+			//TODO use code instead of specific function
+			CompanyBusinessLayer.getInstance().getProductBusiness().consume(CompanyBusinessLayer.getInstance().getSaleProductDao().readBySale(sale));
+		}
+	}
 }

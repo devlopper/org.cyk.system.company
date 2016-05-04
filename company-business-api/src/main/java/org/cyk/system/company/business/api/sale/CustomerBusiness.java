@@ -14,6 +14,6 @@ public interface CustomerBusiness extends AbstractActorBusiness<Customer,Custome
 	Collection<Customer> findByBalanceGreaterThanOrEquals(BigDecimal balance);
 	Collection<Customer> findByBalanceLowerThanOrEquals(BigDecimal balance);
 	
-	void consume(Sale sale);
+	Sale consume(Sale sale);
 	
 }
