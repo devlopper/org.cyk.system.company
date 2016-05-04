@@ -2,6 +2,7 @@ package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.ejb.Stateless;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyReportProducer.ReceiptParameters;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.impl.AbstractCompanyBeanAdapter;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
@@ -187,6 +189,39 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	public ReportBasedOnTemplateFile<SaleReport> findReport(SaleCashRegisterMovement saleCashRegisterMovement) {
 		return rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement.getReport(),
 				CompanyBusinessLayer.getInstance().getPointOfSalePaymentReportName()+Constant.CHARACTER_UNDESCORE+StringUtils.defaultString(saleCashRegisterMovement.getCashRegisterMovement().getComputedIdentifier(), saleCashRegisterMovement.getIdentifier().toString()));
+	}
+	
+	@Override
+	public SaleCashRegisterMovement delete(SaleCashRegisterMovement saleCashRegisterMovement) {
+		
+		return super.delete(saleCashRegisterMovement);
+	}
+	
+	/**/
+	
+	public static interface Listener{
+		
+		Collection<Listener> COLLECTION = new ArrayList<>();
+		
+		/**/
+		
+		
+		public static class Adapter extends AbstractCompanyBeanAdapter implements Listener, Serializable {
+			private static final long serialVersionUID = -1625238619828187690L;
+			
+			/**/
+		
+			
+			public static class Default extends Adapter implements Serializable {
+				private static final long serialVersionUID = -1625238619828187690L;
+				
+				/**/
+				
+				
+			}
+			
+		}
+		
 	}
 
 }

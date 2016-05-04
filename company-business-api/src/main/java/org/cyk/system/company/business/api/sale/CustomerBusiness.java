@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.party.person.AbstractActorBusiness;
 
 public interface CustomerBusiness extends AbstractActorBusiness<Customer,Customer.SearchCriteria> {
@@ -14,6 +15,6 @@ public interface CustomerBusiness extends AbstractActorBusiness<Customer,Custome
 	Collection<Customer> findByBalanceGreaterThanOrEquals(BigDecimal balance);
 	Collection<Customer> findByBalanceLowerThanOrEquals(BigDecimal balance);
 	
-	Sale consume(Sale sale);
+	Sale consume(Sale sale, Crud crud, Boolean first);
 	
 }

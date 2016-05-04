@@ -106,11 +106,19 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 		private static final long serialVersionUID = 5585791722273454192L;
 		
 		@Override
-		public void processOnConsume(Sale sale, Crud crud) {
-			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE);
-			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_VALUE, sale.getCost().getValue());
-			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_TAX, sale.getCost().getTax());
-			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_TURNOVER, sale.getCost().getTurnover());
+		public void processOnConsume(Sale sale, Crud crud, Boolean first) {
+			BigDecimal sign = null;
+			if(Crud.CREATE.equals(crud)){
+				sign = BigDecimal.ONE;
+			}else if(Crud.UPDATE.equals(crud)) {
+				sign = BigDecimal.ONE;
+			}else if(Crud.DELETE.equals(crud)) {
+				sign = BigDecimal.ONE.negate();
+			}
+			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE.multiply(sign));
+			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_VALUE, sale.getCost().getValue().multiply(sign));
+			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_TAX, sale.getCost().getTax().multiply(sign));
+			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_TURNOVER, sale.getCost().getTurnover().multiply(sign));
 			CompanyBusinessLayer.getInstance().getAccountingPeriodDao().update(sale.getAccountingPeriod());
 		}
 	}

@@ -13,12 +13,15 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.product.ProductBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCollection;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.persistence.api.product.ProductDao;
+import org.cyk.system.root.business.api.Crud;
 
 @Stateless
 public class ProductBusinessImpl extends AbstractProductBusinessImpl<Product,ProductDao> implements ProductBusiness,Serializable  {
@@ -82,6 +85,17 @@ public class ProductBusinessImpl extends AbstractProductBusinessImpl<Product,Pro
 		/*for(ProductEmployee productEmployee : sale.getPerformers())
 			products.remove(productEmployee.getProduct());*/
 		return products;
+	}
+	
+	/**/
+	
+	public static class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter implements Serializable {
+		private static final long serialVersionUID = 5585791722273454192L;
+		
+		@Override
+		public void processOnConsume(Sale sale, Crud crud, Boolean first) {
+			CompanyBusinessLayer.getInstance().getProductBusiness().consume(sale,crud,first);
+		}
 	}
  
 }

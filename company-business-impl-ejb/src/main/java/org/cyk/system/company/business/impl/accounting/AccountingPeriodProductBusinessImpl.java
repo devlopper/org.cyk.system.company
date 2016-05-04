@@ -39,12 +39,11 @@ public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPerio
 	}
 
 	@Override
-	public void consume(Sale sale) {
+	public void consume(Sale sale, Crud crud, Boolean first) {
 		Collection<SaleProduct> saleProducts = saleProductDao.readBySale(sale);
 		Set<SalableProduct> products = new HashSet<>();
 		for(SaleProduct saleProduct : saleProducts)
 			products.add(saleProduct.getSalableProduct());
-		
 		for(SalableProduct salableProduct : products){
 			BigDecimal usedCount = BigDecimal.ZERO,cost = BigDecimal.ZERO,vat = BigDecimal.ZERO,turnover = BigDecimal.ZERO;
 			for(SaleProduct saleProduct : saleProducts)
@@ -55,25 +54,33 @@ public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPerio
 					turnover = turnover.add(saleProduct.getCost().getTurnover());
 				}
 			AccountingPeriodProduct accountingPeriodProduct = dao.readByAccountingPeriodByProduct(sale.getAccountingPeriod(), salableProduct.getProduct());
-			updateSalesResults(accountingPeriodProduct.getSaleResults(),usedCount,cost,vat,turnover);
+			updateSalesResults(accountingPeriodProduct.getSaleResults(),crud,first,usedCount,cost,vat,turnover);
 			dao.update(accountingPeriodProduct);
 			
 			//Update Hierarchy
 		 	ProductCategory category = salableProduct.getProduct().getCategory();
 			while(category!=null){
 				AccountingPeriodProductCategory accountingPeriodProductCategory = accountingPeriodProductCategoryDao.readByAccountingPeriodByProduct(sale.getAccountingPeriod(), category);
-				updateSalesResults(accountingPeriodProductCategory.getSaleResults(), usedCount,cost,vat, turnover);
+				updateSalesResults(accountingPeriodProductCategory.getSaleResults(),crud,first, usedCount,cost,vat, turnover);
 				accountingPeriodProductCategoryDao.update(accountingPeriodProductCategory);
 				category = productCategoryDao.readParent(category);
 			}
 		}
 	}
 	
-	private void updateSalesResults(SaleResults salesResults,BigDecimal count,BigDecimal cost,BigDecimal vat,BigDecimal turnover){
-		commonUtils.increment(BigDecimal.class, salesResults.getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, count);
-		commonUtils.increment(BigDecimal.class, salesResults.getCost(), Cost.FIELD_VALUE, cost);
-		commonUtils.increment(BigDecimal.class, salesResults.getCost(), Cost.FIELD_TAX, vat);
-		commonUtils.increment(BigDecimal.class, salesResults.getCost(), Cost.FIELD_TURNOVER, turnover);
+	private void updateSalesResults(SaleResults salesResults, Crud crud, Boolean first,BigDecimal count,BigDecimal cost,BigDecimal vat,BigDecimal turnover){
+		BigDecimal sign = null;
+		if(Crud.CREATE.equals(crud)){
+			sign = BigDecimal.ONE;
+		}else if(Crud.UPDATE.equals(crud)) {
+			sign = BigDecimal.ONE;
+		}else if(Crud.DELETE.equals(crud)) {
+			sign = BigDecimal.ONE.negate();
+		}
+		commonUtils.increment(BigDecimal.class, salesResults.getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, count.multiply(sign));
+		commonUtils.increment(BigDecimal.class, salesResults.getCost(), Cost.FIELD_VALUE, cost.multiply(sign));
+		commonUtils.increment(BigDecimal.class, salesResults.getCost(), Cost.FIELD_TAX, vat.multiply(sign));
+		commonUtils.increment(BigDecimal.class, salesResults.getCost(), Cost.FIELD_TURNOVER, turnover.multiply(sign));
 	}
 	
 	/**/
@@ -82,8 +89,8 @@ public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPerio
 		private static final long serialVersionUID = 5585791722273454192L;
 		
 		@Override
-		public void processOnConsume(Sale sale, Crud crud) {
-			companyBusinessLayer.getAccountingPeriodProductBusiness().consume(sale);
+		public void processOnConsume(Sale sale, Crud crud, Boolean first) {
+			companyBusinessLayer.getAccountingPeriodProductBusiness().consume(sale,crud,first);
 		}
 	}
 	

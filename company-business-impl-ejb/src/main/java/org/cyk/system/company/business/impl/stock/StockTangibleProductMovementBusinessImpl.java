@@ -70,7 +70,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 	}
 	
 	@Override
-	public void consume(Sale sale) {
+	public void consume(Sale sale, Crud crud, Boolean first) {
 		/*
 		 * We need to update the stock
 		 */
@@ -127,8 +127,8 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 		private static final long serialVersionUID = 5585791722273454192L;
 		
 		@Override
-		public void processOnConsume(Sale sale, Crud crud) {
-			companyBusinessLayer.getStockTangibleProductMovementBusiness().consume(sale);
+		public void processOnConsume(Sale sale, Crud crud, Boolean first) {
+			companyBusinessLayer.getStockTangibleProductMovementBusiness().consume(sale,crud,first);
 		}
 	}
 }

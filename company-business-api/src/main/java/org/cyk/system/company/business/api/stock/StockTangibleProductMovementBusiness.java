@@ -6,6 +6,7 @@ import java.util.List;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.TypedBusiness;
 
 public interface StockTangibleProductMovementBusiness extends TypedBusiness<StockTangibleProductMovement> {
@@ -17,7 +18,7 @@ public interface StockTangibleProductMovementBusiness extends TypedBusiness<Stoc
 	 * Update the stock
 	 * @param sale
 	 */
-	void consume(Sale sale);
+	void consume(Sale sale, Crud crud, Boolean first);
 	
 	Collection<StockTangibleProductMovement> findByCriteria(StockTangibleProductMovementSearchCriteria criteria);
 	Long countByCriteria(StockTangibleProductMovementSearchCriteria criteria);

@@ -12,8 +12,6 @@ import javax.inject.Inject;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.product.AbstractProductBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
-import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
 import org.cyk.system.company.model.product.Product;
@@ -23,6 +21,7 @@ import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.product.AbstractProductDao;
+import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractEnumerationBusinessImpl;
 
@@ -33,6 +32,7 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
 	@Inject protected AccountingPeriodProductDao accountingPeriodProductDao;
 	@Inject protected AccountingPeriodBusiness accountingPeriodBusiness;
 	@Inject protected OwnedCompanyBusiness ownedCompanyBusiness;
+	@Inject protected SaleProductDao saleProductDao;
 	
     public AbstractProductBusinessImpl(DAO dao) {
         super(dao);
@@ -63,8 +63,9 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
     }
         
     @Override
-	public void consume(Collection<SaleProduct> saleProducts) {
-		Set<PRODUCT> products = products(saleProducts);
+	public void consume(Sale sale, Crud crud, Boolean first) {
+		Collection<SaleProduct> saleProducts = saleProductDao.readBySale(sale);
+    	Set<PRODUCT> products = products(saleProducts);
 		
 		for(PRODUCT product : products){
 			BigDecimal usedCount = BigDecimal.ZERO;
@@ -84,13 +85,5 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
 
     /**/
     
-    public static class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter implements Serializable {
-		private static final long serialVersionUID = 5585791722273454192L;
-		
-		@Override
-		public void processOnConsume(Sale sale, Crud crud) {
-			//TODO use code instead of specific function
-			CompanyBusinessLayer.getInstance().getProductBusiness().consume(CompanyBusinessLayer.getInstance().getSaleProductDao().readBySale(sale));
-		}
-	}
+    
 }

@@ -12,14 +12,26 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     protected void businesses() {
     	updateAccountingPeriod("0.18", "true","false","false");
     	
-    	CreateSaleParameters p = new CreateSaleParameters(S1, null, null, CUST1, new String[][]{{TP1,"2"}}, "0","false");
-    	createSale(p);
-    	_1(p);
-    	/*
+    	CreateSaleParameters createSaleParameters = new CreateSaleParameters(S1, null, null, CUST1, new String[][]{{TP1,"2"}}, "0","false");
+    	createSale(createSaleParameters);
+    	_1(createSaleParameters);
+    	
     	DeleteSaleParameters deleteSaleParameters = new DeleteSaleParameters(S1);
     	deleteSale(deleteSaleParameters);
     	_2(deleteSaleParameters);
-    	*/
+    	
+    	createSaleParameters = new CreateSaleParameters(S1, null, null, CUST1, new String[][]{{TP1,"2"}}, "0","false");
+    	createSale(createSaleParameters);
+    	_3(createSaleParameters);
+    	
+    	CreateSaleCashRegisterMovementParameters cashRegisterMovementParameters = new CreateSaleCashRegisterMovementParameters(S1, S1_P1, null, "500");
+    	createSaleCashRegisterMovement(cashRegisterMovementParameters);
+    	_4(cashRegisterMovementParameters);	
+    	
+    	deleteSaleParameters = new DeleteSaleParameters(S1);
+    	deleteSale(deleteSaleParameters);
+    	_5(deleteSaleParameters);
+    	
     	/*
     	CreateSaleCashRegisterMovementParameters cashRegisterMovementParameters = new CreateSaleCashRegisterMovementParameters(S1, S1_P1, null, "500");
     	createSaleCashRegisterMovement(cashRegisterMovementParameters);
@@ -118,9 +130,20 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
      * @param parameters
      */
     protected abstract void _1(CreateSaleParameters parameters);
+    
+    /**
+     * Deleted
+     * @param parameters
+     */
     protected abstract void _2(DeleteSaleParameters parameters);
-    //protected abstract void _2(CreateSaleCashRegisterMovementParameters parameters);
-    protected abstract void _3(CreateSaleCashRegisterMovementParameters parameters);
+    
+    protected abstract void _3(CreateSaleParameters parameters);
+    
+    protected abstract void _4(CreateSaleCashRegisterMovementParameters parameters);
+    
+    protected abstract void _5(DeleteSaleParameters parameters);
+    
+    //protected abstract void _3(CreateSaleCashRegisterMovementParameters parameters);
     protected abstract void noTax4MorePaid1(CreateSaleParameters parameters);
     protected abstract void noTax5MorePaid2(CreateSaleParameters parameters);
     protected abstract void noTax6MorePaid3(CreateSaleParameters parameters);

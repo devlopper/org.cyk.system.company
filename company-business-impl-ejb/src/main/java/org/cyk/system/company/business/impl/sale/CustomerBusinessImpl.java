@@ -51,18 +51,30 @@ public class CustomerBusinessImpl extends AbstractActorBusinessImpl<Customer, Cu
 	}
 	
 	@Override
-	public Sale consume(Sale sale) {
+	public Sale consume(Sale sale,Crud crud,Boolean first) {
 		if(sale.getCustomer()==null){
 			
 		}else{
-			Customer customer = sale.getCustomer();
-			customer.setSaleCount(customer.getSaleCount().add(BigDecimal.ONE));
-			customer.setTurnover(customer.getTurnover().add(sale.getCost().getTurnover()));
-			customer.setBalance(customer.getBalance().add(sale.getBalance().getValue()));
-			dao.update(customer);	
+			BigDecimal sign = null;
+			if(Crud.CREATE.equals(crud)){
+				sign = BigDecimal.ONE;
+			}else if(Crud.UPDATE.equals(crud)) {
+				sign = BigDecimal.ONE;
+			}else if(Crud.DELETE.equals(crud)) {
+				sign = BigDecimal.ONE.negate();
+			}
+			
+			commonUtils.increment(BigDecimal.class, sale.getCustomer(), Customer.FIELD_SALE_COUNT, BigDecimal.ONE.multiply(sign));
+			commonUtils.increment(BigDecimal.class, sale.getCustomer(), Customer.FIELD_TURNOVER, sale.getCost().getTurnover().multiply(sign));
+			commonUtils.increment(BigDecimal.class, sale.getCustomer(), Customer.FIELD_BALANCE, sale.getBalance().getValue().multiply(sign));
+			
+			dao.update(sale.getCustomer());	
 		
-			sale.getBalance().setCumul(sale.getCustomer().getBalance());//to keep track of evolution
-			sale = saleDao.update(sale);
+			if(Crud.CREATE.equals(crud) || Crud.UPDATE.equals(crud)){
+				sale.getBalance().setCumul(sale.getCustomer().getBalance());//to keep track of evolution
+				sale = saleDao.update(sale);
+			}
+			
 		}
 		
 		return sale;
@@ -74,8 +86,8 @@ public class CustomerBusinessImpl extends AbstractActorBusinessImpl<Customer, Cu
 		private static final long serialVersionUID = 5585791722273454192L;
 		
 		@Override
-		public void processOnConsume(Sale sale, Crud crud) {
-			CompanyBusinessLayer.getInstance().getCustomerBusiness().consume(sale);
+		public void processOnConsume(Sale sale, Crud crud, Boolean first) {
+			CompanyBusinessLayer.getInstance().getCustomerBusiness().consume(sale,crud,first);
 		}
 	}
 

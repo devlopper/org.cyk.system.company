@@ -230,7 +230,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			}
         });
 		
-		//SaleBusinessImpl.Listener.COLLECTION.add(new SaleBusinessImpl.Listener.Adapter.Default());
 		SaleBusinessImpl.Listener.COLLECTION.add(new AccountingPeriodBusinessImpl.SaleBusinessAdapter());
 		SaleBusinessImpl.Listener.COLLECTION.add(new AccountingPeriodProductBusinessImpl.SaleBusinessAdapter());
 		SaleBusinessImpl.Listener.COLLECTION.add(new CustomerBusinessImpl.SaleBusinessAdapter());
