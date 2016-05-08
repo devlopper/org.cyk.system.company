@@ -45,13 +45,13 @@ import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineFinalStateDao;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.Constant;
+import org.cyk.utility.common.ListenerUtils;
 
 @Stateless
 public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao> implements SaleBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	public static final Collection<SaleBusinessImplListener> LISTENERS = new ArrayList<>();
 	public static Boolean AUTO_SET_SALE_DATE = Boolean.TRUE;
 	
 	@Inject private SaleProductDao saleProductDao;
@@ -204,12 +204,13 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		}
 		
 		//Third we generate report
-		Boolean updateReport = Boolean.TRUE;
-		for(SaleBusinessImplListener listener : LISTENERS){
-			Boolean v = listener.isReportUpdatable(this, sale);
-			if(v!=null)
-				updateReport = v;
-		}
+		final Sale sale1 = sale;
+		Boolean updateReport = ListenerUtils.getInstance().getBoolean(Listener.COLLECTION, new ListenerUtils.BooleanMethod<Listener>() {
+			@Override
+			public Boolean execute(Listener listener) {
+				return listener.isReportUpdatable(sale1);
+			}
+		});
 		
 		if(Boolean.TRUE.equals(updateReport)){
 			createReport(previous,new InvoiceParameters(sale, null, saleCashRegisterMovement));
@@ -267,9 +268,13 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 
 	private void createReport(InvoiceParameters previous,InvoiceParameters current){
-		SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().produceInvoice(previous,current);
-		for(SaleBusinessImplListener listener : LISTENERS)
-			listener.reportUpdated(this, saleReport, Boolean.TRUE);
+		final SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().produceInvoice(previous,current);
+		listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>() {
+			@Override
+			public void execute(Listener listener) {
+				listener.processOnReportUpdated(saleReport, Boolean.TRUE);
+			}
+		});
 		
 		if(current.getSale().getReport()==null)
 			current.getSale().setReport(new File());
@@ -314,13 +319,22 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		
 		void processOnConsume(Sale sale,Crud crud, Boolean first);
 		
+		Boolean isReportUpdatable(Sale sale);
+		
+		void processOnReportUpdated(SaleReport saleReport,Boolean invoice);
+		
 		public static class Adapter extends AbstractCompanyBeanAdapter implements Listener, Serializable {
 			private static final long serialVersionUID = -1625238619828187690L;
 			
 			/**/
 		
-			@Override
-			public void processOnConsume(Sale sale, Crud crud, Boolean first) {}
+			@Override public void processOnConsume(Sale sale, Crud crud, Boolean first) {}
+			
+			@Override public Boolean isReportUpdatable(Sale sale) {
+				return null;
+			}
+			
+			@Override public void processOnReportUpdated(SaleReport saleReport,Boolean invoice) {}
 			
 			public static class Default extends Adapter implements Serializable {
 				private static final long serialVersionUID = -1625238619828187690L;

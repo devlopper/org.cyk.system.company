@@ -65,6 +65,30 @@ public class SaleWithOneFiniteStateMachineStateBusinessIT extends AbstractSaleWi
 		companyBusinessTestHelper.assertCurrentAccountingPeriodProduct(TP1,"0", "0","0","0");
 		companyBusinessTestHelper.assertCustomer(CUST1,"0","0","0","0","0" );
 	}
+	
+	@Override
+	protected void _6(CreateSaleParameters parameters) {
+		
+	}
+	
+	@Override
+	protected void _7(CreateSaleCashRegisterMovementParameters parameters) {
+	
+	}
+	
+	@Override
+	protected void _8(CreateSaleCashRegisterMovementParameters parameters) {
+		
+	}
+	
+	@Override
+	protected void _9(DeleteSaleParameters parameters) {
+		companyBusinessTestHelper.assertSaleFiniteStateMachineStateCount("0");
+		assertEquals("Number of sales", 0l, saleDao.countAll());
+		companyBusinessTestHelper.assertCurrentAccountingPeriod("0", "0", "0","0");
+		companyBusinessTestHelper.assertCurrentAccountingPeriodProduct(TP1,"0", "0","0","0");
+		companyBusinessTestHelper.assertCustomer(CUST1,"0","0","0","0","0" );	
+	}
 
 	@Override
 	protected void noTax4MorePaid1(CreateSaleParameters parameters) {

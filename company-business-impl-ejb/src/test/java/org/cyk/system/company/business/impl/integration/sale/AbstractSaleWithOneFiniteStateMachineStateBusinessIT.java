@@ -32,6 +32,22 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     	deleteSale(deleteSaleParameters);
     	_5(deleteSaleParameters);
     	
+    	createSaleParameters = new CreateSaleParameters(S1, null, null, CUST1, new String[][]{{TP1,"2"}}, "0","false");
+    	createSale(createSaleParameters);
+    	_6(createSaleParameters);
+    	
+    	cashRegisterMovementParameters = new CreateSaleCashRegisterMovementParameters(S1, S1_P1, null, "500");
+    	createSaleCashRegisterMovement(cashRegisterMovementParameters);
+    	_7(cashRegisterMovementParameters);	
+    	
+    	cashRegisterMovementParameters = new CreateSaleCashRegisterMovementParameters(S1, S1_P2, null, "800");
+    	createSaleCashRegisterMovement(cashRegisterMovementParameters);
+    	_8(cashRegisterMovementParameters);
+    	
+    	deleteSaleParameters = new DeleteSaleParameters(S1);
+    	deleteSale(deleteSaleParameters);
+    	_9(deleteSaleParameters);
+    	
     	/*
     	CreateSaleCashRegisterMovementParameters cashRegisterMovementParameters = new CreateSaleCashRegisterMovementParameters(S1, S1_P1, null, "500");
     	createSaleCashRegisterMovement(cashRegisterMovementParameters);
@@ -138,10 +154,13 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     protected abstract void _2(DeleteSaleParameters parameters);
     
     protected abstract void _3(CreateSaleParameters parameters);
-    
     protected abstract void _4(CreateSaleCashRegisterMovementParameters parameters);
-    
     protected abstract void _5(DeleteSaleParameters parameters);
+    
+    protected abstract void _6(CreateSaleParameters parameters);
+    protected abstract void _7(CreateSaleCashRegisterMovementParameters parameters);
+    protected abstract void _8(CreateSaleCashRegisterMovementParameters parameters);
+    protected abstract void _9(DeleteSaleParameters parameters);
     
     //protected abstract void _3(CreateSaleCashRegisterMovementParameters parameters);
     protected abstract void noTax4MorePaid1(CreateSaleParameters parameters);

@@ -49,5 +49,12 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 				.instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection(), Boolean.TRUE));
 		return cashRegisterMovement;
 	}
+	
+	@Override
+	public CashRegisterMovement delete(CashRegisterMovement cashRegisterMovement) {
+		RootBusinessLayer.getInstance().getMovementBusiness().delete(cashRegisterMovement.getMovement());
+		cashRegisterMovement.setMovement(null);
+		return super.delete(cashRegisterMovement);
+	}
 
 }

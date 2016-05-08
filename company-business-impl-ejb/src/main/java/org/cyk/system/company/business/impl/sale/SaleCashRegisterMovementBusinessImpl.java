@@ -108,7 +108,6 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		
 		saleCashRegisterMovement.getBalance().setValue(sale.getBalance().getValue());
 		saleDao.update(sale);
-		
 		if(customer!=null){
 			/*Boolean firstSaleCashRegisterMovement = dao.countBySale(sale)==0;
 			if(firstSaleCashRegisterMovement){
@@ -193,7 +192,13 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	
 	@Override
 	public SaleCashRegisterMovement delete(SaleCashRegisterMovement saleCashRegisterMovement) {
-		
+		if(saleCashRegisterMovement.getSale().getCustomer()!=null){
+			commonUtils.increment(BigDecimal.class, saleCashRegisterMovement.getSale().getCustomer(), Customer.FIELD_PAYMENT_COUNT, BigDecimal.ONE.negate());
+			commonUtils.increment(BigDecimal.class, saleCashRegisterMovement.getSale().getCustomer(), Customer.FIELD_PAID
+					, saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate());
+		}
+		companyBusinessLayer.getCashRegisterMovementBusiness().delete(saleCashRegisterMovement.getCashRegisterMovement());
+		saleCashRegisterMovement.setCashRegisterMovement(null);
 		return super.delete(saleCashRegisterMovement);
 	}
 	
@@ -224,4 +229,5 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		
 	}
 
+	
 }
