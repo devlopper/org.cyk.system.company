@@ -32,6 +32,12 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 	}
 	
 	@Override
+	public SaleProduct delete(SaleProduct saleProduct) {
+		// TODO Auto-generated method stub
+		return super.delete(saleProduct);
+	}
+	
+	@Override
 	public Collection<SaleProduct> findBySales(Collection<Sale> sales) {
 		return dao.readBySales(sales);
 	}
