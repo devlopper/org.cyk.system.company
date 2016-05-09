@@ -38,8 +38,7 @@ import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementInputBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementOutputBusiness;
+import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.stock.StockableTangibleProductBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
@@ -51,6 +50,7 @@ import org.cyk.system.company.business.impl.accounting.AccountingPeriodBusinessI
 import org.cyk.system.company.business.impl.accounting.AccountingPeriodProductBusinessImpl;
 import org.cyk.system.company.business.impl.sale.CustomerBusinessImpl;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
+import org.cyk.system.company.business.impl.stock.StockTangibleProductMovementBusinessImpl;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
@@ -73,8 +73,7 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
-import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
+import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Company;
@@ -152,9 +151,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private SalableProductBusiness salableProductBusiness;
 	@Inject private SaleProductDao saleProductDao;
 	@Inject private SaleProductBusiness saleProductBusiness;
-	@Inject private SaleStockTangibleProductMovementInputBusiness saleStockInputBusiness;
-	@Inject private SaleStockTangibleProductMovementOutputBusiness saleStockOutputBusiness;
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
+	@Inject private SaleStockTangibleProductMovementBusiness saleStockTangibleProductMovementBusiness;
 	@Inject private CompanyBusiness companyBusiness;
 	@Inject private OwnedCompanyBusiness ownedCompanyBusiness;
 	@Inject private FileBusiness fileBusiness;
@@ -231,7 +229,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         });
 		
 		//TODO I do not know how to handle sale
-		//SaleBusinessImpl.Listener.COLLECTION.add(new StockTangibleProductMovementBusinessImpl.SaleBusinessAdapter());
+		SaleBusinessImpl.Listener.COLLECTION.add(new StockTangibleProductMovementBusinessImpl.SaleBusinessAdapter());
 		SaleBusinessImpl.Listener.COLLECTION.add(new AccountingPeriodBusinessImpl.SaleBusinessAdapter());
 		SaleBusinessImpl.Listener.COLLECTION.add(new AccountingPeriodProductBusinessImpl.SaleBusinessAdapter());
 		SaleBusinessImpl.Listener.COLLECTION.add(new CustomerBusinessImpl.SaleBusinessAdapter());
@@ -372,14 +370,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)ProductCollection.class, (TypedBusiness)productCollectionBusiness);
         beansMap.put((Class)Sale.class, (TypedBusiness)saleBusiness);
         beansMap.put((Class)SaleCashRegisterMovement.class, (TypedBusiness)saleCashRegisterMovementBusiness);
+        beansMap.put((Class)SaleStockTangibleProductMovement.class, (TypedBusiness)saleStockTangibleProductMovementBusiness);
         beansMap.put((Class)TangibleProductInventory.class, (TypedBusiness)tangibleProductInventoryBusiness); 
         beansMap.put((Class)StockableTangibleProduct.class, (TypedBusiness)stockableTangibleProductBusiness);
         beansMap.put((Class)StockTangibleProductMovement.class, (TypedBusiness)stockTangibleProductMovementBusiness);
         beansMap.put((Class)ProductCategory.class, (TypedBusiness)productCategoryBusiness);
         beansMap.put((Class)OwnedCompany.class, (TypedBusiness)ownedCompanyBusiness);
         beansMap.put((Class)Company.class, (TypedBusiness)companyBusiness);
-        beansMap.put((Class)SaleStockTangibleProductMovementInput.class, (TypedBusiness)saleStockInputBusiness);
-        beansMap.put((Class)SaleStockTangibleProductMovementOutput.class, (TypedBusiness)saleStockOutputBusiness);
         beansMap.put((Class)Production.class, (TypedBusiness)productionBusiness);
         beansMap.put((Class)ProductionUnit.class, (TypedBusiness)productionUnitBusiness);
         beansMap.put((Class)ProductionValue.class, (TypedBusiness)productionInputBusiness);

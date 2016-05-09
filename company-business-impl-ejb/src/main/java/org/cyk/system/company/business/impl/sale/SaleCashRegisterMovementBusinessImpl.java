@@ -96,7 +96,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			exceptionUtils().exception(soldOut<0, "exception.salecashregistermovement.in.soldout.no");
 		companyBusinessLayer.getCashRegisterMovementBusiness().create(saleCashRegisterMovement.getCashRegisterMovement());
 		
-		ReceiptParameters previous = new ReceiptParameters(null,saleCashRegisterMovement);
+		ReceiptParameters previous = new ReceiptParameters(saleCashRegisterMovement);
 		BigDecimal oldBalance = sale.getBalance().getValue(),increment=saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate();
 		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE,increment);
 		exceptionUtils().comparison(!Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getBalanceCanBeNegative()) 
@@ -136,7 +136,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		logIdentifiable("Created",saleCashRegisterMovement);
 		
 		if(Boolean.TRUE.equals(generatePos)){
-			SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().producePaymentReceipt(previous,new ReceiptParameters(null,saleCashRegisterMovement));
+			SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().producePaymentReceipt(previous,new ReceiptParameters(saleCashRegisterMovement));
 			if(saleCashRegisterMovement.getReport()==null)
 				saleCashRegisterMovement.setReport(new File());
 			rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement, saleReport

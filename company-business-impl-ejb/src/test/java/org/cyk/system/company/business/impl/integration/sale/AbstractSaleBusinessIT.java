@@ -39,11 +39,11 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     }
     
     protected void createSaleStock(CreateSaleStockInputParameters p){
-    	companyBusinessTestHelper.createSaleStockTangibleProductMovementInput(p.getComputedIdentifier(), p.getDate(), p.getCashierCode(), p.getCustomerRegistrationCode(), p.getPrice(),p.getTaxable(),p.getQuantity());
+    	//companyBusinessTestHelper.createSaleStockTangibleProductMovementInput(p.getComputedIdentifier(), p.getDate(), p.getCashierCode(), p.getCustomerRegistrationCode(), p.getPrice(),p.getTaxable(),p.getQuantity());
     }
     
     protected void createSaleStock(CreateSaleStockOutputParameters p){
-    	companyBusinessTestHelper.createSaleStockTangibleProductMovementOutput(p.getComputedIdentifier(), p.getDate(), p.getCashierCode(), p.getPaid(),p.getQuantity());
+    	//companyBusinessTestHelper.createSaleStockTangibleProductMovementOutput(p.getComputedIdentifier(), p.getDate(), p.getCashierCode(), p.getPaid(),p.getQuantity());
     }
     
     protected void createSaleCashRegisterMovement(CreateSaleCashRegisterMovementParameters p){

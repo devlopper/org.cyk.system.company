@@ -138,9 +138,6 @@
 	<field name="saleProducts" class="java.util.Collection">
 		<fieldDescription><![CDATA[saleProducts]]></fieldDescription>
 	</field>
-	<field name="saleCashRegisterMovement" class="org.cyk.system.company.model.sale.SaleCashRegisterMovementReport">
-		<fieldDescription><![CDATA[saleCashRegisterMovement]]></fieldDescription>
-	</field>
 	<field name="cashier" class="org.cyk.system.root.model.party.person.ActorReport">
 		<fieldDescription><![CDATA[cashier]]></fieldDescription>
 	</field>
@@ -159,17 +156,17 @@
 	<field name="numberOfProducts" class="java.lang.String">
 		<fieldDescription><![CDATA[numberOfProducts]]></fieldDescription>
 	</field>
-	<field name="headerInfos" class="org.cyk.system.root.model.file.report.LabelValueCollectionReport">
-		<fieldDescription><![CDATA[headerInfos]]></fieldDescription>
-	</field>
-	<field name="taxInfos" class="org.cyk.system.root.model.file.report.LabelValueCollectionReport">
-		<fieldDescription><![CDATA[taxInfos]]></fieldDescription>
-	</field>
-	<field name="paymentInfos" class="org.cyk.system.root.model.file.report.LabelValueCollectionReport">
-		<fieldDescription><![CDATA[paymentInfos]]></fieldDescription>
-	</field>
 	<field name="title" class="java.lang.String">
 		<fieldDescription><![CDATA[title]]></fieldDescription>
+	</field>
+	<field name="labelValueCollectionAtIndex0" class="org.cyk.system.root.model.file.report.LabelValueCollectionReport">
+		<fieldDescription><![CDATA[labelValueCollectionAtIndex0]]></fieldDescription>
+	</field>
+	<field name="labelValueCollectionAtIndex1" class="org.cyk.system.root.model.file.report.LabelValueCollectionReport">
+		<fieldDescription><![CDATA[labelValueCollectionAtIndex1]]></fieldDescription>
+	</field>
+	<field name="labelValueCollectionAtIndex2" class="org.cyk.system.root.model.file.report.LabelValueCollectionReport">
+		<fieldDescription><![CDATA[labelValueCollectionAtIndex2]]></fieldDescription>
 	</field>
 	<background>
 		<band/>
@@ -186,8 +183,8 @@
 			<componentElement>
 				<reportElement key="header" style="table 2" positionType="Float" x="0" y="88" width="575" height="13" uuid="36df267b-97f5-4d0a-9fe1-fb50532eee3e"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="HeaderInfos" uuid="ac2c8167-8724-4433-8f1c-ab30279885a5">
-						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{headerInfos}.getCollection())]]></dataSourceExpression>
+					<datasetRun subDataset="HeaderInfos" uuid="1c5a42e3-f1be-43fc-a7e3-228965672ace">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{labelValueCollectionAtIndex0}.getCollection())]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="250" uuid="f4d5a409-dbc4-4718-8159-a56a0608e1e1">
 						<jr:detailCell style="table 2_TD" height="30" rowSpan="1">
@@ -216,8 +213,8 @@
 			<componentElement>
 				<reportElement key="payment" style="table 2" positionType="Float" x="0" y="117" width="575" height="13" uuid="d9018c63-3316-4414-859e-cd9a5d51c129"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="HeaderInfos" uuid="2fc48e6f-5441-4326-a302-7cf3249d76ad">
-						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{paymentInfos}.getCollection())]]></dataSourceExpression>
+					<datasetRun subDataset="HeaderInfos" uuid="07352207-91d0-4369-a20c-ffcdca6d8348">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{labelValueCollectionAtIndex1}.getCollection())]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="250" uuid="c6cb6975-b62e-424a-9b9f-24f33810cf8f">
 						<jr:detailCell style="table 2_TD" height="26" rowSpan="1">
@@ -246,8 +243,8 @@
 			<componentElement>
 				<reportElement key="vat" style="table 2" positionType="Float" x="0" y="147" width="575" height="15" uuid="12f31851-534b-4b0c-8816-a447e0b99caf"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="HeaderInfos" uuid="a2825ad7-37ad-4813-8b79-fe2fd2cad672">
-						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{taxInfos}.getCollection())]]></dataSourceExpression>
+					<datasetRun subDataset="HeaderInfos" uuid="17827cc4-5080-4938-a939-bb6deea17c48">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{labelValueCollectionAtIndex2}.getCollection())]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="250" uuid="8338700c-a63f-421e-9785-931a5e3428c0">
 						<jr:detailCell style="table 2_TD" height="26" rowSpan="1">

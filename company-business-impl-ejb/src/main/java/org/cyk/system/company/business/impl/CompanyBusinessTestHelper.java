@@ -30,8 +30,6 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
-import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
-import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
@@ -42,7 +40,6 @@ import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
-import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementInputDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.impl.AbstractBusinessTestHelper;
 import org.cyk.system.root.business.impl.RootDataProducerHelper;
@@ -77,7 +74,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     @Inject private SaleDao saleDao;
     @Inject private SaleCashRegisterMovementDao saleCashRegisterMovementDao;
     @Inject private StockableTangibleProductDao stockableTangibleProductDao;
-    @Inject private SaleStockTangibleProductMovementInputDao saleStockTangibleProductMovementInputDao;
     
     @Getter @Setter private Boolean saleAutoCompleted = Boolean.TRUE;
 	
@@ -150,19 +146,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	if(customerCode!=null)
     		sale.setCustomer(customerDao.readByRegistrationCode(customerCode));
     }
-	
-	public void set(SaleStockTangibleProductMovementInput saleStockTangibleProductMovementInput,String quantity){
-		//set(saleStockTangibleProductMovementInput.getSale(), identifier, date, cashierCode, customerCode, null, taxable);
-		set(saleStockTangibleProductMovementInput.getStockTangibleProductMovement(), null, quantity);
-	}
-		
-	public void set(SaleStockTangibleProductMovementOutput saleStockOutput,String quantity,Date date){
-		//saleStockOutput.getStockTangibleProductStockMovement().setQuantity(new BigDecimal(quantity).negate());
-	}
-	
-	public void set(SaleStockTangibleProductMovementOutput saleStockOutput,String quantity){
-		set(saleStockOutput, quantity, null);
-	}
 	
 	public void set(SaleCashRegisterMovement saleCashRegisterMovement,String amountIn,String amountOut,Date date){
 		saleCashRegisterMovement.setAmountIn(new BigDecimal(amountIn));
@@ -252,31 +235,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     
     public void writeSaleCashRegisterMovementReport(String identifier){
     	writeReport(CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().findReport(saleCashRegisterMovementDao.readByCashRegisterMovementComputedIdentifier(identifier)));
-    }
-    
-    public SaleStockTangibleProductMovementInput createSaleStockTangibleProductMovementInput(String identifier,String date,String cashierCode,String customerCode,String price,String taxable,String quantity){
-    	Sale sale = CompanyBusinessLayer.getInstance().getSaleBusiness().instanciateOne(cashierDao.readAll().iterator().next().getPerson());
-    	set(sale, identifier, date, cashierCode, customerCode, null, taxable);
-    	SaleStockTangibleProductMovementInput input = CompanyBusinessLayer.getInstance().getSaleStockInputBusiness().instanciateOne(sale);
-    	set(input, quantity);
-    	if(price!=null){
-    		SaleProduct saleProduct = input.getSale().getSaleProducts().iterator().next();
-    		saleProduct.getCost().setValue(commonUtils.getBigDecimal(price));
-    		saleProduct.setQuantity(commonUtils.getBigDecimal(quantity));
-    		CompanyBusinessLayer.getInstance().getSaleBusiness().applyChange(input.getSale(), saleProduct);
-    	}
-    	
-    	CompanyBusinessLayer.getInstance().getSaleStockInputBusiness().create(input);
-    	return input;
-    }
-    
-    public SaleStockTangibleProductMovementOutput createSaleStockTangibleProductMovementOutput(String identifier,String date,String cashierCode,String paid,String quantity){
-    	Sale sale = saleDao.readByComputedIdentifier(identifier);
-    	SaleStockTangibleProductMovementOutput output = CompanyBusinessLayer.getInstance().getSaleStockOutputBusiness().instanciateOne(cashierDao.readAll().iterator().next().getPerson()
-    			,saleStockTangibleProductMovementInputDao.readBySale(sale));
-    	output.getSaleCashRegisterMovement().getCashRegisterMovement().getMovement().setValue(commonUtils.getBigDecimal(paid));
-    	output.getStockTangibleProductMovement().getMovement().setValue(commonUtils.getBigDecimal(quantity));
-    	return CompanyBusinessLayer.getInstance().getSaleStockOutputBusiness().create(output);
     }
     				    
     /*Assertions*/

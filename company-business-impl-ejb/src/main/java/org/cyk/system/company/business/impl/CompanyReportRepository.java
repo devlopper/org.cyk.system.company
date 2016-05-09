@@ -6,9 +6,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -21,14 +19,11 @@ import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementInputBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementOutputBusiness;
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.product.TangibleProductInventoryReportTableDetails;
 import org.cyk.system.company.business.impl.sale.CustomerReportTableRow;
 import org.cyk.system.company.business.impl.sale.SaleReportTableDetail;
-import org.cyk.system.company.business.impl.sale.SaleStockReportTableRow;
 import org.cyk.system.company.business.impl.sale.StockDashBoardReportTableDetails;
 import org.cyk.system.company.business.impl.stock.TangibleProductStockMovementLineReport;
 import org.cyk.system.company.model.product.TangibleProduct;
@@ -41,11 +36,6 @@ import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
-import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementInput;
-import org.cyk.system.company.model.sale.SaleStockInputSearchCriteria;
-import org.cyk.system.company.model.sale.SaleStockTangibleProductMovementOutput;
-import org.cyk.system.company.model.sale.SaleStockOutputSearchCriteria;
-import org.cyk.system.company.model.sale.SaleStockSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
@@ -100,8 +90,6 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	@Inject private SaleBusiness saleBusiness;
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	@Inject private SaleStockTangibleProductMovementBusiness saleStockBusiness;
-	@Inject private SaleStockTangibleProductMovementInputBusiness saleStockInputBusiness;
-	@Inject private SaleStockTangibleProductMovementOutputBusiness saleStockOutputBusiness;
 	@Inject private TangibleProductInventoryBusiness tangibleProductInventoryBusiness;
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
@@ -161,11 +149,11 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 		});
 		
 		addConfiguration(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
-        		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),SaleStockTangibleProductMovement.class,SaleStockReportTableRow.class) {
+        		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),SaleStockTangibleProductMovement.class,Object.class) {
 			private static final long serialVersionUID = -1966207854828857772L;
 			@Override
 			public Object model(AbstractIdentifiable identifiable) {
-				return new SaleStockReportTableRow((SaleStockTangibleProductMovement) identifiable);
+				return null;//new SaleStockReportTableRow((SaleStockTangibleProductMovement) identifiable);
 			}
 			@Override
 			public Boolean useCustomIdentifiableCollection() {
@@ -180,7 +168,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				Date fromDate = getParameterFromDate(parameters);
 				Date toDate = getParameterToDate(parameters);
 				
-				if(parameterSaleStockReportCashRegister.equals(reportType)){
+				/*if(parameterSaleStockReportCashRegister.equals(reportType)){
 					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestockoutput.cashregister.title"));
 					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 						private static final long serialVersionUID = -1279948056976719107L;
@@ -209,7 +197,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 						public Boolean ignoreField(Field field) {return SaleStockReportTableRow.inputFieldIgnored(field);};
 			        });
 					return saleStockInputBusiness.findByCriteria(new SaleStockInputSearchCriteria(fromDate,toDate,saleDone));
-				}
+				}*/
 				return null;
 			}
 			
@@ -338,7 +326,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	public Collection<?> processSaleStockReportRows(String reportType,Date fromDate,Date toDate,Collection<Object> initialRows,Boolean addGrandTotalRow) {
 		if(parameterSaleStockReportCashRegister.equals(reportType)){
 			BigDecimal output=BigDecimal.ZERO,paid=BigDecimal.ZERO,balance=BigDecimal.ZERO;
-			for(Object object : initialRows){
+			/*for(Object object : initialRows){
 				SaleStockReportTableRow row = (SaleStockReportTableRow) object;
 				if(row.getSaleStock() instanceof SaleStockTangibleProductMovementOutput){
 					//output = output.add( ((SaleStockOutput)row.getSaleStock()).getStockTangibleProductStockMovement().getQuantity().abs());
@@ -346,32 +334,32 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 					//balance = saleBusiness.sumBalanceByCriteria(criteria) 
 							//balance.add(((SaleStockOutput)row.getSaleStock()).getSaleStockInput().getS.getBalance().getValue());
 				}
-			}
+			}*/
 			SaleResults results = saleBusiness.computeByCriteria(new SaleSearchCriteria(fromDate,toDate));
 			balance = results.getBalance();
-			SaleStockReportTableRow totalRow = new SaleStockReportTableRow();
+			//SaleStockReportTableRow totalRow = new SaleStockReportTableRow();
 			//totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));
-			totalRow.setTakenNumberOfGoods(RootBusinessLayer.getInstance().getNumberBusiness().format(output));
+			/*totalRow.setTakenNumberOfGoods(RootBusinessLayer.getInstance().getNumberBusiness().format(output));
 			totalRow.setAmountPaid(RootBusinessLayer.getInstance().getNumberBusiness().format(paid));	
 			totalRow.setBalance(RootBusinessLayer.getInstance().getNumberBusiness().format(balance));
-			initialRows.add(totalRow);
+			initialRows.add(totalRow);*/
 			return initialRows;
-		}else if(parameterSaleStockReportInventory.equals(reportType)){
+		}/*else if(parameterSaleStockReportInventory.equals(reportType)){
 			return groupByCustomer(initialRows,Boolean.TRUE.equals(addGrandTotalRow)?saleStockBusiness.computeByCriteria(new SaleStockSearchCriteria(fromDate, toDate)):null
 					,addGrandTotalRow);
 		}else if(parameterSaleStockReportCustomer.equals(reportType)){
 			return groupByCustomer(initialRows,Boolean.TRUE.equals(addGrandTotalRow)?saleStockBusiness.computeByCriteria(new SaleStockSearchCriteria(fromDate, toDate)):null
 					,addGrandTotalRow);
-		}else if(parameterSaleStockReportInput.equals(reportType)){
+		}*/else if(parameterSaleStockReportInput.equals(reportType)){
 			return initialRows;
 		}	
 		return null;
 	}
 	
-	protected Collection<SaleStockReportTableRow> groupByCustomer(Collection<Object> initialRows,SaleStocksDetails saleStocksDetails,Boolean addGrandTotalRow){
-		Map<String,Collection<SaleStockReportTableRow>> map = new LinkedHashMap<>();
+	protected Collection<Object> groupByCustomer(Collection<Object> initialRows,SaleStocksDetails saleStocksDetails,Boolean addGrandTotalRow){
+		//Map<String,Collection<SaleStockReportTableRow>> map = new LinkedHashMap<>();
 		//group by
-		for(Object object : initialRows){
+		/*for(Object object : initialRows){
 			SaleStockReportTableRow row = (SaleStockReportTableRow)object;
 			Collection<SaleStockReportTableRow> collection = map.get(row.getCustomer());
 			if(collection==null){
@@ -379,13 +367,14 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			}
 			collection.add(row);
 		}
+		*/
 		//total
-		Collection<SaleStockReportTableRow> rows = new ArrayList<>();
-		SaleStockReportTableRow totalRow;
-		BigDecimal[][] totals = new BigDecimal[5][2];
-		for(Entry<String, Collection<SaleStockReportTableRow>> entry : map.entrySet()){
-			set(totals, BigDecimal.ZERO);
-			for(SaleStockReportTableRow row : entry.getValue()){
+		/*Collection<SaleStockReportTableRow> rows = new ArrayList<>();
+		SaleStockReportTableRow totalRow;*/
+		//BigDecimal[][] totals = new BigDecimal[5][2];
+		//for(Entry<String, Collection<SaleStockReportTableRow>> entry : map.entrySet()){
+		//	set(totals, BigDecimal.ZERO);
+			/*for(SaleStockReportTableRow row : entry.getValue()){
 				if(row.getSaleStock() instanceof SaleStockTangibleProductMovementInput){
 					//incrementTotal(totals, STOCK_IN, ((SaleStockInput)row.getSaleStock()).getStockTangibleProductStockMovement().getQuantity());
 					incrementTotal(totals, AMOUNT, ((SaleStockTangibleProductMovementInput)row.getSaleStock()).getSale().getCost().getValue());
@@ -395,8 +384,9 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 					incrementTotal(totals, PAID, ((SaleStockTangibleProductMovementOutput)row.getSaleStock()).getSaleCashRegisterMovement().getCashRegisterMovement().getMovement().getValue());
 					set(totals, CUMUL,0, ((SaleStockTangibleProductMovementOutput)row.getSaleStock()).getSaleCashRegisterMovement().getBalance().getCumul());
 				}
-			} 
-
+			} */
+			
+			/*
 			totalRow = new SaleStockReportTableRow();
 			totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));
 			totalRow.setStockIn(getTotal(totals, STOCK_IN));
@@ -408,11 +398,12 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			totalRow.setCumulatedBalance(getTotal(totals, CUMUL));
 			
 			entry.getValue().add(totalRow);
-			rows.addAll(entry.getValue());
-		}
+			*/
+		//	rows.addAll(entry.getValue());
+		//}
 		//grand total
 		if(Boolean.TRUE.equals(addGrandTotalRow)){
-			totalRow = new SaleStockReportTableRow();
+			/*totalRow = new SaleStockReportTableRow();
 			totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total.grand"));
 			totalRow.setStockIn(format(saleStocksDetails.getIn()));
 			totalRow.setStockOut(format(saleStocksDetails.getOut()));	
@@ -420,9 +411,9 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			totalRow.setAmount(format(saleStocksDetails.getSaleResults().getCost().getValue()));
 			totalRow.setAmountPaid(format(saleStocksDetails.getSaleResults().getPaid()));	
 			totalRow.setCumulatedBalance(format(saleStocksDetails.getSaleResults().getBalance()));
-			rows.add(totalRow);
+			rows.add(totalRow);*/
 		}
-		return rows;
+		return null;//rows;
 	}
 	
 	public Collection<?> processSaleStockReportRowsI(String reportType,Date fromDate,Date toDate,Collection<AbstractIdentifiable> initialRows,Boolean addGrandTotalRow) {

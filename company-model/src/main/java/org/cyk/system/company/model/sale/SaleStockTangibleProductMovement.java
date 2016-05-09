@@ -3,8 +3,6 @@ package org.cyk.system.company.model.sale;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
@@ -20,15 +18,16 @@ import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS)
-@Inheritance(strategy=InheritanceType.JOINED)
 public class SaleStockTangibleProductMovement extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@OneToOne @NotNull 
-	protected StockTangibleProductMovement stockTangibleProductMovement;
+	@OneToOne @NotNull private Sale sale;
+	
+	@OneToOne @NotNull private StockTangibleProductMovement stockTangibleProductMovement;
 
 	/**/
 	
+	public static final String FIELD_SALE = "sale";
 	public static final String FIELD_STOCK_TANGIBLE_PRODUCT_STOCK_MOVEMENT = "stockTangibleProductStockMovement";
 }
