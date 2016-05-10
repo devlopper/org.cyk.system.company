@@ -214,7 +214,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		});
 		
 		if(updateReport==null || Boolean.TRUE.equals(updateReport)){
-			final SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().produceInvoice(sale);
+			final SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().produceSaleReport(sale);
 			if(sale.getReport()==null)
 				sale.setReport(new File());
 			RootBusinessLayer.getInstance().getReportBusiness().buildBinaryContent(sale, saleReport, sale.getAccountingPeriod().getSaleConfiguration().getSaleReportTemplate().getTemplate(), Boolean.TRUE);

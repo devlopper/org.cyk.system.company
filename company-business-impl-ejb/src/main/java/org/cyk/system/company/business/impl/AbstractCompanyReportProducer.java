@@ -24,7 +24,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCompanyReportProducer.class);
 	
 	@Override
-	public SaleReport produceInvoice(Sale sale) {
+	public SaleReport produceSaleReport(Sale sale) {
 		logDebug("Prepare Sale report");
 		SaleReport saleReport = new SaleReport();
 		set(sale, saleReport);
@@ -32,44 +32,45 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	}
 	
 	@Override
-	public SaleCashRegisterMovementReport producePaymentReceipt(SaleCashRegisterMovement saleCashRegisterMovement) {
+	public SaleCashRegisterMovementReport produceSaleCashRegisterMovementReport(SaleCashRegisterMovement saleCashRegisterMovement) {
 		logDebug("Prepare Payment report");
 		SaleCashRegisterMovementReport report = new SaleCashRegisterMovementReport();
 		set(saleCashRegisterMovement.getSale(), report.getSale());
+		report.setTitle(languageBusiness.findText("company.report.salecashregistermovement"));
 		report.setIdentifier(saleCashRegisterMovement.getCashRegisterMovement().getComputedIdentifier());
 		report.setAmountDue(format(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
 		report.setAccountingPeriod(report.getSale().getAccountingPeriod());
 		report.setAmountIn(format(saleCashRegisterMovement.getAmountIn()));
 		report.setAmountOut(format(saleCashRegisterMovement.getAmountOut()));
-		//report.setAmountToOut(format(saleCashRegisterMovement.getAmountIn()));
+		report.setBalance(format(saleCashRegisterMovement.getBalance().getValue()));
 		return report;
 	}
 	
-	protected void set(Sale sale,SaleReport saleReport){
+	protected void set(Sale sale,SaleReport report){
 		Company company = sale.getCashier().getCashRegister().getOwnedCompany().getCompany();
 		BigDecimal numberOfProducts = BigDecimal.ZERO;
 		for(SaleProduct sp : sale.getSaleProducts())
 			numberOfProducts = numberOfProducts.add(sp.getQuantity());
 		
-		saleReport.setTitle(languageBusiness.findText("company.report.invoice"));
-		saleReport.setIdentifier(sale.getComputedIdentifier());
-		saleReport.setCashRegisterIdentifier(Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getShowPointOfSaleReportCashier())?sale.getCashier().getCashRegister().getCode():null);
-		saleReport.setDate(timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN));
-		set(sale.getCustomer(), saleReport.getCustomer());
-		saleReport.setNumberOfProducts(numberBusiness.format(numberOfProducts));
-		saleReport.setAmountDue(numberBusiness.format(sale.getCost().getValue()));
-		saleReport.setWelcomeMessage(languageBusiness.findText("company.report.pointofsale.welcome"));
-		saleReport.setGoodByeMessage(languageBusiness.findText("company.report.pointofsale.goodbye"));
+		report.setTitle(languageBusiness.findText("company.report.sale"));
+		report.setIdentifier(sale.getComputedIdentifier());
+		report.setCashRegisterIdentifier(Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getShowPointOfSaleReportCashier())?sale.getCashier().getCashRegister().getCode():null);
+		report.setDate(timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN));
+		set(sale.getCustomer(), report.getCustomer());
+		report.setNumberOfProducts(numberBusiness.format(numberOfProducts));
+		report.setAmountDue(numberBusiness.format(sale.getCost().getValue()));
+		report.setWelcomeMessage(languageBusiness.findText("company.report.pointofsale.welcome"));
+		report.setGoodByeMessage(languageBusiness.findText("company.report.pointofsale.goodbye"));
 		
-		saleReport.getAccountingPeriod().getCompany().setName(company.getName());
-		saleReport.getAccountingPeriod().getCompany().setImage(rootBusinessLayer.getFileBusiness().findInputStream(company.getImage()));
+		report.getAccountingPeriod().getCompany().setName(company.getName());
+		report.getAccountingPeriod().getCompany().setImage(rootBusinessLayer.getFileBusiness().findInputStream(company.getImage()));
 
 		contactCollectionBusiness.load(company.getContactCollection());
-		saleReport.getAccountingPeriod().getCompany().getContact().setPhoneNumbers(StringUtils.join(company.getContactCollection().getPhoneNumbers()," - "));
+		report.getAccountingPeriod().getCompany().getContact().setPhoneNumbers(StringUtils.join(company.getContactCollection().getPhoneNumbers()," - "));
 		
-		saleReport.setVatRate(format(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
-		saleReport.setAmountDueNoTaxes(format(sale.getCost().getValue().subtract(sale.getCost().getTax()).setScale(2)));
-		saleReport.setVatAmount(format(sale.getCost().getTax().setScale(2)));
+		report.setVatRate(format(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
+		report.setAmountDueNoTaxes(format(sale.getCost().getValue().subtract(sale.getCost().getTax()).setScale(2)));
+		report.setVatAmount(format(sale.getCost().getTax().setScale(2)));
 	}
 		
 	protected void valueAddedTaxesPart(SaleReport saleReport,Sale sale){

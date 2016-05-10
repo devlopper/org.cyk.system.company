@@ -13,8 +13,8 @@ public class DefaultSaleReportProducer extends AbstractCompanyReportProducer imp
 	private static final long serialVersionUID = 7126711234011563710L;
 
 	@Override
-	public SaleReport produceInvoice(Sale sale) {
-		SaleReport report = super.produceInvoice(sale);
+	public SaleReport produceSaleReport(Sale sale) {
+		SaleReport report = super.produceSaleReport(sale);
 
 		report.addLabelValueCollection("company.report.sale.detailsblocktitle",new String[][]{
 				{text("company.report.sale.identifier"), report.getIdentifier()}
@@ -36,8 +36,8 @@ public class DefaultSaleReportProducer extends AbstractCompanyReportProducer imp
 	}
 	
 	@Override
-	public SaleCashRegisterMovementReport producePaymentReceipt(SaleCashRegisterMovement saleCashRegisterMovement) {
-		SaleCashRegisterMovementReport report = super.producePaymentReceipt(saleCashRegisterMovement);
+	public SaleCashRegisterMovementReport produceSaleCashRegisterMovementReport(SaleCashRegisterMovement saleCashRegisterMovement) {
+		SaleCashRegisterMovementReport report = super.produceSaleCashRegisterMovementReport(saleCashRegisterMovement);
 		
 		report.addLabelValueCollection("company.report.salecashregistermovement.detailsblocktitle",new String[][]{
 				{text("company.report.salecashregistermovement.identifier"), report.getIdentifier()}
@@ -48,6 +48,9 @@ public class DefaultSaleReportProducer extends AbstractCompanyReportProducer imp
 		
 		report.addLabelValueCollection(text("company.report.salecashregistermovement.paymentblocktitle"),new String[][]{
 				{text("company.report.salecashregistermovement.amount.du"), report.getAmountDue()}
+				,{text("company.report.salecashregistermovement.amount.in"), report.getAmountIn()}
+				,{text("company.report.salecashregistermovement.amount.out"), report.getAmountOut()}
+				,{text("company.report.salecashregistermovement.amount.balance"), report.getBalance()}
 				});
 		
 		return report;

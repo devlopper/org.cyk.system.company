@@ -14,9 +14,9 @@ import org.cyk.system.root.business.api.RootReportProducer;
 
 public interface CompanyReportProducer extends RootReportProducer {
 
-	SaleReport produceInvoice(Sale sale);
+	SaleReport produceSaleReport(Sale sale);
 	
-	SaleCashRegisterMovementReport producePaymentReceipt(SaleCashRegisterMovement saleCashRegisterMovement);
+	SaleCashRegisterMovementReport produceSaleCashRegisterMovementReport(SaleCashRegisterMovement saleCashRegisterMovement);
 	
 	/**/
 	

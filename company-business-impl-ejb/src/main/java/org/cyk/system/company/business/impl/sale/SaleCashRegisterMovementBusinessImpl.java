@@ -135,7 +135,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		logIdentifiable("Created",saleCashRegisterMovement);
 		
 		if(Boolean.TRUE.equals(generatePos)){
-			SaleCashRegisterMovementReport saleCashRegisterMovementReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().producePaymentReceipt(saleCashRegisterMovement);
+			SaleCashRegisterMovementReport saleCashRegisterMovementReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().produceSaleCashRegisterMovementReport(saleCashRegisterMovement);
 			if(saleCashRegisterMovement.getReport()==null)
 				saleCashRegisterMovement.setReport(new File());
 			rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement, saleCashRegisterMovementReport
