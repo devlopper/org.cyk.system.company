@@ -34,9 +34,15 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	@Override
 	public SaleCashRegisterMovementReport producePaymentReceipt(SaleCashRegisterMovement saleCashRegisterMovement) {
 		logDebug("Prepare Payment report");
-		SaleCashRegisterMovementReport saleCashRegisterMovementReport = new SaleCashRegisterMovementReport();
-		set(saleCashRegisterMovement.getSale(), saleCashRegisterMovementReport.getSale());
-		return saleCashRegisterMovementReport;
+		SaleCashRegisterMovementReport report = new SaleCashRegisterMovementReport();
+		set(saleCashRegisterMovement.getSale(), report.getSale());
+		report.setIdentifier(saleCashRegisterMovement.getCashRegisterMovement().getComputedIdentifier());
+		report.setAmountDue(format(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
+		report.setAccountingPeriod(report.getSale().getAccountingPeriod());
+		report.setAmountIn(format(saleCashRegisterMovement.getAmountIn()));
+		report.setAmountOut(format(saleCashRegisterMovement.getAmountOut()));
+		//report.setAmountToOut(format(saleCashRegisterMovement.getAmountIn()));
+		return report;
 	}
 	
 	protected void set(Sale sale,SaleReport saleReport){

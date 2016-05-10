@@ -31,12 +31,12 @@
 		<dependency>
 			<groupId>org.cyk.system.company.business</groupId>
 			<artifactId>company-business-api</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.1-develop</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cyk.system.company.persistence</groupId>
 			<artifactId>company-persistence-impl-jpa</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.1-develop</version>
 		</dependency>
 		
 		<dependency>

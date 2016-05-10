@@ -44,20 +44,20 @@
 		<dependency>
 			<groupId>org.cyk.system.company.business</groupId>
 			<artifactId>company-business-impl-ejb</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.1-develop</version>
 			<type>ejb</type>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.cyk.system.company.ui.web.jsf.primefaces</groupId>
 			<artifactId>company-ui-web-primefaces-api</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.1-develop</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.cyk.system.company</groupId>
 			<artifactId>company-application-resources</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.1-develop</version>
 		</dependency>
 		
 		<dependency>

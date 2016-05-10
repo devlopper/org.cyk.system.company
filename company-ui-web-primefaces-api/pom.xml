@@ -27,7 +27,7 @@
 		<dependency>
 			<groupId>org.cyk.system.company.business</groupId>
 			<artifactId>company-business-impl-ejb</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.1-develop</version>
 			<scope>provided</scope>
 		</dependency>
 		
