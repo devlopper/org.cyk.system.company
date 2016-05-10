@@ -35,7 +35,9 @@ public class SaleConfiguration extends AbstractModelElement implements Serializa
 	
 	@OneToOne @NotNull private FiniteStateMachine finiteStateMachine;
 	
-	@OneToOne private ReportTemplate pointOfSaleReportTemplate;
+	@OneToOne private ReportTemplate saleReportTemplate;
+	
+	@OneToOne private ReportTemplate saleCashRegisterMovementReportTemplate;
 	
 	@Column(nullable=false) @NotNull private Boolean showPointOfSaleReportCashier = Boolean.FALSE;
 	

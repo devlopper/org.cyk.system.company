@@ -258,26 +258,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	}
 	
 	private void company(){ 
-		ReportTemplate pointOfSaleReportTemplate = new ReportTemplate("POINT_OF_SALE",createFile("report/payment/pos_a4.jrxml", "pointofsale.jrxml"),null,null);
-		create(pointOfSaleReportTemplate);
-		
-		/*File pointOfSaleReportFile = new File();*/
 		byte[] bytes = null;
-		/*for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS){
-			byte[] value = listener.getCompanyPointOfSaleBytes();
-			if(value!=null)
-				bytes = value;
-		}
-		if(bytes==null)
-			bytes = getResourceAsBytes("report/payment/pos2.jrxml");
-		bytes = getResourceAsBytes("report/payment/pos_a4.jrxml");
 		
-		pointOfSaleReportFile = fileBusiness.process(bytes,"pointofsale.jrxml");
-		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
-			listener.handlePointOfSaleToInstall(pointOfSaleReportFile);
-		
-		installObject(PRODUCT_POINT_OF_SALE,fileBusiness,pointOfSaleReportFile);
-		*/
 		Company company = new Company();
 		company.setCode("C01");
 		String companyName = null;
@@ -324,7 +306,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		Integer currentYear = new DateTime().getYear();
 		accountingPeriod.setPeriod(new Period(new DateTime(currentYear, 1, 1, 0, 0).toDate(), new DateTime(currentYear, 12, 31, 23, 59).toDate()));
 		
-		accountingPeriod.getSaleConfiguration().setPointOfSaleReportTemplate(pointOfSaleReportTemplate);
+		accountingPeriod.getSaleConfiguration().setSaleReportTemplate(create(new ReportTemplate("SALE_REPORT_A4",createFile("report/sale/sale_a4.jrxml", "sale_a4.jrxml"),null,null,null)));
+		accountingPeriod.getSaleConfiguration().setSaleCashRegisterMovementReportTemplate(create(new ReportTemplate("SALE_CASH_REGISTER_MOVEMENT_REPORT_A4",createFile("report/sale/salecashregistermovement_a4.jrxml", "salecashregistermovement_a4.jrxml"),null,null,null)));
 		accountingPeriod.getSaleConfiguration().setValueAddedTaxRate(BigDecimal.ZERO);
 		accountingPeriod.getSaleConfiguration().setIdentifierGenerator(stringGenerator("FACT","0", 8l, null, null,8l));
 		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(stringGenerator("PAIE","0", 8l, null, null,8l));

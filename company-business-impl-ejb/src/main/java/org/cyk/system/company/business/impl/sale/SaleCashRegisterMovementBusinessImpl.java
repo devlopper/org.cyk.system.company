@@ -11,7 +11,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.business.api.CompanyReportProducer.ReceiptParameters;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.AbstractCompanyBeanAdapter;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
@@ -97,7 +96,6 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			exceptionUtils().exception(soldOut<0, "exception.salecashregistermovement.in.soldout.no");
 		companyBusinessLayer.getCashRegisterMovementBusiness().create(saleCashRegisterMovement.getCashRegisterMovement());
 		
-		ReceiptParameters previous = new ReceiptParameters(saleCashRegisterMovement);
 		BigDecimal oldBalance = sale.getBalance().getValue(),increment=saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate();
 		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE,increment);
 		exceptionUtils().comparison(!Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getBalanceCanBeNegative()) 
@@ -141,7 +139,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			if(saleCashRegisterMovement.getReport()==null)
 				saleCashRegisterMovement.setReport(new File());
 			rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement, saleCashRegisterMovementReport
-					,saleCashRegisterMovement.getSale().getAccountingPeriod().getSaleConfiguration().getPointOfSaleReportTemplate().getTemplate(), Boolean.TRUE); 
+					,saleCashRegisterMovement.getSale().getAccountingPeriod().getSaleConfiguration().getSaleCashRegisterMovementReportTemplate().getTemplate(), Boolean.TRUE); 
 		}
 		return saleCashRegisterMovement;
 	}

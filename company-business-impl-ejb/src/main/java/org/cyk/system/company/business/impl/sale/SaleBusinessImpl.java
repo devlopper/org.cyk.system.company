@@ -13,7 +13,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
-import org.cyk.system.company.business.api.CompanyReportProducer.InvoiceParameters;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductBusiness;
@@ -218,7 +217,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			final SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().produceInvoice(sale);
 			if(sale.getReport()==null)
 				sale.setReport(new File());
-			RootBusinessLayer.getInstance().getReportBusiness().buildBinaryContent(sale, saleReport, sale.getAccountingPeriod().getSaleConfiguration().getPointOfSaleReportTemplate().getTemplate(), Boolean.TRUE);
+			RootBusinessLayer.getInstance().getReportBusiness().buildBinaryContent(sale, saleReport, sale.getAccountingPeriod().getSaleConfiguration().getSaleReportTemplate().getTemplate(), Boolean.TRUE);
 			
 			listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>() {
 				@Override

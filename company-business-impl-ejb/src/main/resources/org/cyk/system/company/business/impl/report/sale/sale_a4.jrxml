@@ -132,29 +132,8 @@
 	<field name="welcomeMessage" class="java.lang.String">
 		<fieldDescription><![CDATA[welcomeMessage]]></fieldDescription>
 	</field>
-	<field name="customer" class="org.cyk.system.root.model.party.person.ActorReport">
-		<fieldDescription><![CDATA[customer]]></fieldDescription>
-	</field>
-	<field name="saleProducts" class="java.util.Collection">
-		<fieldDescription><![CDATA[saleProducts]]></fieldDescription>
-	</field>
-	<field name="cashier" class="org.cyk.system.root.model.party.person.ActorReport">
-		<fieldDescription><![CDATA[cashier]]></fieldDescription>
-	</field>
-	<field name="date" class="java.lang.String">
-		<fieldDescription><![CDATA[date]]></fieldDescription>
-	</field>
-	<field name="cost" class="java.lang.String">
-		<fieldDescription><![CDATA[cost]]></fieldDescription>
-	</field>
-	<field name="cashRegisterIdentifier" class="java.lang.String">
-		<fieldDescription><![CDATA[cashRegisterIdentifier]]></fieldDescription>
-	</field>
 	<field name="accountingPeriod" class="org.cyk.system.company.model.accounting.AccountingPeriodReport">
 		<fieldDescription><![CDATA[accountingPeriod]]></fieldDescription>
-	</field>
-	<field name="numberOfProducts" class="java.lang.String">
-		<fieldDescription><![CDATA[numberOfProducts]]></fieldDescription>
 	</field>
 	<field name="title" class="java.lang.String">
 		<fieldDescription><![CDATA[title]]></fieldDescription>

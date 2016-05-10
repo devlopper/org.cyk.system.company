@@ -1,34 +1,27 @@
 package org.cyk.system.company.model.sale;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import org.apache.commons.lang3.RandomStringUtils;
-import org.cyk.system.root.model.file.report.AbstractReportTemplateFile;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class SaleCashRegisterMovementReport extends AbstractReportTemplateFile<SaleCashRegisterMovementReport> implements Serializable {
+public class SaleCashRegisterMovementReport extends AbstractSaleReport<SaleCashRegisterMovementReport> implements Serializable {
 
 	private static final long serialVersionUID = 7332510774063666925L;
 
-	private SaleReport sale;
-	private String identifier,date,amountDue,amountIn,amountToOut,amountOut,balance;
+	private SaleReport sale = new SaleReport();
+	private String amountIn,amountToOut,amountOut,balance;
 
 	@Override
 	public void generate() {
+		super.generate();
 		title = "Paiement";
-		identifier=RandomStringUtils.randomNumeric(8);
-		date=new Date().toString();
-		amountDue=provider.randomInt(1, 1000000)+"";
 		amountIn=provider.randomInt(1, 1000000)+"";
 		amountOut=provider.randomInt(1, 1000000)+"";
 		amountToOut=provider.randomInt(1, 1000000)+"";
 		balance=provider.randomInt(1, 1000000)+"";
 		
-		sale = new SaleReport();
 		sale.generate();
 	}
 	

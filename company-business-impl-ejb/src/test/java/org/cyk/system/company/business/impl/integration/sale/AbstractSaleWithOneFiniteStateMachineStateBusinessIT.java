@@ -180,7 +180,7 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     
     @Override
     protected void createSaleCashRegisterMovement(CreateSaleCashRegisterMovementParameters p) {
-    	p.setWriteReport(Boolean.FALSE);
+    	p.setWriteReport(Boolean.TRUE);
     	super.createSaleCashRegisterMovement(p);
     }
 }
