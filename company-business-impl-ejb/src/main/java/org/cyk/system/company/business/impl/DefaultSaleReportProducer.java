@@ -41,6 +41,7 @@ public class DefaultSaleReportProducer extends AbstractCompanyReportProducer imp
 		
 		report.addLabelValueCollection("company.report.salecashregistermovement.detailsblocktitle",new String[][]{
 				{text("company.report.salecashregistermovement.identifier"), report.getIdentifier()}
+				,{text("company.report.sale.identifier"), report.getSale().getIdentifier()}
 				,{text("company.report.salecashregistermovement.cashregister"), report.getCashRegisterIdentifier()}
 				,{text("company.report.salecashregistermovement.date"), report.getDate()}
 				,{text("company.report.salecashregistermovement.customer"), report.getSale().getCustomer().getPerson().getNames()}

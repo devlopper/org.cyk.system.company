@@ -36,7 +36,6 @@ import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
-import org.cyk.system.company.model.sale.SaleStocksDetails;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
@@ -356,7 +355,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 		return null;
 	}
 	
-	protected Collection<Object> groupByCustomer(Collection<Object> initialRows,SaleStocksDetails saleStocksDetails,Boolean addGrandTotalRow){
+	//protected Collection<Object> groupByCustomer(Collection<Object> initialRows,SaleStocksDetails saleStocksDetails,Boolean addGrandTotalRow){
 		//Map<String,Collection<SaleStockReportTableRow>> map = new LinkedHashMap<>();
 		//group by
 		/*for(Object object : initialRows){
@@ -402,7 +401,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 		//	rows.addAll(entry.getValue());
 		//}
 		//grand total
-		if(Boolean.TRUE.equals(addGrandTotalRow)){
+		//if(Boolean.TRUE.equals(addGrandTotalRow)){
 			/*totalRow = new SaleStockReportTableRow();
 			totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total.grand"));
 			totalRow.setStockIn(format(saleStocksDetails.getIn()));
@@ -412,9 +411,9 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			totalRow.setAmountPaid(format(saleStocksDetails.getSaleResults().getPaid()));	
 			totalRow.setCumulatedBalance(format(saleStocksDetails.getSaleResults().getBalance()));
 			rows.add(totalRow);*/
-		}
-		return null;//rows;
-	}
+		//}
+		//return null;//rows;
+	//}
 	
 	public Collection<?> processSaleStockReportRowsI(String reportType,Date fromDate,Date toDate,Collection<AbstractIdentifiable> initialRows,Boolean addGrandTotalRow) {
 		Collection<Object> c = new ArrayList<>();

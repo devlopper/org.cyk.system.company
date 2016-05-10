@@ -39,7 +39,7 @@ public class SaleConfiguration extends AbstractModelElement implements Serializa
 	
 	@OneToOne private ReportTemplate saleCashRegisterMovementReportTemplate;
 	
-	@Column(nullable=false) @NotNull private Boolean showPointOfSaleReportCashier = Boolean.FALSE;
+	@OneToOne private ReportTemplate saleAndSaleCashRegisterMovementReportTemplate;
 	
 	@Column(nullable=false) @NotNull private Boolean balanceCanBeNegative = Boolean.FALSE;
 	

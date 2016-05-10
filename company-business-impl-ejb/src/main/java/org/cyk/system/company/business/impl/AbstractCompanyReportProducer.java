@@ -54,7 +54,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		
 		report.setTitle(languageBusiness.findText("company.report.sale"));
 		report.setIdentifier(sale.getComputedIdentifier());
-		report.setCashRegisterIdentifier(Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getShowPointOfSaleReportCashier())?sale.getCashier().getCashRegister().getCode():null);
+		report.setCashRegisterIdentifier(sale.getCashier().getCashRegister().getCode());
 		report.setDate(timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN));
 		set(sale.getCustomer(), report.getCustomer());
 		report.setNumberOfProducts(numberBusiness.format(numberOfProducts));
