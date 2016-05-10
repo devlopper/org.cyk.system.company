@@ -11,7 +11,7 @@
 
 	<groupId>org.cyk.system.company</groupId>
 	<artifactId>pom</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.1-develop</version>
 	<packaging>pom</packaging>
 
 	<name>company management system</name>  
