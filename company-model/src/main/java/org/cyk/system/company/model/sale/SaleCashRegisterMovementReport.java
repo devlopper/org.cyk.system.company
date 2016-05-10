@@ -3,12 +3,11 @@ package org.cyk.system.company.model.sale;
 import java.io.Serializable;
 import java.util.Date;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.cyk.system.root.model.file.report.AbstractReportTemplateFile;
-import org.cyk.system.root.model.file.report.LabelValueCollectionReport;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter
 public class SaleCashRegisterMovementReport extends AbstractReportTemplateFile<SaleCashRegisterMovementReport> implements Serializable {
@@ -18,10 +17,9 @@ public class SaleCashRegisterMovementReport extends AbstractReportTemplateFile<S
 	private SaleReport sale;
 	private String identifier,date,amountDue,amountIn,amountToOut,amountOut,balance;
 
-	private LabelValueCollectionReport paymentInfos = new LabelValueCollectionReport();
-	
 	@Override
 	public void generate() {
+		title = "Paiement";
 		identifier=RandomStringUtils.randomNumeric(8);
 		date=new Date().toString();
 		amountDue=provider.randomInt(1, 1000000)+"";

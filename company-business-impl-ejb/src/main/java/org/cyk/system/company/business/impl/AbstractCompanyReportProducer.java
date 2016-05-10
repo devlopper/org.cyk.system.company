@@ -10,6 +10,7 @@ import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementReport;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.structure.Company;
@@ -27,16 +28,28 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	@Override
 	public SaleReport produceInvoice(Sale sale) {
 		logDebug("Prepare Sale report");
-		CashRegister cashRegister = sale.getCashier().getCashRegister();
-		Company company = cashRegister.getOwnedCompany().getCompany();
+		SaleReport saleReport = new SaleReport();
+		set(sale, saleReport);
+		return saleReport;
+	}
+	
+	@Override
+	public SaleCashRegisterMovementReport producePaymentReceipt(SaleCashRegisterMovement saleCashRegisterMovement) {
+		logDebug("Prepare Payment report");
+		SaleCashRegisterMovementReport saleCashRegisterMovementReport = new SaleCashRegisterMovementReport();
+		set(saleCashRegisterMovement.getSale(), saleCashRegisterMovementReport.getSale());
+		return saleCashRegisterMovementReport;
+	}
+	
+	protected void set(Sale sale,SaleReport saleReport){
+		Company company = sale.getCashier().getCashRegister().getOwnedCompany().getCompany();
 		BigDecimal numberOfProducts = BigDecimal.ZERO;
 		for(SaleProduct sp : sale.getSaleProducts())
 			numberOfProducts = numberOfProducts.add(sp.getQuantity());
 		
-		SaleReport saleReport = new SaleReport();
-		saleReport.setTitle(languageBusiness.findText("company.report.pointofsale.invoice"));
+		saleReport.setTitle(languageBusiness.findText("company.report.invoice"));
 		saleReport.setIdentifier(sale.getComputedIdentifier());
-		saleReport.setCashRegisterIdentifier(Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getShowPointOfSaleReportCashier())?cashRegister.getCode():null);
+		saleReport.setCashRegisterIdentifier(Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getShowPointOfSaleReportCashier())?sale.getCashier().getCashRegister().getCode():null);
 		saleReport.setDate(timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN));
 		set(sale.getCustomer(), saleReport.getCustomer());
 		saleReport.setNumberOfProducts(numberBusiness.format(numberOfProducts));
@@ -53,48 +66,6 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		saleReport.setVatRate(format(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
 		saleReport.setAmountDueNoTaxes(format(sale.getCost().getValue().subtract(sale.getCost().getTax()).setScale(2)));
 		saleReport.setVatAmount(format(sale.getCost().getTax().setScale(2)));
-		
-		/*if(Boolean.TRUE.equals(sale.getAccountingPeriod().getShowPointOfSaleReportCashier()))
-			saleReport.getHeaderInfos().add("Caisse", cashRegisterMovement.getCashRegister().getCode());
-		saleReport.getHeaderInfos().add("Date", timeBusiness.formatDate(sale.getDate(),TimeBusiness.DATE_TIME_LONG_PATTERN));
-		if(sale.getCustomer()!=null)
-			saleReport.getHeaderInfos().add("Client", sale.getCustomer().getRegistration().getCode());
-		*/
-		/*saleReport.getPaymentInfos().add("Montant a payer", format(sale.getCost()));
-		saleReport.getPaymentInfos().add("Especes", format(saleCashRegisterMovement.getAmountIn()));
-		saleReport.getPaymentInfos().add("A rendre", format(saleCashRegisterMovement.getAmountIn().subtract(sale.getCost())));
-		
-		saleReport.getTaxInfos().add("Taux TVA", format(sale.getAccountingPeriod().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
-		saleReport.getTaxInfos().add("Montant HT", format(sale.getCost().subtract(sale.getValueAddedTax()).setScale(2)));
-		saleReport.getTaxInfos().add("TVA", format(sale.getValueAddedTax().setScale(2)));*/
-		/*
-		saleReport.getAccountingPeriod().getCompany().getContact().setPhoneNumbers(StringUtils.join(company.getContactCollection().getPhoneNumbers()," - "));
-		saleReport.getCustomer().setRegistrationCode(sale.getCustomer()==null?"":sale.getCustomer().getRegistration().getCode());
-		saleReport.getSaleCashRegisterMovement().setAmountDue(numberBusiness.format(sale.getCost()));
-		if(Boolean.TRUE.equals(sale.getDone())){
-			saleReport.getSaleCashRegisterMovement().setAmountIn(numberBusiness.format(saleCashRegisterMovement.getAmountIn()));
-			saleReport.getSaleCashRegisterMovement().setAmountToOut(numberBusiness.format(saleCashRegisterMovement.getAmountIn().subtract(sale.getCost())));
-			saleReport.getSaleCashRegisterMovement().setAmountOut(numberBusiness.format(saleCashRegisterMovement.getAmountOut()));
-			if(sale.getValueAddedTax()!=null && sale.getValueAddedTax().signum()!=0){
-				saleReport.getSaleCashRegisterMovement().setVatRate(numberBusiness.format(sale.getAccountingPeriod().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
-				saleReport.getSaleCashRegisterMovement().setVatAmount(numberBusiness.format(sale.getValueAddedTax().setScale(2)));
-				saleReport.getSaleCashRegisterMovement().setAmountDueNoTaxes(numberBusiness.format(sale.getCost().subtract(sale.getValueAddedTax()).setScale(2)));
-			}
-		}
-		*/
-		return saleReport;
-	}
-	
-	@Override
-	public SaleReport producePaymentReceipt(ReceiptParameters previousStateParameters,ReceiptParameters currentStateParameters) {
-		logDebug("Prepare Payment report");
-		//SaleStockTangibleProductMovementOutput saleStockOutput = currentStateParameters.getSaleStockOutput();
-		SaleCashRegisterMovement saleCashRegisterMovement = null;//saleStockOutput==null?previousStateParameters.getSaleCashRegisterMovement():saleStockOutput.getSaleCashRegisterMovement();
-		Sale sale = null;//saleStockOutput==null?saleCashRegisterMovement.getSale():saleStockOutput.getSaleStockInput().getSale();
-		SaleReport saleReport = null;/*prepare(sale, saleStockOutput==null?null:saleStockOutput.getSaleStockInput(), saleCashRegisterMovement.getCashRegisterMovement()
-						,previousStateParameters.getAmountToPay(),previousStateParameters.getAmountPaid(),previousStateParameters.getAmountToOut(),Boolean.TRUE
-						,previousStateParameters.getNumberOfGoodsInStock(),previousStateParameters.getNumberOfGoodsDelivered());*/
-		return saleReport;
 	}
 	
 	private SaleReport prepare(Sale sale,CashRegisterMovement cashRegisterMovement,BigDecimal amountToPay,BigDecimal amountPaid,BigDecimal amountToOut,Boolean paymentOnly

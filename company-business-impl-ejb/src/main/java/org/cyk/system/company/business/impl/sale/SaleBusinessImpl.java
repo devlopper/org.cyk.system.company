@@ -192,11 +192,9 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		sale = dao.update(sale);
 		
 		//Secondly we pay
-		InvoiceParameters previous = null;
 		if(saleCashRegisterMovement==null){
 			
 		}else {
-			previous = new InvoiceParameters(saleCashRegisterMovement);
 			//FIXME has be done to handled sale stock issue : 0 amount and X stock out. think another better way
 			if(saleCashRegisterMovement.getAmountIn().equals(saleCashRegisterMovement.getAmountOut()) && saleCashRegisterMovement.getAmountIn().equals(BigDecimal.ZERO)){
 				//logDebug("No sale cash register movement");
@@ -217,7 +215,19 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		});
 		
 		if(updateReport==null || Boolean.TRUE.equals(updateReport)){
-			createReport(sale);
+			final SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().produceInvoice(sale);
+			if(sale.getReport()==null)
+				sale.setReport(new File());
+			RootBusinessLayer.getInstance().getReportBusiness().buildBinaryContent(sale, saleReport, sale.getAccountingPeriod().getSaleConfiguration().getPointOfSaleReportTemplate().getTemplate(), Boolean.TRUE);
+			
+			listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>() {
+				@Override
+				public void execute(Listener listener) {
+					listener.processOnReportUpdated(saleReport, Boolean.TRUE);
+				}
+			});
+			 
+			dao.update(sale);
 		}
 		logIdentifiable("Created",sale);
 		return sale;
@@ -273,21 +283,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		return super.delete(sale);
 	}
 
-	private void createReport(Sale sale){
-		final SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().produceInvoice(sale);
-		listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>() {
-			@Override
-			public void execute(Listener listener) {
-				listener.processOnReportUpdated(saleReport, Boolean.TRUE);
-			}
-		});
-		
-		if(sale.getReport()==null)
-			sale.setReport(new File());
-		RootBusinessLayer.getInstance().getReportBusiness().buildBinaryContent(sale, saleReport, sale.getAccountingPeriod().getSaleConfiguration().getPointOfSaleReportTemplate().getTemplate(), Boolean.TRUE); 
-		dao.update(sale);
-	}
-	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<Sale> findByCriteria(SaleSearchCriteria criteria) {
 		prepareFindByCriteria(criteria);

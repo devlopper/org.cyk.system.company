@@ -21,6 +21,7 @@ import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementReport;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
@@ -136,10 +137,10 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		logIdentifiable("Created",saleCashRegisterMovement);
 		
 		if(Boolean.TRUE.equals(generatePos)){
-			SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().producePaymentReceipt(previous,new ReceiptParameters(saleCashRegisterMovement));
+			SaleCashRegisterMovementReport saleCashRegisterMovementReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().producePaymentReceipt(saleCashRegisterMovement);
 			if(saleCashRegisterMovement.getReport()==null)
 				saleCashRegisterMovement.setReport(new File());
-			rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement, saleReport
+			rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement, saleCashRegisterMovementReport
 					,saleCashRegisterMovement.getSale().getAccountingPeriod().getSaleConfiguration().getPointOfSaleReportTemplate().getTemplate(), Boolean.TRUE); 
 		}
 		return saleCashRegisterMovement;

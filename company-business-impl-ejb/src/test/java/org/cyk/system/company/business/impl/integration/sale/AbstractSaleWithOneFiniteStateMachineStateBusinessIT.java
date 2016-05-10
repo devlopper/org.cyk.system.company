@@ -15,7 +15,7 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     	CreateSaleParameters createSaleParameters = new CreateSaleParameters(S1, null, null, CUST1, new String[][]{{TP1,"2"}}, "0","false");
     	createSale(createSaleParameters);
     	_1(createSaleParameters);
-    	/*
+    	
     	DeleteSaleParameters deleteSaleParameters = new DeleteSaleParameters(S1);
     	deleteSale(deleteSaleParameters);
     	_2(deleteSaleParameters);
@@ -31,7 +31,7 @@ public abstract class AbstractSaleWithOneFiniteStateMachineStateBusinessIT exten
     	deleteSaleParameters = new DeleteSaleParameters(S1);
     	deleteSale(deleteSaleParameters);
     	_5(deleteSaleParameters);
-    	
+    	/*
     	createSaleParameters = new CreateSaleParameters(S1, null, null, CUST1, new String[][]{{TP1,"2"}}, "0","false");
     	createSale(createSaleParameters);
     	_6(createSaleParameters);
