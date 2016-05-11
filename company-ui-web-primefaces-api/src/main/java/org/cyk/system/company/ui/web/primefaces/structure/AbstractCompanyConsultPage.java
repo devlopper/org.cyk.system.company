@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.impl.structure.CompanyDetails;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.impl.AbstractOutputDetails;
+import org.cyk.system.root.model.network.UniformResourceLocatorParameter;
 import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.model.geography.ContactDetails;
@@ -68,7 +69,7 @@ public abstract class AbstractCompanyConsultPage extends AbstractConsultPage<Com
 		if(StringUtils.isEmpty(selectedTabId))
 			;
 		else
-			commandable.addParameter(webManager.getRequestParameterTabId(), selectedTabId);
+			commandable.addParameter(UniformResourceLocatorParameter.TAB_ID, selectedTabId);
 		contextualMenu.getChildren().add(commandable);
 		
 		return Arrays.asList(contextualMenu);

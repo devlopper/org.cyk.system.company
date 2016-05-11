@@ -26,6 +26,7 @@ import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.root.business.api.Crud;
+import org.cyk.system.root.model.network.UniformResourceLocatorParameter;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
@@ -118,6 +119,8 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		customers = new ArrayList<Customer>(customerBusiness.findAll());
 		cashRegisterController.init(CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().instanciateOne(identifiable, identifiable.getCashier().getPerson(), Boolean.TRUE),Boolean.TRUE);
 		sell();
+		debug(saleProductCollection.getAddCommandable());
+		//saleProductCollection.getAddCommandable().setViewType(null);
 	}
 	
 	/**/
@@ -144,7 +147,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		super.succeed(command, parameter);
 		String url = null;
 		//url = "http://localhost:8080/company/private/__tools__/report.jsf?clazz=Sale&identifiable=151&fileExtensionParam=pdf&ridp=pos&windowmode=windowmodedialog";
-		url = navigationManager.reportUrl(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale(),uiManager.getPdfParameter(),Boolean.TRUE);
+		url = navigationManager.reportUrl(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale(),UniformResourceLocatorParameter.PDF,Boolean.TRUE);
 		messageDialogOkButtonOnClick += "window.open('"+url+"', 'pointofsale"+identifiable.getIdentifier()+"', 'location=no,menubar=no,titlebar=no,toolbar=no,width=400, height=550');";
 		//System.out.println(messageDialogOkButtonOnClick);
 		return null;

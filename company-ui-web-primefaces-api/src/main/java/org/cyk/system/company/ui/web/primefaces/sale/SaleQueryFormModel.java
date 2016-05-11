@@ -10,7 +10,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.ui.api.UIManager;
+import org.cyk.system.root.model.network.UniformResourceLocatorParameter;
 import org.cyk.ui.api.command.UICommandable.Parameter;
 import org.cyk.ui.api.model.AbstractQueryOneFormModel;
 import org.cyk.ui.web.api.WebNavigationManager;
@@ -56,7 +56,7 @@ public class SaleQueryFormModel extends AbstractQueryOneFormModel.Default<Sale> 
 			if(ArrayUtils.contains(new String[]{CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementInput()
 					,CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementOutput()}, actionIdentifier)){
 				WebNavigationManager.getInstance().redirectToDynamicCreate( findByIdentifier(((SaleQueryFormModel)data).getIdentifier()),SaleCashRegisterMovement.class,
-						Arrays.asList(new Parameter(UIManager.getInstance().getActionIdentifierParameter(), actionIdentifier))); 
+						Arrays.asList(new Parameter(UniformResourceLocatorParameter.ACTION_IDENTIFIER, actionIdentifier))); 
 			}
 		}
 		

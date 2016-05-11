@@ -6,7 +6,7 @@
         <jta-data-source>java:app/jdbc/cyk_company_pool</jta-data-source>
         <mapping-file>META-INF/orm.xml</mapping-file>
         <jar-file>root-model-0.0.1.jar</jar-file>
-        <jar-file>company-model-0.0.1-develop.jar</jar-file>
+        <jar-file>company-model-0.0.1.jar</jar-file>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="eclipselink.logging.level" value="OFF" />

@@ -33,6 +33,7 @@ import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.ui.web.primefaces.model.ProductCollectionFormModel;
 import org.cyk.system.company.ui.web.primefaces.stock.StockableTangibleProductEditPage;
+import org.cyk.system.root.model.network.UniformResourceLocatorParameter;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.AbstractUserSession;
 import org.cyk.ui.api.Icon;
@@ -107,29 +108,6 @@ public abstract class AbstractCompanyWebManager extends AbstractPrimefacesManage
 			cashier = companyBusinessLayer.getCashierBusiness().findByPerson((Person) userSession.getUser());
 		}
 		SystemMenu systemMenu = new SystemMenu();
-		/*
-		UICommandable group = Builder.create("department", null);
-
-		group.addChild(Builder.createList(DivisionType.class, null));	
-		group.addChild(Builder.createList(Division.class, null));	
-		group.addChild(Builder.createList(Division.class, null));	
-		group.addChild("command.ownedcompany", null, "ownedCompanyCrudOne", null);
-		systemMenu.getReferenceEntities().add(group);
-		*/
-		/*
-		group = Builder.create(uiManager.businessEntityInfos(Product.class).getUserInterface().getLabelId(), null);
-		//group.addChild(Builder.createList(ProductCategory.class, null));
-		group.addChild(Builder.createList(IntangibleProduct.class, null));	
-		group.addChild(Builder.createList(TangibleProduct.class, null));	
-		//group.addChild(Builder.createList(ProductCollection.class, null));
-		systemMenu.getReferenceEntities().add(group);
-		
-		group = Builder.create(uiManager.businessEntityInfos(Sale.class).getUserInterface().getLabelId(), null);
-		group.addChild(Builder.createList(SalableProduct.class, null));
-		group.addChild(Builder.createList(Customer.class, null));
-		
-		systemMenu.getReferenceEntities().add(group);
-		*/
 		addBusinessMenu(systemMenu,getProductCommandable(userSession,systemMenu.getMobileBusinesses())); 
 		addBusinessMenu(systemMenu,getCustomerCommandable(userSession,systemMenu.getMobileBusinesses())); 
 		addBusinessMenu(systemMenu,paymentCommandables(userSession,systemMenu.getMobileBusinesses(), cashier));
@@ -267,12 +245,12 @@ public abstract class AbstractCompanyWebManager extends AbstractPrimefacesManage
 	/**/
 	
 	public String javascriptShowPointOfSale(Sale sale){
-		String url = webNavigationManager.reportUrl(sale, companyReportRepository.getReportPointOfSale(),uiManager.getPdfParameter(),Boolean.TRUE);
+		String url = webNavigationManager.reportUrl(sale, companyReportRepository.getReportPointOfSale(),UniformResourceLocatorParameter.PDF,Boolean.TRUE);
 		return javaScriptHelper.openWindow("pointofsale"+sale.getIdentifier(), url, 400, 550);
 	}
 	
 	public String javascriptShowPointOfSale(SaleCashRegisterMovement saleCashRegisterMovement){
-		String url = webNavigationManager.reportUrl(saleCashRegisterMovement, companyReportRepository.getReportPointOfSaleReceipt(),uiManager.getPdfParameter(),Boolean.TRUE);
+		String url = webNavigationManager.reportUrl(saleCashRegisterMovement, companyReportRepository.getReportPointOfSaleReceipt(),UniformResourceLocatorParameter.PDF,Boolean.TRUE);
 		return javaScriptHelper.openWindow("pointofsale"+saleCashRegisterMovement.getIdentifier(), url, 400, 550);
 	}
 	
