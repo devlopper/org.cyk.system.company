@@ -1,6 +1,7 @@
 package org.cyk.system.company.business.impl;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.model.sale.Sale;
@@ -27,11 +28,15 @@ public class DefaultSaleReportProducer extends AbstractCompanyReportProducer imp
 				{text("company.report.sale.amount.du"), report.getAmountDue()}
 				});
 		
-		report.addLabelValueCollection(text("company.report.sale.vatblocktitle"),new String[][]{
-				{text("company.report.sale.vat.rate"), report.getVatRate()}
-				,{text("company.report.sale.amount.vat.excluded"), report.getAmountDueNoTaxes()}
-				,{text("company.report.sale.vat.amount"), report.getVatAmount()}
-				});
+		if(sale.getCost().getTax().equals(BigDecimal.ZERO))
+			report.addLabelValueCollection(text("company.report.sale.vatblocktitle"),new String[][]{});
+		else{
+			report.addLabelValueCollection(text("company.report.sale.vatblocktitle"),new String[][]{
+					{text("company.report.sale.vat.rate"), report.getVatRate()}
+					,{text("company.report.sale.amount.vat.excluded"), report.getAmountDueNoTaxes()}
+					,{text("company.report.sale.vat.amount"), report.getVatAmount()}
+					});
+		}
 		return report;
 	}
 	
@@ -41,7 +46,7 @@ public class DefaultSaleReportProducer extends AbstractCompanyReportProducer imp
 		
 		report.addLabelValueCollection("company.report.salecashregistermovement.detailsblocktitle",new String[][]{
 				{text("company.report.salecashregistermovement.identifier"), report.getIdentifier()}
-				,{text("company.report.sale.identifier"), report.getSale().getIdentifier()}
+				,{text("company.report.salecashregistermovement.sale.identifier"), report.getSale().getIdentifier()}
 				,{text("company.report.salecashregistermovement.cashregister"), report.getCashRegisterIdentifier()}
 				,{text("company.report.salecashregistermovement.date"), report.getDate()}
 				,{text("company.report.salecashregistermovement.customer"), report.getSale().getCustomer().getPerson().getNames()}

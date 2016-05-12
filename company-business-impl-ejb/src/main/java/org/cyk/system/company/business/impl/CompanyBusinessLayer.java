@@ -83,6 +83,7 @@ import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
+import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.api.FormatterBusiness;
@@ -175,6 +176,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private ResellerProductionBusiness resellerProductionBusiness;
 	//@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
 	//@Inject private AccountingPeriodProductCategoryBusiness accountingPeriodProductCategoryBusiness;
+	@Inject private SaleCashRegisterMovementDao saleCashRegisterMovementDao;
 	@Inject private UserAccountBusiness userAccountBusiness;
 	@Inject private RoleDao roleDao;
 	@Inject private PersonDao personDao;

@@ -2,7 +2,7 @@ package org.cyk.system.company.business.impl;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.Collection;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyReportProducer;
@@ -35,14 +35,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	public SaleCashRegisterMovementReport produceSaleCashRegisterMovementReport(SaleCashRegisterMovement saleCashRegisterMovement) {
 		logDebug("Prepare Payment report");
 		SaleCashRegisterMovementReport report = new SaleCashRegisterMovementReport();
-		set(saleCashRegisterMovement.getSale(), report.getSale());
-		report.setTitle(languageBusiness.findText("company.report.salecashregistermovement"));
-		report.setIdentifier(saleCashRegisterMovement.getCashRegisterMovement().getComputedIdentifier());
-		report.setAmountDue(format(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
-		report.setAccountingPeriod(report.getSale().getAccountingPeriod());
-		report.setAmountIn(format(saleCashRegisterMovement.getAmountIn()));
-		report.setAmountOut(format(saleCashRegisterMovement.getAmountOut()));
-		report.setBalance(format(saleCashRegisterMovement.getBalance().getValue()));
+		set(saleCashRegisterMovement, report);
 		return report;
 	}
 	
@@ -72,26 +65,33 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		report.setAmountDueNoTaxes(format(sale.getCost().getValue().subtract(sale.getCost().getTax()).setScale(2)));
 		report.setVatAmount(format(sale.getCost().getTax().setScale(2)));
 	}
+	
+	protected void set(SaleCashRegisterMovement saleCashRegisterMovement,SaleCashRegisterMovementReport report) {
+		set(saleCashRegisterMovement.getSale(), report.getSale());
+		report.setTitle(languageBusiness.findText("company.report.salecashregistermovement"));
+		report.setIdentifier(saleCashRegisterMovement.getCashRegisterMovement().getComputedIdentifier());
 		
-	protected void valueAddedTaxesPart(SaleReport saleReport,Sale sale){
-		//labelValue(saleReport.getTaxInfos(),LABEL_VAT_RATE, format(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
-		labelValue(LABEL_AMOUNT_VAT_EXCLUDED, format(sale.getCost().getValue().subtract(sale.getCost().getTax()).setScale(2,RoundingMode.HALF_DOWN)));
-		labelValue(LABEL_VAT_AMOUNT, format(sale.getCost().getTax().setScale(2,RoundingMode.HALF_DOWN)));
+		Collection<SaleCashRegisterMovement> saleCashRegisterMovements = CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementDao().readBySale(saleCashRegisterMovement.getSale());
+		SaleCashRegisterMovement lastSaleCashRegisterMovement = null;
+		for(SaleCashRegisterMovement s : saleCashRegisterMovements)
+			if(!s.getIdentifier().equals(saleCashRegisterMovement.getIdentifier()) && s.getCashRegisterMovement().getMovement().getDate().before(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getDate()) ){
+				if(lastSaleCashRegisterMovement==null)
+					lastSaleCashRegisterMovement = s;
+				else if(lastSaleCashRegisterMovement.getCashRegisterMovement().getMovement().getDate().before(s.getCashRegisterMovement().getMovement().getDate()))
+					lastSaleCashRegisterMovement = s;
+			}
+			
+		report.setAmountDue(format(lastSaleCashRegisterMovement==null ? saleCashRegisterMovement.getSale().getCost().getValue() : lastSaleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
+		report.setAccountingPeriod(report.getSale().getAccountingPeriod());
+		report.setAmountIn(format(saleCashRegisterMovement.getAmountIn()));
+		report.setAmountOut(format(saleCashRegisterMovement.getAmountOut()));
+		report.setBalance(format(saleCashRegisterMovement.getBalance().getValue()));
 	}
-		
+			
 	@Override
 	protected Logger __logger__() {
 		return LOGGER;
 	}
 	
-	public static final String LABEL_AMOUNT_TO_PAY = "amount.to.pay";
-	public static final String LABEL_CASH = "cash";
-	public static final String LABEL_AMOUNT_PAID = "";
-	public static final String LABEL_AMOUNT_TO_OUT = "amount.to.out";
-	public static final String LABEL_AMOUNT_DU = "company.report.pointofsale.amount.du";
 	
-	public static final String LABEL_VAT_RATE = "company.report.pointofsale.vat.rate";
-	public static final String LABEL_VAT_AMOUNT = "company.report.pointofsale.vat.amount";
-	public static final String LABEL_AMOUNT_VAT_EXCLUDED = "company.report.pointofsale.amount.vat.excluded";
-
 }

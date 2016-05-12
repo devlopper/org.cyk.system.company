@@ -29,7 +29,6 @@ import org.cyk.system.root.business.impl.mathematics.MovementDetails;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.party.person.Person;
-import org.cyk.ui.api.UIManager;
 import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.data.collector.form.ControlSet;
@@ -90,7 +89,6 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 					return CompanyBusinessLayer.getInstance().getSaleProductBusiness().findBySale(identifiable);
 				}
 			});
-		
 		
 		saleCashRegisterMovementTable = createDetailsTable(SaleCashRegisterMovementDetails.class,new DetailsConfigurationListener.Table.Adapter<SaleCashRegisterMovement, SaleCashRegisterMovementDetails>(SaleCashRegisterMovement.class, SaleCashRegisterMovementDetails.class){
 			private static final long serialVersionUID = 1L;
