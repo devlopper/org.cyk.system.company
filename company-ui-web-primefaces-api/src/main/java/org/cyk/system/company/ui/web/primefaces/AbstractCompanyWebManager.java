@@ -96,7 +96,7 @@ public abstract class AbstractCompanyWebManager extends AbstractPrimefacesManage
 		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Customer.class, ActorConsultFormModel.class);
 		
 		uiManager.registerConfiguration(new IdentifiableConfiguration(StockableTangibleProduct.class, StockableTangibleProductEditPage.Form.class, StockableTangibleProductDetails.class
-				,null,null));
+				,null,null,null));
 		uiManager.configBusinessIdentifiable(StockableTangibleProduct.class, null);
 		//webNavigationManager.useDynamicSelectView(StockableTangibleProduct.class);
 	}
