@@ -12,7 +12,7 @@
 
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
  		<ui:param name="pageController" value="#{customerBalancePage}" />
- 		<ui:define name="body">
+ 		<ui:define name="body">Balance : #{customerBalancePage.table}
  			<cyk:table value="#{customerBalancePage.table}"/>
  		</ui:define>
  	</ui:decorate>

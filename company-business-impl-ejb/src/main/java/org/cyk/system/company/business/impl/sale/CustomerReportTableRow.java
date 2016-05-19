@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 
 import org.cyk.system.company.model.sale.Customer;
+import org.cyk.system.root.business.impl.AbstractOutputDetails;
 import org.cyk.system.root.business.impl.file.report.AbstractReportTableRow;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
@@ -16,7 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class CustomerReportTableRow extends AbstractReportTableRow implements Serializable {
+public class CustomerReportTableRow extends AbstractOutputDetails<Customer> implements Serializable {
 	private static final long serialVersionUID = -6341285110719947720L;
 	
 	@Input @InputText private String registrationCode;
@@ -30,6 +31,8 @@ public class CustomerReportTableRow extends AbstractReportTableRow implements Se
 	@Input @InputText @ReportColumn(style=@Style(alignment=@Alignment(horizontal=Horizontal.RIGHT))) private String balance;
 	
 	public CustomerReportTableRow(Customer customer) {
+		super(customer);
+		System.out.println("CustomerReportTableRow.CustomerReportTableRow()");
 		this.registrationCode = customer.getRegistration().getCode();
 		this.names = customer.getPerson().getNames();
 		this.saleStockInputCount = formatNumber(customer.getSaleStockInputCount());

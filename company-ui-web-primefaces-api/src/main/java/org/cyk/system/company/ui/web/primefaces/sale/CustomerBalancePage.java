@@ -33,34 +33,33 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		
-	}
-	
-	@Override
-	protected void afterInitialisation() {
-		super.afterInitialisation();
 		Collection<CustomerReportTableRow> details = new ArrayList<>();
 		String balanceType = requestParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType());
 		final Boolean all = CompanyReportRepository.getInstance().getParameterCustomerBalanceAll().equals(balanceType);
 		contentTitle = all?text("company.command.customer.balance"):text("field.credence");
-		/*
+		
 		Collection<Customer> customers = all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
 		for(Customer customer : customers)
 			details.add(new CustomerReportTableRow(customer));
-		*/
+		
 		table = createDetailsTable(CustomerReportTableRow.class, new DetailsConfigurationListener.Table.Adapter<Customer,CustomerReportTableRow>(Customer.class, CustomerReportTableRow.class){
 			private static final long serialVersionUID = -6570916902889942385L;
 			@Override
 			public Collection<Customer> getIdentifiables() {
-				return all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
+				return customerBusiness.findAll();// all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
 			}
+			
+			
+			
 			@Override
 			public ColumnAdapter getColumnAdapter() {
 				return new ColumnAdapter(){
 					@Override
 					public Boolean isColumn(Field field) {
-						return all?CustomerReportTableRow.balanceFieldIgnored(field):
-							CustomerReportTableRow.credenceFieldIgnored(field);
+						System.out.println(
+								"CustomerBalancePage.afterInitialisation().new Adapter() {...}.getColumnAdapter().new ColumnAdapter() {...}.isColumn() : "+field.getName());
+						return true;
+						//return all?CustomerReportTableRow.balanceFieldIgnored(field):CustomerReportTableRow.credenceFieldIgnored(field);
 					}
 				};
 			}
@@ -72,6 +71,46 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerReportType(), 
 				CompanyReportRepository.getInstance().getParameterCustomerReportBalance());
 		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), balanceType);
+	}
+	
+	@Override
+	protected void afterInitialisation() {
+		super.afterInitialisation();
+		/*Collection<CustomerReportTableRow> details = new ArrayList<>();
+		String balanceType = requestParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType());
+		final Boolean all = CompanyReportRepository.getInstance().getParameterCustomerBalanceAll().equals(balanceType);
+		contentTitle = all?text("company.command.customer.balance"):text("field.credence");
+		
+		Collection<Customer> customers = all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
+		for(Customer customer : customers)
+			details.add(new CustomerReportTableRow(customer));
+		
+		table = createDetailsTable(CustomerReportTableRow.class, new DetailsConfigurationListener.Table.Adapter<Customer,CustomerReportTableRow>(Customer.class, CustomerReportTableRow.class){
+			private static final long serialVersionUID = -6570916902889942385L;
+			@Override
+			public Collection<Customer> getIdentifiables() {
+				return customerBusiness.findAll();// all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
+			}
+			@Override
+			public ColumnAdapter getColumnAdapter() {
+				return new ColumnAdapter(){
+					@Override
+					public Boolean isColumn(Field field) {
+						System.out.println(
+								"CustomerBalancePage.afterInitialisation().new Adapter() {...}.getColumnAdapter().new ColumnAdapter() {...}.isColumn() : "+field.getName());
+						return true;
+						//return all?CustomerReportTableRow.balanceFieldIgnored(field):CustomerReportTableRow.credenceFieldIgnored(field);
+					}
+				};
+			}
+		});	
+		table.setShowHeader(Boolean.FALSE);
+		table.setShowFooter(Boolean.FALSE);
+		table.setShowToolBar(Boolean.TRUE);
+		table.setIdentifiableClass(Customer.class);
+		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerReportType(), 
+				CompanyReportRepository.getInstance().getParameterCustomerReportBalance());
+		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), balanceType);*/
 	}
 	
 }
