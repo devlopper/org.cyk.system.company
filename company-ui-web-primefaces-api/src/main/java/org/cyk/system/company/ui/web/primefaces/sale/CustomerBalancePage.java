@@ -44,26 +44,28 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 		
 		table = createDetailsTable(CustomerReportTableRow.class, new DetailsConfigurationListener.Table.Adapter<Customer,CustomerReportTableRow>(Customer.class, CustomerReportTableRow.class){
 			private static final long serialVersionUID = -6570916902889942385L;
+			
 			@Override
-			public Collection<Customer> getIdentifiables() {
-				return customerBusiness.findAll();// all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
+			public Boolean getEnabledInDefaultTab() {
+				return Boolean.TRUE;
 			}
 			
-			
+			@Override
+			public Collection<Customer> getIdentifiables() {
+				return all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
+			}
 			
 			@Override
 			public ColumnAdapter getColumnAdapter() {
 				return new ColumnAdapter(){
 					@Override
 					public Boolean isColumn(Field field) {
-						System.out.println(
-								"CustomerBalancePage.afterInitialisation().new Adapter() {...}.getColumnAdapter().new ColumnAdapter() {...}.isColumn() : "+field.getName());
-						return true;
-						//return all?CustomerReportTableRow.balanceFieldIgnored(field):CustomerReportTableRow.credenceFieldIgnored(field);
+						return all?CustomerReportTableRow.balanceFieldIgnored(field):CustomerReportTableRow.credenceFieldIgnored(field);
 					}
 				};
 			}
 		});	
+		table.setRendered(Boolean.TRUE);
 		table.setShowHeader(Boolean.FALSE);
 		table.setShowFooter(Boolean.FALSE);
 		table.setShowToolBar(Boolean.TRUE);
