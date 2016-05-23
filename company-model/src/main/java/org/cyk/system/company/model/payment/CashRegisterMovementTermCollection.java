@@ -16,7 +16,7 @@ import lombok.Setter;
 
 @Getter @Setter @Entity
 @ModelBean(crudStrategy=CrudStrategy.BUSINESS)
-public class PaymentTermCollection extends AbstractIdentifiable implements Serializable {
+public class CashRegisterMovementTermCollection extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 

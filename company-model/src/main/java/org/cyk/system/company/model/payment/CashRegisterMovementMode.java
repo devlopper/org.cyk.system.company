@@ -13,14 +13,14 @@ import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 
 @Getter @Setter @NoArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.ENUMERATION)
-public class PaymentType extends AbstractEnumeration implements Serializable {
+public class CashRegisterMovementMode extends AbstractEnumeration implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	public static final String CASH = "CASH";
+	public static final String CHEQUE = "CHEQUE";
 	
-	
-	public PaymentType(String code, String libelle, String description) {
+	public CashRegisterMovementMode(String code, String libelle, String description) {
 		super(code, libelle,null, description);
 	}
 	

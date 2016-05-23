@@ -24,9 +24,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
+import org.cyk.system.company.model.payment.CashRegisterMovementTermCollection;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.root.model.AbstractIdentifiable;
-import org.cyk.system.root.model.event.EventCollection;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.utility.common.Constant;
@@ -65,7 +65,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	
 	@Column(length=1024*1) private String comments;
 	
-	@OneToOne private EventCollection paymentTermEventCollection;
+	@OneToOne private CashRegisterMovementTermCollection cashRegisterMovementTermCollection;
 	
 	/**/
 	

@@ -21,11 +21,11 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
 @ModelBean(crudStrategy=CrudStrategy.BUSINESS)
-public class PaymentTerm extends AbstractIdentifiable implements Serializable {
+public class CashRegisterMovementTerm extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne private PaymentTermCollection collection;
+	@ManyToOne private CashRegisterMovementTermCollection collection;
 	
 	@OneToOne @NotNull private Event event;
 	
