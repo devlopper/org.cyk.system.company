@@ -26,6 +26,7 @@ import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.event.EventCollection;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.utility.common.Constant;
@@ -63,6 +64,8 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	@OneToOne private File report;
 	
 	@Column(length=1024*1) private String comments;
+	
+	@OneToOne private EventCollection paymentTermEventCollection;
 	
 	/**/
 	

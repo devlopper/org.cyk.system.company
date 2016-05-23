@@ -4,12 +4,13 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+import org.cyk.system.root.model.party.person.AbstractActor;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import org.cyk.system.root.model.party.person.AbstractActor;
 
 @Getter @Setter @NoArgsConstructor @Entity
 public class Employee extends AbstractActor implements Serializable {
@@ -18,6 +19,8 @@ public class Employee extends AbstractActor implements Serializable {
 
 	@ManyToOne private Division division;
 
+	@OneToOne private EmploymentAgreement employmentAgreement;
+	
 	/**/
 	
 	public static class SearchCriteria extends AbstractSearchCriteria<Employee> {

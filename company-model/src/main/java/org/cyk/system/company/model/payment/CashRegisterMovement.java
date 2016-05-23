@@ -24,6 +24,7 @@ public class CashRegisterMovement extends AbstractIdentifiable implements Serial
 
 	@Column(unique=true,nullable=true) private String computedIdentifier;
 	@ManyToOne @NotNull private CashRegister cashRegister;
+	@ManyToOne @NotNull private PaymentType paymentType;
 	@ManyToOne @NotNull private Movement movement;
 	
 	public CashRegisterMovement(CashRegister cashRegister,Movement movement) {
