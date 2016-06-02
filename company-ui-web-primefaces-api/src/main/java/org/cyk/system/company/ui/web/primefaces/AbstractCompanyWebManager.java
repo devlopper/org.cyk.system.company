@@ -108,10 +108,10 @@ public abstract class AbstractCompanyWebManager extends AbstractPrimefacesManage
 			cashier = companyBusinessLayer.getCashierBusiness().findByPerson((Person) userSession.getUser());
 		}
 		SystemMenu systemMenu = new SystemMenu();
-		addBusinessMenu(systemMenu,getProductCommandable(userSession,systemMenu.getMobileBusinesses())); 
-		addBusinessMenu(systemMenu,getCustomerCommandable(userSession,systemMenu.getMobileBusinesses())); 
-		addBusinessMenu(systemMenu,paymentCommandables(userSession,systemMenu.getMobileBusinesses(), cashier));
-		addBusinessMenu(systemMenu,getSaleCommandable(userSession,systemMenu.getMobileBusinesses(), cashier)); 
+		addBusinessMenu(userSession,systemMenu,getProductCommandable(userSession,systemMenu.getMobileBusinesses())); 
+		addBusinessMenu(userSession,systemMenu,getCustomerCommandable(userSession,systemMenu.getMobileBusinesses())); 
+		addBusinessMenu(userSession,systemMenu,paymentCommandables(userSession,systemMenu.getMobileBusinesses(), cashier));
+		addBusinessMenu(userSession,systemMenu,getSaleCommandable(userSession,systemMenu.getMobileBusinesses(), cashier)); 
 		
 		return systemMenu;
 	}

@@ -66,10 +66,11 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 			}
 		});	
 		table.setRendered(Boolean.TRUE);
-		table.setShowHeader(Boolean.FALSE);
+		table.setShowHeader(Boolean.TRUE);
 		table.setShowFooter(Boolean.FALSE);
 		table.setShowToolBar(Boolean.TRUE);
 		table.setIdentifiableClass(Customer.class);
+		table.getPrintCommandable().setRendered(Boolean.TRUE);
 		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerReportType(), 
 				CompanyReportRepository.getInstance().getParameterCustomerReportBalance());
 		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), balanceType);
@@ -113,6 +114,9 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerReportType(), 
 				CompanyReportRepository.getInstance().getParameterCustomerReportBalance());
 		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), balanceType);*/
+		
+		
+		debug(table);
 	}
 	
 }
