@@ -4,10 +4,11 @@ import javax.persistence.NoResultException;
 
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
-import org.cyk.system.root.persistence.impl.AbstractTypedDao;
+import org.cyk.system.root.persistence.impl.AbstractCollectionDaoImpl;
 
-public class SalableProductDaoImpl extends AbstractTypedDao<SalableProduct> implements SalableProductDao {
+public class SalableProductDaoImpl extends AbstractCollectionDaoImpl<SalableProduct,SalableProductInstance> implements SalableProductDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
 

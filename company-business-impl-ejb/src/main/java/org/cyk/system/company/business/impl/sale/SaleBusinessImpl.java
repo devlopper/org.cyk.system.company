@@ -182,7 +182,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 				sale.setDate(universalTimeCoordinated());
 		
 		sale = super.create(sale);
-		cascade(sale, sale.getSaleProducts(),null,null, Crud.CREATE);//FIXME : i think null should be the list of payments and some kind of listener to be used
+		cascade(sale, sale.getSaleProducts(),null,null, Crud.CREATE);
 		consume(sale,Crud.CREATE);
 		
 		if(sale.getComputedIdentifier()==null)

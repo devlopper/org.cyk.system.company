@@ -1,4 +1,4 @@
-package org.cyk.system.company.business.impl.sale;
+package org.cyk.system.company.business.impl.sale; 
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -6,14 +6,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.sale.SaleProductBusiness;
+import org.cyk.system.company.business.api.sale.SaleProductInstanceBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleProduct;
+import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.persistence.api.sale.SaleProductDao;
+import org.cyk.system.company.persistence.api.sale.SaleProductInstanceDao;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.chart.CartesianModel;
 import org.cyk.system.root.business.api.chart.CartesianModelListener;
 import org.cyk.system.root.business.api.chart.Series;
@@ -26,18 +32,32 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
+	@Inject private SaleProductInstanceDao saleProductInstanceDao;
+	
 	@Inject
 	public SaleProductBusinessImpl(SaleProductDao dao) {
 		super(dao);
 	}
 	
-	@Override
-	public SaleProduct delete(SaleProduct saleProduct) {
-		// TODO Auto-generated method stub
-		return super.delete(saleProduct);
+	private void cascade(SaleProduct saleProduct,Collection<SaleProductInstance> saleProductInstances,Crud crud){
+		new CascadeOperationListener.Adapter.Default<SaleProductInstance,SaleProductInstanceDao,SaleProductInstanceBusiness>(saleProductInstanceDao,CompanyBusinessLayer.getInstance().getSaleProductInstanceBusiness())
+			.operate(saleProductInstances, crud);
 	}
 	
 	@Override
+	public SaleProduct create(SaleProduct saleProduct) {
+		saleProduct = super.create(saleProduct);
+		cascade(saleProduct, saleProduct.getInstances(), Crud.CREATE);
+		return saleProduct;
+	}
+	
+	@Override
+	public SaleProduct delete(SaleProduct saleProduct) {
+		cascade(saleProduct, saleProductInstanceDao.readBySaleProduct(saleProduct), Crud.DELETE);
+		return super.delete(saleProduct);
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<SaleProduct> findBySales(Collection<Sale> sales) {
 		return dao.readBySales(sales);
 	}

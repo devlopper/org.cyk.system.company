@@ -148,6 +148,17 @@
         				<h:outputText id="grandtotal" value="#{saleEditPage.identifiable.cost.value}" />
         			</f:facet>
         		</p:column>
+        		
+        		<p:column headerText="#{uiManager.text('field.instance')}" rendered="#{saleEditPage.showInstanceColumn}" width="30%">
+        			<p:selectOneMenu id="instance" value="#{saleEditPage.selectedProduct}" var="salableProduct" converter="#{objectConverter}" 
+	        			filter="true" filterMatchMode="contains" disabled="#{saleEditPage.collectMoney}">
+	        			<f:selectItems value="#{saleEditPage.salableProducts}"  />
+	        			<p:column><h:outputText value="#{salableProduct.product.code}" /></p:column>
+			            <p:column><h:outputText value="#{salableProduct.product.name}" /></p:column>
+	        		</p:selectOneMenu>
+        			<h:outputText value="#{saleProduct.quantity}" rendered="#{saleEditPage.collectMoney}" />
+        		</p:column>
+        		
  			</cyk:itemCollection>
         	
         	<p:outputPanel id="moneyPanel" ><ui:fragment rendered="#{saleEditPage.collectMoney}">

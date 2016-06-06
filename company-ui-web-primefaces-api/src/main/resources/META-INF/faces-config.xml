@@ -90,6 +90,38 @@
 			<redirect />
 		</navigation-case>
 		
+		<navigation-case>
+			<from-outcome>salableProductEditView</from-outcome>
+			<to-view-id>/private/sale/salableproduct/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>salableProductListView</from-outcome>
+			<to-view-id>/private/sale/salableproduct/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>salableProductConsultView</from-outcome>
+			<to-view-id>/private/sale/salableproduct/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>salableProductInstanceEditView</from-outcome>
+			<to-view-id>/private/sale/salableproductinstance/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>salableProductInstanceListView</from-outcome>
+			<to-view-id>/private/sale/salableproductinstance/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>salableProductInstanceConsultView</from-outcome>
+			<to-view-id>/private/sale/salableproductinstance/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
 		<!-- Manager -->
 		<navigation-case>
 			<from-outcome>ownedCompanyCrudOne</from-outcome>

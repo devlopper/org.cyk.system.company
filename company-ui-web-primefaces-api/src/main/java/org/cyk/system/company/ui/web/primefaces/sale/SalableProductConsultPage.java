@@ -1,0 +1,57 @@
+package org.cyk.system.company.ui.web.primefaces.sale;
+
+import java.io.Serializable;
+import java.util.Collection;
+
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.sale.SalableProductDetails;
+import org.cyk.system.company.business.impl.sale.SalableProductInstanceDetails;
+import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.SalableProductInstance;
+import org.cyk.system.root.business.api.Crud;
+import org.cyk.ui.web.primefaces.Table;
+import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
+import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
+
+@Named @ViewScoped @Getter @Setter
+public class SalableProductConsultPage extends AbstractConsultPage<SalableProduct> implements Serializable {
+
+	private static final long serialVersionUID = 3274187086682750183L;
+	
+	private FormOneData<SalableProductDetails> details;
+	private Table<SalableProductInstanceDetails> instanceTable;
+	
+	@Override
+	protected void initialisation() {
+		super.initialisation();
+		details = createDetailsForm(SalableProductDetails.class, identifiable, new DetailsConfigurationListener.Form.Adapter<SalableProduct,SalableProductDetails>(SalableProduct.class, SalableProductDetails.class){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public Boolean getEnabledInDefaultTab() {
+				return Boolean.TRUE;
+			}
+		});
+		
+		instanceTable = (Table<SalableProductInstanceDetails>) createDetailsTable(SalableProductInstanceDetails.class, new DetailsConfigurationListener.Table.Adapter<SalableProductInstance,SalableProductInstanceDetails>(SalableProductInstance.class, SalableProductInstanceDetails.class){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public Collection<SalableProductInstance> getIdentifiables() {
+				return CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().findByCollection(identifiable);
+			}
+			@Override
+			public Crud[] getCruds() {
+				return new Crud[]{Crud.CREATE/*,Crud.READ,Crud.UPDATE*/,Crud.DELETE};
+			}
+		});
+		
+		instanceTable.setShowHeader(Boolean.TRUE);
+					
+	}
+
+}
