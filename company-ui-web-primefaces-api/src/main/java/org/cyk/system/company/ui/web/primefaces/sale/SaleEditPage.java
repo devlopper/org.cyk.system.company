@@ -23,8 +23,10 @@ import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleProduct;
+import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.model.network.UniformResourceLocatorParameter;
 import org.cyk.system.root.model.party.person.Person;
@@ -56,7 +58,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	private SalableProduct selectedProduct,selectedIntangibleProduct,selectedTangibleProduct;
 	private Customer selectedCustomer;
 	
-	private Boolean collectProduct=Boolean.FALSE,collectMoney=Boolean.TRUE,showQuantityColumn = Boolean.TRUE;
+	private Boolean collectProduct=Boolean.FALSE,collectMoney=Boolean.TRUE,showQuantityColumn = Boolean.TRUE,showInstanceColumn = Boolean.TRUE;
 	
 	@Inject private SaleCashRegisterMovementController cashRegisterController;
 	
@@ -94,6 +96,16 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 				item.setUnitPrice(numberBusiness.format(item.getIdentifiable().getSalableProduct().getPrice()));
 				item.setQuantity(item.getIdentifiable().getQuantity());
 				item.setTotalPrice(numberBusiness.format(item.getIdentifiable().getCost().getValue()));
+				item.setInstanceChoices(new ArrayList<>(CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().findByCollection(item.getIdentifiable().getSalableProduct())));
+			}
+			
+			@Override
+			public void write(SaleProductItem item) {
+				super.write(item);
+				SaleProductInstance saleProductInstance = new SaleProductInstance();
+				saleProductInstance.setSalableProductInstance(item.getInstance());
+				saleProductInstance.setSaleProduct(item.getIdentifiable());
+				item.getIdentifiable().getInstances().add(saleProductInstance);
 			}
 			
 			@Override
@@ -119,7 +131,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		customers = new ArrayList<Customer>(customerBusiness.findAll());
 		cashRegisterController.init(CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().instanciateOne(identifiable, identifiable.getCashier().getPerson(), Boolean.TRUE),Boolean.TRUE);
 		sell();
-		debug(saleProductCollection.getAddCommandable());
+		//debug(saleProductCollection.getAddCommandable());
 		//saleProductCollection.getAddCommandable().setViewType(null);
 	}
 	
@@ -135,6 +147,14 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	protected <T extends AbstractIdentifiable> T identifiableFromRequestParameter(Class<T> aClass) {
 		return (T) saleBusiness.instanciate((Person) getUserSession().getUser()); //super.identifiableFromRequestParameter(aClass);
 	}*/
+	
+	@Override
+	public void transfer(UICommand command, Object object) throws Exception {
+		super.transfer(command, object);
+		if(form.getSubmitCommandable().getCommand() == command){
+			saleProductCollection.write();
+		}
+	}
 	
 	@Override
 	protected void create() {
@@ -186,6 +206,10 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		private static final long serialVersionUID = 3828481396841243726L;
 		private String code,name,unitPrice,totalPrice;
 		private BigDecimal quantity;
+		private SalableProductInstance instance;
+		
+		private List<SalableProductInstance> instanceChoices;
+		
 	}
 	
 	/**/

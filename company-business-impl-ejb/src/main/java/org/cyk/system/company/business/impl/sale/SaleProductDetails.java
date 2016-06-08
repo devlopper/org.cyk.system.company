@@ -16,7 +16,7 @@ public class SaleProductDetails extends AbstractOutputDetails<SaleProduct> imple
 	private static final long serialVersionUID = -1498269103849317057L;
 	
 	@Input @InputText
-	private String code,name,unitPrice,quantity,price;
+	private String code,name,unitPrice,quantity,price,instances;
 	
 	public SaleProductDetails(SaleProduct saleProduct) {
 		super(saleProduct);

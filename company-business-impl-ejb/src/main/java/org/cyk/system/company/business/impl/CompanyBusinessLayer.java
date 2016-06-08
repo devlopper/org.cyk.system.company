@@ -125,6 +125,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 
 	private static CompanyBusinessLayer INSTANCE;
 	
+	public static Boolean PRODUCT_STOCKING_ENABLED = Boolean.FALSE;
+	
 	private String pointOfSaleInvoiceReportName;
 	private String pointOfSalePaymentReportName;
 	private final String pointOfSaleReportExtension = "pdf";
@@ -256,12 +258,14 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		structure();
 		company();
 		
-		create(new IntangibleProduct(IntangibleProduct.STOCKING, IntangibleProduct.STOCKING, null, null));
-    	create(new TangibleProduct(TangibleProduct.STOCKING, TangibleProduct.STOCKING, null, null));
-    	
-    	create(new SalableProduct(getEnumeration(IntangibleProduct.class, IntangibleProduct.STOCKING), null));
-    	create(new StockableTangibleProduct(getEnumeration(TangibleProduct.class, TangibleProduct.STOCKING)
-    			, rootDataProducerHelper.createMovementCollection(TangibleProduct.STOCKING, "Input", "Output")));
+		if(Boolean.TRUE.equals(PRODUCT_STOCKING_ENABLED)){
+			create(new IntangibleProduct(IntangibleProduct.STOCKING, IntangibleProduct.STOCKING, null, null));
+	    	create(new TangibleProduct(TangibleProduct.STOCKING, TangibleProduct.STOCKING, null, null));
+	    	
+	    	create(new SalableProduct(getEnumeration(IntangibleProduct.class, IntangibleProduct.STOCKING), null));
+	    	create(new StockableTangibleProduct(getEnumeration(TangibleProduct.class, TangibleProduct.STOCKING)
+	    			, rootDataProducerHelper.createMovementCollection(TangibleProduct.STOCKING, "Input", "Output")));	
+		}
 	}
 	
 	private void company(){ 

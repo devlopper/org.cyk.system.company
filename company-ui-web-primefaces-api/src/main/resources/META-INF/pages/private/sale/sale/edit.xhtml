@@ -150,13 +150,12 @@
         		</p:column>
         		
         		<p:column headerText="#{uiManager.text('field.instance')}" rendered="#{saleEditPage.showInstanceColumn}" width="30%">
-        			<p:selectOneMenu id="instance" value="#{saleEditPage.selectedProduct}" var="salableProduct" converter="#{objectConverter}" 
-	        			filter="true" filterMatchMode="contains" disabled="#{saleEditPage.collectMoney}">
-	        			<f:selectItems value="#{saleEditPage.salableProducts}"  />
-	        			<p:column><h:outputText value="#{salableProduct.product.code}" /></p:column>
-			            <p:column><h:outputText value="#{salableProduct.product.name}" /></p:column>
+        			<p:selectOneMenu id="instance" value="#{item.instance}" var="instance" converter="#{objectConverter}" 
+	        			filter="true" filterMatchMode="contains" disabled="#{saleEditPage.collectMoney}" >
+	        			<f:selectItems value="#{item.instanceChoices}" itemLabel="#{instance.code}" />
+	        			<p:column><h:outputText value="#{instance.code}" /></p:column>
 	        		</p:selectOneMenu>
-        			<h:outputText value="#{saleProduct.quantity}" rendered="#{saleEditPage.collectMoney}" />
+        			<h:outputText value="#{instance.code}" rendered="#{saleEditPage.collectMoney}" />
         		</p:column>
         		
  			</cyk:itemCollection>

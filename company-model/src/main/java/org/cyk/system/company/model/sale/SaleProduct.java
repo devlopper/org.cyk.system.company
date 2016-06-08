@@ -33,7 +33,13 @@ public class SaleProduct extends AbstractIdentifiable implements Serializable {
 	
 	@Embedded private Cost cost = new Cost();
 
-	@Transient private Collection<SaleProductInstance> instances = new ArrayList<>();
+	@Transient private Collection<SaleProductInstance> instances;
+	
+	public Collection<SaleProductInstance> getInstances(){
+		if(instances==null)
+			instances = new ArrayList<>();
+		return instances;
+	}
 	
 	@Override
 	public String getUiString() {

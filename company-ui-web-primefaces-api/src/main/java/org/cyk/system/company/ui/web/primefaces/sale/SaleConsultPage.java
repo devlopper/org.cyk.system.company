@@ -23,6 +23,7 @@ import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
+import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.mathematics.MovementDetails;
@@ -86,7 +87,23 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 				private static final long serialVersionUID = 1L;
 				@Override
 				public Collection<SaleProduct> getIdentifiables() {
-					return CompanyBusinessLayer.getInstance().getSaleProductBusiness().findBySale(identifiable);
+					Collection<SaleProduct> saleProducts = CompanyBusinessLayer.getInstance().getSaleProductBusiness().findBySale(identifiable);
+					return saleProducts;
+				}
+				
+				@Override
+				public Collection<SaleProductDetails> getDatas() {
+					Collection<SaleProductDetails> details = super.getDatas();
+					for(SaleProductDetails saleProductDetails :details){
+						Collection<SaleProductInstance> saleProductInstances = CompanyBusinessLayer.getInstance().getSaleProductInstanceBusiness().findBySaleProduct(saleProductDetails.getMaster());
+						saleProductDetails.setInstances(saleProductInstances.toString());
+					}
+					return details;
+				}
+				
+				@Override
+				public SaleProductDetails createData(SaleProduct saleProduct) {
+					return super.createData(saleProduct);
 				}
 			});
 		
