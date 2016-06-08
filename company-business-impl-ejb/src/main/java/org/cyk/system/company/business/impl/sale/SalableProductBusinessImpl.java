@@ -1,9 +1,11 @@
 package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -12,6 +14,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.model.product.IntangibleProduct;
+import org.cyk.system.company.model.product.Product;
+import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.persistence.api.product.ProductDao;
@@ -19,6 +24,7 @@ import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
 
+@Stateless
 public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<SalableProduct,SalableProductInstance, SalableProductDao,SalableProductInstanceDao,SalableProductInstanceBusiness> implements SalableProductBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
@@ -54,6 +60,14 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 		if(StringUtils.isBlank(salableProduct.getName()))
 			salableProduct.setName(salableProduct.getProduct().getName());
 		return super.create(salableProduct);
+	}
+	
+	@Override
+	public void create(Class<? extends Product> aClass,String code, String name, BigDecimal price) {
+		Product product = TangibleProduct.class.equals(aClass) ? new TangibleProduct(code, name, null, null) : new IntangibleProduct(code, name, null, null);
+		CompanyBusinessLayer.getInstance().getProductBusiness().create(product);
+		SalableProduct salableProduct = new SalableProduct(product, price);
+		create(salableProduct);
 	}
 
 	@Override

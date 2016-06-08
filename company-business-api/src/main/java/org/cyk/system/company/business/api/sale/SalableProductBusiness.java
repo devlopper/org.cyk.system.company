@@ -1,7 +1,9 @@
 package org.cyk.system.company.business.api.sale;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.root.business.api.AbstractCollectionBusiness;
@@ -11,4 +13,5 @@ public interface SalableProductBusiness extends AbstractCollectionBusiness<Salab
 	SalableProduct instanciateOne(String productCode,String unitPrice);
 	List<SalableProduct> instanciateMany(String[][] arguments);
 	
+	void create(Class<? extends Product> aClass,String code,String name,BigDecimal price);
 }
