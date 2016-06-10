@@ -35,15 +35,23 @@ public class SaleConfiguration extends AbstractModelElement implements Serializa
 	
 	@OneToOne @NotNull private FiniteStateMachine finiteStateMachine;
 	
+	@OneToOne @NotNull private FiniteStateMachine salableProductInstanceCashRegisterFiniteStateMachine;
+	
 	@OneToOne private ReportTemplate saleReportTemplate;
 	
 	@OneToOne private ReportTemplate saleCashRegisterMovementReportTemplate;
 	
 	@OneToOne private ReportTemplate saleAndSaleCashRegisterMovementReportTemplate;
 	
+	@Column(nullable=false) @NotNull private Boolean balanceMustBeZero = Boolean.FALSE;
+	
 	@Column(nullable=false) @NotNull private Boolean balanceCanBeNegative = Boolean.FALSE;
 	
 	@Column(nullable=false) @NotNull private Boolean balanceCanBeGreaterThanCost = Boolean.FALSE;
+	
+	@Column(nullable=false) @NotNull private Boolean salableProductInstanceAssignableToManyCashRegister = Boolean.FALSE;
+	
+	@Column(nullable=false) @NotNull private Boolean allowOnlySalableProductInstanceOfCashRegister = Boolean.FALSE;
 	
 	@Override
 	public String getUiString() {

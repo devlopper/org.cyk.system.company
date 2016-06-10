@@ -44,6 +44,7 @@ import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.api.config.IdentifiableConfiguration;
 import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.ui.web.primefaces.HierarchyNode;
+import org.cyk.ui.web.primefaces.UserSession;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.primefaces.model.TreeNode;
@@ -118,7 +119,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		addBusinessMenu(userSession,systemMenu,paymentCommandables(userSession,systemMenu.getMobileBusinesses(), cashier));
 		addBusinessMenu(userSession,systemMenu,getSaleCommandable(userSession,systemMenu.getMobileBusinesses(), cashier)); 
 		
-		return systemMenu;
+		return GiftCardSystemMenuBuilder.getInstance().build((UserSession) userSession);
 	}
 	
 	public UICommandable getProductCommandable(AbstractUserSession<TreeNode,HierarchyNode> userSession,Collection<UICommandable> mobileCommandables){

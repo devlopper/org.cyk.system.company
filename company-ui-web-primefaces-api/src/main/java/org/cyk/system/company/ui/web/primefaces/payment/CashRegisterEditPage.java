@@ -5,12 +5,12 @@ import java.io.Serializable;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.ui.web.primefaces.page.mathematics.AbstractMovementCollectionEditPage;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class CashRegisterEditPage extends AbstractMovementCollectionEditPage<CashRegister> implements Serializable {

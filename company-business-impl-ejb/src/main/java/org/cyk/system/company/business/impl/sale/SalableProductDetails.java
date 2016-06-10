@@ -17,11 +17,11 @@ public class SalableProductDetails extends AbstractOutputDetails<SalableProduct>
 	@Input @InputText
 	private String code,name,price;
 	
-	public SalableProductDetails(SalableProduct saleProduct) {
-		super(saleProduct);
-		code = saleProduct.getProduct().getCode();
-		name = formatUsingBusiness(saleProduct.getProduct());
-		price = formatNumber(saleProduct.getPrice());
+	public SalableProductDetails(SalableProduct salableProduct) {
+		super(salableProduct);
+		code = salableProduct.getCode();
+		name = salableProduct.getName();
+		price = formatNumber(salableProduct.getPrice());
 	}
 	
 	/**/

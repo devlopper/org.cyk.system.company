@@ -24,7 +24,16 @@
 				}
 			</style>
         	
-        	<p:panelGrid id="optionsPanel" columns="7">
+        	<p:panelGrid id="optionsPanel" columns="9">
+        		<p:outputLabel value="#{uiManager.text('model.entity.cashier')}" for="cashierf" />
+        		<p:selectOneMenu id="cashierf" value="#{saleEditPage.selectedCashier}" var="cashier"  converter="#{objectConverter}" 
+        			filter="true" filterMatchMode="contains" valueChangeListener="#{saleEditPage.cashierChangedListener}" disabled="#{saleEditPage.collectMoney}">
+        			<p:ajax event="change" process="cashierf" />
+        			<f:selectItems value="#{saleEditPage.cashiers}" var="c" itemLabel="#{c.cashRegister.name}"  />
+        			<p:column><h:outputText value="#{cashier.cashRegister.code}" /></p:column>
+		            <p:column><h:outputText value="#{cashier.cashRegister.name}" /></p:column>
+        		</p:selectOneMenu>
+        		
         		<p:outputLabel value="#{uiManager.text('model.entity.customer')}" for="customer" />
         		<p:selectOneMenu id="customer" value="#{saleEditPage.selectedCustomer}" var="customer"  converter="#{objectConverter}" 
         			filter="true" filterMatchMode="contains">
@@ -83,41 +92,6 @@
         	</p:panelGrid>
         	
         	<p:remoteCommand name="refreshFooter" update=":form:collection:datatable:grandtotal"/>
-        	
-        	
-        	<!--p:dataTable id="datatable" value="#{saleEditPage.identifiable.saleProducts}" var="saleProduct" rowIndexVar="index" >
-        		
-        		<p:column headerText="#" width="1%"><h:outputText value="#{index+1}" /></p:column>
-        		<p:column headerText="#{uiManager.text('field.code')}" width="7%"><h:outputText value="#{saleProduct.product.code}" /></p:column>
-        		<p:column headerText="#{uiManager.text('field.name')}"><h:outputText value="#{saleProduct.product.name}" /></p:column>
-        		<p:column headerText="#{uiManager.text('field.price.unit')}" rendered="#{saleEditPage.showQuantityColumn}" width="7%">
-        			<h:outputText value="#{saleProduct.product.price}" />
-        		</p:column>
-        		<p:column headerText="#{uiManager.text('field.quantity')}" rendered="#{saleEditPage.showQuantityColumn}" width="4%">
-        			<pe:inputNumber id="quantity" value="#{saleProduct.quantity}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}" 
-        				minValue="1" decimalPlaces="0" rendered="#{saleEditPage.collectProduct}">
-        				<p:ajax event="change" listener="#{saleEditPage.productQuantityChanged(saleProduct)}" process="quantity" update="total,grandtotal" 
-        					oncomplete="refreshFooter();"/>
-        			</pe:inputNumber>
-        			<h:outputText value="#{saleProduct.quantity}" rendered="#{saleEditPage.collectMoney}" />
-        		</p:column>
-        		<p:column headerText="#{uiManager.text('field.price.total')}" width="7%">
-        			<h:outputText id="total" value="#{saleProduct.price}" rendered="#{saleProduct.product.price!=null}" />
-        			<pe:inputNumber id="totalInput" value="#{saleProduct.price}" required="true" requiredMessage="#{uiManager.text('input.value.required')}" 
-        				minValue="1" decimalPlaces="0" rendered="#{saleProduct.product.price==null}">
-        				<p:ajax event="change" listener="#{saleEditPage.productQuantityChanged(saleProduct)}" process="totalInput" update="grandtotal" oncomplete="refreshFooter();"/>
-        			</pe:inputNumber>
-        			<f:facet name="footer">
-        				<h:outputText id="grandtotal" value="#{saleEditPage.identifiable.cost}" />
-        			</f:facet>
-        		</p:column>
-        		
-        		<p:column width="7%" rendered="#{saleEditPage.collectProduct}">
-        			<p:commandButton title="#{uiManager.text('command.delete')}" icon="ui-icon-minus" 
-        				action="#{saleEditPage.deleteProduct(saleProduct)}" update=":form:optionsPanel,datatable" />
-        		</p:column>
-        		
-        	</p:dataTable-->
         	
         	<cyk:itemCollection id="collection" value="#{saleEditPage.saleProductCollection}" >
  				<p:column headerText="#{uiManager.text('field.code')}" width="7%">

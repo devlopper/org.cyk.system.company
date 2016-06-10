@@ -13,6 +13,26 @@
 	</cc:interface>
 
 	<cc:implementation>
+		<p:panelGrid id="pg00" columns="3" rendered="#{cc.value.showMode}">
+      		<p:outputLabel value="#{uiManager.text('model.entity.saleCashRegisterMovementMode')}" for="paymentMode" />
+      		<p:selectOneMenu id="paymentMode" value="#{cc.value.saleCashRegisterMovement.cashRegisterMovement.mode}" var="saleCashRegisterMovementMode"  converter="#{objectConverter}" 
+       			filter="true" filterMatchMode="contains" valueChangeListener="#{cc.value.modeChangedListener}" >
+       			<p:ajax event="change" process="paymentMode" update="pg01"/>
+       			<f:selectItems value="#{cc.value.modes}" var="c" itemLabel="#{c.name}"  />
+       			<p:column><h:outputText value="#{saleCashRegisterMovementMode.code}" /></p:column>
+	            <p:column><h:outputText value="#{saleCashRegisterMovementMode.name}" /></p:column>
+       		</p:selectOneMenu>
+      		<p:message for="paymentMode" />
+      	</p:panelGrid>   
+      	
+      	<p:outputPanel id="pg01" ><p:panelGrid columns="3" rendered="#{cc.value.showDocumentIdentifier}">
+      		<p:outputLabel value="#{uiManager.text('field.supportingDocumentIdentifier')}" for="supportingDocumentIdentifier" />
+      		<pe:inputNumber id="supportingDocumentIdentifier" value="#{cc.value.saleCashRegisterMovement.cashRegisterMovement.movement.supportingDocumentIdentifier}" 
+      			maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}">
+     		
+     		</pe:inputNumber>
+     		<p:message for="supportingDocumentIdentifier" />
+      	</p:panelGrid></p:outputPanel>
 
       	<p:panelGrid id="pg1" columns="3" rendered="#{cc.value.showIn}">
       		<p:outputLabel value="#{uiManager.text('field.in')}" for="amountIn" />

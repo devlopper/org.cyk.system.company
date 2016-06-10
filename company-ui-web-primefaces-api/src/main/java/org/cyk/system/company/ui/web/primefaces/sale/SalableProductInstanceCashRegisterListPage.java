@@ -1,18 +1,18 @@
-package org.cyk.system.company.ui.web.primefaces.payment;
+package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
-import org.cyk.system.company.model.payment.CashRegister;
-import org.cyk.ui.web.primefaces.page.crud.AbstractCrudManyPage;
-
 import lombok.Getter;
 import lombok.Setter;
 
+import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
+import org.cyk.ui.web.primefaces.page.crud.AbstractCrudManyPage;
+
 @Named @ViewScoped @Getter @Setter
-public class CashRegisterListPage extends AbstractCrudManyPage<CashRegister> implements Serializable {
+public class SalableProductInstanceCashRegisterListPage extends AbstractCrudManyPage<SalableProductInstanceCashRegister> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
@@ -22,8 +22,9 @@ public class CashRegisterListPage extends AbstractCrudManyPage<CashRegister> imp
 		rowAdapter.setOpenable(Boolean.TRUE);
 		rowAdapter.setUpdatable(Boolean.TRUE);
 		rowAdapter.setDeletable(Boolean.TRUE);
-		table.setShowHeader(Boolean.TRUE);
-		table.setShowToolBar(Boolean.TRUE);
+		/*table.setShowHeader(Boolean.FALSE);
+		table.setShowToolBar(Boolean.FALSE);
+		*/
 		table.setShowOpenCommand(Boolean.TRUE);
 	}
 	

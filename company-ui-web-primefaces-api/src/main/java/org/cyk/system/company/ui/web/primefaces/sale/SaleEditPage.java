@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -20,6 +21,7 @@ import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
+import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
@@ -54,8 +56,10 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	
 	private List<SalableProduct> salableProducts,intangibleProducts,tangibleProducts;
 	private List<Customer> customers;
+	private List<Cashier> cashiers;
 
 	private SalableProduct selectedProduct,selectedIntangibleProduct,selectedTangibleProduct;
+	private Cashier selectedCashier;
 	private Customer selectedCustomer;
 	
 	private Boolean collectProduct=Boolean.FALSE,collectMoney=Boolean.TRUE,showQuantityColumn = Boolean.TRUE,showInstanceColumn = Boolean.TRUE;
@@ -117,7 +121,10 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		saleProductCollection.setLabel(null);
 	
 		identifiable.setAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent());
-		identifiable.setCashier(CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson((Person) getUserSession().getUser()));
+		if(roleManager.isAdministrator(Faces.getRequest())){
+			
+		}else
+			identifiable.setCashier(selectedCashier = CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson((Person) getUserSession().getUser()));
 		if(identifiable.getCashier()==null && !Boolean.TRUE.equals(roleManager.isAdministrator(Faces.getRequest()))){
 			renderViewErrorMessage("View Init Error!!!", "View Init Error Details!!!");
 			return;
@@ -128,8 +135,10 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		tangibleProducts = new ArrayList<SalableProduct>();
 		for(SalableProduct salableProduct : salableProducts)
 			( salableProduct.getProduct() instanceof TangibleProduct ? tangibleProducts : intangibleProducts ).add(salableProduct);	
+		cashiers = new ArrayList<Cashier>(CompanyBusinessLayer.getInstance().getCashierBusiness().findAll());
 		customers = new ArrayList<Customer>(customerBusiness.findAll());
-		cashRegisterController.init(CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().instanciateOne(identifiable, identifiable.getCashier().getPerson(), Boolean.TRUE),Boolean.TRUE);
+		
+		cashierChanged(identifiable.getCashier());
 		sell();
 		//debug(saleProductCollection.getAddCommandable());
 		//saleProductCollection.getAddCommandable().setViewType(null);
@@ -193,6 +202,19 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		collectProduct = Boolean.TRUE;
 		((Commandable)saleProductCollection.getAddCommandable()).getButton().setDisabled(Boolean.FALSE);
 		collectMoney = Boolean.FALSE;
+	}
+	
+	public void cashierChangedListener(ValueChangeEvent event){
+		cashierChanged((Cashier) event.getNewValue());
+	}
+	
+	public void cashierChanged(Cashier cashier){
+		if(cashier==null)
+			;
+		else{
+			identifiable.setCashier(cashier);
+			cashRegisterController.init(CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().instanciateOne(identifiable, cashier.getPerson(), Boolean.TRUE),Boolean.TRUE);
+		}
 	}
 		
 	public void productQuantityChanged(SaleProductItem saleProductItem){

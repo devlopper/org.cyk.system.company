@@ -18,6 +18,7 @@ import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.payment.CashRegisterMovementModeBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
 import org.cyk.system.company.business.api.product.ProductBusiness;
@@ -36,6 +37,7 @@ import org.cyk.system.company.business.api.production.ResellerProductionPlanBusi
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductInstanceCashRegisterBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductBusiness;
@@ -56,6 +58,7 @@ import org.cyk.system.company.business.impl.stock.StockTangibleProductMovementBu
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
+import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
@@ -74,6 +77,7 @@ import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
+import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
@@ -147,6 +151,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private CashRegisterBusiness cashRegisterBusiness;
+	@Inject private CashRegisterMovementModeBusiness cashRegisterMovementModeBusiness;
 	@Inject private CashierBusiness cashierBusiness;
 	@Inject private EmployeeBusiness employeeBusiness;
 	@Inject private ProductBusiness productBusiness;
@@ -155,6 +160,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private IntangibleProductBusiness intangibleProductBusiness;
 	@Inject private SaleBusiness saleBusiness;
 	@Inject private SalableProductBusiness salableProductBusiness;
+	@Inject private SalableProductInstanceCashRegisterBusiness salableProductInstanceCashRegisterBusiness;
 	@Inject private SalableProductInstanceBusiness salableProductInstanceBusiness;
 	@Inject private SaleProductDao saleProductDao;
 	@Inject private SaleProductBusiness saleProductBusiness;
@@ -266,6 +272,11 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	    	create(new StockableTangibleProduct(getEnumeration(TangibleProduct.class, TangibleProduct.STOCKING)
 	    			, rootDataProducerHelper.createMovementCollection(TangibleProduct.STOCKING, "Input", "Output")));	
 		}
+		
+		createEnumeration(CashRegisterMovementMode.class, CashRegisterMovementMode.CASH);
+		CashRegisterMovementMode cashRegisterMovementMode = new CashRegisterMovementMode(CashRegisterMovementMode.CHEQUE, CashRegisterMovementMode.CHEQUE, null);
+		cashRegisterMovementMode.setSupportDocumentIdentifier(Boolean.TRUE);
+		create(cashRegisterMovementMode);
 	}
 	
 	private void company(){ 
@@ -380,6 +391,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)ProductionPlanResource.class, (TypedBusiness)productionPlanResourceBusiness);
         beansMap.put((Class)CashRegister.class, (TypedBusiness)cashRegisterBusiness);
         beansMap.put((Class)CashRegisterMovement.class, (TypedBusiness)cashRegisterMovementBusiness);
+        beansMap.put((Class)CashRegisterMovementMode.class, (TypedBusiness)cashRegisterMovementModeBusiness);
+        beansMap.put((Class)SalableProductInstanceCashRegister.class, (TypedBusiness)salableProductInstanceCashRegisterBusiness);
+        
     }
 	
 	/**/

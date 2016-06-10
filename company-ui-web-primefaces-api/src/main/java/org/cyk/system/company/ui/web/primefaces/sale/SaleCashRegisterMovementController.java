@@ -2,13 +2,18 @@ package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.utility.common.cdi.AbstractBean;
 
@@ -20,7 +25,8 @@ public class SaleCashRegisterMovementController extends AbstractBean implements 
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	
 	private SaleCashRegisterMovement saleCashRegisterMovement;
-	private Boolean deposit,showIn,showOut,showBalance;
+	private List<CashRegisterMovementMode> modes;
+	private Boolean deposit,showMode=Boolean.TRUE,showDocumentIdentifier,showIn,showOut,showBalance;
 	private BigDecimal amountToHand,balance=BigDecimal.ZERO;
 
 	public void init(SaleCashRegisterMovement saleCashRegisterMovement,Boolean deposit){
@@ -29,6 +35,12 @@ public class SaleCashRegisterMovementController extends AbstractBean implements 
 		showIn=Boolean.TRUE.equals(deposit);
 		showOut=!showIn;
 		showBalance=Boolean.TRUE;
+		if(modes==null)
+			modes = new ArrayList<>(CompanyBusinessLayer.getInstance().getCashRegisterMovementModeBusiness().findAll());
+	}
+	
+	public void modeChangedListener(ValueChangeEvent event){
+		showDocumentIdentifier = event.getNewValue()!=null && Boolean.TRUE.equals(((CashRegisterMovementMode)event.getNewValue()).getSupportDocumentIdentifier());
 	}
 	
 	public void amountInChanged(){
