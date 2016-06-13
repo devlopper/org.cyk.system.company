@@ -122,6 +122,27 @@
 			<redirect />
 		</navigation-case>
 		
+		<navigation-case>
+			<from-outcome>salableProductInstanceCashRegisterCreateManyView</from-outcome>
+			<to-view-id>/private/sale/salableproductinstancecashregister/createmany.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>salableProductInstanceCashRegisterEditView</from-outcome>
+			<to-view-id>/private/sale/salableproductinstancecashregister/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>salableProductInstanceCashRegisterListView</from-outcome>
+			<to-view-id>/private/sale/salableproductinstancecashregister/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>salableProductInstanceCashRegisterConsultView</from-outcome>
+			<to-view-id>/private/sale/salableproductinstancecashregister/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
 		<!-- Manager -->
 		<navigation-case>
 			<from-outcome>ownedCompanyCrudOne</from-outcome>

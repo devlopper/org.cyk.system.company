@@ -39,6 +39,9 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 			module.addChild(createListCommandable(SalableProduct.class, null));
 			module.addChild(createListCommandable(SalableProductInstance.class, null));
 			module.addChild(createListCommandable(SalableProductInstanceCashRegister.class, null));
+			
+			module.addChild(createCreateCommandable(SalableProductInstanceCashRegister.class, null));
+			
 			module.addChild(createListCommandable(Employee.class, null));
 			module.addChild(createListCommandable(Customer.class, null));
 		}

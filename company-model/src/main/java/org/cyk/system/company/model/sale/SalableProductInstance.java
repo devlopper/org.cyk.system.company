@@ -16,6 +16,14 @@ import org.cyk.utility.common.annotation.ModelBean.GenderType;
 public class SalableProductInstance extends AbstractCollectionItem<SalableProduct> implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
+
+	public SalableProductInstance() {
+		super();
+	}
+
+	public SalableProductInstance(SalableProduct collection, String code,String name) {
+		super(collection, code, name);
+	}
 	
 	
 }

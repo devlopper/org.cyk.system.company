@@ -10,8 +10,8 @@ import org.cyk.system.root.business.api.AbstractCollectionBusiness;
 
 public interface SalableProductBusiness extends AbstractCollectionBusiness<SalableProduct,SalableProductInstance> {
 
-	SalableProduct instanciateOne(String productCode,String unitPrice);
-	List<SalableProduct> instanciateMany(String[][] arguments);
+	//SalableProduct instanciateOne(String productCode,String unitPrice);
+	//List<SalableProduct> instanciateMany(String[][] arguments);
 	
 	void create(Class<? extends Product> aClass,String code,String name,BigDecimal price);
 }

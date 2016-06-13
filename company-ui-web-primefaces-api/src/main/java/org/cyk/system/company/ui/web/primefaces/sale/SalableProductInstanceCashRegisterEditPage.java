@@ -2,8 +2,6 @@ package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -13,8 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
@@ -23,7 +19,6 @@ import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
-import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
@@ -42,7 +37,7 @@ public class SalableProductInstanceCashRegisterEditPage extends AbstractCrudOneP
 			if(Boolean.TRUE.equals(CREATE_ON_CASH_REGISTER))
 				return ArrayUtils.contains(new String[]{Form.FIELD_CASH_REGISTER,Form.FIELD_SALABLE_PRODUCT_INSTANCE,Form.FIELD_FINITE_STATE_MACHINE_STATE}, field.getName());
 			else
-				return ArrayUtils.contains(new String[]{Form.FIELD_SALABLE_PRODUCT,Form.FIELD_CODES,Form.FIELD_SEPARATOR}, field.getName());
+				return ArrayUtils.contains(new String[]{/*Form.FIELD_SALABLE_PRODUCT,Form.FIELD_CODES,Form.FIELD_SEPARATOR*/}, field.getName());
 		}
 	};
 	
@@ -69,9 +64,9 @@ public class SalableProductInstanceCashRegisterEditPage extends AbstractCrudOneP
 		if(Boolean.TRUE.equals(CREATE_ON_CASH_REGISTER))
 			super.create();
 		else{
-			String codes = StringUtils.remove(((Form)form.getData()).codes, Constant.LINE_DELIMITER);
+			/*String codes = StringUtils.remove(((Form)form.getData()).codes, Constant.LINE_DELIMITER);
 			CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().create(identifiable.getCollection()
-					,new LinkedHashSet<>(Arrays.asList(StringUtils.split(codes, ((Form)form.getData()).separator))) );
+					,new LinkedHashSet<>(Arrays.asList(StringUtils.split(codes, ((Form)form.getData()).separator))) );*/
 		}
 	}
 	

@@ -37,9 +37,9 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 		super(dao);
 	}
 
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	/*@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public SalableProduct instanciateOne(String productCode, String unitPrice) {
-		SalableProduct salableProduct = new SalableProduct();
+		SalableProduct salableProduct = super.instanciateOne(productCode, productCode);
 		salableProduct.setProduct(productDao.read(productCode));
 		salableProduct.setPrice(commonUtils.getBigDecimal(unitPrice));
 		return salableProduct;
@@ -51,7 +51,7 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 		for(String[] info : arguments)
 			list.add(instanciateOne(info[0], info.length>1?info[1]:null));
 		return list;
-	}
+	}*/
 	
 	@Override
 	public SalableProduct create(SalableProduct salableProduct) {

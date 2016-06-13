@@ -1,87 +1,66 @@
 package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
 
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegister;
+import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
-import org.cyk.system.school.business.impl.SchoolBusinessLayer;
-import org.cyk.system.school.model.subject.ClassroomSessionDivisionSubject;
-import org.cyk.system.school.model.subject.ClassroomSessionDivisionSubjectEvaluationType;
-import org.cyk.system.school.model.subject.Evaluation;
-import org.cyk.system.school.model.subject.StudentClassroomSessionDivisionSubjectEvaluation;
-import org.cyk.system.school.ui.web.primefaces.SchoolWebManager;
-import org.cyk.ui.api.command.AbstractCommandable.Builder;
-import org.cyk.ui.api.command.UICommandable;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineFinalState;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
-import org.cyk.ui.api.model.AbstractItemCollection;
 import org.cyk.ui.api.model.AbstractItemCollectionItem;
-import org.cyk.ui.web.api.AbstractWebApplicableValueQuestion;
-import org.cyk.ui.web.api.ItemCollectionWebAdapter;
 import org.cyk.ui.web.primefaces.ItemCollection;
-import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
-import org.cyk.utility.common.annotation.user.interfaces.Input;
-import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
-import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
-import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 
 @Named @ViewScoped @Getter @Setter
-public class EvaluationEditPage extends AbstractCrudOnePage<SalableProductInstanceCashRegister> implements Serializable {
+public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCrudOnePage<SalableProductInstanceCashRegister> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
 	private CashRegister cashRegister;
-	private ItemCollection<SalableProductInstanceCashRegisterItem,SalableProductInstanceCashRegister> markCollection;
+	private FiniteStateMachineFinalState finiteStateMachineFinalState;
+	private List<CashRegister> cashRegisters;
+	private List<SalableProductInstance> salableProductInstances;
+	private ItemCollection<SalableProductInstanceCashRegisterItem,SalableProductInstanceCashRegister> salableProductInstanceCashRegisterCollection;
 	
 	@Override
 	protected void initialisation() {
-		Long subjectEvaluationTypeIdentifier = requestParameterLong(ClassroomSessionDivisionSubjectEvaluationType.class);
-		if(subjectEvaluationTypeIdentifier==null){
-			Long classroomSessionDivisionSubjectIdentifier = requestParameterLong(ClassroomSessionDivisionSubject.class);
-			if(classroomSessionDivisionSubjectIdentifier==null)
-				;
-			else
-				classroomSessionDivisionSubject = SchoolBusinessLayer.getInstance().getClassroomSessionDivisionSubjectBusiness().find(classroomSessionDivisionSubjectIdentifier);	
+		Long cashRegisterIdentifier = requestParameterLong(CashRegister.class);
+		if(cashRegisterIdentifier==null){
+			cashRegisters = new ArrayList<>(CompanyBusinessLayer.getInstance().getCashRegisterBusiness().findAll());
 		}else{
-			subjectEvaluationType = SchoolBusinessLayer.getInstance().getClassroomSessionDivisionSubjectEvaluationTypeBusiness().find(subjectEvaluationTypeIdentifier);
-			classroomSessionDivisionSubject = subjectEvaluationType.getClassroomSessionDivisionSubject();
+			cashRegister = CompanyBusinessLayer.getInstance().getCashRegisterBusiness().find(cashRegisterIdentifier);
 		}
 			
 		super.initialisation();
-		if(subjectEvaluationType!=null){
-			maximumValue = identifiable.getClassroomSessionDivisionSubjectEvaluationType().getMaximumValue();
+		
+		if(cashRegister!=null){
+			
 		}
+		
 		if(Crud.CREATE.equals(crud)){
 			
 		}else{
-			identifiable.setSalableProductInstanceCashRegisters(SchoolBusinessLayer.getInstance().getStudentClassroomSessionDivisionSubjectEvaluationBusiness().findByEvaluation(identifiable,Crud.UPDATE.equals(crud)));
-			subjectEvaluationType = identifiable.getClassroomSessionDivisionSubjectEvaluationType();
-			classroomSessionDivisionSubject = subjectEvaluationType.getClassroomSessionDivisionSubject();
+			
 		}
-		
-		markCollection = createItemCollection(SalableProductInstanceCashRegisterItem.class, StudentClassroomSessionDivisionSubjectEvaluation.class,new ItemCollectionWebAdapter<SalableProductInstanceCashRegisterItem,StudentClassroomSessionDivisionSubjectEvaluation>(){
+		/*
+		salableProductInstanceCashRegisterCollection = createItemCollection(SalableProductInstanceCashRegisterItem.class, SalableProductInstanceCashRegister.class,new ItemCollectionWebAdapter<SalableProductInstanceCashRegisterItem,SalableProductInstanceCashRegister>(){
 			private static final long serialVersionUID = -3872058204105902514L;
 			@Override
-			public Collection<StudentClassroomSessionDivisionSubjectEvaluation> create() {
+			public Collection<SalableProductInstanceCashRegister> create() {
 				return identifiable.getSalableProductInstanceCashRegisters();
 			}
 			@Override
-			public Collection<StudentClassroomSessionDivisionSubjectEvaluation> load() {
+			public Collection<SalableProductInstanceCashRegister> load() {
 				return identifiable.getSalableProductInstanceCashRegisters();
 			}
 			@Override
@@ -93,7 +72,7 @@ public class EvaluationEditPage extends AbstractCrudOnePage<SalableProductInstan
 				return Boolean.FALSE;
 			}
 			@Override
-			public void instanciated(AbstractItemCollection<SalableProductInstanceCashRegisterItem, StudentClassroomSessionDivisionSubjectEvaluation,SelectItem> itemCollection,SalableProductInstanceCashRegisterItem mark) {
+			public void instanciated(AbstractItemCollection<SalableProductInstanceCashRegisterItem, SalableProductInstanceCashRegister,SelectItem> itemCollection,SalableProductInstanceCashRegisterItem mark) {
 				super.instanciated(itemCollection, mark);
 				mark.setRegistrationCode(mark.getIdentifiable().getStudentSubject().getStudent().getRegistration().getCode());
 				mark.setNames(mark.getIdentifiable().getStudentSubject().getStudent().getPerson().getNames());
@@ -122,9 +101,9 @@ public class EvaluationEditPage extends AbstractCrudOnePage<SalableProductInstan
 		//TODO make it in super class
 		//markCollection.setShowFooter(markCollection.getAddCommandable().getRendered());
 		//onDocumentLoadJavaScript = markCollection.getFormatJavaScript();
-		
+		*/
 	}
-	
+	/*
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
@@ -159,14 +138,14 @@ public class EvaluationEditPage extends AbstractCrudOnePage<SalableProductInstan
 		subjectEvaluation.setClassroomSessionDivisionSubjectEvaluationType(subjectEvaluationType);
 		return subjectEvaluation;
 	}
-		
+	*/	
 	@Override
 	protected Class<?> __formModelClass__() {
 		return Form.class;
 	}
 		
 	@Getter @Setter
-	public static class Form extends AbstractFormModel<Evaluation> implements Serializable{
+	public static class Form extends AbstractFormModel<SalableProductInstanceCashRegister> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 	}
@@ -174,15 +153,15 @@ public class EvaluationEditPage extends AbstractCrudOnePage<SalableProductInstan
 	@Getter @Setter
 	public static class SalableProductInstanceCashRegisterItem extends AbstractItemCollectionItem<SalableProductInstanceCashRegister> implements Serializable {
 		private static final long serialVersionUID = 3828481396841243726L;
-		private String registrationCode;
-		private String names;
-		private BigDecimal value;
-		private String valueAsString;
-				
+		private SalableProductInstance salableProductInstance;
+		private CashRegister cashRegister;
+		private FiniteStateMachineFinalState finiteStateMachineFinalState;
+		
+		/*
 		@Override
 		public String toString() {
-			return registrationCode+" "+names+" "+value;
-		}
+			return salableProductInstanceCode+Constant.CHARACTER_SPACE+cashRegister;
+		}*/
 	}
 	
 	/**/
