@@ -24,4 +24,6 @@ public class SaleProductInstanceDaoImpl extends AbstractTypedDao<SaleProductInst
 		return namedQuery(readBySaleProduct).parameter(SaleProductInstance.FIELD_SALE_PRODUCT, saleProduct).resultMany();
 	}
 
+	
+
 }

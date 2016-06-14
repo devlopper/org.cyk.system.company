@@ -10,10 +10,10 @@
       xmlns:company="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.company/component">
 
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
-        <ui:param name="pageController" value="#{salableProductInstanceCashRegisterCreateManyPage}" />
+        <ui:param name="pageController" value="#{salableProductInstanceCashRegisterProcessWorkflowPage}" />
         <ui:define name="body">
-        	<cyk:formOneData value="#{salableProductInstanceCashRegisterCreateManyPage.form}"/>
-        	<cyk:itemCollection value="#{salableProductInstanceCashRegisterCreateManyPage.itemCollection}" >
+        	<cyk:formOneData value="#{salableProductInstanceCashRegisterProcessWorkflowPage.form}"/>
+        	<cyk:itemCollection value="#{salableProductInstanceCashRegisterProcessWorkflowPage.itemCollection}" >
  				<p:column headerText="#{uiManager.text('model.entity.cashRegister')}" >
  					<h:outputText value="#{uiManager.format(item.cashRegister)}" />
  				</p:column>
@@ -27,7 +27,7 @@
         </ui:define>
         
         <ui:define name="contentMenuBar">
- 			<cyk:command value="#{salableProductInstanceCashRegisterCreateManyPage.form.submitCommandable}" executeParameter="#{salableProductInstanceCashRegisterCreateManyPage.form.data}" />
+ 			<cyk:command value="#{salableProductInstanceCashRegisterProcessWorkflowPage.form.submitCommandable}" executeParameter="#{salableProductInstanceCashRegisterProcessWorkflowPage.form.data}" />
  		</ui:define>
     </ui:decorate>
  

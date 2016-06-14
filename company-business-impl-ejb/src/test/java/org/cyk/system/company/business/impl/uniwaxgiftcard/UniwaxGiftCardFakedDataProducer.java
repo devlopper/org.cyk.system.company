@@ -10,19 +10,13 @@ import javax.inject.Singleton;
 import lombok.Getter;
 
 import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
-import org.cyk.system.company.business.impl.CompanyBusinessLayerAdapter;
-import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
-import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Employee;
-import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
-import org.cyk.system.root.model.security.Installation;
 
 @Singleton @Getter
 public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataProducer implements Serializable {
@@ -45,34 +39,7 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 	protected void initialisation() {
 		super.initialisation();
 		
-		companyBusinessLayer.getCompanyBusinessLayerListeners().add(new CompanyBusinessLayerAdapter() {
-			private static final long serialVersionUID = 5179809445850168706L;
-
-			@Override
-			public String getCompanyName() {
-				return "Gestion des cartes cadeaux";
-			}
-			
-			@Override
-			public void handleAccountingPeriodToInstall(AccountingPeriod accountingPeriod) {
-				FiniteStateMachine finiteStateMachine = rootDataProducerHelper.createFiniteStateMachine("WORKFLOW"
-		    			, new String[]{"SEND","RECEIVE"}, new String[]{"ASSIGNED","SENT","RECEIVED"}
-		    		, "ASSIGNED", new String[]{"RECEIVED"}, new String[][]{
-		    			{"ASSIGNED","SEND","SENT"}
-		    			,{"SENT","RECEIVE","RECEIVED"}
-		    	});
-				accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterFiniteStateMachine(finiteStateMachine);
-				super.handleAccountingPeriodToInstall(accountingPeriod);
-			}
-			
-			@Override
-			public void handleCompanyToInstall(Company company) {
-				super.handleCompanyToInstall(company);
-				addContacts(company.getContactCollection(), new String[]{"RueJ7 1-II Plateux Vallon, Cocody"}, new String[]{"22417217","21014459"}
-				, new String[]{"05996283","49925138","06173731"}, new String[]{"08 BP 1828 Abidjan 08"}, new String[]{"iesa@aviso.ci"}, new String[]{"http://www.iesaci.com"});
-			}
-
-		});
+		
 	}
 	
 	@Override

@@ -26,7 +26,8 @@ public abstract class AbstractUniwaxGiftCardBusinessIT extends AbstractBusinessI
     }
     
     @Override
-    protected void installApplication() {
+    protected void listeners() {
+    	super.listeners();
     	ApplicationBusinessImpl.Listener.COLLECTION.add(new ApplicationBusinessImpl.Listener.Adapter.Default(){
 			private static final long serialVersionUID = 6148913289155659043L;
 			@Override
@@ -66,8 +67,6 @@ public abstract class AbstractUniwaxGiftCardBusinessIT extends AbstractBusinessI
 			}*/
 
 		});
-    	
-    	super.installApplication();
     }
     
 }

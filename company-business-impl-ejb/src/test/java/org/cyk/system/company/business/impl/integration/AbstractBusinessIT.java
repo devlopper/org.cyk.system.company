@@ -191,7 +191,12 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     }
     
     protected void installApplication(Boolean fake){
+    	listeners();
     	companyBusinessLayer.installApplication(fake);
+    }
+    
+    protected void listeners(){
+    	
     }
     
     protected void installApplication(){

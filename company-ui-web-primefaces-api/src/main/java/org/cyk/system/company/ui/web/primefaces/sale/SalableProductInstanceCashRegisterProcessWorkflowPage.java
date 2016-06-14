@@ -23,13 +23,15 @@ import org.cyk.ui.api.model.AbstractItemCollection;
 import org.cyk.ui.api.model.AbstractItemCollectionItem;
 import org.cyk.ui.web.primefaces.ItemCollection;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
+import org.cyk.ui.web.primefaces.page.crud.AbstractEditManyPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 
 @Named @ViewScoped @Getter @Setter
-public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCrudOnePage<SalableProductInstanceCashRegister> implements Serializable {
+public class SalableProductInstanceCashRegisterProcessWorkflowPage extends AbstractEditManyPage<SalableProductInstanceCashRegister
+	,SalableProductInstanceCashRegisterProcessWorkflowPage.SalableProductInstanceCashRegisterItem> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	

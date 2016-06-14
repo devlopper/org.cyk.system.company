@@ -133,6 +133,11 @@
 			<redirect />
 		</navigation-case>
 		<navigation-case>
+			<from-outcome>salableProductInstanceCashRegisterProcessWorkflowView</from-outcome>
+			<to-view-id>/private/sale/salableproductinstancecashregister/processworkflow.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
 			<from-outcome>salableProductInstanceCashRegisterListView</from-outcome>
 			<to-view-id>/private/sale/salableproductinstancecashregister/list.xhtml</to-view-id>
 			<redirect />

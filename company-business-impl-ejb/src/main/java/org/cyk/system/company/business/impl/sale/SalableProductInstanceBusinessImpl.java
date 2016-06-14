@@ -46,5 +46,10 @@ public class SalableProductInstanceBusinessImpl extends AbstractCollectionItemBu
 			
 		CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().create(salableProductInstances);
 	}
+	
+	@Override
+	public Collection<SalableProductInstance> findWhereNotAssociatedToCashRegister() {
+		return dao.readWhereNotAssociatedToCashRegister();
+	}
 
 }
