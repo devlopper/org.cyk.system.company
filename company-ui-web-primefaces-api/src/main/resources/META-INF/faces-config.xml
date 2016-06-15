@@ -147,6 +147,11 @@
 			<to-view-id>/private/sale/salableproductinstancecashregister/consult.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>salableProductInstanceCashRegisterSelectManyView</from-outcome>
+			<to-view-id>/private/sale/salableproductinstancecashregister/selectmany.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 		
 		<!-- Manager -->
 		<navigation-case>

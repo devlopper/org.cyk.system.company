@@ -12,9 +12,6 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.structure.Employee;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.security.Role;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.menu.SystemMenu;
@@ -46,11 +43,14 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 			
 			module.addChild(createListCommandable(SalableProductInstanceCashRegister.class, null));
 			
-			FiniteStateMachine finiteStateMachine = CompanyBusinessLayer
-					.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
+			module.addChild(createSelectManyCommandable(SalableProductInstanceCashRegister.class
+					, CompanyBusinessLayer.getInstance().getActionProcessSalableProductInstanceCashRegisterWorkFlow(),null));
 			
-			for(FiniteStateMachineState finiteStateMachineState : RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness().findByMachine(finiteStateMachine))
-				module.addChild(createCreateManyCommandable(SalableProductInstanceCashRegister.class, null).addParameter(finiteStateMachineState).setLabel(finiteStateMachineState.getName()));
+			//FiniteStateMachine finiteStateMachine = CompanyBusinessLayer
+			//		.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
+			
+			//for(FiniteStateMachineState finiteStateMachineState : RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness().findByMachine(finiteStateMachine))
+			//	module.addChild(createCreateManyCommandable(SalableProductInstanceCashRegister.class, null).addParameter(finiteStateMachineState).setLabel(finiteStateMachineState.getName()));
 			
 			module.addChild(createListCommandable(Employee.class, null));
 			module.addChild(createListCommandable(Customer.class, null));

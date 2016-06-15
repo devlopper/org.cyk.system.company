@@ -24,6 +24,7 @@ import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterEditPage;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceCashRegisterEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceCashRegisterQueryManyFormModel;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleCashRegisterMovementEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
@@ -57,9 +58,12 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 		uiManager.configBusinessIdentifiable(SalableProductInstance.class, null);
 		//webNavigationManager.useDynamicSelectView(SalableProductInstance.class);
 		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProductInstanceCashRegister.class, SalableProductInstanceCashRegisterEditPage.Form.class, SalableProductInstanceCashRegisterDetails.class,null,null,null));
+		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProductInstanceCashRegister.class, SalableProductInstanceCashRegisterEditPage.Form.class
+				,SalableProductInstanceCashRegisterDetails.class,null,null,SalableProductInstanceCashRegisterQueryManyFormModel.class));
 		uiManager.configBusinessIdentifiable(SalableProductInstanceCashRegister.class, null);
-		//webNavigationManager.useDynamicSelectView(SalableProductInstanceCashRegister.class);
+		primefacesManager.getSelectManyPageListeners().add(new SalableProductInstanceCashRegisterQueryManyFormModel.PageAdapter());
+		primefacesManager.getProcessManyPageListeners().add(new SalableProductInstanceCashRegisterQueryManyFormModel.ProcessPageAdapter());
+		webNavigationManager.useDynamicSelectView(SalableProductInstanceCashRegister.class);
 		
 		uiManager.registerConfiguration(new IdentifiableConfiguration(Sale.class, SaleEditPage.Form.class, SaleDetails.class,SaleQueryFormModel.class,null,null));
 		uiManager.configBusinessIdentifiable(Sale.class, null);

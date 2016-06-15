@@ -1,12 +1,16 @@
 package org.cyk.system.company.business.impl.sale; 
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.sale.SalableProductInstanceCashRegisterBusiness;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
+import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister.SearchCriteria;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashRegisterDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
@@ -20,6 +24,15 @@ public class SalableProductInstanceCashRegisterBusinessImpl extends AbstractType
 		super(dao);
 	}
 	
-	
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public Collection<SalableProductInstanceCashRegister> findByCriteria(SearchCriteria searchCriteria) {
+		prepareFindByCriteria(searchCriteria);
+		return dao.readByCriteria(searchCriteria);
+	}
+
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public Long countByCriteria(SearchCriteria searchCriteria) {
+		return dao.countByCriteria(searchCriteria);
+	}
 	
 }

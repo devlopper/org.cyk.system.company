@@ -135,6 +135,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	private String pointOfSalePaymentReportName;
 	private final String pointOfSaleReportExtension = "pdf";
 	
+	private String actionProcessSalableProductInstanceCashRegisterWorkFlow = "apspicrwf";
 	private final String actionCreateSaleCashRegisterMovementInput = "acscrmi";
 	private final String actionCreateSaleCashRegisterMovementOutput = "acscrmo";
 	

@@ -1,7 +1,10 @@
 package org.cyk.system.company.business.impl.payment;
 
 import java.io.Serializable;
+import java.util.Collection;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
@@ -11,6 +14,7 @@ import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.mathematics.MovementAction;
+import org.cyk.system.root.model.party.person.Person;
 
 public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashRegister, CashRegisterDao> implements CashRegisterBusiness,Serializable {
 
@@ -33,4 +37,8 @@ public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashR
 		return super.create(cashRegister);
 	}
 	
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public Collection<CashRegister> findByPerson(Person person) {
+		return dao.readByPerson(person);
+	}
 }
