@@ -25,7 +25,7 @@
 			</style>
         	
         	<p:panelGrid id="optionsPanel" columns="9">
-        		<p:outputLabel value="#{uiManager.text('model.entity.cashier')}" for="cashierf" />
+        		<p:outputLabel value="#{uiManager.text('model.entity.cashRegister')}" for="cashierf" />
         		<p:selectOneMenu id="cashierf" value="#{saleEditPage.selectedCashier}" var="cashier"  converter="#{objectConverter}" 
         			filter="true" filterMatchMode="contains" valueChangeListener="#{saleEditPage.cashierChangedListener}" disabled="#{saleEditPage.collectMoney}">
         			<p:ajax event="change" process="cashierf" />

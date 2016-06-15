@@ -51,7 +51,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	@ManyToOne @NotNull private Cashier cashier;
 	@ManyToOne private Customer customer;
 	
-	//@Column private String externalIdentifier;//This value is used to link to another system (Example : Accounting System)
+	@Column private String externalIdentifier;//This value is used to link to another system (Example : Accounting System)
 	
 	@Embedded private Cost cost = new Cost();
 	

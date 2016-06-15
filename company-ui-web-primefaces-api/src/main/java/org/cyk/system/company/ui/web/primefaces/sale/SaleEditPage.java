@@ -118,7 +118,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 				saleBusiness.unselectProduct(identifiable, item.getIdentifiable());
 			}
 		});
-		saleProductCollection.setLabel(null);
+		saleProductCollection.setLabel(text(uiManager.businessEntityInfos(SaleProduct.class).getUserInterface().getLabelId()));
 	
 		identifiable.setAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent());
 		if(roleManager.isAdministrator(Faces.getRequest())){
@@ -140,6 +140,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		
 		cashierChanged(identifiable.getCashier());
 		sell();
+		
 		//debug(saleProductCollection.getAddCommandable());
 		//saleProductCollection.getAddCommandable().setViewType(null);
 	}
