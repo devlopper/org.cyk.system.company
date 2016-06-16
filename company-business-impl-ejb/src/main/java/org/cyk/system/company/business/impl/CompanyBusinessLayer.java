@@ -130,6 +130,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	private static CompanyBusinessLayer INSTANCE;
 	
 	public static Boolean PRODUCT_STOCKING_ENABLED = Boolean.FALSE;
+	public static Boolean AUTO_CREATE_CASHIER = Boolean.TRUE;
 	
 	private String pointOfSaleInvoiceReportName;
 	private String pointOfSalePaymentReportName;

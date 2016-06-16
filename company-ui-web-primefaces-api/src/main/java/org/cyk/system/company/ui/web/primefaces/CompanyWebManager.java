@@ -108,7 +108,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	}
 	
 	@Override
-	public SystemMenu systemMenu(AbstractUserSession<TreeNode,HierarchyNode> userSession) {
+	public SystemMenu systemMenu(UserSession userSession) {
 		Cashier cashier = null;
 		if(userSession.getUser() instanceof Person){
 			cashier = companyBusinessLayer.getCashierBusiness().findByPerson((Person) userSession.getUser());
@@ -119,7 +119,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		addBusinessMenu(userSession,systemMenu,paymentCommandables(userSession,systemMenu.getMobileBusinesses(), cashier));
 		addBusinessMenu(userSession,systemMenu,getSaleCommandable(userSession,systemMenu.getMobileBusinesses(), cashier)); 
 		
-		return GiftCardSystemMenuBuilder.getInstance().build((UserSession) userSession);
+		return systemMenu;
 	}
 	
 	public UICommandable getProductCommandable(AbstractUserSession<TreeNode,HierarchyNode> userSession,Collection<UICommandable> mobileCommandables){

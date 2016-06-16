@@ -13,7 +13,10 @@ import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceEditP
 import org.cyk.system.root.business.impl.language.LanguageBusinessImpl;
 import org.cyk.system.root.model.party.person.AbstractActor;
 import org.cyk.system.root.ui.web.primefaces.api.RootWebManager;
+import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
+import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
+import org.cyk.ui.web.primefaces.UserSession;
 import org.cyk.ui.web.primefaces.page.tools.AbstractActorCrudOnePageAdapter;
 import org.cyk.utility.common.helper.StringHelper.CaseType;
 
@@ -37,7 +40,13 @@ public class UniwacGiftCardContextListener extends AbstractCompanyContextListene
 		SalableProductEditPage.CREATE_ON_PRODUCT = Boolean.FALSE;
 		SalableProductInstanceEditPage.CREATE_ON_SALABLE_PRODUCT = Boolean.FALSE;
 		
-		
+		CompanyWebManager.getInstance().getListeners().add(new AbstractPrimefacesManager.AbstractPrimefacesManagerListener.Adapter(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public SystemMenu getSystemMenu(UserSession userSession) {
+				return GiftCardSystemMenuBuilder.getInstance().build(userSession);
+			}
+		});
 	}
 	
 	@Override
