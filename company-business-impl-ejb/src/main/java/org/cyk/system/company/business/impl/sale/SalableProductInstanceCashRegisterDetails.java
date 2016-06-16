@@ -19,7 +19,7 @@ public class SalableProductInstanceCashRegisterDetails extends AbstractOutputDet
 	
 	public SalableProductInstanceCashRegisterDetails(SalableProductInstanceCashRegister salableProductInstanceCashRegister) {
 		super(salableProductInstanceCashRegister);
-		this.salableProductInstance = formatUsingBusiness(salableProductInstanceCashRegister.getSalableProductInstance());
+		this.salableProductInstance = salableProductInstanceCashRegister.getSalableProductInstance().getCode();// formatUsingBusiness(salableProductInstanceCashRegister.getSalableProductInstance());
 		this.cashRegister = formatUsingBusiness(salableProductInstanceCashRegister.getCashRegister());
 		this.finiteStateMachineState = formatUsingBusiness(salableProductInstanceCashRegister.getFiniteStateMachineState());
 	}

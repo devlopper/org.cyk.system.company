@@ -15,11 +15,14 @@ import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister.SearchCriteria;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.api.model.AbstractQueryManyFormModel;
 import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
+import org.cyk.ui.web.api.WebManager;
 import org.cyk.ui.web.primefaces.page.AbstractProcessManyPage;
 import org.cyk.ui.web.primefaces.page.AbstractSelectManyPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
@@ -75,7 +78,9 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 			Collection<CashRegister> cashRegisters = Boolean.TRUE.equals(page.getUserSession().getIsAdministrator()) 
 					?CompanyBusinessLayer.getInstance().getCashRegisterBusiness().findAll() : CompanyBusinessLayer.getInstance().getCashRegisterBusiness()
 							.findByPerson((Person)page.getUserSession().getUser());
-			page.setChoices(FIELD_CASHREGISTER, cashRegisters);
+			CashRegister cashRegister = cashRegisters.size()==1?cashRegisters.iterator().next():null;
+					
+			page.setChoices(FIELD_CASHREGISTER, cashRegisters,cashRegister);
 			page.createAjaxBuilder(FIELD_CASHREGISTER).crossedFieldNames(FIELD_FINITESTATEMACHINESTATE).updatedFieldNames(FIELD_IDENTIFIABLES)
 			.method(CashRegister.class,new ListenValueMethod<CashRegister>() {
 				@Override
@@ -86,10 +91,19 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 			
 			//page.setChoices(FIELD_SALABLEPRODUCTINSTANCE, CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().findAll());
 			
-			Collection<FiniteStateMachineState> finiteStateMachineStates = RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
-					.findByMachine(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
-							.getSalableProductInstanceCashRegisterFiniteStateMachine());
-			page.setChoices(FIELD_FINITESTATEMACHINESTATE, finiteStateMachineStates);
+			FiniteStateMachine finiteStateMachine = CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
+					.getSalableProductInstanceCashRegisterFiniteStateMachine();
+			Long finiteStateMachineAlphabetIdentifier = WebManager.getInstance().getRequestParameterLong(FiniteStateMachineAlphabet.class);
+			FiniteStateMachineAlphabet finiteStateMachineAlphabet = finiteStateMachineAlphabetIdentifier == null ? null 
+					: RootBusinessLayer.getInstance().getFiniteStateMachineAlphabetBusiness().find(finiteStateMachineAlphabetIdentifier);
+			
+			Collection<FiniteStateMachineState> finiteStateMachineStates = finiteStateMachineAlphabet == null ? RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
+					.findByMachine(finiteStateMachine) : RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
+					.findFromByMachineByAlphabet(finiteStateMachine, finiteStateMachineAlphabet);
+			
+			FiniteStateMachineState finiteStateMachineState = finiteStateMachineStates.size()==1?finiteStateMachineStates.iterator().next():null;		
+					
+			page.setChoices(FIELD_FINITESTATEMACHINESTATE,finiteStateMachineStates,finiteStateMachineState );
 			page.createAjaxBuilder(FIELD_FINITESTATEMACHINESTATE).crossedFieldNames(FIELD_CASHREGISTER).updatedFieldNames(FIELD_IDENTIFIABLES)
 			.method(FiniteStateMachineState.class,new ListenValueMethod<FiniteStateMachineState>() {
 				@Override
@@ -98,7 +112,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 				}
 			}).build();
 			
-			
+			selectSalableProductInstanceCashRegisters(page, cashRegister, finiteStateMachineState);
 		}
 	}
 	
@@ -131,7 +145,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 			super.initialiseProcessOnInitialisationEnded(page);
 			CompanyBusinessLayer companyBusinessLayer = CompanyBusinessLayer.getInstance();
 			page.getForm().getSubmitCommandable().getCommand().setConfirm(Boolean.TRUE);
-			if(companyBusinessLayer.getActionProcessSalableProductInstanceCashRegisterWorkFlow().equals(page.getActionIdentifier())){
+			if(companyBusinessLayer.getActionUpdateSalableProductInstanceCashRegisterState().equals(page.getActionIdentifier())){
 				
 			}
 			
@@ -148,7 +162,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 		@Override
 		public void serve(AbstractProcessManyPage<?> page,Object data, String actionIdentifier) {
 			CompanyBusinessLayer companyBusinessLayer = CompanyBusinessLayer.getInstance();
-			if(companyBusinessLayer.getActionProcessSalableProductInstanceCashRegisterWorkFlow().equals(actionIdentifier)){
+			if(companyBusinessLayer.getActionUpdateSalableProductInstanceCashRegisterState().equals(actionIdentifier)){
 				Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = new ArrayList<>();
 				for(Object object : page.getElements()){
 					((SalableProductInstanceCashRegister) object).setFiniteStateMachineState(((Form)data).getFiniteStateMachineState());
@@ -165,7 +179,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 		
 		@Override
 		public Boolean getShowForm(AbstractProcessManyPage<?> processManyPage,String actionIdentifier) {
-			return ArrayUtils.contains(new String[]{CompanyBusinessLayer.getInstance().getActionProcessSalableProductInstanceCashRegisterWorkFlow()}, actionIdentifier);
+			return ArrayUtils.contains(new String[]{CompanyBusinessLayer.getInstance().getActionUpdateSalableProductInstanceCashRegisterState()}, actionIdentifier);
 		}
 		
 		@Getter @Setter

@@ -130,13 +130,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	private static CompanyBusinessLayer INSTANCE;
 	
 	public static Boolean PRODUCT_STOCKING_ENABLED = Boolean.FALSE;
-	public static Boolean AUTO_CREATE_CASHIER = Boolean.TRUE;
+	public static Boolean AUTO_CREATE_CASHIER = Boolean.FALSE;
 	
 	private String pointOfSaleInvoiceReportName;
 	private String pointOfSalePaymentReportName;
 	private final String pointOfSaleReportExtension = "pdf";
 	
-	private String actionProcessSalableProductInstanceCashRegisterWorkFlow = "apspicrwf";
+	private String actionUpdateSalableProductInstanceCashRegisterState = "auspicrs";
 	private final String actionCreateSaleCashRegisterMovementInput = "acscrmi";
 	private final String actionCreateSaleCashRegisterMovementOutput = "acscrmo";
 	
@@ -231,8 +231,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 				Collection<Person> persons = personDao.select().all();
 				ownedCompany.getCompany().setManager(persons.isEmpty() ? null : persons.iterator().next());
 				companyBusiness.update(ownedCompany.getCompany());
-				CashRegister cashRegister = create(new CashRegister("CashRegister01",ownedCompany,createMovementCollection("CashRegisterMovementCollection01", "Entrée", "Sortie")));
-				cashierBusiness.create(new Cashier(ownedCompany.getCompany().getManager(),cashRegister));
+				if(Boolean.TRUE.equals(AUTO_CREATE_CASHIER)){
+					CashRegister cashRegister = create(new CashRegister("CashRegister01",ownedCompany,createMovementCollection("CashRegisterMovementCollection01", "Entrée", "Sortie")));
+					cashierBusiness.create(new Cashier(ownedCompany.getCompany().getManager(),cashRegister));
+				}
 			}
 		});
 		

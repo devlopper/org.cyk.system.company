@@ -18,7 +18,7 @@ public class CashRegisterDaoImpl extends AbstractEnumerationDaoImpl<CashRegister
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
 		registerNamedQuery(readByPerson, "SELECT r FROM CashRegister r WHERE EXISTS("
-				+ " SELECT v FROM Cashier v WHERE v.person = :person"
+				+ " SELECT v FROM Cashier v WHERE v.cashRegister = r AND v.person = :person"
 				+ ")");
 	}
 	

@@ -21,6 +21,7 @@ import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
+import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
@@ -40,6 +41,10 @@ import org.cyk.ui.web.api.ItemCollectionWebAdapter;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.ItemCollection;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
+import org.cyk.utility.common.annotation.user.interfaces.Input;
+import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
+import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
+import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 import org.omnifaces.util.Faces;
 
 @Named @ViewScoped @Getter @Setter
@@ -47,6 +52,8 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
+	public static Class<? extends AbstractFormModel<?>> FORM_EDIT_CLASS = Form.class;
+	
 	@Inject private SaleBusiness saleBusiness;
 	@Inject private ProductBusiness productBusiness;
 	@Inject private IntangibleProductBusiness intangibleProductBusiness;
@@ -141,8 +148,6 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		cashierChanged(identifiable.getCashier());
 		sell();
 		
-		//debug(saleProductCollection.getAddCommandable());
-		//saleProductCollection.getAddCommandable().setViewType(null);
 	}
 	
 	/**/
@@ -151,12 +156,6 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	protected Sale instanciateIdentifiable() {
 		return roleManager.isAdministrator(Faces.getRequest()) ? saleBusiness.instanciateOne() : saleBusiness.instanciateOne((Person) getUserSession().getUser());
 	}
-	
-	/*@SuppressWarnings("unchecked")
-	@Override
-	protected <T extends AbstractIdentifiable> T identifiableFromRequestParameter(Class<T> aClass) {
-		return (T) saleBusiness.instanciate((Person) getUserSession().getUser()); //super.identifiableFromRequestParameter(aClass);
-	}*/
 	
 	@Override
 	public void transfer(UICommand command, Object object) throws Exception {
@@ -168,8 +167,12 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	
 	@Override
 	protected void create() {
-		identifiable.setCustomer(selectedCustomer);
-		saleBusiness.create(identifiable, cashRegisterController.getSaleCashRegisterMovement());
+		if(Boolean.TRUE.equals(getIsFormOneSaleProduct())){
+			debug(identifiable);
+		}else{
+			identifiable.setCustomer(selectedCustomer);
+			saleBusiness.create(identifiable, cashRegisterController.getSaleCashRegisterMovement());
+		}
 	}
 	
 	@Override
@@ -223,6 +226,10 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		saleBusiness.applyChange(identifiable, saleProductItem.getIdentifiable());
 		saleProductCollection.read(saleProductItem);	
 	}
+	
+	public Boolean getIsFormOneSaleProduct(){
+		return FormOneSaleProduct.class.equals(FORM_EDIT_CLASS);
+	}
 			
 	@Getter @Setter
 	public static class SaleProductItem extends AbstractItemCollectionItem<SaleProduct> implements Serializable {
@@ -239,6 +246,17 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	
 	public static class Form extends AbstractFormModel<Sale> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
+		
+	}
+	
+	@Getter @Setter
+	public static class FormOneSaleProduct extends AbstractFormModel<Sale> implements Serializable{
+		private static final long serialVersionUID = -4741435164709063863L;
+		
+		@Input @InputChoice @InputOneChoice @InputOneCombo private CashRegister cashRegister;
+		@Input @InputChoice @InputOneChoice @InputOneCombo private SalableProduct salableProduct;
+		@Input @InputChoice @InputOneChoice @InputOneCombo private SalableProductInstance salableProductInstance;
+		@Input @InputChoice @InputOneChoice @InputOneCombo private Customer customer;
 		
 	}
 }

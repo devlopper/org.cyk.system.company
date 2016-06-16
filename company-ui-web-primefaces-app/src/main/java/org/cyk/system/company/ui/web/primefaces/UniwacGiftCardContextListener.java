@@ -10,6 +10,7 @@ import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.ui.web.primefaces.production.ResellerCrudOnePageAdapter;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
 import org.cyk.system.root.business.impl.language.LanguageBusinessImpl;
 import org.cyk.system.root.model.party.person.AbstractActor;
 import org.cyk.system.root.ui.web.primefaces.api.RootWebManager;
@@ -27,6 +28,8 @@ public class UniwacGiftCardContextListener extends AbstractCompanyContextListene
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
+		SaleEditPage.FORM_EDIT_CLASS = SaleEditPage.FormOneSaleProduct.class;
+		
 		LanguageBusinessImpl.cache(Locale.FRENCH, "model.entity.salableProduct", null, CaseType.FURL, "carte cadeau");
 		LanguageBusinessImpl.cache(Locale.FRENCH, "model.entity.salableProduct.many", null, CaseType.FURL, "cartes cadeau");
 		

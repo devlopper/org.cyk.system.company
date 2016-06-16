@@ -65,7 +65,7 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 		primefacesManager.getProcessManyPageListeners().add(new SalableProductInstanceCashRegisterQueryManyFormModel.ProcessPageAdapter());
 		webNavigationManager.useDynamicSelectView(SalableProductInstanceCashRegister.class);
 		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(Sale.class, SaleEditPage.Form.class, SaleDetails.class,SaleQueryFormModel.class,null,null));
+		uiManager.registerConfiguration(new IdentifiableConfiguration(Sale.class, SaleEditPage.FORM_EDIT_CLASS, SaleDetails.class,SaleQueryFormModel.class,null,null));
 		uiManager.configBusinessIdentifiable(Sale.class, null);
 		primefacesManager.getSelectOnePageListeners().add(new SaleQueryFormModel.PageAdapter());
 		webNavigationManager.useDynamicSelectView(Sale.class);

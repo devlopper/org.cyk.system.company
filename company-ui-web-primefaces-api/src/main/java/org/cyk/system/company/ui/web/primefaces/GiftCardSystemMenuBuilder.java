@@ -12,6 +12,10 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.structure.Employee;
+import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
+import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Role;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.menu.SystemMenu;
@@ -35,34 +39,38 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 	
 	public Commandable getGiftCardCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = null;
+		module = createModuleCommandable(SalableProduct.class, null);
 		if(userSession.hasRole(Role.MANAGER)){
-			module = createModuleCommandable(SalableProduct.class, null);
-			module.addChild(createListCommandable(SalableProduct.class, null));
-			module.addChild(createListCommandable(SalableProductInstance.class, null));
-			module.addChild(createListCommandable(SalableProductInstanceCashRegister.class, null));
+			addChild(userSession,module,createListCommandable(SalableProduct.class, null));
+			addChild(userSession,module,createListCommandable(SalableProductInstance.class, null));
+			addChild(userSession,module,createListCommandable(SalableProductInstanceCashRegister.class, null));
 			
-			module.addChild(createSelectManyCommandable(SalableProductInstanceCashRegister.class
-					, CompanyBusinessLayer.getInstance().getActionProcessSalableProductInstanceCashRegisterWorkFlow(),null));
-			
-			//FiniteStateMachine finiteStateMachine = CompanyBusinessLayer
-			//		.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
-			
-			//for(FiniteStateMachineState finiteStateMachineState : RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness().findByMachine(finiteStateMachine))
-			//	module.addChild(createCreateManyCommandable(SalableProductInstanceCashRegister.class, null).addParameter(finiteStateMachineState).setLabel(finiteStateMachineState.getName()));
-			
-			module.addChild(createListCommandable(Employee.class, null));
-			module.addChild(createListCommandable(Customer.class, null));
+			//addChild(createSelectManyCommandable(SalableProductInstanceCashRegister.class
+			//		, CompanyBusinessLayer.getInstance().getActionUpdateSalableProductInstanceCashRegisterState(),null));
+				
+			addChild(userSession,module,createListCommandable(Employee.class, null));
+			addChild(userSession,module,createListCommandable(Customer.class, null));
 		}
+		
+		FiniteStateMachine finiteStateMachine = CompanyBusinessLayer
+				.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
+		for(FiniteStateMachineAlphabet finiteStateMachineAlphabet : RootBusinessLayer.getInstance().getFiniteStateMachineAlphabetBusiness().findByMachine(finiteStateMachine))
+			addChild(userSession,module,(Commandable) createSelectManyCommandable(SalableProductInstanceCashRegister.class
+					, CompanyBusinessLayer.getInstance().getActionUpdateSalableProductInstanceCashRegisterState(),null)
+					.addParameter(finiteStateMachineAlphabet).setLabel(finiteStateMachineAlphabet.getName()));
+		
 		return module;
 	}
 	
 	public Commandable getSaleCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = null;
+		module = createModuleCommandable(Sale.class, null);
+		if(Boolean.TRUE.equals(userSession.getIsAdministrator()) || CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson((Person) userSession.getUser())!=null){
+			addChild(userSession,module,createListCommandable(Sale.class, null));
+		}
 		if(userSession.hasRole(Role.MANAGER)){
-			module = createModuleCommandable(Sale.class, null);
-			module.addChild(createListCommandable(Sale.class, null));
-			module.addChild(createListCommandable(CashRegister.class, null));
-			module.addChild(createListCommandable(Cashier.class, null));
+			addChild(userSession,module,createListCommandable(CashRegister.class, null));
+			addChild(userSession,module,createListCommandable(Cashier.class, null));
 		}
 		return module;
 	}
