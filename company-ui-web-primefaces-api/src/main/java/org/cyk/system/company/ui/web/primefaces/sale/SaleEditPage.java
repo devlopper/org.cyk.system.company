@@ -45,6 +45,7 @@ import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
+import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.omnifaces.util.Faces;
 
 @Named @ViewScoped @Getter @Setter
@@ -168,7 +169,11 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	@Override
 	protected void create() {
 		if(Boolean.TRUE.equals(getIsFormOneSaleProduct())){
-			debug(identifiable);
+			/*debug(identifiable);
+			debug(identifiable.getSaleProducts().iterator().next());
+			debug(identifiable.getSaleProducts().iterator().next().getInstances().iterator().next());
+			*/
+			saleBusiness.create(identifiable/*, cashRegisterController.getSaleCashRegisterMovement()*/);
 		}else{
 			identifiable.setCustomer(selectedCustomer);
 			saleBusiness.create(identifiable, cashRegisterController.getSaleCashRegisterMovement());
@@ -253,10 +258,40 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	public static class FormOneSaleProduct extends AbstractFormModel<Sale> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
-		@Input @InputChoice @InputOneChoice @InputOneCombo private CashRegister cashRegister;
+		@Input @InputText private String externalIdentifier;
+		@Input @InputChoice @InputOneChoice @InputOneCombo private Cashier cashier;
 		@Input @InputChoice @InputOneChoice @InputOneCombo private SalableProduct salableProduct;
 		@Input @InputChoice @InputOneChoice @InputOneCombo private SalableProductInstance salableProductInstance;
 		@Input @InputChoice @InputOneChoice @InputOneCombo private Customer customer;
+		
+		private SaleProduct saleProduct;
+		private SaleProductInstance saleProductInstance;
+		
+		@Override
+		public void read() {
+			super.read();
+			if(identifiable.getSaleProducts().isEmpty()){
+				saleProduct = new SaleProduct();
+				saleProduct.setSale(identifiable);
+				saleProduct.setSalableProduct(salableProduct);
+				saleProduct.setQuantity(BigDecimal.ONE);
+				identifiable.getSaleProducts().add(saleProduct);
+				
+				saleProductInstance = new SaleProductInstance();
+				saleProduct.getInstances().add(saleProductInstance);
+				saleProductInstance.setSaleProduct(saleProduct);
+				
+			}else{
+				saleProduct = identifiable.getSaleProducts().iterator().next();
+			}
+		}
+		
+		@Override
+		public void write() {
+			super.write();
+			saleProduct.setSalableProduct(salableProduct);
+			saleProductInstance.setSalableProductInstance(salableProductInstance);
+		}
 		
 	}
 }

@@ -218,6 +218,21 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 				return rootBusinessLayer.getTimeBusiness().formatDate(production.getPeriod().getFromDate());
 			}
 		});
+		formatterBusiness.registerFormatter(SalableProductInstance.class, new AbstractFormatter<SalableProductInstance>() {
+			private static final long serialVersionUID = 3952155697329951912L;
+			@Override
+			public String format(SalableProductInstance salableProductInstance, ContentType contentType) {
+				return salableProductInstance.getCode();
+			}
+		});
+		/*formatterBusiness.registerFormatter(Cashier.class, new AbstractFormatter<Cashier>() {
+			private static final long serialVersionUID = 3952155697329951912L;
+			@Override
+			public String format(Cashier cashier, ContentType contentType) {
+				return cashier.get;
+			}
+		});*/
+		
 		
 		pointOfSaleInvoiceReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.invoice");
 		pointOfSalePaymentReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.paymentreceipt");
