@@ -28,11 +28,11 @@
         	
         	<ui:fragment rendered="#{not saleEditPage.isFormOneSaleProduct}">
 	        	<p:panelGrid id="optionsPanel" columns="9">
-	        		<p:outputLabel value="#{uiManager.text('model.entity.cashRegister')}" for="cashierf" />
+	        		<p:outputLabel value="#{uiManager.text('model.entity.cashier')}" for="cashierf" />
 	        		<p:selectOneMenu id="cashierf" value="#{saleEditPage.selectedCashier}" var="cashier"  converter="#{objectConverter}" 
 	        			filter="true" filterMatchMode="contains" valueChangeListener="#{saleEditPage.cashierChangedListener}" disabled="#{saleEditPage.collectMoney}">
-	        			<p:ajax event="change" process="cashierf" />
-	        			<f:selectItems value="#{saleEditPage.cashiers}" var="c" itemLabel="#{c.cashRegister.name}"  />
+	        			<p:ajax event="change" process="cashierf" update="salableProduct" />
+	        			<f:selectItems value="#{saleEditPage.cashiers}" />
 	        			<p:column><h:outputText value="#{cashier.cashRegister.code}" /></p:column>
 			            <p:column><h:outputText value="#{cashier.cashRegister.name}" /></p:column>
 	        		</p:selectOneMenu>
@@ -48,7 +48,7 @@
 	        		<p:outputLabel value="#{uiManager.text('model.entity.product')}" for="salableProduct" />
 	        		<p:selectOneMenu id="salableProduct" value="#{saleEditPage.selectedProduct}" var="salableProduct" converter="#{objectConverter}" 
 	        			filter="true" filterMatchMode="contains" disabled="#{saleEditPage.collectMoney}">
-	        			<f:selectItems value="#{saleEditPage.salableProducts}"  />
+	        			<f:selectItems value="#{saleEditPage.salableProducts}" />
 	        			<p:column><h:outputText value="#{salableProduct.product.code}" /></p:column>
 			            <p:column><h:outputText value="#{salableProduct.product.name}" /></p:column>
 	        		</p:selectOneMenu>
@@ -99,7 +99,7 @@
 	        		<p:column headerText="#{uiManager.text('field.instance')}" rendered="#{saleEditPage.showInstanceColumn}" width="30%">
 	        			<p:selectOneMenu id="instance" value="#{item.instance}" var="instance" converter="#{objectConverter}" 
 		        			filter="true" filterMatchMode="contains" disabled="#{saleEditPage.collectMoney}" >
-		        			<f:selectItems value="#{item.instanceChoices}" itemLabel="#{instance.code}" />
+		        			<f:selectItems value="#{item.instanceChoices}" var="spi" itemLabel="#{spi.code}" />
 		        			<p:column><h:outputText value="#{instance.code}" /></p:column>
 		        		</p:selectOneMenu>
 	        			<h:outputText value="#{instance.code}" rendered="#{saleEditPage.collectMoney}" />

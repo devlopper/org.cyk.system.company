@@ -53,6 +53,9 @@ public class SaleConfiguration extends AbstractModelElement implements Serializa
 	
 	@Column(nullable=false) @NotNull private Boolean allowOnlySalableProductInstanceOfCashRegister = Boolean.FALSE;
 	
+	private Long minimalNumberOfProductBySale;
+	private Long maximalNumberOfProductBySale;
+	
 	@Override
 	public String getUiString() {
 		return toString();

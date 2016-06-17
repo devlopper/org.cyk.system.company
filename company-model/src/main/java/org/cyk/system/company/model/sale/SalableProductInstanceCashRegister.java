@@ -46,6 +46,11 @@ public class SalableProductInstanceCashRegister extends AbstractIdentifiable imp
 	
 	/**/
 	
+	public static final String FIELD_SALABLE_PRODUCT_INSTANCE = "salableProductInstance";
+	public static final String FIELD_CASH_REGISTER = "cashRegister";
+	
+	/**/
+	
 	@Getter @Setter
 	public static class SearchCriteria extends AbstractFieldValueSearchCriteriaSet implements Serializable {
 

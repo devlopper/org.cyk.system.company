@@ -1,8 +1,9 @@
 package org.cyk.system.company.business.api.sale;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Collection;
 
+import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
@@ -14,4 +15,6 @@ public interface SalableProductBusiness extends AbstractCollectionBusiness<Salab
 	//List<SalableProduct> instanciateMany(String[][] arguments);
 	
 	void create(Class<? extends Product> aClass,String code,String name,BigDecimal price);
+
+	Collection<SalableProduct> findByCashRegister(CashRegister cashRegister);
 }

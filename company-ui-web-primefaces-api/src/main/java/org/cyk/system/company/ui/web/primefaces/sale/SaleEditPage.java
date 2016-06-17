@@ -14,25 +14,21 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
-import org.cyk.system.company.business.api.product.ProductBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductBusiness;
-import org.cyk.system.company.business.api.sale.CustomerBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
-import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleConfiguration;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.model.network.UniformResourceLocatorParameter;
 import org.cyk.system.root.model.party.person.Person;
+import org.cyk.ui.api.SelectItemBuilderListener;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.api.model.AbstractItemCollection;
@@ -43,6 +39,7 @@ import org.cyk.ui.web.primefaces.ItemCollection;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
+import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
@@ -54,23 +51,20 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	private static final long serialVersionUID = 9040359120893077422L;
 
 	public static Class<? extends AbstractFormModel<?>> FORM_EDIT_CLASS = Form.class;
+	public static Boolean SHOW_QUANTITY_COLUMN = Boolean.TRUE;
 	
-	@Inject private SaleBusiness saleBusiness;
-	@Inject private ProductBusiness productBusiness;
-	@Inject private IntangibleProductBusiness intangibleProductBusiness;
-	@Inject private TangibleProductBusiness tangibleProductBusiness;
-	@Inject private CustomerBusiness customerBusiness;
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
 	
-	private List<SalableProduct> salableProducts,intangibleProducts,tangibleProducts;
+	private SaleConfiguration saleConfiguration;
+	private List<SelectItem> salableProducts,intangibleProducts,tangibleProducts;
 	private List<Customer> customers;
-	private List<Cashier> cashiers;
+	private List<SelectItem> cashiers;
 
 	private SalableProduct selectedProduct,selectedIntangibleProduct,selectedTangibleProduct;
 	private Cashier selectedCashier;
 	private Customer selectedCustomer;
 	
-	private Boolean collectProduct=Boolean.FALSE,collectMoney=Boolean.TRUE,showQuantityColumn = Boolean.TRUE,showInstanceColumn = Boolean.TRUE;
+	private Boolean collectProduct=Boolean.FALSE,collectMoney=Boolean.TRUE,showQuantityColumn = SHOW_QUANTITY_COLUMN,showInstanceColumn = Boolean.TRUE;
 	
 	@Inject private SaleCashRegisterMovementController cashRegisterController;
 	
@@ -79,12 +73,13 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	@Override
 	protected void initialisation() {
 		super.initialisation();
+		saleConfiguration = CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration();
 		saleProductCollection = createItemCollection(SaleProductItem.class, SaleProduct.class 
 				,new ItemCollectionWebAdapter<SaleProductItem,SaleProduct>(){
 			private static final long serialVersionUID = -3872058204105902514L;
 			@Override
 			public SaleProduct instanciate(AbstractItemCollection<SaleProductItem, SaleProduct, SelectItem> itemCollection) {
-				return saleBusiness.selectProduct(identifiable, selectedProduct);
+				return companyBusinessLayer.getSaleBusiness().selectProduct(identifiable, selectedProduct);
 			}
 			
 			@Override
@@ -123,7 +118,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			@Override
 			public void delete(AbstractItemCollection<SaleProductItem, SaleProduct, SelectItem> itemCollection,SaleProductItem item) {
 				super.delete(itemCollection, item);
-				saleBusiness.unselectProduct(identifiable, item.getIdentifiable());
+				companyBusinessLayer.getSaleBusiness().unselectProduct(identifiable, item.getIdentifiable());
 			}
 		});
 		saleProductCollection.setLabel(text(uiManager.businessEntityInfos(SaleProduct.class).getUserInterface().getLabelId()));
@@ -138,15 +133,32 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			return;
 		}
 		
-		salableProducts = new ArrayList<SalableProduct>(CompanyBusinessLayer.getInstance().getSalableProductBusiness().findAll());
-		intangibleProducts = new ArrayList<SalableProduct>();
-		tangibleProducts = new ArrayList<SalableProduct>();
-		for(SalableProduct salableProduct : salableProducts)
-			( salableProduct.getProduct() instanceof TangibleProduct ? tangibleProducts : intangibleProducts ).add(salableProduct);	
-		cashiers = new ArrayList<Cashier>(CompanyBusinessLayer.getInstance().getCashierBusiness().findAll());
-		customers = new ArrayList<Customer>(customerBusiness.findAll());
+		cashiers = webManager.getSelectItems(Cashier.class,CompanyBusinessLayer.getInstance().getCashierBusiness().findAll());
+		customers = new ArrayList<Customer>(companyBusinessLayer.getCustomerBusiness().findAll());
+		
+		if(Boolean.TRUE.equals(saleConfiguration.getAllowOnlySalableProductInstanceOfCashRegister())){
+			
+		}else{
+			salableProducts = webManager.getSelectItems(SalableProduct.class, CompanyBusinessLayer.getInstance().getSalableProductBusiness().findAll());
+			//salableProducts = new ArrayList<SalableProduct>(CompanyBusinessLayer.getInstance().getSalableProductBusiness().findAll());
+			//intangibleProducts = new ArrayList<SalableProduct>();
+			//tangibleProducts = new ArrayList<SalableProduct>();
+			//for(SalableProduct salableProduct : salableProducts)
+			//	( salableProduct.getProduct() instanceof TangibleProduct ? tangibleProducts : intangibleProducts ).add(salableProduct);		
+		}
 		
 		cashierChanged(identifiable.getCashier());
+		
+		if(Boolean.TRUE.equals(getIsFormOneSaleProduct())){
+			/*page.createAjaxBuilder(FormOneSaleProduct.).crossedFieldNames(FIELD_FINITESTATEMACHINESTATE).updatedFieldNames(FIELD_IDENTIFIABLES)
+			.method(CashRegister.class,new ListenValueMethod<CashRegister>() {
+				@Override
+				public void execute(CashRegister cashRegister) {
+					selectSalableProductInstanceCashRegisters(page,cashRegister,(FiniteStateMachineState) page.getForm().findInputByFieldName(FIELD_FINITESTATEMACHINESTATE).getValue());
+				}
+			}).build();*/
+		}
+		
 		sell();
 		
 	}
@@ -155,7 +167,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	
 	@Override
 	protected Sale instanciateIdentifiable() {
-		return roleManager.isAdministrator(Faces.getRequest()) ? saleBusiness.instanciateOne() : saleBusiness.instanciateOne((Person) getUserSession().getUser());
+		return roleManager.isAdministrator(Faces.getRequest()) ? companyBusinessLayer.getSaleBusiness().instanciateOne() : companyBusinessLayer.getSaleBusiness().instanciateOne((Person) getUserSession().getUser());
 	}
 	
 	@Override
@@ -173,10 +185,10 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			debug(identifiable.getSaleProducts().iterator().next());
 			debug(identifiable.getSaleProducts().iterator().next().getInstances().iterator().next());
 			*/
-			saleBusiness.create(identifiable/*, cashRegisterController.getSaleCashRegisterMovement()*/);
+			companyBusinessLayer.getSaleBusiness().create(identifiable/*, cashRegisterController.getSaleCashRegisterMovement()*/);
 		}else{
 			identifiable.setCustomer(selectedCustomer);
-			saleBusiness.create(identifiable, cashRegisterController.getSaleCashRegisterMovement());
+			companyBusinessLayer.getSaleBusiness().create(identifiable, cashRegisterController.getSaleCashRegisterMovement());
 		}
 	}
 	
@@ -192,13 +204,17 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	}
 	
 	public void addProduct(Integer type){
-		if(type==0)
-			saleBusiness.selectProduct(identifiable, selectedProduct);
-		else if(type==1)
-			saleBusiness.selectProduct(identifiable, selectedIntangibleProduct);
-		else if(type==2)
-			saleBusiness.selectProduct(identifiable, selectedTangibleProduct);
-		//saleProductCollection.add(selectedProduct);
+		System.out.println(saleConfiguration.getMaximalNumberOfProductBySale());
+		System.out.println(saleConfiguration.getMaximalNumberOfProductBySale()!=null && identifiable.getSaleProducts().size() < saleConfiguration.getMaximalNumberOfProductBySale());
+		if(saleConfiguration.getMaximalNumberOfProductBySale()!=null && identifiable.getSaleProducts().size() < saleConfiguration.getMaximalNumberOfProductBySale()){
+			if(type==0)
+				companyBusinessLayer.getSaleBusiness().selectProduct(identifiable, selectedProduct);
+			else if(type==1)
+				companyBusinessLayer.getSaleBusiness().selectProduct(identifiable, selectedIntangibleProduct);
+			else if(type==2)
+				companyBusinessLayer.getSaleBusiness().selectProduct(identifiable, selectedTangibleProduct);
+			//saleProductCollection.add(selectedProduct);
+		}
 	}
 		
 	public void cash(){
@@ -222,13 +238,15 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			;
 		else{
 			identifiable.setCashier(cashier);
-			cashRegisterController.init(CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().instanciateOne(identifiable, cashier.getPerson(), Boolean.TRUE),Boolean.TRUE);
+			salableProducts = webManager.getSelectItems(SalableProduct.class, Boolean.TRUE.equals(saleConfiguration.getAllowOnlySalableProductInstanceOfCashRegister())
+					?companyBusinessLayer.getSalableProductBusiness().findByCashRegister(cashier.getCashRegister()) : companyBusinessLayer.getSalableProductBusiness().findAll());	
+			cashRegisterController.init(companyBusinessLayer.getSaleCashRegisterMovementBusiness().instanciateOne(identifiable, cashier.getPerson(), Boolean.TRUE),Boolean.TRUE);
 		}
 	}
 		
 	public void productQuantityChanged(SaleProductItem saleProductItem){
 		saleProductItem.getIdentifiable().setQuantity(saleProductItem.getQuantity());
-		saleBusiness.applyChange(identifiable, saleProductItem.getIdentifiable());
+		companyBusinessLayer.getSaleBusiness().applyChange(identifiable, saleProductItem.getIdentifiable());
 		saleProductCollection.read(saleProductItem);	
 	}
 	
@@ -263,9 +281,14 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		@Input @InputChoice @InputOneChoice @InputOneCombo private SalableProduct salableProduct;
 		@Input @InputChoice @InputOneChoice @InputOneCombo private SalableProductInstance salableProductInstance;
 		@Input @InputChoice @InputOneChoice @InputOneCombo private Customer customer;
+		@Input @InputNumber private BigDecimal cost;
 		
 		private SaleProduct saleProduct;
 		private SaleProductInstance saleProductInstance;
+		
+		public void setSalableProduct(SalableProduct salableProduct){
+			saleProduct = CompanyBusinessLayer.getInstance().getSaleBusiness().selectProduct(identifiable, salableProduct);
+		}
 		
 		@Override
 		public void read() {
@@ -292,6 +315,8 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			saleProduct.setSalableProduct(salableProduct);
 			saleProductInstance.setSalableProductInstance(salableProductInstance);
 		}
+		
+		public static final String FIELD_SALABLE_PRODUCT = "salableProduct";
 		
 	}
 }

@@ -2,6 +2,10 @@ package org.cyk.system.company.persistence.impl.sale;
 
 import java.util.Collection;
 
+import javax.persistence.NoResultException;
+
+import org.cyk.system.company.model.payment.CashRegister;
+import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister.SearchCriteria;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashRegisterDao;
@@ -13,13 +17,21 @@ public class SalableProductInstanceCashRegisterDaoImpl extends AbstractTypedDao<
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	private String readByCriteria,countByCriteria;
+	private String readBySalableProductInstanceByCashRegister,readByCriteria,countByCriteria;
 	
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
+		registerNamedQuery(readBySalableProductInstanceByCashRegister, _select().where(SalableProductInstanceCashRegister.FIELD_SALABLE_PRODUCT_INSTANCE)
+				.and(SalableProductInstanceCashRegister.FIELD_CASH_REGISTER));
 		registerNamedQuery(readByCriteria, "SELECT r1 FROM SalableProductInstanceCashRegister r1 WHERE r1.cashRegister.identifier IN :cashRegisters "
 				+ " AND r1.finiteStateMachineState.identifier IN :finiteStateMachineStates");
+	}
+	
+	@Override
+	public SalableProductInstanceCashRegister readBySalableProductInstanceByCashRegister(SalableProductInstance salableProductInstance,CashRegister cashRegister) {
+		return namedQuery(readBySalableProductInstanceByCashRegister).parameter(SalableProductInstanceCashRegister.FIELD_SALABLE_PRODUCT_INSTANCE, salableProductInstance)
+				.parameter(SalableProductInstanceCashRegister.FIELD_CASH_REGISTER, cashRegister).ignoreThrowable(NoResultException.class).resultOne();
 	}
 	
 	@Override

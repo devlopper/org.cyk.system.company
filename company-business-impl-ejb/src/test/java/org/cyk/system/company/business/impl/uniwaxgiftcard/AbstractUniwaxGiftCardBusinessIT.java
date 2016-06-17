@@ -56,6 +56,9 @@ public abstract class AbstractUniwaxGiftCardBusinessIT extends AbstractBusinessI
 		    			,{"SENT","RECEIVE","RECEIVED"}
 		    	});
 				accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterFiniteStateMachine(finiteStateMachine);
+				accountingPeriod.getSaleConfiguration().setAllowOnlySalableProductInstanceOfCashRegister(Boolean.TRUE);
+				accountingPeriod.getSaleConfiguration().setMinimalNumberOfProductBySale(1l);
+				accountingPeriod.getSaleConfiguration().setMaximalNumberOfProductBySale(1l);
 				super.handleAccountingPeriodToInstall(accountingPeriod);
 			}
 			

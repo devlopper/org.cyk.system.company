@@ -2,8 +2,7 @@ package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -14,12 +13,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
-import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
@@ -29,7 +28,7 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	@Inject private ProductDao productDao;
+	//@Inject private ProductDao productDao;
 	@Inject private SalableProductInstanceDao salableProductInstanceDao;
 	
 	@Inject
@@ -68,6 +67,11 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 		CompanyBusinessLayer.getInstance().getProductBusiness().create(product);
 		SalableProduct salableProduct = new SalableProduct(product, price);
 		create(salableProduct);
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public Collection<SalableProduct> findByCashRegister(CashRegister cashRegister) {
+		return dao.readByCashRegister(cashRegister);
 	}
 
 	@Override
