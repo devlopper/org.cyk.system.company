@@ -17,7 +17,6 @@ import lombok.Setter;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.model.payment.Cashier;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
@@ -28,7 +27,6 @@ import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.model.network.UniformResourceLocatorParameter;
 import org.cyk.system.root.model.party.person.Person;
-import org.cyk.ui.api.SelectItemBuilderListener;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.api.model.AbstractItemCollection;
@@ -52,6 +50,8 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 
 	public static Class<? extends AbstractFormModel<?>> FORM_EDIT_CLASS = Form.class;
 	public static Boolean SHOW_QUANTITY_COLUMN = Boolean.TRUE;
+	public static Boolean SHOW_UNIT_PRICE_COLUMN = Boolean.TRUE;
+	public static Boolean SHOW_INSTANCE_COLUMN = Boolean.TRUE;
 	
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
 	
@@ -64,7 +64,8 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	private Cashier selectedCashier;
 	private Customer selectedCustomer;
 	
-	private Boolean collectProduct=Boolean.FALSE,collectMoney=Boolean.TRUE,showQuantityColumn = SHOW_QUANTITY_COLUMN,showInstanceColumn = Boolean.TRUE;
+	private Boolean collectProduct=Boolean.FALSE,collectMoney=Boolean.TRUE,showUnitPriceColumn=SHOW_UNIT_PRICE_COLUMN,showQuantityColumn = SHOW_QUANTITY_COLUMN
+			,showInstanceColumn = SHOW_INSTANCE_COLUMN;
 	
 	@Inject private SaleCashRegisterMovementController cashRegisterController;
 	
@@ -85,7 +86,6 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			@Override
 			public void instanciated(AbstractItemCollection<SaleProductItem, SaleProduct,SelectItem> itemCollection,SaleProductItem item) {
 				super.instanciated(itemCollection, item);
-				
 			}
 			@Override
 			public Crud getCrud() {
@@ -94,6 +94,10 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			@Override
 			public Boolean isShowAddButton() {
 				return Boolean.TRUE;
+			}
+			@Override
+			public Boolean instanciatable(AbstractItemCollection<SaleProductItem, SaleProduct, SelectItem> itemCollection) {
+				return saleConfiguration.getMaximalNumberOfProductBySale()==null || identifiable.getSaleProducts().size() < saleConfiguration.getMaximalNumberOfProductBySale();
 			}
 			@Override
 			public void read(SaleProductItem item) {
@@ -122,6 +126,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			}
 		});
 		saleProductCollection.setLabel(text(uiManager.businessEntityInfos(SaleProduct.class).getUserInterface().getLabelId()));
+		saleProductCollection.setShowAddCommandableAtBottom(Boolean.FALSE);
 	
 		identifiable.setAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent());
 		if(roleManager.isAdministrator(Faces.getRequest())){
@@ -204,8 +209,6 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	}
 	
 	public void addProduct(Integer type){
-		System.out.println(saleConfiguration.getMaximalNumberOfProductBySale());
-		System.out.println(saleConfiguration.getMaximalNumberOfProductBySale()!=null && identifiable.getSaleProducts().size() < saleConfiguration.getMaximalNumberOfProductBySale());
 		if(saleConfiguration.getMaximalNumberOfProductBySale()!=null && identifiable.getSaleProducts().size() < saleConfiguration.getMaximalNumberOfProductBySale()){
 			if(type==0)
 				companyBusinessLayer.getSaleBusiness().selectProduct(identifiable, selectedProduct);

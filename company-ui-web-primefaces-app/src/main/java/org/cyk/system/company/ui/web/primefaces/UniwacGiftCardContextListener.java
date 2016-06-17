@@ -29,6 +29,10 @@ public class UniwacGiftCardContextListener extends AbstractCompanyContextListene
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		SaleEditPage.SHOW_QUANTITY_COLUMN = Boolean.FALSE;
+		SaleEditPage.SHOW_UNIT_PRICE_COLUMN = Boolean.FALSE;
+		
+		LanguageBusinessImpl.cache(Locale.FRENCH, "model.entity.product", null, CaseType.FURL, "carte cadeau");
+		LanguageBusinessImpl.cache(Locale.FRENCH, "model.entity.product.many", null, CaseType.FURL, "cartes cadeau");
 		
 		LanguageBusinessImpl.cache(Locale.FRENCH, "model.entity.salableProduct", null, CaseType.FURL, "carte cadeau");
 		LanguageBusinessImpl.cache(Locale.FRENCH, "model.entity.salableProduct.many", null, CaseType.FURL, "cartes cadeau");
