@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -26,6 +27,7 @@ import org.cyk.ui.web.api.WebManager;
 import org.cyk.ui.web.primefaces.page.AbstractProcessManyPage;
 import org.cyk.ui.web.primefaces.page.AbstractSelectManyPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
+import org.cyk.utility.common.annotation.user.interfaces.InputCalendar;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
@@ -168,7 +170,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 					((SalableProductInstanceCashRegister) object).setFiniteStateMachineState(((Form)data).getFiniteStateMachineState());
 					salableProductInstanceCashRegisters.add((SalableProductInstanceCashRegister) object);
 				}
-				companyBusinessLayer.getSalableProductInstanceCashRegisterBusiness().update(salableProductInstanceCashRegisters);
+				companyBusinessLayer.getSalableProductInstanceCashRegisterBusiness().update(salableProductInstanceCashRegisters,page.getUserSession().getUser());
 			}
 		}
 		
@@ -187,6 +189,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 			private static final long serialVersionUID = -4741435164709063863L;
 			
 			@Input @InputChoice(load=false) @InputOneChoice @InputOneCombo private FiniteStateMachineState finiteStateMachineState;
+			@Input @InputCalendar private Date date;
 			
 			public static final String FIELD_FINITESTATEMACHINESTATE = "finiteStateMachineState";
 		}

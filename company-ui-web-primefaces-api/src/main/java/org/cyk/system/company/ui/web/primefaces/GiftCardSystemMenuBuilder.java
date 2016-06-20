@@ -15,6 +15,7 @@ import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateLog;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Role;
 import org.cyk.ui.api.command.UICommandable;
@@ -50,6 +51,8 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 				
 			addChild(userSession,module,createListCommandable(Employee.class, null));
 			addChild(userSession,module,createListCommandable(Customer.class, null));
+			
+			addChild(userSession,module,createListCommandable(FiniteStateMachineStateLog.class, null));
 		}
 		
 		FiniteStateMachine finiteStateMachine = CompanyBusinessLayer

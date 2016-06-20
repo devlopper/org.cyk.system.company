@@ -137,7 +137,7 @@ public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCr
 	
 	@Override
 	protected void create() {
-		CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().create(itemCollection.getIdentifiables());
+		CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().create(itemCollection.getIdentifiables(),userSession.getUser());
 	}
 	
 	@Override
