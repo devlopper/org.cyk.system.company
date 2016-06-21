@@ -9,6 +9,8 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.sale.SalableProductInstanceCashRegisterBusiness;
+import org.cyk.system.company.model.payment.CashRegister;
+import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister.SearchCriteria;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashRegisterDao;
@@ -35,6 +37,11 @@ public class SalableProductInstanceCashRegisterBusinessImpl extends AbstractType
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Long countByCriteria(SearchCriteria searchCriteria) {
 		return dao.countByCriteria(searchCriteria);
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public SalableProductInstanceCashRegister findBySalableProductInstanceByCashRegister(SalableProductInstance salableProductInstance, CashRegister cashRegister) {
+		return dao.readBySalableProductInstanceByCashRegister(salableProductInstance,cashRegister);
 	}
 	
 	@Override

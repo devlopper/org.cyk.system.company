@@ -9,5 +9,7 @@ import org.cyk.system.root.persistence.api.TypedDao;
 public interface SaleProductInstanceDao extends TypedDao<SaleProductInstance> {
 
 	Collection<SaleProductInstance> readBySaleProduct(SaleProduct saleProduct);
+
+	SaleProductInstance readBySalableProductInstanceCode(String code);
 	
 }

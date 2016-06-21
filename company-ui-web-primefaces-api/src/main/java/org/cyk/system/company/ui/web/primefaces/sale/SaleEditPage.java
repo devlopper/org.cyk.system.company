@@ -65,7 +65,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	private Customer selectedCustomer;
 	
 	private Boolean collectProduct=Boolean.FALSE,collectMoney=Boolean.TRUE,showUnitPriceColumn=SHOW_UNIT_PRICE_COLUMN,showQuantityColumn = SHOW_QUANTITY_COLUMN
-			,showInstanceColumn = SHOW_INSTANCE_COLUMN;
+			,showInstanceColumn = SHOW_INSTANCE_COLUMN,showProductTable=Boolean.TRUE;
 	
 	@Inject private SaleCashRegisterMovementController cashRegisterController;
 	
@@ -179,18 +179,18 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	public void transfer(UICommand command, Object object) throws Exception {
 		super.transfer(command, object);
 		if(form.getSubmitCommandable().getCommand() == command){
-			saleProductCollection.write();
+			//saleProductCollection.write();
 		}
 	}
 	
 	@Override
 	protected void create() {
 		if(Boolean.TRUE.equals(getIsFormOneSaleProduct())){
-			/*debug(identifiable);
+			//debug(identifiable);
 			debug(identifiable.getSaleProducts().iterator().next());
-			debug(identifiable.getSaleProducts().iterator().next().getInstances().iterator().next());
-			*/
-			companyBusinessLayer.getSaleBusiness().create(identifiable/*, cashRegisterController.getSaleCashRegisterMovement()*/);
+			//debug(identifiable.getSaleProducts().iterator().next().getInstances().iterator().next());
+			
+			//companyBusinessLayer.getSaleBusiness().create(identifiable/*, cashRegisterController.getSaleCashRegisterMovement()*/);
 		}else{
 			identifiable.setCustomer(selectedCustomer);
 			companyBusinessLayer.getSaleBusiness().create(identifiable, cashRegisterController.getSaleCashRegisterMovement());

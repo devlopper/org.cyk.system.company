@@ -1,16 +1,25 @@
 package org.cyk.system.company.ui.web.primefaces;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Locale;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.annotation.WebListener;
 
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.production.Reseller;
+import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
+import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleProduct;
+import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.ui.web.primefaces.production.ResellerCrudOnePageAdapter;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
+import org.cyk.system.root.business.api.Crud;
+import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.language.LanguageBusinessImpl;
 import org.cyk.system.root.model.party.person.AbstractActor;
 import org.cyk.system.root.ui.web.primefaces.api.RootWebManager;
@@ -52,6 +61,20 @@ public class UniwacGiftCardContextListener extends AbstractCompanyContextListene
 			@Override
 			public SystemMenu getSystemMenu(UserSession userSession) {
 				return GiftCardSystemMenuBuilder.getInstance().build(userSession);
+			}
+		});
+		
+		SaleBusinessImpl.Listener.COLLECTION.add(new SaleBusinessImpl.Listener.Adapter.Default(){
+			private static final long serialVersionUID = -5267314419114036486L;
+			@Override
+			public void processOnConsume(Sale sale, Crud crud, Boolean first) {
+				super.processOnConsume(sale, crud, first);
+				Collection<SaleProduct> saleProducts = CompanyBusinessLayer.getInstance().getSaleProductBusiness().findBySale(sale);
+				SaleProductInstance saleProductInstance = saleProducts.iterator().next().getInstances().iterator().next();
+				SalableProductInstanceCashRegister salableProductInstanceCashRegister = CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterDao()
+						.readBySalableProductInstanceByCashRegister(saleProductInstance.getSalableProductInstance(),sale.getCashier().getCashRegister());
+				RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness().create(salableProductInstanceCashRegister
+						,RootBusinessLayer.getInstance().getFiniteStateMachineStateDao().read("GIFT_CARD_SOLD"),sale.getCashier().getPerson());
 			}
 		});
 	}

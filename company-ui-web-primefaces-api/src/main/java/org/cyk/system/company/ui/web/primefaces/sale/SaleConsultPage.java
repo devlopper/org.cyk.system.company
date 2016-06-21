@@ -140,7 +140,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 	
 	@Override
 	protected Boolean showContextualDeleteCommandable() {
-		return Boolean.FALSE;
+		return Boolean.TRUE;
 	}
 	
 	@Override

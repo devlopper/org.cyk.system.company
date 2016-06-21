@@ -9,5 +9,6 @@ import org.cyk.system.root.business.api.TypedBusiness;
 public interface SaleProductInstanceBusiness extends TypedBusiness<SaleProductInstance> {
 
 	Collection<SaleProductInstance> findBySaleProduct(SaleProduct saleProduct);
+	SaleProductInstance findBySalableProductInstanceCode(String code);
 	
 }

@@ -2,6 +2,8 @@ package org.cyk.system.company.business.api.sale;
 
 import java.util.Collection;
 
+import org.cyk.system.company.model.payment.CashRegister;
+import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister.SearchCriteria;
 import org.cyk.system.root.business.api.TypedBusiness;
@@ -17,4 +19,6 @@ public interface SalableProductInstanceCashRegisterBusiness extends TypedBusines
 	
 	SalableProductInstanceCashRegister update(SalableProductInstanceCashRegister salableProductInstanceCashRegister,Party party);
 	void update(Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters,Party party);
+	
+	SalableProductInstanceCashRegister findBySalableProductInstanceByCashRegister(SalableProductInstance salableProductInstance, CashRegister cashRegister);
 }

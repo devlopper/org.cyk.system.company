@@ -11,6 +11,7 @@ import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
@@ -70,6 +71,7 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 		module = createModuleCommandable(Sale.class, null);
 		if(Boolean.TRUE.equals(userSession.getIsAdministrator()) || CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson((Person) userSession.getUser())!=null){
 			addChild(userSession,module,createListCommandable(Sale.class, null));
+			addChild(userSession,module,createSelectOneCommandable(SaleProductInstance.class, "retour", null));
 		}
 		if(userSession.hasRole(Role.MANAGER)){
 			addChild(userSession,module,createListCommandable(CashRegister.class, null));

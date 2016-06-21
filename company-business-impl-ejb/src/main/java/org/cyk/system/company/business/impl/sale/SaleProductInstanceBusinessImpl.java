@@ -3,6 +3,7 @@ package org.cyk.system.company.business.impl.sale;
 import java.io.Serializable;
 import java.util.Collection;
 
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -15,6 +16,7 @@ import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashReg
 import org.cyk.system.company.persistence.api.sale.SaleProductInstanceDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
+@Stateless
 public class SaleProductInstanceBusinessImpl extends AbstractTypedBusinessService<SaleProductInstance, SaleProductInstanceDao> implements SaleProductInstanceBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
@@ -39,6 +41,11 @@ public class SaleProductInstanceBusinessImpl extends AbstractTypedBusinessServic
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<SaleProductInstance> findBySaleProduct(SaleProduct saleProduct) {
 		return dao.readBySaleProduct(saleProduct);
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public SaleProductInstance findBySalableProductInstanceCode(String code) {
+		return dao.readBySalableProductInstanceCode(code);
 	}
 	
 }

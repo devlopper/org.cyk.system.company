@@ -2,6 +2,9 @@ package org.cyk.system.company.persistence.impl.sale;
 
 import java.util.Collection;
 
+import javax.persistence.NoResultException;
+
+import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.persistence.api.sale.SaleProductInstanceDao;
@@ -11,12 +14,14 @@ public class SaleProductInstanceDaoImpl extends AbstractTypedDao<SaleProductInst
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	private String readBySaleProduct;
+	private String readBySaleProduct,readBySalableProductInstanceCode;
 	
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
 		registerNamedQuery(readBySaleProduct, _select().where(SaleProductInstance.FIELD_SALE_PRODUCT));
+		registerNamedQuery(readBySalableProductInstanceCode, _select().where(commonUtils.attributePath(SaleProductInstance.FIELD_SALABLE_PRODUCT_INSTANCE,
+				SalableProductInstance.FIELD_CODE), SalableProductInstance.FIELD_CODE));
 	}
 	
 	@Override
@@ -24,6 +29,10 @@ public class SaleProductInstanceDaoImpl extends AbstractTypedDao<SaleProductInst
 		return namedQuery(readBySaleProduct).parameter(SaleProductInstance.FIELD_SALE_PRODUCT, saleProduct).resultMany();
 	}
 
-	
+	@Override
+	public SaleProductInstance readBySalableProductInstanceCode(String code) {
+		return namedQuery(readBySalableProductInstanceCode).ignoreThrowable(NoResultException.class)
+				.parameter(SalableProductInstance.FIELD_CODE, code).resultOne();
+	}
 
 }

@@ -90,6 +90,7 @@ import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
+import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashRegisterDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
@@ -137,6 +138,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	private final String pointOfSaleReportExtension = "pdf";
 	
 	private String actionUpdateSalableProductInstanceCashRegisterState = "auspicrs";
+	//private String action SalableProductInstanceCashRegisterState = "auspicrs";
 	private final String actionCreateSaleCashRegisterMovementInput = "acscrmi";
 	private final String actionCreateSaleCashRegisterMovementOutput = "acscrmo";
 	
@@ -163,6 +165,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private SaleBusiness saleBusiness;
 	@Inject private SalableProductBusiness salableProductBusiness;
 	@Inject private SalableProductInstanceCashRegisterBusiness salableProductInstanceCashRegisterBusiness;
+	@Inject private SalableProductInstanceCashRegisterDao salableProductInstanceCashRegisterDao;
 	@Inject private SalableProductInstanceBusiness salableProductInstanceBusiness;
 	@Inject private SaleProductDao saleProductDao;
 	@Inject private SaleProductBusiness saleProductBusiness;
@@ -267,11 +270,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		SaleBusinessImpl.Listener.COLLECTION.add(new AccountingPeriodBusinessImpl.SaleBusinessAdapter());
 		SaleBusinessImpl.Listener.COLLECTION.add(new AccountingPeriodProductBusinessImpl.SaleBusinessAdapter());
 		SaleBusinessImpl.Listener.COLLECTION.add(new CustomerBusinessImpl.SaleBusinessAdapter());
-		
-		
+	
 	}
-	
-	
+		
 	@Override
 	protected AbstractReportRepository getReportRepository() {
 		return companyReportRepository;
@@ -294,6 +295,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 		createEnumeration(CashRegisterMovementMode.class, CashRegisterMovementMode.CASH);
 		CashRegisterMovementMode cashRegisterMovementMode = new CashRegisterMovementMode(CashRegisterMovementMode.CHEQUE, CashRegisterMovementMode.CHEQUE, null);
+		cashRegisterMovementMode.setSupportDocumentIdentifier(Boolean.TRUE);
+		create(cashRegisterMovementMode);
+		
+		cashRegisterMovementMode = new CashRegisterMovementMode(CashRegisterMovementMode.GIFT_CARD, CashRegisterMovementMode.GIFT_CARD, null);
 		cashRegisterMovementMode.setSupportDocumentIdentifier(Boolean.TRUE);
 		create(cashRegisterMovementMode);
 	}

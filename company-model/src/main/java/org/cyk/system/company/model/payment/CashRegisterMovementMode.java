@@ -19,6 +19,7 @@ public class CashRegisterMovementMode extends AbstractEnumeration implements Ser
 
 	public static final String CASH = "CASH";
 	public static final String CHEQUE = "CHEQUE";
+	public static final String GIFT_CARD = "GIFT_CARD";
 	
 	private Boolean supportDocumentIdentifier = Boolean.FALSE;
 	

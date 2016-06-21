@@ -19,6 +19,7 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterEditPage;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementEditPage;
@@ -28,6 +29,7 @@ import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceCashR
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleCashRegisterMovementEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.SaleProductInstanceQueryOneFormModel;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleQueryFormModel;
 import org.cyk.system.company.ui.web.primefaces.structure.CompanyEditPage;
 import org.cyk.ui.api.config.IdentifiableConfiguration;
@@ -69,6 +71,11 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 		uiManager.configBusinessIdentifiable(Sale.class, null);
 		primefacesManager.getSelectOnePageListeners().add(new SaleQueryFormModel.PageAdapter());
 		webNavigationManager.useDynamicSelectView(Sale.class);
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(SaleProductInstance.class, null, null,SaleProductInstanceQueryOneFormModel.class,null,null));
+		uiManager.configBusinessIdentifiable(SaleProductInstance.class, null);
+		primefacesManager.getSelectOnePageListeners().add(new SaleProductInstanceQueryOneFormModel.PageAdapter());
+		webNavigationManager.useDynamicSelectView(SaleProductInstance.class);
 		
 		uiManager.registerConfiguration(new IdentifiableConfiguration(SaleCashRegisterMovement.class, SaleCashRegisterMovementEditPage.Form.class, SaleCashRegisterMovementDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(SaleCashRegisterMovement.class, null);
