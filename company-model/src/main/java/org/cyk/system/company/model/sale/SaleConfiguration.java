@@ -15,6 +15,7 @@ import org.cyk.system.root.model.AbstractModelElement;
 import org.cyk.system.root.model.file.report.ReportTemplate;
 import org.cyk.system.root.model.generator.StringGenerator;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 
 @Getter @Setter @Embeddable
 public class SaleConfiguration extends AbstractModelElement implements Serializable {
@@ -36,6 +37,8 @@ public class SaleConfiguration extends AbstractModelElement implements Serializa
 	@OneToOne @NotNull private FiniteStateMachine finiteStateMachine;
 	
 	@OneToOne @NotNull private FiniteStateMachine salableProductInstanceCashRegisterFiniteStateMachine;
+	
+	@OneToOne private FiniteStateMachineState salableProductInstanceCashRegisterSaleConsumeState;
 	
 	@OneToOne private ReportTemplate saleReportTemplate;
 	

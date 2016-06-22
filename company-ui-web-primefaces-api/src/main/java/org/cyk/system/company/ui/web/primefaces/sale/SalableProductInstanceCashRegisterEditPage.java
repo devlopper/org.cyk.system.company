@@ -63,7 +63,7 @@ public class SalableProductInstanceCashRegisterEditPage extends AbstractCrudOneP
 	@Override
 	protected void create() {
 		if(Boolean.TRUE.equals(CREATE_ON_CASH_REGISTER))
-			CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().create(identifiable, userSession.getUser());
+			CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().create(identifiable);
 		else{
 			/*String codes = StringUtils.remove(((Form)form.getData()).codes, Constant.LINE_DELIMITER);
 			CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().create(identifiable.getCollection()
@@ -73,7 +73,7 @@ public class SalableProductInstanceCashRegisterEditPage extends AbstractCrudOneP
 	
 	@Override
 	protected void update() {
-		CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().update(identifiable, userSession.getUser());
+		CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().update(identifiable);
 	}
 	
 	@Override

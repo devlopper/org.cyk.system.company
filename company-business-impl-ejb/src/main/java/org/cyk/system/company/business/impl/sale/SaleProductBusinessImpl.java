@@ -62,7 +62,7 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 		return dao.readBySales(sales);
 	}
 	
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Collection<SaleProduct> findBySalesByCategories(Collection<Sale> sales,Collection<ProductCategory> productCategories) {
 		Collection<SaleProduct> collection = findBySales(sales);
 		if(productCategories==null || productCategories.isEmpty())
@@ -76,7 +76,7 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 		return results;
 	}
 	
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<SaleProduct> findBySale(Sale sale) {
 		return findBySales(Arrays.asList(sale));
 	}
@@ -139,7 +139,7 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 		return cartesianModel;
 	}
 
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public CartesianModel findCartesianModelTurnOver(SalesResultsCartesianModelParameters parameters) {
 		return salesCartesianModel(parameters,new CartesianModelListener<SaleProduct>() {
 			@Override
@@ -155,7 +155,7 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 		},"field.turnover","amount");
 	}
 
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public CartesianModel findCartesianModelCount(SalesResultsCartesianModelParameters parameters) {
 		return salesCartesianModel(parameters,new CartesianModelListener<SaleProduct>() {
 			@Override

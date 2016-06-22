@@ -116,6 +116,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 				SaleProductInstance saleProductInstance = new SaleProductInstance();
 				saleProductInstance.setSalableProductInstance(item.getInstance());
 				saleProductInstance.setSaleProduct(item.getIdentifiable());
+				saleProductInstance.setProcessingUser(identifiable.getProcessingUser());
 				item.getIdentifiable().getInstances().add(saleProductInstance);
 			}
 			

@@ -16,7 +16,7 @@ import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister.Sear
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashRegisterDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
-import org.cyk.system.root.model.party.Party;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 
 @Stateless
 public class SalableProductInstanceCashRegisterBusinessImpl extends AbstractTypedBusinessService<SalableProductInstanceCashRegister, SalableProductInstanceCashRegisterDao> implements SalableProductInstanceCashRegisterBusiness,Serializable {
@@ -45,33 +45,18 @@ public class SalableProductInstanceCashRegisterBusinessImpl extends AbstractType
 	}
 	
 	@Override
-	public SalableProductInstanceCashRegister create(SalableProductInstanceCashRegister salableProductInstanceCashRegister,Party party) {
-		/*salableProductInstanceCashRegister.setGlobalIdentifier(new GlobalIdentifier());
-		salableProductInstanceCashRegister.getGlobalIdentifier().setIdentifier(RandomStringUtils.randomAlphanumeric(26));
-		((GenericDaoImpl)genericDao).getEntityManager().persist(salableProductInstanceCashRegister.getGlobalIdentifier());
-		*/
+	public SalableProductInstanceCashRegister create(SalableProductInstanceCashRegister salableProductInstanceCashRegister) {
 		salableProductInstanceCashRegister = super.create(salableProductInstanceCashRegister);
-		
-		RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness().create(salableProductInstanceCashRegister,salableProductInstanceCashRegister.getFiniteStateMachineState(),party);
+		RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness().create(salableProductInstanceCashRegister,salableProductInstanceCashRegister.getFiniteStateMachineState());
 		return salableProductInstanceCashRegister;
 	}
 	
 	@Override
-	public void create(Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters,Party party) {
-		for(SalableProductInstanceCashRegister salableProductInstanceCashRegister : salableProductInstanceCashRegisters)
-			create(salableProductInstanceCashRegister, party);
-	}
-	
-	@Override
-	public SalableProductInstanceCashRegister update(SalableProductInstanceCashRegister salableProductInstanceCashRegister,Party party) {
+	public SalableProductInstanceCashRegister update(SalableProductInstanceCashRegister salableProductInstanceCashRegister) {
+		FiniteStateMachineState finiteStateMachineState = salableProductInstanceCashRegister.getFiniteStateMachineState();
 		salableProductInstanceCashRegister = super.update(salableProductInstanceCashRegister);
-		RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness().create(salableProductInstanceCashRegister,salableProductInstanceCashRegister.getFiniteStateMachineState(),party);
+		RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness().create(salableProductInstanceCashRegister,finiteStateMachineState);
 		return salableProductInstanceCashRegister;
 	}
 	
-	@Override
-	public void update(Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters,Party party) {
-		for(SalableProductInstanceCashRegister salableProductInstanceCashRegister : salableProductInstanceCashRegisters)
-			update(salableProductInstanceCashRegister, party);
-	}
 }

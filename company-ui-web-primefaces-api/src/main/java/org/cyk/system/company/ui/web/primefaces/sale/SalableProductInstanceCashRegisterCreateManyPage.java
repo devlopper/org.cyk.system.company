@@ -104,6 +104,10 @@ public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCr
 				item.getIdentifiable().setCashRegister(item.getCashRegister());
 				item.getIdentifiable().setSalableProductInstance(item.getSalableProductInstance());
 				item.getIdentifiable().setFiniteStateMachineState(item.getFiniteStateMachineState());
+				
+				item.getIdentifiable().setProcessingUser(userSession.getUser());
+				item.getFiniteStateMachineState().setProcessingUser(item.getIdentifiable().getProcessingUser());
+				
 			}
 			
 		});
@@ -137,7 +141,7 @@ public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCr
 	
 	@Override
 	protected void create() {
-		CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().create(itemCollection.getIdentifiables(),userSession.getUser());
+		CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().create(itemCollection.getIdentifiables());
 	}
 	
 	@Override

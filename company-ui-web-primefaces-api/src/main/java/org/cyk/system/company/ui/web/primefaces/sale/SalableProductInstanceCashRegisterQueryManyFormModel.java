@@ -20,6 +20,7 @@ import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.party.person.Person;
+import org.cyk.ui.api.UIManager;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.api.model.AbstractQueryManyFormModel;
 import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
@@ -28,6 +29,7 @@ import org.cyk.ui.web.primefaces.page.AbstractProcessManyPage;
 import org.cyk.ui.web.primefaces.page.AbstractSelectManyPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputCalendar;
+import org.cyk.utility.common.annotation.user.interfaces.InputCalendar.Format;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
@@ -49,7 +51,6 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 	
 	@Override @Sequence(direction=Direction.AFTER,field=FIELD_FINITESTATEMACHINESTATE)
 	public List<SalableProductInstanceCashRegister> getIdentifiables() {
-		// TODO Auto-generated method stub
 		return super.getIdentifiables();
 	}
 	
@@ -65,6 +66,8 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 	public static class PageAdapter extends AbstractSelectManyPage.Listener.Adapter.Default<SalableProductInstanceCashRegister,Long> implements Serializable {
 
 		private static final long serialVersionUID = -7392513843271510254L;
+		
+		private FiniteStateMachineAlphabet finiteStateMachineAlphabet;
 		
 		public PageAdapter() {
 			super(SalableProductInstanceCashRegister.class);
@@ -95,9 +98,8 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 			
 			FiniteStateMachine finiteStateMachine = CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
 					.getSalableProductInstanceCashRegisterFiniteStateMachine();
-			Long finiteStateMachineAlphabetIdentifier = WebManager.getInstance().getRequestParameterLong(FiniteStateMachineAlphabet.class);
-			FiniteStateMachineAlphabet finiteStateMachineAlphabet = finiteStateMachineAlphabetIdentifier == null ? null 
-					: RootBusinessLayer.getInstance().getFiniteStateMachineAlphabetBusiness().find(finiteStateMachineAlphabetIdentifier);
+			finiteStateMachineAlphabet = WebManager.getInstance().getIdentifiableFromRequestParameter(FiniteStateMachineAlphabet.class,Boolean.TRUE);  
+		
 			
 			Collection<FiniteStateMachineState> finiteStateMachineStates = finiteStateMachineAlphabet == null ? RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
 					.findByMachine(finiteStateMachine) : RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
@@ -116,20 +118,37 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 			
 			selectSalableProductInstanceCashRegisters(page, cashRegister, finiteStateMachineState);
 		}
-	}
 	
-	private static void selectSalableProductInstanceCashRegisters(AbstractSelectManyPage<?> page,CashRegister cashRegister,FiniteStateMachineState finiteStateMachineState){
-		Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters;
-		if(cashRegister==null || finiteStateMachineState==null){
-			salableProductInstanceCashRegisters = new ArrayList<>();
-		}else{
-			SearchCriteria searchCriteria = new SearchCriteria();
-			searchCriteria.addCashRegisters(Arrays.asList(cashRegister)).addFiniteStateMachineStates(Arrays.asList(finiteStateMachineState));
-			salableProductInstanceCashRegisters = CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().findByCriteria(searchCriteria);
+		private void selectSalableProductInstanceCashRegisters(AbstractSelectManyPage<?> page,CashRegister cashRegister,FiniteStateMachineState finiteStateMachineState){
+			Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters;
+			if(cashRegister==null || finiteStateMachineState==null){
+				salableProductInstanceCashRegisters = new ArrayList<>();
+			}else{
+				SearchCriteria searchCriteria = new SearchCriteria();
+				searchCriteria.addCashRegisters(Arrays.asList(cashRegister)).addFiniteStateMachineStates(Arrays.asList(finiteStateMachineState));
+				salableProductInstanceCashRegisters = CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().findByCriteria(searchCriteria);
+			}
+			
+			page.setChoices(FIELD_IDENTIFIABLES, salableProductInstanceCashRegisters);
 		}
 		
-		page.setChoices(FIELD_IDENTIFIABLES, salableProductInstanceCashRegisters);
+		@Override
+		public Object[] getParameters(AbstractSelectManyPage<?> page,Object data, String actionIdentifier) {
+			if(CompanyBusinessLayer.getInstance().getActionUpdateSalableProductInstanceCashRegisterState().equals(actionIdentifier)){
+				FiniteStateMachineState finiteStateMachineState = ((SalableProductInstanceCashRegisterQueryManyFormModel)data).finiteStateMachineState;
+				if(finiteStateMachineState==null)
+					;
+				else{
+					finiteStateMachineState = RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness().findByFromStateByAlphabet(finiteStateMachineState, 
+							finiteStateMachineAlphabet);
+					return new Object[]{UIManager.getInstance().businessEntityInfos(FiniteStateMachineState.class).getIdentifier(),finiteStateMachineState.getIdentifier()};
+				}
+			}
+			return super.getParameters(page, data, actionIdentifier);
+		}
 	}
+	
+	
 	
 	/**/
 	
@@ -158,19 +177,22 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 			super.initialiseProcessOnAfterInitialisationEnded(page);
 			page.setChoices(Form.FIELD_FINITESTATEMACHINESTATE, RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
 					.findByMachine(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
-							.getSalableProductInstanceCashRegisterFiniteStateMachine()));
+							.getSalableProductInstanceCashRegisterFiniteStateMachine())
+							,WebManager.getInstance().getIdentifiableFromRequestParameter(FiniteStateMachineState.class,Boolean.TRUE));
 		}
 		
 		@Override
 		public void serve(AbstractProcessManyPage<?> page,Object data, String actionIdentifier) {
 			CompanyBusinessLayer companyBusinessLayer = CompanyBusinessLayer.getInstance();
+			((Form)data).getFiniteStateMachineState().setProcessingUser(page.getUserSession().getUser());
+			((Form)data).getFiniteStateMachineState().setProcessingDate(((Form)data).date);
 			if(companyBusinessLayer.getActionUpdateSalableProductInstanceCashRegisterState().equals(actionIdentifier)){
 				Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = new ArrayList<>();
 				for(Object object : page.getElements()){
 					((SalableProductInstanceCashRegister) object).setFiniteStateMachineState(((Form)data).getFiniteStateMachineState());
 					salableProductInstanceCashRegisters.add((SalableProductInstanceCashRegister) object);
 				}
-				companyBusinessLayer.getSalableProductInstanceCashRegisterBusiness().update(salableProductInstanceCashRegisters,page.getUserSession().getUser());
+				companyBusinessLayer.getSalableProductInstanceCashRegisterBusiness().update(salableProductInstanceCashRegisters);
 			}
 		}
 		
@@ -189,7 +211,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 			private static final long serialVersionUID = -4741435164709063863L;
 			
 			@Input @InputChoice(load=false) @InputOneChoice @InputOneCombo private FiniteStateMachineState finiteStateMachineState;
-			@Input @InputCalendar private Date date;
+			@Input @InputCalendar(format=Format.DATETIME_SHORT) private Date date = new Date();
 			
 			public static final String FIELD_FINITESTATEMACHINESTATE = "finiteStateMachineState";
 		}

@@ -10,6 +10,8 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.sale.SaleProductInstanceBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashRegisterDao;
@@ -34,6 +36,18 @@ public class SaleProductInstanceBusinessImpl extends AbstractTypedBusinessServic
 				.getAllowOnlySalableProductInstanceOfCashRegister()) 
 				&& salableProductInstanceCashRegisterDao.readBySalableProductInstanceByCashRegister(saleProductInstance.getSalableProductInstance()
 					, saleProductInstance.getSaleProduct().getSale().getCashier().getCashRegister())==null, "AllowOnlySalableProductInstanceOfCashRegister");
+		
+		Sale sale = saleProductInstance.getSaleProduct().getSale();
+		if(sale.getAccountingPeriod().getSaleConfiguration().getSalableProductInstanceCashRegisterSaleConsumeState()==null){
+			
+		}else{
+			SalableProductInstanceCashRegister salableProductInstanceCashRegister = salableProductInstanceCashRegisterDao
+					.readBySalableProductInstanceByCashRegister(saleProductInstance.getSalableProductInstance(),sale.getCashier().getCashRegister());
+			salableProductInstanceCashRegister.setFiniteStateMachineState(sale.getAccountingPeriod().getSaleConfiguration()
+					.getSalableProductInstanceCashRegisterSaleConsumeState());
+			salableProductInstanceCashRegister.getFiniteStateMachineState().setProcessingUser(saleProductInstance.getProcessingUser());
+			CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().update(salableProductInstanceCashRegister);
+		}
 		
 		return super.create(saleProductInstance);
 	}

@@ -9,6 +9,7 @@ import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.security.Installation;
+import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 
 public abstract class AbstractUniwaxGiftCardBusinessIT extends AbstractBusinessIT {
 
@@ -26,6 +27,7 @@ public abstract class AbstractUniwaxGiftCardBusinessIT extends AbstractBusinessI
 	private static final String GIFT_CARD_USED = "GIFT_CARD_USED";
 	
     @Inject protected UniwaxGiftCardFakedDataProducer dataProducer;
+    @Inject protected FiniteStateMachineStateDao finiteStateMachineStateDao;
      
     protected void installApplication(Boolean fake){
     	super.installApplication(fake);
@@ -70,6 +72,7 @@ public abstract class AbstractUniwaxGiftCardBusinessIT extends AbstractBusinessI
 		    			,{GIFT_CARD_SOLD,GIFT_CARD_USE,GIFT_CARD_USED}
 		    	});
 				accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterFiniteStateMachine(finiteStateMachine);
+				accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterSaleConsumeState(finiteStateMachineStateDao.read(GIFT_CARD_SOLD));
 				accountingPeriod.getSaleConfiguration().setAllowOnlySalableProductInstanceOfCashRegister(Boolean.TRUE);
 				accountingPeriod.getSaleConfiguration().setMinimalNumberOfProductBySale(1l);
 				accountingPeriod.getSaleConfiguration().setMaximalNumberOfProductBySale(1l);
