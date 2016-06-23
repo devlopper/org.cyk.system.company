@@ -1,12 +1,16 @@
 package org.cyk.system.company.ui.web.primefaces;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Locale;
 
+import javax.faces.model.SelectItem;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.annotation.WebListener;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.model.production.Reseller;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.ui.web.primefaces.production.ResellerCrudOnePageAdapter;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceEditPage;
@@ -15,19 +19,30 @@ import org.cyk.system.root.business.impl.language.LanguageBusinessImpl;
 import org.cyk.system.root.model.party.person.AbstractActor;
 import org.cyk.system.root.ui.web.primefaces.api.RootWebManager;
 import org.cyk.ui.api.command.menu.SystemMenu;
+import org.cyk.ui.api.data.collector.control.Input;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
+import org.cyk.ui.api.data.collector.form.ControlSet;
 import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.ui.web.primefaces.UserSession;
+import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
+import org.cyk.ui.web.primefaces.page.AbstractBusinessEntityFormOnePage;
 import org.cyk.ui.web.primefaces.page.tools.AbstractActorCrudOnePageAdapter;
+import org.cyk.utility.common.cdi.AbstractBean;
 import org.cyk.utility.common.helper.StringHelper.CaseType;
+import org.primefaces.extensions.model.dynaform.DynaFormControl;
+import org.primefaces.extensions.model.dynaform.DynaFormLabel;
+import org.primefaces.extensions.model.dynaform.DynaFormModel;
+import org.primefaces.extensions.model.dynaform.DynaFormRow;
 
 @WebListener
 public class UniwacGiftCardContextListener extends AbstractCompanyContextListener implements Serializable {
 
 	private static final long serialVersionUID = -9042005596731665575L;
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
+		SaleEditPage.FORM_EDIT_CLASS = SaleEditPage.FormOneSaleProduct.class;
 		SaleEditPage.SHOW_QUANTITY_COLUMN = Boolean.FALSE;
 		SaleEditPage.SHOW_UNIT_PRICE_COLUMN = Boolean.FALSE;
 		
@@ -55,6 +70,26 @@ public class UniwacGiftCardContextListener extends AbstractCompanyContextListene
 			}
 		});
 		
+		AbstractBusinessEntityFormOnePage.BusinessEntityFormOnePageListener.COLLECTION.add(new AbstractBusinessEntityFormOnePage.BusinessEntityFormOnePageListener.Adapter.Default(Sale.class){
+			private static final long serialVersionUID = 5004002889129536583L;
+			@Override
+			public void initialisationEnded(AbstractBean bean) {
+				super.initialisationEnded(bean);
+				SaleEditPage saleEditPage = (SaleEditPage) bean;
+				saleEditPage.getForm().getControlSetListeners().add(new ControlSetAdapter<Object>(){
+					@Override
+					public Boolean build(Field field) {
+						return !ArrayUtils.contains(new Object[]{SaleEditPage.FormOneSaleProduct.FIELD_EXTERNAL_IDENTIFIER}, field.getName());
+					}
+					@Override
+					public void input(ControlSet<Object, DynaFormModel, DynaFormRow, DynaFormLabel, DynaFormControl, SelectItem> controlSet,
+							Input<?, DynaFormModel, DynaFormRow, DynaFormLabel, DynaFormControl, SelectItem> input) {
+						super.input(controlSet, input);
+						input.setReadOnly(ArrayUtils.contains(new Object[]{SaleEditPage.FormOneSaleProduct.FIELD_COST}, input.getField().getName()));
+					}
+				});
+			}
+		});
 	}
 	
 	@Override

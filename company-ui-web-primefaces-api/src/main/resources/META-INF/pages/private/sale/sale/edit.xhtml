@@ -28,6 +28,8 @@
         	
         	<ui:fragment rendered="#{not saleEditPage.isFormOneSaleProduct}">
 	        	<p:panelGrid id="optionsPanel" columns="9">
+	        		<!--ui:include src="/org.cyk.ui.web.primefaces.company/include/sale/inputCashier.xhtml" /-->
+	        		
 	        		<p:outputLabel value="#{uiManager.text('model.entity.cashier')}" for="cashierf" />
 	        		<p:selectOneMenu id="cashierf" value="#{saleEditPage.selectedCashier}" var="cashier"  converter="#{objectConverter}" 
 	        			filter="true" filterMatchMode="contains" valueChangeListener="#{saleEditPage.cashierChangedListener}" disabled="#{saleEditPage.collectMoney}">

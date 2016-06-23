@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component">
+      
+	<p:outputLabel value="#{uiManager.text('model.entity.cashier')}" for="cashierf" />
+	<p:selectOneMenu id="cashierf" value="#{saleEditPage.selectedCashier}" var="cashier"  converter="#{objectConverter}" 
+		filter="true" filterMatchMode="contains" valueChangeListener="#{saleEditPage.cashierChangedListener}" disabled="#{saleEditPage.collectMoney}">
+     	<p:ajax event="change" process="cashierf" update="salableProduct" />
+     	<f:selectItems value="#{saleEditPage.cashiers}" />
+     	<p:column><h:outputText value="#{cashier.cashRegister.code}" /></p:column>
+        <p:column><h:outputText value="#{cashier.cashRegister.name}" /></p:column>
+	</p:selectOneMenu>
+	
+</html>

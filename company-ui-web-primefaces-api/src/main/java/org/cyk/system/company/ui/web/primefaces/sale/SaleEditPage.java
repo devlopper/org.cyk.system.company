@@ -3,6 +3,7 @@ package org.cyk.system.company.ui.web.primefaces.sale;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.faces.event.ValueChangeEvent;
@@ -31,6 +32,7 @@ import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.api.model.AbstractItemCollection;
 import org.cyk.ui.api.model.AbstractItemCollectionItem;
+import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
 import org.cyk.ui.web.api.ItemCollectionWebAdapter;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.ItemCollection;
@@ -169,6 +171,55 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		
 	}
 	
+	@Override
+	protected void afterInitialisation() {
+		super.afterInitialisation();
+		createAjaxBuilder(FormOneSaleProduct.FIELD_CASHIER).updatedFieldNames(FormOneSaleProduct.FIELD_SALABLE_PRODUCT,FormOneSaleProduct.FIELD_SALABLE_PRODUCT_INSTANCE
+				,FormOneSaleProduct.FIELD_COST)
+		.method(Cashier.class,new ListenValueMethod<Cashier>() {
+			@Override
+			public void execute(Cashier cashRegister) {
+				selectCashier(cashRegister);
+			}
+		}).build();
+		
+		createAjaxBuilder(FormOneSaleProduct.FIELD_SALABLE_PRODUCT).updatedFieldNames(FormOneSaleProduct.FIELD_SALABLE_PRODUCT_INSTANCE,FormOneSaleProduct.FIELD_COST)
+		.method(SalableProduct.class,new ListenValueMethod<SalableProduct>() {
+			@Override
+			public void execute(SalableProduct salableProduct) {
+				selectSalableProduct(salableProduct);
+			}
+		}).build();
+		
+		createAjaxBuilder(FormOneSaleProduct.FIELD_SALABLE_PRODUCT_INSTANCE)
+		.method(SalableProductInstance.class,new ListenValueMethod<SalableProductInstance>() {
+			@Override
+			public void execute(SalableProductInstance salableProductInstance) {
+				selectSalableProductInstance(salableProductInstance);
+			}
+		}).build();
+	}
+	
+	private void selectCashier(Cashier cashier){
+		Collection<SalableProduct> salableProducts = CompanyBusinessLayer.getInstance().getSalableProductBusiness().findByCashRegister(cashier.getCashRegister());
+		SalableProduct salableProduct = (SalableProduct) setChoicesAndGetAutoSelected(FormOneSaleProduct.FIELD_SALABLE_PRODUCT,salableProducts);
+		if(salableProduct!=null){
+			selectSalableProduct(salableProduct);
+		}
+	}
+	private void selectSalableProduct(SalableProduct salableProduct){
+		setFieldValue(FormOneSaleProduct.FIELD_COST, salableProduct.getPrice());
+		Collection<SalableProductInstance> salableProductInstances = CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().findByCollection(salableProduct);
+		SalableProductInstance salableProductInstance = (SalableProductInstance) setChoicesAndGetAutoSelected(FormOneSaleProduct.FIELD_SALABLE_PRODUCT_INSTANCE, salableProductInstances);
+		if(salableProductInstance!=null)
+			selectSalableProductInstance(salableProductInstance);
+	}
+	
+	private void selectSalableProductInstance(SalableProductInstance salableProductInstance){
+		salableProductInstance.setProcessingUser(userSession.getUser());
+		salableProductInstance.setProcessingDate(null);
+	}
+	
 	/**/
 	
 	@Override
@@ -188,10 +239,12 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	protected void create() {
 		if(Boolean.TRUE.equals(getIsFormOneSaleProduct())){
 			//debug(identifiable);
-			debug(identifiable.getSaleProducts().iterator().next());
+			//debug(identifiable.getSaleProducts().iterator().next());
 			//debug(identifiable.getSaleProducts().iterator().next().getInstances().iterator().next());
 			
-			//companyBusinessLayer.getSaleBusiness().create(identifiable/*, cashRegisterController.getSaleCashRegisterMovement()*/);
+			SaleProductInstance saleProductInstance = identifiable.getSaleProducts().iterator().next().getInstances().iterator().next();
+			saleProductInstance.setProcessingUser(userSession.getUser());
+			companyBusinessLayer.getSaleBusiness().create(identifiable/*, cashRegisterController.getSaleCashRegisterMovement()*/);
 		}else{
 			identifiable.setCustomer(selectedCustomer);
 			companyBusinessLayer.getSaleBusiness().create(identifiable, cashRegisterController.getSaleCashRegisterMovement());
@@ -282,8 +335,8 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		
 		@Input @InputText private String externalIdentifier;
 		@Input @InputChoice @InputOneChoice @InputOneCombo private Cashier cashier;
-		@Input @InputChoice @InputOneChoice @InputOneCombo private SalableProduct salableProduct;
-		@Input @InputChoice @InputOneChoice @InputOneCombo private SalableProductInstance salableProductInstance;
+		@Input @InputChoice(load=false) @InputOneChoice @InputOneCombo private SalableProduct salableProduct;
+		@Input @InputChoice(load=false) @InputOneChoice @InputOneCombo private SalableProductInstance salableProductInstance;
 		@Input @InputChoice @InputOneChoice @InputOneCombo private Customer customer;
 		@Input @InputNumber private BigDecimal cost;
 		
@@ -320,7 +373,11 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			saleProductInstance.setSalableProductInstance(salableProductInstance);
 		}
 		
+		public static final String FIELD_EXTERNAL_IDENTIFIER = "externalIdentifier";
+		public static final String FIELD_CASHIER = "cashier";
 		public static final String FIELD_SALABLE_PRODUCT = "salableProduct";
-		
+		public static final String FIELD_SALABLE_PRODUCT_INSTANCE = "salableProductInstance";
+		public static final String FIELD_CUSTOMER = "customer";
+		public static final String FIELD_COST = "cost";
 	}
 }

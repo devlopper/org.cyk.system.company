@@ -14,6 +14,7 @@ import lombok.Setter;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
+import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.utility.common.cdi.AbstractBean;
 
@@ -26,7 +27,8 @@ public class SaleCashRegisterMovementController extends AbstractBean implements 
 	
 	private SaleCashRegisterMovement saleCashRegisterMovement;
 	private List<CashRegisterMovementMode> modes;
-	private Boolean deposit,showMode=Boolean.TRUE,showDocumentIdentifier,showIn,showOut,showBalance;
+	private List<SalableProductInstance> salableProductInstances;
+	private Boolean deposit,showMode=Boolean.TRUE,showDocumentIdentifier,showIn,showOut,showBalance,showSalableProductInstances;
 	private BigDecimal amountToHand,balance=BigDecimal.ZERO;
 
 	public void init(SaleCashRegisterMovement saleCashRegisterMovement,Boolean deposit){
@@ -40,7 +42,13 @@ public class SaleCashRegisterMovementController extends AbstractBean implements 
 	}
 	
 	public void modeChangedListener(ValueChangeEvent event){
-		showDocumentIdentifier = event.getNewValue()!=null && Boolean.TRUE.equals(((CashRegisterMovementMode)event.getNewValue()).getSupportDocumentIdentifier());
+		CashRegisterMovementMode cashRegisterMovementMode = (CashRegisterMovementMode)event.getNewValue();
+		if(cashRegisterMovementMode==null){
+			showDocumentIdentifier = Boolean.FALSE;
+		}else{
+			showDocumentIdentifier = Boolean.TRUE.equals(cashRegisterMovementMode.getSupportDocumentIdentifier());
+			showSalableProductInstances = CashRegisterMovementMode.GIFT_CARD.equals(cashRegisterMovementMode.getCode());
+		}
 	}
 	
 	public void amountInChanged(){
@@ -54,5 +62,7 @@ public class SaleCashRegisterMovementController extends AbstractBean implements 
 		saleCashRegisterMovementBusiness.out(saleCashRegisterMovement);
 		balance = saleCashRegisterMovementBusiness.computeBalance(saleCashRegisterMovement);
 	}
+	
+	
 	
 }
