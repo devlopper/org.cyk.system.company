@@ -83,9 +83,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 			Collection<CashRegister> cashRegisters = Boolean.TRUE.equals(page.getUserSession().getIsAdministrator()) 
 					?CompanyBusinessLayer.getInstance().getCashRegisterBusiness().findAll() : CompanyBusinessLayer.getInstance().getCashRegisterBusiness()
 							.findByPerson((Person)page.getUserSession().getUser());
-			CashRegister cashRegister = cashRegisters.size()==1?cashRegisters.iterator().next():null;
-					
-			page.setChoices(FIELD_CASHREGISTER, cashRegisters,cashRegister);
+			CashRegister cashRegister = (CashRegister) page.setChoicesAndGetAutoSelected(FIELD_CASHREGISTER, cashRegisters);
 			page.createAjaxBuilder(FIELD_CASHREGISTER).crossedFieldNames(FIELD_FINITESTATEMACHINESTATE).updatedFieldNames(FIELD_IDENTIFIABLES)
 			.method(CashRegister.class,new ListenValueMethod<CashRegister>() {
 				@Override
@@ -105,9 +103,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 					.findByMachine(finiteStateMachine) : RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
 					.findFromByMachineByAlphabet(finiteStateMachine, finiteStateMachineAlphabet);
 			
-			FiniteStateMachineState finiteStateMachineState = finiteStateMachineStates.size()==1?finiteStateMachineStates.iterator().next():null;		
-					
-			page.setChoices(FIELD_FINITESTATEMACHINESTATE,finiteStateMachineStates,finiteStateMachineState );
+			FiniteStateMachineState finiteStateMachineState = (FiniteStateMachineState) page.setChoicesAndGetAutoSelected(FIELD_FINITESTATEMACHINESTATE,finiteStateMachineStates );
 			page.createAjaxBuilder(FIELD_FINITESTATEMACHINESTATE).crossedFieldNames(FIELD_CASHREGISTER).updatedFieldNames(FIELD_IDENTIFIABLES)
 			.method(FiniteStateMachineState.class,new ListenValueMethod<FiniteStateMachineState>() {
 				@Override

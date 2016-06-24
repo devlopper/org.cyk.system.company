@@ -31,6 +31,9 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 
 	private static GiftCardSystemMenuBuilder INSTANCE;
 	
+	public static final String ACTION_SELL_GIFT_CARD = "asgc";
+	public static final String ACTION_USE_GIFT_CARD = "augc";
+	
 	@Override
 	public SystemMenu build(UserSession userSession) {
 		SystemMenu systemMenu = new SystemMenu();
@@ -71,7 +74,9 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 		module = createModuleCommandable(Sale.class, null);
 		if(Boolean.TRUE.equals(userSession.getIsAdministrator()) || CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson((Person) userSession.getUser())!=null){
 			addChild(userSession,module,createListCommandable(Sale.class, null));
-			addChild(userSession,module,createSelectOneCommandable(SaleProductInstance.class, "retour", null));
+			//addChild(userSession,module,createSelectOneCommandable(SaleProductInstance.class, "retour", null));
+			addChild(userSession,module,(Commandable) createCreateCommandable(Sale.class, null).setLabel(getText("action.sellgiftcard")).addActionParameter(ACTION_SELL_GIFT_CARD));
+			addChild(userSession,module,(Commandable) createCreateCommandable(Sale.class, null).setLabel(getText("action.usegiftcard")).addActionParameter(ACTION_USE_GIFT_CARD));
 		}
 		if(userSession.hasRole(Role.MANAGER)){
 			addChild(userSession,module,createListCommandable(CashRegister.class, null));

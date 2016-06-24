@@ -17,11 +17,13 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
+import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleConfiguration;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleProductInstance;
@@ -208,6 +210,11 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		}
 	}
 	private void selectSalableProduct(SalableProduct salableProduct){
+		if(identifiable.getSaleProducts().isEmpty())
+			;
+		else
+			companyBusinessLayer.getSaleBusiness().unselectProduct(identifiable, identifiable.getSaleProducts().iterator().next());
+		companyBusinessLayer.getSaleBusiness().selectProduct(identifiable, salableProduct);
 		setFieldValue(FormOneSaleProduct.FIELD_COST, salableProduct.getPrice());
 		Collection<SalableProductInstance> salableProductInstances = CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().findByCollection(salableProduct);
 		SalableProductInstance salableProductInstance = (SalableProductInstance) setChoicesAndGetAutoSelected(FormOneSaleProduct.FIELD_SALABLE_PRODUCT_INSTANCE, salableProductInstances);
@@ -216,8 +223,14 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	}
 	
 	private void selectSalableProductInstance(SalableProductInstance salableProductInstance){
-		salableProductInstance.setProcessingUser(userSession.getUser());
-		salableProductInstance.setProcessingDate(null);
+		identifiable.getSaleProducts().iterator().next().getInstances().clear();
+		SaleProductInstance saleProductInstance = new SaleProductInstance();
+		saleProductInstance.setSalableProductInstance(salableProductInstance);
+		saleProductInstance.setSaleProduct(identifiable.getSaleProducts().iterator().next());
+		identifiable.getSaleProducts().iterator().next().getInstances().add(saleProductInstance);
+		
+		saleProductInstance.setProcessingUser(userSession.getUser());
+		saleProductInstance.setProcessingDate(null);
 	}
 	
 	/**/
@@ -242,9 +255,21 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			//debug(identifiable.getSaleProducts().iterator().next());
 			//debug(identifiable.getSaleProducts().iterator().next().getInstances().iterator().next());
 			
-			SaleProductInstance saleProductInstance = identifiable.getSaleProducts().iterator().next().getInstances().iterator().next();
-			saleProductInstance.setProcessingUser(userSession.getUser());
-			companyBusinessLayer.getSaleBusiness().create(identifiable/*, cashRegisterController.getSaleCashRegisterMovement()*/);
+			//SaleProductInstance saleProductInstance = identifiable.getSaleProducts().iterator().next().getInstances().iterator().next();
+			//saleProductInstance.setProcessingUser(userSession.getUser());
+			SaleCashRegisterMovement saleCashRegisterMovement = null;
+			if(((FormOneSaleProduct)form.getData()).cashRegisterMovementMode==null){
+				
+			}else{
+				saleCashRegisterMovement = companyBusinessLayer.getSaleCashRegisterMovementBusiness().instanciateOne(identifiable, identifiable.getCashier().getPerson(), Boolean.TRUE);
+				saleCashRegisterMovement.getCashRegisterMovement().setMode(((FormOneSaleProduct)form.getData()).cashRegisterMovementMode);
+				saleCashRegisterMovement.setAmountIn(identifiable.getSaleProducts().iterator().next().getSalableProduct().getPrice());
+				saleCashRegisterMovement.getCashRegisterMovement().getMovement().setSupportingDocumentIdentifier(((FormOneSaleProduct)form.getData()).supportingDocumentIdentifier);
+				companyBusinessLayer.getSaleCashRegisterMovementBusiness().in(saleCashRegisterMovement);
+				//identifiable.getSaleCashRegisterMovements().add(saleCashRegisterMovement);
+			}
+			
+			companyBusinessLayer.getSaleBusiness().create(identifiable,saleCashRegisterMovement);
 		}else{
 			identifiable.setCustomer(selectedCustomer);
 			companyBusinessLayer.getSaleBusiness().create(identifiable, cashRegisterController.getSaleCashRegisterMovement());
@@ -340,6 +365,9 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		@Input @InputChoice @InputOneChoice @InputOneCombo private Customer customer;
 		@Input @InputNumber private BigDecimal cost;
 		
+		@Input @InputChoice @InputOneChoice @InputOneCombo private CashRegisterMovementMode cashRegisterMovementMode;
+		@Input @InputText private String supportingDocumentIdentifier;
+		
 		private SaleProduct saleProduct;
 		private SaleProductInstance saleProductInstance;
 		
@@ -351,7 +379,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		public void read() {
 			super.read();
 			if(identifiable.getSaleProducts().isEmpty()){
-				saleProduct = new SaleProduct();
+				/*saleProduct = new SaleProduct();
 				saleProduct.setSale(identifiable);
 				saleProduct.setSalableProduct(salableProduct);
 				saleProduct.setQuantity(BigDecimal.ONE);
@@ -360,7 +388,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 				saleProductInstance = new SaleProductInstance();
 				saleProduct.getInstances().add(saleProductInstance);
 				saleProductInstance.setSaleProduct(saleProduct);
-				
+				*/
 			}else{
 				saleProduct = identifiable.getSaleProducts().iterator().next();
 			}
@@ -369,8 +397,8 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		@Override
 		public void write() {
 			super.write();
-			saleProduct.setSalableProduct(salableProduct);
-			saleProductInstance.setSalableProductInstance(salableProductInstance);
+			//saleProduct.setSalableProduct(salableProduct);
+			//saleProductInstance.setSalableProductInstance(salableProductInstance);
 		}
 		
 		public static final String FIELD_EXTERNAL_IDENTIFIER = "externalIdentifier";
@@ -379,5 +407,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		public static final String FIELD_SALABLE_PRODUCT_INSTANCE = "salableProductInstance";
 		public static final String FIELD_CUSTOMER = "customer";
 		public static final String FIELD_COST = "cost";
+		public static final String FIELD_CASH_REGISTER_MOVEMENT_MODE = "cashRegisterMovementMode";
+		public static final String FIELD_SUPPORTING_DOCUMENT_IDENTIFIER = "supportingDocumentIdentifier";
 	}
 }
