@@ -34,6 +34,9 @@ import org.cyk.system.company.ui.web.primefaces.sale.SaleQueryFormModel;
 import org.cyk.system.company.ui.web.primefaces.structure.CompanyEditPage;
 import org.cyk.ui.api.config.IdentifiableConfiguration;
 import org.cyk.ui.web.primefaces.AbstractContextListener;
+import org.cyk.ui.web.primefaces.page.AbstractProcessManyPage;
+import org.cyk.ui.web.primefaces.page.AbstractSelectManyPage;
+import org.cyk.ui.web.primefaces.page.AbstractSelectOnePage;
 
 public abstract class AbstractCompanyContextListener extends AbstractContextListener implements Serializable {
 
@@ -63,18 +66,18 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProductInstanceCashRegister.class, SalableProductInstanceCashRegisterEditPage.Form.class
 				,SalableProductInstanceCashRegisterDetails.class,null,null,SalableProductInstanceCashRegisterQueryManyFormModel.class));
 		uiManager.configBusinessIdentifiable(SalableProductInstanceCashRegister.class, null);
-		primefacesManager.getSelectManyPageListeners().add(new SalableProductInstanceCashRegisterQueryManyFormModel.PageAdapter());
-		primefacesManager.getProcessManyPageListeners().add(new SalableProductInstanceCashRegisterQueryManyFormModel.ProcessPageAdapter());
+		AbstractSelectManyPage.Listener.COLLECTION.add(new SalableProductInstanceCashRegisterQueryManyFormModel.PageAdapter());
+		AbstractProcessManyPage.Listener.COLLECTION.add(new SalableProductInstanceCashRegisterQueryManyFormModel.ProcessPageAdapter());
 		webNavigationManager.useDynamicSelectView(SalableProductInstanceCashRegister.class);
 		
 		uiManager.registerConfiguration(new IdentifiableConfiguration(Sale.class, SaleEditPage.FORM_EDIT_CLASS, SaleDetails.class,SaleQueryFormModel.class,null,null));
 		uiManager.configBusinessIdentifiable(Sale.class, null);
-		primefacesManager.getSelectOnePageListeners().add(new SaleQueryFormModel.PageAdapter());
+		AbstractSelectOnePage.Listener.COLLECTION.add(new SaleQueryFormModel.PageAdapter());
 		webNavigationManager.useDynamicSelectView(Sale.class);
 		
 		uiManager.registerConfiguration(new IdentifiableConfiguration(SaleProductInstance.class, null, null,SaleProductInstanceQueryOneFormModel.class,null,null));
 		uiManager.configBusinessIdentifiable(SaleProductInstance.class, null);
-		primefacesManager.getSelectOnePageListeners().add(new SaleProductInstanceQueryOneFormModel.PageAdapter());
+		AbstractSelectOnePage.Listener.COLLECTION.add(new SaleProductInstanceQueryOneFormModel.PageAdapter());
 		webNavigationManager.useDynamicSelectView(SaleProductInstance.class);
 		
 		uiManager.registerConfiguration(new IdentifiableConfiguration(SaleCashRegisterMovement.class, SaleCashRegisterMovementEditPage.Form.class, SaleCashRegisterMovementDetails.class,null,null,null));
