@@ -42,13 +42,17 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 			
 			@Override
 			public Collection<SalableProductInstanceCashRegisterStateLogDetails> getDatas() {
+				finiteStateMachineStateLogs = RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness().findAll();
 				Collection<SalableProductInstanceCashRegisterStateLogDetails> collection = super.getDatas();
 				Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness()
 						.findByClass(finiteStateMachineStateLogs, SalableProductInstanceCashRegister.class);
 				for(SalableProductInstanceCashRegisterStateLogDetails salableProductInstanceCashRegisterStateLogDetails : collection){
 					for(SalableProductInstanceCashRegister salableProductInstanceCashRegister : salableProductInstanceCashRegisters){
-						if(salableProductInstanceCashRegisterStateLogDetails.getMaster().getIdentifiableGlobalIdentifier().equals(salableProductInstanceCashRegister.getGlobalIdentifier())){
+						if(salableProductInstanceCashRegisterStateLogDetails.getMaster().getIdentifiableGlobalIdentifier().getIdentifier().equals(salableProductInstanceCashRegister.getGlobalIdentifier().getIdentifier())){
 							salableProductInstanceCashRegisterStateLogDetails.setInstanceCode(salableProductInstanceCashRegister.getSalableProductInstance().getCode());
+							salableProductInstanceCashRegisterStateLogDetails.setInstanceQuantity("1");
+							salableProductInstanceCashRegisterStateLogDetails.setInstanceUnitPrice(numberBusiness.format(salableProductInstanceCashRegister.getSalableProductInstance().getCollection().getPrice()));
+							salableProductInstanceCashRegisterStateLogDetails.setCashRegister(salableProductInstanceCashRegister.getCashRegister().getCode());
 							break;
 						}
 					}
