@@ -23,6 +23,7 @@ import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBus
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.product.TangibleProductInventoryReportTableDetails;
 import org.cyk.system.company.business.impl.sale.CustomerReportTableRow;
+import org.cyk.system.company.business.impl.sale.SalableProductInstanceCashRegisterStateLogDetails;
 import org.cyk.system.company.business.impl.sale.SaleReportTableDetail;
 import org.cyk.system.company.business.impl.sale.StockDashBoardReportTableDetails;
 import org.cyk.system.company.business.impl.stock.TangibleProductStockMovementLineReport;
@@ -52,6 +53,7 @@ import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderIdentifi
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParameters;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFileConfiguration;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateLog;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 
@@ -317,7 +319,30 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 		        parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultJasperReportBasedOnDynamicBuilder());
 				return (ReportBasedOnDynamicBuilder<StockDashBoardReportTableDetails>) reportBusiness.build(parameters);
 			}
-		});	
+		});
+		
+		/**/
+		
+		addConfiguration(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
+        		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),FiniteStateMachineStateLog.class,SalableProductInstanceCashRegisterStateLogDetails.class) {
+			private static final long serialVersionUID = -1966207854828857772L;
+			@Override
+			public Object model(AbstractIdentifiable identifiable) {
+				return new SalableProductInstanceCashRegisterStateLogDetails((FiniteStateMachineStateLog) identifiable);
+			}
+			/*@Override
+			public Boolean useCustomIdentifiableCollection() {
+				return Boolean.TRUE;
+			}*/
+			
+			@Override
+			public void beforeBuild(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
+				for(Object object : parameters.getDatas()){
+					((SalableProductInstanceCashRegisterStateLogDetails)object).setInstanceCode("456");
+				}
+			}
+			
+		});
 	}
 	
 	/**/

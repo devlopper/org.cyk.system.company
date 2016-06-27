@@ -11,7 +11,6 @@ import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
@@ -19,6 +18,7 @@ import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateLog;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Role;
+import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.web.primefaces.AbstractSystemMenuBuilder;
@@ -81,6 +81,10 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 		if(userSession.hasRole(Role.MANAGER)){
 			addChild(userSession,module,createListCommandable(CashRegister.class, null));
 			addChild(userSession,module,createListCommandable(Cashier.class, null));
+			
+			module.addChild(Builder.create("field.transfer", null, CompanyWebManager.getInstance().getOutcomeSalableProductInstanceCashRegisterStateLogList()));
+			//c.addParameter(CompanyReportRepository.getInstance().getParameterCustomerReportType(), CompanyReportRepository.getInstance().getParameterCustomerReportBalance());
+			//c.addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), CompanyReportRepository.getInstance().getParameterCustomerBalanceCredence());
 		}
 		return module;
 	}

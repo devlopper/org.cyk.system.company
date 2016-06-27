@@ -73,6 +73,8 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	private final String outcomeSaleStockInStock = "saleStockInStockView";
 	private final String outcomeSaleStockList = "saleStockListView";
 	private final String outcomeSaleStockOutputList = "saleStockOutputListView";
+	
+	private final String outcomeSalableProductInstanceCashRegisterStateLogList = "salableProductInstanceCashRegisterStateLogListView";
 		
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
 	@Inject private CompanyReportRepository companyReportRepository;

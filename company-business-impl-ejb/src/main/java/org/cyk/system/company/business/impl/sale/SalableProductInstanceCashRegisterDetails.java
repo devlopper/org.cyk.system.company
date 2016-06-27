@@ -15,7 +15,8 @@ public class SalableProductInstanceCashRegisterDetails extends AbstractOutputDet
 	private static final long serialVersionUID = -1498269103849317057L;
 	
 	@Input @InputText
-	private String salableProductInstance,cashRegister,finiteStateMachineState;
+	private String salableProductInstance,cashRegister,finiteStateMachineState
+		,date,instancesCodes,instancesQuantity,instancesUnitPrice,instancesTotalPrice;
 	
 	public SalableProductInstanceCashRegisterDetails(SalableProductInstanceCashRegister salableProductInstanceCashRegister) {
 		super(salableProductInstanceCashRegister);
