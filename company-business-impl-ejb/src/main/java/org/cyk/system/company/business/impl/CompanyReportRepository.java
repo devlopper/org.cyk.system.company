@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -31,6 +32,7 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.product.TangibleProductInventoryDetail;
 import org.cyk.system.company.model.sale.Customer;
+import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
@@ -445,6 +447,38 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 		for(AbstractIdentifiable i : initialRows)
 			c.add(i);
 		return processSaleStockReportRows(reportType, fromDate, toDate, c,addGrandTotalRow);
+	}
+	
+	/**/
+	
+	public Collection<SalableProductInstanceCashRegisterStateLogDetails> format(Collection<SalableProductInstanceCashRegisterStateLogDetails> collection,Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters){
+		Map<String, SalableProductInstanceCashRegisterStateLogDetails> map = new LinkedHashMap<>();
+		
+		for(SalableProductInstanceCashRegisterStateLogDetails salableProductInstanceCashRegisterStateLogDetails : collection){
+			for(SalableProductInstanceCashRegister salableProductInstanceCashRegister : salableProductInstanceCashRegisters){
+				if(salableProductInstanceCashRegisterStateLogDetails.getMaster().getIdentifiableGlobalIdentifier().getIdentifier().equals(salableProductInstanceCashRegister.getGlobalIdentifier().getIdentifier())){
+					salableProductInstanceCashRegisterStateLogDetails.setSalableProductInstanceCashRegister(salableProductInstanceCashRegister);
+					salableProductInstanceCashRegisterStateLogDetails.setInstanceCode(salableProductInstanceCashRegister.getSalableProductInstance().getCode());
+					salableProductInstanceCashRegisterStateLogDetails.setInstanceQuantity("1");
+					salableProductInstanceCashRegisterStateLogDetails.setInstanceUnitPrice(format(salableProductInstanceCashRegister.getSalableProductInstance().getCollection().getPrice()));
+					salableProductInstanceCashRegisterStateLogDetails.setCashRegister(salableProductInstanceCashRegister.getCashRegister().getCode());
+					break;
+				}
+			}
+			
+			//debug(salableProductInstanceCashRegisterStateLogDetails.getSalableProductInstanceCashRegister());
+			
+			String key = ""+salableProductInstanceCashRegisterStateLogDetails.getMaster().getDate().getTime()+salableProductInstanceCashRegisterStateLogDetails
+					.getSalableProductInstanceCashRegister().getCashRegister().getCode()+salableProductInstanceCashRegisterStateLogDetails.getMaster().getState().getCode();
+			SalableProductInstanceCashRegisterStateLogDetails spicrsld = map.get(key);
+			if(spicrsld==null)
+				spicrsld = map.put(key, salableProductInstanceCashRegisterStateLogDetails);
+			else{
+				spicrsld.setInstanceCode(spicrsld.getInstanceCode()+","+salableProductInstanceCashRegisterStateLogDetails.getInstanceCode());
+				spicrsld.setInstanceQuantity(String.valueOf(Integer.parseInt(spicrsld.getInstanceQuantity())+1));
+			}
+		}
+		return map.values();
 	}
 	
 	private static CompanyReportRepository INSTANCE;

@@ -16,15 +16,15 @@ public abstract class AbstractUniwaxGiftCardBusinessIT extends AbstractBusinessI
 	private static final long serialVersionUID = -5752455124275831171L;
 
 	private static final String GIFT_CARD_WORKFLOW = "GIFT_CARD_WORKFLOW";
-	private static final String GIFT_CARD_ASSIGNED = "GIFT_CARD_ASSIGNED";
-	private static final String GIFT_CARD_SEND = "GIFT_CARD_SEND";
-	private static final String GIFT_CARD_SENT = "GIFT_CARD_SENT";
-	private static final String GIFT_CARD_RECEIVE = "GIFT_CARD_RECEIVE";
-	private static final String GIFT_CARD_RECEIVED = "GIFT_CARD_RECEIVED";
-	private static final String GIFT_CARD_SELL = "GIFT_CARD_SELL";
-	private static final String GIFT_CARD_SOLD = "GIFT_CARD_SOLD";
-	private static final String GIFT_CARD_USE = "GIFT_CARD_USE";
-	private static final String GIFT_CARD_USED = "GIFT_CARD_USED";
+	private static final String GIFT_CARD_ASSIGNED = "Assigné";
+	private static final String GIFT_CARD_SEND = "Transferer";
+	private static final String GIFT_CARD_SENT = "Transferé";
+	private static final String GIFT_CARD_RECEIVE = "Réceptionner";
+	private static final String GIFT_CARD_RECEIVED = "Réceptionné";
+	private static final String GIFT_CARD_SELL = "Vendre";
+	private static final String GIFT_CARD_SOLD = "Vendu";
+	private static final String GIFT_CARD_USE = "Utiliser";
+	private static final String GIFT_CARD_USED = "Utilisé";
 	
     @Inject protected UniwaxGiftCardFakedDataProducer dataProducer;
     @Inject protected FiniteStateMachineStateDao finiteStateMachineStateDao;

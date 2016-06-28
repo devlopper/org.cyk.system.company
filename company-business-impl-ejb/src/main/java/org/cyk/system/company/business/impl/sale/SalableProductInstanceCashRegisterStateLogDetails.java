@@ -26,4 +26,10 @@ public class SalableProductInstanceCashRegisterStateLogDetails extends FiniteSta
 		
 	}
 
+	public static final String FIELD_INSTANCE_CODE = "instanceCode";
+	public static final String FIELD_INSTANCE_QUANTITY = "instanceQuantity";
+	public static final String FIELD_INSTANCE_UNIT_PRICE = "instanceUnitPrice";
+	public static final String FIELD_INSTANCE_TOTAL_PRICE = "instanceTotalPrice";
+	public static final String FIELD_CASH_REGISTER = "cashRegister";
+	
 }

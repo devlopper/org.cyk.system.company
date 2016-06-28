@@ -36,13 +36,16 @@ import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.production.ResourceProduct;
 import org.cyk.system.company.model.structure.Company;
+import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
+import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
 import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.system.root.model.userinterface.InputName;
+import org.cyk.system.root.persistence.api.party.ApplicationDao;
 import org.cyk.utility.common.generator.RandomDataProvider;
 
 @Getter
@@ -64,6 +67,9 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	
 	@Inject protected CustomerDao customerDao;
 	@Inject protected CashierDao cashierDao;
+	@Inject protected CashRegisterDao cashRegisterDao;
+	@Inject protected SalableProductInstanceDao salableProductInstanceDao;
+	@Inject protected ApplicationDao applicationDao;
 	
 	@Override
 	protected void initialisation() {

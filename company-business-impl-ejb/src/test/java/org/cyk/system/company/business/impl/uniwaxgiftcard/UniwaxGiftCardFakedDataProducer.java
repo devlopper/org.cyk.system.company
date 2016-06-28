@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Singleton;
 
@@ -16,24 +17,21 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.SalableProductInstance;
+import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
+import org.cyk.system.company.model.sale.SaleConfiguration;
 import org.cyk.system.company.model.structure.Employee;
+import org.cyk.system.root.model.party.Application;
 
 @Singleton @Getter
 public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataProducer implements Serializable {
 
 	private static final long serialVersionUID = -1832900422621121762L;
 	
-	public static final String SALABLE_PRODUCT_AMATEUR_CODE = "AMATEUR";
-	public static final String SALABLE_PRODUCT_CLASSIC_CODE = "CLASSIC";
-	public static final String SALABLE_PRODUCT_PRENIUM_CODE = "PRENIUM";
+	public static final Object[][] GIFT_CARDS = {{"5000",1,99},{"10000",100,199},{"20000",200,299}};
 	
-	public static final String CASH_REGISTER_PLATEAU_CODE = "PLATEAU";
-	public static final String CASH_REGISTER_YOPOUGON_CODE = "YOP";
-	public static final String CASH_REGISTER_ABOBO_CODE = "ABOBO";
-	
-	public static final String EMPLOYEE_PLATEAU_MANAGER_REGISTRATION_CODE = "EMP001";
-	public static final String EMPLOYEE_YOP_MANAGER_REGISTRATION_CODE = "EMP002";
-	public static final String EMPLOYEE_ABOBO_MANAGER_REGISTRATION_CODE = "EMP003";
+	public static final String[] SHOPS = {"CAP NORD","CAP SUD","PLTX PR ST-C2D","PLTX  P.A.A","PLTX (BOLLORE)","PLTX","PLATEAU","WOODIN 2PLTX","CASH DJIBI"
+		,"PRESIDENCE DE LA REPUBLIQUE","ANAC","Mme DICKOH"};
 	
 	@Override
 	protected void initialisation() {
@@ -47,39 +45,59 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 		Collection<Product> products = new ArrayList<>();
 		Collection<SalableProduct> salableProducts = new ArrayList<>();
 		Collection<CashRegister> cashRegisters = new ArrayList<>();
+		Collection<Employee> employees = new ArrayList<>();
 		Collection<Cashier> cashiers = new ArrayList<>();
+		Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = new ArrayList<>();
 		
-		for(Object[] values : new Object[][]{ 
-				{SALABLE_PRODUCT_AMATEUR_CODE,"L'amateur","10000",new String[]{"1","2","3"} } 
-				,{SALABLE_PRODUCT_CLASSIC_CODE,"Le classic","25000",new String[]{"A","B","C"}} 
-				,{SALABLE_PRODUCT_PRENIUM_CODE,"Le prenium","100000",new String[]{"900","901","902"}} 
-				} ){
-			TangibleProduct tangibleProduct = companyBusinessLayer.getTangibleProductBusiness().instanciateOne((String)values[0], (String)values[1]);
+		for(Object[] values : GIFT_CARDS ){
+			TangibleProduct tangibleProduct = companyBusinessLayer.getTangibleProductBusiness().instanciateOne((String)values[0], (String)values[0]);
 			products.add(tangibleProduct);
+			List<String> instances = new ArrayList<>();
+			for(int i = (Integer)values[1]; i <= (Integer)values[2]; i++ )
+				instances.add(i+"");
 			
-			SalableProduct salableProduct = companyBusinessLayer.getSalableProductBusiness().instanciateOne(tangibleProduct.getCode(), tangibleProduct.getName(), (String[])values[3]);
+			SalableProduct salableProduct = companyBusinessLayer.getSalableProductBusiness().instanciateOne(tangibleProduct.getCode(), tangibleProduct.getName(), instances.toArray(new String[]{}));
+			salableProduct.setItemCodeSeparator(null);
 			salableProduct.setProduct(tangibleProduct);
-			salableProduct.setPrice(new BigDecimal((String)values[2]));
+			salableProduct.setPrice(new BigDecimal((String)values[0]));
 			salableProducts.add(salableProduct);
 		}
 		
 		flush(Product.class, products);
 		flush(SalableProduct.class, salableProducts);
 		
-		Collection<Employee> employees = rootBusinessLayer.getRootBusinessTestHelper().createActors(Employee.class, new String[]{EMPLOYEE_PLATEAU_MANAGER_REGISTRATION_CODE
-			,EMPLOYEE_YOP_MANAGER_REGISTRATION_CODE,EMPLOYEE_ABOBO_MANAGER_REGISTRATION_CODE});
-		
-		String[] codes = new String[]{CASH_REGISTER_PLATEAU_CODE,CASH_REGISTER_YOPOUGON_CODE,CASH_REGISTER_ABOBO_CODE};
-		int i =0;
-		for(Employee employee : employees){
-			CashRegister cashRegister = new CashRegister(codes[i++], null, null);
+		for(String shop : SHOPS){
+			CashRegister cashRegister = new CashRegister(shop, null, null);
 			cashRegisters.add(cashRegister);
+			
+			Employee employee = companyBusinessLayer.getEmployeeBusiness().instanciateOne();
+			employees.add(employee);
 			
 			Cashier cashier = new Cashier(employee.getPerson(), cashRegister);
 			cashiers.add(cashier);
 		}
+		
+		flush(Employee.class, employees);
 		flush(CashRegister.class, cashRegisters);
 		flush(Cashier.class, cashiers);
+		
+		SaleConfiguration saleConfiguration = companyBusinessLayer.getAccountingPeriodBusiness().findCurrent().getSaleConfiguration();
+		cashRegisters = cashRegisterDao.readAll();
+		List<SalableProductInstance> salableProductInstances = new ArrayList<>(salableProductInstanceDao.readAll());
+		int i = 0 , size = salableProductInstances.size() / cashRegisters.size();
+		Application application = applicationDao.readOneRandomly();
+		for(CashRegister cashRegister : cashRegisters){
+			for(int j = i; j < i+size && j < salableProductInstances.size() ; j++){				
+				SalableProductInstanceCashRegister salableProductInstanceCashRegister = new SalableProductInstanceCashRegister(salableProductInstances.get(j)
+						, cashRegister, saleConfiguration.getSalableProductInstanceCashRegisterFiniteStateMachine().getInitialState());
+				salableProductInstanceCashRegister.setProcessingUser(application);
+				salableProductInstanceCashRegister.getFiniteStateMachineState().setProcessingUser(application);
+				salableProductInstanceCashRegisters.add(salableProductInstanceCashRegister);
+			}
+			i += size;
+		}
+		
+		flush(SalableProductInstanceCashRegister.class, salableProductInstanceCashRegisters);
 		
 		rootRandomDataProvider.createActor(Customer.class, 5);
 		

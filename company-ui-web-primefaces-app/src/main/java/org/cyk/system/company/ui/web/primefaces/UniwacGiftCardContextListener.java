@@ -104,6 +104,7 @@ public class UniwacGiftCardContextListener extends AbstractCompanyContextListene
 			
 			
 		});
+		
 	}
 	
 	@Override

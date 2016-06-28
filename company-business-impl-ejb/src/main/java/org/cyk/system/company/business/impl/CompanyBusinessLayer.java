@@ -155,6 +155,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private CashRegisterBusiness cashRegisterBusiness;
+	
 	@Inject private CashRegisterMovementModeBusiness cashRegisterMovementModeBusiness;
 	@Inject private CashierBusiness cashierBusiness;
 	@Inject private EmployeeBusiness employeeBusiness;
@@ -167,6 +168,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private SalableProductInstanceCashRegisterBusiness salableProductInstanceCashRegisterBusiness;
 	@Inject private SalableProductInstanceCashRegisterDao salableProductInstanceCashRegisterDao;
 	@Inject private SalableProductInstanceBusiness salableProductInstanceBusiness;
+	
 	@Inject private SaleProductDao saleProductDao;
 	@Inject private SaleProductBusiness saleProductBusiness;
 	@Inject private SaleProductInstanceBusiness saleProductInstanceBusiness;

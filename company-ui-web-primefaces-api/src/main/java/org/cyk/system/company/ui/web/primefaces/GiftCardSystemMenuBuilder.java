@@ -15,6 +15,7 @@ import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateLog;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Role;
@@ -65,6 +66,10 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 			addChild(userSession,module,(Commandable) createSelectManyCommandable(SalableProductInstanceCashRegister.class
 					, CompanyBusinessLayer.getInstance().getActionUpdateSalableProductInstanceCashRegisterState(),null)
 					.addParameter(finiteStateMachineAlphabet).setLabel(finiteStateMachineAlphabet.getName()));
+		
+		for(FiniteStateMachineState finiteStateMachineState : RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness().findByMachine(finiteStateMachine))
+			addChild(userSession,module,(Commandable) Builder.create("field.transfer", null, CompanyWebManager.getInstance()
+					.getOutcomeSalableProductInstanceCashRegisterStateLogList()).addParameter(finiteStateMachineState).setLabel(finiteStateMachineState.getName()));
 		
 		return module;
 	}

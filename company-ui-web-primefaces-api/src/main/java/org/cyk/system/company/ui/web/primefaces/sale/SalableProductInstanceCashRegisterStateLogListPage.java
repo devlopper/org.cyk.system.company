@@ -1,6 +1,7 @@
 package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Collection;
 
 import javax.faces.view.ViewScoped;
@@ -9,10 +10,17 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceCashRegisterStateLogDetails;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateLog;
+import org.cyk.ui.api.UIManager;
+import org.cyk.ui.api.model.table.ColumnAdapter;
+import org.cyk.ui.web.api.WebManager;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.page.AbstractPrimefacesPage;
 
@@ -21,57 +29,17 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
+	public static DetailsConfigurationListener.Table.Adapter<FiniteStateMachineStateLog,SalableProductInstanceCashRegisterStateLogDetails> TABLE_ADAPTER = new TableAdapter();
+	
 	private Table<SalableProductInstanceCashRegisterStateLogDetails> table;
-	private Collection<FiniteStateMachineStateLog> finiteStateMachineStateLogs;
+	private DetailsConfigurationListener.Table.Adapter<FiniteStateMachineStateLog,SalableProductInstanceCashRegisterStateLogDetails> tableAdapter = TABLE_ADAPTER;
 	
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		table = createDetailsTable(SalableProductInstanceCashRegisterStateLogDetails.class, new DetailsConfigurationListener.Table.Adapter<FiniteStateMachineStateLog,SalableProductInstanceCashRegisterStateLogDetails>(FiniteStateMachineStateLog.class, SalableProductInstanceCashRegisterStateLogDetails.class){
-			private static final long serialVersionUID = -6570916902889942385L;
-			
-			@Override
-			public Boolean getEnabledInDefaultTab() {
-				return Boolean.TRUE;
-			}
-			
-			@Override
-			public Collection<FiniteStateMachineStateLog> getIdentifiables() {
-				return finiteStateMachineStateLogs = RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness().findAll();
-			}
-			
-			@Override
-			public Collection<SalableProductInstanceCashRegisterStateLogDetails> getDatas() {
-				finiteStateMachineStateLogs = RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness().findAll();
-				Collection<SalableProductInstanceCashRegisterStateLogDetails> collection = super.getDatas();
-				Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness()
-						.findByClass(finiteStateMachineStateLogs, SalableProductInstanceCashRegister.class);
-				for(SalableProductInstanceCashRegisterStateLogDetails salableProductInstanceCashRegisterStateLogDetails : collection){
-					for(SalableProductInstanceCashRegister salableProductInstanceCashRegister : salableProductInstanceCashRegisters){
-						if(salableProductInstanceCashRegisterStateLogDetails.getMaster().getIdentifiableGlobalIdentifier().getIdentifier().equals(salableProductInstanceCashRegister.getGlobalIdentifier().getIdentifier())){
-							salableProductInstanceCashRegisterStateLogDetails.setInstanceCode(salableProductInstanceCashRegister.getSalableProductInstance().getCode());
-							salableProductInstanceCashRegisterStateLogDetails.setInstanceQuantity("1");
-							salableProductInstanceCashRegisterStateLogDetails.setInstanceUnitPrice(numberBusiness.format(salableProductInstanceCashRegister.getSalableProductInstance().getCollection().getPrice()));
-							salableProductInstanceCashRegisterStateLogDetails.setCashRegister(salableProductInstanceCashRegister.getCashRegister().getCode());
-							break;
-						}
-					}
-				}
-				return collection;
-			}
-			
-			/*@Override
-			public ColumnAdapter getColumnAdapter() {
-				return new ColumnAdapter(){
-					@Override
-					public Boolean isColumn(Field field) {
-						return all?CustomerReportTableRow.balanceFieldIgnored(field):CustomerReportTableRow.credenceFieldIgnored(field);
-					}
-				};
-			}*/
-		});	
+		table = createDetailsTable(SalableProductInstanceCashRegisterStateLogDetails.class, tableAdapter);	
 		table.setRendered(Boolean.TRUE);
-		table.setShowHeader(Boolean.TRUE);
+		table.setShowHeader(Boolean.FALSE);
 		table.setShowFooter(Boolean.FALSE);
 		table.setShowToolBar(Boolean.TRUE);
 		table.setIdentifiableClass(FiniteStateMachineStateLog.class);
@@ -80,45 +48,61 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 				CompanyReportRepository.getInstance().getParameterCustomerReportBalance());
 		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), balanceType);*/
 	}
-	
-	@Override
-	protected void afterInitialisation() {
-		super.afterInitialisation();
-		/*Collection<CustomerReportTableRow> details = new ArrayList<>();
-		String balanceType = requestParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType());
-		final Boolean all = CompanyReportRepository.getInstance().getParameterCustomerBalanceAll().equals(balanceType);
-		contentTitle = all?text("company.command.customer.balance"):text("field.credence");
 		
-		Collection<Customer> customers = all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
-		for(Customer customer : customers)
-			details.add(new CustomerReportTableRow(customer));
+	public static class TableAdapter extends DetailsConfigurationListener.Table.Adapter<FiniteStateMachineStateLog,SalableProductInstanceCashRegisterStateLogDetails> {
+
+		private static final long serialVersionUID = 202093846160625878L;
+
+		//private Collection<FiniteStateMachineStateLog> finiteStateMachineStateLogs;
 		
-		table = createDetailsTable(CustomerReportTableRow.class, new DetailsConfigurationListener.Table.Adapter<Customer,CustomerReportTableRow>(Customer.class, CustomerReportTableRow.class){
-			private static final long serialVersionUID = -6570916902889942385L;
-			@Override
-			public Collection<Customer> getIdentifiables() {
-				return customerBusiness.findAll();// all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
-			}
-			@Override
-			public ColumnAdapter getColumnAdapter() {
-				return new ColumnAdapter(){
-					@Override
-					public Boolean isColumn(Field field) {
-						System.out.println(
-								"CustomerBalancePage.afterInitialisation().new Adapter() {...}.getColumnAdapter().new ColumnAdapter() {...}.isColumn() : "+field.getName());
-						return true;
-						//return all?CustomerReportTableRow.balanceFieldIgnored(field):CustomerReportTableRow.credenceFieldIgnored(field);
+		public TableAdapter() {
+			super(FiniteStateMachineStateLog.class, SalableProductInstanceCashRegisterStateLogDetails.class);
+		}
+		
+		@Override
+		public Boolean getEnabledInDefaultTab() {
+			return Boolean.TRUE;
+		}
+		
+		protected FiniteStateMachineStateLog.SearchCriteria getSearchCriteria(){
+			FiniteStateMachineStateLog.SearchCriteria searchCriteria = new FiniteStateMachineStateLog.SearchCriteria();
+			searchCriteria.addFiniteStateMachineStates(WebManager.getInstance().decodeIdentifiablesRequestParameter(FiniteStateMachineState.class));
+			if(searchCriteria.getFiniteStateMachineStates().isEmpty())
+				searchCriteria.addFiniteStateMachineStates(RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
+						.findByMachine(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
+								.getSalableProductInstanceCashRegisterFiniteStateMachine()));
+			return searchCriteria;
+		}
+		
+		@Override
+		public Collection<FiniteStateMachineStateLog> getIdentifiables() {
+			return RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness().findByCriteria(getSearchCriteria());
+		}
+		
+		@Override
+		public Collection<SalableProductInstanceCashRegisterStateLogDetails> getDatas() {
+			Collection<SalableProductInstanceCashRegisterStateLogDetails> collection = super.getDatas();
+			FiniteStateMachineStateLog.IdentifiablesSearchCriteria<SalableProductInstanceCashRegister> searchCriteria = new FiniteStateMachineStateLog
+					.IdentifiablesSearchCriteria<>(SalableProductInstanceCashRegister.class,getSearchCriteria());
+			Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness()
+					.findIdentifiablesByCriteria(searchCriteria);
+			return CompanyReportRepository.getInstance().format(collection,salableProductInstanceCashRegisters);
+		}
+		
+		public ColumnAdapter getColumnAdapter() {
+			return new ColumnAdapter(){
+				@Override
+				public Boolean isColumn(Field field) {
+					if( SalableProductInstanceCashRegisterStateLogDetails.FIELD_STATE.equals(field.getName()) ){
+						Collection<Long> identifiers = WebManager.getInstance().decodeIdentifiersRequestParameter(UIManager.getInstance().businessEntityInfos(FiniteStateMachineState.class)
+								.getIdentifier());
+						return identifiers==null || identifiers.size() > 1;
 					}
-				};
-			}
-		});	
-		table.setShowHeader(Boolean.FALSE);
-		table.setShowFooter(Boolean.FALSE);
-		table.setShowToolBar(Boolean.TRUE);
-		table.setIdentifiableClass(Customer.class);
-		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerReportType(), 
-				CompanyReportRepository.getInstance().getParameterCustomerReportBalance());
-		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), balanceType);*/
+					return !ArrayUtils.contains(new String[]{SalableProductInstanceCashRegisterStateLogDetails.FIELD_PARTY
+							,SalableProductInstanceCashRegisterStateLogDetails.FIELD_IDENTIFIABLE_GLOBAL_IDENTIFIER}, field.getName());
+				}
+			};
+		}
 		
 	}
 	
