@@ -14,6 +14,7 @@ import javax.inject.Singleton;
 
 import lombok.Getter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
@@ -43,6 +44,7 @@ import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
+import org.cyk.system.root.business.api.mathematics.NumberBusiness.FormatSequenceArguments;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.file.report.DefaultReportBasedOnDynamicBuilder;
@@ -56,6 +58,7 @@ import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParamete
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFileConfiguration;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateLog;
+import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 
@@ -453,7 +456,6 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	
 	public Collection<SalableProductInstanceCashRegisterStateLogDetails> format(Collection<SalableProductInstanceCashRegisterStateLogDetails> collection,Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters){
 		Map<String, SalableProductInstanceCashRegisterStateLogDetails> map = new LinkedHashMap<>();
-		
 		for(SalableProductInstanceCashRegisterStateLogDetails salableProductInstanceCashRegisterStateLogDetails : collection){
 			for(SalableProductInstanceCashRegister salableProductInstanceCashRegister : salableProductInstanceCashRegisters){
 				if(salableProductInstanceCashRegisterStateLogDetails.getMaster().getIdentifiableGlobalIdentifier().getIdentifier().equals(salableProductInstanceCashRegister.getGlobalIdentifier().getIdentifier())){
@@ -466,18 +468,26 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				}
 			}
 			
-			//debug(salableProductInstanceCashRegisterStateLogDetails.getSalableProductInstanceCashRegister());
-			
 			String key = ""+salableProductInstanceCashRegisterStateLogDetails.getMaster().getDate().getTime()+salableProductInstanceCashRegisterStateLogDetails
 					.getSalableProductInstanceCashRegister().getCashRegister().getCode()+salableProductInstanceCashRegisterStateLogDetails.getMaster().getState().getCode();
 			SalableProductInstanceCashRegisterStateLogDetails spicrsld = map.get(key);
-			if(spicrsld==null)
+			if(spicrsld==null){
 				spicrsld = map.put(key, salableProductInstanceCashRegisterStateLogDetails);
-			else{
-				spicrsld.setInstanceCode(spicrsld.getInstanceCode()+","+salableProductInstanceCashRegisterStateLogDetails.getInstanceCode());
+				
+			}else{
+				spicrsld.setInstanceCode(spicrsld.getInstanceCode()+Constant.CHARACTER_COMA+salableProductInstanceCashRegisterStateLogDetails.getInstanceCode());
 				spicrsld.setInstanceQuantity(String.valueOf(Integer.parseInt(spicrsld.getInstanceQuantity())+1));
 			}
 		}
+		
+		for(SalableProductInstanceCashRegisterStateLogDetails salableProductInstanceCashRegisterStateLogDetails : map.values()){
+			FormatSequenceArguments<Long> arguments = new FormatSequenceArguments<>(1l);
+			Collection<Long> identifiers = new ArrayList<>();
+			for(String value : StringUtils.split(salableProductInstanceCashRegisterStateLogDetails.getInstanceCode(), Constant.CHARACTER_COMA))
+				identifiers.add(Long.parseLong(value));
+			salableProductInstanceCashRegisterStateLogDetails.setInstanceCode(RootBusinessLayer.getInstance().getNumberBusiness().formatSequences(identifiers, arguments));
+		}
+		
 		return map.values();
 	}
 	
