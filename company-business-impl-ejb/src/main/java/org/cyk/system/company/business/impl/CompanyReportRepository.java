@@ -44,6 +44,7 @@ import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
 import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
+import org.cyk.system.root.business.api.mathematics.NumberBusiness;
 import org.cyk.system.root.business.api.mathematics.NumberBusiness.FormatSequenceArguments;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
@@ -58,9 +59,11 @@ import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParamete
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFileConfiguration;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateLog;
+import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
+import org.joda.time.DateTime;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER+1)
 public class CompanyReportRepository extends AbstractReportRepository implements Serializable {
@@ -454,7 +457,8 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	
 	/**/
 	
-	public Collection<SalableProductInstanceCashRegisterStateLogDetails> format(Collection<SalableProductInstanceCashRegisterStateLogDetails> collection,Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters){
+	public Collection<SalableProductInstanceCashRegisterStateLogDetails> format(Collection<SalableProductInstanceCashRegisterStateLogDetails> collection,Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters,String timeDivisionTypeCode){
+		NumberBusiness numberBusiness = RootBusinessLayer.getInstance().getNumberBusiness();
 		Map<String, SalableProductInstanceCashRegisterStateLogDetails> map = new LinkedHashMap<>();
 		for(SalableProductInstanceCashRegisterStateLogDetails salableProductInstanceCashRegisterStateLogDetails : collection){
 			for(SalableProductInstanceCashRegister salableProductInstanceCashRegister : salableProductInstanceCashRegisters){
@@ -463,12 +467,15 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 					salableProductInstanceCashRegisterStateLogDetails.setInstanceCode(salableProductInstanceCashRegister.getSalableProductInstance().getCode());
 					salableProductInstanceCashRegisterStateLogDetails.setInstanceQuantity("1");
 					salableProductInstanceCashRegisterStateLogDetails.setInstanceUnitPrice(format(salableProductInstanceCashRegister.getSalableProductInstance().getCollection().getPrice()));
+					salableProductInstanceCashRegisterStateLogDetails.setInstanceTotalPrice( 
+							format(new BigDecimal(salableProductInstanceCashRegisterStateLogDetails.getInstanceQuantity()).multiply(salableProductInstanceCashRegisterStateLogDetails.getSalableProductInstanceCashRegister().getSalableProductInstance().getCollection().getPrice())) );
 					salableProductInstanceCashRegisterStateLogDetails.setCashRegister(salableProductInstanceCashRegister.getCashRegister().getCode());
 					break;
 				}
 			}
 			
-			String key = ""+salableProductInstanceCashRegisterStateLogDetails.getMaster().getDate().getTime()+salableProductInstanceCashRegisterStateLogDetails
+			
+			String key = ""+salableProductInstanceCashRegisterStateLogDetails.getDate()+salableProductInstanceCashRegisterStateLogDetails
 					.getSalableProductInstanceCashRegister().getCashRegister().getCode()+salableProductInstanceCashRegisterStateLogDetails.getMaster().getState().getCode();
 			SalableProductInstanceCashRegisterStateLogDetails spicrsld = map.get(key);
 			if(spicrsld==null){
@@ -476,7 +483,10 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				
 			}else{
 				spicrsld.setInstanceCode(spicrsld.getInstanceCode()+Constant.CHARACTER_COMA+salableProductInstanceCashRegisterStateLogDetails.getInstanceCode());
-				spicrsld.setInstanceQuantity(String.valueOf(Integer.parseInt(spicrsld.getInstanceQuantity())+1));
+				spicrsld.setInstanceQuantity(String.valueOf(Integer.parseInt(spicrsld.getInstanceQuantity())+Integer.parseInt(salableProductInstanceCashRegisterStateLogDetails.getInstanceQuantity())));
+				//spicrsld.setInstanceTotalPrice(format(salableProductInstanceCashRegisterStateLogDetails.getSalableProductInstanceCashRegister().getSalableProductInstance().getCollection().getPrice()));
+				spicrsld.setInstanceTotalPrice(format(numberBusiness.parse(BigDecimal.class,spicrsld.getInstanceTotalPrice())
+						.add(numberBusiness.parse(BigDecimal.class, salableProductInstanceCashRegisterStateLogDetails.getInstanceTotalPrice())) ));
 			}
 		}
 		

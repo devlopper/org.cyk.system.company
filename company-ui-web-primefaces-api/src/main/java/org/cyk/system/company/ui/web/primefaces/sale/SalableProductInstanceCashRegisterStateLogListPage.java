@@ -18,6 +18,7 @@ import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateLog;
+import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.ui.api.UIManager;
 import org.cyk.ui.api.model.table.ColumnAdapter;
 import org.cyk.ui.web.api.WebManager;
@@ -64,6 +65,10 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 			return Boolean.TRUE;
 		}
 		
+		protected String getTimeDivisionTypeCode(){
+			return TimeDivisionType.DAY;
+		}
+		
 		protected FiniteStateMachineStateLog.SearchCriteria getSearchCriteria(){
 			FiniteStateMachineStateLog.SearchCriteria searchCriteria = new FiniteStateMachineStateLog.SearchCriteria();
 			searchCriteria.addFiniteStateMachineStates(WebManager.getInstance().decodeIdentifiablesRequestParameter(FiniteStateMachineState.class));
@@ -86,7 +91,7 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 					.IdentifiablesSearchCriteria<>(SalableProductInstanceCashRegister.class,getSearchCriteria());
 			Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness()
 					.findIdentifiablesByCriteria(searchCriteria);
-			return CompanyReportRepository.getInstance().format(collection,salableProductInstanceCashRegisters);
+			return CompanyReportRepository.getInstance().format(collection,salableProductInstanceCashRegisters,getTimeDivisionTypeCode());
 		}
 		
 		public ColumnAdapter getColumnAdapter() {

@@ -168,7 +168,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 				}
 			}).build();*/
 		}
-		
+		//System.out.println(form.get);
 		sell();
 		
 	}
