@@ -72,6 +72,7 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 		protected FiniteStateMachineStateLog.SearchCriteria getSearchCriteria(){
 			FiniteStateMachineStateLog.SearchCriteria searchCriteria = new FiniteStateMachineStateLog.SearchCriteria();
 			searchCriteria.addFiniteStateMachineStates(WebManager.getInstance().decodeIdentifiablesRequestParameter(FiniteStateMachineState.class));
+			searchCriteria.setTimeDivisionTypeCode(TimeDivisionType.DAY);
 			if(searchCriteria.getFiniteStateMachineStates().isEmpty())
 				searchCriteria.addFiniteStateMachineStates(RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
 						.findByMachine(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
