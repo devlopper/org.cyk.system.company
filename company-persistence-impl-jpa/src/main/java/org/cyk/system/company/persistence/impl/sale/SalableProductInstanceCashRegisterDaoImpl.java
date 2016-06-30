@@ -17,11 +17,12 @@ public class SalableProductInstanceCashRegisterDaoImpl extends AbstractTypedDao<
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	private String readBySalableProductInstanceByCashRegister,readByCriteria,countByCriteria;
+	private String readBySalableProductInstance,readBySalableProductInstanceByCashRegister,readByCriteria,countByCriteria;
 	
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
+		registerNamedQuery(readBySalableProductInstance, _select().where(SalableProductInstanceCashRegister.FIELD_SALABLE_PRODUCT_INSTANCE));
 		registerNamedQuery(readBySalableProductInstanceByCashRegister, _select().where(SalableProductInstanceCashRegister.FIELD_SALABLE_PRODUCT_INSTANCE)
 				.and(SalableProductInstanceCashRegister.FIELD_CASH_REGISTER));
 		registerNamedQuery(readByCriteria, "SELECT r1 FROM SalableProductInstanceCashRegister r1 WHERE r1.cashRegister.identifier IN :cashRegisters "
@@ -32,6 +33,12 @@ public class SalableProductInstanceCashRegisterDaoImpl extends AbstractTypedDao<
 	public SalableProductInstanceCashRegister readBySalableProductInstanceByCashRegister(SalableProductInstance salableProductInstance,CashRegister cashRegister) {
 		return namedQuery(readBySalableProductInstanceByCashRegister).parameter(SalableProductInstanceCashRegister.FIELD_SALABLE_PRODUCT_INSTANCE, salableProductInstance)
 				.parameter(SalableProductInstanceCashRegister.FIELD_CASH_REGISTER, cashRegister).ignoreThrowable(NoResultException.class).resultOne();
+	}
+	
+	@Override
+	public Collection<SalableProductInstanceCashRegister> readBySalableProductInstance(SalableProductInstance salableProductInstance) {
+		return namedQuery(readBySalableProductInstance).parameter(SalableProductInstanceCashRegister.FIELD_SALABLE_PRODUCT_INSTANCE, salableProductInstance)
+				.resultMany();
 	}
 	
 	@Override

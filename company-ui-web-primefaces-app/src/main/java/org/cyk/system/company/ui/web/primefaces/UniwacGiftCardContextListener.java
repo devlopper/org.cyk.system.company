@@ -2,6 +2,7 @@ package org.cyk.system.company.ui.web.primefaces;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Locale;
 
 import javax.servlet.ServletContextEvent;
@@ -77,11 +78,13 @@ public class UniwacGiftCardContextListener extends AbstractCompanyContextListene
 					//change state to used
 					SalableProductInstance salableProductInstance = CompanyBusinessLayer.getInstance().getSalableProductInstanceDao()
 							.read(sale.getSaleCashRegisterMovements().iterator().next().getCashRegisterMovement().getMovement().getSupportingDocumentIdentifier());
-					SalableProductInstanceCashRegister salableProductInstanceCashRegister = CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterDao()
-							.readBySalableProductInstanceByCashRegister(salableProductInstance, sale.getCashier().getCashRegister());
-					salableProductInstanceCashRegister.setFiniteStateMachineState(rootBusinessLayer.getFiniteStateMachineStateDao().read("Utilisé"));
-					salableProductInstanceCashRegister.getFiniteStateMachineState().getProcessing().setParty(sale.getProcessing().getParty());
-					CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().update(salableProductInstanceCashRegister);
+					Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterDao()
+							.readBySalableProductInstance(salableProductInstance);
+					for(SalableProductInstanceCashRegister salableProductInstanceCashRegister : salableProductInstanceCashRegisters){
+						salableProductInstanceCashRegister.setFiniteStateMachineState(rootBusinessLayer.getFiniteStateMachineStateDao().read("Utilisé"));
+						salableProductInstanceCashRegister.getFiniteStateMachineState().getProcessing().setParty(sale.getProcessing().getParty());
+					}
+					CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().update(salableProductInstanceCashRegisters);
 				}
 			}
 			@Override

@@ -11,6 +11,7 @@ import org.cyk.system.root.persistence.api.TypedDao;
 public interface SalableProductInstanceCashRegisterDao extends TypedDao<SalableProductInstanceCashRegister> {
 
 	SalableProductInstanceCashRegister readBySalableProductInstanceByCashRegister(SalableProductInstance salableProductInstance,CashRegister cashRegister);
+	Collection<SalableProductInstanceCashRegister> readBySalableProductInstance(SalableProductInstance salableProductInstance);
 	
 	Collection<SalableProductInstanceCashRegister> readByCriteria(SearchCriteria searchCriteria);
 	Long countByCriteria(SearchCriteria searchCriteria);
