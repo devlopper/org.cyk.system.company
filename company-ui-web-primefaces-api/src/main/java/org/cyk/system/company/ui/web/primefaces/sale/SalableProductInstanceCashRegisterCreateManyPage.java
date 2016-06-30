@@ -105,8 +105,8 @@ public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCr
 				item.getIdentifiable().setSalableProductInstance(item.getSalableProductInstance());
 				item.getIdentifiable().setFiniteStateMachineState(item.getFiniteStateMachineState());
 				
-				item.getIdentifiable().setProcessingUser(userSession.getUser());
-				item.getFiniteStateMachineState().setProcessingUser(item.getIdentifiable().getProcessingUser());
+				item.getIdentifiable().getProcessing().setParty(userSession.getUser());
+				item.getFiniteStateMachineState().getProcessing().setParty(item.getIdentifiable().getProcessing().getParty());
 				
 			}
 			

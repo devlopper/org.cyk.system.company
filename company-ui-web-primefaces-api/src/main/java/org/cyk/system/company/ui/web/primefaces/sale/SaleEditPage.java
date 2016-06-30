@@ -1,9 +1,11 @@
 package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.event.ValueChangeEvent;
@@ -17,6 +19,7 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
+import org.cyk.system.company.business.impl.sale.SaleBusinessImpl.Listener;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.sale.Customer;
@@ -38,8 +41,11 @@ import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
 import org.cyk.ui.web.api.ItemCollectionWebAdapter;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.ItemCollection;
+import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
+import org.cyk.utility.common.ListenerUtils;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
+import org.cyk.utility.common.annotation.user.interfaces.InputCalendar;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
@@ -120,7 +126,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 				SaleProductInstance saleProductInstance = new SaleProductInstance();
 				saleProductInstance.setSalableProductInstance(item.getInstance());
 				saleProductInstance.setSaleProduct(item.getIdentifiable());
-				saleProductInstance.setProcessingUser(identifiable.getProcessingUser());
+				saleProductInstance.getProcessing().setParty(identifiable.getProcessing().getParty());
 				item.getIdentifiable().getInstances().add(saleProductInstance);
 			}
 			
@@ -160,13 +166,14 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		cashierChanged(identifiable.getCashier());
 		
 		if(Boolean.TRUE.equals(getIsFormOneSaleProduct())){
-			/*page.createAjaxBuilder(FormOneSaleProduct.).crossedFieldNames(FIELD_FINITESTATEMACHINESTATE).updatedFieldNames(FIELD_IDENTIFIABLES)
-			.method(CashRegister.class,new ListenValueMethod<CashRegister>() {
+			form.getControlSetListeners().add(new ControlSetAdapter<Object>(){
 				@Override
-				public void execute(CashRegister cashRegister) {
-					selectSalableProductInstanceCashRegisters(page,cashRegister,(FiniteStateMachineState) page.getForm().findInputByFieldName(FIELD_FINITESTATEMACHINESTATE).getValue());
+				public Boolean build(Field field) {
+					if(FormOneSaleProduct.FIELD_DATE.equals(field.getName()) && FormOneSaleProduct.SHOW_DATE!=null)
+						return FormOneSaleProduct.SHOW_DATE;
+					return super.build(field);
 				}
-			}).build();*/
+			});
 		}
 		//System.out.println(form.get);
 		sell();
@@ -229,8 +236,8 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		saleProductInstance.setSaleProduct(identifiable.getSaleProducts().iterator().next());
 		identifiable.getSaleProducts().iterator().next().getInstances().add(saleProductInstance);
 		
-		saleProductInstance.setProcessingUser(userSession.getUser());
-		saleProductInstance.setProcessingDate(null);
+		saleProductInstance.getProcessing().setParty(userSession.getUser());
+		saleProductInstance.getProcessing().setDate(null);
 	}
 	
 	/**/
@@ -261,12 +268,16 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			if(((FormOneSaleProduct)form.getData()).cashRegisterMovementMode==null){
 				
 			}else{
+				identifiable.setDate(((FormOneSaleProduct)form.getData()).date);
 				saleCashRegisterMovement = companyBusinessLayer.getSaleCashRegisterMovementBusiness().instanciateOne(identifiable, identifiable.getCashier().getPerson(), Boolean.TRUE);
 				saleCashRegisterMovement.getCashRegisterMovement().setMode(((FormOneSaleProduct)form.getData()).cashRegisterMovementMode);
 				saleCashRegisterMovement.setAmountIn(identifiable.getSaleProducts().iterator().next().getSalableProduct().getPrice());
 				saleCashRegisterMovement.getCashRegisterMovement().getMovement().setSupportingDocumentIdentifier(((FormOneSaleProduct)form.getData()).supportingDocumentIdentifier);
 				companyBusinessLayer.getSaleCashRegisterMovementBusiness().in(saleCashRegisterMovement);
-				//identifiable.getSaleCashRegisterMovements().add(saleCashRegisterMovement);
+				identifiable.getSaleCashRegisterMovements().add(saleCashRegisterMovement);
+				
+				//System.out.println( identifiable.getSaleProducts() );
+				//System.out.println( identifiable.getSaleProducts().iterator().next().getInstances() );
 			}
 			
 			companyBusinessLayer.getSaleBusiness().create(identifiable,saleCashRegisterMovement);
@@ -279,11 +290,16 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	@Override
 	public Object succeed(UICommand command, Object parameter) {
 		super.succeed(command, parameter);
-		String url = null;
-		//url = "http://localhost:8080/company/private/__tools__/report.jsf?clazz=Sale&identifiable=151&fileExtensionParam=pdf&ridp=pos&windowmode=windowmodedialog";
-		url = navigationManager.reportUrl(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale(),UniformResourceLocatorParameter.PDF,Boolean.TRUE);
-		messageDialogOkButtonOnClick += "window.open('"+url+"', 'pointofsale"+identifiable.getIdentifier()+"', 'location=no,menubar=no,titlebar=no,toolbar=no,width=400, height=550');";
-		//System.out.println(messageDialogOkButtonOnClick);
+		if( ListenerUtils.getInstance().getBoolean(Listener.COLLECTION, new ListenerUtils.BooleanMethod<Listener>() {
+			@Override
+			public Boolean execute(Listener listener) {
+				return listener.isReportUpdatable(identifiable);
+			}
+		}) ){
+			String url = null;
+			url = navigationManager.reportUrl(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale(),UniformResourceLocatorParameter.PDF,Boolean.TRUE);
+			messageDialogOkButtonOnClick += "window.open('"+url+"', 'pointofsale"+identifiable.getIdentifier()+"', 'location=no,menubar=no,titlebar=no,toolbar=no,width=400, height=550');";
+		}
 		return null;
 	}
 	
@@ -358,6 +374,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	public static class FormOneSaleProduct extends AbstractFormModel<Sale> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
+		@Input @InputCalendar private Date date;
 		@Input @InputText private String externalIdentifier;
 		@Input @InputChoice @InputOneChoice @InputOneCombo private Cashier cashier;
 		@Input @InputChoice(load=false) @InputOneChoice @InputOneCombo private SalableProduct salableProduct;
@@ -379,16 +396,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		public void read() {
 			super.read();
 			if(identifiable.getSaleProducts().isEmpty()){
-				/*saleProduct = new SaleProduct();
-				saleProduct.setSale(identifiable);
-				saleProduct.setSalableProduct(salableProduct);
-				saleProduct.setQuantity(BigDecimal.ONE);
-				identifiable.getSaleProducts().add(saleProduct);
 				
-				saleProductInstance = new SaleProductInstance();
-				saleProduct.getInstances().add(saleProductInstance);
-				saleProductInstance.setSaleProduct(saleProduct);
-				*/
 			}else{
 				saleProduct = identifiable.getSaleProducts().iterator().next();
 			}
@@ -401,6 +409,9 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			//saleProductInstance.setSalableProductInstance(salableProductInstance);
 		}
 		
+		public static Boolean SHOW_DATE = Boolean.FALSE;
+		
+		public static final String FIELD_DATE = "date";
 		public static final String FIELD_EXTERNAL_IDENTIFIER = "externalIdentifier";
 		public static final String FIELD_CASHIER = "cashier";
 		public static final String FIELD_SALABLE_PRODUCT = "salableProduct";

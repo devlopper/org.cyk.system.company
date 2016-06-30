@@ -180,8 +180,8 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 		@Override
 		public void serve(AbstractProcessManyPage<?> page,Object data, String actionIdentifier) {
 			CompanyBusinessLayer companyBusinessLayer = CompanyBusinessLayer.getInstance();
-			((Form)data).getFiniteStateMachineState().setProcessingUser(page.getUserSession().getUser());
-			((Form)data).getFiniteStateMachineState().setProcessingDate(((Form)data).date);
+			((Form)data).getFiniteStateMachineState().getProcessing().setParty(page.getUserSession().getUser());
+			((Form)data).getFiniteStateMachineState().getProcessing().setDate(((Form)data).date);
 			if(companyBusinessLayer.getActionUpdateSalableProductInstanceCashRegisterState().equals(actionIdentifier)){
 				Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = new ArrayList<>();
 				for(Object object : page.getElements()){

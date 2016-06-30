@@ -91,8 +91,10 @@ import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashRegisterDao;
+import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleProductDao;
+import org.cyk.system.company.persistence.api.sale.SaleProductInstanceDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.api.FormatterBusiness;
 import org.cyk.system.root.business.api.TypedBusiness;
@@ -172,6 +174,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private SaleProductDao saleProductDao;
 	@Inject private SaleProductBusiness saleProductBusiness;
 	@Inject private SaleProductInstanceBusiness saleProductInstanceBusiness;
+	@Inject private SaleProductInstanceDao saleProductInstanceDao;
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	@Inject private SaleStockTangibleProductMovementBusiness saleStockTangibleProductMovementBusiness;
 	@Inject private CompanyBusiness companyBusiness;
@@ -201,6 +204,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private RoleDao roleDao;
 	@Inject private PersonDao personDao;
 	@Inject private SalableProductDao salableProductDao;
+	@Inject private SalableProductInstanceDao salableProductInstanceDao;
 	@Inject private StockableTangibleProductDao stockableTangibleProductDao;
 	@Inject private ProductCategoryBusiness productCategoryBusiness;
 	@Inject private StringGeneratorBusiness stringGeneratorBusiness;

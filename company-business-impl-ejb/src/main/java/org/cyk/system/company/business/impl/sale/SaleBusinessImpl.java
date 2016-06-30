@@ -17,7 +17,6 @@ import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
-import org.cyk.system.company.business.impl.AbstractCompanyBeanAdapter;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
@@ -181,6 +180,13 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			if(sale.getDate()==null)
 				sale.setDate(universalTimeCoordinated());
 		
+		final Sale sale0 = sale;
+		listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>(){
+			@Override
+			public void execute(Listener listener) {
+				listener.beforeCreate(sale0);
+			}});
+		
 		sale = super.create(sale);
 		cascade(sale, sale.getSaleProducts(),null,null, Crud.CREATE);
 		consume(sale,Crud.CREATE);
@@ -311,23 +317,23 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	/**/
 	
-	public static interface Listener{
+	public static interface Listener extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<Sale>{
 		
 		Collection<Listener> COLLECTION = new ArrayList<>();
 		
 		/**/
-		
+
 		void processOnConsume(Sale sale,Crud crud, Boolean first);
 		
 		Boolean isReportUpdatable(Sale sale);
 		
 		void processOnReportUpdated(SaleReport saleReport,Boolean invoice);
 		
-		public static class Adapter extends AbstractCompanyBeanAdapter implements Listener, Serializable {
+		public static class Adapter extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener.Adapter<Sale> implements Listener, Serializable {
 			private static final long serialVersionUID = -1625238619828187690L;
 			
 			/**/
-		
+			
 			@Override public void processOnConsume(Sale sale, Crud crud, Boolean first) {}
 			
 			@Override public Boolean isReportUpdatable(Sale sale) {
@@ -335,15 +341,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			}
 			
 			@Override public void processOnReportUpdated(SaleReport saleReport,Boolean invoice) {}
-			
-			public static class Default extends Adapter implements Serializable {
-				private static final long serialVersionUID = -1625238619828187690L;
-				
-				/**/
-				
-				@Override
-				public void processOnConsume(Sale sale, Crud crud, Boolean first) {}
-			}
 			
 		}
 		

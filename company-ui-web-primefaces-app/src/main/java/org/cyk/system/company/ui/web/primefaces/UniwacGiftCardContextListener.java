@@ -9,9 +9,14 @@ import javax.servlet.annotation.WebListener;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
+import org.cyk.system.company.business.impl.sale.SaleProductInstanceBusinessImpl;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.production.Reseller;
+import org.cyk.system.company.model.sale.SalableProductInstance;
+import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.ui.web.primefaces.production.ResellerCrudOnePageAdapter;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceEditPage;
@@ -57,6 +62,55 @@ public class UniwacGiftCardContextListener extends AbstractCompanyContextListene
 		SalableProductEditPage.CREATE_ON_PRODUCT = Boolean.FALSE;
 		SalableProductInstanceEditPage.CREATE_ON_SALABLE_PRODUCT = Boolean.FALSE;
 		
+		SaleBusinessImpl.Listener.COLLECTION.add(new SaleBusinessImpl.Listener.Adapter(){
+			private static final long serialVersionUID = 6995530308698881653L;
+			@Override
+			public void beforeCreate(Sale sale) {
+				if(GiftCardSystemMenuBuilder.ACTION_SELL_GIFT_CARD.equals(sale.getProcessing().getIdentifier())){
+					
+				}else if(GiftCardSystemMenuBuilder.ACTION_USE_GIFT_CARD.equals(sale.getProcessing().getIdentifier())){
+					//No product selling while using gift card
+					//while( !sale.getSaleProducts().isEmpty()  )
+					//	CompanyBusinessLayer.getInstance().getSaleBusiness().unselectProduct(sale, sale.getSaleProducts().iterator().next());
+					sale.getSaleProducts().clear();
+					
+					//change state to used
+					SalableProductInstance salableProductInstance = CompanyBusinessLayer.getInstance().getSalableProductInstanceDao()
+							.read(sale.getSaleCashRegisterMovements().iterator().next().getCashRegisterMovement().getMovement().getSupportingDocumentIdentifier());
+					SalableProductInstanceCashRegister salableProductInstanceCashRegister = CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterDao()
+							.readBySalableProductInstanceByCashRegister(salableProductInstance, sale.getCashier().getCashRegister());
+					salableProductInstanceCashRegister.setFiniteStateMachineState(rootBusinessLayer.getFiniteStateMachineStateDao().read("Utilisé"));
+					salableProductInstanceCashRegister.getFiniteStateMachineState().getProcessing().setParty(sale.getProcessing().getParty());
+					CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().update(salableProductInstanceCashRegister);
+				}
+			}
+			@Override
+			public Boolean isReportUpdatable(Sale sale) {
+				return Boolean.FALSE;
+			}
+		});
+		
+		SaleProductInstanceBusinessImpl.Listener.COLLECTION.add(new SaleProductInstanceBusinessImpl.Listener.Adapter(){
+			private static final long serialVersionUID = -8980261961629960732L;
+
+			@Override
+			public void beforeCreate(SaleProductInstance saleProductInstance) {
+				if(GiftCardSystemMenuBuilder.ACTION_SELL_GIFT_CARD.equals(saleProductInstance.getSaleProduct().getSale().getProcessing().getIdentifier())){
+					SalableProductInstanceCashRegister salableProductInstanceCashRegister = CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterDao()
+							.readBySalableProductInstanceByCashRegister(saleProductInstance.getSalableProductInstance()
+									,saleProductInstance.getSaleProduct().getSale().getCashier().getCashRegister());
+					
+					salableProductInstanceCashRegister.setFiniteStateMachineState(rootBusinessLayer.getFiniteStateMachineStateDao().read("Vendu"));
+					salableProductInstanceCashRegister.getFiniteStateMachineState().getProcessing().setParty(saleProductInstance.getProcessing().getParty());
+					CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().update(salableProductInstanceCashRegister);	
+				}else if(GiftCardSystemMenuBuilder.ACTION_USE_GIFT_CARD.equals(saleProductInstance.getSaleProduct().getSale().getProcessing().getIdentifier())){
+					
+				}
+				
+				
+			}
+		});
+		
 		CompanyWebManager.getInstance().getListeners().add(new AbstractPrimefacesManager.AbstractPrimefacesManagerListener.Adapter(){
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -81,7 +135,8 @@ public class UniwacGiftCardContextListener extends AbstractCompanyContextListene
 							, field.getName());
 						else if(GiftCardSystemMenuBuilder.ACTION_USE_GIFT_CARD.equals(saleEditPage.getActionIdentifier()))
 							return ArrayUtils.contains(new Object[]{SaleEditPage.FormOneSaleProduct.FIELD_CASHIER,SaleEditPage.FormOneSaleProduct.FIELD_EXTERNAL_IDENTIFIER
-									,SaleEditPage.FormOneSaleProduct.FIELD_SUPPORTING_DOCUMENT_IDENTIFIER,SaleEditPage.FormOneSaleProduct.FIELD_CASH_REGISTER_MOVEMENT_MODE}
+									,SaleEditPage.FormOneSaleProduct.FIELD_SUPPORTING_DOCUMENT_IDENTIFIER
+									,SaleEditPage.FormOneSaleProduct.FIELD_CASH_REGISTER_MOVEMENT_MODE}
 							, field.getName());
 						else
 							return Boolean.FALSE;
@@ -100,6 +155,12 @@ public class UniwacGiftCardContextListener extends AbstractCompanyContextListene
 				final SaleEditPage saleEditPage = (SaleEditPage) bean;
 				super.afterInitialisationEnded(bean);
 				saleEditPage.setFieldValue(SaleEditPage.FormOneSaleProduct.FIELD_CASH_REGISTER_MOVEMENT_MODE, CompanyBusinessLayer.getInstance().getCashRegisterMovementModeBusiness().find(CashRegisterMovementMode.GIFT_CARD));
+				
+				if(GiftCardSystemMenuBuilder.ACTION_SELL_GIFT_CARD.equals(saleEditPage.getActionIdentifier())){
+					
+				}else if(GiftCardSystemMenuBuilder.ACTION_USE_GIFT_CARD.equals(saleEditPage.getActionIdentifier())){
+					//saleEditPage.getForm().findInputByClassByFieldName(WebInput.class, FormOneSaleProduct.FIELD_CASHIER).getAjaxListener().setEnabled(Boolean.FALSE);
+				}
 			}
 			
 			

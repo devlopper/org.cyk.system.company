@@ -128,7 +128,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 		
 		@Override
 		public void processOnConsume(Sale sale, Crud crud, Boolean first) {
-			companyBusinessLayer.getStockTangibleProductMovementBusiness().consume(sale,crud,first);
+			CompanyBusinessLayer.getInstance().getStockTangibleProductMovementBusiness().consume(sale,crud,first);
 		}
 	}
 }

@@ -63,7 +63,6 @@ import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
-import org.joda.time.DateTime;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER+1)
 public class CompanyReportRepository extends AbstractReportRepository implements Serializable {
@@ -474,7 +473,6 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				}
 			}
 			
-			
 			String key = ""+salableProductInstanceCashRegisterStateLogDetails.getDate()+salableProductInstanceCashRegisterStateLogDetails
 					.getSalableProductInstanceCashRegister().getCashRegister().getCode()+salableProductInstanceCashRegisterStateLogDetails.getMaster().getState().getCode();
 			SalableProductInstanceCashRegisterStateLogDetails spicrsld = map.get(key);
@@ -484,7 +482,6 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			}else{
 				spicrsld.setInstanceCode(spicrsld.getInstanceCode()+Constant.CHARACTER_COMA+salableProductInstanceCashRegisterStateLogDetails.getInstanceCode());
 				spicrsld.setInstanceQuantity(String.valueOf(Integer.parseInt(spicrsld.getInstanceQuantity())+Integer.parseInt(salableProductInstanceCashRegisterStateLogDetails.getInstanceQuantity())));
-				//spicrsld.setInstanceTotalPrice(format(salableProductInstanceCashRegisterStateLogDetails.getSalableProductInstanceCashRegister().getSalableProductInstance().getCollection().getPrice()));
 				spicrsld.setInstanceTotalPrice(format(numberBusiness.parse(BigDecimal.class,spicrsld.getInstanceTotalPrice())
 						.add(numberBusiness.parse(BigDecimal.class, salableProductInstanceCashRegisterStateLogDetails.getInstanceTotalPrice())) ));
 			}
@@ -496,6 +493,8 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			for(String value : StringUtils.split(salableProductInstanceCashRegisterStateLogDetails.getInstanceCode(), Constant.CHARACTER_COMA))
 				identifiers.add(Long.parseLong(value));
 			salableProductInstanceCashRegisterStateLogDetails.setInstanceCode(RootBusinessLayer.getInstance().getNumberBusiness().formatSequences(identifiers, arguments));
+			if(TimeDivisionType.DAY.equals(timeDivisionTypeCode))
+				salableProductInstanceCashRegisterStateLogDetails.setDate(formatDate(salableProductInstanceCashRegisterStateLogDetails.getMaster().getDate()));
 		}
 		
 		return map.values();

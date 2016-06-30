@@ -1,6 +1,7 @@
 package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.ejb.Stateless;
@@ -10,13 +11,12 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.sale.SaleProductInstanceBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
-import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
-import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashRegisterDao;
 import org.cyk.system.company.persistence.api.sale.SaleProductInstanceDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.utility.common.ListenerUtils;
 
 @Stateless
 public class SaleProductInstanceBusinessImpl extends AbstractTypedBusinessService<SaleProductInstance, SaleProductInstanceDao> implements SaleProductInstanceBusiness,Serializable {
@@ -31,13 +31,19 @@ public class SaleProductInstanceBusinessImpl extends AbstractTypedBusinessServic
 	}
 	
 	@Override
-	public SaleProductInstance create(SaleProductInstance saleProductInstance) {
+	public SaleProductInstance create(final SaleProductInstance saleProductInstance) {
 		exceptionUtils().exception(Boolean.TRUE.equals(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
 				.getAllowOnlySalableProductInstanceOfCashRegister()) 
 				&& salableProductInstanceCashRegisterDao.readBySalableProductInstanceByCashRegister(saleProductInstance.getSalableProductInstance()
 					, saleProductInstance.getSaleProduct().getSale().getCashier().getCashRegister())==null, "AllowOnlySalableProductInstanceOfCashRegister");
 		
-		Sale sale = saleProductInstance.getSaleProduct().getSale();
+		listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>(){
+			@Override
+			public void execute(Listener listener) {
+				listener.beforeCreate(saleProductInstance);
+			}});
+		
+		/*Sale sale = saleProductInstance.getSaleProduct().getSale();
 		if(sale.getAccountingPeriod().getSaleConfiguration().getSalableProductInstanceCashRegisterSaleConsumeState()==null){
 			
 		}else{
@@ -45,10 +51,11 @@ public class SaleProductInstanceBusinessImpl extends AbstractTypedBusinessServic
 					.readBySalableProductInstanceByCashRegister(saleProductInstance.getSalableProductInstance(),sale.getCashier().getCashRegister());
 			salableProductInstanceCashRegister.setFiniteStateMachineState(sale.getAccountingPeriod().getSaleConfiguration()
 					.getSalableProductInstanceCashRegisterSaleConsumeState());
-			salableProductInstanceCashRegister.getFiniteStateMachineState().setProcessingUser(saleProductInstance.getProcessingUser());
+			salableProductInstanceCashRegister.getFiniteStateMachineState().getProcessing().setParty(saleProductInstance.getProcessing().getParty());
 			CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().update(salableProductInstanceCashRegister);
+			
 		}
-		
+		*/
 		return super.create(saleProductInstance);
 	}
 
@@ -60,6 +67,19 @@ public class SaleProductInstanceBusinessImpl extends AbstractTypedBusinessServic
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public SaleProductInstance findBySalableProductInstanceCode(String code) {
 		return dao.readBySalableProductInstanceCode(code);
+	}
+	
+	public static interface Listener extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<SaleProductInstance> {
+		
+		Collection<Listener> COLLECTION = new ArrayList<>();
+
+		/**/
+		
+		public static class Adapter extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener.Adapter<SaleProductInstance> implements Listener,Serializable{
+			private static final long serialVersionUID = 8213436661982661753L;
+			
+		}
+		
 	}
 	
 }

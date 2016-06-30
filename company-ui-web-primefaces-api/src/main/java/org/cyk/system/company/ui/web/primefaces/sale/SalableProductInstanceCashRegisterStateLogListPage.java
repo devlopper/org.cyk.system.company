@@ -49,12 +49,13 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 				CompanyReportRepository.getInstance().getParameterCustomerReportBalance());
 		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), balanceType);*/
 	}
-		
+	
+	@Getter @Setter
 	public static class TableAdapter extends DetailsConfigurationListener.Table.Adapter<FiniteStateMachineStateLog,SalableProductInstanceCashRegisterStateLogDetails> {
 
 		private static final long serialVersionUID = 202093846160625878L;
 
-		//private Collection<FiniteStateMachineStateLog> finiteStateMachineStateLogs;
+		private String timeDivisionTypeCode = TimeDivisionType.DAY;
 		
 		public TableAdapter() {
 			super(FiniteStateMachineStateLog.class, SalableProductInstanceCashRegisterStateLogDetails.class);
@@ -65,14 +66,10 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 			return Boolean.TRUE;
 		}
 		
-		protected String getTimeDivisionTypeCode(){
-			return TimeDivisionType.DAY;
-		}
-		
 		protected FiniteStateMachineStateLog.SearchCriteria getSearchCriteria(){
 			FiniteStateMachineStateLog.SearchCriteria searchCriteria = new FiniteStateMachineStateLog.SearchCriteria();
 			searchCriteria.addFiniteStateMachineStates(WebManager.getInstance().decodeIdentifiablesRequestParameter(FiniteStateMachineState.class));
-			searchCriteria.setTimeDivisionTypeCode(TimeDivisionType.DAY);
+			searchCriteria.setTimeDivisionTypeCode(timeDivisionTypeCode);
 			if(searchCriteria.getFiniteStateMachineStates().isEmpty())
 				searchCriteria.addFiniteStateMachineStates(RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
 						.findByMachine(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()

@@ -90,8 +90,8 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 			for(int j = i; j < i+size && j < salableProductInstances.size() ; j++){				
 				SalableProductInstanceCashRegister salableProductInstanceCashRegister = new SalableProductInstanceCashRegister(salableProductInstances.get(j)
 						, cashRegister, saleConfiguration.getSalableProductInstanceCashRegisterFiniteStateMachine().getInitialState());
-				salableProductInstanceCashRegister.setProcessingUser(application);
-				salableProductInstanceCashRegister.getFiniteStateMachineState().setProcessingUser(application);
+				salableProductInstanceCashRegister.getProcessing().setParty(application);
+				salableProductInstanceCashRegister.getFiniteStateMachineState().getProcessing().setParty(application);
 				salableProductInstanceCashRegisters.add(salableProductInstanceCashRegister);
 			}
 			i += size;
