@@ -47,9 +47,8 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 		Collection<CashRegister> cashRegisters = new ArrayList<>();
 		Collection<Employee> employees = new ArrayList<>();
 		Collection<Cashier> cashiers = new ArrayList<>();
-		Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = new ArrayList<>();
 		
-		for(Object[] values : GIFT_CARDS ){
+		/*for(Object[] values : GIFT_CARDS ){
 			TangibleProduct tangibleProduct = companyBusinessLayer.getTangibleProductBusiness().instanciateOne((String)values[0], (String)values[0]);
 			products.add(tangibleProduct);
 			List<String> instances = new ArrayList<>();
@@ -61,7 +60,7 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 			salableProduct.setProduct(tangibleProduct);
 			salableProduct.setPrice(new BigDecimal((String)values[0]));
 			salableProducts.add(salableProduct);
-		}
+		}*/
 		
 		flush(Product.class, products);
 		flush(SalableProduct.class, salableProducts);
@@ -80,7 +79,8 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 		flush(Employee.class, employees);
 		flush(CashRegister.class, cashRegisters);
 		flush(Cashier.class, cashiers);
-		
+		/*
+		Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = new ArrayList<>();
 		SaleConfiguration saleConfiguration = companyBusinessLayer.getAccountingPeriodBusiness().findCurrent().getSaleConfiguration();
 		cashRegisters = cashRegisterDao.readAll();
 		List<SalableProductInstance> salableProductInstances = new ArrayList<>(salableProductInstanceDao.readAll());
@@ -96,9 +96,8 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 			}
 			i += size;
 		}
-		
 		flush(SalableProductInstanceCashRegister.class, salableProductInstanceCashRegisters);
-		
+		*/
 		rootRandomDataProvider.createActor(Customer.class, 5);
 		
 		
