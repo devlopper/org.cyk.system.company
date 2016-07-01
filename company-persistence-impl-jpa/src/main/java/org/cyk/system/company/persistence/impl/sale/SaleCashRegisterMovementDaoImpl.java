@@ -10,18 +10,20 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
+import org.cyk.system.root.persistence.impl.QueryStringBuilder;
 
 public class SaleCashRegisterMovementDaoImpl extends AbstractTypedDao<SaleCashRegisterMovement> implements SaleCashRegisterMovementDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	private String readBySale,countBySale,sumAmount,readByCashRegisterMovementComputedIdentifier;
+	private String readBySale,countBySale,sumAmount,readByCashRegisterMovementComputedIdentifier,readBySupportingDocumentIdentifiers;
 	
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
 		registerNamedQuery(readBySale, _select().where(SaleCashRegisterMovement.FIELD_SALE));
 		registerNamedQuery(sumAmount, "SELECT SUM(scrm.cashRegisterMovement.movement.value) FROM SaleCashRegisterMovement scrm WHERE scrm.sale = :sale");
+		registerNamedQuery(readBySupportingDocumentIdentifiers, "SELECT r FROM SaleCashRegisterMovement r WHERE r.cashRegisterMovement.movement.supportingDocumentIdentifier IN :identifiers");
 		registerNamedQuery(readByCashRegisterMovementComputedIdentifier, _select().where(commonUtils
 				.attributePath(SaleCashRegisterMovement.FIELD_CASH_REGISTER_MOVEMENT, CashRegisterMovement.FIELD_COMPUTED_IDENTIFIER),CashRegisterMovement.FIELD_COMPUTED_IDENTIFIER));
 	}
@@ -44,6 +46,11 @@ public class SaleCashRegisterMovementDaoImpl extends AbstractTypedDao<SaleCashRe
 	@Override
 	public SaleCashRegisterMovement readByCashRegisterMovementComputedIdentifier(String identifier) {
 		return namedQuery(readByCashRegisterMovementComputedIdentifier).parameter(CashRegisterMovement.FIELD_COMPUTED_IDENTIFIER, identifier).ignoreThrowable(NoResultException.class).resultOne();
+	}
+	
+	@Override
+	public Collection<SaleCashRegisterMovement> readBySupportingDocumentIdentifiers(Collection<String> supportingDocumentIdentifiers) {
+		return namedQuery(readBySupportingDocumentIdentifiers).parameter(QueryStringBuilder.VAR_IDENTIFIERS, supportingDocumentIdentifiers).resultMany();
 	}
 
 }
