@@ -48,6 +48,7 @@ public class SalableProductInstanceCashRegister extends AbstractIdentifiable imp
 	
 	public static final String FIELD_SALABLE_PRODUCT_INSTANCE = "salableProductInstance";
 	public static final String FIELD_CASH_REGISTER = "cashRegister";
+	public static final String FIELD_FINITE_STATE_MACHINE_STATE = "finiteStateMachineState";
 	
 	/**/
 	

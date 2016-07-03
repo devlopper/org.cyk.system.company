@@ -14,8 +14,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.business.impl.sale.SaleProductInstanceBusinessImpl;
+import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.production.Reseller;
+import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
@@ -25,6 +27,7 @@ import org.cyk.system.company.ui.web.primefaces.production.ResellerCrudOnePageAd
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage.FormOneSaleProduct;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.language.LanguageBusinessImpl;
 import org.cyk.system.root.business.impl.mathematics.machine.FiniteStateMachineStateLogBusinessImpl;
@@ -206,6 +209,15 @@ public class UniwacGiftCardContextListener extends AbstractCompanyContextListene
 			}
 			
 			
+		});
+		
+		SaleEditPage.Listener.COLLECTION.add(new SaleEditPage.Listener.Adapter(){
+			private static final long serialVersionUID = -1473884331127075090L;
+			@Override
+			public Collection<SalableProductInstance> getSalableProductInstances(SalableProduct salableProduct,CashRegister cashRegister) {
+				FiniteStateMachineState finiteStateMachineState = RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness().find("Réceptionné");
+				return CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().findByCollectionByCashRegisterByFiniteStateMachineState(salableProduct,cashRegister, finiteStateMachineState);
+			}
 		});
 		
 	}

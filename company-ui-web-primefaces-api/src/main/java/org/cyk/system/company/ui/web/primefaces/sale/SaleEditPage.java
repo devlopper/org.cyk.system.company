@@ -19,7 +19,9 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
+import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl.Listener;
+import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.sale.Customer;
@@ -51,6 +53,7 @@ import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
+import org.cyk.utility.common.cdi.BeanAdapter;
 import org.omnifaces.util.Faces;
 
 @Named @ViewScoped @Getter @Setter
@@ -192,11 +195,11 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			}
 		}).build();
 		
-		createAjaxBuilder(FormOneSaleProduct.FIELD_SALABLE_PRODUCT).updatedFieldNames(FormOneSaleProduct.FIELD_SALABLE_PRODUCT_INSTANCE,FormOneSaleProduct.FIELD_COST)
+		createAjaxBuilder(FormOneSaleProduct.FIELD_SALABLE_PRODUCT).crossedFieldNames(FormOneSaleProduct.FIELD_CASHIER).updatedFieldNames(FormOneSaleProduct.FIELD_SALABLE_PRODUCT_INSTANCE,FormOneSaleProduct.FIELD_COST)
 		.method(SalableProduct.class,new ListenValueMethod<SalableProduct>() {
 			@Override
 			public void execute(SalableProduct salableProduct) {
-				selectSalableProduct(salableProduct);
+				selectSalableProduct((Cashier) form.findInputByFieldName(FormOneSaleProduct.FIELD_CASHIER).getValue(),salableProduct);
 			}
 		}).build();
 		
@@ -213,17 +216,23 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		Collection<SalableProduct> salableProducts = CompanyBusinessLayer.getInstance().getSalableProductBusiness().findByCashRegister(cashier.getCashRegister());
 		SalableProduct salableProduct = (SalableProduct) setChoicesAndGetAutoSelected(FormOneSaleProduct.FIELD_SALABLE_PRODUCT,salableProducts);
 		if(salableProduct!=null){
-			selectSalableProduct(salableProduct);
+			selectSalableProduct(cashier,salableProduct);
 		}
 	}
-	private void selectSalableProduct(SalableProduct salableProduct){
+	private void selectSalableProduct(final Cashier cashier,final SalableProduct salableProduct){
 		if(identifiable.getSaleProducts().isEmpty())
 			;
 		else
 			companyBusinessLayer.getSaleBusiness().unselectProduct(identifiable, identifiable.getSaleProducts().iterator().next());
 		companyBusinessLayer.getSaleBusiness().selectProduct(identifiable, salableProduct);
 		setFieldValue(FormOneSaleProduct.FIELD_COST, salableProduct.getPrice());
-		Collection<SalableProductInstance> salableProductInstances = CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().findByCollection(salableProduct);
+		
+		Collection<SalableProductInstance> salableProductInstances = listenerUtils.getCollection(Listener.COLLECTION, new ListenerUtils.CollectionMethod<Listener, SalableProductInstance>() {
+			@Override
+			public Collection<SalableProductInstance> execute(Listener listener) {
+				return listener.getSalableProductInstances(salableProduct,cashier.getCashRegister());
+			}
+		});
 		SalableProductInstance salableProductInstance = (SalableProductInstance) setChoicesAndGetAutoSelected(FormOneSaleProduct.FIELD_SALABLE_PRODUCT_INSTANCE, salableProductInstances);
 		if(salableProductInstance!=null)
 			selectSalableProductInstance(salableProductInstance);
@@ -290,9 +299,9 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	@Override
 	public Object succeed(UICommand command, Object parameter) {
 		super.succeed(command, parameter);
-		if( ListenerUtils.getInstance().getBoolean(Listener.COLLECTION, new ListenerUtils.BooleanMethod<Listener>() {
+		if( ListenerUtils.getInstance().getBoolean(SaleBusinessImpl.Listener.COLLECTION, new ListenerUtils.BooleanMethod<SaleBusinessImpl.Listener>() {
 			@Override
-			public Boolean execute(Listener listener) {
+			public Boolean execute(SaleBusinessImpl.Listener listener) {
 				return listener.isReportUpdatable(identifiable);
 			}
 		}) ){
@@ -420,5 +429,35 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		public static final String FIELD_COST = "cost";
 		public static final String FIELD_CASH_REGISTER_MOVEMENT_MODE = "cashRegisterMovementMode";
 		public static final String FIELD_SUPPORTING_DOCUMENT_IDENTIFIER = "supportingDocumentIdentifier";
+	}
+	
+	public static interface Listener {
+		
+		Collection<Listener> COLLECTION = new ArrayList<>();
+		
+		/**/
+		
+		Collection<SalableProductInstance> getSalableProductInstances(SalableProduct salableProduct,CashRegister cashRegister);
+		
+		public static class Adapter extends BeanAdapter implements Listener {
+			private static final long serialVersionUID = -2307751181350506061L;
+
+			@Override
+			public Collection<SalableProductInstance> getSalableProductInstances(SalableProduct salableProduct,CashRegister cashRegister) {
+				return null;
+			}
+			
+			/**/
+			
+			public static class Default extends Adapter implements Serializable {
+				private static final long serialVersionUID = 8303179056469661724L;
+				
+				@Override
+				public Collection<SalableProductInstance> getSalableProductInstances(SalableProduct salableProduct,CashRegister cashRegister) {
+					return CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().findByCollection(salableProduct);
+				}
+			}
+			
+		}
 	}
 }
