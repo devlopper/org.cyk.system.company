@@ -108,7 +108,8 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 			saleCashRegisterMovement.setAmountIn(new BigDecimal(randomDataProvider.randomPositiveInt(sale.getCost().getValue().intValue())*1.3));
 			saleCashRegisterMovement.setAmountIn(saleCashRegisterMovement.getAmountIn().round(new MathContext(0, RoundingMode.DOWN)));
 			saleCashRegisterMovementBusiness.in(saleCashRegisterMovement);
-			saleBusiness.create(sale, saleCashRegisterMovement);
+			sale.getSaleCashRegisterMovements().add(saleCashRegisterMovement);
+			saleBusiness.create(sale);
 			
 			if(stock>0 && randomDataProvider.randomInt(1, 5)==3){
 				createTangibleProductStockMovement(tangibleProducts,sale.getDate());

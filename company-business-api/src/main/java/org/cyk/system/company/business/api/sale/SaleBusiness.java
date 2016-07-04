@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleResults;
@@ -27,7 +26,6 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 	void unselectProduct(Sale sale,SaleProduct saleProduct);
 	void applyChange(Sale sale, SaleProduct saleProduct);
 	
-	Sale create(Sale sale,SaleCashRegisterMovement saleCashRegisterMovement);
 	void update(Sale sale,FiniteStateMachineAlphabet finiteStateMachineAlphabet);
 	
 	Collection<Sale> findByCriteria(SaleSearchCriteria criteria);

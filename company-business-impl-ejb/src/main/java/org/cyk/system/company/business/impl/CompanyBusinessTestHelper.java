@@ -187,13 +187,14 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	}else{
     		final SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().instanciateOne(sale, sale.getCashier().getPerson(),Boolean.TRUE);
         	set(saleCashRegisterMovement, paid);
+        	sale.getSaleCashRegisterMovements().add(saleCashRegisterMovement);
         	if(expectedThrowableMessage!=null){
         		new Try(expectedThrowableMessage){ 
         			private static final long serialVersionUID = -8176804174113453706L;
-        			@Override protected void code() {getCompanyBusinessLayer().getSaleBusiness().create(sale,saleCashRegisterMovement);}
+        			@Override protected void code() {getCompanyBusinessLayer().getSaleBusiness().create(sale);}
         		}.execute();
         	}else{
-        		getCompanyBusinessLayer().getSaleBusiness().create(sale,saleCashRegisterMovement);
+        		getCompanyBusinessLayer().getSaleBusiness().create(sale);
         	}	
     	}
     	return sale;

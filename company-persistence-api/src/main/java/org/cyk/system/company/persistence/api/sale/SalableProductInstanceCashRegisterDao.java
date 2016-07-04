@@ -6,6 +6,7 @@ import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister.SearchCriteria;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.persistence.api.TypedDao;
 
 public interface SalableProductInstanceCashRegisterDao extends TypedDao<SalableProductInstanceCashRegister> {
@@ -15,5 +16,7 @@ public interface SalableProductInstanceCashRegisterDao extends TypedDao<SalableP
 	
 	Collection<SalableProductInstanceCashRegister> readByCriteria(SearchCriteria searchCriteria);
 	Long countByCriteria(SearchCriteria searchCriteria);
+	Collection<SalableProductInstanceCashRegister> readBySalableProductInstanceByFiniteStateMachineState(
+			SalableProductInstance salableProductInstance,FiniteStateMachineState finiteStateMachineState);
 
 }

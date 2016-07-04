@@ -9,6 +9,7 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister.SearchCriteria;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashRegisterDao;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.search.AbstractFieldValueSearchCriteriaSet;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
@@ -17,7 +18,8 @@ public class SalableProductInstanceCashRegisterDaoImpl extends AbstractTypedDao<
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	private String readBySalableProductInstance,readBySalableProductInstanceByCashRegister,readByCriteria,countByCriteria;
+	private String readBySalableProductInstance,readBySalableProductInstanceByCashRegister,readByCriteria,countByCriteria
+		,readBySalableProductInstanceByFiniteStateMachineState;
 	
 	@Override
 	protected void namedQueriesInitialisation() {
@@ -25,6 +27,8 @@ public class SalableProductInstanceCashRegisterDaoImpl extends AbstractTypedDao<
 		registerNamedQuery(readBySalableProductInstance, _select().where(SalableProductInstanceCashRegister.FIELD_SALABLE_PRODUCT_INSTANCE));
 		registerNamedQuery(readBySalableProductInstanceByCashRegister, _select().where(SalableProductInstanceCashRegister.FIELD_SALABLE_PRODUCT_INSTANCE)
 				.and(SalableProductInstanceCashRegister.FIELD_CASH_REGISTER));
+		registerNamedQuery(readBySalableProductInstanceByFiniteStateMachineState, _select().where(SalableProductInstanceCashRegister.FIELD_SALABLE_PRODUCT_INSTANCE)
+				.and(SalableProductInstanceCashRegister.FIELD_FINITE_STATE_MACHINE_STATE));
 		registerNamedQuery(readByCriteria, "SELECT r1 FROM SalableProductInstanceCashRegister r1 WHERE r1.cashRegister.identifier IN :cashRegisters "
 				+ " AND r1.finiteStateMachineState.identifier IN :finiteStateMachineStates");
 	}
@@ -39,6 +43,13 @@ public class SalableProductInstanceCashRegisterDaoImpl extends AbstractTypedDao<
 	public Collection<SalableProductInstanceCashRegister> readBySalableProductInstance(SalableProductInstance salableProductInstance) {
 		return namedQuery(readBySalableProductInstance).parameter(SalableProductInstanceCashRegister.FIELD_SALABLE_PRODUCT_INSTANCE, salableProductInstance)
 				.resultMany();
+	}
+	
+	@Override
+	public Collection<SalableProductInstanceCashRegister> readBySalableProductInstanceByFiniteStateMachineState(SalableProductInstance salableProductInstance,
+			FiniteStateMachineState finiteStateMachineState) {
+		return namedQuery(readBySalableProductInstanceByFiniteStateMachineState).parameter(SalableProductInstanceCashRegister.FIELD_SALABLE_PRODUCT_INSTANCE, salableProductInstance)
+				.parameter(SalableProductInstanceCashRegister.FIELD_FINITE_STATE_MACHINE_STATE, finiteStateMachineState).resultMany();
 	}
 	
 	@Override

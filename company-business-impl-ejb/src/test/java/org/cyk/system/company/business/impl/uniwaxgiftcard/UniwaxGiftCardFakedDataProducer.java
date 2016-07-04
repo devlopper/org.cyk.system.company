@@ -17,18 +17,14 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
-import org.cyk.system.company.model.sale.SalableProductInstance;
-import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
-import org.cyk.system.company.model.sale.SaleConfiguration;
 import org.cyk.system.company.model.structure.Employee;
-import org.cyk.system.root.model.party.Application;
 
 @Singleton @Getter
 public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataProducer implements Serializable {
 
 	private static final long serialVersionUID = -1832900422621121762L;
 	
-	public static final Object[][] GIFT_CARDS = {{"5000",1,99},{"10000",100,199},{"20000",200,299}};
+	public static final Object[][] GIFT_CARDS = {{"5000",1,5},{"10000",100,105},{"20000",200,205}};
 	
 	public static final String[] SHOPS = {"CAP NORD","CAP SUD","PLTX PR ST-C2D","PLTX  P.A.A","PLTX (BOLLORE)","PLTX","PLATEAU","WOODIN 2PLTX","CASH DJIBI"
 		,"PRESIDENCE DE LA REPUBLIQUE","ANAC","Mme DICKOH"};
@@ -48,7 +44,7 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 		Collection<Employee> employees = new ArrayList<>();
 		Collection<Cashier> cashiers = new ArrayList<>();
 		
-		/*for(Object[] values : GIFT_CARDS ){
+		for(Object[] values : GIFT_CARDS ){
 			TangibleProduct tangibleProduct = companyBusinessLayer.getTangibleProductBusiness().instanciateOne((String)values[0], (String)values[0]);
 			products.add(tangibleProduct);
 			List<String> instances = new ArrayList<>();
@@ -60,7 +56,7 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 			salableProduct.setProduct(tangibleProduct);
 			salableProduct.setPrice(new BigDecimal((String)values[0]));
 			salableProducts.add(salableProduct);
-		}*/
+		}
 		
 		flush(Product.class, products);
 		flush(SalableProduct.class, salableProducts);

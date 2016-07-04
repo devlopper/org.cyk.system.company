@@ -20,7 +20,6 @@ import lombok.Setter;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
-import org.cyk.system.company.business.impl.sale.SaleBusinessImpl.Listener;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.payment.Cashier;
@@ -279,20 +278,32 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			}else{
 				identifiable.setDate(((FormOneSaleProduct)form.getData()).date);
 				saleCashRegisterMovement = companyBusinessLayer.getSaleCashRegisterMovementBusiness().instanciateOne(identifiable, identifiable.getCashier().getPerson(), Boolean.TRUE);
-				saleCashRegisterMovement.getCashRegisterMovement().setMode(((FormOneSaleProduct)form.getData()).cashRegisterMovementMode);
-				saleCashRegisterMovement.setAmountIn(identifiable.getSaleProducts().iterator().next().getSalableProduct().getPrice());
-				saleCashRegisterMovement.getCashRegisterMovement().getMovement().setSupportingDocumentIdentifier(((FormOneSaleProduct)form.getData()).supportingDocumentIdentifier);
-				companyBusinessLayer.getSaleCashRegisterMovementBusiness().in(saleCashRegisterMovement);
 				identifiable.getSaleCashRegisterMovements().add(saleCashRegisterMovement);
-				
-				//System.out.println( identifiable.getSaleProducts() );
-				//System.out.println( identifiable.getSaleProducts().iterator().next().getInstances() );
+				saleCashRegisterMovement.getCashRegisterMovement().setMode(((FormOneSaleProduct)form.getData()).cashRegisterMovementMode);
+				saleCashRegisterMovement.getCashRegisterMovement().getMovement().setSupportingDocumentIdentifier(((FormOneSaleProduct)form.getData()).supportingDocumentIdentifier);
+				saleCashRegisterMovement.setAmountIn(listenerUtils.getBigDecimal(Listener.COLLECTION, new ListenerUtils.BigDecimalMethod<Listener>() {
+					@Override
+					public BigDecimal execute(Listener listener) {
+						return listener.getAmountIn(identifiable);
+					}
+				}));
+				companyBusinessLayer.getSaleCashRegisterMovementBusiness().in(saleCashRegisterMovement);
 			}
-			
-			companyBusinessLayer.getSaleBusiness().create(identifiable,saleCashRegisterMovement);
+			if(saleCashRegisterMovement!=null){
+				final SaleCashRegisterMovement saleCashRegisterMovementFinal = saleCashRegisterMovement;
+				listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>() {
+					@Override
+					public void execute(Listener listener) {
+						listener.processSaleCashRegisterMovement(saleCashRegisterMovementFinal);
+					}
+				});
+			}
+			companyBusinessLayer.getSaleBusiness().create(identifiable);
 		}else{
 			identifiable.setCustomer(selectedCustomer);
-			companyBusinessLayer.getSaleBusiness().create(identifiable, cashRegisterController.getSaleCashRegisterMovement());
+			identifiable.getSaleCashRegisterMovements().clear();
+			identifiable.getSaleCashRegisterMovements().add(cashRegisterController.getSaleCashRegisterMovement());
+			companyBusinessLayer.getSaleBusiness().create(identifiable);
 		}
 	}
 	
@@ -438,6 +449,8 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		/**/
 		
 		Collection<SalableProductInstance> getSalableProductInstances(SalableProduct salableProduct,CashRegister cashRegister);
+		BigDecimal getAmountIn(Sale sale);
+		void processSaleCashRegisterMovement(SaleCashRegisterMovement saleCashRegisterMovement);
 		
 		public static class Adapter extends BeanAdapter implements Listener {
 			private static final long serialVersionUID = -2307751181350506061L;
@@ -446,7 +459,12 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			public Collection<SalableProductInstance> getSalableProductInstances(SalableProduct salableProduct,CashRegister cashRegister) {
 				return null;
 			}
-			
+			@Override
+			public BigDecimal getAmountIn(Sale sale) {
+				return null;
+			}
+			@Override
+			public void processSaleCashRegisterMovement(SaleCashRegisterMovement saleCashRegisterMovement) {}
 			/**/
 			
 			public static class Default extends Adapter implements Serializable {
@@ -455,6 +473,10 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 				@Override
 				public Collection<SalableProductInstance> getSalableProductInstances(SalableProduct salableProduct,CashRegister cashRegister) {
 					return CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().findByCollection(salableProduct);
+				}
+				@Override
+				public BigDecimal getAmountIn(Sale sale) {
+					return sale.getSaleProducts().iterator().next().getSalableProduct().getPrice();
 				}
 			}
 			

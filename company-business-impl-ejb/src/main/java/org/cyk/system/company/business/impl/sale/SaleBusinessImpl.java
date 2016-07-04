@@ -165,14 +165,10 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			sale.getCost().setValue(sale.getCost().getValue().add(saleProduct.getCost().getValue()));
 		}
 	}
-	
-	@Override
-	public Sale create(Sale sale) {
-		return create(sale, null);
-	}
 		
 	@Override
-	public Sale create(Sale sale, SaleCashRegisterMovement saleCashRegisterMovement) {
+	public Sale create(Sale sale) {
+		SaleCashRegisterMovement saleCashRegisterMovement = sale.getSaleCashRegisterMovements().isEmpty() ? null : sale.getSaleCashRegisterMovements().iterator().next();
 		exceptionUtils().exception(saleCashRegisterMovement!=null && finiteStateMachineFinalStateDao.readByState(sale.getFiniteStateMachineState())==null
 				, "exception.sale.finitestatemachinestate.notfinal");
 		//Firstly we create the sale
