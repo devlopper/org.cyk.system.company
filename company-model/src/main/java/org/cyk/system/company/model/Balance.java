@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 import org.cyk.system.root.model.AbstractModelElement;
+import org.cyk.utility.common.Constant;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +28,7 @@ public class Balance extends AbstractModelElement implements Serializable {
 	
 	@Override
 	public String toString() {
-		return value+(cumul==null?"":","+cumul);
+		return value+(cumul==null?Constant.EMPTY_STRING.toString():Constant.CHARACTER_COMA.toString()+cumul);
 	}
 	
 	@Override

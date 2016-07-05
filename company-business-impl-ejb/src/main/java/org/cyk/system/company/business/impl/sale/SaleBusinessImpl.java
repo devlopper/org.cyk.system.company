@@ -42,6 +42,7 @@ import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineFinalState;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineFinalStateDao;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
@@ -185,6 +186,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		
 		sale = super.create(sale);
 		cascade(sale, sale.getSaleProducts(),null,null, Crud.CREATE);
+		
 		consume(sale,Crud.CREATE);
 		
 		if(sale.getComputedIdentifier()==null)
@@ -196,6 +198,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		if(saleCashRegisterMovement==null){
 			
 		}else {
+			saleCashRegisterMovement.setSale(sale);
 			//FIXME has be done to handled sale stock issue : 0 amount and X stock out. think another better way
 			if(saleCashRegisterMovement.getAmountIn().equals(saleCashRegisterMovement.getAmountOut()) && saleCashRegisterMovement.getAmountIn().equals(BigDecimal.ZERO)){
 				//logDebug("No sale cash register movement");
@@ -254,7 +257,8 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	private void consume(Sale sale,Crud crud){
-		if(finiteStateMachineFinalStateDao.readByState(sale.getFiniteStateMachineState())==null){
+		FiniteStateMachineFinalState finiteStateMachineFinalState = finiteStateMachineFinalStateDao.readByState(sale.getFiniteStateMachineState());
+		if(finiteStateMachineFinalState==null){
 			
 		}else{
 			/*

@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.impl.CompanyBusinessLayerAdapter;
 import org.cyk.system.company.business.impl.integration.AbstractBusinessIT;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
@@ -14,17 +15,6 @@ import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachin
 public abstract class AbstractUniwaxGiftCardBusinessIT extends AbstractBusinessIT {
 
 	private static final long serialVersionUID = -5752455124275831171L;
-
-	private static final String GIFT_CARD_WORKFLOW = "GIFT_CARD_WORKFLOW";
-	private static final String GIFT_CARD_ASSIGNED = "Assigné";
-	private static final String GIFT_CARD_SEND = "Transferer";
-	private static final String GIFT_CARD_SENT = "Transferé";
-	private static final String GIFT_CARD_RECEIVE = "Réceptionner";
-	private static final String GIFT_CARD_RECEIVED = "Réceptionné";
-	private static final String GIFT_CARD_SELL = "Vendre";
-	private static final String GIFT_CARD_SOLD = "Vendu";
-	private static final String GIFT_CARD_USE = "Utiliser";
-	private static final String GIFT_CARD_USED = "Utilisé";
 	
     @Inject protected UniwaxGiftCardFakedDataProducer dataProducer;
     @Inject protected FiniteStateMachineStateDao finiteStateMachineStateDao;
@@ -62,17 +52,18 @@ public abstract class AbstractUniwaxGiftCardBusinessIT extends AbstractBusinessI
 			
 			@Override
 			public void handleAccountingPeriodToInstall(AccountingPeriod accountingPeriod) {
-				FiniteStateMachine finiteStateMachine = rootDataProducerHelper.createFiniteStateMachine(GIFT_CARD_WORKFLOW
-		    			, new String[]{GIFT_CARD_SEND,GIFT_CARD_RECEIVE,GIFT_CARD_SELL,GIFT_CARD_USE}
-						, new String[]{GIFT_CARD_ASSIGNED,GIFT_CARD_SENT,GIFT_CARD_RECEIVED,GIFT_CARD_SOLD,GIFT_CARD_USED}
-		    			, GIFT_CARD_ASSIGNED, new String[]{GIFT_CARD_USED}, new String[][]{
-		    			{GIFT_CARD_ASSIGNED,GIFT_CARD_SEND,GIFT_CARD_SENT}
-		    			,{GIFT_CARD_SENT,GIFT_CARD_RECEIVE,GIFT_CARD_RECEIVED}
-		    			,{GIFT_CARD_RECEIVED,GIFT_CARD_SELL,GIFT_CARD_SOLD}
-		    			,{GIFT_CARD_SOLD,GIFT_CARD_USE,GIFT_CARD_USED}
+				FiniteStateMachine finiteStateMachine = rootDataProducerHelper.createFiniteStateMachine(CompanyConstant.GIFT_CARD_WORKFLOW
+		    			, new String[]{CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SEND,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_RECEIVE,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE}
+						, new String[]{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_ASSIGNED,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SENT,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD
+						,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED}
+		    			,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_ASSIGNED, new String[]{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED}, new String[][]{
+		    			{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_ASSIGNED,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SEND,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SENT}
+		    			,{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SENT,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_RECEIVE,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED}
+		    			,{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD}
+		    			,{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED}
 		    	});
 				accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterFiniteStateMachine(finiteStateMachine);
-				accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterSaleConsumeState(finiteStateMachineStateDao.read(GIFT_CARD_SOLD));
+				accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterSaleConsumeState(finiteStateMachineStateDao.read(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD));
 				accountingPeriod.getSaleConfiguration().setAllowOnlySalableProductInstanceOfCashRegister(Boolean.TRUE);
 				accountingPeriod.getSaleConfiguration().setMinimalNumberOfProductBySale(1l);
 				accountingPeriod.getSaleConfiguration().setMaximalNumberOfProductBySale(1l);
