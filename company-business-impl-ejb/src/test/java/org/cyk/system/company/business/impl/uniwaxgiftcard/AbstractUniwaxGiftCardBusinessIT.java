@@ -70,12 +70,7 @@ public abstract class AbstractUniwaxGiftCardBusinessIT extends AbstractBusinessI
 				super.handleAccountingPeriodToInstall(accountingPeriod);
 			}
 			
-			/*@Override
-			public void handleCompanyToInstall(Company company) {
-				super.handleCompanyToInstall(company);
-				addContacts(company.getContactCollection(), new String[]{"RueJ7 1-II Plateux Vallon, Cocody"}, new String[]{"22417217","21014459"}
-				, new String[]{"05996283","49925138","06173731"}, new String[]{"08 BP 1828 Abidjan 08"}, new String[]{"iesa@aviso.ci"}, new String[]{"http://www.iesaci.com"});
-			}*/
+			
 
 		});
     }
