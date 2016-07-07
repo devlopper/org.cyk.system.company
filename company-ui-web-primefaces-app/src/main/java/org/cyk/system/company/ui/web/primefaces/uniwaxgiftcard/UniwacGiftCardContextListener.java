@@ -10,15 +10,11 @@ import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.business.impl.sale.SaleProductInstanceBusinessImpl;
 import org.cyk.system.company.ui.web.primefaces.AbstractCompanyContextListener;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.company.ui.web.primefaces.GiftCardSystemMenuBuilder;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
 import org.cyk.system.root.business.impl.language.LanguageBusinessImpl;
 import org.cyk.system.root.ui.web.primefaces.api.RootWebManager;
-import org.cyk.ui.api.command.menu.SystemMenu;
-import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
-import org.cyk.ui.web.primefaces.UserSession;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessEntityFormOnePage;
 import org.cyk.utility.common.helper.StringHelper.CaseType;
 
@@ -53,17 +49,10 @@ public class UniwacGiftCardContextListener extends AbstractCompanyContextListene
 		SaleBusinessImpl.Listener.COLLECTION.add(new SaleBusinessAdapter());
 		SaleProductInstanceBusinessImpl.Listener.COLLECTION.add(new SaleProductInstanceBusinessAdapter());
 		
+		CompanyWebManager.getInstance().getListeners().add(new PrimefacesManagerAdapter());
 		AbstractBusinessEntityFormOnePage.BusinessEntityFormOnePageListener.COLLECTION.add(new BusinessSaleEditPageAdapter());
 		SaleEditPage.Listener.COLLECTION.add(new SaleEditPageAdapter());
-		
-		CompanyWebManager.getInstance().getListeners().add(new AbstractPrimefacesManager.AbstractPrimefacesManagerListener.Adapter(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public SystemMenu getSystemMenu(UserSession userSession) {
-				return GiftCardSystemMenuBuilder.getInstance().build(userSession);
-			}
-		});
-		
+			
 	}
 		
 	@Override
