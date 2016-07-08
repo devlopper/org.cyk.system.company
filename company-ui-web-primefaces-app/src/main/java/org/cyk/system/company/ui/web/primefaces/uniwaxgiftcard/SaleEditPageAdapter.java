@@ -42,4 +42,8 @@ public class SaleEditPageAdapter extends SaleEditPage.Listener.Adapter.Default i
 	public void processSaleCashRegisterMovement(SaleCashRegisterMovement saleCashRegisterMovement) {
 		saleCashRegisterMovement.getSale().getCost().setValue(saleCashRegisterMovement.getAmountIn());
 	}
+	
+	
+	
+	
 }

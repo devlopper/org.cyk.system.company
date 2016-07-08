@@ -345,7 +345,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			@Override
 			public void beforeBuild(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
 				for(Object object : parameters.getDatas()){
-					((SalableProductInstanceCashRegisterStateLogDetails)object).setInstanceCode("456");
+					((SalableProductInstanceCashRegisterStateLogDetails)object).setCode("456");
 				}
 			}
 			
@@ -463,11 +463,11 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			for(SalableProductInstanceCashRegister salableProductInstanceCashRegister : salableProductInstanceCashRegisters){
 				if(salableProductInstanceCashRegisterStateLogDetails.getMaster().getIdentifiableGlobalIdentifier().getIdentifier().equals(salableProductInstanceCashRegister.getGlobalIdentifier().getIdentifier())){
 					salableProductInstanceCashRegisterStateLogDetails.setSalableProductInstanceCashRegister(salableProductInstanceCashRegister);
-					salableProductInstanceCashRegisterStateLogDetails.setInstanceCode(salableProductInstanceCashRegister.getSalableProductInstance().getCode());
-					salableProductInstanceCashRegisterStateLogDetails.setInstanceQuantity("1");
-					salableProductInstanceCashRegisterStateLogDetails.setInstanceUnitPrice(format(salableProductInstanceCashRegister.getSalableProductInstance().getCollection().getPrice()));
-					salableProductInstanceCashRegisterStateLogDetails.setInstanceTotalPrice( 
-							format(new BigDecimal(salableProductInstanceCashRegisterStateLogDetails.getInstanceQuantity()).multiply(salableProductInstanceCashRegisterStateLogDetails.getSalableProductInstanceCashRegister().getSalableProductInstance().getCollection().getPrice())) );
+					salableProductInstanceCashRegisterStateLogDetails.setCode(salableProductInstanceCashRegister.getSalableProductInstance().getCode());
+					salableProductInstanceCashRegisterStateLogDetails.setQuantity("1");
+					salableProductInstanceCashRegisterStateLogDetails.setUnitPrice(format(salableProductInstanceCashRegister.getSalableProductInstance().getCollection().getPrice()));
+					salableProductInstanceCashRegisterStateLogDetails.setTotalPrice( 
+							format(new BigDecimal(salableProductInstanceCashRegisterStateLogDetails.getQuantity()).multiply(salableProductInstanceCashRegisterStateLogDetails.getSalableProductInstanceCashRegister().getSalableProductInstance().getCollection().getPrice())) );
 					salableProductInstanceCashRegisterStateLogDetails.setCashRegister(salableProductInstanceCashRegister.getCashRegister().getCode());
 					break;
 				}
@@ -480,19 +480,19 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				spicrsld = map.put(key, salableProductInstanceCashRegisterStateLogDetails);
 				
 			}else{
-				spicrsld.setInstanceCode(spicrsld.getInstanceCode()+Constant.CHARACTER_COMA+salableProductInstanceCashRegisterStateLogDetails.getInstanceCode());
-				spicrsld.setInstanceQuantity(String.valueOf(Integer.parseInt(spicrsld.getInstanceQuantity())+Integer.parseInt(salableProductInstanceCashRegisterStateLogDetails.getInstanceQuantity())));
-				spicrsld.setInstanceTotalPrice(format(numberBusiness.parse(BigDecimal.class,spicrsld.getInstanceTotalPrice())
-						.add(numberBusiness.parse(BigDecimal.class, salableProductInstanceCashRegisterStateLogDetails.getInstanceTotalPrice())) ));
+				spicrsld.setCode(spicrsld.getCode()+Constant.CHARACTER_COMA+salableProductInstanceCashRegisterStateLogDetails.getCode());
+				spicrsld.setQuantity(String.valueOf(Integer.parseInt(spicrsld.getQuantity())+Integer.parseInt(salableProductInstanceCashRegisterStateLogDetails.getQuantity())));
+				spicrsld.setTotalPrice(format(numberBusiness.parse(BigDecimal.class,spicrsld.getTotalPrice())
+						.add(numberBusiness.parse(BigDecimal.class, salableProductInstanceCashRegisterStateLogDetails.getTotalPrice())) ));
 			}
 		}
 		
 		for(SalableProductInstanceCashRegisterStateLogDetails salableProductInstanceCashRegisterStateLogDetails : map.values()){
 			FormatSequenceArguments<Long> arguments = new FormatSequenceArguments<>(1l);
 			Collection<Long> identifiers = new ArrayList<>();
-			for(String value : StringUtils.split(salableProductInstanceCashRegisterStateLogDetails.getInstanceCode(), Constant.CHARACTER_COMA))
+			for(String value : StringUtils.split(salableProductInstanceCashRegisterStateLogDetails.getCode(), Constant.CHARACTER_COMA))
 				identifiers.add(Long.parseLong(value));
-			salableProductInstanceCashRegisterStateLogDetails.setInstanceCode(RootBusinessLayer.getInstance().getNumberBusiness().formatSequences(identifiers, arguments));
+			salableProductInstanceCashRegisterStateLogDetails.setCode(RootBusinessLayer.getInstance().getNumberBusiness().formatSequences(identifiers, arguments));
 			if(TimeDivisionType.DAY.equals(timeDivisionTypeCode))
 				salableProductInstanceCashRegisterStateLogDetails.setDate(formatDate(salableProductInstanceCashRegisterStateLogDetails.getMaster().getDate()));
 		}

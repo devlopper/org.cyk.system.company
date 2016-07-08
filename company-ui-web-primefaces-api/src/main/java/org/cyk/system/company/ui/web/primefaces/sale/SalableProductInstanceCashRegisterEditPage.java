@@ -40,7 +40,7 @@ public class SalableProductInstanceCashRegisterEditPage extends AbstractCrudOneP
 			if(Boolean.TRUE.equals(CREATE_ON_CASH_REGISTER))
 				return ArrayUtils.contains(new String[]{Form.FIELD_CASH_REGISTER,Form.FIELD_SALABLE_PRODUCT_INSTANCE,Form.FIELD_FINITE_STATE_MACHINE_STATE}, field.getName());
 			else
-				return !ArrayUtils.contains(new String[]{Form.FIELD_SALABLE_PRODUCT_INSTANCE,CodesFormModel.FIELD_CODE}, field.getName());
+				return !ArrayUtils.contains(new String[]{Form.FIELD_SALABLE_PRODUCT_INSTANCE,CodesFormModel.FIELD_CODE,Form.FIELD_FINITE_STATE_MACHINE_STATE}, field.getName());
 		}
 	};
 	
@@ -69,9 +69,6 @@ public class SalableProductInstanceCashRegisterEditPage extends AbstractCrudOneP
 		else{
 			identifiable.getCashRegister().setProcessing(identifiable.getProcessing());
 			CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().create(((Form)form.getData()).codes.getCodeSet(), identifiable.getCashRegister());
-			/*String codes = StringUtils.remove(((Form)form.getData()).codes, Constant.LINE_DELIMITER);
-			CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().create(identifiable.getCollection()
-					,new LinkedHashSet<>(Arrays.asList(StringUtils.split(codes, ((Form)form.getData()).separator))) );*/
 		}
 	}
 	

@@ -7,12 +7,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import org.cyk.system.root.model.party.person.AbstractActor;
+import org.cyk.utility.common.annotation.ModelBean;
+import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
+import org.cyk.utility.common.annotation.ModelBean.GenderType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor @Entity
+@Getter @Setter @NoArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE)
 public class Employee extends AbstractActor implements Serializable {
 
 	private static final long serialVersionUID = 1371797411549893368L;

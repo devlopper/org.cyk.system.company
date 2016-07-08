@@ -24,4 +24,8 @@ public class CashRegisterDetails extends AbstractEnumerationDetails<CashRegister
 		value = formatNumber(cashRegister.getMovementCollection().getValue());
 		//movementCollectionDetails = new MovementCollectionDetails(cashRegister.getMovementCollection());
 	}
+	
+	/**/
+	
+	public static final String FIELD_VALUE = "value";
 }

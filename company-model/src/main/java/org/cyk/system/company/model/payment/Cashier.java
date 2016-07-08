@@ -16,13 +16,14 @@ import org.cyk.system.root.model.party.person.Person;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
+import org.cyk.utility.common.annotation.ModelBean.GenderType;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
-@ModelBean(crudStrategy=CrudStrategy.ENUMERATION)
+@ModelBean(crudStrategy=CrudStrategy.ENUMERATION,genderType=GenderType.MALE)
 public class Cashier extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;

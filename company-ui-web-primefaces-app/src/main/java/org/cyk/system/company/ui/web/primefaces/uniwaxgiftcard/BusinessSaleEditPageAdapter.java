@@ -88,8 +88,9 @@ public class BusinessSaleEditPageAdapter extends AbstractBusinessEntityFormOnePa
 		saleEditPage.setFieldValue(SaleEditPage.FormOneSaleProduct.FIELD_CASH_REGISTER_MOVEMENT_MODE, CompanyBusinessLayer.getInstance().getCashRegisterMovementModeBusiness().find(CashRegisterMovementMode.GIFT_CARD));
 		
 		if(GiftCardSystemMenuBuilder.ACTION_SELL_GIFT_CARD.equals(saleEditPage.getActionIdentifier())){
-			
+			saleEditPage.setContentTitle("Création d'une vente de carte cadeau");
 		}else if(GiftCardSystemMenuBuilder.ACTION_USE_GIFT_CARD.equals(saleEditPage.getActionIdentifier())){
+			saleEditPage.setContentTitle("Utilisation d'une carte cadeau");
 			//saleEditPage.getForm().findInputByClassByFieldName(WebInput.class, FormOneSaleProduct.FIELD_CASHIER).getAjaxListener().setEnabled(Boolean.FALSE);
 			((FormOneSaleProduct)saleEditPage.getForm().getData()).setCashRegisterMovementMode(CompanyBusinessLayer.getInstance().getCashRegisterMovementModeBusiness().find(CashRegisterMovementMode.GIFT_CARD));
 			saleEditPage.addInputListener(SaleEditPage.FormOneSaleProduct.FIELD_SUPPORTING_DOCUMENT_IDENTIFIER, new WebInput.Listener.Adapter.Default(){
@@ -111,5 +112,7 @@ public class BusinessSaleEditPageAdapter extends AbstractBusinessEntityFormOnePa
 			});
 		}
 	}
+		
+	
 
 }

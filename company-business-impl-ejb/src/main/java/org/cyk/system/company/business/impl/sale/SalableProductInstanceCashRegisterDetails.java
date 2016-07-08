@@ -16,7 +16,7 @@ public class SalableProductInstanceCashRegisterDetails extends AbstractOutputDet
 	
 	@Input @InputText
 	private String salableProductInstance,cashRegister,finiteStateMachineState
-		,date,instancesCodes,instancesQuantity,instancesUnitPrice,instancesTotalPrice;
+		/*,date,instancesCodes,instancesQuantity,instancesUnitPrice,instancesTotalPrice*/;
 	
 	public SalableProductInstanceCashRegisterDetails(SalableProductInstanceCashRegister salableProductInstanceCashRegister) {
 		super(salableProductInstanceCashRegister);

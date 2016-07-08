@@ -19,17 +19,17 @@ public class SalableProductInstanceCashRegisterStateLogDetails extends FiniteSta
 	private SalableProductInstanceCashRegister salableProductInstanceCashRegister;
 	
 	@Input @InputText
-	private String instanceCode,instanceQuantity,instanceUnitPrice,instanceTotalPrice,cashRegister;
+	private String code,quantity,unitPrice,totalPrice,cashRegister;
 	
 	public SalableProductInstanceCashRegisterStateLogDetails(FiniteStateMachineStateLog finiteStateMachineStateLog) {
 		super(finiteStateMachineStateLog);
 		
 	}
 
-	public static final String FIELD_INSTANCE_CODE = "instanceCode";
-	public static final String FIELD_INSTANCE_QUANTITY = "instanceQuantity";
-	public static final String FIELD_INSTANCE_UNIT_PRICE = "instanceUnitPrice";
-	public static final String FIELD_INSTANCE_TOTAL_PRICE = "instanceTotalPrice";
+	public static final String FIELD_INSTANCE_CODE = "code";
+	public static final String FIELD_INSTANCE_QUANTITY = "quantity";
+	public static final String FIELD_INSTANCE_UNIT_PRICE = "unitPrice";
+	public static final String FIELD_INSTANCE_TOTAL_PRICE = "totalPrice";
 	public static final String FIELD_CASH_REGISTER = "cashRegister";
 	
 }

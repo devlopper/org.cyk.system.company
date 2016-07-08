@@ -11,9 +11,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceCashRegisterStateLogDetails;
+import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
@@ -24,6 +26,7 @@ import org.cyk.ui.api.model.table.ColumnAdapter;
 import org.cyk.ui.web.api.WebManager;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.page.AbstractPrimefacesPage;
+import org.cyk.utility.common.Constant;
 
 @Named @ViewScoped @Getter @Setter
 public class SalableProductInstanceCashRegisterStateLogListPage extends AbstractPrimefacesPage implements Serializable {
@@ -48,6 +51,14 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerReportType(), 
 				CompanyReportRepository.getInstance().getParameterCustomerReportBalance());
 		table.getPrintCommandable().addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), balanceType);*/
+	
+	}
+	
+	@Override
+	protected void afterInitialisation() {
+		super.afterInitialisation();
+		FiniteStateMachineStateLog.SearchCriteria searchCriteria = ((TableAdapter)tableAdapter).getSearchCriteria();
+		contentTitle = languageBusiness.findListOfText(SalableProductInstance.class)+Constant.CHARACTER_SPACE+StringUtils.join(searchCriteria.getFiniteStateMachineStates(),Constant.CHARACTER_COMA);
 	}
 	
 	@Getter @Setter
@@ -66,7 +77,7 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 			return Boolean.TRUE;
 		}
 		
-		protected FiniteStateMachineStateLog.SearchCriteria getSearchCriteria(){
+		public FiniteStateMachineStateLog.SearchCriteria getSearchCriteria(){
 			FiniteStateMachineStateLog.SearchCriteria searchCriteria = new FiniteStateMachineStateLog.SearchCriteria();
 			searchCriteria.addFiniteStateMachineStates(WebManager.getInstance().decodeIdentifiablesRequestParameter(FiniteStateMachineState.class));
 			searchCriteria.setTimeDivisionTypeCode(timeDivisionTypeCode);
