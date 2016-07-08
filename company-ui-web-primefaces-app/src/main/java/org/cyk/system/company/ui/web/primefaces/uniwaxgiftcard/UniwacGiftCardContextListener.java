@@ -11,6 +11,7 @@ import org.cyk.system.company.business.impl.sale.SaleProductInstanceBusinessImpl
 import org.cyk.system.company.ui.web.primefaces.AbstractCompanyContextListener;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceCashRegisterEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
 import org.cyk.system.root.business.impl.language.LanguageBusinessImpl;
@@ -29,6 +30,7 @@ public class UniwacGiftCardContextListener extends AbstractCompanyContextListene
 		SaleEditPage.FORM_EDIT_CLASS = SaleEditPage.FormOneSaleProduct.class;
 		SaleEditPage.SHOW_QUANTITY_COLUMN = Boolean.FALSE;
 		SaleEditPage.SHOW_UNIT_PRICE_COLUMN = Boolean.FALSE;
+		SalableProductInstanceCashRegisterEditPage.CREATE_ON_CASH_REGISTER=Boolean.FALSE;
 		
 		LanguageBusinessImpl.cache(Locale.FRENCH, "model.entity.product", null, CaseType.FURL, "carte cadeau");
 		LanguageBusinessImpl.cache(Locale.FRENCH, "model.entity.product.many", null, CaseType.FURL, "cartes cadeau");

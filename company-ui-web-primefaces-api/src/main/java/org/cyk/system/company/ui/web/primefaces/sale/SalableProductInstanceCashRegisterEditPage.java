@@ -18,8 +18,10 @@ import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
+import org.cyk.ui.api.model.CodesFormModel;
 import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
+import org.cyk.utility.common.annotation.user.interfaces.IncludeInputs;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
@@ -38,7 +40,7 @@ public class SalableProductInstanceCashRegisterEditPage extends AbstractCrudOneP
 			if(Boolean.TRUE.equals(CREATE_ON_CASH_REGISTER))
 				return ArrayUtils.contains(new String[]{Form.FIELD_CASH_REGISTER,Form.FIELD_SALABLE_PRODUCT_INSTANCE,Form.FIELD_FINITE_STATE_MACHINE_STATE}, field.getName());
 			else
-				return ArrayUtils.contains(new String[]{/*Form.FIELD_SALABLE_PRODUCT,Form.FIELD_CODES,Form.FIELD_SEPARATOR*/}, field.getName());
+				return !ArrayUtils.contains(new String[]{Form.FIELD_SALABLE_PRODUCT_INSTANCE,CodesFormModel.FIELD_CODE}, field.getName());
 		}
 	};
 	
@@ -65,6 +67,8 @@ public class SalableProductInstanceCashRegisterEditPage extends AbstractCrudOneP
 		if(Boolean.TRUE.equals(CREATE_ON_CASH_REGISTER))
 			CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().create(identifiable);
 		else{
+			identifiable.getCashRegister().setProcessing(identifiable.getProcessing());
+			CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().create(((Form)form.getData()).codes.getCodeSet(), identifiable.getCashRegister());
 			/*String codes = StringUtils.remove(((Form)form.getData()).codes, Constant.LINE_DELIMITER);
 			CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().create(identifiable.getCollection()
 					,new LinkedHashSet<>(Arrays.asList(StringUtils.split(codes, ((Form)form.getData()).separator))) );*/
@@ -87,20 +91,10 @@ public class SalableProductInstanceCashRegisterEditPage extends AbstractCrudOneP
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private SalableProductInstance salableProductInstance;
+		@IncludeInputs(layout=org.cyk.utility.common.annotation.user.interfaces.IncludeInputs.Layout.VERTICAL) private CodesFormModel codes = new CodesFormModel();
+		
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private CashRegister cashRegister;
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private FiniteStateMachineState finiteStateMachineState;
-		
-		/*@Override
-		public void read() {
-			super.read();
-			salableProduct = identifiable.getCollection();
-		}
-		
-		@Override
-		public void write() {
-			super.write();
-			identifiable.setCollection(salableProduct);
-		}*/
 		
 		/**/
 		

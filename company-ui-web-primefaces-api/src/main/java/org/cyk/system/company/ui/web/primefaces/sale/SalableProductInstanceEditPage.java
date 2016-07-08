@@ -2,9 +2,6 @@ package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
@@ -15,22 +12,19 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
+import org.cyk.ui.api.model.CodesFormModel;
 import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
-import org.cyk.utility.common.Constant;
+import org.cyk.utility.common.annotation.user.interfaces.IncludeInputs;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
-import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
-import org.cyk.utility.common.annotation.user.interfaces.InputText;
-import org.cyk.utility.common.annotation.user.interfaces.InputTextarea;
 import org.primefaces.extensions.model.dynaform.DynaFormControl;
 import org.primefaces.extensions.model.dynaform.DynaFormLabel;
 import org.primefaces.extensions.model.dynaform.DynaFormModel;
@@ -47,9 +41,9 @@ public class SalableProductInstanceEditPage extends AbstractCrudOnePage<SalableP
 		@Override
 		public Boolean build(Field field) {
 			if(Boolean.TRUE.equals(CREATE_ON_SALABLE_PRODUCT))
-				return ArrayUtils.contains(new String[]{Form.FIELD_SALABLE_PRODUCT,Form.FIELD_CODE}, field.getName());
+				return ArrayUtils.contains(new String[]{Form.FIELD_SALABLE_PRODUCT,CodesFormModel.FIELD_CODE}, field.getName());
 			else
-				return !ArrayUtils.contains(new String[]{Form.FIELD_CODE}, field.getName());
+				return !ArrayUtils.contains(new String[]{CodesFormModel.FIELD_CODE}, field.getName());
 		}
 		
 		public void input(org.cyk.ui.api.data.collector.form.ControlSet<Object,DynaFormModel,DynaFormRow,DynaFormLabel,DynaFormControl,SelectItem> controlSet, org.cyk.ui.api.data.collector.control.Input<?,DynaFormModel,DynaFormRow,DynaFormLabel,DynaFormControl,SelectItem> input) {
@@ -60,7 +54,7 @@ public class SalableProductInstanceEditPage extends AbstractCrudOnePage<SalableP
 	public static ControlSetAdapter<Object> UPDATE_CONTROL_SET_ADAPTER = new ControlSetAdapter<Object>(){
 		@Override
 		public Boolean build(Field field) {
-			return ArrayUtils.contains(new String[]{Form.FIELD_SALABLE_PRODUCT,Form.FIELD_CODE}, field.getName());
+			return ArrayUtils.contains(new String[]{Form.FIELD_SALABLE_PRODUCT,CodesFormModel.FIELD_CODE}, field.getName());
 		}
 	};
 	
@@ -120,19 +114,7 @@ public class SalableProductInstanceEditPage extends AbstractCrudOnePage<SalableP
 		if(Boolean.TRUE.equals(CREATE_ON_SALABLE_PRODUCT))
 			super.create();
 		else{
-			Form _form = (Form)form.getData();
-			Set<String> codeSet = new LinkedHashSet<>();
-					
-			String codes = StringUtils.remove(_form.codes, Constant.LINE_DELIMITER);
-			String[] codesSplitted = StringUtils.split(codes, _form.separator);
-			if(codesSplitted!=null)
-				codeSet.addAll(Arrays.asList(codesSplitted));
-			
-			if(_form.fromCode!=null && _form.toCode!=null && _form.codeStep!=null)
-				for(int index = _form.fromCode; index <= _form.toCode; index = index + _form.codeStep)
-					codeSet.add(String.valueOf(index));
-			
-			CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().create(identifiable.getCollection(),codeSet );
+			CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().create(identifiable.getCollection(),((Form)form.getData()).codes.getCodeSet() );
 		}
 	}
 	
@@ -147,16 +129,8 @@ public class SalableProductInstanceEditPage extends AbstractCrudOnePage<SalableP
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private SalableProduct salableProduct;
-		@Input @InputText @NotNull private String code;
 		
-		//@Input @InputBooleanCheck @NotNull private Boolean inputCodeSet;
-		@Input @InputTextarea /*@NotNull*/ private String codes;
-		@Input @InputText /*@NotNull*/ private String separator;
-		
-		//@Input @InputBooleanCheck @NotNull private Boolean inputCodeInterval;
-		@Input @InputNumber /*@NotNull*/ private Integer fromCode;
-		@Input @InputNumber /*@NotNull*/ private Integer toCode;
-		@Input @InputNumber /*@NotNull*/ private Integer codeStep=1;
+		@IncludeInputs(layout=org.cyk.utility.common.annotation.user.interfaces.IncludeInputs.Layout.VERTICAL) private CodesFormModel codes = new CodesFormModel();
 		
 		@Override
 		public void read() {
@@ -173,14 +147,7 @@ public class SalableProductInstanceEditPage extends AbstractCrudOnePage<SalableP
 		/**/
 		
 		public static final String FIELD_SALABLE_PRODUCT = "salableProduct";
-		public static final String FIELD_INPUT_CODE_SET = "inputCodeSet";
-		public static final String FIELD_CODE = "code";
-		public static final String FIELD_CODES = "codes";
-		public static final String FIELD_SEPARATOR = "separator";
-		public static final String FIELD_INPUT_CODE_INTERVAL = "inputCodeInterval";
-		public static final String FIELD_FROM_CODE = "fromCode";
-		public static final String FIELD_TO_CODE = "toCode";
-		public static final String FIELD_CODE_STEP = "codeStep";
+		
 	}
 
 }

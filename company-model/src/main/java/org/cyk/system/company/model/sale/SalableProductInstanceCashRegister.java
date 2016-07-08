@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -22,13 +25,14 @@ import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity @ModelBean(genderType=GenderType.FEMALE,crudStrategy=CrudStrategy.BUSINESS)
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={SalableProductInstanceCashRegister.COLUMN_SALABLE_PRODUCT_INSTANCE,SalableProductInstanceCashRegister.COLUMN_CASH_REGISTER})})
 public class SalableProductInstanceCashRegister extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 	
-	@ManyToOne @NotNull private SalableProductInstance salableProductInstance;
+	@ManyToOne @JoinColumn(name=COLUMN_SALABLE_PRODUCT_INSTANCE) @NotNull private SalableProductInstance salableProductInstance;
 	
-	@ManyToOne @NotNull private CashRegister cashRegister;
+	@ManyToOne @JoinColumn(name=COLUMN_CASH_REGISTER) @NotNull private CashRegister cashRegister;
 
 	@ManyToOne private FiniteStateMachineState finiteStateMachineState;
 	
@@ -50,6 +54,8 @@ public class SalableProductInstanceCashRegister extends AbstractIdentifiable imp
 	public static final String FIELD_CASH_REGISTER = "cashRegister";
 	public static final String FIELD_FINITE_STATE_MACHINE_STATE = "finiteStateMachineState";
 	
+	public static final String COLUMN_SALABLE_PRODUCT_INSTANCE = "salableProductInstance";
+	public static final String COLUMN_CASH_REGISTER = "cashRegister";
 	/**/
 	
 	@Getter @Setter
