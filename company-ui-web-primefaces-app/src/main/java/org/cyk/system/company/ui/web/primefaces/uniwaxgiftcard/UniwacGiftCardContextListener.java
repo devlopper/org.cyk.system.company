@@ -10,6 +10,14 @@ import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.business.impl.sale.SaleProductInstanceBusinessImpl;
 import org.cyk.system.company.ui.web.primefaces.AbstractCompanyContextListener;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
+import org.cyk.system.company.ui.web.primefaces.adapter.giftcard.BusinessProcessManySalableProductInstancePageAdapter;
+import org.cyk.system.company.ui.web.primefaces.adapter.giftcard.BusinessSaleEditPageAdapter;
+import org.cyk.system.company.ui.web.primefaces.adapter.giftcard.BusinessSelectManySalableProductInstancePageAdapter;
+import org.cyk.system.company.ui.web.primefaces.adapter.giftcard.FiniteStateMachineStateLogBusinessAdapter;
+import org.cyk.system.company.ui.web.primefaces.adapter.giftcard.GiftCardPrimefacesManagerAdapter;
+import org.cyk.system.company.ui.web.primefaces.adapter.giftcard.SaleBusinessAdapter;
+import org.cyk.system.company.ui.web.primefaces.adapter.giftcard.SaleEditPageAdapter;
+import org.cyk.system.company.ui.web.primefaces.adapter.giftcard.SaleProductInstanceBusinessAdapter;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceCashRegisterEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceEditPage;
@@ -55,7 +63,7 @@ public class UniwacGiftCardContextListener extends AbstractCompanyContextListene
 		SaleProductInstanceBusinessImpl.Listener.COLLECTION.add(new SaleProductInstanceBusinessAdapter());
 		FiniteStateMachineStateLogBusinessImpl.Listener.COLLECTION.add(new FiniteStateMachineStateLogBusinessAdapter());
 		
-		CompanyWebManager.getInstance().getListeners().add(new PrimefacesManagerAdapter());
+		CompanyWebManager.getInstance().getListeners().add(new GiftCardPrimefacesManagerAdapter());
 		AbstractBusinessEntityFormOnePage.BusinessEntityFormOnePageListener.COLLECTION.add(new BusinessSaleEditPageAdapter());
 		SaleEditPage.Listener.COLLECTION.add(new SaleEditPageAdapter());
 		

@@ -1,4 +1,4 @@
-package org.cyk.system.company.ui.web.primefaces.uniwaxgiftcard;
+package org.cyk.system.company.ui.web.primefaces.adapter.giftcard;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

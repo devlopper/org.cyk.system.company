@@ -1,4 +1,4 @@
-package org.cyk.system.company.ui.web.primefaces.uniwaxgiftcard;
+package org.cyk.system.company.ui.web.primefaces.adapter.giftcard;
 
 import java.io.Serializable;
 
@@ -7,7 +7,7 @@ import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.ui.web.primefaces.UserSession;
 
-public class PrimefacesManagerAdapter extends AbstractPrimefacesManager.AbstractPrimefacesManagerListener.Adapter implements Serializable {
+public class GiftCardPrimefacesManagerAdapter extends AbstractPrimefacesManager.AbstractPrimefacesManagerListener.Adapter implements Serializable {
 
 	private static final long serialVersionUID = -8716834916609095637L;
 	
