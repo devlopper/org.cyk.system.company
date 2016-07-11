@@ -55,6 +55,7 @@ import org.cyk.system.company.business.impl.accounting.AccountingPeriodProductBu
 import org.cyk.system.company.business.impl.sale.CustomerBusinessImpl;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.business.impl.stock.StockTangibleProductMovementBusinessImpl;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
@@ -114,6 +115,8 @@ import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.report.ReportTemplate;
 import org.cyk.system.root.model.geography.ContactCollection;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Installation;
 import org.cyk.system.root.model.time.Period;
@@ -307,6 +310,17 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		cashRegisterMovementMode = new CashRegisterMovementMode(CashRegisterMovementMode.GIFT_CARD, CashRegisterMovementMode.GIFT_CARD, null);
 		cashRegisterMovementMode.setSupportDocumentIdentifier(Boolean.TRUE);
 		create(cashRegisterMovementMode);
+		
+		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SEND, "Transférer");
+		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_RECEIVE, "Réceptionner");
+		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL, "Vendre");
+		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE, "Utiliser");
+		
+		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_ASSIGNED, "Assigné");
+		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SENT, "Transféré");
+		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED, "Réceptionné");
+		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD, "Vendu");
+		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED, "Utilisé");
 	}
 	
 	private void company(){ 

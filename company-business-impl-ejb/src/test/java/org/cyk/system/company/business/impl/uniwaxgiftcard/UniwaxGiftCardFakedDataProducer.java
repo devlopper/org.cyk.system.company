@@ -11,7 +11,6 @@ import javax.inject.Singleton;
 import lombok.Getter;
 
 import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
-import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.Product;
@@ -19,8 +18,6 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.structure.Employee;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 
 @Singleton @Getter
 public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataProducer implements Serializable {
@@ -98,17 +95,6 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 		flush(SalableProductInstanceCashRegister.class, salableProductInstanceCashRegisters);
 		*/
 		rootRandomDataProvider.createActor(Customer.class, 5);
-		
-		rootDataProducerHelper.updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SEND, "Transférer");
-		rootDataProducerHelper.updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_RECEIVE, "Réceptionner");
-		rootDataProducerHelper.updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL, "Vendre");
-		rootDataProducerHelper.updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE, "Utiliser");
-		
-		rootDataProducerHelper.updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_ASSIGNED, "Assigné");
-		rootDataProducerHelper.updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SENT, "Transféré");
-		rootDataProducerHelper.updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED, "Réceptionné");
-		rootDataProducerHelper.updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD, "Vendu");
-		rootDataProducerHelper.updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED, "Utilisé");
 		
 	}
 
