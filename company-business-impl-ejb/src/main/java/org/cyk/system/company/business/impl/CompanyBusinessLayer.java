@@ -35,6 +35,7 @@ import org.cyk.system.company.business.api.production.ResellerBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
+import org.cyk.system.company.business.api.sale.CustomerSalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductInstanceCashRegisterBusiness;
@@ -76,6 +77,7 @@ import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.sale.Customer;
+import org.cyk.system.company.model.sale.CustomerSalableProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
@@ -120,6 +122,7 @@ import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Installation;
 import org.cyk.system.root.model.time.Period;
+import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.system.root.persistence.api.security.RoleDao;
 import org.cyk.utility.common.annotation.Deployment;
@@ -163,6 +166,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	
 	@Inject private CashRegisterMovementModeBusiness cashRegisterMovementModeBusiness;
 	@Inject private CashierBusiness cashierBusiness;
+	@Inject private CustomerSalableProductBusiness customerSalableProductBusiness;
 	@Inject private EmployeeBusiness employeeBusiness;
 	@Inject private ProductBusiness productBusiness;
 	@Inject private ProductCollectionBusiness productCollectionBusiness;
@@ -209,6 +213,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private SalableProductDao salableProductDao;
 	@Inject private SalableProductInstanceDao salableProductInstanceDao;
 	@Inject private StockableTangibleProductDao stockableTangibleProductDao;
+	@Inject private FiniteStateMachineStateDao finiteStateMachineStateDao;
 	@Inject private ProductCategoryBusiness productCategoryBusiness;
 	@Inject private StringGeneratorBusiness stringGeneratorBusiness;
 	@Setter private CompanyReportProducer companyReportProducer = new DefaultSaleReportProducer();
@@ -310,17 +315,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		cashRegisterMovementMode = new CashRegisterMovementMode(CashRegisterMovementMode.GIFT_CARD, CashRegisterMovementMode.GIFT_CARD, null);
 		cashRegisterMovementMode.setSupportDocumentIdentifier(Boolean.TRUE);
 		create(cashRegisterMovementMode);
-		
-		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SEND, "Transférer");
-		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_RECEIVE, "Réceptionner");
-		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL, "Vendre");
-		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE, "Utiliser");
-		
-		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_ASSIGNED, "Assigné");
-		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SENT, "Transféré");
-		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED, "Réceptionné");
-		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD, "Vendu");
-		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED, "Utilisé");
+
 	}
 	
 	private void company(){ 
@@ -367,6 +362,27 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
     			{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE,"SALE_FINITE_MACHINE_ALPHABET_VALID",Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}
     	});
 		
+		FiniteStateMachine salableProductInstanceCashRegisterFiniteStateMachine = rootDataProducerHelper.createFiniteStateMachine(CompanyConstant.GIFT_CARD_WORKFLOW
+    			, new String[]{CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SEND,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_RECEIVE,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE}
+				, new String[]{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_ASSIGNED,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SENT,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD
+				,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED}
+    			,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_ASSIGNED, new String[]{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED}, new String[][]{
+    			{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_ASSIGNED,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SEND,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SENT}
+    			,{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SENT,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_RECEIVE,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED}
+    			,{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD}
+    			,{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED}
+    	});
+		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SEND, "Transférer");
+		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_RECEIVE, "Réceptionner");
+		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL, "Vendre");
+		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE, "Utiliser");
+		
+		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_ASSIGNED, "Assigné");
+		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SENT, "Transféré");
+		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED, "Réceptionné");
+		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD, "Vendu");
+		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED, "Utilisé");
+		
 		AccountingPeriod accountingPeriod = new AccountingPeriod();
 		accountingPeriod.setOwnedCompany(ownedCompany);
 		Integer currentYear = new DateTime().getYear();
@@ -378,6 +394,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		accountingPeriod.getSaleConfiguration().setIdentifierGenerator(stringGenerator("FACT","0", 8l, null, null,8l));
 		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(stringGenerator("PAIE","0", 8l, null, null,8l));
 		accountingPeriod.getSaleConfiguration().setFiniteStateMachine(finiteStateMachine);
+		accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterFiniteStateMachine(salableProductInstanceCashRegisterFiniteStateMachine);
+		accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterSaleConsumeState(finiteStateMachineStateDao.read(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD));
 		
 		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getIdentifierGenerator());
 		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());
@@ -437,7 +455,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)CashRegisterMovement.class, (TypedBusiness)cashRegisterMovementBusiness);
         beansMap.put((Class)CashRegisterMovementMode.class, (TypedBusiness)cashRegisterMovementModeBusiness);
         beansMap.put((Class)SalableProductInstanceCashRegister.class, (TypedBusiness)salableProductInstanceCashRegisterBusiness);
-        
+        beansMap.put((Class)CustomerSalableProduct.class, (TypedBusiness)customerSalableProductBusiness);
     }
 	
 	/**/

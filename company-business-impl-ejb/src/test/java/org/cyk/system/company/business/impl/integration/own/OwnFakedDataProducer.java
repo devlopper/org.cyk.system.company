@@ -23,7 +23,7 @@ public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer imple
 	
 	@Override
 	protected void structure() {
-		Collection<TangibleProduct> tangibleProducts = companyBusinessLayer.getTangibleProductBusiness().instanciateMany(new String[][]{
+		/*Collection<TangibleProduct> tangibleProducts = companyBusinessLayer.getTangibleProductBusiness().instanciateMany(new String[][]{
 				new String[]{"TP1"},new String[]{"TP2"},new String[]{"TP3"},new String[]{"TP4"},new String[]{"TP5"}
 		});
 		flush(TangibleProduct.class, tangibleProducts);
@@ -46,7 +46,7 @@ public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer imple
 				new String[]{"TP2","1000"},new String[]{"TP5","2500"},new String[]{"IP5"}
 		});
 		flush(SalableProduct.class, salableProducts);
-		
+		*/
 		rootRandomDataProvider.createActor(Customer.class, 5);
 	}
 

@@ -6,6 +6,7 @@ import javax.servlet.ServletContextEvent;
 
 import org.cyk.system.company.business.impl.payment.CashRegisterDetails;
 import org.cyk.system.company.business.impl.payment.CashRegisterMovementDetails;
+import org.cyk.system.company.business.impl.sale.CustomerSalableProductDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceCashRegisterDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceDetails;
@@ -14,6 +15,7 @@ import org.cyk.system.company.business.impl.sale.SaleDetails;
 import org.cyk.system.company.business.impl.structure.CompanyDetails;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
+import org.cyk.system.company.model.sale.CustomerSalableProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
@@ -23,6 +25,7 @@ import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterEditPage;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.CustomerSalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceCashRegisterEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceCashRegisterQueryManyFormModel;
@@ -83,6 +86,9 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 		uiManager.registerConfiguration(new IdentifiableConfiguration(SaleCashRegisterMovement.class, SaleCashRegisterMovementEditPage.Form.class, SaleCashRegisterMovementDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(SaleCashRegisterMovement.class, null);
 		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(CustomerSalableProduct.class, CustomerSalableProductEditPage.Form.class, CustomerSalableProductDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(CustomerSalableProduct.class, null);
+		//webNavigationManager.useDynamicSelectView(SalableProductInstance.class);
 	}
 	
 	

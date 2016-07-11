@@ -26,6 +26,7 @@ import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.sale.Customer;
+import org.cyk.system.company.model.sale.CustomerSalableProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
@@ -145,6 +146,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		UICommandable module = null;
 		module = Builder.create(uiManager.businessEntityInfos(Customer.class).getUserInterface().getLabelId(), Icon.PERSON);
 		module.addChild(Builder.createList(Customer.class, null));
+		module.addChild(Builder.createList(CustomerSalableProduct.class, null));
 		
 		UICommandable c;
 		module.addChild(c = Builder.create("field.credence", null, outcomeCustomerBalance));

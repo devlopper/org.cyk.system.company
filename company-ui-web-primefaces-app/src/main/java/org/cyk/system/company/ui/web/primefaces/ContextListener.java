@@ -3,6 +3,7 @@ package org.cyk.system.company.ui.web.primefaces;
 import java.io.Serializable;
 
 import javax.servlet.ServletContextEvent;
+import javax.servlet.annotation.WebListener;
 
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.ui.web.primefaces.production.ResellerCrudOnePageAdapter;
@@ -13,7 +14,7 @@ import org.cyk.system.root.ui.web.primefaces.api.RootWebManager;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.web.primefaces.page.tools.AbstractActorCrudOnePageAdapter;
 
-//@WebListener
+@WebListener
 public class ContextListener extends AbstractCompanyContextListener implements Serializable {
 
 	private static final long serialVersionUID = -9042005596731665575L;
@@ -23,8 +24,8 @@ public class ContextListener extends AbstractCompanyContextListener implements S
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		super.contextInitialized(event);
-		SalableProductEditPage.CREATE_ON_PRODUCT = Boolean.FALSE;
-		SalableProductInstanceEditPage.CREATE_ON_SALABLE_PRODUCT = Boolean.FALSE;
+		//SalableProductEditPage.CREATE_ON_PRODUCT = Boolean.FALSE;
+		//SalableProductInstanceEditPage.CREATE_ON_SALABLE_PRODUCT = Boolean.FALSE;
 	}
 	
 	@Override
