@@ -17,7 +17,7 @@ import org.cyk.utility.common.annotation.ModelBean.GenderType;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
 @ModelBean(genderType=GenderType.MALE,crudStrategy=CrudStrategy.BUSINESS)
-public class Vehicle extends AbstractIdentifiable implements Serializable {
+public class VehicleMember extends AbstractIdentifiable implements Serializable {
 
 	private static final long serialVersionUID = 376048854435296766L;
 
