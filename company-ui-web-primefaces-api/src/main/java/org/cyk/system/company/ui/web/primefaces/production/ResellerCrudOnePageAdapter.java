@@ -5,20 +5,20 @@ import java.math.BigDecimal;
 
 import javax.validation.constraints.NotNull;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.ui.api.data.collector.form.FormConfiguration;
 import org.cyk.ui.api.model.party.AbstractActorEditFormModel;
-import org.cyk.ui.web.primefaces.page.tools.AbstractActorCrudOnePageAdapter;
+import org.cyk.ui.web.primefaces.page.party.AbstractActorCrudOnePageAdapter;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class ResellerCrudOnePageAdapter extends AbstractActorCrudOnePageAdapter<Reseller> implements Serializable {
 

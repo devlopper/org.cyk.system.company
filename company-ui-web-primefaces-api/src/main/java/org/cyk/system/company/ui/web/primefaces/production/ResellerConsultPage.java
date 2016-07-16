@@ -5,16 +5,16 @@ import java.io.Serializable;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.root.business.impl.AbstractOutputDetails;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
-import org.cyk.ui.web.primefaces.page.crud.AbstractActorConsultPage;
+import org.cyk.ui.web.primefaces.page.party.AbstractActorConsultPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class ResellerConsultPage extends AbstractActorConsultPage<Reseller> implements Serializable {
