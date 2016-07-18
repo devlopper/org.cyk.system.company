@@ -1,4 +1,4 @@
-package org.cyk.system.company.ui.web.primefaces;
+package org.cyk.system.company.ui.web.primefaces.adapter.giftcard;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -13,6 +13,7 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.structure.Employee;
+import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;

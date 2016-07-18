@@ -9,7 +9,6 @@ import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.ui.web.primefaces.GiftCardSystemMenuBuilder;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.validation.ExceptionUtils;
 

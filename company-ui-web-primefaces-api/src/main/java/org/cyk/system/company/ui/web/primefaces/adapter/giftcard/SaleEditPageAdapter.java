@@ -11,7 +11,6 @@ import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.ui.web.primefaces.GiftCardSystemMenuBuilder;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;

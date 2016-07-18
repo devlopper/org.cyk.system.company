@@ -2,7 +2,6 @@ package org.cyk.system.company.ui.web.primefaces.adapter.giftcard;
 
 import java.io.Serializable;
 
-import org.cyk.system.company.ui.web.primefaces.GiftCardSystemMenuBuilder;
 import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.ui.web.primefaces.UserSession;

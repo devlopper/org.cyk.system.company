@@ -7,7 +7,6 @@ import org.cyk.system.company.business.impl.sale.SaleProductInstanceBusinessImpl
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.SaleProductInstance;
-import org.cyk.system.company.ui.web.primefaces.GiftCardSystemMenuBuilder;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 
 public class SaleProductInstanceBusinessAdapter extends SaleProductInstanceBusinessImpl.Listener.Adapter implements Serializable {
