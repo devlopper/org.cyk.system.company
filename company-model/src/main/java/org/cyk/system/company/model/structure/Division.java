@@ -4,14 +4,14 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 
+import org.cyk.system.root.model.pattern.tree.AbstractDataTree;
+import org.cyk.utility.common.annotation.FieldOverride;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.root.model.pattern.tree.AbstractDataTree;
-import org.cyk.utility.common.annotation.user.interfaces.FieldOverride;
-
-@Getter @Setter @NoArgsConstructor @Entity @FieldOverride(name="type",type=DivisionType.class)
+@Getter @Setter @NoArgsConstructor @Entity @FieldOverride(name=Division.FIELD_TYPE,type=DivisionType.class)
 public class Division extends AbstractDataTree<DivisionType> implements Serializable  {
 
 	private static final long serialVersionUID = -6128937819261060725L;
