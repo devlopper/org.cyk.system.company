@@ -25,7 +25,7 @@ public class Company extends Party implements Serializable {
 	
 	@Override
 	public String toString() {
-		return name;
+		return getName();
 	}
 	
 	@Override

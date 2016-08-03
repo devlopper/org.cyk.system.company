@@ -17,9 +17,7 @@ public class ProductCategory extends DataTreeType implements Serializable  {
 
 	private static final long serialVersionUID = -6128937819261060725L;
 	
-	@ManyToOne
-	//@Input @InputChoice @InputOneChoice @InputOneCombo
-	protected Division division;
+	@ManyToOne protected Division division;
 	
 	public ProductCategory(DataTreeType parent, String code,String label) {
 		super(parent, code,label);

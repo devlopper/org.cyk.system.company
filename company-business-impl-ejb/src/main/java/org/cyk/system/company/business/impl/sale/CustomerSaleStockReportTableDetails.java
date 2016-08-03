@@ -24,7 +24,7 @@ public class CustomerSaleStockReportTableDetails implements Serializable {
 	@Input @InputText @ReportColumn(style=@Style(alignment=@Alignment(horizontal=Horizontal.RIGHT))) private String saleStockOutputCount;
 	
 	public CustomerSaleStockReportTableDetails(Customer customer) {
-		this.registrationCode = customer.getRegistration().getCode();
+		this.registrationCode = customer.getCode();
 		this.names = customer.getPerson().getNames();
 		this.saleStockInputCount = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getSaleStockInputCount());
 		this.saleStockOutputCount = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getSaleStockOutputCount());

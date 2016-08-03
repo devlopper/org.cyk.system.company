@@ -78,7 +78,7 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	@Override
 	public String getLogMessage() {
 		return String.format(LOG_FORMAT,identifier,computedIdentifier,date,finiteStateMachineState==null?Constant.EMPTY_STRING:finiteStateMachineState.getCode(),autoComputeValueAddedTax,cost.getLogMessage(),balance.getLogMessage()
-				,customer==null?"":customer.getRegistration().getCode(),accountingPeriod.getLogMessage());
+				,customer==null?"":customer.getCode(),accountingPeriod.getLogMessage());
 	}
 	
 	@Override

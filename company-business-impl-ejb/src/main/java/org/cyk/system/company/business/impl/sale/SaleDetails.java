@@ -24,7 +24,7 @@ public class SaleDetails extends AbstractOutputDetails<Sale> implements Serializ
 		this.externalIdentifier = sale.getExternalIdentifier();
 		this.cost = formatNumber(sale.getCost().getValue());
 		this.balance = formatNumber(sale.getBalance().getValue().abs());
-		this.customer = sale.getCustomer()==null?Constant.EMPTY_STRING:(sale.getCustomer().getRegistration().getCode()+Constant.CHARACTER_SLASH+sale.getCustomer().getPerson().getNames());
+		this.customer = sale.getCustomer()==null?Constant.EMPTY_STRING:(sale.getCustomer().getCode()+Constant.CHARACTER_SLASH+sale.getCustomer().getPerson().getNames());
 		this.date = formatDateTime(sale.getDate());
 	}
 	

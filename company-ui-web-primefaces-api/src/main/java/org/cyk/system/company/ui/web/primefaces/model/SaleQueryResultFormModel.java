@@ -40,7 +40,7 @@ public class SaleQueryResultFormModel extends AbstractFormModel<Sale> implements
 	public void read() {
 		super.read();
 		if(identifiable.getCustomer()!=null)
-			customer = identifiable.getCustomer().getRegistration().getCode()+"/"+
+			customer = identifiable.getCustomer().getCode()+"/"+
 				identifiable.getCustomer().getPerson().getNames();
 	}
 	

@@ -34,8 +34,8 @@ public class ProductionPlan extends AbstractSpreadSheetTemplate<ProductionPlanRe
 	public ProductionPlan() {}
 
 	public ProductionPlan(String code,String name,ProductionUnit productionUnit,ManufacturedProduct manufacturedProduct,TimeDivisionType reportIntervalTimeDivisionType) {
-		this.code = code;
-		this.name = name;
+		setCode(code);
+		setName(name);
 		this.productionUnit = productionUnit;
 		this.manufacturedProduct = manufacturedProduct;
 		this.reportIntervalTimeDivisionType = reportIntervalTimeDivisionType;

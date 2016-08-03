@@ -6,6 +6,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.cyk.system.company.model.structure.Company;
+import org.cyk.system.root.model.party.Party;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.model.party.AbstractPartyEditFormModel;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
@@ -34,10 +35,13 @@ public class CompanyEditPage extends AbstractCrudOnePage<Company> implements Ser
 		@Input @InputChoice @InputOneChoice @InputOneCombo private Person manager;
 		@Input @InputChoice @InputOneChoice @InputOneCombo private Person signer;
 		
+		@Override
+		protected Party getParty() {
+			return identifiable;
+		}
+		
+		public static final String FIELD_MANAGER = "manager";
 		public static final String FIELD_SIGNER = "signer";
-		
-		public static final String TAB_COMPANY_ID = "company";
-		
 	}
 
 }

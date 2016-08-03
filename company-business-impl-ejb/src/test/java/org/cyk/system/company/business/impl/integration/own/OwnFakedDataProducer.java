@@ -8,13 +8,8 @@ import javax.inject.Singleton;
 import lombok.Getter;
 
 import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
-import org.cyk.system.company.model.product.IntangibleProduct;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
-import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.stock.StockTangibleProductMovement;
-import org.cyk.system.company.model.stock.StockableTangibleProduct;
 
 @Singleton @Getter
 public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer implements Serializable {
@@ -53,11 +48,11 @@ public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer imple
 	@Override
 	protected void doBusiness(Listener listener) {
 		Collection<Sale> sales = companyBusinessLayer.getSaleBusiness().instanciateMany(new Object[][]{
-				new Object[]{"sale001",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getRegistration().getCode(),"1/1/2000 05:00","false"
+				new Object[]{"sale001",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getCode(),"1/1/2000 05:00","false"
 						,new String[][]{ new String[]{"TP2","2"} }}
-				,new Object[]{"sale002",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getRegistration().getCode(),"1/1/2000 05:15","false"
+				,new Object[]{"sale002",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getCode(),"1/1/2000 05:15","false"
 						,new String[][]{ new String[]{"TP2","1"} }}
-				,new Object[]{"sale003",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getRegistration().getCode(),"1/1/2000 08:00","false"
+				,new Object[]{"sale003",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getCode(),"1/1/2000 08:00","false"
 						,new String[][]{ new String[]{"TP2","1"},new String[]{"TP5","3"} }}
 		});
 		flush(Sale.class, sales);

@@ -15,10 +15,9 @@ import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.ui.api.command.UICommandable;
 import org.cyk.system.root.business.impl.AbstractOutputDetails;
+import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.web.primefaces.Table;
-import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
@@ -28,24 +27,12 @@ public class ProductionUnitConsultPage extends AbstractConsultPage<ProductionUni
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	private FormOneData<Details> details;
 	private Table<ProductionPlanDetails> productionPlanTable;
 	private Table<ResellerDetails> resellerProductTable;
 
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		details = createDetailsForm(Details.class, identifiable, new DetailsConfigurationListener.Form.Adapter<ProductionUnit,Details>(ProductionUnit.class, Details.class){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public Boolean getEnabledInDefaultTab() {
-				return Boolean.TRUE;
-			}
-			@Override
-			public String getTabId() {
-				return "tabId";
-			}
-		});
 		
 		productionPlanTable = (Table<ProductionPlanDetails>) createDetailsTable(ProductionPlanDetails.class, new DetailsConfigurationListener.Table.Adapter<ProductionPlan,ProductionPlanDetails>(ProductionPlan.class, ProductionPlanDetails.class){
 			private static final long serialVersionUID = 1L;
@@ -113,7 +100,7 @@ public class ProductionUnitConsultPage extends AbstractConsultPage<ProductionUni
 		@Input @InputText private String registrationCode,names,salary,amountGap,payable;
 		public ResellerDetails(Reseller reseller) {
 			super(reseller);
-			registrationCode = reseller.getRegistration().getCode();
+			registrationCode = reseller.getCode();
 			names = reseller.getPerson().getNames();
 			salary = numberBusiness.format(reseller.getSalary());
 			amountGap = numberBusiness.format(reseller.getAmountGap());

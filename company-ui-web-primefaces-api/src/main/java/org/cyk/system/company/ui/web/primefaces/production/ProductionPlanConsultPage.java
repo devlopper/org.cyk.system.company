@@ -15,10 +15,9 @@ import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.ui.api.command.UICommandable;
 import org.cyk.system.root.business.impl.AbstractOutputDetails;
+import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.web.primefaces.Table;
-import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
@@ -28,21 +27,12 @@ public class ProductionPlanConsultPage extends AbstractConsultPage<ProductionPla
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	private FormOneData<Details> details;
 	private Table<ProductionDetails> productionTable;
 	private Table<ResellerProductionPlanDetails> resellerProductionPlanTable;
 	
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		details = createDetailsForm(Details.class, identifiable, new DetailsConfigurationListener.Form.Adapter<ProductionPlan,Details>(ProductionPlan.class, Details.class){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public Boolean getEnabledInDefaultTab() {
-				return Boolean.TRUE;
-			}
-			
-		});
 		
 		productionTable = (Table<ProductionDetails>) createDetailsTable(ProductionDetails.class, new DetailsConfigurationListener.Table.Adapter<Production,ProductionDetails>(Production.class, ProductionDetails.class){
 			private static final long serialVersionUID = 1L;

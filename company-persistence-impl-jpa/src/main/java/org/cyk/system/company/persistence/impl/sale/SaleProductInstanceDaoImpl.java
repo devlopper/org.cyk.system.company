@@ -8,6 +8,7 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.persistence.api.sale.SaleProductInstanceDao;
+import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 
 public class SaleProductInstanceDaoImpl extends AbstractTypedDao<SaleProductInstance> implements SaleProductInstanceDao {
@@ -21,7 +22,7 @@ public class SaleProductInstanceDaoImpl extends AbstractTypedDao<SaleProductInst
 		super.namedQueriesInitialisation();
 		registerNamedQuery(readBySaleProduct, _select().where(SaleProductInstance.FIELD_SALE_PRODUCT));
 		registerNamedQuery(readBySalableProductInstanceCode, _select().where(commonUtils.attributePath(SaleProductInstance.FIELD_SALABLE_PRODUCT_INSTANCE,
-				SalableProductInstance.FIELD_CODE), SalableProductInstance.FIELD_CODE));
+				SalableProductInstance.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE), GlobalIdentifier.FIELD_CODE));
 	}
 	
 	@Override
@@ -32,7 +33,7 @@ public class SaleProductInstanceDaoImpl extends AbstractTypedDao<SaleProductInst
 	@Override
 	public SaleProductInstance readBySalableProductInstanceCode(String code) {
 		return namedQuery(readBySalableProductInstanceCode).ignoreThrowable(NoResultException.class)
-				.parameter(SalableProductInstance.FIELD_CODE, code).resultOne();
+				.parameter(GlobalIdentifier.FIELD_CODE, code).resultOne();
 	}
 
 }

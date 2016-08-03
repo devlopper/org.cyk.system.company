@@ -54,20 +54,13 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
 	@Inject private CompanyWebManager companyWebManager;
 	
-	private FormOneData<SaleDetails> details;
 	private Table<SaleProductDetails> saleProductTable;
 	private Table<SaleCashRegisterMovementDetails> saleCashRegisterMovementTable;
 	
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		details = createDetailsForm(SaleDetails.class, identifiable, new DetailsConfigurationListener.Form.Adapter<Sale,SaleDetails>(Sale.class, SaleDetails.class){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public Boolean getEnabledInDefaultTab() {
-				return Boolean.TRUE;
-			}
-		});
+		/*
 		details.getControlSetListeners().add(new ControlSetAdapter<SaleDetails>(){
 			@Override
 			public String fiedLabel(
@@ -81,7 +74,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 				return super.fiedLabel(controlSet, field);
 			}
 		}); 
-		
+		*/
 		if(Boolean.TRUE.equals(SHOW_SALE_PRODUCT_TABLE))
 			saleProductTable = createDetailsTable(SaleProductDetails.class, new DetailsConfigurationListener.Table.Adapter<SaleProduct, SaleProductDetails>(SaleProduct.class, SaleProductDetails.class){
 				private static final long serialVersionUID = 1L;
