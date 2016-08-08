@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.structure.OwnedCompany;
-import org.cyk.system.root.business.api.event.AbstractIdentifiablePeriodBusiness;
+import org.cyk.system.root.business.api.time.AbstractIdentifiablePeriodBusiness;
 
 public interface AccountingPeriodBusiness extends AbstractIdentifiablePeriodBusiness<AccountingPeriod> {
 

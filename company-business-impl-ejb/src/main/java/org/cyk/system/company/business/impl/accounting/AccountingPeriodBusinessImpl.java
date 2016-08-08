@@ -25,7 +25,7 @@ import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.business.impl.event.AbstractIdentifiablePeriodBusinessImpl;
+import org.cyk.system.root.business.impl.time.AbstractIdentifiablePeriodBusinessImpl;
 
 @Stateless
 public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusinessImpl<AccountingPeriod, AccountingPeriodDao> implements AccountingPeriodBusiness,Serializable {

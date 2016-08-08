@@ -43,14 +43,14 @@ public class InstanciationBusinessUT extends AbstractBusinessUT {
 	
 	@Test
 	public void accountingPeriod() {
-		ObjectFieldValues objectFieldValues = new ObjectFieldValues(AccountingPeriod.class)
-		.set(AccountingPeriod.FIELD_CLOSED,"myfinalstate");
+		//ObjectFieldValues objectFieldValues = new ObjectFieldValues(AccountingPeriod.class)
+		//.set(AccountingPeriod.FIELD_CLOSED,"myfinalstate");
 	}
 	
 	@Test
 	public void ownedCompany() {
-		ObjectFieldValues objectFieldValues = new ObjectFieldValues(AccountingPeriod.class)
-		.set(AccountingPeriod.FIELD_CLOSED,"myfinalstate");
+		//ObjectFieldValues objectFieldValues = new ObjectFieldValues(AccountingPeriod.class)
+		//.set(AccountingPeriod.FIELD_CLOSED,"myfinalstate");
 	}
 	
 	/**/

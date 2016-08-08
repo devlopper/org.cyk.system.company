@@ -97,7 +97,7 @@ public class ProductionPlanConsultPage extends AbstractConsultPage<ProductionPla
 		@Input @InputText private String date;
 		public ProductionDetails(Production production) {
 			super(production);
-			date = timeBusiness.formatDate(production.getPeriod().getFromDate());
+			date = timeBusiness.formatDate(production.getExistencePeriod().getFromDate());
 		}
 	}
 	

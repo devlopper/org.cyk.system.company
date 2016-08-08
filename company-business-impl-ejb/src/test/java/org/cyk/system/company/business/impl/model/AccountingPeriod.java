@@ -7,16 +7,16 @@ import javax.persistence.Embedded;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import org.cyk.system.company.model.sale.SaleConfiguration;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.stock.StockConfiguration;
 import org.cyk.system.company.model.stock.StockResults;
 import org.cyk.system.company.model.structure.OwnedCompany;
-import org.cyk.system.root.model.event.AbstractIdentifiablePeriod;
+import org.cyk.system.root.model.time.AbstractIdentifiablePeriod;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor 
 public class AccountingPeriod extends AbstractIdentifiablePeriod implements Serializable {

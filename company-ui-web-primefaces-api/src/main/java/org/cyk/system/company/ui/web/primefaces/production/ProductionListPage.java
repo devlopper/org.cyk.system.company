@@ -49,7 +49,7 @@ public class ProductionListPage extends AbstractCrudManyPage<Production> impleme
 		@Input @InputText private String date;
 		public Details(Production production) {
 			super(production);
-			date = timeBusiness.formatDate(production.getPeriod().getFromDate());
+			date = timeBusiness.formatDate(production.getExistencePeriod().getFromDate());
 		}
 		
 	}

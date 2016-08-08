@@ -63,14 +63,14 @@ public class ProductionEditPage extends AbstractCrudOnePage<Production> implemen
 		@Override
 		public void read() {
 			super.read();
-			date = identifiable.getPeriod().getFromDate();
+			date = identifiable.getExistencePeriod().getFromDate();
 		}
 		
 		@Override
 		public void write() {
 			super.write();
-			identifiable.getPeriod().setFromDate(date);
-			identifiable.getPeriod().setToDate(identifiable.getPeriod().getFromDate());
+			identifiable.getExistencePeriod().setFromDate(date);
+			identifiable.getExistencePeriod().setToDate(identifiable.getExistencePeriod().getFromDate());
 		}
 	}
 	

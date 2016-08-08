@@ -97,8 +97,8 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 		accountingPeriod = accountingPeriodBusiness.findCurrent();
 		taxesCollected = accountingPeriod.getSaleConfiguration().getValueAddedTaxRate().compareTo(BigDecimal.ZERO)!=0;
 		TimeDivisionType selectedTimeDivisionType = timeDivisionTypeBusiness.find(TimeDivisionType.MONTH);
-		Date exerciceBegin = accountingPeriod.getPeriod().getFromDate();
-		Date exerciceEnd = accountingPeriod.getPeriod().getToDate();
+		Date exerciceBegin = accountingPeriod.getExistencePeriod().getFromDate();
+		Date exerciceEnd = accountingPeriod.getExistencePeriod().getToDate();
 		SaleSearchCriteria saleSearchCriteria = null;
 		
 		contentTitle = text("sale")+" - "+text("dashboard")+" - "+timeBusiness.formatDate(exerciceBegin,exerciceEnd);
@@ -133,7 +133,7 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 			
 		}else{
 			salesFound = Boolean.TRUE;
-			SalesResultsCartesianModelParameters salesResultsCartesianModelParameters = new SalesResultsCartesianModelParameters(accountingPeriod.getPeriod(), 
+			SalesResultsCartesianModelParameters salesResultsCartesianModelParameters = new SalesResultsCartesianModelParameters(accountingPeriod.getExistencePeriod(), 
 					saleProducts, productCategory==null?productCategories:Arrays.asList(productCategory), selectedTimeDivisionType);
 			turnoverBarChartModel = chartManager.barModel(configureCartesianModel(saleProductBusiness.findCartesianModelTurnOver(salesResultsCartesianModelParameters)));
 	        countBarChartModel = chartManager.barModel(configureCartesianModel(saleProductBusiness.findCartesianModelCount(salesResultsCartesianModelParameters)));

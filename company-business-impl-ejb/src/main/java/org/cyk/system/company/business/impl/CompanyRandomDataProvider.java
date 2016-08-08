@@ -118,7 +118,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 		}
 		
 		for(int i=0;i<stock;i++){
-			createTangibleProductStockMovement(tangibleProducts,randomDataProvider.randomDate(lastSaleDate, accountingPeriod.getPeriod().getToDate()));
+			createTangibleProductStockMovement(tangibleProducts,randomDataProvider.randomDate(lastSaleDate, accountingPeriod.getExistencePeriod().getToDate()));
 		}
 	}
 	
@@ -175,7 +175,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 	}
 	
 	private Date date(AccountingPeriod accountingPeriod){
-		return randomDataProvider.randomDate(accountingPeriod.getPeriod().getFromDate(), accountingPeriod.getPeriod().getToDate());
+		return randomDataProvider.randomDate(accountingPeriod.getExistencePeriod().getFromDate(), accountingPeriod.getExistencePeriod().getToDate());
 	}
 	
 	

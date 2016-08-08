@@ -97,7 +97,7 @@ public abstract class AbstractPersistenceIT extends AbstractIntegrationTestJpaBa
 	
 	protected void createSales(String[][] salableProducts,String[][] sales) {
 		AccountingPeriod accountingPeriod = new AccountingPeriod();
-		accountingPeriod.setPeriod(new Period(new Date(), new Date()));
+		accountingPeriod.setExistencePeriod(new Period(new Date(), new Date()));
 		create(accountingPeriod);
 		
 		Person person = new Person();

@@ -69,7 +69,7 @@ public class ProductionConsultPage extends AbstractConsultPage<Production> imple
 		@Input @InputText private String date;
 		public Details(Production production) {
 			super(production);
-			date = timeBusiness.formatDate(production.getPeriod().getFromDate());
+			date = timeBusiness.formatDate(production.getExistencePeriod().getFromDate());
 		}
 	}
 	

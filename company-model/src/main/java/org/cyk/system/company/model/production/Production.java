@@ -22,8 +22,5 @@ public class Production extends AbstractSpreadSheet<ProductionPlan,ProductionPla
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal manufacturedQuantity = BigDecimal.ZERO;
 	//@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal quantity = BigDecimal.ZERO;
 
-	@Override
-	public String getUiString() {
-		return period.getFromDate().toString();
-	}
+	
 }

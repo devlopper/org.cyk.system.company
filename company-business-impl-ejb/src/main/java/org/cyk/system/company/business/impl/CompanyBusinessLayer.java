@@ -232,7 +232,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			private static final long serialVersionUID = 3952155697329951912L;
 			@Override
 			public String format(Production production, ContentType contentType) {
-				return rootBusinessLayer.getTimeBusiness().formatDate(production.getPeriod().getFromDate());
+				return rootBusinessLayer.getTimeBusiness().formatDate(production.getExistencePeriod().getFromDate());
 			}
 		});
 		formatterBusiness.registerFormatter(SalableProductInstance.class, new AbstractFormatter<SalableProductInstance>() {
@@ -386,7 +386,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		AccountingPeriod accountingPeriod = new AccountingPeriod();
 		accountingPeriod.setOwnedCompany(ownedCompany);
 		Integer currentYear = new DateTime().getYear();
-		accountingPeriod.setPeriod(new Period(new DateTime(currentYear, 1, 1, 0, 0).toDate(), new DateTime(currentYear, 12, 31, 23, 59).toDate()));
+		accountingPeriod.setExistencePeriod(new Period(new DateTime(currentYear, 1, 1, 0, 0).toDate(), new DateTime(currentYear, 12, 31, 23, 59).toDate()));
 		
 		accountingPeriod.getSaleConfiguration().setSaleReportTemplate(create(new ReportTemplate("SALE_REPORT_A4",createFile("report/sale/sale_a4.jrxml", "sale_a4.jrxml"),null,null,null)));
 		accountingPeriod.getSaleConfiguration().setSaleCashRegisterMovementReportTemplate(create(new ReportTemplate("SALE_CASH_REGISTER_MOVEMENT_REPORT_A4",createFile("report/sale/salecashregistermovement_a4.jrxml", "salecashregistermovement_a4.jrxml"),null,null,null)));

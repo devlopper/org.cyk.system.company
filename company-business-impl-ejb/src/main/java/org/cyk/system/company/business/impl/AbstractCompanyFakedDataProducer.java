@@ -165,7 +165,7 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	
 	protected Production createProduction(ProductionPlan productionPlan,Collection<Object[]> collection,Collection<Production> productions){
 		Production production = new Production();
-		production.setPeriod(new Period(new Date(), new Date()));
+		production.setExistencePeriod(new Period(new Date(), new Date()));
 		production.setTemplate(productionPlan);
 		productions.add(production);
 		for(Object[] object : collection){
