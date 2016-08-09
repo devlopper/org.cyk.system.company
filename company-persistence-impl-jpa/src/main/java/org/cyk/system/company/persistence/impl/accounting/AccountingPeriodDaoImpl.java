@@ -15,7 +15,7 @@ public class AccountingPeriodDaoImpl extends AbstractIdentifiablePeriodDaoImpl<A
 
 	private static final long serialVersionUID = -763318561920858308L;
 	
-	private static final String READ_BY_COMPANY_FORMAT = "SELECT accountingPeriod FROM AccountingPeriod accountingPeriod WHERE %s ORDER BY accountingPeriod.period.fromDate DESC";
+	private static final String READ_BY_COMPANY_FORMAT = "SELECT accountingPeriod FROM AccountingPeriod accountingPeriod WHERE %s ORDER BY accountingPeriod.globalIdentifier.existencePeriod.fromDate DESC";
 	
 	private String readWhereToDateLessThanByDateByCompany,countWhereToDateLessThanByDateByCompany,readWhereDateBetweenPeriodByCompany,countWhereDateBetweenPeriodByCompany;
 	
@@ -23,9 +23,9 @@ public class AccountingPeriodDaoImpl extends AbstractIdentifiablePeriodDaoImpl<A
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
 		registerNamedQuery(readWhereToDateLessThanByDateByCompany,String.format(READ_BY_COMPANY_FORMAT, 
-				"accountingPeriod.ownedCompany = :ownedCompany AND accountingPeriod.period.toDate < :thedate"));
+				"accountingPeriod.ownedCompany = :ownedCompany AND accountingPeriod.globalIdentifier.existencePeriod.toDate < :thedate"));
         registerNamedQuery(readWhereDateBetweenPeriodByCompany,String.format(READ_BY_COMPANY_FORMAT, 
-        		"accountingPeriod.ownedCompany = :ownedCompany AND :thedate BETWEEN accountingPeriod.period.fromDate AND accountingPeriod.period.toDate"));
+        		"accountingPeriod.ownedCompany = :ownedCompany AND :thedate BETWEEN accountingPeriod.globalIdentifier.existencePeriod.fromDate AND accountingPeriod.globalIdentifier.existencePeriod.toDate"));
 	}
 	
 	@Override

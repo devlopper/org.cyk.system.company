@@ -1,4 +1,4 @@
-package org.cyk.system.company.ui.web.primefaces.adapter.erp;
+package org.cyk.system.company.ui.web.primefaces.adapter.enterpriseresourceplanning;
 
 import java.io.Serializable;
 
@@ -6,7 +6,7 @@ import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.web.primefaces.AbstractPrimefacesManager;
 import org.cyk.ui.web.primefaces.UserSession;
 
-public class ErpPrimefacesManagerAdapter extends AbstractPrimefacesManager.AbstractPrimefacesManagerListener.Adapter implements Serializable {
+public class PrimefacesManager extends AbstractPrimefacesManager.AbstractPrimefacesManagerListener.Adapter implements Serializable {
 
 	private static final long serialVersionUID = -8716834916609095637L;
 	
