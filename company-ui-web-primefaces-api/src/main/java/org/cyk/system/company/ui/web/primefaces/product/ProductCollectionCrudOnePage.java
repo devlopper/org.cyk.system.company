@@ -32,7 +32,7 @@ public class ProductCollectionCrudOnePage extends AbstractCrudOnePage<ProductCol
 	private List<Product> selectedProducts,list=new ArrayList<>();
 	private BigDecimal totalPrice = BigDecimal.ZERO;
 	
-	@Override
+	/*@Override
 	protected void initialisation() {
 		super.initialisation();
 		selectedProducts = new ArrayList<Product>(identifiable.getCollection());
@@ -45,10 +45,10 @@ public class ProductCollectionCrudOnePage extends AbstractCrudOnePage<ProductCol
 		dualListModel = new DualListModel<Product>(products, selectedProducts);
 		for(Product product : selectedProducts)
 			;//totalPrice = totalPrice.add(product.getPrice());
-	}
+	}*/
 	
 	/**/
-	
+	/*
 	@Override
 	public void transfer(UICommand command, Object parameter) throws Exception {}
 	
@@ -59,20 +59,20 @@ public class ProductCollectionCrudOnePage extends AbstractCrudOnePage<ProductCol
 	public void serve(UICommand command, Object parameter) {
 		identifiable.setCollection(list);
 		super.serve(command, parameter);
-	}
+	}*/
 	
 	@SuppressWarnings("unchecked")
 	public void onTransfer(TransferEvent event) {
-	    if(Boolean.TRUE.equals(event.isAdd())){
+	    /*if(Boolean.TRUE.equals(event.isAdd())){
 	    	for(Product product : (List<Product>)event.getItems())
 	        	identifiable.getCollection().add(product);
 	    }else{
 	    	for(Product product : (List<Product>)event.getItems())
 	        	identifiable.getCollection().remove(product);
 	    }
-        
+        */
         //totalPrice = identifiable.getTotalPrice();
-        list = new ArrayList<Product>(identifiable.getCollection());
+        //list = new ArrayList<Product>(identifiable.getCollection());
         //for(Product product : (List<Product>)event.getItems())
         //	totalPrice = totalPrice.add( new BigDecimal(event.isAdd()?1:-1).multiply(product.getPrice()));
     } 

@@ -20,12 +20,16 @@ public class CashRegisterMovementDetails extends AbstractOutputDetails<CashRegis
 	
 	@Input(label=@Text(value="field.identifier")) @InputText private String computedIdentifier;
 	@Input @InputText private String cashRegister;
-	@IncludeInputs(layout=Layout.VERTICAL) private MovementDetails movementDetails;
+	@IncludeInputs(layout=Layout.VERTICAL) private MovementDetails movement;
 	
 	public CashRegisterMovementDetails(CashRegisterMovement cashRegisterMovement) {
 		super(cashRegisterMovement);
 		computedIdentifier = cashRegisterMovement.getComputedIdentifier();
 		cashRegister = formatUsingBusiness(cashRegisterMovement.getCashRegister());
-		movementDetails = new MovementDetails(cashRegisterMovement.getMovement());
+		movement = new MovementDetails(cashRegisterMovement.getMovement());
 	}
+	
+	public static final String FIELD_COMPUTED_IDENTIFIER = "computedIdentifier";
+	public static final String FIELD_CASH_REGISTER = "cashRegister";
+	public static final String FIELD_MOVEMENT = "movement";
 }

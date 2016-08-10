@@ -63,7 +63,7 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 	
 	@Override
 	public void create(Class<? extends Product> aClass,String code, String name, BigDecimal price) {
-		Product product = TangibleProduct.class.equals(aClass) ? new TangibleProduct(code, name, null, null) : new IntangibleProduct(code, name, null, null);
+		Product product = TangibleProduct.class.equals(aClass) ? new TangibleProduct(code, name, null) : new IntangibleProduct(code, name, null);
 		CompanyBusinessLayer.getInstance().getProductBusiness().create(product);
 		SalableProduct salableProduct = new SalableProduct(product, price);
 		create(salableProduct);

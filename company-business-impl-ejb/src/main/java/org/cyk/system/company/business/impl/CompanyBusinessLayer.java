@@ -299,8 +299,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		company();
 		
 		if(Boolean.TRUE.equals(PRODUCT_STOCKING_ENABLED)){
-			create(new IntangibleProduct(IntangibleProduct.STOCKING, IntangibleProduct.STOCKING, null, null));
-	    	create(new TangibleProduct(TangibleProduct.STOCKING, TangibleProduct.STOCKING, null, null));
+			create(new IntangibleProduct(IntangibleProduct.STOCKING, IntangibleProduct.STOCKING, null));
+	    	create(new TangibleProduct(TangibleProduct.STOCKING, TangibleProduct.STOCKING, null));
 	    	
 	    	create(new SalableProduct(getEnumeration(IntangibleProduct.class, IntangibleProduct.STOCKING), null));
 	    	create(new StockableTangibleProduct(getEnumeration(TangibleProduct.class, TangibleProduct.STOCKING)

@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.root.model.AbstractEnumeration;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudInheritanceStrategy;
@@ -28,19 +27,14 @@ public class Product extends AbstractEnumeration implements Serializable  {
 
 	private static final long serialVersionUID = -6128937819261060725L;
 	
-	@ManyToOne //@Input @InputChoice @InputOneChoice @InputOneCombo
-	protected Division division;
-	
 	@ManyToOne @Input @InputChoice @InputOneChoice @InputOneCombo
 	protected ProductCategory category;
 	
-	public Product(String code, String name, Division division, ProductCategory category) {
+	public Product(String code, String name, ProductCategory category) {
 		super(code, name, null, null);
-		this.division = division;
 		this.category = category;
 	}
 	
-	public static final String FIELD_DIVISION = "division";
 	public static final String FIELD_CATEGORY = "category";
 
 

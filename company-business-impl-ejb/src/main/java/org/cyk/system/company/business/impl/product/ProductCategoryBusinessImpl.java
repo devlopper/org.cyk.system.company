@@ -42,7 +42,7 @@ public class ProductCategoryBusinessImpl extends AbstractDataTreeTypeBusinessImp
     	dao.create(productCategory);
     	AccountingPeriod accountingPeriod = accountingPeriodBusiness.findCurrent(ownedCompany);
     	if(accountingPeriod!=null)
-    		if(accountingPeriodProductCategoryDao.readByAccountingPeriodByProduct(accountingPeriod, productCategory)==null)
+    		if(accountingPeriodProductCategoryDao.readByAccountingPeriodByEntity(accountingPeriod, productCategory)==null)
     			accountingPeriodProductCategoryDao.create(new AccountingPeriodProductCategory(accountingPeriod, productCategory));
     	return productCategory;
     }

@@ -15,7 +15,7 @@ public class ProductCollectionDaoImpl extends AbstractProductDaoImpl<ProductColl
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
-		registerNamedQuery(readAllWithProduct, "SELECT DISTINCT pc FROM ProductCollection pc LEFT JOIN FETCH pc.collection");
+		//registerNamedQuery(readAllWithProduct, "SELECT DISTINCT pc FROM ProductCollection pc LEFT JOIN FETCH pc.collection");
 	}
 	
 	@Override

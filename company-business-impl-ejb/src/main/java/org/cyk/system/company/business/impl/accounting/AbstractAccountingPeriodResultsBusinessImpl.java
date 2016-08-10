@@ -38,24 +38,24 @@ public class AbstractAccountingPeriodResultsBusinessImpl<RESULTS extends Abstrac
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public RESULTS findByAccountingPeriodByProduct(AccountingPeriod accountingPeriod, PRODUCT product) {
-		return dao.readByAccountingPeriodByProduct(accountingPeriod, product);
+		return dao.readByAccountingPeriodByEntity(accountingPeriod, product);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<RESULTS> findByAccountingPeriodByProducts(AccountingPeriod accountingPeriod, Collection<PRODUCT> products) {
-		return dao.readByAccountingPeriodByProducts(accountingPeriod, products);
+		return dao.readByAccountingPeriodByEntities(accountingPeriod, products);
 	}	
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<RESULTS> findHighestNumberOfSales(AccountingPeriod accountingPeriod, Collection<PRODUCT> products) {
 		BigDecimal value = dao.readHighestNumberOfSales(accountingPeriod, products);
-		return dao.readByAccountingPeriodByProductsByNumberOfSales(accountingPeriod, products, value);
+		return dao.readByAccountingPeriodByEntitiesByNumberOfSales(accountingPeriod, products, value);
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<RESULTS> findLowestNumberOfSales(AccountingPeriod accountingPeriod, Collection<PRODUCT> products) {
 		BigDecimal value = dao.readLowestNumberOfSales(accountingPeriod, products);
-		return dao.readByAccountingPeriodByProductsByNumberOfSales(accountingPeriod, products, value);
+		return dao.readByAccountingPeriodByEntitiesByNumberOfSales(accountingPeriod, products, value);
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)

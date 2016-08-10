@@ -27,5 +27,5 @@ public class CashRegisterMovementMode extends AbstractEnumeration implements Ser
 		super(code, libelle,null, description);
 	}
 	
-	
+	public static final String FIELD_SUPPORT_DOCUMENT_IDENTIFIER = "supportDocumentIdentifier";
 }

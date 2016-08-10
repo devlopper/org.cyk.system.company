@@ -5,8 +5,6 @@ import java.io.Serializable;
 import javax.servlet.ServletContextEvent;
 
 import org.cyk.system.company.ui.web.primefaces.AbstractCompanyContextListener;
-import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.root.ui.web.primefaces.api.RootWebManager;
 
 public abstract class AbstractContextListener extends AbstractCompanyContextListener implements Serializable {
 
@@ -18,12 +16,5 @@ public abstract class AbstractContextListener extends AbstractCompanyContextList
 		super.contextInitialized(event);
 			
 	}
-		
-	@Override
-	protected void identifiableConfiguration(ServletContextEvent event) {
-		super.identifiableConfiguration(event);
-		uiManager.registerApplicationUImanager(RootWebManager.getInstance());
-		uiManager.registerApplicationUImanager(CompanyWebManager.getInstance());
-	}
-	
+			
 }

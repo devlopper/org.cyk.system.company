@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.product.AbstractProductBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
 import org.cyk.system.company.model.product.Product;
@@ -57,9 +58,16 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
     	dao.create(product);
     	AccountingPeriod accountingPeriod = accountingPeriodBusiness.findCurrent(ownedCompany);
     	if(accountingPeriod!=null)
-    		if(accountingPeriodProductDao.readByAccountingPeriodByProduct(accountingPeriod, product)==null)
+    		if(accountingPeriodProductDao.readByAccountingPeriodByEntity(accountingPeriod, product)==null)
     			accountingPeriodProductDao.create(new AccountingPeriodProduct(accountingPeriod, product));
     	return product;
+    }
+    
+    @Override
+    public PRODUCT delete(PRODUCT product){
+    	for(AccountingPeriodProduct accountingPeriodProduct : accountingPeriodProductDao.readByEntity(product))
+    		CompanyBusinessLayer.getInstance().getAccountingPeriodProductBusiness().delete(accountingPeriodProduct);
+    	return super.delete(product); 
     }
         
     @Override

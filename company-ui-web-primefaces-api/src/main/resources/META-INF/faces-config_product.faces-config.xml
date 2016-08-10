@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+	<navigation-rule>
+		<from-view-id>*</from-view-id>
+		<!-- ########################################### Private Navigations Cases ############################################### -->
+		<navigation-case>
+			<from-outcome>tangibleProductListView</from-outcome>
+			<to-view-id>/private/product/tangibleproduct/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>tangibleProductEditView</from-outcome>
+			<to-view-id>/private/product/tangibleproduct/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>tangibleProductConsultView</from-outcome>
+			<to-view-id>/private/product/tangibleproduct/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>intangibleProductListView</from-outcome>
+			<to-view-id>/private/product/intangibleproduct/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>intangibleProductEditView</from-outcome>
+			<to-view-id>/private/product/intangibleproduct/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>intangibleProductConsultView</from-outcome>
+			<to-view-id>/private/product/intangibleproduct/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>productCollectionListView</from-outcome>
+			<to-view-id>/private/product/productcollection/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>productCollectionEditView</from-outcome>
+			<to-view-id>/private/product/productcollection/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>productCollectionConsultView</from-outcome>
+			<to-view-id>/private/product/productcollection/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		
+	</navigation-rule>
+
+</faces-config>

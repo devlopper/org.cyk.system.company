@@ -2,6 +2,10 @@ package org.cyk.system.company.model;
 
 public interface CompanyConstant {
 
+	/* Product */
+	
+	String STOCKING= "STOCKING";
+	
 	/* Gift card management */
 	
 	String GIFT_CARD_WORKFLOW = "GIFT_CARD_WORKFLOW";

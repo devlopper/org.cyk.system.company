@@ -6,6 +6,13 @@ import javax.servlet.ServletContextEvent;
 
 import org.cyk.system.company.business.impl.payment.CashRegisterDetails;
 import org.cyk.system.company.business.impl.payment.CashRegisterMovementDetails;
+import org.cyk.system.company.business.impl.payment.CashRegisterMovementModeDetails;
+import org.cyk.system.company.business.impl.payment.CashRegisterMovementTermCollectionDetails;
+import org.cyk.system.company.business.impl.payment.CashRegisterMovementTermDetails;
+import org.cyk.system.company.business.impl.payment.CashierDetails;
+import org.cyk.system.company.business.impl.product.IntangibleProductDetails;
+import org.cyk.system.company.business.impl.product.ProductCollectionDetails;
+import org.cyk.system.company.business.impl.product.TangibleProductDetails;
 import org.cyk.system.company.business.impl.sale.CustomerSalableProductDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceCashRegisterDetails;
@@ -15,6 +22,13 @@ import org.cyk.system.company.business.impl.sale.SaleDetails;
 import org.cyk.system.company.business.impl.structure.CompanyDetails;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
+import org.cyk.system.company.model.payment.CashRegisterMovementMode;
+import org.cyk.system.company.model.payment.CashRegisterMovementTerm;
+import org.cyk.system.company.model.payment.CashRegisterMovementTermCollection;
+import org.cyk.system.company.model.payment.Cashier;
+import org.cyk.system.company.model.product.IntangibleProduct;
+import org.cyk.system.company.model.product.ProductCollection;
+import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.CustomerSalableProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
@@ -24,7 +38,23 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterEditPage;
+import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterListPage;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementEditPage;
+import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementListPage;
+import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementModeEditPage;
+import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementModeListPage;
+import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementTermCollectionEditPage;
+import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementTermCollectionListPage;
+import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementTermEditPage;
+import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementTermListPage;
+import org.cyk.system.company.ui.web.primefaces.payment.CashierEditPage;
+import org.cyk.system.company.ui.web.primefaces.payment.CashierListPage;
+import org.cyk.system.company.ui.web.primefaces.product.IntangibleProductEditPage;
+import org.cyk.system.company.ui.web.primefaces.product.IntangibleProductListPage;
+import org.cyk.system.company.ui.web.primefaces.product.ProductCollectionEditPage;
+import org.cyk.system.company.ui.web.primefaces.product.ProductCollectionListPage;
+import org.cyk.system.company.ui.web.primefaces.product.TangibleProductEditPage;
+import org.cyk.system.company.ui.web.primefaces.product.TangibleProductListPage;
 import org.cyk.system.company.ui.web.primefaces.sale.CustomerSalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceCashRegisterEditPage;
@@ -37,6 +67,8 @@ import org.cyk.system.company.ui.web.primefaces.sale.SaleQueryFormModel;
 import org.cyk.system.company.ui.web.primefaces.structure.CompanyEditPage;
 import org.cyk.ui.api.config.IdentifiableConfiguration;
 import org.cyk.ui.web.primefaces.AbstractContextListener;
+import org.cyk.ui.web.primefaces.page.AbstractBusinessEntityFormManyPage.BusinessEntityFormManyPageListener;
+import org.cyk.ui.web.primefaces.page.AbstractBusinessEntityFormOnePage.BusinessEntityFormOnePageListener;
 import org.cyk.ui.web.primefaces.page.AbstractProcessManyPage;
 import org.cyk.ui.web.primefaces.page.AbstractSelectManyPage;
 import org.cyk.ui.web.primefaces.page.AbstractSelectOnePage;
@@ -48,15 +80,21 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 	@Override
 	protected void identifiableConfiguration(ServletContextEvent event) {
 		super.identifiableConfiguration(event);
+		uiManager.registerApplicationUImanager(CompanyWebManager.getInstance());
+		
+		initializeProductModule();
+		
+		initializePaymentModule();
+		
 		uiManager.registerConfiguration(new IdentifiableConfiguration(Company.class, CompanyEditPage.Form.class, CompanyDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(Company.class, null);
-		
+		/*
 		uiManager.registerConfiguration(new IdentifiableConfiguration(CashRegister.class, CashRegisterEditPage.Form.class, CashRegisterDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(CashRegister.class, null);
 		
 		uiManager.registerConfiguration(new IdentifiableConfiguration(CashRegisterMovement.class, CashRegisterMovementEditPage.Form.class, CashRegisterMovementDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(CashRegisterMovement.class, null);
-		
+		*/
 		/* Sale */
 		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProduct.class, SalableProductEditPage.Form.class, SalableProductDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(SalableProduct.class, null);
@@ -91,5 +129,53 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 		//webNavigationManager.useDynamicSelectView(SalableProductInstance.class);
 	}
 	
+	protected void initializeProductModule(){
+		uiManager.registerConfiguration(new IdentifiableConfiguration(TangibleProduct.class, TangibleProductEditPage.Form.class, TangibleProductDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(TangibleProduct.class, null);
+		BusinessEntityFormManyPageListener.COLLECTION.add(new TangibleProductListPage.Adapter());
+		BusinessEntityFormOnePageListener.COLLECTION.add(new TangibleProductEditPage.Adapter());
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(IntangibleProduct.class, IntangibleProductEditPage.Form.class, IntangibleProductDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(IntangibleProduct.class, null);
+		BusinessEntityFormManyPageListener.COLLECTION.add(new IntangibleProductListPage.Adapter());
+		BusinessEntityFormOnePageListener.COLLECTION.add(new IntangibleProductEditPage.Adapter());
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(ProductCollection.class, ProductCollectionEditPage.Form.class, ProductCollectionDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(ProductCollection.class, null);
+		BusinessEntityFormManyPageListener.COLLECTION.add(new ProductCollectionListPage.Adapter());
+		BusinessEntityFormOnePageListener.COLLECTION.add(new ProductCollectionEditPage.Adapter());
+	}
 	
+	protected void initializePaymentModule(){
+		uiManager.registerConfiguration(new IdentifiableConfiguration(Cashier.class, CashierEditPage.Form.class, CashierDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(Cashier.class, null);
+		BusinessEntityFormManyPageListener.COLLECTION.add(new CashierListPage.Adapter());
+		BusinessEntityFormOnePageListener.COLLECTION.add(new CashierEditPage.Adapter());
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(CashRegister.class, CashRegisterEditPage.Form.class, CashRegisterDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(CashRegister.class, null);
+		BusinessEntityFormManyPageListener.COLLECTION.add(new CashRegisterListPage.Adapter());
+		BusinessEntityFormOnePageListener.COLLECTION.add(new CashRegisterEditPage.Adapter());
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(CashRegisterMovement.class, CashRegisterMovementEditPage.Form.class, CashRegisterMovementDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(CashRegisterMovement.class, null);
+		BusinessEntityFormManyPageListener.COLLECTION.add(new CashRegisterMovementListPage.Adapter());
+		BusinessEntityFormOnePageListener.COLLECTION.add(new CashRegisterMovementEditPage.Adapter());
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(CashRegisterMovementMode.class, CashRegisterMovementModeEditPage.Form.class, CashRegisterMovementModeDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(CashRegisterMovementMode.class, null);
+		BusinessEntityFormManyPageListener.COLLECTION.add(new CashRegisterMovementModeListPage.Adapter());
+		BusinessEntityFormOnePageListener.COLLECTION.add(new CashRegisterMovementModeEditPage.Adapter());
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(CashRegisterMovementTerm.class, CashRegisterMovementTermEditPage.Form.class, CashRegisterMovementTermDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(CashRegisterMovementTerm.class, null);
+		BusinessEntityFormManyPageListener.COLLECTION.add(new CashRegisterMovementTermListPage.Adapter());
+		BusinessEntityFormOnePageListener.COLLECTION.add(new CashRegisterMovementTermEditPage.Adapter());
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(CashRegisterMovementTermCollection.class, CashRegisterMovementTermCollectionEditPage.Form.class, CashRegisterMovementTermCollectionDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(CashRegisterMovementTermCollection.class, null);
+		BusinessEntityFormManyPageListener.COLLECTION.add(new CashRegisterMovementTermCollectionListPage.Adapter());
+		BusinessEntityFormOnePageListener.COLLECTION.add(new CashRegisterMovementTermCollectionEditPage.Adapter());
+		
+	}
 }

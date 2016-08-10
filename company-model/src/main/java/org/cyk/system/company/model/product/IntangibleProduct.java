@@ -4,21 +4,25 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 
+import org.cyk.system.company.model.CompanyConstant;
+import org.cyk.utility.common.Constant;
+import org.cyk.utility.common.annotation.ModelBean;
+import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
+import org.cyk.utility.common.annotation.ModelBean.GenderType;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.model.structure.Division;
-
-@Getter @Setter @NoArgsConstructor @Entity 
+@Getter @Setter @NoArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.FEMALE)
 public class IntangibleProduct extends Product implements Serializable  {
 
 	private static final long serialVersionUID = -6128937819261060725L;
 
-	public static final String STOCKING = IntangibleProduct.class.getSimpleName()+"_STOCKING";
+	public static final String STOCKING = IntangibleProduct.class.getSimpleName()+Constant.CHARACTER_UNDESCORE+CompanyConstant.STOCKING;
 	
-	public IntangibleProduct(String code, String name, Division division,ProductCategory category) {
-		super(code, name, division, category);
+	public IntangibleProduct(String code, String name,ProductCategory category) {
+		super(code, name, category);
 	}
 	
 }

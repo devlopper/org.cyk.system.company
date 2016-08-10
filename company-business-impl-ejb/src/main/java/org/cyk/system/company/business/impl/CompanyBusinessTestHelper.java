@@ -272,7 +272,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     }
     
     public void assertCurrentAccountingPeriodProduct(String productCode,ObjectFieldValues expectedValues){
-    	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByProduct(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
+    	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByEntity(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
     	doAssertions(accountingPeriodProduct.getSaleResults().getCost(), expectedValues);
     }
     public void assertCurrentAccountingPeriodProduct(String productCode,String numberOfProceedElements,String cost,String tax,String turnover){
@@ -330,7 +330,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     }
     
     public void assertAccountingPeriodProduct(String productCode,ObjectFieldValues expectedValues){
-    	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByProduct(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
+    	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByEntity(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
     	doAssertions(accountingPeriodProduct.getSaleResults().getCost(), expectedValues);
     	doAssertions(accountingPeriodProduct.getProductResults().getNumberOfSalesSort(), expectedValues);
     }

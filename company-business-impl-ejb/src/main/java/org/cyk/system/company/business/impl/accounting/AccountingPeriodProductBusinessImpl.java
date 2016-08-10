@@ -54,14 +54,14 @@ public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPerio
 					vat = turnover.add(saleProduct.getCost().getTax());
 					turnover = turnover.add(saleProduct.getCost().getTurnover());
 				}
-			AccountingPeriodProduct accountingPeriodProduct = dao.readByAccountingPeriodByProduct(sale.getAccountingPeriod(), salableProduct.getProduct());
+			AccountingPeriodProduct accountingPeriodProduct = dao.readByAccountingPeriodByEntity(sale.getAccountingPeriod(), salableProduct.getProduct());
 			updateSalesResults(accountingPeriodProduct.getSaleResults(),crud,first,usedCount,cost,vat,turnover);
 			dao.update(accountingPeriodProduct);
 			
 			//Update Hierarchy
 		 	ProductCategory category = salableProduct.getProduct().getCategory();
 			while(category!=null){
-				AccountingPeriodProductCategory accountingPeriodProductCategory = accountingPeriodProductCategoryDao.readByAccountingPeriodByProduct(sale.getAccountingPeriod(), category);
+				AccountingPeriodProductCategory accountingPeriodProductCategory = accountingPeriodProductCategoryDao.readByAccountingPeriodByEntity(sale.getAccountingPeriod(), category);
 				updateSalesResults(accountingPeriodProductCategory.getSaleResults(),crud,first, usedCount,cost,vat, turnover);
 				accountingPeriodProductCategoryDao.update(accountingPeriodProductCategory);
 				category = productCategoryDao.readParent(category);
