@@ -24,9 +24,8 @@ public class CashRegisterMovementTerm extends AbstractCollectionItem<CashRegiste
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@OneToOne @NotNull private Event event;
-	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amount;
+	@OneToOne private Event event;
 	
 	public static final String FIELD_EVENT = "event";
 	public static final String FIELD_AMOUNT = "amount";

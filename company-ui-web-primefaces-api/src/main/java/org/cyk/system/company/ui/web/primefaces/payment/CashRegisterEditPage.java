@@ -44,11 +44,13 @@ public class CashRegisterEditPage extends AbstractMovementCollectionEditPage<Cas
 		public Adapter() {
 			super(CashRegister.class);
 			FormConfiguration configuration = createFormConfiguration(Crud.CREATE, FormConfiguration.TYPE_INPUT_SET_SMALLEST);
-			//configuration.addRequiredFieldNames(Form.FIELD_CODE,Form.FIELD_NAME);
+			configuration.addRequiredFieldNames(Form.FIELD_CODE,Form.FIELD_NAME);
 			
 			configuration = createFormConfiguration(Crud.UPDATE, UIManager.getInstance().businessEntityInfos(entityTypeClass).getUserInterface().getLabelId());
-			//configuration.addRequiredFieldNames(Form.FIELD_CODE,Form.FIELD_NAME);
+			configuration.addRequiredFieldNames(Form.FIELD_CODE,Form.FIELD_NAME);
 			
+			configuration = createFormConfiguration(Crud.DELETE, FormConfiguration.TYPE_INPUT_SET_SMALLEST);
+			configuration.addFieldNames(Form.FIELD_CODE,Form.FIELD_NAME);
 		}
 		
 	}

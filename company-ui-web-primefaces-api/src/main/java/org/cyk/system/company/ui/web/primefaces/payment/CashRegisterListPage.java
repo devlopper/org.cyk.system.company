@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.cyk.system.company.business.impl.payment.CashRegisterDetails;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.root.business.api.Crud;
+import org.cyk.system.root.business.impl.mathematics.MovementCollectionDetails;
 import org.cyk.ui.api.data.collector.form.FormConfiguration;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessEntityFormManyPage;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudManyPage;
@@ -29,7 +30,8 @@ public class CashRegisterListPage extends AbstractCrudManyPage<CashRegister> imp
 		public Adapter() {
 			super(CashRegister.class);
 			FormConfiguration configuration = createFormConfiguration(Crud.READ, FormConfiguration.TYPE_INPUT_SET_SMALLEST);
-			configuration.addFieldNames(CashRegisterDetails.FIELD_CODE,CashRegisterDetails.FIELD_NAME);
+			configuration.addFieldNames(CashRegisterDetails.FIELD_CODE,CashRegisterDetails.FIELD_NAME
+					,CashRegisterDetails.FIELD_MOVEMENT_COLLECTION,MovementCollectionDetails.FIELD_VALUE);
 		}
 		
 	}

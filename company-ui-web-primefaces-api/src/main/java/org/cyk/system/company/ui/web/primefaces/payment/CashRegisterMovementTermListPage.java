@@ -29,7 +29,7 @@ public class CashRegisterMovementTermListPage extends AbstractCrudManyPage<CashR
 		public Adapter() {
 			super(CashRegisterMovementTerm.class);
 			FormConfiguration configuration = createFormConfiguration(Crud.READ, FormConfiguration.TYPE_INPUT_SET_SMALLEST);
-			configuration.addFieldNames(CashRegisterMovementTermDetails.FIELD_CODE,CashRegisterMovementTermDetails.FIELD_NAME);
+			configuration.addFieldNames(CashRegisterMovementTermDetails.FIELD_AMOUNT,CashRegisterMovementTermDetails.FIELD_EVENT);
 		}
 		
 	}

@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.root.business.impl.AbstractEnumerationDetails;
+import org.cyk.system.root.business.impl.mathematics.MovementCollectionDetails;
+import org.cyk.utility.common.annotation.user.interfaces.IncludeInputs;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 
@@ -15,17 +17,16 @@ public class CashRegisterDetails extends AbstractEnumerationDetails<CashRegister
 	private static final long serialVersionUID = -4741435164709063863L;
 	
 	@Input @InputText private String value;
-	//@IncludeInputs private MovementCollectionDetails movementCollectionDetails;
-	
-	//private String date,instancesCodes,instancesQuantity,instancesUnitPrice,instancesTotalPrice;
+	@IncludeInputs private MovementCollectionDetails movementCollection;
 	
 	public CashRegisterDetails(CashRegister cashRegister) {
 		super(cashRegister);
 		value = formatNumber(cashRegister.getMovementCollection().getValue());
-		//movementCollectionDetails = new MovementCollectionDetails(cashRegister.getMovementCollection());
+		movementCollection = new MovementCollectionDetails(cashRegister.getMovementCollection());
 	}
 	
 	/**/
 	
 	public static final String FIELD_VALUE = "value";
+	public static final String FIELD_MOVEMENT_COLLECTION = "movementCollection";
 }

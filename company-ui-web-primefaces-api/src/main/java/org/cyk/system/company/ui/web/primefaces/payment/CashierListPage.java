@@ -29,7 +29,7 @@ public class CashierListPage extends AbstractCrudManyPage<Cashier> implements Se
 		public Adapter() {
 			super(Cashier.class);
 			FormConfiguration configuration = createFormConfiguration(Crud.READ, FormConfiguration.TYPE_INPUT_SET_SMALLEST);
-			configuration.addFieldNames(CashierDetails.FIELD_CODE,CashierDetails.FIELD_NAME);
+			configuration.addFieldNames(CashierDetails.FIELD_CASH_REGISTER,CashierDetails.FIELD_PERSON);
 		}
 		
 	}
