@@ -19,7 +19,7 @@ public class CashRegisterMovementDetails extends AbstractOutputDetails<CashRegis
 	private static final long serialVersionUID = -4741435164709063863L;
 	
 	@Input(label=@Text(value="field.identifier")) @InputText private String computedIdentifier;
-	@Input @InputText private String cashRegister;
+	@Input @InputText private String cashRegister,mode;
 	@IncludeInputs(layout=Layout.VERTICAL) private MovementDetails movement;
 	
 	public CashRegisterMovementDetails(CashRegisterMovement cashRegisterMovement) {
@@ -27,9 +27,11 @@ public class CashRegisterMovementDetails extends AbstractOutputDetails<CashRegis
 		computedIdentifier = cashRegisterMovement.getComputedIdentifier();
 		cashRegister = formatUsingBusiness(cashRegisterMovement.getCashRegister());
 		movement = new MovementDetails(cashRegisterMovement.getMovement());
+		mode = formatUsingBusiness(cashRegisterMovement.getMode());
 	}
 	
 	public static final String FIELD_COMPUTED_IDENTIFIER = "computedIdentifier";
 	public static final String FIELD_CASH_REGISTER = "cashRegister";
 	public static final String FIELD_MOVEMENT = "movement";
+	public static final String FIELD_MODE = "mode";
 }

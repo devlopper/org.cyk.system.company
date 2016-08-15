@@ -9,9 +9,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
@@ -19,6 +16,8 @@ import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBus
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementModeBusiness;
+import org.cyk.system.company.business.api.payment.CashRegisterMovementTermBusiness;
+import org.cyk.system.company.business.api.payment.CashRegisterMovementTermCollectionBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
 import org.cyk.system.company.business.api.product.ProductBusiness;
@@ -61,6 +60,8 @@ import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
+import org.cyk.system.company.model.payment.CashRegisterMovementTerm;
+import org.cyk.system.company.model.payment.CashRegisterMovementTermCollection;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
@@ -130,6 +131,9 @@ import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.cyk.utility.common.computation.DataReadConfiguration;
 import org.joda.time.DateTime;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER) @Getter
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
 
@@ -177,6 +181,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Inject private SalableProductInstanceCashRegisterBusiness salableProductInstanceCashRegisterBusiness;
 	@Inject private SalableProductInstanceCashRegisterDao salableProductInstanceCashRegisterDao;
 	@Inject private SalableProductInstanceBusiness salableProductInstanceBusiness;
+	
+	@Inject private CashRegisterMovementTermCollectionBusiness cashRegisterMovementTermCollectionBusiness;
+	@Inject private CashRegisterMovementTermBusiness cashRegisterMovementTermBusiness;
 	
 	@Inject private SaleProductDao saleProductDao;
 	@Inject private SaleProductBusiness saleProductBusiness;
@@ -456,6 +463,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
         beansMap.put((Class)CashRegisterMovementMode.class, (TypedBusiness)cashRegisterMovementModeBusiness);
         beansMap.put((Class)SalableProductInstanceCashRegister.class, (TypedBusiness)salableProductInstanceCashRegisterBusiness);
         beansMap.put((Class)CustomerSalableProduct.class, (TypedBusiness)customerSalableProductBusiness);
+        
+        beansMap.put((Class)CashRegisterMovementTerm.class, (TypedBusiness)cashRegisterMovementTermBusiness);
+        beansMap.put((Class)CashRegisterMovementTermCollection.class, (TypedBusiness)cashRegisterMovementTermCollectionBusiness);
     }
 	
 	/**/

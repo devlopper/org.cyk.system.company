@@ -5,10 +5,10 @@ import java.io.Serializable;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import org.cyk.system.company.model.product.TangibleProduct;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import org.cyk.system.company.model.product.TangibleProduct;
 
 @Named @ViewScoped @Getter @Setter
 public class TangibleProductListPage extends AbstractProductListPage<TangibleProduct> implements Serializable {
@@ -17,13 +17,5 @@ public class TangibleProductListPage extends AbstractProductListPage<TangiblePro
 	
 	/**/
 	
-	public static class Adapter extends AbstractAdapter<TangibleProduct> implements Serializable {
-
-		private static final long serialVersionUID = 4370361826462886031L;
-
-		public Adapter() {
-			super(TangibleProduct.class);
-		}
-		
-	}
+	
 }

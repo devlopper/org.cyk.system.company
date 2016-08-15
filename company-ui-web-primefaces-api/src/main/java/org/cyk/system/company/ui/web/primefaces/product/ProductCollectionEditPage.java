@@ -20,16 +20,6 @@ public class ProductCollectionEditPage extends AbstractProductEditPage<ProductCo
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 	}
-	
-	public static class Adapter extends AbstractAdapter<ProductCollection> implements Serializable {
 
-		private static final long serialVersionUID = 4370361826462886031L;
-
-		public Adapter() {
-			super(ProductCollection.class);
-			
-		}
-		
-	}
 	
 }

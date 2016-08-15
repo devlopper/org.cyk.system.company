@@ -20,15 +20,4 @@ public class TangibleProductEditPage extends AbstractProductEditPage<TangiblePro
 		
 	}
 	
-	public static class Adapter extends AbstractAdapter<TangibleProduct> implements Serializable {
-
-		private static final long serialVersionUID = 4370361826462886031L;
-
-		public Adapter() {
-			super(TangibleProduct.class);
-			
-		}
-		
-	}
-	
 }

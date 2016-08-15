@@ -1,20 +1,20 @@
 package org.cyk.system.company.ui.web.primefaces.payment;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.validation.constraints.NotNull;
+
+import org.cyk.system.company.model.payment.CashRegisterMovementTermCollection;
+import org.cyk.ui.api.data.collector.form.AbstractFormModel;
+import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
+import org.cyk.utility.common.annotation.user.interfaces.Input;
+import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import org.cyk.system.company.model.payment.CashRegisterMovementTermCollection;
-import org.cyk.system.root.business.api.Crud;
-import org.cyk.ui.api.UIManager;
-import org.cyk.ui.api.data.collector.form.AbstractFormModel;
-import org.cyk.ui.api.data.collector.form.FormConfiguration;
-import org.cyk.ui.web.primefaces.page.AbstractBusinessEntityFormOnePage;
-import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
 
 @Named @ViewScoped @Getter @Setter
 public class CashRegisterMovementTermCollectionEditPage extends AbstractCrudOnePage<CashRegisterMovementTermCollection> implements Serializable {
@@ -25,22 +25,9 @@ public class CashRegisterMovementTermCollectionEditPage extends AbstractCrudOneP
 	public static class Form extends AbstractFormModel<CashRegisterMovementTermCollection> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
-		
-	}
-	
-	public static class Adapter extends AbstractBusinessEntityFormOnePage.BusinessEntityFormOnePageListener.Adapter.Default<CashRegisterMovementTermCollection> implements Serializable {
+		@Input @InputNumber @NotNull private BigDecimal amount;
 
-		private static final long serialVersionUID = 4370361826462886031L;
-
-		public Adapter() {
-			super(CashRegisterMovementTermCollection.class);
-			FormConfiguration configuration = createFormConfiguration(Crud.CREATE, FormConfiguration.TYPE_INPUT_SET_SMALLEST);
-			//configuration.addRequiredFieldNames(Form.FIELD_CODE,Form.FIELD_NAME);
-			
-			configuration = createFormConfiguration(Crud.UPDATE, UIManager.getInstance().businessEntityInfos(entityTypeClass).getUserInterface().getLabelId());
-			//configuration.addRequiredFieldNames(Form.FIELD_CODE,Form.FIELD_NAME);
-			
-		}
+		public static final String FIELD_AMOUNT = "amount";
 		
 	}
 

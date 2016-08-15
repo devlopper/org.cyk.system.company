@@ -5,16 +5,16 @@ import java.io.Serializable;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import org.cyk.system.company.model.payment.CashRegister;
+import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.ui.web.primefaces.page.mathematics.AbstractMovementCollectionEditPage;
+import org.cyk.utility.common.annotation.user.interfaces.Input;
+import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
+import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
+import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import org.cyk.system.company.model.payment.CashRegister;
-import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.model.mathematics.MovementCollection;
-import org.cyk.ui.api.UIManager;
-import org.cyk.ui.api.data.collector.form.FormConfiguration;
-import org.cyk.ui.web.primefaces.page.AbstractBusinessEntityFormOnePage;
-import org.cyk.ui.web.primefaces.page.mathematics.AbstractMovementCollectionEditPage;
 
 @Named @ViewScoped @Getter @Setter
 public class CashRegisterEditPage extends AbstractMovementCollectionEditPage<CashRegister> implements Serializable {
@@ -30,29 +30,27 @@ public class CashRegisterEditPage extends AbstractMovementCollectionEditPage<Cas
 	public static class Form extends AbstractMovementCollectionForm<CashRegister> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
+		@Input @InputChoice @InputOneChoice @InputOneCombo private MovementCollection movementCollection;
+		
 		@Override
 		protected MovementCollection getMovementCollection() {
 			return identifiable.getMovementCollection();
 		}
 		
-	}
-	
-	public static class Adapter extends AbstractBusinessEntityFormOnePage.BusinessEntityFormOnePageListener.Adapter.Default<CashRegister> implements Serializable {
-
-		private static final long serialVersionUID = 4370361826462886031L;
-
-		public Adapter() {
-			super(CashRegister.class);
-			FormConfiguration configuration = createFormConfiguration(Crud.CREATE, FormConfiguration.TYPE_INPUT_SET_SMALLEST);
-			configuration.addRequiredFieldNames(Form.FIELD_CODE,Form.FIELD_NAME);
-			
-			configuration = createFormConfiguration(Crud.UPDATE, UIManager.getInstance().businessEntityInfos(entityTypeClass).getUserInterface().getLabelId());
-			configuration.addRequiredFieldNames(Form.FIELD_CODE,Form.FIELD_NAME);
-			
-			configuration = createFormConfiguration(Crud.DELETE, FormConfiguration.TYPE_INPUT_SET_SMALLEST);
-			configuration.addFieldNames(Form.FIELD_CODE,Form.FIELD_NAME);
+		@Override
+		public void read() {
+			super.read();
+			movementCollection = getMovementCollection();
 		}
 		
+		@Override
+		public void write() {
+			super.write();
+			identifiable.setMovementCollection(movementCollection);
+		}
+		
+		public static final String FIELD_MOVEMENT_COLLECTION = "movementCollection";
+		
 	}
-
+	
 }

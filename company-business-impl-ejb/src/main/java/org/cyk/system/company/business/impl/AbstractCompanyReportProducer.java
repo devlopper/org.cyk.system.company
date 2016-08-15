@@ -74,10 +74,10 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		Collection<SaleCashRegisterMovement> saleCashRegisterMovements = CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementDao().readBySale(saleCashRegisterMovement.getSale());
 		SaleCashRegisterMovement lastSaleCashRegisterMovement = null;
 		for(SaleCashRegisterMovement s : saleCashRegisterMovements)
-			if(!s.getIdentifier().equals(saleCashRegisterMovement.getIdentifier()) && s.getCashRegisterMovement().getMovement().getDate().before(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getDate()) ){
+			if(!s.getIdentifier().equals(saleCashRegisterMovement.getIdentifier()) && s.getCashRegisterMovement().getMovement().getBirthDate().before(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getBirthDate()) ){
 				if(lastSaleCashRegisterMovement==null)
 					lastSaleCashRegisterMovement = s;
-				else if(lastSaleCashRegisterMovement.getCashRegisterMovement().getMovement().getDate().before(s.getCashRegisterMovement().getMovement().getDate()))
+				else if(lastSaleCashRegisterMovement.getCashRegisterMovement().getMovement().getBirthDate().before(s.getCashRegisterMovement().getMovement().getBirthDate()))
 					lastSaleCashRegisterMovement = s;
 			}
 			

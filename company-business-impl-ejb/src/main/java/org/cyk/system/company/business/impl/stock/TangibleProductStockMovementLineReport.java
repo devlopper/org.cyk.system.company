@@ -21,7 +21,7 @@ public class TangibleProductStockMovementLineReport implements Serializable {
 	private String comments;
 	
 	public TangibleProductStockMovementLineReport(StockTangibleProductMovement tangibleProductStockMovement) {
-		date = RootBusinessLayer.getInstance().getTimeBusiness().formatDateTime(tangibleProductStockMovement.getMovement().getDate());
+		date = RootBusinessLayer.getInstance().getTimeBusiness().formatDateTime(tangibleProductStockMovement.getMovement().getBirthDate());
 		//tangibleProduct = tangibleProductStockMovement.getTangibleProduct().getUiString();
 		quantity = RootBusinessLayer.getInstance().getNumberBusiness().format(tangibleProductStockMovement.getMovement().getValue());
 	}

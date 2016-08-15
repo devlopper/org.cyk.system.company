@@ -21,15 +21,5 @@ public class IntangibleProductEditPage extends AbstractProductEditPage<Intangibl
 		
 	}
 	
-	public static class Adapter extends AbstractAdapter<IntangibleProduct> implements Serializable {
-
-		private static final long serialVersionUID = 4370361826462886031L;
-
-		public Adapter() {
-			super(IntangibleProduct.class);
-			
-		}
-		
-	}
 	
 }

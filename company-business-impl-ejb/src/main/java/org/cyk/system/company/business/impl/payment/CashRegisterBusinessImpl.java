@@ -30,10 +30,11 @@ public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashR
 		if(cashRegister.getOwnedCompany()==null)
 			cashRegister.setOwnedCompany(CompanyBusinessLayer.getInstance().getOwnedCompanyBusiness().findDefaultOwnedCompany());
 		
-		if(cashRegister.getMovementCollection()==null)
+		if(cashRegister.getMovementCollection()==null){
 			cashRegister.setMovementCollection((RootBusinessLayer.getInstance().getMovementCollectionBusiness().instanciateOne(cashRegister.getCode()
 					, cashRegister.getCode()+MovementAction.INCREMENT, cashRegister.getCode()+MovementAction.DECREMENT)));
-		RootBusinessLayer.getInstance().getMovementCollectionBusiness().create(cashRegister.getMovementCollection());
+			RootBusinessLayer.getInstance().getMovementCollectionBusiness().create(cashRegister.getMovementCollection());
+		}
 		return super.create(cashRegister);
 	}
 	

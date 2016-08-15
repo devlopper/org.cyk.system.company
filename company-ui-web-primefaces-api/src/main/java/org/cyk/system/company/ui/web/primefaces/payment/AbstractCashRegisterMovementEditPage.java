@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
+import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
@@ -15,6 +16,7 @@ import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
+import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.cyk.utility.common.annotation.user.interfaces.Sequence;
 import org.cyk.utility.common.annotation.user.interfaces.Sequence.Direction;
 
@@ -30,6 +32,7 @@ public abstract class AbstractCashRegisterMovementEditPage<MOVEMENT extends Abst
 	protected void initialisation() {
 		super.initialisation();
 		form.getControlSetListeners().add(new ControlSetAdapter<Object>(){
+			private static final long serialVersionUID = 1L;
 			@Override
 			public Boolean build(Field field) {
 				if(field.getName().equals(AbstractCashRegisterMovementForm.FIELD_CASH_REGISTER))
@@ -59,8 +62,13 @@ public abstract class AbstractCashRegisterMovementEditPage<MOVEMENT extends Abst
 	public static abstract class AbstractCashRegisterMovementForm<MOVEMENT extends AbstractIdentifiable> extends AbstractMovementForm<MOVEMENT> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
-		@Sequence(direction=Direction.BEFORE,field=AbstractMovementForm.FIELD_CURRENT_TOTAL)
+		//@Sequence(direction=Direction.BEFORE,field=AbstractMovementForm.FIELD_CURRENT_TOTAL)
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull protected CashRegister cashRegister;
+		
+		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull protected Movement movement;
+		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private CashRegisterMovementMode mode;
+		@Input @InputText private String computedIdentifier;
+		
 		
 		protected abstract CashRegisterMovement getCashRegisterMovement();
 		
@@ -68,12 +76,22 @@ public abstract class AbstractCashRegisterMovementEditPage<MOVEMENT extends Abst
 		public void read() {
 			super.read();
 			cashRegister = getCashRegisterMovement().getCashRegister();
+			movement = getCashRegisterMovement().getMovement();
+			mode = getCashRegisterMovement().getMode();
+			computedIdentifier = getCashRegisterMovement().getComputedIdentifier();
 		}
 		
 		@Override
 		public void write() {
+			collection = cashRegister.getMovementCollection();
+			value = movement.getValue();
 			super.write();
 			getCashRegisterMovement().setCashRegister(cashRegister);
+			getCashRegisterMovement().setMovement(movement);
+			getCashRegisterMovement().setMode(mode);
+			getCashRegisterMovement().setComputedIdentifier(computedIdentifier);
+			
+			
 		}
 		
 		@Override
@@ -83,6 +101,9 @@ public abstract class AbstractCashRegisterMovementEditPage<MOVEMENT extends Abst
 		
 		/**/
 		public static final String FIELD_CASH_REGISTER = "cashRegister";
+		public static final String FIELD_MOVEMENT = "movement";
+		public static final String FIELD_MODE = "mode";
+		public static final String FIELD_COMPUTED_IDENTIFIER = "computedIdentifier";
 		
 	}
 
