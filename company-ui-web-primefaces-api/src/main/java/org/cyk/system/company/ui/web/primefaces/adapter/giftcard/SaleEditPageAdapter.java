@@ -12,14 +12,14 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateBusiness;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 
 public class SaleEditPageAdapter extends SaleEditPage.Listener.Adapter.Default implements Serializable {
 	private static final long serialVersionUID = -1473884331127075090L;
 	@Override
 	public Collection<SalableProductInstance> getSalableProductInstances(SalableProduct salableProduct,CashRegister cashRegister) {
-		FiniteStateMachineState finiteStateMachineState = RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness().find(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED);
+		FiniteStateMachineState finiteStateMachineState = inject(FiniteStateMachineStateBusiness.class).find(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED);
 		return CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().findByCollectionByCashRegisterByFiniteStateMachineState(salableProduct,cashRegister, finiteStateMachineState);
 	}
 	

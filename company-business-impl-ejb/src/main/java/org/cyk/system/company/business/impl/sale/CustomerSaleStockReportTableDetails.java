@@ -14,7 +14,7 @@ import org.cyk.utility.common.annotation.user.interfaces.style.Alignment;
 import org.cyk.utility.common.annotation.user.interfaces.style.Alignment.Horizontal;
 import org.cyk.utility.common.annotation.user.interfaces.style.Style;
 
-@Getter @Setter
+@Getter @Setter @Deprecated
 public class CustomerSaleStockReportTableDetails implements Serializable {
 	private static final long serialVersionUID = -6341285110719947720L;
 	
@@ -26,7 +26,7 @@ public class CustomerSaleStockReportTableDetails implements Serializable {
 	public CustomerSaleStockReportTableDetails(Customer customer) {
 		this.registrationCode = customer.getCode();
 		this.names = customer.getPerson().getNames();
-		this.saleStockInputCount = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getSaleStockInputCount());
-		this.saleStockOutputCount = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getSaleStockOutputCount());
+		//this.saleStockInputCount = inject(NumberBusiness.class).format(customer.getSaleStockInputCount());
+		//this.saleStockOutputCount = inject(NumberBusiness.class).format(customer.getSaleStockOutputCount());
 	}
 }

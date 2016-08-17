@@ -46,6 +46,8 @@ import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.mathematics.NumberBusiness;
 import org.cyk.system.root.business.api.mathematics.NumberBusiness.FormatSequenceArguments;
+import org.cyk.system.root.business.api.party.ApplicationBusiness;
+import org.cyk.system.root.business.api.time.TimeBusiness;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.file.report.DefaultReportBasedOnDynamicBuilder;
@@ -177,7 +179,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				Date toDate = getParameterToDate(parameters);
 				
 				/*if(parameterSaleStockReportCashRegister.equals(reportType)){
-					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestockoutput.cashregister.title"));
+					parameters.setTitle(inject(LanguageBusiness.class).findText("company.report.salestockoutput.cashregister.title"));
 					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 						private static final long serialVersionUID = -1279948056976719107L;
 						public Boolean ignoreField(Field field) {return SaleStockReportTableRow.cashRegisterFieldIgnored(field);};
@@ -185,21 +187,21 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 					SaleStockOutputSearchCriteria searchCriteria = new SaleStockOutputSearchCriteria(fromDate,toDate,saleDone);
 					return saleStockOutputBusiness.findByCriteria(searchCriteria);
 				}else if(parameterSaleStockReportInventory.equals(reportType)){
-					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestock.inventory.title"));
+					parameters.setTitle(inject(LanguageBusiness.class).findText("company.report.salestock.inventory.title"));
 					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 						private static final long serialVersionUID = -1279948056976719107L;
 						public Boolean ignoreField(Field field) {return SaleStockReportTableRow.inventoryFieldIgnored(field);};
 			        });
 					return saleStockBusiness.findByCriteria(new SaleStockSearchCriteria(fromDate,toDate,BigDecimal.ONE,saleDone));
 				}else if(parameterSaleStockReportCustomer.equals(reportType)){
-					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestock.customer.title"));
+					parameters.setTitle(inject(LanguageBusiness.class).findText("company.report.salestock.customer.title"));
 					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 						private static final long serialVersionUID = -1279948056976719107L;
 						public Boolean ignoreField(Field field) {return SaleStockReportTableRow.customerFieldIgnored(field);};
 			        });
 					return saleStockBusiness.findByCriteria(new SaleStockSearchCriteria(fromDate,toDate,saleDone));
 				}else if(parameterSaleStockReportInput.equals(reportType)){
-					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.salestockinput.list.title"));
+					parameters.setTitle(inject(LanguageBusiness.class).findText("company.report.salestockinput.list.title"));
 					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 						private static final long serialVersionUID = -1279948056976719107L;
 						public Boolean ignoreField(Field field) {return SaleStockReportTableRow.inputFieldIgnored(field);};
@@ -232,10 +234,10 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			}
 			@Override
 			public Collection<? extends AbstractIdentifiable> identifiables(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
-				BusinessEntityInfos tangibleProductInventoryEntityInfos = RootBusinessLayer.getInstance().getApplicationBusiness().findBusinessEntityInfos(TangibleProductInventory.class);
+				BusinessEntityInfos tangibleProductInventoryEntityInfos = inject(ApplicationBusiness.class).findBusinessEntityInfos(TangibleProductInventory.class);
 				Long tangibleProductInventoryId = Long.parseLong(parameters.getExtendedParameterMap().get(tangibleProductInventoryEntityInfos.getIdentifier())[0]);
 				TangibleProductInventory tangibleProductInventory = tangibleProductInventoryBusiness.load(tangibleProductInventoryId);
-				parameters.setTitle(languageBusiness.findClassLabelText(TangibleProductInventory.class)+" "+ RootBusinessLayer.getInstance().getTimeBusiness().formatDateTime(tangibleProductInventory.getDate()));
+				parameters.setTitle(languageBusiness.findClassLabelText(TangibleProductInventory.class)+" "+ inject(TimeBusiness.class).formatDateTime(tangibleProductInventory.getDate()));
 				return tangibleProductInventory.getDetails();
 			}
 		});
@@ -265,14 +267,14 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				String reportType = parameters.getExtendedParameterMap().get(parameterCustomerReportType)[0];
 				if(parameterCustomerReportBalance.equals(reportType)){
 					if(parameterCustomerBalanceAll.equals(parameters.getExtendedParameterMap().get(parameterCustomerBalanceType)[0])){
-						parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.customer.balance.title"));
+						parameters.setTitle(inject(LanguageBusiness.class).findText("company.report.customer.balance.title"));
 						parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 							private static final long serialVersionUID = -1279948056976719107L;
 							public Boolean ignoreField(Field field) {return CustomerReportTableRow.balanceFieldIgnored(field);};
 				        });
 						collection = customerBusiness.findAll();
 					}else{
-						parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.credence.title"));
+						parameters.setTitle(inject(LanguageBusiness.class).findText("company.report.credence.title"));
 						parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 							private static final long serialVersionUID = -1279948056976719107L;
 							public Boolean ignoreField(Field field) {return CustomerReportTableRow.credenceFieldIgnored(field);};
@@ -280,7 +282,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 						collection = customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
 					}
 				}else if(parameterCustomerReportSaleStock.equals(reportType)){
-					parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.customer.salestock.title"));
+					parameters.setTitle(inject(LanguageBusiness.class).findText("company.report.customer.salestock.title"));
 					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
 						private static final long serialVersionUID = -1279948056976719107L;
 						public Boolean ignoreField(Field field) {return CustomerReportTableRow.saleStockFieldIgnored(field);};
@@ -320,7 +322,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				for(TangibleProduct tangibleProduct : tangibleProductBusiness.findAll())
 					parameters.getDatas().add(new StockDashBoardReportTableDetails(tangibleProduct) ) ;
 		        
-				parameters.setTitle(RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.dashboard.stock.title"));
+				parameters.setTitle(inject(LanguageBusiness.class).findText("company.report.dashboard.stock.title"));
 				parameters.setModelClass(StockDashBoardReportTableDetails.class);
 				parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder());
 		        parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultJasperReportBasedOnDynamicBuilder());
@@ -369,10 +371,10 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			SaleResults results = saleBusiness.computeByCriteria(new SaleSearchCriteria(fromDate,toDate));
 			balance = results.getBalance();
 			//SaleStockReportTableRow totalRow = new SaleStockReportTableRow();
-			//totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));
-			/*totalRow.setTakenNumberOfGoods(RootBusinessLayer.getInstance().getNumberBusiness().format(output));
-			totalRow.setAmountPaid(RootBusinessLayer.getInstance().getNumberBusiness().format(paid));	
-			totalRow.setBalance(RootBusinessLayer.getInstance().getNumberBusiness().format(balance));
+			//totalRow.setCustomer(inject(LanguageBusiness.class).findText("total"));
+			/*totalRow.setTakenNumberOfGoods(inject(NumberBusiness.class).format(output));
+			totalRow.setAmountPaid(inject(NumberBusiness.class).format(paid));	
+			totalRow.setBalance(inject(NumberBusiness.class).format(balance));
 			initialRows.add(totalRow);*/
 			return initialRows;
 		}/*else if(parameterSaleStockReportInventory.equals(reportType)){
@@ -419,10 +421,10 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			
 			/*
 			totalRow = new SaleStockReportTableRow();
-			totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total"));
+			totalRow.setCustomer(inject(LanguageBusiness.class).findText("total"));
 			totalRow.setStockIn(getTotal(totals, STOCK_IN));
 			totalRow.setStockOut(getTotal(totals, STOCK_OUT));	
-			totalRow.setRemainingNumberOfGoods(RootBusinessLayer.getInstance().getNumberBusiness().format(totals[STOCK_IN][0].subtract(totals[STOCK_OUT][0])));
+			totalRow.setRemainingNumberOfGoods(inject(NumberBusiness.class).format(totals[STOCK_IN][0].subtract(totals[STOCK_OUT][0])));
 			
 			totalRow.setAmount(getTotal(totals, AMOUNT));
 			totalRow.setAmountPaid(getTotal(totals, PAID));	
@@ -435,7 +437,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 		//grand total
 		//if(Boolean.TRUE.equals(addGrandTotalRow)){
 			/*totalRow = new SaleStockReportTableRow();
-			totalRow.setCustomer(RootBusinessLayer.getInstance().getLanguageBusiness().findText("total.grand"));
+			totalRow.setCustomer(inject(LanguageBusiness.class).findText("total.grand"));
 			totalRow.setStockIn(format(saleStocksDetails.getIn()));
 			totalRow.setStockOut(format(saleStocksDetails.getOut()));	
 			totalRow.setRemainingNumberOfGoods(format(saleStocksDetails.getRemaining()));
@@ -457,7 +459,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	/**/
 	
 	public Collection<SalableProductInstanceCashRegisterStateLogDetails> format(Collection<SalableProductInstanceCashRegisterStateLogDetails> collection,Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters,String timeDivisionTypeCode){
-		NumberBusiness numberBusiness = RootBusinessLayer.getInstance().getNumberBusiness();
+		NumberBusiness numberBusiness = inject(NumberBusiness.class);
 		Map<String, SalableProductInstanceCashRegisterStateLogDetails> map = new LinkedHashMap<>();
 		for(SalableProductInstanceCashRegisterStateLogDetails salableProductInstanceCashRegisterStateLogDetails : collection){
 			for(SalableProductInstanceCashRegister salableProductInstanceCashRegister : salableProductInstanceCashRegisters){
@@ -492,7 +494,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			Collection<Long> identifiers = new ArrayList<>();
 			for(String value : StringUtils.split(salableProductInstanceCashRegisterStateLogDetails.getCode(), Constant.CHARACTER_COMA))
 				identifiers.add(Long.parseLong(value));
-			salableProductInstanceCashRegisterStateLogDetails.setCode(RootBusinessLayer.getInstance().getNumberBusiness().formatSequences(identifiers, arguments));
+			salableProductInstanceCashRegisterStateLogDetails.setCode(inject(NumberBusiness.class).formatSequences(identifiers, arguments));
 			if(TimeDivisionType.DAY.equals(timeDivisionTypeCode))
 				salableProductInstanceCashRegisterStateLogDetails.setDate(formatDate(salableProductInstanceCashRegisterStateLogDetails.getMaster().getDate()));
 		}

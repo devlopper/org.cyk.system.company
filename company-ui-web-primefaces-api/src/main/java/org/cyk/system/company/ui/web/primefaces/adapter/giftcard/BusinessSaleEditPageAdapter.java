@@ -19,7 +19,7 @@ import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage.FormOneSaleProduct;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateBusiness;
 import org.cyk.ui.api.data.collector.control.Input;
 import org.cyk.ui.api.data.collector.form.ControlSet;
 import org.cyk.ui.web.api.WebManager;
@@ -45,6 +45,7 @@ public class BusinessSaleEditPageAdapter extends AbstractBusinessEntityFormOnePa
 		final SaleEditPage saleEditPage = (SaleEditPage) bean;
 		
 		saleEditPage.getForm().getControlSetListeners().add(new ControlSetAdapter<Object>(){
+			private static final long serialVersionUID = 1L;
 			@Override
 			public Boolean build(Field field) {
 				if(GiftCardSystemMenuBuilder.ACTION_SELL_GIFT_CARD.equals(saleEditPage.getActionIdentifier()))
@@ -102,7 +103,7 @@ public class BusinessSaleEditPageAdapter extends AbstractBusinessEntityFormOnePa
 						WebManager.getInstance().throwValidationException("salableProductInstanceDoesNotExists",null);
 					SalableProductInstanceCashRegister.SearchCriteria searchCriteria = new SalableProductInstanceCashRegister.SearchCriteria();
 					searchCriteria.addCashRegisters(CompanyBusinessLayer.getInstance().getCashRegisterBusiness().findAll());
-					searchCriteria.addFiniteStateMachineStates(Arrays.asList(RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness().find(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD)));
+					searchCriteria.addFiniteStateMachineStates(Arrays.asList(inject(FiniteStateMachineStateBusiness.class).find(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD)));
 					Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = CompanyBusinessLayer.getInstance()
 							.getSalableProductInstanceCashRegisterBusiness().findByCriteria(searchCriteria);
 					if(salableProductInstanceCashRegisters.isEmpty())

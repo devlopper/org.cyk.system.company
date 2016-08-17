@@ -26,6 +26,8 @@ import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
+import org.cyk.system.root.business.api.language.LanguageBusiness;
+import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.file.File;
@@ -63,7 +65,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement());
 		saleCashRegisterMovement.getCashRegisterMovement().setComputedIdentifier(computedIdentifier);
 		saleCashRegisterMovement.getCashRegisterMovement().setCashRegister(cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)).getCashRegister());
-		saleCashRegisterMovement.getCashRegisterMovement().setMovement(RootBusinessLayer.getInstance().getMovementBusiness().instanciateOne(
+		saleCashRegisterMovement.getCashRegisterMovement().setMovement(inject(MovementBusiness.class).instanciateOne(
 				saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection(),amount));
 		return saleCashRegisterMovement;
 	}
@@ -72,7 +74,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	public SaleCashRegisterMovement instanciateOne(Sale sale,Person person,Boolean input) {
 		Cashier cashier = cashierDao.readByPerson(person);
 		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement(cashier.getCashRegister(),new Movement());
-		cashRegisterMovement.setMovement(RootBusinessLayer.getInstance().getMovementBusiness().instanciateOne(cashier.getCashRegister().getMovementCollection(),input));
+		cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashier.getCashRegister().getMovementCollection(),input));
 		SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement(sale,cashRegisterMovement);
 		logInstanceCreated(saleCashRegisterMovement);
 		return saleCashRegisterMovement;
@@ -100,7 +102,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE,increment);
 		exceptionUtils().comparison(!Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getBalanceCanBeNegative()) 
 				&& sale.getBalance().getValue().signum() == -1
-				, RootBusinessLayer.getInstance().getLanguageBusiness().findText("field.balance"),ArithmeticOperator.GTE,BigDecimal.ZERO);
+				, inject(LanguageBusiness.class).findText("field.balance"),ArithmeticOperator.GTE,BigDecimal.ZERO);
 		logTrace("Old balance={} , Increment={} , New balance={}",oldBalance,increment, sale.getBalance().getValue());
 		//cumul balance must be link to a date , so do not update a cumulated balance
 		//sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));

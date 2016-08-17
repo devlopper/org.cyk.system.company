@@ -25,8 +25,8 @@ import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockTangibleProductMovementDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.api.Crud;
+import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
 
 @Stateless
 public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusinessService<StockTangibleProductMovement, StockTangibleProductMovementDao> implements StockTangibleProductMovementBusiness,Serializable {
@@ -46,7 +46,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 		StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement();
 		stockTangibleProductMovement.setStockableTangibleProduct(stockableTangibleProductDao.readByTangibleProduct(tangibleProductDao.read(arguments[0])));
 		BigDecimal value = numberBusiness.parseBigDecimal(arguments[1]);
-		stockTangibleProductMovement.setMovement(RootBusinessLayer.getInstance().getMovementBusiness()
+		stockTangibleProductMovement.setMovement(inject(MovementBusiness.class)
 				.instanciateOne(stockTangibleProductMovement.getStockableTangibleProduct().getMovementCollection(), value.compareTo(BigDecimal.ZERO) >= 0));
 		stockTangibleProductMovement.getMovement().setValue(value);
 		return stockTangibleProductMovement;
@@ -62,7 +62,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 	
 	@Override
 	public StockTangibleProductMovement create(StockTangibleProductMovement stockTangibleProductMovement) {
-		RootBusinessLayer.getInstance().getMovementBusiness().create(stockTangibleProductMovement.getMovement());
+		inject(MovementBusiness.class).create(stockTangibleProductMovement.getMovement());
 		//updateStock(stockTangibleProductMovement);
 		stockTangibleProductMovement = super.create(stockTangibleProductMovement);
 		logIdentifiable("Created", stockTangibleProductMovement);
@@ -90,7 +90,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 					if(saleProduct.getSalableProduct().getProduct().equals(stockableTangibleProduct.getTangibleProduct()))
 						count = count.add(saleProduct.getQuantity());
 				StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement(stockableTangibleProduct
-						,RootBusinessLayer.getInstance().getMovementBusiness().instanciateOne(stockableTangibleProduct.getMovementCollection(), Boolean.FALSE));
+						,inject(MovementBusiness.class).instanciateOne(stockableTangibleProduct.getMovementCollection(), Boolean.FALSE));
 				stockTangibleProductMovement.getMovement().setValue(count.negate());
 				CompanyBusinessLayer.getInstance().getStockTangibleProductMovementBusiness().create(stockTangibleProductMovement);
 				//logTrace("Updated : {}",stockableTangibleProduct.getLogMessage());

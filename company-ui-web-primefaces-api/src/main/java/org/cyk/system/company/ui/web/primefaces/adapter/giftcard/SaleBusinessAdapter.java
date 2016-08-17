@@ -9,8 +9,8 @@ import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.validation.ExceptionUtils;
+import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 
 public class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter implements Serializable {
 	private static final long serialVersionUID = 6995530308698881653L;
@@ -26,7 +26,7 @@ public class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter imple
 			ExceptionUtils.getInstance().exception(salableProductInstance ==null, "exception.giftacrdinstancedoesnotexist");
 			Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = CompanyBusinessLayer.getInstance()
 					.getSalableProductInstanceCashRegisterDao().readBySalableProductInstanceByFiniteStateMachineState(salableProductInstance,
-							RootBusinessLayer.getInstance().getFiniteStateMachineStateDao().read(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD));
+							inject(FiniteStateMachineStateDao.class).read(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD));
 			
 			//No product selling while using gift card
 			//while( !sale.getSaleProducts().isEmpty()  )
@@ -37,7 +37,7 @@ public class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter imple
 			
 			
 			for(SalableProductInstanceCashRegister salableProductInstanceCashRegister : salableProductInstanceCashRegisters){
-				salableProductInstanceCashRegister.setFiniteStateMachineState(RootBusinessLayer.getInstance().getFiniteStateMachineStateDao().read(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED));
+				salableProductInstanceCashRegister.setFiniteStateMachineState(inject(FiniteStateMachineStateDao.class).read(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED));
 				salableProductInstanceCashRegister.getFiniteStateMachineState().getProcessing().setParty(sale.getProcessing().getParty());
 			}
 			CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().update(salableProductInstanceCashRegisters);

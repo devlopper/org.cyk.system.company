@@ -17,7 +17,8 @@ import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceCashRegisterStateLogDetails;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateBusiness;
+import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateLogBusiness;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateLog;
 import org.cyk.system.root.model.time.TimeDivisionType;
@@ -82,7 +83,7 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 			searchCriteria.addFiniteStateMachineStates(WebManager.getInstance().decodeIdentifiablesRequestParameter(FiniteStateMachineState.class));
 			searchCriteria.setTimeDivisionTypeCode(timeDivisionTypeCode);
 			if(searchCriteria.getFiniteStateMachineStates().isEmpty())
-				searchCriteria.addFiniteStateMachineStates(RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
+				searchCriteria.addFiniteStateMachineStates(inject(FiniteStateMachineStateBusiness.class)
 						.findByMachine(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
 								.getSalableProductInstanceCashRegisterFiniteStateMachine()));
 			return searchCriteria;
@@ -90,7 +91,7 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 		
 		@Override
 		public Collection<FiniteStateMachineStateLog> getIdentifiables() {
-			return RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness().findByCriteria(getSearchCriteria());
+			return inject(FiniteStateMachineStateLogBusiness.class).findByCriteria(getSearchCriteria());
 		}
 		
 		@Override
@@ -98,7 +99,7 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 			Collection<SalableProductInstanceCashRegisterStateLogDetails> collection = super.getDatas();
 			FiniteStateMachineStateLog.IdentifiablesSearchCriteria<SalableProductInstanceCashRegister> searchCriteria = new FiniteStateMachineStateLog
 					.IdentifiablesSearchCriteria<>(SalableProductInstanceCashRegister.class,getSearchCriteria());
-			Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness()
+			Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = inject(FiniteStateMachineStateLogBusiness.class)
 					.findIdentifiablesByCriteria(searchCriteria);
 			return CompanyReportRepository.getInstance().format(collection,salableProductInstanceCashRegisters,getTimeDivisionTypeCode());
 		}

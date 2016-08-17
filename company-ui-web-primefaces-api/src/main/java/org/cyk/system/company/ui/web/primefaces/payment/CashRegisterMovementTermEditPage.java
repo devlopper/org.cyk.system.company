@@ -7,26 +7,33 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.model.payment.CashRegisterMovementTerm;
+import org.cyk.system.company.model.payment.CashRegisterMovementTermCollection;
+import org.cyk.system.root.model.AbstractCollectionItem;
 import org.cyk.system.root.model.event.Event;
-import org.cyk.ui.api.data.collector.form.AbstractFormModel;
-import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
+import org.cyk.ui.web.primefaces.page.AbstractCollectionItemEditPage;
+import org.cyk.utility.common.annotation.FieldOverride;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @Named @ViewScoped @Getter @Setter
-public class CashRegisterMovementTermEditPage extends AbstractCrudOnePage<CashRegisterMovementTerm> implements Serializable {
+public class CashRegisterMovementTermEditPage extends AbstractCollectionItemEditPage<CashRegisterMovementTerm> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
-	@Getter @Setter
-	public static class Form extends AbstractFormModel<CashRegisterMovementTerm> implements Serializable{
+	@Override
+	protected AbstractCollectionItem<?> getItem() {
+		return identifiable;
+	}
+	
+	@Getter @Setter @FieldOverride(name=AbstractForm.FIELD_COLLECTION,type=CashRegisterMovementTermCollection.class)
+	public static class Form extends AbstractForm.AbstractDefault<CashRegisterMovementTermCollection,CashRegisterMovementTerm> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		@Input @InputNumber @NotNull private BigDecimal amount;
@@ -35,6 +42,9 @@ public class CashRegisterMovementTermEditPage extends AbstractCrudOnePage<CashRe
 		public static final String FIELD_EVENT = "event";
 		public static final String FIELD_AMOUNT = "amount";
 		
+		
 	}
+
+	
 
 }

@@ -11,8 +11,8 @@ import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
+import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.party.person.Person;
 
@@ -31,9 +31,9 @@ public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashR
 			cashRegister.setOwnedCompany(CompanyBusinessLayer.getInstance().getOwnedCompanyBusiness().findDefaultOwnedCompany());
 		
 		if(cashRegister.getMovementCollection()==null){
-			cashRegister.setMovementCollection((RootBusinessLayer.getInstance().getMovementCollectionBusiness().instanciateOne(cashRegister.getCode()
+			cashRegister.setMovementCollection((inject(MovementCollectionBusiness.class).instanciateOne(cashRegister.getCode()
 					, cashRegister.getCode()+MovementAction.INCREMENT, cashRegister.getCode()+MovementAction.DECREMENT)));
-			RootBusinessLayer.getInstance().getMovementCollectionBusiness().create(cashRegister.getMovementCollection());
+			inject(MovementCollectionBusiness.class).create(cashRegister.getMovementCollection());
 		}
 		return super.create(cashRegister);
 	}

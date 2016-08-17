@@ -9,6 +9,9 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
@@ -104,7 +107,9 @@ import org.cyk.system.root.business.api.FormatterBusiness;
 import org.cyk.system.root.business.api.TypedBusiness;
 import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
+import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.security.UserAccountBusiness;
+import org.cyk.system.root.business.api.time.TimeBusiness;
 import org.cyk.system.root.business.impl.AbstractBusinessLayer;
 import org.cyk.system.root.business.impl.AbstractFormatter;
 import org.cyk.system.root.business.impl.BusinessServiceProvider;
@@ -130,9 +135,6 @@ import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.cyk.utility.common.computation.DataReadConfiguration;
 import org.joda.time.DateTime;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER) @Getter
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
@@ -239,7 +241,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			private static final long serialVersionUID = 3952155697329951912L;
 			@Override
 			public String format(Production production, ContentType contentType) {
-				return rootBusinessLayer.getTimeBusiness().formatDate(production.getExistencePeriod().getFromDate());
+				return inject(TimeBusiness.class).formatDate(production.getExistencePeriod().getFromDate());
 			}
 		});
 		formatterBusiness.registerFormatter(SalableProductInstance.class, new AbstractFormatter<SalableProductInstance>() {
@@ -258,8 +260,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		});*/
 		
 		
-		pointOfSaleInvoiceReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.invoice");
-		pointOfSalePaymentReportName = RootBusinessLayer.getInstance().getLanguageBusiness().findText("company.report.pointofsale.paymentreceipt");
+		pointOfSaleInvoiceReportName = inject(LanguageBusiness.class).findText("company.report.pointofsale.invoice");
+		pointOfSalePaymentReportName = inject(LanguageBusiness.class).findText("company.report.pointofsale.paymentreceipt");
 		
 		ApplicationBusinessImpl.Listener.COLLECTION.add(new ApplicationBusinessImpl.Listener.Adapter.Default(){
 			private static final long serialVersionUID = 5234235361543643487L;

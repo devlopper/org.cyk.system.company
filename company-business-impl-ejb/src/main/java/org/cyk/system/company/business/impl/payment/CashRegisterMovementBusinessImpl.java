@@ -13,8 +13,8 @@ import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
+import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.party.person.Person;
 
 @Stateless
@@ -31,7 +31,7 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	
 	@Override
 	public CashRegisterMovement create(CashRegisterMovement cashRegisterMovement) {
-		RootBusinessLayer.getInstance().getMovementBusiness().create(cashRegisterMovement.getMovement());
+		inject(MovementBusiness.class).create(cashRegisterMovement.getMovement());
 		super.create(cashRegisterMovement);
 		if(cashRegisterMovement.getComputedIdentifier()==null)
 			cashRegisterMovement.setComputedIdentifier(generateIdentifier(cashRegisterMovement,CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFIER
@@ -45,14 +45,14 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	public CashRegisterMovement instanciateOne(Person person) {
 		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
 		cashRegisterMovement.setCashRegister(cashierDao.readByPerson(person).getCashRegister());
-		cashRegisterMovement.setMovement(RootBusinessLayer.getInstance().getMovementBusiness()
+		cashRegisterMovement.setMovement(inject(MovementBusiness.class)
 				.instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection(), Boolean.TRUE));
 		return cashRegisterMovement;
 	}
 	
 	@Override
 	public CashRegisterMovement delete(CashRegisterMovement cashRegisterMovement) {
-		RootBusinessLayer.getInstance().getMovementBusiness().delete(cashRegisterMovement.getMovement());
+		inject(MovementBusiness.class).delete(cashRegisterMovement.getMovement());
 		cashRegisterMovement.setMovement(null);
 		return super.delete(cashRegisterMovement);
 	}

@@ -24,8 +24,8 @@ import org.cyk.system.root.business.api.chart.CartesianModel;
 import org.cyk.system.root.business.api.chart.CartesianModelListener;
 import org.cyk.system.root.business.api.chart.Series;
 import org.cyk.system.root.business.api.chart.SeriesItem;
+import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.time.Period;
 
 public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SaleProduct, SaleProductDao> implements SaleProductBusiness,Serializable {
@@ -119,11 +119,11 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 		if(parameters.getSaleProducts().isEmpty())
 			return null;
 		
-		CartesianModel cartesianModel = new CartesianModel(RootBusinessLayer.getInstance().getLanguageBusiness().findText(nameId)+" - "+timeBusiness.formatPeriodFromTo(parameters.getPeriod()),
+		CartesianModel cartesianModel = new CartesianModel(inject(LanguageBusiness.class).findText(nameId)+" - "+timeBusiness.formatPeriodFromTo(parameters.getPeriod()),
 				parameters.getTimeDivisionType().getName(),
-				RootBusinessLayer.getInstance().getLanguageBusiness().findText(yAxisLabelId));
+				inject(LanguageBusiness.class).findText(yAxisLabelId));
 		cartesianModel.getXAxis().setTickAngle(45);
-		Series ySeries = cartesianModel.addSeries(RootBusinessLayer.getInstance().getLanguageBusiness().findText(nameId));
+		Series ySeries = cartesianModel.addSeries(inject(LanguageBusiness.class).findText(nameId));
 		
 		for(Period period : timeBusiness.findPeriods(parameters.getPeriod(), parameters.getTimeDivisionType(),Boolean.TRUE)){
 			String x = timeBusiness.formatPeriod(period, parameters.getTimeDivisionType());

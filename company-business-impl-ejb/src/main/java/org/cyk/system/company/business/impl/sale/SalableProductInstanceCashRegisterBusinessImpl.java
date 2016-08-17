@@ -17,8 +17,8 @@ import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister.SearchCriteria;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashRegisterDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
+import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateLogBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 
 @Stateless
@@ -55,7 +55,7 @@ public class SalableProductInstanceCashRegisterBusinessImpl extends AbstractType
 				, salableProductInstanceCashRegister.getCashRegister());
 		exceptionUtils().exception(inDatabase!=null, "exception.SalableProductInstanceCashRegisterAlreadyExists");
 		salableProductInstanceCashRegister = super.create(salableProductInstanceCashRegister);
-		RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness().create(salableProductInstanceCashRegister,salableProductInstanceCashRegister.getFiniteStateMachineState());
+		inject(FiniteStateMachineStateLogBusiness.class).create(salableProductInstanceCashRegister,salableProductInstanceCashRegister.getFiniteStateMachineState());
 		return salableProductInstanceCashRegister;
 	}
 	
@@ -63,7 +63,7 @@ public class SalableProductInstanceCashRegisterBusinessImpl extends AbstractType
 	public SalableProductInstanceCashRegister update(SalableProductInstanceCashRegister salableProductInstanceCashRegister) {
 		FiniteStateMachineState finiteStateMachineState = salableProductInstanceCashRegister.getFiniteStateMachineState();
 		salableProductInstanceCashRegister = super.update(salableProductInstanceCashRegister);
-		RootBusinessLayer.getInstance().getFiniteStateMachineStateLogBusiness().create(salableProductInstanceCashRegister,finiteStateMachineState);
+		inject(FiniteStateMachineStateLogBusiness.class).create(salableProductInstanceCashRegister,finiteStateMachineState);
 		return salableProductInstanceCashRegister;
 	}
 

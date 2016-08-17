@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.model.sale.Customer;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.cyk.utility.common.annotation.user.interfaces.ReportColumn;
@@ -25,6 +24,6 @@ public class CredenceReportTableDetails implements Serializable {
 	public CredenceReportTableDetails(Customer customer) {
 		this.registrationCode = customer.getCode();
 		this.names = customer.getPerson().getNames();
-		this.balance = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getBalance());
+		//this.balance = inject(NumberBusiness.class).format(customer.getBalance());
 	}
 }

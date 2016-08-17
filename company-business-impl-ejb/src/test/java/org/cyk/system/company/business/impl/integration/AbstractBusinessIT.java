@@ -32,6 +32,7 @@ import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.AbstractBusinessException;
 import org.cyk.system.root.business.api.GenericBusiness;
+import org.cyk.system.root.business.api.mathematics.NumberBusiness;
 import org.cyk.system.root.business.api.party.ApplicationBusiness;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer.Listener.Adapter;
@@ -117,7 +118,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     		}
     		@Override
     		public String formatBigDecimal(BigDecimal value) {
-    			return RootBusinessLayer.getInstance().getNumberBusiness().format(value);
+    			return inject(NumberBusiness.class).format(value);
     		}
     	});
 	}

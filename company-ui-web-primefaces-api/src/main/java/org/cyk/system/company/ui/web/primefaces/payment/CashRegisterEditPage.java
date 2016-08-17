@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.ui.web.primefaces.page.mathematics.AbstractMovementCollectionEditPage;
@@ -24,6 +25,13 @@ public class CashRegisterEditPage extends AbstractMovementCollectionEditPage<Cas
 	@Override
 	protected MovementCollection getMovementCollection() {
 		return identifiable.getMovementCollection();
+	}
+	
+	@Override
+	protected CashRegister instanciateIdentifiable() {
+		CashRegister cashRegister = super.instanciateIdentifiable();
+		cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaultOwnedCompany());
+		return cashRegister;
 	}
 	
 	@Getter @Setter

@@ -115,25 +115,8 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			}
 		});
 		
-		getFormConfiguration(CashRegisterMovementTerm.class, Crud.CREATE).addRequiredFieldNames(CashRegisterMovementTermEditPage.Form.FIELD_AMOUNT
-				,CashRegisterMovementTermEditPage.Form.FIELD_EVENT);
-		registerDetailsConfiguration(CashRegisterMovementTermDetails.class, new DetailsConfiguration(){
-			private static final long serialVersionUID = 1L;
-			@SuppressWarnings("rawtypes")
-			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
-				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
-					private static final long serialVersionUID = 1L;
-					@Override
-					public Boolean build(Field field) {
-						return isFieldNameIn(field,CashRegisterMovementTermDetails.FIELD_AMOUNT,CashRegisterMovementTermDetails.FIELD_EVENT);
-					}
-				};
-			}
-		});
-		
-		getFormConfiguration(CashRegisterMovementTerm.class, Crud.CREATE).addRequiredFieldNames(CashRegisterMovementTermEditPage.Form.FIELD_AMOUNT
-				,CashRegisterMovementTermEditPage.Form.FIELD_EVENT);
+		getFormConfiguration(CashRegisterMovementTerm.class, Crud.CREATE).addRequiredFieldNames(CashRegisterMovementTerm.FIELD_COLLECTION,CashRegisterMovementTermEditPage.Form.FIELD_AMOUNT
+				).addFieldNames(CashRegisterMovementTermEditPage.Form.FIELD_EVENT);
 		registerDetailsConfiguration(CashRegisterMovementTermDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")

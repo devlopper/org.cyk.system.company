@@ -20,7 +20,8 @@ import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister.SearchCriteria;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.api.language.LanguageBusiness;
+import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateBusiness;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
@@ -92,6 +93,9 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 		public void initialisationEnded(AbstractBean bean) {
 			super.initialisationEnded(bean);
 			((AbstractSelectManyPage<?>)bean).getForm().getControlSetListeners().add(new ControlSetAdapter<Object>(){
+
+				private static final long serialVersionUID = 1L;
+
 				@Override
 				public Boolean build(Field field) {
 					if(field.getName().equals(FIELD_FINITESTATEMACHINESTATE)){
@@ -105,7 +109,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 				@Override
 				public String fiedLabel(ControlSet<Object, DynaFormModel, DynaFormRow, DynaFormLabel, DynaFormControl, SelectItem> controlSet,Field field) {
 					if(field.getName().equals(FIELD_IDENTIFIABLES))
-						return RootBusinessLayer.getInstance().getLanguageBusiness().findClassLabelText(SalableProduct.class);
+						return inject(LanguageBusiness.class).findClassLabelText(SalableProduct.class);
 					return super.fiedLabel(controlSet, field);
 				}
 			});
@@ -125,8 +129,8 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 			FiniteStateMachine finiteStateMachine = CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
 					.getSalableProductInstanceCashRegisterFiniteStateMachine();
 			FiniteStateMachineAlphabet finiteStateMachineAlphabet = getFiniteStateMachineAlphabet();
-			return finiteStateMachineAlphabet == null ? RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
-					.findByMachine(finiteStateMachine) : RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
+			return finiteStateMachineAlphabet == null ? inject(FiniteStateMachineStateBusiness.class)
+					.findByMachine(finiteStateMachine) : inject(FiniteStateMachineStateBusiness.class)
 					.findFromByMachineByAlphabet(finiteStateMachine, finiteStateMachineAlphabet);
 		}
 				
@@ -182,7 +186,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 				if(finiteStateMachineState==null)
 					;
 				else{
-					finiteStateMachineState = RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness().findByFromStateByAlphabet(finiteStateMachineState, 
+					finiteStateMachineState = inject(FiniteStateMachineStateBusiness.class).findByFromStateByAlphabet(finiteStateMachineState, 
 							getFiniteStateMachineAlphabet());
 					return new Object[]{UIManager.getInstance().businessEntityInfos(FiniteStateMachineState.class).getIdentifier(),finiteStateMachineState.getIdentifier()};
 				}
@@ -210,6 +214,8 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 			CompanyBusinessLayer companyBusinessLayer = CompanyBusinessLayer.getInstance();
 			page.getForm().getSubmitCommandable().getCommand().setConfirm(Boolean.TRUE);
 			page.getForm().getControlSetListeners().add(new ControlSetAdapter<Object>(){
+				private static final long serialVersionUID = 1L;
+
 				@Override
 				public Boolean build(Field field) {
 					if(field.getName().equals(Form.FIELD_FINITESTATEMACHINESTATE))
@@ -229,7 +235,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 		@Override
 		protected void initialiseProcessOnAfterInitialisationEnded(AbstractProcessManyPage<?> page) {
 			super.initialiseProcessOnAfterInitialisationEnded(page);
-			page.setChoices(Form.FIELD_FINITESTATEMACHINESTATE, RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
+			page.setChoices(Form.FIELD_FINITESTATEMACHINESTATE, inject(FiniteStateMachineStateBusiness.class)
 					.findByMachine(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
 							.getSalableProductInstanceCashRegisterFiniteStateMachine())
 							,((Form)page.getForm().getData()).finiteStateMachineState = getFiniteStateMachineState());

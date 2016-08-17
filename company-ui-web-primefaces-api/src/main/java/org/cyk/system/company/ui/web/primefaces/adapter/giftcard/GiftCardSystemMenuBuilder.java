@@ -14,7 +14,8 @@ import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineAlphabetBusiness;
+import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateBusiness;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
@@ -70,7 +71,7 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 		
 		FiniteStateMachine finiteStateMachine = CompanyBusinessLayer
 				.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
-		for(FiniteStateMachineAlphabet finiteStateMachineAlphabet : RootBusinessLayer.getInstance().getFiniteStateMachineAlphabetBusiness().findByMachine(finiteStateMachine))
+		for(FiniteStateMachineAlphabet finiteStateMachineAlphabet : inject(FiniteStateMachineAlphabetBusiness.class).findByMachine(finiteStateMachine))
 			if(ArrayUtils.contains(new String[]{CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE}
 				, finiteStateMachineAlphabet.getCode()))
 				;
@@ -105,7 +106,7 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 		if(userSession.hasRole(Role.MANAGER)){
 			FiniteStateMachine finiteStateMachine = CompanyBusinessLayer
 					.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
-			for(FiniteStateMachineState finiteStateMachineState : RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness().findByMachine(finiteStateMachine))
+			for(FiniteStateMachineState finiteStateMachineState : inject(FiniteStateMachineStateBusiness.class).findByMachine(finiteStateMachine))
 				addChild(userSession,module,(Commandable) Builder.create(null, null, CompanyWebManager.getInstance()
 						.getOutcomeSalableProductInstanceCashRegisterStateLogList()).addParameter(finiteStateMachineState).setLabel(finiteStateMachineState.getName()));
 		}

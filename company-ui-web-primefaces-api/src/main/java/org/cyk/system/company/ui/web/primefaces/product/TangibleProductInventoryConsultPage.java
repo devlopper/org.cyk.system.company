@@ -37,8 +37,8 @@ public class TangibleProductInventoryConsultPage extends AbstractConsultPage<Tan
 		detailsTable.setShowFooter(Boolean.FALSE);
 		detailsTable.setShowToolBar(Boolean.TRUE);
 		detailsTable.setIdentifiableClass(TangibleProductInventory.class);
-		BusinessEntityInfos tangibleProductInventoryEntityInfos = RootBusinessLayer.getInstance().getApplicationBusiness().findBusinessEntityInfos(TangibleProductInventory.class);
-		detailsTable.getPrintCommandable().setParameter(tangibleProductInventoryEntityInfos.getIdentifier(),identifiable.getIdentifier());
+		//BusinessEntityInfos tangibleProductInventoryEntityInfos = RootBusinessLayer.getInstance().getApplicationBusiness().findBusinessEntityInfos(TangibleProductInventory.class);
+		//detailsTable.getPrintCommandable().setParameter(tangibleProductInventoryEntityInfos.getIdentifier(),identifiable.getIdentifier());
 	}
 	
 }

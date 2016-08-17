@@ -37,8 +37,8 @@ public class CustomerReportTableRow extends AbstractOutputDetails<Customer> impl
 		this.names = customer.getPerson().getNames();
 		this.saleStockInputCount = formatNumber(customer.getSaleStockInputCount());
 		this.saleStockOutputCount = formatNumber(customer.getSaleStockOutputCount());
-		//this.saleCount = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getSaleCount());
-		//this.paymentCount = RootBusinessLayer.getInstance().getNumberBusiness().format(customer.getPaymentCount());
+		//this.saleCount = inject(NumberBusiness.class).format(customer.getSaleCount());
+		//this.paymentCount = inject(NumberBusiness.class).format(customer.getPaymentCount());
 		this.turnover = formatNumber(customer.getTurnover());
 		this.paid = formatNumber(customer.getPaid());
 		this.balance = formatNumber(customer.getBalance());

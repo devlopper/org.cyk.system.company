@@ -37,6 +37,7 @@ import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
+import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.file.File;
@@ -251,7 +252,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	@Override
 	public void update(Sale sale,FiniteStateMachineAlphabet finiteStateMachineAlphabet) {
 		exceptionUtils().exception(finiteStateMachineFinalStateDao.readByState(sale.getFiniteStateMachineState())!=null, "exception.sale_state_cannotbeupdated");
-		sale.setFiniteStateMachineState(RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness().findByFromStateByAlphabet(sale.getFiniteStateMachineState(), finiteStateMachineAlphabet));
+		sale.setFiniteStateMachineState(inject(FiniteStateMachineStateBusiness.class).findByFromStateByAlphabet(sale.getFiniteStateMachineState(), finiteStateMachineAlphabet));
 		consume(sale,Crud.UPDATE);
 		dao.update(sale);
 	}

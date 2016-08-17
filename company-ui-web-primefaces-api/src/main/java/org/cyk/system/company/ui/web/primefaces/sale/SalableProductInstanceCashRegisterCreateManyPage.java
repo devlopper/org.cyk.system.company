@@ -16,7 +16,7 @@ import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateBusiness;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.api.model.AbstractItemCollection;
@@ -60,9 +60,9 @@ public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCr
 		if(finiteStateMachineStateIdentifier==null){
 			
 		}else{
-			finiteStateMachineState = RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness().find(finiteStateMachineStateIdentifier);
+			finiteStateMachineState = inject(FiniteStateMachineStateBusiness.class).find(finiteStateMachineStateIdentifier);
 		}
-		finiteStateMachineStates = new ArrayList<>(RootBusinessLayer.getInstance().getFiniteStateMachineStateBusiness()
+		finiteStateMachineStates = new ArrayList<>(inject(FiniteStateMachineStateBusiness.class)
 				.findByMachine(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
 						.getSalableProductInstanceCashRegisterFiniteStateMachine()));
 		

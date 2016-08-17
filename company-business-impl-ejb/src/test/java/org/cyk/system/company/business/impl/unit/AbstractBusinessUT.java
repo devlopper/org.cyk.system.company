@@ -3,7 +3,7 @@ package org.cyk.system.company.business.impl.unit;
 import java.math.BigDecimal;
 
 import org.cyk.system.root.business.api.AbstractBusinessException;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.api.mathematics.NumberBusiness;
 import org.cyk.utility.common.ObjectFieldValues;
 import org.cyk.utility.common.test.TestEnvironmentListener;
 import org.cyk.utility.test.unit.AbstractUnitTest;
@@ -26,7 +26,7 @@ public class AbstractBusinessUT extends AbstractUnitTest {
     		}
     		@Override
     		public String formatBigDecimal(BigDecimal value) {
-    			return RootBusinessLayer.getInstance().getNumberBusiness().format(value);
+    			return inject(NumberBusiness.class).format(value);
     		}
     	});
 	}
