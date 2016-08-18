@@ -11,7 +11,10 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductInstanceCashRegisterBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
@@ -46,15 +49,15 @@ public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCr
 	
 	@Override
 	protected void initialisation() {
-		salableProductInstances = new ArrayList<>(CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().findWhereNotAssociatedToCashRegister());
+		salableProductInstances = new ArrayList<>(inject(SalableProductInstanceBusiness.class).findWhereNotAssociatedToCashRegister());
 		
 		Long cashRegisterIdentifier = requestParameterLong(CashRegister.class);
 		if(cashRegisterIdentifier==null){
 			
 		}else{
-			cashRegister = CompanyBusinessLayer.getInstance().getCashRegisterBusiness().find(cashRegisterIdentifier);
+			cashRegister = inject(CashRegisterBusiness.class).find(cashRegisterIdentifier);
 		}
-		cashRegisters = new ArrayList<>(CompanyBusinessLayer.getInstance().getCashRegisterBusiness().findAll());
+		cashRegisters = new ArrayList<>(inject(CashRegisterBusiness.class).findAll());
 		
 		Long finiteStateMachineStateIdentifier = requestParameterLong(FiniteStateMachineState.class);
 		if(finiteStateMachineStateIdentifier==null){
@@ -63,7 +66,7 @@ public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCr
 			finiteStateMachineState = inject(FiniteStateMachineStateBusiness.class).find(finiteStateMachineStateIdentifier);
 		}
 		finiteStateMachineStates = new ArrayList<>(inject(FiniteStateMachineStateBusiness.class)
-				.findByMachine(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
+				.findByMachine(inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration()
 						.getSalableProductInstanceCashRegisterFiniteStateMachine()));
 		
 		super.initialisation();
@@ -141,7 +144,7 @@ public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCr
 	
 	@Override
 	protected void create() {
-		CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().create(itemCollection.getIdentifiables());
+		inject(SalableProductInstanceCashRegisterBusiness.class).create(itemCollection.getIdentifiables());
 	}
 	
 	@Override

@@ -12,7 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.production.ProductionBusiness;
+import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadsheet;
@@ -39,8 +40,8 @@ public class ProductionEditPage extends AbstractCrudOnePage<Production> implemen
 	
 	@Override
 	protected Production instanciateIdentifiable() {
-		return CompanyBusinessLayer.getInstance().getProductionBusiness().instanciateOne(
-				CompanyBusinessLayer.getInstance().getProductionPlanBusiness().find(requestParameterLong(ProductionPlan.class)));
+		return inject(ProductionBusiness.class).instanciateOne(
+				inject(ProductionPlanBusiness.class).find(requestParameterLong(ProductionPlan.class)));
 	}
 				
 	@Override

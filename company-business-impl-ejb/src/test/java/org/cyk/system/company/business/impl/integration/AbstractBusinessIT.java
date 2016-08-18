@@ -152,9 +152,9 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     			super.afterInstall(businessLayer, installation);
     			create(new Cashier(RootBusinessLayer.getInstance().getPersonBusiness().one(),cashRegister));
     	        
-    	        Company company = CompanyBusinessLayer.getInstance().getCompanyBusiness().find().one();
+    	        Company company = inject(CompanyBusiness.class).find().one();
     	        company.setManager(RootBusinessLayer.getInstance().getPersonBusiness().one());
-    	        CompanyBusinessLayer.getInstance().getCompanyBusiness().update(company);
+    	        inject(CompanyBusiness.class).update(company);
     		}
     	});*/
     	installApplication();

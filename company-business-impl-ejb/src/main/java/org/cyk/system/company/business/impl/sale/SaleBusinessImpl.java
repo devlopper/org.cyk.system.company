@@ -13,6 +13,9 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
+import org.cyk.system.company.business.api.CompanyReportProducer;
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductBusiness;
@@ -75,7 +78,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Sale instanciateOne() {
 		Sale sale = super.instanciateOne();
-		sale.setAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent());
+		sale.setAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent());
 		sale.setAutoComputeValueAddedTax(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().signum()!=0);
 		sale.setFiniteStateMachineState(sale.getAccountingPeriod().getSaleConfiguration().getFiniteStateMachine().getInitialState());
 		return sale;
@@ -84,7 +87,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Sale instanciateOne(Person person) {
 		Sale sale = instanciateOne();
-		sale.setCashier(CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson(person));
+		sale.setCashier(inject(CashierBusiness.class).findByPerson(person));
 		return sale;
 	}
 	
@@ -121,7 +124,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		saleProduct.setSale(sale);
 		saleProduct.setSalableProduct(salableProduct);
 		saleProduct.setQuantity(quantity);
-		CompanyBusinessLayer.getInstance().getSaleProductBusiness().process(saleProduct);
+		inject(SaleProductBusiness.class).process(saleProduct);
 		sale.getSaleProducts().add(saleProduct);
 		//if(saleProduct.getCost().getValue()!=null)
 		//	sale.getCost().setValue(sale.getCost().getValue().add(saleProduct.getCost().getValue()));
@@ -156,7 +159,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void applyChange(Sale sale, SaleProduct saleProduct) {
-		CompanyBusinessLayer.getInstance().getSaleProductBusiness().process(saleProduct);
+		inject(SaleProductBusiness.class).process(saleProduct);
 		updateCost(sale);
 		logIdentifiable("Change applied", saleProduct);
 	}
@@ -205,7 +208,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 				//logDebug("No sale cash register movement");
 			}else if(finiteStateMachineFinalStateDao.readByState(sale.getFiniteStateMachineState())!=null) {
 				saleCashRegisterMovement.setSale(sale);
-				CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().create(saleCashRegisterMovement);
+				inject(SaleCashRegisterMovementBusiness.class).create(saleCashRegisterMovement);
 				sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));	 
 			}
 		}
@@ -220,7 +223,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		});
 		
 		if(updateReport==null || Boolean.TRUE.equals(updateReport)){
-			final SaleReport saleReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().produceSaleReport(sale);
+			final SaleReport saleReport = inject(CompanyReportProducer.class).produceSaleReport(sale);
 			if(sale.getReport()==null)
 				sale.setReport(new File());
 			RootBusinessLayer.getInstance().getReportBusiness().buildBinaryContent(sale, saleReport, sale.getAccountingPeriod().getSaleConfiguration().getSaleReportTemplate().getTemplate(), Boolean.TRUE);
@@ -239,13 +242,13 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	private void cascade(Sale sale,Collection<SaleProduct> saleProducts,Collection<SaleStockTangibleProductMovement> saleStockTangibleProductMovements,Collection<SaleCashRegisterMovement> saleCashRegisterMovements,Crud crud){
-		new CascadeOperationListener.Adapter.Default<SaleProduct,SaleProductDao,SaleProductBusiness>(saleProductDao,CompanyBusinessLayer.getInstance().getSaleProductBusiness())
+		new CascadeOperationListener.Adapter.Default<SaleProduct,SaleProductDao,SaleProductBusiness>(saleProductDao,inject(SaleProductBusiness.class))
 			.operate(saleProducts, crud);
 		new CascadeOperationListener.Adapter.Default<SaleStockTangibleProductMovement,SaleStockTangibleProductMovementDao,SaleStockTangibleProductMovementBusiness>(null,
-				CompanyBusinessLayer.getInstance().getSaleStockTangibleProductMovementBusiness())
+				inject(SaleStockTangibleProductMovementBusiness.class))
 		.operate(saleStockTangibleProductMovements, crud);
 		new CascadeOperationListener.Adapter.Default<SaleCashRegisterMovement,SaleCashRegisterMovementDao,SaleCashRegisterMovementBusiness>(null,
-				CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness())
+				inject(SaleCashRegisterMovementBusiness.class))
 		.operate(saleCashRegisterMovements, crud);
 	}
 	
@@ -267,8 +270,8 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			 */
 			
 			if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))
-				sale.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(sale.getAccountingPeriod(), sale.getCost().getValue()));
-			sale.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(sale.getAccountingPeriod(), sale.getCost().getValue(), sale.getCost().getTax()));
+				sale.getCost().setTax(inject(AccountingPeriodBusiness.class).computeValueAddedTax(sale.getAccountingPeriod(), sale.getCost().getValue()));
+			sale.getCost().setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(sale.getAccountingPeriod(), sale.getCost().getValue(), sale.getCost().getTax()));
 			sale.getBalance().setValue(sale.getCost().getValue());
 			
 			commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE

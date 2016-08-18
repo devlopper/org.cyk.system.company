@@ -1,6 +1,6 @@
 package org.cyk.system.company.business.impl.integration.sale;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineBusiness;
 import org.cyk.system.root.business.impl.RootDataProducerHelper;
@@ -30,7 +30,7 @@ public abstract class AbstractSaleWithManyFiniteStateMachineStateBusinessIT exte
     	});
     	AccountingPeriod accountingPeriod = accountingPeriodBusiness.findCurrent();
     	accountingPeriod.getSaleConfiguration().setFiniteStateMachine(CommonUtils.getInstance().inject(FiniteStateMachineBusiness.class).find(SALE_FINITE_MACHINE_STATE));
-    	CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().update(accountingPeriod);
+    	CommonUtils.getInstance().inject(AccountingPeriodBusiness.class).update(accountingPeriod);
     }
            
     @Override

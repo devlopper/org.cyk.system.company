@@ -72,50 +72,15 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 		uiManager.registerApplicationUImanager(CompanyWebManager.getInstance());
 		
 		initializeProductModule();
-		
 		initializePaymentModule();
+		initializeSaleModule();
+		initializeCompanyModule();
 		
+	}
+	
+	protected void initializeCompanyModule(){
 		uiManager.registerConfiguration(new IdentifiableConfiguration(Company.class, CompanyEditPage.Form.class, CompanyDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(Company.class, null);
-		/*
-		uiManager.registerConfiguration(new IdentifiableConfiguration(CashRegister.class, CashRegisterEditPage.Form.class, CashRegisterDetails.class,null,null,null));
-		uiManager.configBusinessIdentifiable(CashRegister.class, null);
-		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(CashRegisterMovement.class, CashRegisterMovementEditPage.Form.class, CashRegisterMovementDetails.class,null,null,null));
-		uiManager.configBusinessIdentifiable(CashRegisterMovement.class, null);
-		*/
-		/* Sale */
-		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProduct.class, SalableProductEditPage.Form.class, SalableProductDetails.class,null,null,null));
-		uiManager.configBusinessIdentifiable(SalableProduct.class, null);
-		//webNavigationManager.useDynamicSelectView(SalableProduct.class);
-		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProductInstance.class, SalableProductInstanceEditPage.Form.class, SalableProductInstanceDetails.class,null,null,null));
-		uiManager.configBusinessIdentifiable(SalableProductInstance.class, null);
-		//webNavigationManager.useDynamicSelectView(SalableProductInstance.class);
-		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProductInstanceCashRegister.class, SalableProductInstanceCashRegisterEditPage.Form.class
-				,SalableProductInstanceCashRegisterDetails.class,null,null,SalableProductInstanceCashRegisterQueryManyFormModel.class));
-		uiManager.configBusinessIdentifiable(SalableProductInstanceCashRegister.class, null);
-		AbstractSelectManyPage.Listener.COLLECTION.add(new SalableProductInstanceCashRegisterQueryManyFormModel.PageAdapter());
-		AbstractProcessManyPage.Listener.COLLECTION.add(new SalableProductInstanceCashRegisterQueryManyFormModel.ProcessPageAdapter());
-		webNavigationManager.useDynamicSelectView(SalableProductInstanceCashRegister.class);
-		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(Sale.class, SaleEditPage.FORM_EDIT_CLASS, SaleDetails.class,SaleQueryFormModel.class,null,null));
-		uiManager.configBusinessIdentifiable(Sale.class, null);
-		AbstractSelectOnePage.Listener.COLLECTION.add(new SaleQueryFormModel.PageAdapter());
-		webNavigationManager.useDynamicSelectView(Sale.class);
-		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(SaleProductInstance.class, null, null,SaleProductInstanceQueryOneFormModel.class,null,null));
-		uiManager.configBusinessIdentifiable(SaleProductInstance.class, null);
-		AbstractSelectOnePage.Listener.COLLECTION.add(new SaleProductInstanceQueryOneFormModel.PageAdapter());
-		webNavigationManager.useDynamicSelectView(SaleProductInstance.class);
-		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(SaleCashRegisterMovement.class, SaleCashRegisterMovementEditPage.Form.class, SaleCashRegisterMovementDetails.class,null,null,null));
-		uiManager.configBusinessIdentifiable(SaleCashRegisterMovement.class, null);
-		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(CustomerSalableProduct.class, CustomerSalableProductEditPage.Form.class, CustomerSalableProductDetails.class,null,null,null));
-		uiManager.configBusinessIdentifiable(CustomerSalableProduct.class, null);
-		//webNavigationManager.useDynamicSelectView(SalableProductInstance.class);
 	}
 	
 	protected void initializeProductModule(){
@@ -149,5 +114,40 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 		uiManager.registerConfiguration(new IdentifiableConfiguration(CashRegisterMovementTermCollection.class, CashRegisterMovementTermCollectionEditPage.Form.class, CashRegisterMovementTermCollectionDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(CashRegisterMovementTermCollection.class, null);
 		
+	}
+	
+	protected void initializeSaleModule(){
+		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProduct.class, SalableProductEditPage.Form.class, SalableProductDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(SalableProduct.class, null);
+		//webNavigationManager.useDynamicSelectView(SalableProduct.class);
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProductInstance.class, SalableProductInstanceEditPage.Form.class, SalableProductInstanceDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(SalableProductInstance.class, null);
+		//webNavigationManager.useDynamicSelectView(SalableProductInstance.class);
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProductInstanceCashRegister.class, SalableProductInstanceCashRegisterEditPage.Form.class
+				,SalableProductInstanceCashRegisterDetails.class,null,null,SalableProductInstanceCashRegisterQueryManyFormModel.class));
+		
+		uiManager.configBusinessIdentifiable(SalableProductInstanceCashRegister.class, null);
+		AbstractSelectManyPage.Listener.COLLECTION.add(new SalableProductInstanceCashRegisterQueryManyFormModel.PageAdapter());
+		AbstractProcessManyPage.Listener.COLLECTION.add(new SalableProductInstanceCashRegisterQueryManyFormModel.ProcessPageAdapter());
+		webNavigationManager.useDynamicSelectView(SalableProductInstanceCashRegister.class);
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(Sale.class, SaleEditPage.FORM_EDIT_CLASS, SaleDetails.class,SaleQueryFormModel.class,null,null));
+		uiManager.configBusinessIdentifiable(Sale.class, null);
+		AbstractSelectOnePage.Listener.COLLECTION.add(new SaleQueryFormModel.PageAdapter());
+		webNavigationManager.useDynamicSelectView(Sale.class);
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(SaleProductInstance.class, null, null,SaleProductInstanceQueryOneFormModel.class,null,null));
+		uiManager.configBusinessIdentifiable(SaleProductInstance.class, null);
+		AbstractSelectOnePage.Listener.COLLECTION.add(new SaleProductInstanceQueryOneFormModel.PageAdapter());
+		webNavigationManager.useDynamicSelectView(SaleProductInstance.class);
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(SaleCashRegisterMovement.class, SaleCashRegisterMovementEditPage.Form.class, SaleCashRegisterMovementDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(SaleCashRegisterMovement.class, null);
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(CustomerSalableProduct.class, CustomerSalableProductEditPage.Form.class, CustomerSalableProductDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(CustomerSalableProduct.class, null);
+		//webNavigationManager.useDynamicSelectView(SalableProductInstance.class);
 	}
 }

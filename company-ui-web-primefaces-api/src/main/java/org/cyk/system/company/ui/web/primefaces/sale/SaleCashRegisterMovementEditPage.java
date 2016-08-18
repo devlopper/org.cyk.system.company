@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.Sale;
@@ -88,12 +89,12 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		if(saleIdentifier==null)
 			;
 		else
-			sale = CompanyBusinessLayer.getInstance().getSaleBusiness().find(saleIdentifier);
+			sale = inject(SaleBusiness.class).find(saleIdentifier);
 		*/
 		Sale sale = webManager.getIdentifiableFromRequestParameter(Sale.class, Boolean.TRUE);
 		//identifiable.setSale();
 		SaleCashRegisterMovement saleCashRegisterMovement = 
-				CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().instanciateOne(sale, (Person) userSession.getUser(), Boolean.TRUE);
+				inject(SaleCashRegisterMovementBusiness.class).instanciateOne(sale, (Person) userSession.getUser(), Boolean.TRUE);
 		String action = requestParameter(UniformResourceLocatorParameter.ACTION_IDENTIFIER);
 		if(CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementInput().equals(action))
 			saleCashRegisterMovement.getCashRegisterMovement().getMovement().setAction(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction());
@@ -116,7 +117,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 	
 	@Override
 	protected BigDecimal computeNextTotal(BigDecimal increment) {
-		return CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().computeBalance(identifiable,(MovementAction) form.findInputByFieldName(Form.FIELD_ACTION).getValue()
+		return inject(SaleCashRegisterMovementBusiness.class).computeBalance(identifiable,(MovementAction) form.findInputByFieldName(Form.FIELD_ACTION).getValue()
 				,increment);
 	}
 		

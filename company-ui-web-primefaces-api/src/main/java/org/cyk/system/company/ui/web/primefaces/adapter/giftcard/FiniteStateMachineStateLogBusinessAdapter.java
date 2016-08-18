@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.root.business.impl.mathematics.machine.FiniteStateMachineStateLogBusinessImpl;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
@@ -30,7 +30,7 @@ public class FiniteStateMachineStateLogBusinessAdapter extends FiniteStateMachin
 						supportingDocumentIdentifiers.add( ((SalableProductInstanceCashRegister)identifiable).getSalableProductInstance().getCode() );
 					}
 				}
-				Collection<SaleCashRegisterMovement> saleCashRegisterMovements = CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementDao()
+				Collection<SaleCashRegisterMovement> saleCashRegisterMovements = inject(SaleCashRegisterMovementDao.class)
 						.readBySupportingDocumentIdentifiers(supportingDocumentIdentifiers);
 				
 				for(SalableProductInstanceCashRegister salableProductInstanceCashRegister : utilise)

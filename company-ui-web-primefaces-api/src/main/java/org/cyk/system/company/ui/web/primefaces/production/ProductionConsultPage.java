@@ -9,7 +9,7 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
@@ -40,7 +40,7 @@ public class ProductionConsultPage extends AbstractConsultPage<Production> imple
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Collection<ResellerProduction> getIdentifiables() {
-				return CompanyBusinessLayer.getInstance().getResellerProductionBusiness().findByProduction(identifiable);
+				return inject(ResellerProductionBusiness.class).findByProduction(identifiable);
 			}
 			@Override
 			public ResellerProductionDetails createData(ResellerProduction identifiable) {

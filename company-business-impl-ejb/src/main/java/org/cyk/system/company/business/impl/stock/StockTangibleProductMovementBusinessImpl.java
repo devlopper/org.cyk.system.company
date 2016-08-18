@@ -13,7 +13,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Sale;
@@ -22,6 +21,7 @@ import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
+import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockTangibleProductMovementDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.api.Crud;
@@ -74,14 +74,14 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 		/*
 		 * We need to update the stock
 		 */
-		Collection<SaleProduct> saleProducts = CompanyBusinessLayer.getInstance().getSaleProductDao().readBySale(sale);
+		Collection<SaleProduct> saleProducts = inject(SaleProductDao.class).readBySale(sale);
 		Collection<TangibleProduct> tangibleProducts = new LinkedHashSet<>();
 		for(SaleProduct saleProduct : saleProducts)
 			if(saleProduct.getSalableProduct().getProduct() instanceof TangibleProduct)
 				tangibleProducts.add((TangibleProduct) saleProduct.getSalableProduct().getProduct());
 	
 		for(TangibleProduct tangibleProduct : tangibleProducts){
-			StockableTangibleProduct stockableTangibleProduct = CompanyBusinessLayer.getInstance().getStockableTangibleProductDao().readByTangibleProduct(tangibleProduct);
+			StockableTangibleProduct stockableTangibleProduct = inject(StockableTangibleProductDao.class).readByTangibleProduct(tangibleProduct);
 			if(stockableTangibleProduct==null)
 				;
 			else{
@@ -92,7 +92,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 				StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement(stockableTangibleProduct
 						,inject(MovementBusiness.class).instanciateOne(stockableTangibleProduct.getMovementCollection(), Boolean.FALSE));
 				stockTangibleProductMovement.getMovement().setValue(count.negate());
-				CompanyBusinessLayer.getInstance().getStockTangibleProductMovementBusiness().create(stockTangibleProductMovement);
+				inject(StockTangibleProductMovementBusiness.class).create(stockTangibleProductMovement);
 				//logTrace("Updated : {}",stockableTangibleProduct.getLogMessage());
 			}
 		}
@@ -128,7 +128,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 		
 		@Override
 		public void processOnConsume(Sale sale, Crud crud, Boolean first) {
-			CompanyBusinessLayer.getInstance().getStockTangibleProductMovementBusiness().consume(sale,crud,first);
+			inject(StockTangibleProductMovementBusiness.class).consume(sale,crud,first);
 		}
 	}
 }

@@ -7,6 +7,7 @@ import javax.inject.Singleton;
 
 import lombok.Getter;
 
+import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
@@ -18,26 +19,26 @@ public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer imple
 	
 	@Override
 	protected void structure() {
-		/*Collection<TangibleProduct> tangibleProducts = companyBusinessLayer.getTangibleProductBusiness().instanciateMany(new String[][]{
+		/*Collection<TangibleProduct> tangibleProducts = inject(TangibleProductBusiness.class).instanciateMany(new String[][]{
 				new String[]{"TP1"},new String[]{"TP2"},new String[]{"TP3"},new String[]{"TP4"},new String[]{"TP5"}
 		});
 		flush(TangibleProduct.class, tangibleProducts);
-		Collection<IntangibleProduct> intangibleProducts = companyBusinessLayer.getIntangibleProductBusiness().instanciateMany(new String[][]{
+		Collection<IntangibleProduct> intangibleProducts = inject(IntangibleProductBusiness.class).instanciateMany(new String[][]{
 				new String[]{"IP1"},new String[]{"IP2"},new String[]{"IP3"},new String[]{"IP4"},new String[]{"IP5"}
 		});
 		flush(IntangibleProduct.class, intangibleProducts);
 		
-		Collection<StockableTangibleProduct> stockableTangibleProducts = companyBusinessLayer.getStockableTangibleProductBusiness().instanciateMany(new String[][]{
+		Collection<StockableTangibleProduct> stockableTangibleProducts = inject(StockableTangibleProductBusiness.class).instanciateMany(new String[][]{
 				new String[]{"TP2"},new String[]{"TP3"},new String[]{"TP5"}
 		});
 		flush(StockableTangibleProduct.class, stockableTangibleProducts);
 		
-		Collection<StockTangibleProductMovement> stockTangibleProductMovements = companyBusinessLayer.getStockTangibleProductMovementBusiness().instanciateMany(new String[][]{
+		Collection<StockTangibleProductMovement> stockTangibleProductMovements = inject(StockTangibleProductMovementBusiness.class).instanciateMany(new String[][]{
 				new String[]{"TP2","100"},new String[]{"TP3","100"},new String[]{"TP5","100"}
 		});
 		flush(StockTangibleProductMovement.class, stockTangibleProductMovements);
 		
-		Collection<SalableProduct> salableProducts = companyBusinessLayer.getSalableProductBusiness().instanciateMany(new String[][]{
+		Collection<SalableProduct> salableProducts = inject(SalableProductBusiness.class).instanciateMany(new String[][]{
 				new String[]{"TP2","1000"},new String[]{"TP5","2500"},new String[]{"IP5"}
 		});
 		flush(SalableProduct.class, salableProducts);
@@ -47,7 +48,7 @@ public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer imple
 
 	@Override
 	protected void doBusiness(Listener listener) {
-		Collection<Sale> sales = companyBusinessLayer.getSaleBusiness().instanciateMany(new Object[][]{
+		Collection<Sale> sales = inject(SaleBusiness.class).instanciateMany(new Object[][]{
 				new Object[]{"sale001",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getCode(),"1/1/2000 05:00","false"
 						,new String[][]{ new String[]{"TP2","2"} }}
 				,new Object[]{"sale002",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getCode(),"1/1/2000 05:15","false"

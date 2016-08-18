@@ -3,12 +3,14 @@ package org.cyk.system.company.ui.web.primefaces.adapter.giftcard;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.sale.SalableProductInstanceCashRegisterBusiness;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashRegisterDao;
+import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
 import org.cyk.system.root.business.impl.validation.ExceptionUtils;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 
@@ -22,15 +24,14 @@ public class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter imple
 		}else if(GiftCardSystemMenuBuilder.ACTION_USE_GIFT_CARD.equals(sale.getProcessing().getIdentifier())){
 			ExceptionUtils.getInstance().exception(sale.getSaleCashRegisterMovements().isEmpty(), "exception.giftacrdinstancerequired");
 			String giftCardIdentifier = sale.getSaleCashRegisterMovements().iterator().next().getCashRegisterMovement().getMovement().getSupportingDocumentIdentifier();
-			SalableProductInstance salableProductInstance = CompanyBusinessLayer.getInstance().getSalableProductInstanceDao().read(giftCardIdentifier);
+			SalableProductInstance salableProductInstance = inject(SalableProductInstanceDao.class).read(giftCardIdentifier);
 			ExceptionUtils.getInstance().exception(salableProductInstance ==null, "exception.giftacrdinstancedoesnotexist");
-			Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = CompanyBusinessLayer.getInstance()
-					.getSalableProductInstanceCashRegisterDao().readBySalableProductInstanceByFiniteStateMachineState(salableProductInstance,
+			Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = inject(SalableProductInstanceCashRegisterDao.class).readBySalableProductInstanceByFiniteStateMachineState(salableProductInstance,
 							inject(FiniteStateMachineStateDao.class).read(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD));
 			
 			//No product selling while using gift card
 			//while( !sale.getSaleProducts().isEmpty()  )
-			//	CompanyBusinessLayer.getInstance().getSaleBusiness().unselectProduct(sale, sale.getSaleProducts().iterator().next());
+			//	inject(SaleBusiness.class).unselectProduct(sale, sale.getSaleProducts().iterator().next());
 			sale.getSaleProducts().clear();
 			
 			//change state to used
@@ -40,7 +41,7 @@ public class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter imple
 				salableProductInstanceCashRegister.setFiniteStateMachineState(inject(FiniteStateMachineStateDao.class).read(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED));
 				salableProductInstanceCashRegister.getFiniteStateMachineState().getProcessing().setParty(sale.getProcessing().getParty());
 			}
-			CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().update(salableProductInstanceCashRegisters);
+			inject(SalableProductInstanceCashRegisterBusiness.class).update(salableProductInstanceCashRegisters);
 		}
 	}
 	@Override

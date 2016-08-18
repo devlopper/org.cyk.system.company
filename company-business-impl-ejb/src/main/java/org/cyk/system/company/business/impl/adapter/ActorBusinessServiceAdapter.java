@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.party.person.AbstractActor;
@@ -19,8 +19,8 @@ public class ActorBusinessServiceAdapter<ACTOR extends AbstractActor> extends Ab
 	public void processOnCreated(ACTOR actor) {
 		super.processOnCreated(actor);
 		if(Boolean.TRUE.equals(isCustomer(actor))){
-			Customer customer = CompanyBusinessLayer.getInstance().getCustomerBusiness().instanciateOne(actor);
-			CompanyBusinessLayer.getInstance().getCustomerBusiness().create(customer);
+			Customer customer = inject(CustomerBusiness.class).instanciateOne(actor);
+			inject(CustomerBusiness.class).create(customer);
 		}
 	}
 	

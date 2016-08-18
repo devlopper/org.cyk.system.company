@@ -24,7 +24,7 @@ public class CashRegisterMovementEditPage extends AbstractCashRegisterMovementEd
 		
 	/*@Override
 	protected CashRegisterMovement instanciateIdentifiable() {
-		return CompanyBusinessLayer.getInstance().getCashRegisterMovementBusiness().instanciateOne((Person) userSession.getUser());
+		return inject(CashRegisterMovementBusiness.class).instanciateOne((Person) userSession.getUser());
 	}*/
 	
 	@Getter @Setter

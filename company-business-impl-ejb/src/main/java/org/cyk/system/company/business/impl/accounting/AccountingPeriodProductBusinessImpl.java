@@ -91,7 +91,7 @@ public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPerio
 		
 		@Override
 		public void processOnConsume(Sale sale, Crud crud, Boolean first) {
-			CompanyBusinessLayer.getInstance().getAccountingPeriodProductBusiness().consume(sale,crud,first);
+			inject(AccountingPeriodProductBusiness.class).consume(sale,crud,first);
 		}
 	}
 	

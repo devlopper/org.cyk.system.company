@@ -12,7 +12,7 @@ import lombok.Setter;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceCashRegisterStateLogDetails;
 import org.cyk.system.company.model.sale.SalableProductInstance;
@@ -84,7 +84,7 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 			searchCriteria.setTimeDivisionTypeCode(timeDivisionTypeCode);
 			if(searchCriteria.getFiniteStateMachineStates().isEmpty())
 				searchCriteria.addFiniteStateMachineStates(inject(FiniteStateMachineStateBusiness.class)
-						.findByMachine(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
+						.findByMachine(inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration()
 								.getSalableProductInstanceCashRegisterFiniteStateMachine()));
 			return searchCriteria;
 		}

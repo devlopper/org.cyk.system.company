@@ -9,8 +9,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductInstanceBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashRegisterDao;
@@ -32,7 +32,7 @@ public class SaleProductInstanceBusinessImpl extends AbstractTypedBusinessServic
 	
 	@Override
 	public SaleProductInstance create(final SaleProductInstance saleProductInstance) {
-		exceptionUtils().exception(Boolean.TRUE.equals(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
+		exceptionUtils().exception(Boolean.TRUE.equals(inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration()
 				.getAllowOnlySalableProductInstanceOfCashRegister()) 
 				&& salableProductInstanceCashRegisterDao.readBySalableProductInstanceByCashRegister(saleProductInstance.getSalableProductInstance()
 					, saleProductInstance.getSaleProduct().getSale().getCashier().getCashRegister())==null, "AllowOnlySalableProductInstanceOfCashRegister");
@@ -52,7 +52,7 @@ public class SaleProductInstanceBusinessImpl extends AbstractTypedBusinessServic
 			salableProductInstanceCashRegister.setFiniteStateMachineState(sale.getAccountingPeriod().getSaleConfiguration()
 					.getSalableProductInstanceCashRegisterSaleConsumeState());
 			salableProductInstanceCashRegister.getFiniteStateMachineState().getProcessing().setParty(saleProductInstance.getProcessing().getParty());
-			CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().update(salableProductInstanceCashRegister);
+			inject(SalableProductInstanceCashRegisterBusiness.class).update(salableProductInstanceCashRegister);
 			
 		}
 		*/

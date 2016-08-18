@@ -9,7 +9,8 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.production.ProductionBusiness;
+import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
@@ -38,7 +39,7 @@ public class ProductionPlanConsultPage extends AbstractConsultPage<ProductionPla
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Collection<Production> getIdentifiables() {
-				return CompanyBusinessLayer.getInstance().getProductionBusiness().findByProductionPlan(identifiable);
+				return inject(ProductionBusiness.class).findByProductionPlan(identifiable);
 			}
 			@Override
 			public Crud[] getCruds() {
@@ -51,7 +52,7 @@ public class ProductionPlanConsultPage extends AbstractConsultPage<ProductionPla
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Collection<ResellerProductionPlan> getIdentifiables() {
-				return CompanyBusinessLayer.getInstance().getResellerProductionPlanBusiness().findByProductionPlan(identifiable);
+				return inject(ResellerProductionPlanBusiness.class).findByProductionPlan(identifiable);
 			}
 			
 			@Override

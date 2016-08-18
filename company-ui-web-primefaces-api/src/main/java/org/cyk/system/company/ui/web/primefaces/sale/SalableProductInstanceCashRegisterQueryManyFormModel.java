@@ -15,6 +15,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductInstanceCashRegisterBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.SalableProduct;
@@ -126,7 +129,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 		}
 		
 		private Collection<FiniteStateMachineState> getFiniteStateMachineStates(){
-			FiniteStateMachine finiteStateMachine = CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
+			FiniteStateMachine finiteStateMachine = inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration()
 					.getSalableProductInstanceCashRegisterFiniteStateMachine();
 			FiniteStateMachineAlphabet finiteStateMachineAlphabet = getFiniteStateMachineAlphabet();
 			return finiteStateMachineAlphabet == null ? inject(FiniteStateMachineStateBusiness.class)
@@ -137,7 +140,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 		
 		private void selectCashRegister(final AbstractSelectManyPage<?> page){
 			Collection<CashRegister> cashRegisters = Boolean.TRUE.equals(page.getUserSession().getIsAdministrator()) 
-					?CompanyBusinessLayer.getInstance().getCashRegisterBusiness().findAll() : CompanyBusinessLayer.getInstance().getCashRegisterBusiness()
+					?inject(CashRegisterBusiness.class).findAll() : inject(CashRegisterBusiness.class)
 							.findByPerson((Person)page.getUserSession().getUser());
 			CashRegister cashRegister = (CashRegister) page.setChoicesAndGetAutoSelected(FIELD_CASHREGISTER, cashRegisters);
 			page.createAjaxBuilder(FIELD_CASHREGISTER).crossedFieldNames(FIELD_FINITESTATEMACHINESTATE).updatedFieldNames(FIELD_IDENTIFIABLES)
@@ -149,7 +152,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 				}
 			}).build();
 			
-			//page.setChoices(FIELD_SALABLEPRODUCTINSTANCE, CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().findAll());
+			//page.setChoices(FIELD_SALABLEPRODUCTINSTANCE, inject(SalableProductInstanceBusiness.class).findAll());
 			
 			Collection<FiniteStateMachineState> finiteStateMachineStates = getFiniteStateMachineStates();
 			
@@ -173,7 +176,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 			}else{
 				SearchCriteria searchCriteria = new SearchCriteria();
 				searchCriteria.addCashRegisters(Arrays.asList(cashRegister)).addFiniteStateMachineStates(Arrays.asList(finiteStateMachineState));
-				salableProductInstanceCashRegisters = CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().findByCriteria(searchCriteria);
+				salableProductInstanceCashRegisters = inject(SalableProductInstanceCashRegisterBusiness.class).findByCriteria(searchCriteria);
 			}
 			
 			page.setChoices(FIELD_IDENTIFIABLES, salableProductInstanceCashRegisters);
@@ -236,7 +239,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 		protected void initialiseProcessOnAfterInitialisationEnded(AbstractProcessManyPage<?> page) {
 			super.initialiseProcessOnAfterInitialisationEnded(page);
 			page.setChoices(Form.FIELD_FINITESTATEMACHINESTATE, inject(FiniteStateMachineStateBusiness.class)
-					.findByMachine(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
+					.findByMachine(inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration()
 							.getSalableProductInstanceCashRegisterFiniteStateMachine())
 							,((Form)page.getForm().getData()).finiteStateMachineState = getFiniteStateMachineState());
 		}
@@ -252,7 +255,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 					((SalableProductInstanceCashRegister) object).setFiniteStateMachineState(((Form)data).getFiniteStateMachineState());
 					salableProductInstanceCashRegisters.add((SalableProductInstanceCashRegister) object);
 				}
-				companyBusinessLayer.getSalableProductInstanceCashRegisterBusiness().update(salableProductInstanceCashRegisters);
+				inject(SalableProductInstanceCashRegisterBusiness.class).update(salableProductInstanceCashRegisters);
 			}
 		}
 		

@@ -46,7 +46,7 @@ public class SalableProductInstanceBusinessImpl extends AbstractCollectionItemBu
 			salableProductInstances.add(salableProductInstance);
 		}
 			
-		CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().create(salableProductInstances);
+		inject(SalableProductInstanceBusiness.class).create(salableProductInstances);
 	}
 	
 	@Override

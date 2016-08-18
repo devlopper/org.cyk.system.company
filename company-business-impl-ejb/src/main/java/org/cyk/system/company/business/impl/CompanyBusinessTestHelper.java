@@ -15,6 +15,12 @@ import lombok.Setter;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.sale.SaleBusiness;
+import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
+import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
@@ -100,7 +106,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	
 	public void set(CashRegister cashRegister,String code){
 		setEnumeration(cashRegister, code);
-		cashRegister.setOwnedCompany(CompanyBusinessLayer.getInstance().getOwnedCompanyBusiness().findDefaultOwnedCompany());
+		cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaultOwnedCompany());
 		cashRegister.setMovementCollection(new MovementCollection());
 	}
 	
@@ -133,10 +139,10 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	if(products!=null)
 	    	for(String[] infos : products){
 	    		SalableProduct salableProduct = salableProductDao.readByProduct(productDao.read(infos[0]));
-	    		SaleProduct saleProduct = getCompanyBusinessLayer().getSaleBusiness().selectProduct(sale, salableProduct,commonUtils.getBigDecimal(infos[1]));
+	    		SaleProduct saleProduct = inject(SaleBusiness.class).selectProduct(sale, salableProduct,commonUtils.getBigDecimal(infos[1]));
 	    		if(salableProduct.getPrice()==null){
 	    			saleProduct.getCost().setValue(commonUtils.getBigDecimal(infos[2]));
-	    			 getCompanyBusinessLayer().getSaleBusiness().applyChange(sale, saleProduct);
+	    			 inject(SaleBusiness.class).applyChange(sale, saleProduct);
 	    		}else{
 	    				
 	    		}
@@ -151,7 +157,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		saleCashRegisterMovement.setAmountIn(new BigDecimal(amountIn));
 		saleCashRegisterMovement.setAmountOut(new BigDecimal(amountOut));
 		//saleCashRegisterMovement.getCashRegisterMovement().setDate(date);
-		 getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().in(saleCashRegisterMovement);
+		 inject(SaleCashRegisterMovementBusiness.class).in(saleCashRegisterMovement);
 	}
 	public void set(SaleCashRegisterMovement saleCashRegisterMovement,String amountIn,Date date){
 		set(saleCashRegisterMovement,amountIn,"0",date);
@@ -165,7 +171,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	public void createCashRegisterMovement(String cashRegisterCode,String amount,String expectedBalance,String expectedThrowableMessage){
     	final CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
     	set(cashRegisterMovement, cashRegisterCode, amount);
-    	CompanyBusinessLayer.getInstance().getCashRegisterMovementBusiness().create(cashRegisterMovement);
+    	inject(CashRegisterMovementBusiness.class).create(cashRegisterMovement);
     }
 	public void createCashRegisterMovement(String cashRegisterCode,String amount,String expectedBalance){
 		createCashRegisterMovement(cashRegisterCode, amount, expectedBalance,null);
@@ -174,68 +180,68 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     public void createStockTangibleProductMovement(String tangibleProductCode,String quantity){
     	StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement();
     	set(stockTangibleProductMovement, tangibleProductCode, quantity);
-    	CompanyBusinessLayer.getInstance().getStockTangibleProductMovementBusiness().create(stockTangibleProductMovement);
+    	inject(StockTangibleProductMovementBusiness.class).create(stockTangibleProductMovement);
     }
     
 	/* Sale */
 	
     public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable,String finalState,String expectedThrowableMessage){
-    	final Sale sale =  getCompanyBusinessLayer().getSaleBusiness().instanciateOne(cashierDao.select().one().getPerson());
+    	final Sale sale =  inject(SaleBusiness.class).instanciateOne(cashierDao.select().one().getPerson());
     	set(sale,identifier,date, cashierCode, customerCode, products, taxable);
     	if(paid==null || !Boolean.TRUE.equals(Boolean.parseBoolean(StringUtils.defaultString(finalState,"true")))){
-    		getCompanyBusinessLayer().getSaleBusiness().create(sale);
+    		inject(SaleBusiness.class).create(sale);
     	}else{
-    		final SaleCashRegisterMovement saleCashRegisterMovement =  getCompanyBusinessLayer().getSaleCashRegisterMovementBusiness().instanciateOne(sale, sale.getCashier().getPerson(),Boolean.TRUE);
+    		final SaleCashRegisterMovement saleCashRegisterMovement =  inject(SaleCashRegisterMovementBusiness.class).instanciateOne(sale, sale.getCashier().getPerson(),Boolean.TRUE);
         	set(saleCashRegisterMovement, paid);
         	sale.getSaleCashRegisterMovements().add(saleCashRegisterMovement);
         	if(expectedThrowableMessage!=null){
         		new Try(expectedThrowableMessage){ 
         			private static final long serialVersionUID = -8176804174113453706L;
-        			@Override protected void code() {getCompanyBusinessLayer().getSaleBusiness().create(sale);}
+        			@Override protected void code() {inject(SaleBusiness.class).create(sale);}
         		}.execute();
         	}else{
-        		getCompanyBusinessLayer().getSaleBusiness().create(sale);
+        		inject(SaleBusiness.class).create(sale);
         	}	
     	}
     	return sale;
     }
     /*public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable,String expectedThrowableMessage){
     	return createSale(identifier, date, cashierCode, customerCode, products, paid, taxable,
-    			finiteStateMachineFinalStateDao.readByState(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration()
+    			finiteStateMachineFinalStateDao.readByState(inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration()
     					.getFiniteStateMachine().getInitialState())!=null,expectedThrowableMessage);
     }*/
     
     public void writeSaleReport(String identifier){
-    	writeReport(CompanyBusinessLayer.getInstance().getSaleBusiness().findReport(saleDao.readByComputedIdentifier(identifier)));
+    	writeReport(inject(SaleBusiness.class).findReport(saleDao.readByComputedIdentifier(identifier)));
     }
     
     public void updateSale(String identifier,String finiteStateMachineAlphabetCode,String taxable){
     	Sale sale = saleDao.readByComputedIdentifier(identifier);
     	FiniteStateMachineAlphabet finiteStateMachineAlphabet = finiteStateMachineAlphabetDao.read(finiteStateMachineAlphabetCode);
     	sale.setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
-    	CompanyBusinessLayer.getInstance().getSaleBusiness().update(sale, finiteStateMachineAlphabet);
+    	inject(SaleBusiness.class).update(sale, finiteStateMachineAlphabet);
     }
     
     public void deleteSale(String identifier){
     	Sale sale = saleDao.readByComputedIdentifier(identifier);
-    	CompanyBusinessLayer.getInstance().getSaleBusiness().delete(sale);
+    	inject(SaleBusiness.class).delete(sale);
     }
     
     public void createSaleCashRegisterMovement(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode,String amount,String expectedThrowableMessage){
-    	final SaleCashRegisterMovement saleCashRegisterMovement = CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness()
+    	final SaleCashRegisterMovement saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class)
     			.instanciateOne(saleComputedIdentifier,computedIdentifier, cashierPersonCode==null?cashierDao.readOneRandomly().getPerson().getCode():cashierPersonCode, amount);
     	if(expectedThrowableMessage!=null){
     		new Try(expectedThrowableMessage){ 
     			private static final long serialVersionUID = -8176804174113453706L;
-    			@Override protected void code() {CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().create(saleCashRegisterMovement);}
+    			@Override protected void code() {inject(SaleCashRegisterMovementBusiness.class).create(saleCashRegisterMovement);}
     		}.execute();
     	}else{
-    		CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().create(saleCashRegisterMovement);
+    		inject(SaleCashRegisterMovementBusiness.class).create(saleCashRegisterMovement);
     	}	
     }
     
     public void writeSaleCashRegisterMovementReport(String identifier){
-    	writeReport(CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().findReport(saleCashRegisterMovementDao.readByCashRegisterMovementComputedIdentifier(identifier)));
+    	writeReport(inject(SaleCashRegisterMovementBusiness.class).findReport(saleCashRegisterMovementDao.readByCashRegisterMovementComputedIdentifier(identifier)));
     }
     				    
     /*Assertions*/
@@ -263,7 +269,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     }
     
     public void assertCurrentAccountingPeriod(ObjectFieldValues expectedValues){
-    	AccountingPeriod accountingPeriod = CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent();
+    	AccountingPeriod accountingPeriod = inject(AccountingPeriodBusiness.class).findCurrent();
     	doAssertions(accountingPeriod.getSaleResults().getCost(), expectedValues);
     }
     public void assertCurrentAccountingPeriod(String numberOfProceedElements,String cost,String tax,String turnover){
@@ -272,7 +278,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     }
     
     public void assertCurrentAccountingPeriodProduct(String productCode,ObjectFieldValues expectedValues){
-    	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByEntity(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
+    	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByEntity(inject(AccountingPeriodBusiness.class).findCurrent(), productDao.read(productCode));
     	doAssertions(accountingPeriodProduct.getSaleResults().getCost(), expectedValues);
     }
     public void assertCurrentAccountingPeriodProduct(String productCode,String numberOfProceedElements,String cost,String tax,String turnover){
@@ -282,10 +288,10 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     
     public void assertCostComputation(AccountingPeriod accountingPeriod,String[][] values){
     	for(String[] infos : values){
-    		BigDecimal vat = CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(accountingPeriod, commonUtils.getBigDecimal(infos[0]));
+    		BigDecimal vat = inject(AccountingPeriodBusiness.class).computeValueAddedTax(accountingPeriod, commonUtils.getBigDecimal(infos[0]));
     		assertBigDecimalEquals("Value Added Tax of "+infos[0], infos[1], vat);
     		assertBigDecimalEquals("Turnover of "+infos[0]+" with VAT = "+vat, infos[2]
-    				, CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(accountingPeriod, commonUtils.getBigDecimal(infos[0]), vat));
+    				, inject(AccountingPeriodBusiness.class).computeTurnover(accountingPeriod, commonUtils.getBigDecimal(infos[0]), vat));
     	}
     }
     
@@ -300,7 +306,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     		saleSearchCriteria.getFiniteStateMachineStates().add(finiteStateMachineStateDao.read(finiteStateMachineStateCode));
     	}
     	assertEquals("Sale search criteria "+StringUtils.join(finiteStateMachineStateCodes)+" count", expectedCount
-    			, CompanyBusinessLayer.getInstance().getSaleBusiness().countByCriteria(saleSearchCriteria).toString());
+    			, inject(SaleBusiness.class).countByCriteria(saleSearchCriteria).toString());
     }
     public void assertSaleFiniteStateMachineStateCount(String finiteStateMachineStateCode,String expectedCount){
     	assertSaleFiniteStateMachineStateCount(new String[]{finiteStateMachineStateCode},expectedCount);
@@ -317,20 +323,20 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	SaleSearchCriteria criteria = new SaleSearchCriteria(getDate(fromDate, Boolean.FALSE), getDate(toDate, Boolean.FALSE));
     	for(String saleFiniteStateMachineStateCode : saleFiniteStateMachineStateCodes)
     		criteria.getFiniteStateMachineStates().add(finiteStateMachineStateDao.read(saleFiniteStateMachineStateCode));
-    	Collection<Sale> sales = CompanyBusinessLayer.getInstance().getSaleBusiness().findByCriteria(criteria);
+    	Collection<Sale> sales = inject(SaleBusiness.class).findByCriteria(criteria);
     	assertEquals("Find sale by criteria count using collection", expectedComputedIdentifiers.length, sales.size());
-    	assertEquals("Find sale by criteria count using fonction", expectedComputedIdentifiers.length, CompanyBusinessLayer.getInstance().getSaleBusiness().countByCriteria(criteria).intValue());
+    	assertEquals("Find sale by criteria count using fonction", expectedComputedIdentifiers.length, inject(SaleBusiness.class).countByCriteria(criteria).intValue());
     	int i = 0;
     	for(Sale sale : sales)
     		assertEquals("Find sale by criteria computed identifier",expectedComputedIdentifiers[i++],sale.getComputedIdentifier());
-    	SaleResults saleResults = CompanyBusinessLayer.getInstance().getSaleBusiness().computeByCriteria(criteria);
+    	SaleResults saleResults = inject(SaleBusiness.class).computeByCriteria(criteria);
     	doAssertions(saleResults, new ObjectFieldValues(SaleResults.class).set(SaleResults.FIELD_BALANCE,expectedBalance,SaleResults.FIELD_PAID,expectedPaid)
     		.setBaseName(SaleResults.FIELD_COST).set(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,expectedComputedIdentifiers.length+""
     			,Cost.FIELD_VALUE,expectedCost,Cost.FIELD_TAX,expectedTax,Cost.FIELD_TURNOVER,expectedTurnover));
     }
     
     public void assertAccountingPeriodProduct(String productCode,ObjectFieldValues expectedValues){
-    	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByEntity(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), productDao.read(productCode));
+    	AccountingPeriodProduct accountingPeriodProduct = accountingPeriodProductDao.readByAccountingPeriodByEntity(inject(AccountingPeriodBusiness.class).findCurrent(), productDao.read(productCode));
     	doAssertions(accountingPeriodProduct.getSaleResults().getCost(), expectedValues);
     	doAssertions(accountingPeriodProduct.getProductResults().getNumberOfSalesSort(), expectedValues);
     }
@@ -339,7 +345,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	doAssertions(accountingPeriod.getSaleResults().getCost(), expectedValues);
     }
     public void assertAccountingPeriod(ObjectFieldValues expectedValues){
-    	assertAccountingPeriod(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent(), expectedValues);
+    	assertAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent(), expectedValues);
     }
     
     public void assertStockableTangibleProduct(String tangibleProductCode,ObjectFieldValues expectedValues){
@@ -361,10 +367,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	
 	/**/
 	
-    private CompanyBusinessLayer getCompanyBusinessLayer(){
-    	return CompanyBusinessLayer.getInstance();
-    }
-    
 	public static CompanyBusinessTestHelper getInstance() {
 		return INSTANCE;
 	}

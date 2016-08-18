@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
@@ -55,7 +55,7 @@ public class SalableProductEditPage extends AbstractCrudOnePage<SalableProduct> 
 		if(Boolean.TRUE.equals(CREATE_ON_PRODUCT))
 			super.create();
 		else
-			CompanyBusinessLayer.getInstance().getSalableProductBusiness().create(TangibleProduct.class, ((Form)form.getData()).code, ((Form)form.getData()).name, ((Form)form.getData()).price);
+			inject(SalableProductBusiness.class).create(TangibleProduct.class, ((Form)form.getData()).code, ((Form)form.getData()).name, ((Form)form.getData()).price);
 	}
 		
 	public static class Form extends AbstractFormModel<SalableProduct> implements Serializable{

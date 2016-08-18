@@ -3,6 +3,7 @@ package org.cyk.system.company.ui.web.primefaces.adapter.enterpriseresourceplann
 import java.io.Serializable;
 import java.util.Collection;
 
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
@@ -12,6 +13,7 @@ import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.root.business.api.security.BusinessServiceBusiness;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.web.primefaces.Commandable;
@@ -33,6 +35,7 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 	
 	public Commandable getProductCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = createModuleCommandable(Product.class, null);
+		module.setLabel(inject(BusinessServiceBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_PRODUCT).getName());
 		module.addChild(createListCommandable(TangibleProduct.class, null));
 		module.addChild(createListCommandable(IntangibleProduct.class, null));
 		/*module.addChild(createListCommandable(ProductCategory.class, null));
@@ -45,17 +48,13 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 	
 	public Commandable getPaymentCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = createModuleCommandable("payment", null);
-		module.addChild(createListCommandable(Cashier.class, null));
+		module.setLabel(inject(BusinessServiceBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_PAYMENT).getName());
 		module.addChild(createListCommandable(CashRegister.class, null));
-		module.addChild(createListCommandable(CashRegisterMovement.class, null));
+		module.addChild(createListCommandable(Cashier.class, null));
 		module.addChild(createListCommandable(CashRegisterMovementMode.class, null));
-		module.addChild(createListCommandable(CashRegisterMovementTerm.class, null));
+		module.addChild(createListCommandable(CashRegisterMovement.class, null));
 		module.addChild(createListCommandable(CashRegisterMovementTermCollection.class, null));
-		/*module.addChild(createListCommandable(ProductCategory.class, null));
-		module.addChild(createListCommandable(ProductCollection.class, null));
-		module.addChild(createListCommandable(ProductCollectionItem.class, null));*/
-		//module.addChild(createListCommandable(TangibleProductInstance.class, null));
-		/*module.addChild(createListCommandable(TangibleProductInventory.class, null));*/
+		module.addChild(createListCommandable(CashRegisterMovementTerm.class, null));
 		return module;
 	}
 	

@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
@@ -39,7 +39,7 @@ public class ResellerProductionPlanEditPage extends AbstractCrudOnePage<Reseller
 	@Override
 	protected ResellerProductionPlan instanciateIdentifiable() {
 		ResellerProductionPlan instance = super.instanciateIdentifiable();
-		instance.setProductionPlan(CompanyBusinessLayer.getInstance().getProductionPlanBusiness().find(requestParameterLong(ProductionPlan.class)));
+		instance.setProductionPlan(inject(ProductionPlanBusiness.class).find(requestParameterLong(ProductionPlan.class)));
 		return instance;
 	}
 				

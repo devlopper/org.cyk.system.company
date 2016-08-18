@@ -11,8 +11,8 @@ import javax.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.cyk.system.company.business.api.payment.CashRegisterMovementModeBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
@@ -38,7 +38,7 @@ public class SaleCashRegisterMovementController extends AbstractBean implements 
 		showOut=!showIn;
 		showBalance=Boolean.TRUE;
 		if(modes==null)
-			modes = new ArrayList<>(CompanyBusinessLayer.getInstance().getCashRegisterMovementModeBusiness().findAll());
+			modes = new ArrayList<>(inject(CashRegisterMovementModeBusiness.class).findAll());
 	}
 	
 	public void modeChangedListener(ValueChangeEvent event){

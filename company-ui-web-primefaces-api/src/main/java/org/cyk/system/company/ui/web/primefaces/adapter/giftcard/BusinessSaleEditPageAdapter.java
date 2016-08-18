@@ -11,7 +11,10 @@ import javax.faces.model.SelectItem;
 import javax.faces.validator.ValidatorException;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
+import org.cyk.system.company.business.api.payment.CashRegisterMovementModeBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductInstanceCashRegisterBusiness;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.sale.SalableProductInstance;
@@ -85,27 +88,26 @@ public class BusinessSaleEditPageAdapter extends AbstractBusinessEntityFormOnePa
 	public void afterInitialisationEnded(AbstractBean bean) {
 		final SaleEditPage saleEditPage = (SaleEditPage) bean;
 		super.afterInitialisationEnded(bean);
-		saleEditPage.setFieldValue(SaleEditPage.FormOneSaleProduct.FIELD_CASH_REGISTER_MOVEMENT_MODE, CompanyBusinessLayer.getInstance().getCashRegisterMovementModeBusiness().find(CashRegisterMovementMode.GIFT_CARD));
+		saleEditPage.setFieldValue(SaleEditPage.FormOneSaleProduct.FIELD_CASH_REGISTER_MOVEMENT_MODE, inject(CashRegisterMovementModeBusiness.class).find(CashRegisterMovementMode.GIFT_CARD));
 		
 		if(GiftCardSystemMenuBuilder.ACTION_SELL_GIFT_CARD.equals(saleEditPage.getActionIdentifier())){
 			saleEditPage.setContentTitle("Création d'une vente de carte cadeau");
 		}else if(GiftCardSystemMenuBuilder.ACTION_USE_GIFT_CARD.equals(saleEditPage.getActionIdentifier())){
 			saleEditPage.setContentTitle("Utilisation d'une carte cadeau");
 			//saleEditPage.getForm().findInputByClassByFieldName(WebInput.class, FormOneSaleProduct.FIELD_CASHIER).getAjaxListener().setEnabled(Boolean.FALSE);
-			((FormOneSaleProduct)saleEditPage.getForm().getData()).setCashRegisterMovementMode(CompanyBusinessLayer.getInstance().getCashRegisterMovementModeBusiness().find(CashRegisterMovementMode.GIFT_CARD));
+			((FormOneSaleProduct)saleEditPage.getForm().getData()).setCashRegisterMovementMode(inject(CashRegisterMovementModeBusiness.class).find(CashRegisterMovementMode.GIFT_CARD));
 			saleEditPage.addInputListener(SaleEditPage.FormOneSaleProduct.FIELD_SUPPORTING_DOCUMENT_IDENTIFIER, new WebInput.Listener.Adapter.Default(){
 				private static final long serialVersionUID = 1L;
 				@Override
 				public void validate(FacesContext facesContext,UIComponent uiComponent, Object value)throws ValidatorException {
 					super.validate(facesContext, uiComponent, value);
-					SalableProductInstance salableProductInstance = CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().find((String)value);
+					SalableProductInstance salableProductInstance = inject(SalableProductInstanceBusiness.class).find((String)value);
 					if(salableProductInstance==null)
 						WebManager.getInstance().throwValidationException("salableProductInstanceDoesNotExists",null);
 					SalableProductInstanceCashRegister.SearchCriteria searchCriteria = new SalableProductInstanceCashRegister.SearchCriteria();
-					searchCriteria.addCashRegisters(CompanyBusinessLayer.getInstance().getCashRegisterBusiness().findAll());
+					searchCriteria.addCashRegisters(inject(CashRegisterBusiness.class).findAll());
 					searchCriteria.addFiniteStateMachineStates(Arrays.asList(inject(FiniteStateMachineStateBusiness.class).find(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD)));
-					Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = CompanyBusinessLayer.getInstance()
-							.getSalableProductInstanceCashRegisterBusiness().findByCriteria(searchCriteria);
+					Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = inject(SalableProductInstanceCashRegisterBusiness.class).findByCriteria(searchCriteria);
 					if(salableProductInstanceCashRegisters.isEmpty())
 						WebManager.getInstance().throwValidationException("salableProductInstanceIsNotInSoldState",null);
 				}

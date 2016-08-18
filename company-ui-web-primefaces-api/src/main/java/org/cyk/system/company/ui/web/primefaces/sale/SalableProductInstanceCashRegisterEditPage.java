@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.sale.SalableProductInstanceCashRegisterBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
@@ -65,16 +65,16 @@ public class SalableProductInstanceCashRegisterEditPage extends AbstractCrudOneP
 	@Override
 	protected void create() {
 		if(Boolean.TRUE.equals(CREATE_ON_CASH_REGISTER))
-			CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().create(identifiable);
+			inject(SalableProductInstanceCashRegisterBusiness.class).create(identifiable);
 		else{
 			identifiable.getCashRegister().setProcessing(identifiable.getProcessing());
-			CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().create(((Form)form.getData()).codes.getCodeSet(), identifiable.getCashRegister());
+			inject(SalableProductInstanceCashRegisterBusiness.class).create(((Form)form.getData()).codes.getCodeSet(), identifiable.getCashRegister());
 		}
 	}
 	
 	@Override
 	protected void update() {
-		CompanyBusinessLayer.getInstance().getSalableProductInstanceCashRegisterBusiness().update(identifiable);
+		inject(SalableProductInstanceCashRegisterBusiness.class).update(identifiable);
 	}
 	
 	@Override

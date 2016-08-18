@@ -9,8 +9,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductInstanceCashRegisterBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
@@ -90,7 +90,7 @@ public class SalableProductInstanceCashRegisterBusinessImpl extends AbstractType
 
 	@Override
 	public Collection<SalableProductInstanceCashRegister> create(Collection<String> salableInstanceCodes, CashRegister cashRegister) {
-		return create(salableInstanceCodes, cashRegister,CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine().getInitialState());
+		return create(salableInstanceCodes, cashRegister,inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine().getInitialState());
 	}
 	
 }

@@ -119,7 +119,7 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_VALUE, sale.getCost().getValue().multiply(sign));
 			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_TAX, sale.getCost().getTax().multiply(sign));
 			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_TURNOVER, sale.getCost().getTurnover().multiply(sign));
-			CompanyBusinessLayer.getInstance().getAccountingPeriodDao().update(sale.getAccountingPeriod());
+			inject(AccountingPeriodDao.class).update(sale.getAccountingPeriod());
 		}
 	}
 }

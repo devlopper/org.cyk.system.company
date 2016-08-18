@@ -10,9 +10,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.product.ProductCategoryBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductInstanceBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleProduct;
@@ -40,7 +41,7 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 	}
 	
 	private void cascade(SaleProduct saleProduct,Collection<SaleProductInstance> saleProductInstances,Crud crud){
-		new CascadeOperationListener.Adapter.Default<SaleProductInstance,SaleProductInstanceDao,SaleProductInstanceBusiness>(saleProductInstanceDao,CompanyBusinessLayer.getInstance().getSaleProductInstanceBusiness())
+		new CascadeOperationListener.Adapter.Default<SaleProductInstance,SaleProductInstanceDao,SaleProductInstanceBusiness>(saleProductInstanceDao,inject(SaleProductInstanceBusiness.class))
 			.operate(saleProductInstances, crud);
 	}
 	
@@ -70,7 +71,7 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 		Collection<SaleProduct> results = new ArrayList<>();
 		for(SaleProduct saleProduct : collection){
 			if(productCategories.contains(saleProduct.getSalableProduct().getProduct().getCategory()) || 
-					CompanyBusinessLayer.getInstance().getProductCategoryBusiness().isAtLeastOneAncestorOf(productCategories,saleProduct.getSalableProduct().getProduct().getCategory()))
+					inject(ProductCategoryBusiness.class).isAtLeastOneAncestorOf(productCategories,saleProduct.getSalableProduct().getProduct().getCategory()))
 				results.add(saleProduct);
 		}
 		return results;
@@ -106,10 +107,10 @@ public class SaleProductBusinessImpl extends AbstractTypedBusinessService<SalePr
 			 * This product has a cost so we can compute the taxes to be paid
 			 */
 			if(Boolean.TRUE.equals(saleProduct.getSale().getAutoComputeValueAddedTax())){
-				saleProduct.getCost().setTax(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getCost().getValue()));
+				saleProduct.getCost().setTax(inject(AccountingPeriodBusiness.class).computeValueAddedTax(saleProduct.getSale().getAccountingPeriod(), saleProduct.getCost().getValue()));
 			}else if(saleProduct.getCost().getTax()==null)
 				saleProduct.getCost().setTax(BigDecimal.ZERO);
-			saleProduct.getCost().setTurnover(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().computeTurnover(saleProduct.getSale().getAccountingPeriod()
+			saleProduct.getCost().setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(saleProduct.getSale().getAccountingPeriod()
 					, saleProduct.getCost().getValue(),saleProduct.getCost().getTax()));	
 		}
 		logIdentifiable("Processed",saleProduct);

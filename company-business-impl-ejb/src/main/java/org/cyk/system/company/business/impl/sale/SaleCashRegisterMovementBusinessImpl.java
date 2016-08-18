@@ -11,6 +11,8 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.cyk.system.company.business.api.CompanyReportProducer;
+import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.AbstractCompanyBeanAdapter;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
@@ -45,7 +47,6 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	private static final long serialVersionUID = -7830673760640348717L;
 
 	private RootBusinessLayer rootBusinessLayer = RootBusinessLayer.getInstance();
-	private CompanyBusinessLayer companyBusinessLayer = CompanyBusinessLayer.getInstance();
 	
 	@Inject private SaleDao saleDao;
 	@Inject private CustomerDao customerDao;
@@ -96,7 +97,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			exceptionUtils().exception(soldOut>=0, "exception.salecashregistermovement.in.soldout.yes");
 		else
 			exceptionUtils().exception(soldOut<0, "exception.salecashregistermovement.in.soldout.no");
-		companyBusinessLayer.getCashRegisterMovementBusiness().create(saleCashRegisterMovement.getCashRegisterMovement());
+		inject(CashRegisterMovementBusiness.class).create(saleCashRegisterMovement.getCashRegisterMovement());
 		
 		BigDecimal oldBalance = sale.getBalance().getValue(),increment=saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate();
 		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE,increment);
@@ -137,7 +138,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		logIdentifiable("Created",saleCashRegisterMovement);
 		
 		if(Boolean.TRUE.equals(generatePos)){
-			SaleCashRegisterMovementReport saleCashRegisterMovementReport = CompanyBusinessLayer.getInstance().getCompanyReportProducer().produceSaleCashRegisterMovementReport(saleCashRegisterMovement);
+			SaleCashRegisterMovementReport saleCashRegisterMovementReport = inject(CompanyReportProducer.class).produceSaleCashRegisterMovementReport(saleCashRegisterMovement);
 			if(saleCashRegisterMovement.getReport()==null)
 				saleCashRegisterMovement.setReport(new File());
 			rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement, saleCashRegisterMovementReport
@@ -198,7 +199,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			commonUtils.increment(BigDecimal.class, saleCashRegisterMovement.getSale().getCustomer(), Customer.FIELD_PAID
 					, saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate());
 		}
-		companyBusinessLayer.getCashRegisterMovementBusiness().delete(saleCashRegisterMovement.getCashRegisterMovement());
+		inject(CashRegisterMovementBusiness.class).delete(saleCashRegisterMovement.getCashRegisterMovement());
 		saleCashRegisterMovement.setCashRegisterMovement(null);
 		return super.delete(saleCashRegisterMovement);
 	}

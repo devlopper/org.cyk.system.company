@@ -10,6 +10,9 @@ import javax.inject.Singleton;
 
 import lombok.Getter;
 
+import org.cyk.system.company.business.api.product.TangibleProductBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductBusiness;
+import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.Cashier;
@@ -45,13 +48,13 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 		Collection<Cashier> cashiers = new ArrayList<>();
 		
 		for(Object[] values : GIFT_CARDS ){
-			TangibleProduct tangibleProduct = companyBusinessLayer.getTangibleProductBusiness().instanciateOne((String)values[0], (String)values[0]);
+			TangibleProduct tangibleProduct = inject(TangibleProductBusiness.class).instanciateOne((String)values[0], (String)values[0]);
 			products.add(tangibleProduct);
 			List<String> instances = new ArrayList<>();
 			for(int i = (Integer)values[1]; i <= (Integer)values[2]; i++ )
 				instances.add(i+"");
 			
-			SalableProduct salableProduct = companyBusinessLayer.getSalableProductBusiness().instanciateOne(tangibleProduct.getCode(), tangibleProduct.getName(), instances.toArray(new String[]{}));
+			SalableProduct salableProduct = inject(SalableProductBusiness.class).instanciateOne(tangibleProduct.getCode(), tangibleProduct.getName(), instances.toArray(new String[]{}));
 			salableProduct.setItemCodeSeparator(null);
 			salableProduct.setProduct(tangibleProduct);
 			salableProduct.setPrice(new BigDecimal((String)values[0]));
@@ -65,7 +68,7 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 			CashRegister cashRegister = new CashRegister(shop, null, null);
 			cashRegisters.add(cashRegister);
 			
-			Employee employee = companyBusinessLayer.getEmployeeBusiness().instanciateOne();
+			Employee employee = inject(EmployeeBusiness.class).instanciateOne();
 			employees.add(employee);
 			
 			Cashier cashier = new Cashier(employee.getPerson(), cashRegister);
@@ -77,7 +80,7 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 		flush(Cashier.class, cashiers);
 		/*
 		Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters = new ArrayList<>();
-		SaleConfiguration saleConfiguration = companyBusinessLayer.getAccountingPeriodBusiness().findCurrent().getSaleConfiguration();
+		SaleConfiguration saleConfiguration = inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration();
 		cashRegisters = cashRegisterDao.readAll();
 		List<SalableProductInstance> salableProductInstances = new ArrayList<>(salableProductInstanceDao.readAll());
 		int i = 0 , size = salableProductInstances.size() / cashRegisters.size();
@@ -100,7 +103,7 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 
 	@Override
 	protected void doBusiness(Listener listener) {
-		/*Collection<Sale> sales = companyBusinessLayer.getSaleBusiness().instanciateMany(new Object[][]{
+		/*Collection<Sale> sales = inject(SaleBusiness.class).instanciateMany(new Object[][]{
 				new Object[]{"sale001",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getRegistration().getCode(),"1/1/2000 05:00","false"
 						,new String[][]{ new String[]{"TP2","2"} }}
 				,new Object[]{"sale002",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getRegistration().getCode(),"1/1/2000 05:15","false"

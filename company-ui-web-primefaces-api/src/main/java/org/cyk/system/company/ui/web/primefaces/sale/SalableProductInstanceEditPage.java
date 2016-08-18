@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.root.business.api.Crud;
@@ -114,7 +114,7 @@ public class SalableProductInstanceEditPage extends AbstractCrudOnePage<SalableP
 		if(Boolean.TRUE.equals(CREATE_ON_SALABLE_PRODUCT))
 			super.create();
 		else{
-			CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().create(identifiable.getCollection(),((Form)form.getData()).codes.getCodeSet() );
+			inject(SalableProductInstanceBusiness.class).create(identifiable.getCollection(),((Form)form.getData()).codes.getCodeSet() );
 		}
 	}
 	

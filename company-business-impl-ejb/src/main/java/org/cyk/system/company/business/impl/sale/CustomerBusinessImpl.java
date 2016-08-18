@@ -86,7 +86,7 @@ public class CustomerBusinessImpl extends AbstractActorBusinessImpl<Customer, Cu
 		
 		@Override
 		public void processOnConsume(Sale sale, Crud crud, Boolean first) {
-			CompanyBusinessLayer.getInstance().getCustomerBusiness().consume(sale,crud,first);
+			inject(CustomerBusiness.class).consume(sale,crud,first);
 		}
 	}
 

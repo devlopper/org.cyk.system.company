@@ -94,7 +94,7 @@ public class ProductBusinessImpl extends AbstractProductBusinessImpl<Product,Pro
 		
 		@Override
 		public void processOnConsume(Sale sale, Crud crud, Boolean first) {
-			CompanyBusinessLayer.getInstance().getProductBusiness().consume(sale,crud,first);
+			inject(ProductBusiness.class).consume(sale,crud,first);
 		}
 	}
  

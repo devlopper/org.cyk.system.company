@@ -11,8 +11,8 @@ public class TypedBusinessServiceAdapter<IDENTIFIABLE extends AbstractIdentifiab
 	private static final long serialVersionUID = 8466321538111354702L;
 
 	/*protected void createCustomer(IDENTIFIABLE identifiable){
-		Customer customer = CompanyBusinessLayer.getInstance().getCustomerBusiness().instanciateOne(actor);
-		CompanyBusinessLayer.getInstance().getCustomerBusiness().create(customer);
+		Customer customer = inject(CustomerBusiness.class).instanciateOne(actor);
+		inject(CustomerBusiness.class).create(customer);
 	}*/
 	
 }

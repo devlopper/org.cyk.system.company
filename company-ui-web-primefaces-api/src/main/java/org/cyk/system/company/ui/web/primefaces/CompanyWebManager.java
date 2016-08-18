@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 
 import lombok.Getter;
 
+import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.stock.StockableTangibleProductDetails;
@@ -114,7 +115,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	public SystemMenu systemMenu(UserSession userSession) {
 		Cashier cashier = null;
 		if(userSession.getUser() instanceof Person){
-			cashier = companyBusinessLayer.getCashierBusiness().findByPerson((Person) userSession.getUser());
+			cashier = inject(CashierBusiness.class).findByPerson((Person) userSession.getUser());
 		}
 		SystemMenu systemMenu = new SystemMenu();
 		addBusinessMenu(userSession,systemMenu,getProductCommandable(userSession,systemMenu.getMobileBusinesses())); 

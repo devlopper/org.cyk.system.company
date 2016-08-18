@@ -10,9 +10,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
@@ -64,7 +64,7 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 	@Override
 	public void create(Class<? extends Product> aClass,String code, String name, BigDecimal price) {
 		Product product = TangibleProduct.class.equals(aClass) ? new TangibleProduct(code, name, null) : new IntangibleProduct(code, name, null);
-		CompanyBusinessLayer.getInstance().getProductBusiness().create(product);
+		inject(ProductBusiness.class).create(product);
 		SalableProduct salableProduct = new SalableProduct(product, price);
 		create(salableProduct);
 	}
@@ -76,7 +76,7 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 
 	@Override
 	protected SalableProductInstanceBusiness getItemBusiness() {
-		return CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness();
+		return inject(SalableProductInstanceBusiness.class);
 	}
 
 	@Override

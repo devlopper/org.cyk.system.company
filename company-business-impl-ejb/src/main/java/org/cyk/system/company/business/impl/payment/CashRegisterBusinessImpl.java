@@ -8,7 +8,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
@@ -28,7 +28,7 @@ public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashR
 	@Override
 	public CashRegister create(CashRegister cashRegister) {
 		if(cashRegister.getOwnedCompany()==null)
-			cashRegister.setOwnedCompany(CompanyBusinessLayer.getInstance().getOwnedCompanyBusiness().findDefaultOwnedCompany());
+			cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaultOwnedCompany());
 		
 		if(cashRegister.getMovementCollection()==null){
 			cashRegister.setMovementCollection((inject(MovementCollectionBusiness.class).instanciateOne(cashRegister.getCode()

@@ -25,7 +25,7 @@ public class CashierConsultPage extends AbstractConsultPage<Cashier> implements 
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
 		super.processIdentifiableContextualCommandable(commandable);
 		
-		FiniteStateMachine finiteStateMachine = CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent()
+		FiniteStateMachine finiteStateMachine = inject(AccountingPeriodBusiness.class).findCurrent()
 				.getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
 		
 		commandable.addChild(Builder.createCreateMany(uiManager.businessEntityInfos(SalableProductInstanceCashRegister.class),null).addParameter(identifiable)

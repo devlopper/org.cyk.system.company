@@ -10,7 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SaleDetails;
 import org.cyk.system.company.model.payment.BalanceType;
@@ -110,7 +111,7 @@ public class SaleListPage extends AbstractBusinessQueryPage<Sale,SaleQueryFormMo
 		SaleSearchCriteria criteria = searchCriteria();
 		criteria.getReadConfig().setFirstResultIndex(queryFirst);
 		criteria.getReadConfig().setMaximumResultCount(20l);
-		SaleResults results = CompanyBusinessLayer.getInstance().getSaleBusiness().computeByCriteria(criteria); 
+		SaleResults results = inject(SaleBusiness.class).computeByCriteria(criteria); 
 		table.getColumn(SaleDetails.FIELD_COST).setFooter(numberBusiness.format(results.getCost().getValue()));
 		if(!BalanceType.ZERO.equals(balanceType)){
 			table.getColumn(SaleDetails.FIELD_BALANCE).setFooter(numberBusiness.format(results.getBalance()));
@@ -120,12 +121,12 @@ public class SaleListPage extends AbstractBusinessQueryPage<Sale,SaleQueryFormMo
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterToDate(),criteria.getToDateSearchCriteria().getPreparedValue().getTime());
 		if(balanceType!=null)
 			table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterBalanceType(),balanceType.name());
-		return CompanyBusinessLayer.getInstance().getSaleBusiness().findByCriteria(criteria);
+		return inject(SaleBusiness.class).findByCriteria(criteria);
 	}
 	
 	@Override
 	protected Long __count__() {
-		return CompanyBusinessLayer.getInstance().getSaleBusiness().countByCriteria(searchCriteria());
+		return inject(SaleBusiness.class).countByCriteria(searchCriteria());
 	}
 
 	protected SaleSearchCriteria searchCriteria(){
@@ -135,7 +136,7 @@ public class SaleListPage extends AbstractBusinessQueryPage<Sale,SaleQueryFormMo
 			criteria.getBalanceTypes().add(balanceType);
 		processSearchCriteria(criteria);
 		if(criteria.getFiniteStateMachineStates().isEmpty())
-			criteria.getFiniteStateMachineStates().add(CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getFiniteStateMachine().getInitialState());
+			criteria.getFiniteStateMachineStates().add(inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration().getFiniteStateMachine().getInitialState());
 		return criteria;
 	}
 	

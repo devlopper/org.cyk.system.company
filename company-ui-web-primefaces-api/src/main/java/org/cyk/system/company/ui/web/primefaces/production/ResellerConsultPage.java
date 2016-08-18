@@ -42,7 +42,7 @@ public class ResellerConsultPage extends AbstractActorConsultPage<Reseller> impl
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Collection<ResellerProduction> getIdentifiables() {
-				return CompanyBusinessLayer.getInstance().getResellerProductionBusiness().findByProduction(identifiable);
+				return inject(ResellerProductionBusiness.class).findByProduction(identifiable);
 			}
 			@Override
 			public ResellerProductionDetails createData(ResellerProduction identifiable) {

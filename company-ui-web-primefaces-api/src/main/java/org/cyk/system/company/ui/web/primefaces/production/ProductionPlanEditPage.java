@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.production.ProductionUnitBusiness;
 import org.cyk.system.company.model.production.ManufacturedProduct;
 import org.cyk.system.company.model.production.ProductionEnergy;
 import org.cyk.system.company.model.production.ProductionPlan;
@@ -28,7 +28,6 @@ import org.cyk.system.root.model.userinterface.InputName;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.api.model.AbstractItemCollectionItem;
-import org.cyk.ui.web.api.ItemCollectionWebAdapter;
 import org.cyk.ui.web.primefaces.ItemCollection;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
@@ -97,7 +96,7 @@ public class ProductionPlanEditPage extends AbstractCrudOnePage<ProductionPlan> 
 	@Override
 	protected ProductionPlan instanciateIdentifiable() {
 		ProductionPlan productionPlan = super.instanciateIdentifiable();
-		productionPlan.setProductionUnit(CompanyBusinessLayer.getInstance().getProductionUnitBusiness().find(requestParameterLong(ProductionUnit.class)));
+		productionPlan.setProductionUnit(inject(ProductionUnitBusiness.class).find(requestParameterLong(ProductionUnit.class)));
 		return productionPlan;
 	}
 				

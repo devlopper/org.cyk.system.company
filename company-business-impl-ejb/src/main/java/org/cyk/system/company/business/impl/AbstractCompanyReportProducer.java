@@ -12,6 +12,7 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovementReport;
 import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.structure.Company;
+import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.root.business.api.time.TimeBusiness;
 import org.cyk.system.root.business.impl.AbstractRootReportProducer;
 import org.slf4j.Logger;
@@ -71,7 +72,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		report.setTitle(languageBusiness.findText("company.report.salecashregistermovement"));
 		report.setIdentifier(saleCashRegisterMovement.getCashRegisterMovement().getComputedIdentifier());
 		
-		Collection<SaleCashRegisterMovement> saleCashRegisterMovements = CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementDao().readBySale(saleCashRegisterMovement.getSale());
+		Collection<SaleCashRegisterMovement> saleCashRegisterMovements = inject(SaleCashRegisterMovementDao.class).readBySale(saleCashRegisterMovement.getSale());
 		SaleCashRegisterMovement lastSaleCashRegisterMovement = null;
 		for(SaleCashRegisterMovement s : saleCashRegisterMovements)
 			if(!s.getIdentifier().equals(saleCashRegisterMovement.getIdentifier()) && s.getCashRegisterMovement().getMovement().getBirthDate().before(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getBirthDate()) ){

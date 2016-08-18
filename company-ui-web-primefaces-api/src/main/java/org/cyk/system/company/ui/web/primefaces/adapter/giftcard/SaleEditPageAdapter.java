@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.SalableProduct;
@@ -20,7 +20,7 @@ public class SaleEditPageAdapter extends SaleEditPage.Listener.Adapter.Default i
 	@Override
 	public Collection<SalableProductInstance> getSalableProductInstances(SalableProduct salableProduct,CashRegister cashRegister) {
 		FiniteStateMachineState finiteStateMachineState = inject(FiniteStateMachineStateBusiness.class).find(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED);
-		return CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().findByCollectionByCashRegisterByFiniteStateMachineState(salableProduct,cashRegister, finiteStateMachineState);
+		return inject(SalableProductInstanceBusiness.class).findByCollectionByCashRegisterByFiniteStateMachineState(salableProduct,cashRegister, finiteStateMachineState);
 	}
 	
 	@Override
@@ -28,7 +28,7 @@ public class SaleEditPageAdapter extends SaleEditPage.Listener.Adapter.Default i
 		if(GiftCardSystemMenuBuilder.ACTION_SELL_GIFT_CARD.equals(sale.getProcessing().getIdentifier())){
 			return super.getCost(sale);
 		}else if(GiftCardSystemMenuBuilder.ACTION_USE_GIFT_CARD.equals(sale.getProcessing().getIdentifier())){
-			SalableProductInstance salableProductInstance = CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness()
+			SalableProductInstance salableProductInstance = inject(SalableProductInstanceBusiness.class)
 					.find(sale.getSaleCashRegisterMovements().iterator().next().getCashRegisterMovement().getMovement().getSupportingDocumentIdentifier());
 			if(salableProductInstance==null)
 				return BigDecimal.ZERO;

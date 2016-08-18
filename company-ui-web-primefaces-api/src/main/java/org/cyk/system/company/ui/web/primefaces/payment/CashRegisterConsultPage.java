@@ -8,7 +8,7 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
@@ -25,7 +25,7 @@ public class CashRegisterConsultPage extends AbstractConsultPage<CashRegister> i
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
 		super.processIdentifiableContextualCommandable(commandable);
 		
-		FiniteStateMachine finiteStateMachine = CompanyBusinessLayer.getInstance().getAccountingPeriodBusiness().findCurrent()
+		FiniteStateMachine finiteStateMachine = inject(AccountingPeriodBusiness.class).findCurrent()
 				.getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
 		
 		commandable.addChild(Builder.createCreateMany(uiManager.businessEntityInfos(SalableProductInstanceCashRegister.class),null).addParameter(identifiable)

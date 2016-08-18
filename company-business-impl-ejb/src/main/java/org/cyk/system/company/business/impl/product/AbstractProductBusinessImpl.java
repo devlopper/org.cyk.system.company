@@ -10,9 +10,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
 import org.cyk.system.company.business.api.product.AbstractProductBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
 import org.cyk.system.company.model.product.Product;
@@ -66,7 +66,7 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
     @Override
     public PRODUCT delete(PRODUCT product){
     	for(AccountingPeriodProduct accountingPeriodProduct : accountingPeriodProductDao.readByEntity(product))
-    		CompanyBusinessLayer.getInstance().getAccountingPeriodProductBusiness().delete(accountingPeriodProduct);
+    		inject(AccountingPeriodProductBusiness.class).delete(accountingPeriodProduct);
     	return super.delete(product); 
     }
         

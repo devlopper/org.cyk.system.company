@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
@@ -69,8 +71,7 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 			//addChild(userSession,module,createListCommandable(FiniteStateMachineStateLog.class, null));
 		}
 		
-		FiniteStateMachine finiteStateMachine = CompanyBusinessLayer
-				.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
+		FiniteStateMachine finiteStateMachine = inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
 		for(FiniteStateMachineAlphabet finiteStateMachineAlphabet : inject(FiniteStateMachineAlphabetBusiness.class).findByMachine(finiteStateMachine))
 			if(ArrayUtils.contains(new String[]{CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE}
 				, finiteStateMachineAlphabet.getCode()))
@@ -86,7 +87,7 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 	public Commandable getSaleCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = null;
 		module = createModuleCommandable(Sale.class, null);
-		if(Boolean.TRUE.equals(userSession.getIsAdministrator()) || CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson((Person) userSession.getUser())!=null){
+		if(Boolean.TRUE.equals(userSession.getIsAdministrator()) || inject(CashierBusiness.class).findByPerson((Person) userSession.getUser())!=null){
 			//addChild(userSession,module,createListCommandable(Sale.class, null));
 			//addChild(userSession,module,createSelectOneCommandable(SaleProductInstance.class, "retour", null));
 			addChild(userSession,module,(Commandable) createCreateCommandable(Sale.class, null).setLabel(getText("action.sellgiftcard")).addActionParameter(ACTION_SELL_GIFT_CARD));
@@ -104,8 +105,7 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 		Commandable module = null;
 		module = createModuleCommandable("command.report", null);
 		if(userSession.hasRole(Role.MANAGER)){
-			FiniteStateMachine finiteStateMachine = CompanyBusinessLayer
-					.getInstance().getAccountingPeriodBusiness().findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
+			FiniteStateMachine finiteStateMachine = inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
 			for(FiniteStateMachineState finiteStateMachineState : inject(FiniteStateMachineStateBusiness.class).findByMachine(finiteStateMachine))
 				addChild(userSession,module,(Commandable) Builder.create(null, null, CompanyWebManager.getInstance()
 						.getOutcomeSalableProductInstanceCashRegisterStateLogList()).addParameter(finiteStateMachineState).setLabel(finiteStateMachineState.getName()));

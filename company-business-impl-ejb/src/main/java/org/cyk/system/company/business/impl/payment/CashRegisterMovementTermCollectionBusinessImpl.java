@@ -32,7 +32,7 @@ public class CashRegisterMovementTermCollectionBusinessImpl extends AbstractColl
 	}
 	@Override
 	protected CashRegisterMovementTermBusiness getItemBusiness() { 
-		return CompanyBusinessLayer.getInstance().getCashRegisterMovementTermBusiness();
+		return inject(CashRegisterMovementTermBusiness.class);
 	}
 	
 	

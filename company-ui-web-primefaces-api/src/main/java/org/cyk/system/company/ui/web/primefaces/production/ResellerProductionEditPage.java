@@ -11,7 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.production.ProductionBusiness;
+import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
@@ -37,7 +38,7 @@ public class ResellerProductionEditPage extends AbstractCrudOnePage<ResellerProd
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
-		setChoices(Form.RESELLER_PRODUCTION_PLAN, CompanyBusinessLayer.getInstance().getResellerProductionPlanBusiness().findByProductionPlan(identifiable.getProduction().getTemplate()));
+		setChoices(Form.RESELLER_PRODUCTION_PLAN, inject(ResellerProductionPlanBusiness.class).findByProductionPlan(identifiable.getProduction().getTemplate()));
 	}
 	
 	@Override
@@ -48,7 +49,7 @@ public class ResellerProductionEditPage extends AbstractCrudOnePage<ResellerProd
 	@Override
 	protected ResellerProduction instanciateIdentifiable() {
 		ResellerProduction instance = super.instanciateIdentifiable();
-		instance.setProduction(CompanyBusinessLayer.getInstance().getProductionBusiness().find(requestParameterLong(Production.class)));
+		instance.setProduction(inject(ProductionBusiness.class).find(requestParameterLong(Production.class)));
 		return instance;
 	}
 	

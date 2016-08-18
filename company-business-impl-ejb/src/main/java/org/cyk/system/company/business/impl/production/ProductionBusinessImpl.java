@@ -10,7 +10,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.production.ProductionBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanMetric;
@@ -41,7 +41,7 @@ public class ProductionBusinessImpl extends AbstractSpreadSheetBusinessImpl<Prod
 	public Production instanciateOne(ProductionPlan productionPlan) {
 		Production production = new Production();
 		production.setTemplate(productionPlan);
-		CompanyBusinessLayer.getInstance().getProductionPlanBusiness().load(productionPlan);
+		inject(ProductionPlanBusiness.class).load(productionPlan);
 		for(ProductionPlanMetric metric : productionPlan.getColumns())
 			production.getColumns().add(metric);
 		for(ProductionPlanResource resource : productionPlan.getRows()){

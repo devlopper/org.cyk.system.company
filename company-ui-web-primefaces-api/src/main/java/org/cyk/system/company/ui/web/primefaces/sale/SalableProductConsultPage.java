@@ -9,7 +9,7 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceDetails;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
@@ -32,7 +32,7 @@ public class SalableProductConsultPage extends AbstractConsultPage<SalableProduc
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Collection<SalableProductInstance> getIdentifiables() {
-				return CompanyBusinessLayer.getInstance().getSalableProductInstanceBusiness().findByCollection(identifiable);
+				return inject(SalableProductInstanceBusiness.class).findByCollection(identifiable);
 			}
 			@Override
 			public Crud[] getCruds() {

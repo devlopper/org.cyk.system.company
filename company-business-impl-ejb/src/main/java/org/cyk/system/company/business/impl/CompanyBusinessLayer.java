@@ -4,54 +4,15 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
-import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
-import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
-import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
-import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.payment.CashRegisterMovementModeBusiness;
-import org.cyk.system.company.business.api.payment.CashRegisterMovementTermBusiness;
-import org.cyk.system.company.business.api.payment.CashRegisterMovementTermCollectionBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
-import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
-import org.cyk.system.company.business.api.product.ProductBusiness;
-import org.cyk.system.company.business.api.product.ProductCategoryBusiness;
-import org.cyk.system.company.business.api.product.ProductCollectionBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
-import org.cyk.system.company.business.api.production.ProductionBusiness;
-import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
-import org.cyk.system.company.business.api.production.ProductionPlanResourceBusiness;
-import org.cyk.system.company.business.api.production.ProductionSpreadSheetCellBusiness;
-import org.cyk.system.company.business.api.production.ProductionUnitBusiness;
-import org.cyk.system.company.business.api.production.ResellerBusiness;
-import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
-import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
-import org.cyk.system.company.business.api.sale.CustomerBusiness;
-import org.cyk.system.company.business.api.sale.CustomerSalableProductBusiness;
-import org.cyk.system.company.business.api.sale.SalableProductBusiness;
-import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
-import org.cyk.system.company.business.api.sale.SalableProductInstanceCashRegisterBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleProductBusiness;
-import org.cyk.system.company.business.api.sale.SaleProductInstanceBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
-import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
-import org.cyk.system.company.business.api.stock.StockableTangibleProductBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
-import org.cyk.system.company.business.api.structure.DivisionBusiness;
-import org.cyk.system.company.business.api.structure.DivisionTypeBusiness;
-import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.accounting.AccountingPeriodBusinessImpl;
 import org.cyk.system.company.business.impl.accounting.AccountingPeriodProductBusinessImpl;
@@ -61,54 +22,23 @@ import org.cyk.system.company.business.impl.stock.StockTangibleProductMovementBu
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
-import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
-import org.cyk.system.company.model.payment.CashRegisterMovementTerm;
-import org.cyk.system.company.model.payment.CashRegisterMovementTermCollection;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
-import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.ProductCategory;
-import org.cyk.system.company.model.product.ProductCollection;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.production.ProductionPlan;
-import org.cyk.system.company.model.production.ProductionPlanResource;
-import org.cyk.system.company.model.production.ProductionUnit;
-import org.cyk.system.company.model.production.ProductionValue;
-import org.cyk.system.company.model.production.Reseller;
-import org.cyk.system.company.model.production.ResellerProduction;
-import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.sale.Customer;
-import org.cyk.system.company.model.sale.CustomerSalableProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
-import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
-import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Company;
-import org.cyk.system.company.model.structure.Division;
 import org.cyk.system.company.model.structure.DivisionType;
-import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.OwnedCompany;
-import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
-import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashRegisterDao;
-import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
-import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
-import org.cyk.system.company.persistence.api.sale.SaleProductDao;
-import org.cyk.system.company.persistence.api.sale.SaleProductInstanceDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
-import org.cyk.system.root.business.api.FormatterBusiness;
-import org.cyk.system.root.business.api.TypedBusiness;
-import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
-import org.cyk.system.root.business.api.security.UserAccountBusiness;
 import org.cyk.system.root.business.api.time.TimeBusiness;
 import org.cyk.system.root.business.impl.AbstractBusinessLayer;
 import org.cyk.system.root.business.impl.AbstractFormatter;
@@ -118,7 +48,6 @@ import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
-import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.report.ReportTemplate;
 import org.cyk.system.root.model.geography.ContactCollection;
@@ -126,11 +55,11 @@ import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.party.person.Person;
+import org.cyk.system.root.model.security.BusinessServiceCollection;
 import org.cyk.system.root.model.security.Installation;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
-import org.cyk.system.root.persistence.api.security.RoleDao;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.cyk.utility.common.computation.DataReadConfiguration;
@@ -163,73 +92,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	public static final Integer STRUCTURE_COMPANY = 2000;
 	public static final Integer FILE_COMPANY_LOGO = 3000;
 	public static final Integer ACCOUNTING_PERIOD = 4000;
-	
-	private DivisionType departmentDivisiontype;
-	
-	@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
-	@Inject private CustomerBusiness customerBusiness;
-	@Inject private CashRegisterBusiness cashRegisterBusiness;
-	
-	@Inject private CashRegisterMovementModeBusiness cashRegisterMovementModeBusiness;
-	@Inject private CashierBusiness cashierBusiness;
-	@Inject private CustomerSalableProductBusiness customerSalableProductBusiness;
-	@Inject private EmployeeBusiness employeeBusiness;
-	@Inject private ProductBusiness productBusiness;
-	@Inject private ProductCollectionBusiness productCollectionBusiness;
-	@Inject private TangibleProductBusiness tangibleProductBusiness;
-	@Inject private IntangibleProductBusiness intangibleProductBusiness;
-	@Inject private SaleBusiness saleBusiness;
-	@Inject private SalableProductBusiness salableProductBusiness;
-	@Inject private SalableProductInstanceCashRegisterBusiness salableProductInstanceCashRegisterBusiness;
-	@Inject private SalableProductInstanceCashRegisterDao salableProductInstanceCashRegisterDao;
-	@Inject private SalableProductInstanceBusiness salableProductInstanceBusiness;
-	
-	@Inject private CashRegisterMovementTermCollectionBusiness cashRegisterMovementTermCollectionBusiness;
-	@Inject private CashRegisterMovementTermBusiness cashRegisterMovementTermBusiness;
-	
-	@Inject private SaleProductDao saleProductDao;
-	@Inject private SaleProductBusiness saleProductBusiness;
-	@Inject private SaleProductInstanceBusiness saleProductInstanceBusiness;
-	@Inject private SaleProductInstanceDao saleProductInstanceDao;
-	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
-	@Inject private SaleStockTangibleProductMovementBusiness saleStockTangibleProductMovementBusiness;
-	@Inject private CompanyBusiness companyBusiness;
-	@Inject private OwnedCompanyBusiness ownedCompanyBusiness;
-	@Inject private FileBusiness fileBusiness;
-	@Inject private DivisionTypeBusiness divisionTypeBusiness;
-	@Inject private DivisionBusiness divisionBusiness;
-	@Inject private TangibleProductInventoryBusiness tangibleProductInventoryBusiness;
-	@Inject private StockTangibleProductMovementBusiness stockTangibleProductMovementBusiness;
-	@Inject private StockableTangibleProductBusiness stockableTangibleProductBusiness;
-	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
-	@Inject private AccountingPeriodDao accountingPeriodDao;
-	@Inject private ProductionBusiness productionBusiness;
-	@Inject private ProductionUnitBusiness productionUnitBusiness;
-	@Inject private ProductionSpreadSheetCellBusiness productionInputBusiness;
-	@Inject private ProductionPlanBusiness productionPlanBusiness;
-	@Inject private ProductionPlanResourceBusiness productionPlanResourceBusiness;
-	@Inject private ResellerBusiness resellerBusiness;
-	@Inject private CashRegisterMovementBusiness cashRegisterMovementBusiness;
-	
-	@Inject private ResellerProductionPlanBusiness resellerProductionPlanBusiness;
-	@Inject private ResellerProductionBusiness resellerProductionBusiness;
-	//@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
-	//@Inject private AccountingPeriodProductCategoryBusiness accountingPeriodProductCategoryBusiness;
-	@Inject private SaleCashRegisterMovementDao saleCashRegisterMovementDao;
-	@Inject private UserAccountBusiness userAccountBusiness;
-	@Inject private RoleDao roleDao;
-	@Inject private PersonDao personDao;
-	@Inject private SalableProductDao salableProductDao;
-	@Inject private SalableProductInstanceDao salableProductInstanceDao;
-	@Inject private StockableTangibleProductDao stockableTangibleProductDao;
-	@Inject private FiniteStateMachineStateDao finiteStateMachineStateDao;
-	@Inject private ProductCategoryBusiness productCategoryBusiness;
-	@Inject private StringGeneratorBusiness stringGeneratorBusiness;
-	@Setter private CompanyReportProducer companyReportProducer = new DefaultSaleReportProducer();
-	//private Role roleSaleManager,roleStockManager,roleHumanResourcesManager,customerManager,productionManager;
-	
-	@Inject private CompanyReportRepository companyReportRepository;
-	@Inject private FormatterBusiness formatterBusiness;
 	
 	private static final Collection<CompanyBusinessLayerListener> COMPANY_BUSINESS_LAYER_LISTENERS = new ArrayList<>();
 	
@@ -268,13 +130,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			@Override
 			public void installationEnded(Installation installation) {
 				super.installationEnded(installation);
-				OwnedCompany ownedCompany = ownedCompanyBusiness.findDefaultOwnedCompany();
-				Collection<Person> persons = personDao.select().all();
+				OwnedCompany ownedCompany = inject(OwnedCompanyBusiness.class).findDefaultOwnedCompany();
+				Collection<Person> persons = inject(PersonDao.class).select().all();
 				ownedCompany.getCompany().setManager(persons.isEmpty() ? null : persons.iterator().next());
-				companyBusiness.update(ownedCompany.getCompany());
+				inject(CompanyBusiness.class).update(ownedCompany.getCompany());
 				if(Boolean.TRUE.equals(AUTO_CREATE_CASHIER)){
 					CashRegister cashRegister = create(new CashRegister("CashRegister01",ownedCompany,createMovementCollection("CashRegisterMovementCollection01", "Entrée", "Sortie")));
-					cashierBusiness.create(new Cashier(ownedCompany.getCompany().getManager(),cashRegister));
+					inject(CashierBusiness.class).create(new Cashier(ownedCompany.getCompany().getManager(),cashRegister));
 				}
 			}
 		});
@@ -298,7 +160,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 	@Override
 	protected AbstractReportRepository getReportRepository() {
-		return companyReportRepository;
+		return inject(CompanyReportRepository.class);
 	}
 	
 	@Override
@@ -356,13 +218,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
 			listener.handleCompanyToInstall(company);
-		installObject(STRUCTURE_COMPANY,companyBusiness,company);
+		installObject(STRUCTURE_COMPANY,inject(CompanyBusiness.class),company);
 		
 		OwnedCompany ownedCompany = new OwnedCompany();
 		ownedCompany.setCompany(company);
 		ownedCompany.setSelected(Boolean.TRUE);
 		//ownedCompanyBusiness.create(ownedCompany);
-		installObject(-1,ownedCompanyBusiness,ownedCompany);
+		installObject(-1,inject(OwnedCompanyBusiness.class),ownedCompany);
 		
 		FiniteStateMachine finiteStateMachine = rootDataProducerHelper.createFiniteStateMachine("SALE_FINITE_MACHINE_STATE"
     			, new String[]{"SALE_FINITE_MACHINE_ALPHABET_VALID"}
@@ -404,17 +266,14 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(stringGenerator("PAIE","0", 8l, null, null,8l));
 		accountingPeriod.getSaleConfiguration().setFiniteStateMachine(finiteStateMachine);
 		accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterFiniteStateMachine(salableProductInstanceCashRegisterFiniteStateMachine);
-		accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterSaleConsumeState(finiteStateMachineStateDao.read(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD));
+		accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterSaleConsumeState(inject(FiniteStateMachineStateDao.class).read(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD));
 		
-		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getIdentifierGenerator());
-		stringGeneratorBusiness.create(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());
+		inject(StringGeneratorBusiness.class).create(accountingPeriod.getSaleConfiguration().getIdentifierGenerator());
+		inject(StringGeneratorBusiness.class).create(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());
 		//accountingPeriodBusiness.create(accountingPeriod);
 		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
 			listener.handleAccountingPeriodToInstall(accountingPeriod);
-		installObject(ACCOUNTING_PERIOD,accountingPeriodBusiness,accountingPeriod);
-		
-		
-		
+		installObject(ACCOUNTING_PERIOD,inject(AccountingPeriodBusiness.class),accountingPeriod);
 		
 		//intangibleProductBusiness.create(new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null, null));
 		//installObject(PRODUCT_INTANGIBLE_SALE_STOCK,intangibleProductBusiness,new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null));
@@ -423,59 +282,22 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		//installObject(PRODUCT_TANGIBLE_SALE_STOCK,tangibleProductBusiness,new TangibleProduct(TangibleProduct.SALE_STOCK, "Marchandise", null, null));
 	}
 	
-	private void security(){ }
+	private void security(){ 
+		for(String code : new String[]{CompanyConstant.BUSINESS_SERVICE_COLLECTION_ACCOUNTING,CompanyConstant.BUSINESS_SERVICE_COLLECTION_COMPANY
+				,CompanyConstant.BUSINESS_SERVICE_COLLECTION_PAYMENT,CompanyConstant.BUSINESS_SERVICE_COLLECTION_PRODUCT,CompanyConstant.BUSINESS_SERVICE_COLLECTION_PRODUCTION
+				,CompanyConstant.BUSINESS_SERVICE_COLLECTION_SALE,CompanyConstant.BUSINESS_SERVICE_COLLECTION_STOCK})
+        	createEnumeration(BusinessServiceCollection.class,code);
+	}
 		
 	private void structure(){
 		DivisionType department = new DivisionType(null, DivisionType.DEPARTMENT, "Department");
         create(department);
     }
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-    @Override
-    public void registerTypedBusinessBean(Map<Class<AbstractIdentifiable>, TypedBusiness<AbstractIdentifiable>> beansMap) {
-        beansMap.put((Class)Employee.class, (TypedBusiness)employeeBusiness);
-        beansMap.put((Class)Customer.class, (TypedBusiness)customerBusiness);
-        beansMap.put((Class)Reseller.class, (TypedBusiness)resellerBusiness);
-        beansMap.put((Class)ResellerProduction.class, (TypedBusiness)resellerProductionBusiness);
-        beansMap.put((Class)ResellerProductionPlan.class, (TypedBusiness)resellerProductionPlanBusiness);
-        beansMap.put((Class)TangibleProduct.class, (TypedBusiness)tangibleProductBusiness);
-        beansMap.put((Class)IntangibleProduct.class, (TypedBusiness)intangibleProductBusiness);
-        beansMap.put((Class)Product.class, (TypedBusiness)productBusiness);
-        beansMap.put((Class)DivisionType.class, (TypedBusiness)divisionTypeBusiness);
-        beansMap.put((Class)Division.class, (TypedBusiness)divisionBusiness);
-        beansMap.put((Class)ProductCollection.class, (TypedBusiness)productCollectionBusiness);
-        beansMap.put((Class)SalableProduct.class, (TypedBusiness)salableProductBusiness);
-        beansMap.put((Class)SalableProductInstance.class, (TypedBusiness)salableProductInstanceBusiness);
-        beansMap.put((Class)Sale.class, (TypedBusiness)saleBusiness);
-        beansMap.put((Class)SaleCashRegisterMovement.class, (TypedBusiness)saleCashRegisterMovementBusiness);
-        beansMap.put((Class)SaleStockTangibleProductMovement.class, (TypedBusiness)saleStockTangibleProductMovementBusiness);
-        beansMap.put((Class)TangibleProductInventory.class, (TypedBusiness)tangibleProductInventoryBusiness); 
-        beansMap.put((Class)StockableTangibleProduct.class, (TypedBusiness)stockableTangibleProductBusiness);
-        beansMap.put((Class)StockTangibleProductMovement.class, (TypedBusiness)stockTangibleProductMovementBusiness);
-        beansMap.put((Class)ProductCategory.class, (TypedBusiness)productCategoryBusiness);
-        beansMap.put((Class)OwnedCompany.class, (TypedBusiness)ownedCompanyBusiness);
-        beansMap.put((Class)Company.class, (TypedBusiness)companyBusiness);
-        beansMap.put((Class)Production.class, (TypedBusiness)productionBusiness);
-        beansMap.put((Class)ProductionUnit.class, (TypedBusiness)productionUnitBusiness);
-        beansMap.put((Class)ProductionValue.class, (TypedBusiness)productionInputBusiness);
-        beansMap.put((Class)ProductionPlan.class, (TypedBusiness)productionPlanBusiness);
-        beansMap.put((Class)ProductionPlanResource.class, (TypedBusiness)productionPlanResourceBusiness);
-        beansMap.put((Class)CashRegister.class, (TypedBusiness)cashRegisterBusiness);
-        beansMap.put((Class)CashRegisterMovement.class, (TypedBusiness)cashRegisterMovementBusiness);
-        beansMap.put((Class)CashRegisterMovementMode.class, (TypedBusiness)cashRegisterMovementModeBusiness);
-        beansMap.put((Class)SalableProductInstanceCashRegister.class, (TypedBusiness)salableProductInstanceCashRegisterBusiness);
-        beansMap.put((Class)CustomerSalableProduct.class, (TypedBusiness)customerSalableProductBusiness);
-        
-        beansMap.put((Class)CashRegisterMovementTerm.class, (TypedBusiness)cashRegisterMovementTermBusiness);
-        beansMap.put((Class)CashRegisterMovementTermCollection.class, (TypedBusiness)cashRegisterMovementTermCollectionBusiness);
-    }
-	
 	/**/
 	
 	@Override
-	protected void setConstants(){
-    	departmentDivisiontype = divisionTypeBusiness.find(DivisionType.DEPARTMENT);
-    }
+	protected void setConstants(){}
 	
 	public IntangibleProduct getIntangibleProductStocking(){
 		return getEnumeration(IntangibleProduct.class,IntangibleProduct.STOCKING);
@@ -484,10 +306,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		return getEnumeration(TangibleProduct.class,TangibleProduct.STOCKING);
 	}
 	public SalableProduct getSalableProductStocking(){
-		return salableProductDao.readByProduct(getIntangibleProductStocking());
+		return inject(SalableProductDao.class).readByProduct(getIntangibleProductStocking());
 	}
 	public StockableTangibleProduct getStockableTangibleProductStocking(){
-		return stockableTangibleProductDao.readByTangibleProduct(getTangibleProductStocking());
+		return inject(StockableTangibleProductDao.class).readByTangibleProduct(getTangibleProductStocking());
 	}
 
 	public static CompanyBusinessLayer getInstance() {

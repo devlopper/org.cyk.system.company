@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.Collection;
 
-import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -14,10 +13,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.cyk.system.company.business.api.payment.CashierBusiness;
+import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.sale.SaleProductBusiness;
+import org.cyk.system.company.business.api.sale.SaleProductInstanceBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SaleCashRegisterMovementDetails;
-import org.cyk.system.company.business.impl.sale.SaleDetails;
 import org.cyk.system.company.business.impl.sale.SaleProductDetails;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.sale.Sale;
@@ -32,17 +34,10 @@ import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
-import org.cyk.ui.api.data.collector.form.ControlSet;
 import org.cyk.ui.api.model.table.Column;
 import org.cyk.ui.api.model.table.ColumnAdapter;
 import org.cyk.ui.web.primefaces.Table;
-import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
-import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
-import org.primefaces.extensions.model.dynaform.DynaFormControl;
-import org.primefaces.extensions.model.dynaform.DynaFormLabel;
-import org.primefaces.extensions.model.dynaform.DynaFormModel;
-import org.primefaces.extensions.model.dynaform.DynaFormRow;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serializable {
@@ -80,7 +75,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 				private static final long serialVersionUID = 1L;
 				@Override
 				public Collection<SaleProduct> getIdentifiables() {
-					Collection<SaleProduct> saleProducts = CompanyBusinessLayer.getInstance().getSaleProductBusiness().findBySale(identifiable);
+					Collection<SaleProduct> saleProducts = inject(SaleProductBusiness.class).findBySale(identifiable);
 					return saleProducts;
 				}
 				
@@ -88,7 +83,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 				public Collection<SaleProductDetails> getDatas() {
 					Collection<SaleProductDetails> details = super.getDatas();
 					for(SaleProductDetails saleProductDetails :details){
-						Collection<SaleProductInstance> saleProductInstances = CompanyBusinessLayer.getInstance().getSaleProductInstanceBusiness().findBySaleProduct(saleProductDetails.getMaster());
+						Collection<SaleProductInstance> saleProductInstances = inject(SaleProductInstanceBusiness.class).findBySaleProduct(saleProductDetails.getMaster());
 						saleProductDetails.setInstances(saleProductInstances.toString());
 					}
 					return details;
@@ -104,7 +99,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Collection<SaleCashRegisterMovement> getIdentifiables() {
-				return CompanyBusinessLayer.getInstance().getSaleCashRegisterMovementBusiness().findBySale(identifiable);
+				return inject(SaleCashRegisterMovementBusiness.class).findBySale(identifiable);
 			}
 			@Override
 			public Crud[] getCruds() {
@@ -141,7 +136,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		super.processIdentifiableContextualCommandable(commandable);
 		Cashier cashier = null;
 		if(userSession.getUser() instanceof Person){
-			cashier = CompanyBusinessLayer.getInstance().getCashierBusiness().findByPerson((Person)userSession.getUser());
+			cashier = inject(CashierBusiness.class).findByPerson((Person)userSession.getUser());
 			
 			UICommandable c;
 			Integer balance = identifiable.getBalance().getValue().compareTo(BigDecimal.ZERO);
