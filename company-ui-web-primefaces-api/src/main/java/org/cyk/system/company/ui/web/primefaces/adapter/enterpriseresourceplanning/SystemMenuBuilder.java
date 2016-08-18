@@ -13,7 +13,7 @@ import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.root.business.api.security.BusinessServiceBusiness;
+import org.cyk.system.root.business.api.security.BusinessServiceCollectionBusiness;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.web.primefaces.Commandable;
@@ -35,7 +35,7 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 	
 	public Commandable getProductCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = createModuleCommandable(Product.class, null);
-		module.setLabel(inject(BusinessServiceBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_PRODUCT).getName());
+		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_PRODUCT).getName());
 		module.addChild(createListCommandable(TangibleProduct.class, null));
 		module.addChild(createListCommandable(IntangibleProduct.class, null));
 		/*module.addChild(createListCommandable(ProductCategory.class, null));
@@ -48,7 +48,7 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 	
 	public Commandable getPaymentCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = createModuleCommandable("payment", null);
-		module.setLabel(inject(BusinessServiceBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_PAYMENT).getName());
+		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_PAYMENT).getName());
 		module.addChild(createListCommandable(CashRegister.class, null));
 		module.addChild(createListCommandable(Cashier.class, null));
 		module.addChild(createListCommandable(CashRegisterMovementMode.class, null));
