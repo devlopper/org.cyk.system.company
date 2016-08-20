@@ -11,6 +11,8 @@ import org.cyk.system.company.business.impl.payment.CashRegisterMovementTermDeta
 import org.cyk.system.company.business.impl.payment.CashierDetails;
 import org.cyk.system.company.business.impl.product.IntangibleProductDetails;
 import org.cyk.system.company.business.impl.product.TangibleProductDetails;
+import org.cyk.system.company.business.impl.sale.CustomerSalableProductDetails;
+import org.cyk.system.company.business.impl.sale.SalableProductDetails;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
@@ -19,6 +21,8 @@ import org.cyk.system.company.model.payment.CashRegisterMovementTermCollection;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.sale.CustomerSalableProduct;
+import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterEditPage;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementEditPage;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementModeEditPage;
@@ -27,6 +31,8 @@ import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementTerm
 import org.cyk.system.company.ui.web.primefaces.payment.CashierEditPage;
 import org.cyk.system.company.ui.web.primefaces.product.IntangibleProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.product.TangibleProductEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.CustomerSalableProductEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.web.primefaces.UserSession;
@@ -183,5 +189,43 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 				};
 			}
 		});
+	}
+	
+	protected void configureSaleModule() {
+		getFormConfiguration(SalableProduct.class, Crud.CREATE).addRequiredFieldNames(SalableProductEditPage.Form.FIELD_CODE
+				,SalableProductEditPage.Form.FIELD_NAME);
+		registerDetailsConfiguration(SalableProductDetails.class, new DetailsConfiguration(){
+			private static final long serialVersionUID = 1L;
+			@SuppressWarnings("rawtypes")
+			@Override
+			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
+					private static final long serialVersionUID = 1L;
+					@Override
+					public Boolean build(Field field) {
+						return isFieldNameIn(field,SalableProductDetails.FIELD_CODE,SalableProductDetails.FIELD_NAME);
+					}
+				};
+			}
+		});
+		
+		getFormConfiguration(CustomerSalableProduct.class, Crud.CREATE).addRequiredFieldNames(CustomerSalableProductEditPage.Form.FIELD_CUSTOMER
+				,CustomerSalableProductEditPage.Form.FIELD_SALABLE_PRODUCT,CustomerSalableProductEditPage.Form.FIELD_PRICE);
+		registerDetailsConfiguration(CustomerSalableProductDetails.class, new DetailsConfiguration(){
+			private static final long serialVersionUID = 1L;
+			@SuppressWarnings("rawtypes")
+			@Override
+			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
+					private static final long serialVersionUID = 1L;
+					@Override
+					public Boolean build(Field field) {
+						return isFieldNameIn(field,CustomerSalableProductDetails.FIELD_CUSTOMER,CustomerSalableProductDetails.FIELD_SALABLE_PRODUCT
+								,CustomerSalableProductDetails.FIELD_PRICE);
+					}
+				};
+			}
+		});
+		
 	}
 }

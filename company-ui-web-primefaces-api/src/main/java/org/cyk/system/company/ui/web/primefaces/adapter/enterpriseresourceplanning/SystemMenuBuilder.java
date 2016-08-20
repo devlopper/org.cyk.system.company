@@ -13,6 +13,10 @@ import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.sale.Customer;
+import org.cyk.system.company.model.sale.CustomerSalableProduct;
+import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.business.api.security.BusinessServiceCollectionBusiness;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.menu.SystemMenu;
@@ -30,6 +34,7 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 		SystemMenu systemMenu = super.build(userSession);
 		addBusinessMenu(userSession,systemMenu,getProductCommandable(userSession, null));
 		addBusinessMenu(userSession,systemMenu,getPaymentCommandable(userSession, null));
+		addBusinessMenu(userSession,systemMenu,getSaleCommandable(userSession, null));
 		return systemMenu;
 	}
 	
@@ -55,6 +60,17 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 		module.addChild(createListCommandable(CashRegisterMovement.class, null));
 		module.addChild(createListCommandable(CashRegisterMovementTermCollection.class, null));
 		module.addChild(createListCommandable(CashRegisterMovementTerm.class, null));
+		return module;
+	}
+	
+	public Commandable getSaleCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
+		Commandable module = createModuleCommandable(Sale.class, null);
+		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_SALE).getName());
+		module.addChild(createListCommandable(SalableProduct.class, null));
+		//module.addChild(createListCommandable(SalableProductInstance.class, null));
+		
+		module.addChild(createListCommandable(Customer.class, null));
+		module.addChild(createListCommandable(CustomerSalableProduct.class, null));
 		return module;
 	}
 	

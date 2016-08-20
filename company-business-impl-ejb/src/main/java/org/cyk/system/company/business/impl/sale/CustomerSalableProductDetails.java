@@ -26,5 +26,8 @@ public class CustomerSalableProductDetails extends AbstractOutputDetails<Custome
 	
 	/**/
 	
+	public static final String FIELD_CUSTOMER = "customer";
+	public static final String FIELD_SALABLE_PRODUCT = "salableProduct";
+	public static final String FIELD_PRICE = "price";
 	
 }
