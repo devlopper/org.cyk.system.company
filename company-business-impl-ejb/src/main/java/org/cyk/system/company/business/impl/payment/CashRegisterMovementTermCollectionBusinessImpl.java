@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.payment.CashRegisterMovementTermBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementTermCollectionBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegisterMovementTerm;
 import org.cyk.system.company.model.payment.CashRegisterMovementTermCollection;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementTermCollectionDao;

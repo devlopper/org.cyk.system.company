@@ -13,11 +13,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.accounting.AbstractAccountingPeriodResultsBusiness;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
@@ -40,7 +35,6 @@ import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.chart.AbstractChartModel.LegendPosition;
 import org.cyk.system.root.business.api.chart.CartesianModel;
 import org.cyk.system.root.business.api.chart.PieModel;
@@ -57,6 +51,11 @@ import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.PieChartModel;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleDashBoardPage extends AbstractDashboardPage implements Serializable {
@@ -103,7 +102,9 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 		
 		contentTitle = text("sale")+" - "+text("dashboard")+" - "+timeBusiness.formatDate(exerciceBegin,exerciceEnd);
 		
-		SaleResults salesResults = null;
+		@SuppressWarnings("unused")
+		SaleResults salesResults = new SaleResults();
+		
 		saleSearchCriteria = new SaleSearchCriteria(exerciceBegin,exerciceEnd);
 		
 		credence = numberBusiness.format(saleBusiness.computeByCriteria(new SaleSearchCriteria(exerciceBegin,exerciceEnd,BalanceType.POSITIVE)).getBalance());
@@ -141,11 +142,13 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 			//salesResultsDetails = (FormOneData<SalesResultsDetails>) createFormOneData(new SaleResultsDetails(salesResults), Crud.READ);
 			configureDetailsForm(salesResultsDetails);
 			salesResultsDetails.getControlSetListeners().add(new ControlSetAdapter<SalesResultsDetails>(){
+				private static final long serialVersionUID = 1L;
+
 				@Override
-				public Boolean build(Field field) {
+				public Boolean build(Object data,Field field) {
 					if(field.getName().equals("sales") || field.getName().equals("valueAddedTaxes"))
 						return taxesCollected;
-					return super.build(field);
+					return super.build(data,field);
 				}
 			}); 
 		}

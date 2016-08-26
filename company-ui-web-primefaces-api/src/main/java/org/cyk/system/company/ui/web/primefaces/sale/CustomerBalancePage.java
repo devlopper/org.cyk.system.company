@@ -58,6 +58,8 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 			@Override
 			public ColumnAdapter getColumnAdapter() {
 				return new ColumnAdapter(){
+					private static final long serialVersionUID = 1L;
+
 					@Override
 					public Boolean isColumn(Field field) {
 						return all?CustomerReportTableRow.balanceFieldIgnored(field):CustomerReportTableRow.credenceFieldIgnored(field);

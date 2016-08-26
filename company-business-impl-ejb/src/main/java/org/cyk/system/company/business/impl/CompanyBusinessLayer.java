@@ -34,6 +34,7 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.DivisionType;
+import org.cyk.system.company.model.structure.EmploymentAgreementType;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
@@ -280,6 +281,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 		//tangibleProductBusiness.create(new TangibleProduct(TangibleProduct.SALE_STOCK, "Marchandise", null, null, null));
 		//installObject(PRODUCT_TANGIBLE_SALE_STOCK,tangibleProductBusiness,new TangibleProduct(TangibleProduct.SALE_STOCK, "Marchandise", null, null));
+		
+		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDD);
+		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDI);
 	}
 	
 	private void security(){ 

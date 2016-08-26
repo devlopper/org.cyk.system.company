@@ -2,17 +2,16 @@ package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.cyk.utility.common.annotation.user.interfaces.ReportColumn;
 import org.cyk.utility.common.annotation.user.interfaces.style.Alignment;
 import org.cyk.utility.common.annotation.user.interfaces.style.Alignment.Horizontal;
 import org.cyk.utility.common.annotation.user.interfaces.style.Style;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter
 public class StockDashBoardReportTableDetails implements Serializable {

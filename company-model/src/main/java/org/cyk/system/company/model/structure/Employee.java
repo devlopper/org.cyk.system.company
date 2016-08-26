@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import org.cyk.system.root.model.party.person.AbstractActor;
 import org.cyk.utility.common.annotation.ModelBean;
@@ -22,7 +22,7 @@ public class Employee extends AbstractActor implements Serializable {
 
 	@ManyToOne private Division division;
 
-	@OneToOne private EmploymentAgreement employmentAgreement;
+	@Transient private EmploymentAgreement employmentAgreement;
 	
 	/**/
 	

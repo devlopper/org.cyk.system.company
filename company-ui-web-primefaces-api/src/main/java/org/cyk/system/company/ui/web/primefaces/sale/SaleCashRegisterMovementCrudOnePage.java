@@ -6,18 +6,16 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleCashRegisterMovementCrudOnePage extends AbstractCrudOnePage<SaleCashRegisterMovement> implements Serializable {

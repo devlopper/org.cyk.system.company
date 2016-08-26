@@ -17,7 +17,6 @@ import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
-import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessQueryPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputCalendar;

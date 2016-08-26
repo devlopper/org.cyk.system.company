@@ -46,6 +46,8 @@ public class CustomerSaleStockPage extends AbstractPrimefacesPage implements Ser
 			@Override
 			public ColumnAdapter getColumnAdapter() {
 				return new ColumnAdapter(){
+					private static final long serialVersionUID = 1L;
+
 					@Override
 					public Boolean isColumn(Field field) {
 						return CustomerReportTableRow.saleStockFieldIgnored(field);

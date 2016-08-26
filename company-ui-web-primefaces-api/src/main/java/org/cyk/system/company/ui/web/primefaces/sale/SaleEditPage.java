@@ -179,10 +179,10 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public Boolean build(Field field) {
+				public Boolean build(Object data,Field field) {
 					if(FormOneSaleProduct.FIELD_DATE.equals(field.getName()) && FormOneSaleProduct.SHOW_DATE!=null)
 						return FormOneSaleProduct.SHOW_DATE;
-					return super.build(field);
+					return super.build(data,field);
 				}
 			});
 		}

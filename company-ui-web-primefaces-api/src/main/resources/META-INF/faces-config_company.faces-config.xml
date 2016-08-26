@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+	<navigation-rule>
+		<from-view-id>*</from-view-id>
+		<!-- ########################################### Private Navigations Cases ############################################### -->
+		<navigation-case>
+			<from-outcome>employeeEditView</from-outcome>
+			<to-view-id>/private/company/employee/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>employeeListView</from-outcome>
+			<to-view-id>/private/company/employee/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>employeeConsultView</from-outcome>
+			<to-view-id>/private/company/employee/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>employmentAgreementEditView</from-outcome>
+			<to-view-id>/private/company/employmentagreement/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>employmentAgreementListView</from-outcome>
+			<to-view-id>/private/company/employmentagreement/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>employmentAgreementConsultView</from-outcome>
+			<to-view-id>/private/company/employmentagreement/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		
+	</navigation-rule>
+
+</faces-config>

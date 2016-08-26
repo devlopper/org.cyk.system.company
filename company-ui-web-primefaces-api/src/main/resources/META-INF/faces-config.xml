@@ -26,31 +26,7 @@
 		</navigation-case>
 		
 		<!-- Manager -->
-		<navigation-case>
-			<from-outcome>ownedCompanyCrudOne</from-outcome>
-			<to-view-id>/private/__role__/__manager__/ownedcompanycrudone.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>ownedCompanyConsultView</from-outcome>
-			<to-view-id>/private/__role__/__manager__/ownedcompany/consult.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>companyConsultView</from-outcome>
-			<to-view-id>/private/__role__/__manager__/company/consult.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>companyListView</from-outcome>
-			<to-view-id>/private/__role__/__manager__/company/list.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>companyEditView</from-outcome>
-			<to-view-id>/private/__role__/__manager__/company/edit.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
+		
 		
 		<!-- Production manager -->
 		<navigation-case>

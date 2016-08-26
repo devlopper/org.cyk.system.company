@@ -35,8 +35,10 @@ public class SalableProductInstanceCashRegisterEditPage extends AbstractCrudOneP
 	public static Boolean CREATE_ON_CASH_REGISTER = Boolean.TRUE;
 	
 	public static ControlSetAdapter<Object> CREATE_CONTROL_SET_ADAPTER = new ControlSetAdapter<Object>(){
+		private static final long serialVersionUID = 1L;
+
 		@Override
-		public Boolean build(Field field) {
+		public Boolean build(Object data,Field field) {
 			if(Boolean.TRUE.equals(CREATE_ON_CASH_REGISTER))
 				return ArrayUtils.contains(new String[]{Form.FIELD_CASH_REGISTER,Form.FIELD_SALABLE_PRODUCT_INSTANCE,Form.FIELD_FINITE_STATE_MACHINE_STATE}, field.getName());
 			else
@@ -45,8 +47,10 @@ public class SalableProductInstanceCashRegisterEditPage extends AbstractCrudOneP
 	};
 	
 	public static ControlSetAdapter<Object> UPDATE_CONTROL_SET_ADAPTER = new ControlSetAdapter<Object>(){
+		private static final long serialVersionUID = 1L;
+
 		@Override
-		public Boolean build(Field field) {
+		public Boolean build(Object data,Field field) {
 			return ArrayUtils.contains(new String[]{Form.FIELD_CASH_REGISTER,Form.FIELD_SALABLE_PRODUCT_INSTANCE,Form.FIELD_FINITE_STATE_MACHINE_STATE}, field.getName());
 		}
 	};

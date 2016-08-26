@@ -5,9 +5,7 @@ import java.io.Serializable;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.system.root.model.party.person.Person;
 
 import lombok.Getter;
 import lombok.Setter;

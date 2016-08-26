@@ -100,20 +100,20 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public Boolean build(Field field) {
+				public Boolean build(Object data,Field field) {
 					if(field.getName().equals(FIELD_FINITESTATEMACHINESTATE)){
 						FiniteStateMachineAlphabet finiteStateMachineAlphabet = getFiniteStateMachineAlphabet(); 
 						
 						return finiteStateMachineAlphabet==null;
 					}
-					return super.build(field);
+					return super.build(data,field);
 				}
 				
 				@Override
-				public String fiedLabel(ControlSet<Object, DynaFormModel, DynaFormRow, DynaFormLabel, DynaFormControl, SelectItem> controlSet,Field field) {
+				public String fiedLabel(ControlSet<Object, DynaFormModel, DynaFormRow, DynaFormLabel, DynaFormControl, SelectItem> controlSet,Object data,Field field) {
 					if(field.getName().equals(FIELD_IDENTIFIABLES))
 						return inject(LanguageBusiness.class).findClassLabelText(SalableProduct.class);
-					return super.fiedLabel(controlSet, field);
+					return super.fiedLabel(controlSet, data,field);
 				}
 			});
 		}
@@ -220,10 +220,10 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public Boolean build(Field field) {
+				public Boolean build(Object data,Field field) {
 					if(field.getName().equals(Form.FIELD_FINITESTATEMACHINESTATE))
 						return getFiniteStateMachineState() == null;
-					return super.build(field);
+					return super.build(data,field);
 				}
 			});
 			if(companyBusinessLayer.getActionUpdateSalableProductInstanceCashRegisterState().equals(page.getActionIdentifier())){

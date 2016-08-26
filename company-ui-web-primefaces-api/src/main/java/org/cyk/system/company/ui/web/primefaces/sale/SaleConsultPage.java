@@ -108,6 +108,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 		});
 		
 		saleCashRegisterMovementTable.getColumnListeners().add(new ColumnAdapter(){
+			private static final long serialVersionUID = 1L;
 			@Override
 			public Boolean isColumn(Field field) {
 				return !ArrayUtils.contains(SaleCashRegisterMovementDetails.getFieldsToHide(), field.getName());

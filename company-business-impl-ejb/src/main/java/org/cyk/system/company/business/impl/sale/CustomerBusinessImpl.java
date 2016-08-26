@@ -10,7 +10,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;

@@ -50,7 +50,7 @@ public class BusinessSaleEditPageAdapter extends AbstractBusinessEntityFormOnePa
 		saleEditPage.getForm().getControlSetListeners().add(new ControlSetAdapter<Object>(){
 			private static final long serialVersionUID = 1L;
 			@Override
-			public Boolean build(Field field) {
+			public Boolean build(Object data,Field field) {
 				if(GiftCardSystemMenuBuilder.ACTION_SELL_GIFT_CARD.equals(saleEditPage.getActionIdentifier()))
 					return ArrayUtils.contains(new Object[]{SaleEditPage.FormOneSaleProduct.FIELD_CASHIER,SaleEditPage.FormOneSaleProduct.FIELD_SALABLE_PRODUCT
 							,SaleEditPage.FormOneSaleProduct.FIELD_SALABLE_PRODUCT_INSTANCE,SaleEditPage.FormOneSaleProduct.FIELD_CUSTOMER}

@@ -7,9 +7,6 @@ import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-
-import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.stock.StockableTangibleProductDetails;
@@ -37,7 +34,6 @@ import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.ui.web.primefaces.model.ProductCollectionFormModel;
 import org.cyk.system.company.ui.web.primefaces.stock.StockableTangibleProductEditPage;
 import org.cyk.system.root.model.network.UniformResourceLocatorParameter;
-import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.AbstractUserSession;
 import org.cyk.ui.api.Icon;
 import org.cyk.ui.api.command.AbstractCommandable.Builder;
@@ -50,6 +46,8 @@ import org.cyk.ui.web.primefaces.UserSession;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.primefaces.model.TreeNode;
+
+import lombok.Getter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyWebManager.DEPLOYMENT_ORDER) @Getter
 public class CompanyWebManager extends AbstractPrimefacesManager implements Serializable {
@@ -113,16 +111,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	
 	@Override
 	public SystemMenu systemMenu(UserSession userSession) {
-		Cashier cashier = null;
-		if(userSession.getUser() instanceof Person){
-			cashier = inject(CashierBusiness.class).findByPerson((Person) userSession.getUser());
-		}
 		SystemMenu systemMenu = new SystemMenu();
-		addBusinessMenu(userSession,systemMenu,getProductCommandable(userSession,systemMenu.getMobileBusinesses())); 
-		addBusinessMenu(userSession,systemMenu,getCustomerCommandable(userSession,systemMenu.getMobileBusinesses())); 
-		addBusinessMenu(userSession,systemMenu,paymentCommandables(userSession,systemMenu.getMobileBusinesses(), cashier));
-		addBusinessMenu(userSession,systemMenu,getSaleCommandable(userSession,systemMenu.getMobileBusinesses(), cashier)); 
-		
 		return systemMenu;
 	}
 	

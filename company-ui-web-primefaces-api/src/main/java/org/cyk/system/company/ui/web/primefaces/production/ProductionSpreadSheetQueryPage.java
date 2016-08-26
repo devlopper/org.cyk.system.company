@@ -7,20 +7,18 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.production.ProductionBusiness;
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadSheetQueryFormModel;
 import org.cyk.system.company.ui.web.primefaces.model.ProductionSpreadSheetQueryResultFormModel;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.model.spreadsheet.SpreadSheetSearchCriteria;
 import org.cyk.ui.api.command.UICommandable;
-import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessQueryPage;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class ProductionSpreadSheetQueryPage extends AbstractBusinessQueryPage<Production, ProductionSpreadSheetQueryFormModel, 

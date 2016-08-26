@@ -106,6 +106,8 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 		
 		public ColumnAdapter getColumnAdapter() {
 			return new ColumnAdapter(){
+				private static final long serialVersionUID = 1L;
+
 				@Override
 				public Boolean isColumn(Field field) {
 					if( SalableProductInstanceCashRegisterStateLogDetails.FIELD_STATE.equals(field.getName()) ){

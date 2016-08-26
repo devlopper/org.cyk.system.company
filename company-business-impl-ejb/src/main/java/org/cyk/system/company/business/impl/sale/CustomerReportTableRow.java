@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.root.business.impl.AbstractOutputDetails;
-import org.cyk.system.root.business.impl.file.report.AbstractReportTableRow;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.cyk.utility.common.annotation.user.interfaces.ReportColumn;

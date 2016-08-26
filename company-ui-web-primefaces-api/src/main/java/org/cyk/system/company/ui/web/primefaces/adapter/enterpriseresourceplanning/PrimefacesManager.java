@@ -3,6 +3,7 @@ package org.cyk.system.company.ui.web.primefaces.adapter.enterpriseresourceplann
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.impl.payment.CashRegisterDetails;
 import org.cyk.system.company.business.impl.payment.CashRegisterMovementDetails;
 import org.cyk.system.company.business.impl.payment.CashRegisterMovementModeDetails;
@@ -13,6 +14,8 @@ import org.cyk.system.company.business.impl.product.IntangibleProductDetails;
 import org.cyk.system.company.business.impl.product.TangibleProductDetails;
 import org.cyk.system.company.business.impl.sale.CustomerSalableProductDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductDetails;
+import org.cyk.system.company.business.impl.structure.EmployeeDetails;
+import org.cyk.system.company.business.impl.structure.EmploymentAgreementDetails;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
@@ -23,6 +26,8 @@ import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.CustomerSalableProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.structure.Employee;
+import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterEditPage;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementEditPage;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementModeEditPage;
@@ -33,6 +38,8 @@ import org.cyk.system.company.ui.web.primefaces.product.IntangibleProductEditPag
 import org.cyk.system.company.ui.web.primefaces.product.TangibleProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.CustomerSalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
+import org.cyk.system.company.ui.web.primefaces.structure.EmployeeEditPage;
+import org.cyk.system.company.ui.web.primefaces.structure.EmploymentAgreementEditPage;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.web.primefaces.UserSession;
@@ -46,6 +53,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 	public PrimefacesManager() {
 		configurePaymentModule();
 		configureProductModule();
+		configureCompanyModule();
 	}
 	
 	@Override
@@ -63,7 +71,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
-					public Boolean build(Field field) {
+					public Boolean build(Object data,Field field) {
 						return isFieldNameIn(field,CashierDetails.FIELD_CASH_REGISTER,CashierDetails.FIELD_PERSON);
 					}
 				};
@@ -79,7 +87,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
-					public Boolean build(Field field) {
+					public Boolean build(Object data,Field field) {
 						return isFieldNameIn(field,CashRegisterDetails.FIELD_MOVEMENT_COLLECTION,CashRegisterDetails.FIELD_CODE,CashRegisterDetails.FIELD_NAME);
 					}
 				};
@@ -96,7 +104,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
-					public Boolean build(Field field) {
+					public Boolean build(Object data,Field field) {
 						return isFieldNameIn(field,CashRegisterMovementDetails.FIELD_CASH_REGISTER,CashRegisterMovementDetails.FIELD_MOVEMENT
 								,CashRegisterMovementDetails.FIELD_COMPUTED_IDENTIFIER,CashRegisterMovementDetails.FIELD_MODE);
 					}
@@ -114,7 +122,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
-					public Boolean build(Field field) {
+					public Boolean build(Object data,Field field) {
 						return isFieldNameIn(field,CashRegisterMovementModeDetails.FIELD_CODE,CashRegisterMovementModeDetails.FIELD_NAME);
 					}
 				};
@@ -131,7 +139,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
-					public Boolean build(Field field) {
+					public Boolean build(Object data,Field field) {
 						return isFieldNameIn(field,CashRegisterMovementTermDetails.FIELD_AMOUNT,CashRegisterMovementTermDetails.FIELD_EVENT);
 					}
 				};
@@ -147,7 +155,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
-					public Boolean build(Field field) {
+					public Boolean build(Object data,Field field) {
 						return isFieldNameIn(field,CashRegisterMovementTermCollectionDetails.FIELD_AMOUNT);
 					}
 				};
@@ -166,7 +174,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
-					public Boolean build(Field field) {
+					public Boolean build(Object data,Field field) {
 						return isFieldNameIn(field,TangibleProductDetails.FIELD_CODE,TangibleProductDetails.FIELD_NAME);
 					}
 				};
@@ -183,7 +191,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
-					public Boolean build(Field field) {
+					public Boolean build(Object data,Field field) {
 						return isFieldNameIn(field,IntangibleProductDetails.FIELD_CODE,IntangibleProductDetails.FIELD_NAME);
 					}
 				};
@@ -202,7 +210,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
-					public Boolean build(Field field) {
+					public Boolean build(Object data,Field field) {
 						return isFieldNameIn(field,SalableProductDetails.FIELD_CODE,SalableProductDetails.FIELD_NAME);
 					}
 				};
@@ -219,7 +227,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
-					public Boolean build(Field field) {
+					public Boolean build(Object data,Field field) {
 						return isFieldNameIn(field,CustomerSalableProductDetails.FIELD_CUSTOMER,CustomerSalableProductDetails.FIELD_SALABLE_PRODUCT
 								,CustomerSalableProductDetails.FIELD_PRICE);
 					}
@@ -227,5 +235,40 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			}
 		});
 		
+	}
+	
+	protected void configureCompanyModule() {
+		configurePersonFormConfiguration(Employee.class,null,new String[]{EmployeeEditPage.Form.FIELD_JOB_FUNCTION,EmployeeEditPage.Form.FIELD_EMPLOYMENT_AGREEMENT_TYPE});
+		registerDetailsConfiguration(EmployeeDetails.class, new DetailsConfiguration(){
+			private static final long serialVersionUID = 1L;
+			@SuppressWarnings("rawtypes")
+			@Override
+			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+				return new PersonDetailsControlSetAdapter(new String[]{EmployeeDetails.FIELD_JOB_FUNCTION});
+			}
+		});
+		
+		getFormConfiguration(EmploymentAgreement.class, Crud.CREATE).addRequiredFieldNames(EmploymentAgreementEditPage.Form.FIELD_TYPE
+				,EmploymentAgreementEditPage.Form.FIELD_EMPLOYEE);
+		registerDetailsConfiguration(EmploymentAgreementDetails.class, new DetailsConfiguration(){
+			private static final long serialVersionUID = 1L;
+			@SuppressWarnings("rawtypes")
+			@Override
+			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
+					private static final long serialVersionUID = 1L;
+					@Override
+					public Boolean build(Object data,Field field) {
+						return isFieldNameIn(field,EmploymentAgreementDetails.FIELD_TYPE,EmploymentAgreementDetails.FIELD_EMPLOYEE);
+					}
+				};
+			}
+		});
+		
+	}
+	
+	@Override
+	protected Boolean isAutoConfigureClass(Class<?> aClass) {
+		return super.isAutoConfigureClass(aClass) && !ArrayUtils.contains(new Class<?>[]{Employee.class}, aClass);
 	}
 }

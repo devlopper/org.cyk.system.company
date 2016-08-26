@@ -12,42 +12,25 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
-import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
-import org.cyk.system.company.business.impl.product.TangibleProductInventoryReportTableDetails;
 import org.cyk.system.company.business.impl.sale.CustomerReportTableRow;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceCashRegisterStateLogDetails;
-import org.cyk.system.company.business.impl.sale.SaleReportTableDetail;
 import org.cyk.system.company.business.impl.sale.StockDashBoardReportTableDetails;
-import org.cyk.system.company.business.impl.stock.TangibleProductStockMovementLineReport;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.product.TangibleProductInventory;
-import org.cyk.system.company.model.product.TangibleProductInventoryDetail;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
-import org.cyk.system.company.model.sale.SaleResults;
-import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
-import org.cyk.system.company.model.stock.StockTangibleProductMovement;
-import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
-import org.cyk.system.root.business.api.BusinessEntityInfos;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.mathematics.NumberBusiness;
 import org.cyk.system.root.business.api.mathematics.NumberBusiness.FormatSequenceArguments;
-import org.cyk.system.root.business.api.party.ApplicationBusiness;
-import org.cyk.system.root.business.api.time.TimeBusiness;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.file.report.DefaultReportBasedOnDynamicBuilder;
@@ -66,17 +49,13 @@ import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 
+import lombok.Getter;
+
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER+1)
 public class CompanyReportRepository extends AbstractReportRepository implements Serializable {
 
 	private static final long serialVersionUID = 6917567891985885124L;
 
-	private static final Integer STOCK_IN = 0;
-	private static final Integer STOCK_OUT = 1;
-	private static final Integer AMOUNT = 2;
-	private static final Integer CUMUL = 3;
-	private static final Integer PAID = 4;
-	
 	@Getter private final String reportPointOfSale = "pos";
 	@Getter private final String reportPointOfSaleReceipt = "posr";
 	@Getter private final String reportStockDashboard = "rsdb";
@@ -96,14 +75,10 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	@Getter private final String parameterSaleDone = "saledone";
 	
 	@Inject private OwnedCompanyBusiness ownedCompanyBusiness;
-	@Inject private StockTangibleProductMovementBusiness tangibleProductStockMovementBusiness;
 	@Inject private SaleBusiness saleBusiness;
 	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
-	@Inject private SaleStockTangibleProductMovementBusiness saleStockBusiness;
-	@Inject private TangibleProductInventoryBusiness tangibleProductInventoryBusiness;
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
-	@Inject private LanguageBusiness languageBusiness;
 	
 	@Override
 	protected void initialisation() {
@@ -120,7 +95,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
         	}
         });
 		
-		addConfiguration(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
+		/*addConfiguration(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
 	    		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),StockTangibleProductMovement.class,TangibleProductStockMovementLineReport.class) {
 			private static final long serialVersionUID = -1966207854828857772L;
 			@Override
@@ -137,9 +112,9 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 						,getParameterToDate(parameters),BigDecimal.ZERO);
 				return tangibleProductStockMovementBusiness.findByCriteria(searchCriteria);
 			}
-		});
+		});*/
 		
-		addConfiguration(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
+		/*addConfiguration(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
         		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),Sale.class,SaleReportTableDetail.class) {
 			private static final long serialVersionUID = -1966207854828857772L;
 			@Override
@@ -156,7 +131,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 						,getParameterToDate(parameters));
 				return saleBusiness.findByCriteria(searchCriteria);
 			}
-		});
+		});*/
 		
 		addConfiguration(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
         		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),SaleStockTangibleProductMovement.class,Object.class) {
@@ -171,13 +146,13 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			}
 			@Override
 			public Collection<? extends AbstractIdentifiable> identifiables(ReportBasedOnDynamicBuilderParameters<Object> parameters) {
-				String reportType = parameters.getExtendedParameterMap().get(parameterSaleStockReportType)[0];
+				/*String reportType = parameters.getExtendedParameterMap().get(parameterSaleStockReportType)[0];
 				Boolean saleDone = null;
 				try { saleDone = Boolean.parseBoolean(parameters.getExtendedParameterMap().get(parameterSaleDone)[0]); } 
 				catch (Exception e) { saleDone = Boolean.TRUE;}
 				Date fromDate = getParameterFromDate(parameters);
 				Date toDate = getParameterToDate(parameters);
-				
+				*/
 				/*if(parameterSaleStockReportCashRegister.equals(reportType)){
 					parameters.setTitle(inject(LanguageBusiness.class).findText("company.report.salestockoutput.cashregister.title"));
 					parameters.getReportBasedOnDynamicBuilderListeners().add(new DefaultReportBasedOnDynamicBuilder(){
@@ -221,7 +196,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			}
 		});
 		
-		addConfiguration(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
+		/*addConfiguration(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
         		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),TangibleProductInventory.class,TangibleProductInventoryReportTableDetails.class) {
 			private static final long serialVersionUID = -1966207854828857772L;
 			@Override
@@ -240,7 +215,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				parameters.setTitle(languageBusiness.findClassLabelText(TangibleProductInventory.class)+" "+ inject(TimeBusiness.class).formatDateTime(tangibleProductInventory.getDate()));
 				return tangibleProductInventory.getDetails();
 			}
-		});
+		});*/
         
 		addConfiguration(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
         		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),Customer.class,CustomerReportTableRow.class) {
@@ -358,7 +333,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	
 	public Collection<?> processSaleStockReportRows(String reportType,Date fromDate,Date toDate,Collection<Object> initialRows,Boolean addGrandTotalRow) {
 		if(parameterSaleStockReportCashRegister.equals(reportType)){
-			BigDecimal output=BigDecimal.ZERO,paid=BigDecimal.ZERO,balance=BigDecimal.ZERO;
+			//BigDecimal output=BigDecimal.ZERO,paid=BigDecimal.ZERO,balance=BigDecimal.ZERO;
 			/*for(Object object : initialRows){
 				SaleStockReportTableRow row = (SaleStockReportTableRow) object;
 				if(row.getSaleStock() instanceof SaleStockTangibleProductMovementOutput){
@@ -368,8 +343,8 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 							//balance.add(((SaleStockOutput)row.getSaleStock()).getSaleStockInput().getS.getBalance().getValue());
 				}
 			}*/
-			SaleResults results = saleBusiness.computeByCriteria(new SaleSearchCriteria(fromDate,toDate));
-			balance = results.getBalance();
+			//SaleResults results = saleBusiness.computeByCriteria(new SaleSearchCriteria(fromDate,toDate));
+			//balance = results.getBalance();
 			//SaleStockReportTableRow totalRow = new SaleStockReportTableRow();
 			//totalRow.setCustomer(inject(LanguageBusiness.class).findText("total"));
 			/*totalRow.setTakenNumberOfGoods(inject(NumberBusiness.class).format(output));

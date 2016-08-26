@@ -15,6 +15,9 @@ public class EmploymentAgreementType extends AbstractEnumeration implements Seri
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
+	public static final String CDD = "CDD";
+	public static final String CDI = "CDI";
+	
 	public EmploymentAgreementType(String code, String libelle) {
 		super(code, libelle,null, null);
 	}

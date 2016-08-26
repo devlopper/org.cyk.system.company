@@ -13,7 +13,6 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;

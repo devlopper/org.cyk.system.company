@@ -9,7 +9,6 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;

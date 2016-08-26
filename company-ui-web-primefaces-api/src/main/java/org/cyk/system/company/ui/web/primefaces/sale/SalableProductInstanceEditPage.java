@@ -38,8 +38,10 @@ public class SalableProductInstanceEditPage extends AbstractCrudOnePage<SalableP
 	public static Boolean CREATE_ON_SALABLE_PRODUCT = Boolean.TRUE;
 	
 	public static ControlSetAdapter<Object> CREATE_CONTROL_SET_ADAPTER = new ControlSetAdapter<Object>(){
+		private static final long serialVersionUID = 1L;
+
 		@Override
-		public Boolean build(Field field) {
+		public Boolean build(Object data,Field field) {
 			if(Boolean.TRUE.equals(CREATE_ON_SALABLE_PRODUCT))
 				return ArrayUtils.contains(new String[]{Form.FIELD_SALABLE_PRODUCT,CodesFormModel.FIELD_CODE}, field.getName());
 			else
@@ -52,8 +54,10 @@ public class SalableProductInstanceEditPage extends AbstractCrudOnePage<SalableP
 	};
 	
 	public static ControlSetAdapter<Object> UPDATE_CONTROL_SET_ADAPTER = new ControlSetAdapter<Object>(){
+		private static final long serialVersionUID = 1L;
+
 		@Override
-		public Boolean build(Field field) {
+		public Boolean build(Object data,Field field) {
 			return ArrayUtils.contains(new String[]{Form.FIELD_SALABLE_PRODUCT,CodesFormModel.FIELD_CODE}, field.getName());
 		}
 	};

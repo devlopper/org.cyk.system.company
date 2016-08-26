@@ -28,7 +28,6 @@ import org.cyk.system.company.model.product.TangibleProductInventoryDetail;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
@@ -123,7 +122,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 	}
 	
 	public void createSaleStockInput(Integer count){
-		AccountingPeriod accountingPeriod = accountingPeriodDao.select().one();
+		/*AccountingPeriod accountingPeriod = accountingPeriodDao.select().one();
 		Cashier cashier = cashierDao.select().one();
 		for(int i=0;i<count;i++){
 			//SaleStockTangibleProductMovementInput saleStockInput = new SaleStockTangibleProductMovementInput(); //null;//saleStockInputBusiness.instanciate(cashier.getPerson());
@@ -148,10 +147,10 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 			//saleStockInputBusiness.create(saleStockInput, saleCashRegisterMovement);
 			
 			
-		}
+		}*/
 	}
 	
-	private void saleCashRegisterMovement(SaleCashRegisterMovement saleCashRegisterMovement,BigDecimal maxValue,Float ratio){
+	/*private void saleCashRegisterMovement(SaleCashRegisterMovement saleCashRegisterMovement,BigDecimal maxValue,Float ratio){
 		try {
 			saleCashRegisterMovement.setAmountIn(new BigDecimal(randomDataProvider.randomInt(1,maxValue.intValue())*ratio));
 		} catch (Exception e) {
@@ -160,7 +159,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 		}
 		saleCashRegisterMovement.setAmountIn(saleCashRegisterMovement.getAmountIn().round(new MathContext(0, RoundingMode.DOWN)));
 		saleCashRegisterMovementBusiness.in(saleCashRegisterMovement);
-	}
+	}*/
 	
 	public void createTangibleProductInventory(Integer count){
 		List<TangibleProduct> tangibleProducts = new ArrayList<>(tangibleProductBusiness.findAll());

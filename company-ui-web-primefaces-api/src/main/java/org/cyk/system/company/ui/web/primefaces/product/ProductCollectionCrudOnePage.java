@@ -9,16 +9,15 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCollection;
-import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class ProductCollectionCrudOnePage extends AbstractCrudOnePage<ProductCollection> implements Serializable {
@@ -61,7 +60,6 @@ public class ProductCollectionCrudOnePage extends AbstractCrudOnePage<ProductCol
 		super.serve(command, parameter);
 	}*/
 	
-	@SuppressWarnings("unchecked")
 	public void onTransfer(TransferEvent event) {
 	    /*if(Boolean.TRUE.equals(event.isAdd())){
 	    	for(Product product : (List<Product>)event.getItems())

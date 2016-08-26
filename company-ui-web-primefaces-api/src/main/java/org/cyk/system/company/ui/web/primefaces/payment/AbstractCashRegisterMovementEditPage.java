@@ -17,8 +17,6 @@ import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
-import org.cyk.utility.common.annotation.user.interfaces.Sequence;
-import org.cyk.utility.common.annotation.user.interfaces.Sequence.Direction;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,10 +32,10 @@ public abstract class AbstractCashRegisterMovementEditPage<MOVEMENT extends Abst
 		form.getControlSetListeners().add(new ControlSetAdapter<Object>(){
 			private static final long serialVersionUID = 1L;
 			@Override
-			public Boolean build(Field field) {
+			public Boolean build(Object data,Field field) {
 				if(field.getName().equals(AbstractCashRegisterMovementForm.FIELD_CASH_REGISTER))
 					return Boolean.TRUE.equals(showCashRegisterField());
-				return super.build(field);
+				return super.build(data,field);
 			}
 		});
 	}

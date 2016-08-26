@@ -17,6 +17,10 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.CustomerSalableProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.structure.Company;
+import org.cyk.system.company.model.structure.Employee;
+import org.cyk.system.company.model.structure.EmploymentAgreement;
+import org.cyk.system.company.model.structure.EmploymentAgreementType;
 import org.cyk.system.root.business.api.security.BusinessServiceCollectionBusiness;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.menu.SystemMenu;
@@ -35,7 +39,19 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 		addBusinessMenu(userSession,systemMenu,getProductCommandable(userSession, null));
 		addBusinessMenu(userSession,systemMenu,getPaymentCommandable(userSession, null));
 		addBusinessMenu(userSession,systemMenu,getSaleCommandable(userSession, null));
+		addBusinessMenu(userSession,systemMenu,getCompanyCommandable(userSession, null));
 		return systemMenu;
+	}
+	
+	public Commandable getCompanyCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
+		Commandable module = createModuleCommandable(Company.class, null);
+		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_COMPANY).getName());
+		//module.addChild(createListCommandable(Company.class, null));
+		module.addChild(createListCommandable(EmploymentAgreementType.class, null));
+		module.addChild(createListCommandable(EmploymentAgreement.class, null));
+		module.addChild(createListCommandable(Employee.class, null));
+		
+		return module;
 	}
 	
 	public Commandable getProductCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
