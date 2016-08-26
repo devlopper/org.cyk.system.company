@@ -28,7 +28,7 @@ public abstract class AbstractSaleReport<MODEL> extends AbstractReportTemplateFi
 
 	@Override
 	public void generate() {
-		accountingPeriod.getCompany().setGenerateImage(Boolean.TRUE);
+		accountingPeriod.getCompany().getGlobalIdentifier().setGenerateImage(Boolean.TRUE);
 		title = "Facture";
 		identifier=RandomStringUtils.randomNumeric(8);
 		cashRegisterIdentifier = RandomStringUtils.randomNumeric(8);

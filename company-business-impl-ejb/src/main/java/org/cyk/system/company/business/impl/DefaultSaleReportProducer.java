@@ -21,7 +21,7 @@ public class DefaultSaleReportProducer extends AbstractCompanyReportProducer imp
 				{text("company.report.sale.identifier"), report.getIdentifier()}
 				,{text("company.report.sale.cashregister"), report.getCashRegisterIdentifier()}
 				,{text("company.report.sale.date"), report.getDate()}
-				,{text("company.report.sale.customer"), report.getCustomer().getPerson().getNames()}
+				,{text("company.report.sale.customer"), report.getCustomer().getCommonActor().getPerson().getNames()}
 				});
 		
 		report.addLabelValueCollection(text("company.report.sale.paymentblocktitle"),new String[][]{
@@ -49,7 +49,7 @@ public class DefaultSaleReportProducer extends AbstractCompanyReportProducer imp
 				,{text("company.report.salecashregistermovement.sale.identifier"), report.getSale().getIdentifier()}
 				,{text("company.report.salecashregistermovement.cashregister"), report.getCashRegisterIdentifier()}
 				,{text("company.report.salecashregistermovement.date"), report.getDate()}
-				,{text("company.report.salecashregistermovement.customer"), report.getSale().getCustomer().getPerson().getNames()}
+				,{text("company.report.salecashregistermovement.customer"), report.getSale().getCustomer().getCommonActor().getPerson().getNames()}
 				});
 		
 		report.addLabelValueCollection(text("company.report.salecashregistermovement.paymentblocktitle"),new String[][]{

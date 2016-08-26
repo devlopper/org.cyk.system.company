@@ -56,11 +56,11 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		report.setWelcomeMessage(languageBusiness.findText("company.report.pointofsale.welcome"));
 		report.setGoodByeMessage(languageBusiness.findText("company.report.pointofsale.goodbye"));
 		
-		report.getAccountingPeriod().getCompany().setName(company.getName());
-		report.getAccountingPeriod().getCompany().setImage(rootBusinessLayer.getFileBusiness().findInputStream(company.getImage()));
+		report.getAccountingPeriod().getCompany().getGlobalIdentifier().setName(company.getName());
+		report.getAccountingPeriod().getCompany().getGlobalIdentifier().setImage(rootBusinessLayer.getFileBusiness().findInputStream(company.getImage()));
 
 		contactCollectionBusiness.load(company.getContactCollection());
-		report.getAccountingPeriod().getCompany().getContact().setPhoneNumbers(StringUtils.join(company.getContactCollection().getPhoneNumbers()," - "));
+		report.getAccountingPeriod().getCompany().getContactCollection().setPhoneNumbers(StringUtils.join(company.getContactCollection().getPhoneNumbers()," - "));
 		
 		report.setVatRate(format(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
 		report.setAmountDueNoTaxes(format(sale.getCost().getValue().subtract(sale.getCost().getTax()).setScale(2)));
