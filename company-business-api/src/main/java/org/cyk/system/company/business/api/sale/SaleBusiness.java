@@ -1,12 +1,9 @@
 package org.cyk.system.company.business.api.sale;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 
-import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
@@ -21,11 +18,6 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 	Sale instanciateOne(String computedIdentifier,String cashierPersonCode,String customerRegistrationCode,String date,String taxable,String[][] salableProductInfos);
 	List<Sale> instanciateMany(Object[][] arguments);
 
-	SaleProduct selectProduct(Sale sale,SalableProduct salableProduct,BigDecimal quantity);
-	SaleProduct selectProduct(Sale sale,SalableProduct salableProduct);
-	void unselectProduct(Sale sale,SaleProduct saleProduct);
-	void applyChange(Sale sale, SaleProduct saleProduct);
-	
 	void update(Sale sale,FiniteStateMachineAlphabet finiteStateMachineAlphabet);
 	
 	Collection<Sale> findByCriteria(SaleSearchCriteria criteria);

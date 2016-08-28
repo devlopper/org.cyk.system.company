@@ -17,7 +17,7 @@ public class SaleProductInstance extends AbstractIdentifiable implements Seriali
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @NotNull private SaleProduct saleProduct;
+	@ManyToOne @NotNull private SalableProductCollectionItem salableProductCollectionItem;
 	@ManyToOne @NotNull private SalableProductInstance salableProductInstance;
 	
 	/*@Override

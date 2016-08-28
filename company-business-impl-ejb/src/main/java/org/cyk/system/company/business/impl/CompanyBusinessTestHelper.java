@@ -10,10 +10,6 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
@@ -33,12 +29,10 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
-import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
@@ -55,9 +49,11 @@ import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineAlphabetDao;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
-import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.ObjectFieldValues;
 import org.cyk.utility.common.test.TestEnvironmentListener.Try;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Singleton
 public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implements Serializable {
@@ -72,8 +68,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     @Inject private SalableProductDao salableProductDao;
     @Inject private CustomerDao customerDao;
     @Inject private CashierDao cashierDao;
-    @Inject private PersonDao personDao;
-    @Inject private AccountingPeriodDao accountingPeriodDao;
     @Inject private AccountingPeriodProductDao accountingPeriodProductDao;
     @Inject private FiniteStateMachineStateDao finiteStateMachineStateDao;
     @Inject private FiniteStateMachineAlphabetDao finiteStateMachineAlphabetDao;
@@ -125,7 +119,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	}
 	
 	public void set(Sale sale,String identifier,String date,String cashierCode,String customerCode,String[][] products,String taxable){
-		if(sale.getComputedIdentifier()==null)
+		/*if(sale.getComputedIdentifier()==null)
 			sale.setComputedIdentifier(identifier);
 		if(sale.getAccountingPeriod()==null)
 			sale.setAccountingPeriod(accountingPeriodDao.select().one());
@@ -151,6 +145,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     		sale.setComments(RandomStringUtils.randomAlphabetic(10));
     	if(customerCode!=null)
     		sale.setCustomer(customerDao.read(customerCode));
+    	*/
     }
 	
 	public void set(SaleCashRegisterMovement saleCashRegisterMovement,String amountIn,String amountOut,Date date){
@@ -218,7 +213,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     public void updateSale(String identifier,String finiteStateMachineAlphabetCode,String taxable){
     	Sale sale = saleDao.readByComputedIdentifier(identifier);
     	FiniteStateMachineAlphabet finiteStateMachineAlphabet = finiteStateMachineAlphabetDao.read(finiteStateMachineAlphabetCode);
-    	sale.setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
+    	sale.getSalableProductCollection().setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
     	inject(SaleBusiness.class).update(sale, finiteStateMachineAlphabet);
     }
     
@@ -295,6 +290,10 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	}
     }
     
+    public void assertCost(Cost cost,ObjectFieldValues expectedValues){
+    	doAssertions(cost, expectedValues);
+    }
+    
     public void assertSaleFiniteStateMachineStateCount(Object[][] datas){
     	for(Object[] data : datas){
     		assertSaleFiniteStateMachineStateCount((String[])data[0],(String)data[1]);
@@ -328,7 +327,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	assertEquals("Find sale by criteria count using fonction", expectedComputedIdentifiers.length, inject(SaleBusiness.class).countByCriteria(criteria).intValue());
     	int i = 0;
     	for(Sale sale : sales)
-    		assertEquals("Find sale by criteria computed identifier",expectedComputedIdentifiers[i++],sale.getComputedIdentifier());
+    		assertEquals("Find sale by criteria computed identifier",expectedComputedIdentifiers[i++],sale.getCode());
     	SaleResults saleResults = inject(SaleBusiness.class).computeByCriteria(criteria);
     	doAssertions(saleResults, new ObjectFieldValues(SaleResults.class).set(SaleResults.FIELD_BALANCE,expectedBalance,SaleResults.FIELD_PAID,expectedPaid)
     		.setBaseName(SaleResults.FIELD_COST).set(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,expectedComputedIdentifiers.length+""

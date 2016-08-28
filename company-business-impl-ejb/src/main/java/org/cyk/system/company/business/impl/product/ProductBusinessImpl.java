@@ -17,8 +17,8 @@ import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCollection;
 import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.root.business.api.Crud;
 
@@ -33,10 +33,10 @@ public class ProductBusinessImpl extends AbstractProductBusinessImpl<Product,Pro
     }
 	
 	@Override
-	protected Set<Product> products(Collection<SaleProduct> saleProducts) {
+	protected Set<Product> products(Collection<SalableProductCollectionItem> saleProducts) {
 		Set<Product> products = new HashSet<>(),noProductCollections= new HashSet<>();
 		Set<ProductCollection> productCollections= new HashSet<>();
-		for(SaleProduct saleProduct : saleProducts)
+		for(SalableProductCollectionItem saleProduct : saleProducts)
 			if(saleProduct.getSalableProduct().getProduct() instanceof ProductCollection)
 				productCollections.add((ProductCollection) saleProduct.getSalableProduct().getProduct());
 			else
@@ -69,12 +69,13 @@ public class ProductBusinessImpl extends AbstractProductBusinessImpl<Product,Pro
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<Product> findNotCollectionBySale(Sale sale) {
 		Collection<Product> products = new ArrayList<>();
-		for(SaleProduct saleProduct : sale.getSaleProducts())
+		/*for(SalableProductCollectionItem saleProduct : sale.getSaleProducts())
 			if(saleProduct.getSalableProduct().getProduct() instanceof ProductCollection)
 				for(Product product : dao.readByCollection((ProductCollection) saleProduct.getSalableProduct().getProduct()))
 					products.add(product);
 			else
 				products.add(saleProduct.getSalableProduct().getProduct());
+		*/
 		return products;
 	}
 	

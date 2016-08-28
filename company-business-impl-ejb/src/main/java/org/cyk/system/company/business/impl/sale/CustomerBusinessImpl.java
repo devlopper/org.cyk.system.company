@@ -63,7 +63,7 @@ public class CustomerBusinessImpl extends AbstractActorBusinessImpl<Customer, Cu
 				sign = BigDecimal.ONE.negate();
 			}
 			commonUtils.increment(BigDecimal.class, sale.getCustomer(), Customer.FIELD_SALE_COUNT, BigDecimal.ONE.multiply(sign));
-			commonUtils.increment(BigDecimal.class, sale.getCustomer(), Customer.FIELD_TURNOVER, sale.getCost().getTurnover().multiply(sign));
+			commonUtils.increment(BigDecimal.class, sale.getCustomer(), Customer.FIELD_TURNOVER, sale.getSalableProductCollection().getCost().getTurnover().multiply(sign));
 			commonUtils.increment(BigDecimal.class, sale.getCustomer(), Customer.FIELD_BALANCE, sale.getBalance().getValue().multiply(sign));
 			
 			dao.update(sale.getCustomer());	

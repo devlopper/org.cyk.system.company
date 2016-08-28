@@ -12,19 +12,22 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.cyk.system.company.model.Cost;
+import org.cyk.system.root.model.AbstractCollectionItem;
+import org.cyk.utility.common.annotation.ModelBean;
+import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.model.Cost;
-import org.cyk.system.root.model.AbstractIdentifiable;
-
-@Getter @Setter @NoArgsConstructor @Entity
-public class SaleProduct extends AbstractIdentifiable implements Serializable {
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
+@ModelBean(crudStrategy=CrudStrategy.BUSINESS)
+public class SalableProductCollectionItem extends AbstractCollectionItem<SalableProductCollection> implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne private Sale sale;
 	@ManyToOne private SalableProduct salableProduct;
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal quantity;
@@ -41,23 +44,4 @@ public class SaleProduct extends AbstractIdentifiable implements Serializable {
 		return instances;
 	}
 	
-	@Override
-	public String getUiString() {
-		return salableProduct.getUiString();
-	}
-	
-	@Override
-	public String toString() {
-		return getUiString();
-	}
-	
-	@Override
-	public String getLogMessage() {
-		return String.format(LOG_FORMAT,salableProduct.getLogMessage(),quantity,commission,reduction,cost.getLogMessage(),sale.getComputedIdentifier());
-	}
-	
-	/**/
-	
-	private static final String LOG_FORMAT = SaleProduct.class.getSimpleName()+"(%s Q=%s C=%s R=%s %s S=%s)";
-
 }

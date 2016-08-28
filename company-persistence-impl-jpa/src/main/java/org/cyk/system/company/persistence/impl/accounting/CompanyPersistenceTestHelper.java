@@ -32,11 +32,13 @@ public class CompanyPersistenceTestHelper extends AbstractBean implements Serial
 	}
 	
 	public void set(Sale sale,String cost,String tax,String turnover){
+		/*
 		sale.setAccountingPeriod(accountingPeriodDao.select().one());
 		sale.setDate(new Date());
 		sale.setCashier(cashierDao.select().one());
 		sale.getCost().setValue(commonUtils.getBigDecimal(cost));
 		sale.getCost().setTax(commonUtils.getBigDecimal(tax));
 		sale.getCost().setTurnover(commonUtils.getBigDecimal(turnover));
+		*/
 	}
 }

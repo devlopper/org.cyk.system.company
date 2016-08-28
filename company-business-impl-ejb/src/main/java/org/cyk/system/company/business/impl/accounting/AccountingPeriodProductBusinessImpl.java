@@ -2,9 +2,6 @@ package org.cyk.system.company.business.impl.accounting;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -12,17 +9,12 @@ import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBus
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
-import org.cyk.system.company.model.accounting.AccountingPeriodProductCategory;
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.ProductCategory;
-import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductCategoryDao;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.product.ProductCategoryDao;
-import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.root.business.api.Crud;
 
 public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPeriodResultsBusinessImpl<AccountingPeriodProduct, AccountingPeriodProductDao,Product> implements AccountingPeriodProductBusiness, Serializable {
@@ -31,7 +23,6 @@ public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPerio
 	
 	@Inject private ProductCategoryDao productCategoryDao;
 	@Inject private AccountingPeriodProductCategoryDao accountingPeriodProductCategoryDao;
-	@Inject private SaleProductDao saleProductDao;
 	
 	@Inject
 	public AccountingPeriodProductBusinessImpl(AccountingPeriodProductDao dao) {
@@ -40,7 +31,7 @@ public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPerio
 
 	@Override
 	public void consume(Sale sale, Crud crud, Boolean first) {
-		Collection<SaleProduct> saleProducts = saleProductDao.readBySale(sale);
+		/*Collection<SaleProduct> saleProducts = saleProductDao.readBySale(sale);
 		Set<SalableProduct> products = new HashSet<>();
 		for(SaleProduct saleProduct : saleProducts)
 			products.add(saleProduct.getSalableProduct());
@@ -65,7 +56,7 @@ public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPerio
 				accountingPeriodProductCategoryDao.update(accountingPeriodProductCategory);
 				category = productCategoryDao.readParent(category);
 			}
-		}
+		}*/
 	}
 	
 	private void updateSalesResults(SaleResults salesResults, Crud crud, Boolean first,BigDecimal count,BigDecimal cost,BigDecimal vat,BigDecimal turnover){

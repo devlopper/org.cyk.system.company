@@ -5,12 +5,12 @@ import java.util.Collection;
 
 import javax.inject.Singleton;
 
-import lombok.Getter;
-
+import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
-import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
+
+import lombok.Getter;
 
 @Singleton @Getter
 public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer implements Serializable {
@@ -43,7 +43,7 @@ public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer imple
 		});
 		flush(SalableProduct.class, salableProducts);
 		*/
-		rootRandomDataProvider.createActor(Customer.class, 5);
+		inject(CustomerBusiness.class).create(inject(CustomerBusiness.class).instanciateManyRandomly(5));
 	}
 
 	@Override

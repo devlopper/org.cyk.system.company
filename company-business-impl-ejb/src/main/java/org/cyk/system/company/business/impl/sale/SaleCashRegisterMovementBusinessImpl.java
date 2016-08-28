@@ -88,6 +88,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	
 	@Override
 	public SaleCashRegisterMovement create(SaleCashRegisterMovement saleCashRegisterMovement,Boolean generatePos) {
+		//exceptionUtils().exception(saleCashRegisterMovement.getAmountIn().equals(saleCashRegisterMovement.getAmountOut()) && saleCashRegisterMovement.getAmountIn().equals(BigDecimal.ZERO), "");
 		Sale sale = saleCashRegisterMovement.getSale();
 		Customer customer = sale.getCustomer();
 		Integer soldOut = BigDecimal.ZERO.compareTo(sale.getBalance().getValue());
@@ -101,7 +102,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		
 		BigDecimal oldBalance = sale.getBalance().getValue(),increment=saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate();
 		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE,increment);
-		exceptionUtils().comparison(!Boolean.TRUE.equals(sale.getAccountingPeriod().getSaleConfiguration().getBalanceCanBeNegative()) 
+		exceptionUtils().comparison(!Boolean.TRUE.equals(sale.getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getBalanceCanBeNegative()) 
 				&& sale.getBalance().getValue().signum() == -1
 				, inject(LanguageBusiness.class).findText("field.balance"),ArithmeticOperator.GTE,BigDecimal.ZERO);
 		logTrace("Old balance={} , Increment={} , New balance={}",oldBalance,increment, sale.getBalance().getValue());
@@ -142,7 +143,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			if(saleCashRegisterMovement.getReport()==null)
 				saleCashRegisterMovement.setReport(new File());
 			rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement, saleCashRegisterMovementReport
-					,saleCashRegisterMovement.getSale().getAccountingPeriod().getSaleConfiguration().getSaleCashRegisterMovementReportTemplate().getTemplate(), Boolean.TRUE); 
+					,saleCashRegisterMovement.getSale().getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getSaleCashRegisterMovementReportTemplate().getTemplate(), Boolean.TRUE); 
 		}
 		return saleCashRegisterMovement;
 	}
@@ -151,7 +152,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	public BigDecimal computeBalance(SaleCashRegisterMovement saleCashRegisterMovement) {
 		BigDecimal saleCashRegisterMovementAmount = saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue();
 		MovementAction action = saleCashRegisterMovement.getCashRegisterMovement().getMovement().getAction();
-		BigDecimal balance = saleCashRegisterMovement.getSale().getIdentifier()==null?saleCashRegisterMovement.getSale().getCost().getValue()
+		BigDecimal balance = saleCashRegisterMovement.getSale().getIdentifier()==null?saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue()
 				:saleCashRegisterMovement.getSale().getBalance().getValue();
 		if(action.equals(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getDecrementAction()))//withdraw
 			if(balance.signum()==1)

@@ -1,59 +1,17 @@
 package org.cyk.system.company.business.impl;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.apache.commons.lang3.time.DateUtils;
-import org.cyk.system.company.business.api.product.ProductBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductInventoryBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
-import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.payment.Cashier;
-import org.cyk.system.company.model.product.IntangibleProduct;
-import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.product.TangibleProductInventory;
-import org.cyk.system.company.model.product.TangibleProductInventoryDetail;
-import org.cyk.system.company.model.sale.Customer;
-import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.stock.StockTangibleProductMovement;
-import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
-import org.cyk.system.company.persistence.api.payment.CashierDao;
-import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.root.business.impl.AbstractRandomDataProvider;
-import org.cyk.system.root.business.impl.RootRandomDataProvider;
-import org.cyk.utility.common.generator.RandomDataProvider;
 
 @Singleton
 public class CompanyRandomDataProvider extends AbstractRandomDataProvider implements Serializable {
 
 	private static final long serialVersionUID = -4495079111239824662L;
 
-	//private RootBusinessLayer rootBusinessLayer = RootBusinessLayer.getInstance();
-	@Inject private RootRandomDataProvider rootRandomDataProvider;
-	
-	@Inject private StockTangibleProductMovementBusiness tangibleProductStockMovementBusiness;
-	@Inject private TangibleProductBusiness tangibleProductBusiness;
-	@Inject private TangibleProductDao tangibleProductDao;
-	@Inject private SaleBusiness saleBusiness;
-	@Inject private AccountingPeriodDao accountingPeriodDao;
-	@Inject private CashierDao cashierDao;
-	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
-	@Inject private ProductBusiness productBusiness;
-	@Inject private TangibleProductInventoryBusiness tangibleProductInventoryBusiness;
-	
+	/*
 	public void createTangibleProductStockMovement(List<TangibleProduct> tangibleProducts,Date date){
 		TangibleProduct tangibleProduct = (TangibleProduct)randomDataProvider.randomFromList(tangibleProducts);
 		if(tangibleProduct.getCode().equals(TangibleProduct.STOCKING))
@@ -79,8 +37,9 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 			createTangibleProductStockMovement(tangibleProducts,randomDataProvider.randomDate(fromDate, toDate));
 		} 
 	}
-	
+	*/
 	public void createSale(Integer count){
+		/*
 		List<TangibleProduct> tangibleProducts = new ArrayList<>(tangibleProductBusiness.findAll());
 		List<Product> products = new ArrayList<>(productBusiness.findAll());
 		AccountingPeriod accountingPeriod = accountingPeriodDao.select().one();
@@ -119,6 +78,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 		for(int i=0;i<stock;i++){
 			createTangibleProductStockMovement(tangibleProducts,randomDataProvider.randomDate(lastSaleDate, accountingPeriod.getExistencePeriod().getToDate()));
 		}
+		*/
 	}
 	
 	public void createSaleStockInput(Integer count){
@@ -160,7 +120,7 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 		saleCashRegisterMovement.setAmountIn(saleCashRegisterMovement.getAmountIn().round(new MathContext(0, RoundingMode.DOWN)));
 		saleCashRegisterMovementBusiness.in(saleCashRegisterMovement);
 	}*/
-	
+	/*
 	public void createTangibleProductInventory(Integer count){
 		List<TangibleProduct> tangibleProducts = new ArrayList<>(tangibleProductBusiness.findAll());
 		AccountingPeriod accountingPeriod = accountingPeriodDao.select().one();
@@ -176,6 +136,6 @@ public class CompanyRandomDataProvider extends AbstractRandomDataProvider implem
 	private Date date(AccountingPeriod accountingPeriod){
 		return randomDataProvider.randomDate(accountingPeriod.getExistencePeriod().getFromDate(), accountingPeriod.getExistencePeriod().getToDate());
 	}
-	
+	*/
 	
 }

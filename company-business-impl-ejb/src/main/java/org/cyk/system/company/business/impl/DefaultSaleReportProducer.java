@@ -28,7 +28,7 @@ public class DefaultSaleReportProducer extends AbstractCompanyReportProducer imp
 				{text("company.report.sale.amount.du"), report.getAmountDue()}
 				});
 		
-		if(sale.getCost().getTax().equals(BigDecimal.ZERO))
+		if(sale.getSalableProductCollection().getCost().getTax().equals(BigDecimal.ZERO))
 			report.addLabelValueCollection(text("company.report.sale.vatblocktitle"),new String[][]{});
 		else{
 			report.addLabelValueCollection(text("company.report.sale.vatblocktitle"),new String[][]{

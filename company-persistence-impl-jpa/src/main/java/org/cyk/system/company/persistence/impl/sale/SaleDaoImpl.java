@@ -35,6 +35,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	@Override
     protected void namedQueriesInitialisation() {
     	super.namedQueriesInitialisation();
+    	/*
     	String attributeCost = commonUtils.attributePath(Sale.FIELD_COST, Cost.FIELD_VALUE);
     	String attributeTax = commonUtils.attributePath(Sale.FIELD_COST, Cost.FIELD_TAX);
     	String attributeTurnover = commonUtils.attributePath(Sale.FIELD_COST, Cost.FIELD_TURNOVER);
@@ -69,16 +70,16 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
     	queryStringBuilder.where(LogicalOperator.AND, balanceValueField,
 				commonUtils.attributePath(queryStringBuilder.getRootEntityVariableName(), Sale.FIELD_COST,Cost.FIELD_VALUE), ArithmeticOperator.NEQ, Boolean.FALSE);
     	registerNamedQuery(computeByCriteriaWhereCashRegisterMovementExists,queryStringBuilder);
-    	
+    	*/
     }	
 	
 	private void whereSearchCriteria(QueryStringBuilder queryStringBuilder){
-		queryStringBuilder.where(Sale.FIELD_COMPUTED_IDENTIFIER,ArithmeticOperator.LIKE)
+		/*queryStringBuilder.where(Sale.FIELD_COMPUTED_IDENTIFIER,ArithmeticOperator.LIKE)
 		.and().between(Sale.FIELD_DATE)
 		.and()
 		.between(commonUtils.attributePath(Sale.FIELD_BALANCE,Balance.FIELD_VALUE), Constant.CHARACTER_COLON+PARAM_BALANCE_MIN, Constant.CHARACTER_COLON+PARAM_BALANCE_MAX)
 		.and().in(commonUtils.attributePath(Sale.FIELD_FINITE_STATE_MACHINE_STATE,AbstractIdentifiable.FIELD_IDENTIFIER), PARAM_FINITE_STATE_MACHINE_STATE_IDENTIFIERS)
-		;
+		;*/
 	}
 	
 	/**/
@@ -90,7 +91,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	
 	@Override
 	public Sale readByComputedIdentifier(String identifier) {
-		return namedQuery(readByComputedIdentifier).parameter(Sale.FIELD_COMPUTED_IDENTIFIER, identifier).ignoreThrowable(NoResultException.class).resultOne();
+		return null;//namedQuery(readByComputedIdentifier).parameter(Sale.FIELD_COMPUTED_IDENTIFIER, identifier).ignoreThrowable(NoResultException.class).resultOne();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -139,7 +140,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	protected void applyPeriodSearchCriteriaParameters(QueryWrapper<?> queryWrapper,AbstractPeriodSearchCriteria searchCriteria) {
 		super.applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		SaleSearchCriteria saleSearchCriteria = (SaleSearchCriteria) searchCriteria;
-		queryWrapper.parameterLike(Sale.FIELD_COMPUTED_IDENTIFIER,saleSearchCriteria.getIdentifierStringSearchCriteria().getPreparedValue());
+		//queryWrapper.parameterLike(Sale.FIELD_COMPUTED_IDENTIFIER,saleSearchCriteria.getIdentifierStringSearchCriteria().getPreparedValue());
 		queryWrapper.parameterIdentifiers(PARAM_FINITE_STATE_MACHINE_STATE_IDENTIFIERS, saleSearchCriteria.getFiniteStateMachineStates());
 		//queryWrapper.parameterIdentifiers(saleSearchCriteria.getCustomers());
 		BigDecimal minBalance=BALANCE_ZERO_MIN,maxBalance=BALANCE_ZERO_MAX;

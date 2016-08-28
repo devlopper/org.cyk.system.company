@@ -9,11 +9,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SaleProductInstanceBusiness;
-import org.cyk.system.company.model.sale.SaleProduct;
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.SaleProductInstance;
-import org.cyk.system.company.persistence.api.sale.SalableProductInstanceCashRegisterDao;
 import org.cyk.system.company.persistence.api.sale.SaleProductInstanceDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.utility.common.ListenerUtils;
@@ -23,8 +21,6 @@ public class SaleProductInstanceBusinessImpl extends AbstractTypedBusinessServic
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	@Inject private SalableProductInstanceCashRegisterDao salableProductInstanceCashRegisterDao;
-	
 	@Inject
 	public SaleProductInstanceBusinessImpl(SaleProductInstanceDao dao) {
 		super(dao);
@@ -32,11 +28,11 @@ public class SaleProductInstanceBusinessImpl extends AbstractTypedBusinessServic
 	
 	@Override
 	public SaleProductInstance create(final SaleProductInstance saleProductInstance) {
-		exceptionUtils().exception(Boolean.TRUE.equals(inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration()
+		/*exceptionUtils().exception(Boolean.TRUE.equals(inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration()
 				.getAllowOnlySalableProductInstanceOfCashRegister()) 
 				&& salableProductInstanceCashRegisterDao.readBySalableProductInstanceByCashRegister(saleProductInstance.getSalableProductInstance()
 					, saleProductInstance.getSaleProduct().getSale().getCashier().getCashRegister())==null, "AllowOnlySalableProductInstanceOfCashRegister");
-		
+		*/
 		listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>(){
 			@Override
 			public void execute(Listener listener) {
@@ -60,7 +56,7 @@ public class SaleProductInstanceBusinessImpl extends AbstractTypedBusinessServic
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public Collection<SaleProductInstance> findBySaleProduct(SaleProduct saleProduct) {
+	public Collection<SaleProductInstance> findBySaleProduct(SalableProductCollectionItem saleProduct) {
 		return dao.readBySaleProduct(saleProduct);
 	}
 	

@@ -2,7 +2,9 @@ package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -19,6 +21,7 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
+import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
@@ -43,6 +46,21 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 		salableProduct.setPrice(commonUtils.getBigDecimal(unitPrice));
 		return salableProduct;
 	}
+	*/
+	
+	@Override
+	public SalableProduct instanciateOneByProductCode(String productCode, String price) {
+		SalableProduct salableProduct = new SalableProduct(inject(ProductDao.class).read(productCode), commonUtils.getBigDecimal(price));
+		return salableProduct;
+	}
+
+	@Override
+	public List<SalableProduct> instanciateManyByProductCodes(String[][] arguments) {
+		List<SalableProduct> list = new ArrayList<>();
+		for(String[] argument : arguments)
+			list.add(instanciateOneByProductCode(argument[0], argument[1]));
+		return list;
+	}
 
 	@Override
 	public List<SalableProduct> instanciateMany(String[][] arguments) {
@@ -50,7 +68,7 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 		for(String[] info : arguments)
 			list.add(instanciateOne(info[0], info.length>1?info[1]:null));
 		return list;
-	}*/
+	}
 	
 	@Override
 	public SalableProduct create(SalableProduct salableProduct) {
@@ -58,6 +76,8 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 			salableProduct.setCode(salableProduct.getProduct().getCode());
 		if(StringUtils.isBlank(salableProduct.getName()))
 			salableProduct.setName(salableProduct.getProduct().getName());
+		if(salableProduct.getProduct()==null)
+			salableProduct.setProduct(inject(ProductDao.class).read(salableProduct.getCode()));
 		return super.create(salableProduct);
 	}
 	
@@ -83,4 +103,5 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 	protected SalableProductInstanceDao getItemDao() {
 		return salableProductInstanceDao;
 	}
+
 }

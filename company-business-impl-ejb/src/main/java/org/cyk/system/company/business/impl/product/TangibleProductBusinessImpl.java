@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.sale.SaleProduct;
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 
 @Stateless
@@ -23,7 +23,7 @@ public class TangibleProductBusinessImpl extends AbstractProductBusinessImpl<Tan
     }
 	
 	@Override
-	protected Set<TangibleProduct> products(Collection<SaleProduct> saleProducts) {
+	protected Set<TangibleProduct> products(Collection<SalableProductCollectionItem> saleProducts) {
 	
 		return null;
 	}

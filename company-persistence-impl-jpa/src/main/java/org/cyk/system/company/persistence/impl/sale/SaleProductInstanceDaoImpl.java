@@ -4,8 +4,8 @@ import java.util.Collection;
 
 import javax.persistence.NoResultException;
 
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.SalableProductInstance;
-import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.persistence.api.sale.SaleProductInstanceDao;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
@@ -26,7 +26,7 @@ public class SaleProductInstanceDaoImpl extends AbstractTypedDao<SaleProductInst
 	}
 	
 	@Override
-	public Collection<SaleProductInstance> readBySaleProduct(SaleProduct saleProduct) {
+	public Collection<SaleProductInstance> readBySaleProduct(SalableProductCollectionItem saleProduct) {
 		return namedQuery(readBySaleProduct).parameter(SaleProductInstance.FIELD_SALE_PRODUCT, saleProduct).resultMany();
 	}
 

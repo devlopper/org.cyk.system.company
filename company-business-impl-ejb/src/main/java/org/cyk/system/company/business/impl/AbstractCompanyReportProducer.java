@@ -1,19 +1,14 @@
 package org.cyk.system.company.business.impl;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Collection;
 
-import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementReport;
-import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleReport;
-import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
-import org.cyk.system.root.business.api.time.TimeBusiness;
 import org.cyk.system.root.business.impl.AbstractRootReportProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +36,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	}
 	
 	protected void set(Sale sale,SaleReport report){
+		/*
 		Company company = sale.getCashier().getCashRegister().getOwnedCompany().getCompany();
 		BigDecimal numberOfProducts = BigDecimal.ZERO;
 		for(SaleProduct sp : sale.getSaleProducts())
@@ -65,6 +61,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		report.setVatRate(format(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
 		report.setAmountDueNoTaxes(format(sale.getCost().getValue().subtract(sale.getCost().getTax()).setScale(2)));
 		report.setVatAmount(format(sale.getCost().getTax().setScale(2)));
+		*/
 	}
 	
 	protected void set(SaleCashRegisterMovement saleCashRegisterMovement,SaleCashRegisterMovementReport report) {
@@ -82,7 +79,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 					lastSaleCashRegisterMovement = s;
 			}
 			
-		report.setAmountDue(format(lastSaleCashRegisterMovement==null ? saleCashRegisterMovement.getSale().getCost().getValue() : lastSaleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
+		//report.setAmountDue(format(lastSaleCashRegisterMovement==null ? saleCashRegisterMovement.getSale().getCost().getValue() : lastSaleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
 		report.setAccountingPeriod(report.getSale().getAccountingPeriod());
 		report.setAmountIn(format(saleCashRegisterMovement.getAmountIn()));
 		report.setAmountOut(format(saleCashRegisterMovement.getAmountOut()));

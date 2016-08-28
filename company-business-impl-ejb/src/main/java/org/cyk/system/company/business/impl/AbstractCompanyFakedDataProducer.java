@@ -8,8 +8,6 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
-import lombok.Getter;
-
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.production.ProductionBusiness;
 import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
@@ -41,12 +39,13 @@ import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
-import org.cyk.system.root.business.impl.RootRandomDataProvider;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.system.root.model.userinterface.InputName;
 import org.cyk.system.root.persistence.api.party.ApplicationDao;
 import org.cyk.utility.common.generator.RandomDataProvider;
+
+import lombok.Getter;
 
 @Getter
 public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedDataProducer implements Serializable {
@@ -70,25 +69,6 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	@Inject protected CashRegisterDao cashRegisterDao;
 	@Inject protected SalableProductInstanceDao salableProductInstanceDao;
 	@Inject protected ApplicationDao applicationDao;
-	
-	@Override
-	protected void initialisation() {
-		super.initialisation();
-		rootRandomDataProvider.getRandomDataProviderListeners().add(new RootRandomDataProvider.RootRandomDataProviderAdapter(){
-			private static final long serialVersionUID = -4292999908835323092L;
-
-			@Override
-			public void set(Object object) {
-				super.set(object);
-				if(object instanceof Reseller){
-					((Reseller)object).setProductionUnit(rootRandomDataProvider.oneFromDatabase(ProductionUnit.class));
-					((Reseller)object).setSalary(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 100000)));
-					((Reseller)object).setAmountGap(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 100000)));
-					((Reseller)object).setPayable(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 100000)));
-				}
-			}
-		});
-	}
 	
 	@Override
 	protected Package getBasePackage() {

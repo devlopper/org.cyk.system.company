@@ -8,9 +8,8 @@ import java.util.List;
 
 import javax.inject.Singleton;
 
-import lombok.Getter;
-
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
+import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
@@ -18,9 +17,10 @@ import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.structure.Employee;
+
+import lombok.Getter;
 
 @Singleton @Getter
 public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataProducer implements Serializable {
@@ -97,7 +97,7 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 		}
 		flush(SalableProductInstanceCashRegister.class, salableProductInstanceCashRegisters);
 		*/
-		rootRandomDataProvider.createActor(Customer.class, 5);
+		inject(CustomerBusiness.class).create(inject(CustomerBusiness.class).instanciateManyRandomly(5));
 		
 	}
 

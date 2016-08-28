@@ -15,13 +15,12 @@ import javax.inject.Inject;
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
-import org.cyk.system.company.persistence.api.sale.SaleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockTangibleProductMovementDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.api.Crud;
@@ -74,9 +73,9 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 		/*
 		 * We need to update the stock
 		 */
-		Collection<SaleProduct> saleProducts = inject(SaleProductDao.class).readBySale(sale);
+		Collection<SalableProductCollectionItem> saleProducts = null;//inject(SalableProductCollectionItemDao.class).readBySale(sale);
 		Collection<TangibleProduct> tangibleProducts = new LinkedHashSet<>();
-		for(SaleProduct saleProduct : saleProducts)
+		for(SalableProductCollectionItem saleProduct : saleProducts)
 			if(saleProduct.getSalableProduct().getProduct() instanceof TangibleProduct)
 				tangibleProducts.add((TangibleProduct) saleProduct.getSalableProduct().getProduct());
 	
@@ -86,7 +85,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 				;
 			else{
 				BigDecimal count = BigDecimal.ZERO;
-				for(SaleProduct saleProduct : saleProducts)
+				for(SalableProductCollectionItem saleProduct : saleProducts)
 					if(saleProduct.getSalableProduct().getProduct().equals(stockableTangibleProduct.getTangibleProduct()))
 						count = count.add(saleProduct.getQuantity());
 				StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement(stockableTangibleProduct
