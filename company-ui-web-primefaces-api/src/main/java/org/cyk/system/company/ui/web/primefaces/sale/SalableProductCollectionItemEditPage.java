@@ -7,14 +7,10 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.ui.web.primefaces.CostFormModel;
-import org.cyk.system.root.model.AbstractCollectionItem;
 import org.cyk.ui.web.primefaces.page.AbstractCollectionItemEditPage;
 import org.cyk.utility.common.annotation.FieldOverride;
 import org.cyk.utility.common.annotation.user.interfaces.IncludeInputs;
@@ -25,18 +21,16 @@ import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneAutoComplete;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Named @ViewScoped @Getter @Setter
-public class SalableProductCollectionItemEditPage extends AbstractCollectionItemEditPage<SalableProductCollectionItem> implements Serializable {
+public class SalableProductCollectionItemEditPage extends AbstractCollectionItemEditPage.AbstractDefault<SalableProductCollectionItem,SalableProductCollection> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
-	@Override
-	protected AbstractCollectionItem<?> getItem() {
-		return identifiable;
-	}
-	
 	@Getter @Setter @FieldOverride(name=Form.FIELD_COLLECTION,type=SalableProductCollection.class)
-	public static class Form extends AbstractCollectionItemEditPage.AbstractForm<SalableProductCollection,SalableProductCollectionItem> implements Serializable{
+	public static class Form extends AbstractCollectionItemEditPage.AbstractForm.AbstractDefault<SalableProductCollection,SalableProductCollectionItem> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 	
 		@Input @InputChoice @InputChoiceAutoComplete @InputOneChoice @InputOneAutoComplete @NotNull private SalableProduct salableProduct;

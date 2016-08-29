@@ -45,4 +45,10 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 		return instances;
 	}
 	
+	public static final String FIELD_SALABLE_PRODUCT = "salableProduct";
+	public static final String FIELD_QUANTITY = "quantity";
+	public static final String FIELD_REDUCTION = "reduction";
+	public static final String FIELD_COMMISSION = "commission";
+	public static final String FIELD_COST = "cost";
+	
 }

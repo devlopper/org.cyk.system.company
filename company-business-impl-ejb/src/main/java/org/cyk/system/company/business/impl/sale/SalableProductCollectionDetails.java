@@ -18,7 +18,7 @@ public class SalableProductCollectionDetails extends AbstractCollectionDetails<S
 	
 	private static final long serialVersionUID = -4741435164709063863L;
 	
-	@Input @InputText private String accountingPeriod,quantity;
+	@Input @InputText private String accountingPeriod;
 	@IncludeInputs(layout=Layout.VERTICAL) private CostDetails cost;
 	
 	public SalableProductCollectionDetails(SalableProductCollection salableProductCollection) {

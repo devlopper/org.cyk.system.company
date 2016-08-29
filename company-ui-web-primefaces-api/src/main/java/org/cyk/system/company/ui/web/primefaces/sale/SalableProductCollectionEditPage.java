@@ -34,9 +34,9 @@ public class SalableProductCollectionEditPage extends AbstractSalableProductColl
 		
 		@Input @InputChoice @InputOneChoice @InputOneCombo private AccountingPeriod accountingPeriod;
 		
-		@IncludeInputs private CostFormModel cost = new CostFormModel();
+		@IncludeInputs(layout=IncludeInputs.Layout.VERTICAL) private CostFormModel cost = new CostFormModel();
 		
-		@Input @InputBooleanButton private Boolean autoComputeValueAddedTax = Boolean.FALSE;
+		@Input @InputBooleanButton private Boolean autoComputeValueAddedTax = Boolean.TRUE;
 				
 		public static final String FIELD_ACCOUNTINGPERIOD = "accountingPeriod";
 		public static final String FIELD_COST = "cost";

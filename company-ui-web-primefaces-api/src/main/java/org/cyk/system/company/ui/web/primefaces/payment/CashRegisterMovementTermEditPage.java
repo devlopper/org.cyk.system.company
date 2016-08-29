@@ -23,7 +23,7 @@ import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 
 @Named @ViewScoped @Getter @Setter
-public class CashRegisterMovementTermEditPage extends AbstractCollectionItemEditPage<CashRegisterMovementTerm> implements Serializable {
+public class CashRegisterMovementTermEditPage extends AbstractCollectionItemEditPage.AbstractDefault<CashRegisterMovementTerm,CashRegisterMovementTermCollection> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
