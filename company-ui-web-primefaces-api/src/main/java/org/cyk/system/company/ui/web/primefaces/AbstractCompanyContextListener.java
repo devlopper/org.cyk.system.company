@@ -14,6 +14,8 @@ import org.cyk.system.company.business.impl.product.IntangibleProductDetails;
 import org.cyk.system.company.business.impl.product.ProductCollectionDetails;
 import org.cyk.system.company.business.impl.product.TangibleProductDetails;
 import org.cyk.system.company.business.impl.sale.CustomerSalableProductDetails;
+import org.cyk.system.company.business.impl.sale.SalableProductCollectionDetails;
+import org.cyk.system.company.business.impl.sale.SalableProductCollectionItemDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceCashRegisterDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceDetails;
@@ -33,6 +35,8 @@ import org.cyk.system.company.model.product.ProductCollection;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.CustomerSalableProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.SalableProductCollection;
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
@@ -51,6 +55,8 @@ import org.cyk.system.company.ui.web.primefaces.product.IntangibleProductEditPag
 import org.cyk.system.company.ui.web.primefaces.product.ProductCollectionEditPage;
 import org.cyk.system.company.ui.web.primefaces.product.TangibleProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.CustomerSalableProductEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.SalableProductCollectionEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.SalableProductCollectionItemEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceCashRegisterEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceCashRegisterQueryManyFormModel;
@@ -132,6 +138,12 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProduct.class, SalableProductEditPage.Form.class, SalableProductDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(SalableProduct.class, null);
 		//webNavigationManager.useDynamicSelectView(SalableProduct.class);
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProductCollection.class, SalableProductCollectionEditPage.Form.class, SalableProductCollectionDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(SalableProductCollection.class, null);
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProductCollectionItem.class, SalableProductCollectionItemEditPage.Form.class, SalableProductCollectionItemDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(SalableProductCollectionItem.class, null);
 		
 		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProductInstance.class, SalableProductInstanceEditPage.Form.class, SalableProductInstanceDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(SalableProductInstance.class, null);

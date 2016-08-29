@@ -12,11 +12,12 @@ import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.root.model.AbstractCollection;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
+import org.cyk.utility.common.annotation.ModelBean.GenderType;
 
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS)
+@Getter @Setter @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE)
 public class SalableProductCollection extends AbstractCollection<SalableProductCollectionItem> implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;

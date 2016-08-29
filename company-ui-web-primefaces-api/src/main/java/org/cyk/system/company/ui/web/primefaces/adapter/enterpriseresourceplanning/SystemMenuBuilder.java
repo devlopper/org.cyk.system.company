@@ -16,6 +16,8 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.CustomerSalableProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.SalableProductCollection;
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Employee;
@@ -83,6 +85,8 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 		Commandable module = createModuleCommandable(Sale.class, null);
 		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_SALE).getName());
 		module.addChild(createListCommandable(SalableProduct.class, null));
+		module.addChild(createListCommandable(SalableProductCollection.class, null));
+		module.addChild(createListCommandable(SalableProductCollectionItem.class, null));
 		//module.addChild(createListCommandable(SalableProductInstance.class, null));
 		
 		module.addChild(createListCommandable(Customer.class, null));

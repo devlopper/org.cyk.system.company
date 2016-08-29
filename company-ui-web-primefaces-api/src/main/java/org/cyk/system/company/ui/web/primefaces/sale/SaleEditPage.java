@@ -1,14 +1,12 @@
 package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -17,16 +15,8 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
-import org.cyk.system.company.business.api.payment.CashierBusiness;
-import org.cyk.system.company.business.api.sale.CustomerBusiness;
-import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
-import org.cyk.system.company.business.impl.CompanyReportRepository;
-import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.payment.Cashier;
@@ -36,22 +26,8 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleConfiguration;
-import org.cyk.system.company.model.sale.SaleProduct;
-import org.cyk.system.company.model.sale.SaleProductInstance;
-import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.model.network.UniformResourceLocatorParameter;
-import org.cyk.system.root.model.party.person.Person;
-import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
-import org.cyk.ui.api.model.AbstractItemCollection;
-import org.cyk.ui.api.model.AbstractItemCollectionItem;
-import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
-import org.cyk.ui.web.api.ItemCollectionWebAdapter;
-import org.cyk.ui.web.primefaces.Commandable;
-import org.cyk.ui.web.primefaces.ItemCollection;
-import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
-import org.cyk.utility.common.ListenerUtils;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputCalendar;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
@@ -60,7 +36,6 @@ import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.cyk.utility.common.cdi.BeanAdapter;
-import org.omnifaces.util.Faces;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializable {
@@ -88,8 +63,8 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	
 	@Inject private SaleCashRegisterMovementController cashRegisterController;
 	
-	private ItemCollection<SaleProductItem,SaleProduct> saleProductCollection;
-	
+	//private ItemCollection<SaleProductItem,SaleProduct> saleProductCollection;
+	/*
 	@Override
 	protected void initialisation() {
 		super.initialisation();
@@ -257,7 +232,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		saleProductInstance.getProcessing().setDate(null);
 	}
 	
-	/**/
+	
 	
 	@Override
 	protected Sale instanciateIdentifiable() {
@@ -399,7 +374,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		
 		private List<SalableProductInstance> instanceChoices;
 		
-	}
+	}*/
 	
 	/**/
 	
@@ -422,7 +397,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		
 		@Input @InputChoice @InputOneChoice @InputOneCombo private CashRegisterMovementMode cashRegisterMovementMode;
 		@Input @InputText private String supportingDocumentIdentifier;
-		
+		/*
 		private SaleProduct saleProduct;
 		private SaleProductInstance saleProductInstance;
 		
@@ -439,7 +414,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 				saleProduct = identifiable.getSaleProducts().iterator().next();
 			}
 		}
-		
+		*/
 		@Override
 		public void write() {
 			super.write();
@@ -499,7 +474,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 				}
 				@Override
 				public BigDecimal getCost(Sale sale) {
-					return sale.getSaleProducts().iterator().next().getSalableProduct().getPrice();
+					return null;//sale.getSaleProducts().iterator().next().getSalableProduct().getPrice();
 				}
 				@Override
 				public BigDecimal getAmountIn(Sale sale) {

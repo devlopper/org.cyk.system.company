@@ -1,9 +1,7 @@
 package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.util.Collection;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -12,30 +10,20 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
-import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleProductBusiness;
-import org.cyk.system.company.business.api.sale.SaleProductInstanceBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
+import org.cyk.system.company.business.impl.sale.SalableProductCollectionItemDetails;
 import org.cyk.system.company.business.impl.sale.SaleCashRegisterMovementDetails;
-import org.cyk.system.company.business.impl.sale.SaleProductDetails;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.sale.SaleProduct;
-import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.business.impl.mathematics.MovementDetails;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
-import org.cyk.ui.api.model.table.Column;
-import org.cyk.ui.api.model.table.ColumnAdapter;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
 
@@ -49,10 +37,52 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 	@Inject private CompanyBusinessLayer companyBusinessLayer;
 	@Inject private CompanyWebManager companyWebManager;
 	
-	private Table<SaleProductDetails> saleProductTable;
+	private Table<SalableProductCollectionItemDetails> saleProductTable;
 	private Table<SaleCashRegisterMovementDetails> saleCashRegisterMovementTable;
-	
-	@Override
+	/*
+	@Override@Getter @Setter
+	public abstract class AbstractMovementCollectionEditPage<COLLECTION extends AbstractIdentifiable> extends AbstractCollectionEditPage<COLLECTION> implements Serializable {
+
+		private static final long serialVersionUID = 3274187086682750183L;
+		
+		protected abstract MovementCollection getMovementCollection();
+		
+		@Override
+		protected AbstractCollection<?> getCollection() {
+			return getMovementCollection();
+		}
+		
+		@Getter @Setter
+		public static abstract class AbstractMovementCollectionForm<COLLECTION extends AbstractIdentifiable> extends AbstractForm<COLLECTION> implements Serializable{
+			private static final long serialVersionUID = -4741435164709063863L;
+			
+			protected abstract MovementCollection getMovementCollection();
+			
+			@Override
+			protected AbstractCollection<?> getCollection() {
+				return getMovementCollection();
+			}
+			
+			
+			@Getter @Setter
+			public static abstract class Default<COLLECTION extends AbstractCollection<?>> extends AbstractMovementCollectionForm<COLLECTION> implements Serializable{
+				private static final long serialVersionUID = -4741435164709063863L;
+				
+				
+				
+			}
+			
+		}
+		
+		@Getter @Setter
+		public static abstract class AbstractDefaultForm<COLLECTION extends AbstractCollection<?>> extends AbstractForm.Default<COLLECTION> implements Serializable{
+			private static final long serialVersionUID = -4741435164709063863L;
+
+			
+		}
+
+	}*/
+
 	protected void initialisation() {
 		super.initialisation();
 		/*
@@ -70,8 +100,10 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 			}
 		}); 
 		*/
+		
+		/*
 		if(Boolean.TRUE.equals(SHOW_SALE_PRODUCT_TABLE))
-			saleProductTable = createDetailsTable(SaleProductDetails.class, new DetailsConfigurationListener.Table.Adapter<SaleProduct, SaleProductDetails>(SaleProduct.class, SaleProductDetails.class){
+			saleProductTable = createDetailsTable(SalableProductCollectionItemDetails.class, new DetailsConfigurationListener.Table.Adapter<SaleProduct, SalableProductCollectionItemDetails>(SaleProduct.class, SalableProductCollectionItemDetails.class){
 				private static final long serialVersionUID = 1L;
 				@Override
 				public Collection<SaleProduct> getIdentifiables() {
@@ -80,9 +112,9 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 				}
 				
 				@Override
-				public Collection<SaleProductDetails> getDatas() {
-					Collection<SaleProductDetails> details = super.getDatas();
-					for(SaleProductDetails saleProductDetails :details){
+				public Collection<SalableProductCollectionItemDetails> getDatas() {
+					Collection<SalableProductCollectionItemDetails> details = super.getDatas();
+					for(SalableProductCollectionItemDetails saleProductDetails :details){
 						Collection<SaleProductInstance> saleProductInstances = inject(SaleProductInstanceBusiness.class).findBySaleProduct(saleProductDetails.getMaster());
 						saleProductDetails.setInstances(saleProductInstances.toString());
 					}
@@ -90,7 +122,7 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 				}
 				
 				@Override
-				public SaleProductDetails createData(SaleProduct saleProduct) {
+				public SalableProductCollectionItemDetails createData(SaleProduct saleProduct) {
 					return super.createData(saleProduct);
 				}
 			});
@@ -120,6 +152,8 @@ public class SaleConsultPage extends AbstractConsultPage<Sale> implements Serial
 					column.setTitle(text("field.amount"));
 			}
 		});
+		
+		*/
 	}
 	
 	@Override

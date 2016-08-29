@@ -1,17 +1,18 @@
 package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.cyk.system.company.business.api.accounting.AbstractAccountingPeriodResultsBusiness;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
@@ -21,41 +22,26 @@ import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.ProductCategoryBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.api.sale.SaleProductBusiness;
-import org.cyk.system.company.business.api.sale.SaleProductBusiness.SalesResultsCartesianModelParameters;
 import org.cyk.system.company.model.accounting.AbstractAccountingPeriodResults;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
 import org.cyk.system.company.model.accounting.AccountingPeriodProductCategory;
-import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
-import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleProduct;
 import org.cyk.system.company.model.sale.SaleResults;
-import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.root.business.api.chart.AbstractChartModel.LegendPosition;
-import org.cyk.system.root.business.api.chart.CartesianModel;
 import org.cyk.system.root.business.api.chart.PieModel;
 import org.cyk.system.root.business.api.time.TimeDivisionTypeBusiness;
 import org.cyk.system.root.model.AbstractEnumeration;
-import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.ui.api.model.table.Row;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.Tree;
-import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.data.collector.form.FormOneData;
 import org.cyk.ui.web.primefaces.page.AbstractDashboardPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.PieChartModel;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleDashBoardPage extends AbstractDashboardPage implements Serializable {
@@ -66,7 +52,7 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 	@Inject private ProductBusiness productBusiness;
 	@Inject private ProductCategoryBusiness productCategoryBusiness;
 	@Inject private SaleBusiness saleBusiness;
-	@Inject private SaleProductBusiness saleProductBusiness;
+	//@Inject private SaleProductBusiness saleProductBusiness;
 	@Inject private TimeDivisionTypeBusiness timeDivisionTypeBusiness;
 	@Inject private AccountingPeriodBusiness accountingPeriodBusiness;
 	@Inject private AccountingPeriodProductBusiness accountingPeriodProductBusiness;
@@ -89,7 +75,7 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		Long productCategoryId = requestParameterLong(uiManager.businessEntityInfos(ProductCategory.class).getIdentifier());
+		/*Long productCategoryId = requestParameterLong(uiManager.businessEntityInfos(ProductCategory.class).getIdentifier());
 		if(productCategoryId!=null)
 			productCategory = productCategoryBusiness.find(productCategoryId);
 		
@@ -151,7 +137,7 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 					return super.build(data,field);
 				}
 			}); 
-		}
+		}*/
 	}
 	
 	@Override
@@ -198,13 +184,13 @@ public class SaleDashBoardPage extends AbstractDashboardPage implements Serializ
 		countPieChartModel = chartManager.pieModel(configurePieModel(countPieModel));
 		turnoverPieChartModel = chartManager.pieModel(configurePieModel(turnoverPieModel));
 	}
-	
+	/*
 	private CartesianModel configureCartesianModel(CartesianModel model){
 		model.setLegendPosition(LegendPosition.NORTH_EAST);
 		model.setShowTitle(Boolean.FALSE);
 		return model;
 	}
-	
+	*/
 	private PieModel configurePieModel(PieModel model){
 		model.setShowTitle(Boolean.FALSE);
 		return model;

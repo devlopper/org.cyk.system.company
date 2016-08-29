@@ -39,7 +39,7 @@ public class SaleEditPageAdapter extends SaleEditPage.Listener.Adapter.Default i
 	
 	@Override
 	public void processSaleCashRegisterMovement(SaleCashRegisterMovement saleCashRegisterMovement) {
-		saleCashRegisterMovement.getSale().getCost().setValue(saleCashRegisterMovement.getAmountIn());
+		saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().setValue(saleCashRegisterMovement.getAmountIn());
 	}
 	
 	

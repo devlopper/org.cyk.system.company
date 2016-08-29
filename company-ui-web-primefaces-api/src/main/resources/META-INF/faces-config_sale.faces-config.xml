@@ -55,6 +55,38 @@
 		</navigation-case>
 		
 		<navigation-case>
+			<from-outcome>salableProductCollectionEditView</from-outcome>
+			<to-view-id>/private/sale/salableproductcollection/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>salableProductCollectionListView</from-outcome>
+			<to-view-id>/private/sale/salableproductcollection/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>salableProductCollectionConsultView</from-outcome>
+			<to-view-id>/private/sale/salableproductcollection/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>salableProductCollectionItemEditView</from-outcome>
+			<to-view-id>/private/sale/salableproductcollectionitem/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>salableProductCollectionItemListView</from-outcome>
+			<to-view-id>/private/sale/salableproductcollectionitem/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>salableProductCollectionItemConsultView</from-outcome>
+			<to-view-id>/private/sale/salableproductcollectionitem/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
 			<from-outcome>salableProductInstanceEditView</from-outcome>
 			<to-view-id>/private/sale/salableproductinstance/edit.xhtml</to-view-id>
 			<redirect />
