@@ -3,6 +3,8 @@ package org.cyk.system.company.business.impl.sale;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
@@ -12,6 +14,7 @@ import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
@@ -24,11 +27,46 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	public SalableProductCollectionItemBusinessImpl(SalableProductCollectionItemDao dao) {
 		super(dao); 
 	}
-
+	
+	@Override
+	public SalableProductCollectionItem create(SalableProductCollectionItem salableProductCollectionItem) {
+		logTrace("create {}", salableProductCollectionItem);
+		super.create(salableProductCollectionItem);
+		if(Boolean.TRUE.equals(salableProductCollectionItem.getCascadeOperationToMaster()))
+			cascadeUpdateCollectionCost(salableProductCollectionItem);
+		logTrace("created {}", salableProductCollectionItem);
+		return salableProductCollectionItem;
+	}
+	
+	@Override
+	public SalableProductCollectionItem update(SalableProductCollectionItem salableProductCollectionItem) {
+		logTrace("update {}", salableProductCollectionItem);
+		super.update(salableProductCollectionItem);
+		if(Boolean.TRUE.equals(salableProductCollectionItem.getCascadeOperationToMaster()))
+			cascadeUpdateCollectionCost(salableProductCollectionItem);
+		logTrace("updated {}", salableProductCollectionItem);
+		return salableProductCollectionItem;
+	}
+	
+	@Override
+	public SalableProductCollectionItem delete(SalableProductCollectionItem salableProductCollectionItem) {
+		logTrace("delete {}", salableProductCollectionItem);
+		super.delete(salableProductCollectionItem);
+		if(Boolean.TRUE.equals(salableProductCollectionItem.getCascadeOperationToMaster()))
+			cascadeUpdateCollectionCost(salableProductCollectionItem);
+		logTrace("deleted {}", salableProductCollectionItem);
+		return salableProductCollectionItem;
+	}
+	
+	private void cascadeUpdateCollectionCost(SalableProductCollectionItem salableProductCollectionItem){
+		inject(SalableProductCollectionBusiness.class).computeCost(salableProductCollectionItem.getCollection());
+		inject(SalableProductCollectionDao.class).update(salableProductCollectionItem.getCollection());
+	}
+	
 	@Override
 	public SalableProductCollectionItem instanciateOne(SalableProductCollection salableProductCollection,
 			SalableProduct salableProduct, BigDecimal quantity, BigDecimal reduction, BigDecimal commission) {
-		SalableProductCollectionItem salableProductCollectionItem = instanciateOne();
+		SalableProductCollectionItem salableProductCollectionItem = instanciateOne(salableProduct.getCode(),salableProduct.getName());
 		salableProductCollectionItem.setCollection(salableProductCollection);
 		salableProductCollectionItem.setSalableProduct(salableProduct);
 		salableProductCollectionItem.setQuantity(quantity);
@@ -44,7 +82,7 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 		return instanciateOne(salableProductCollection, inject(SalableProductDao.class).read(salableProductCode), commonUtils.getBigDecimal(quantity)
 				, commonUtils.getBigDecimal(reduction), commonUtils.getBigDecimal(commission));
 	}
-	
+		
 	/*
 	private void cascade(SaleProduct saleProduct,Collection<SaleProductInstance> saleProductInstances,Crud crud){
 		new CascadeOperationListener.Adapter.Default<SaleProductInstance,SaleProductInstanceDao,SaleProductInstanceBusiness>(saleProductInstanceDao,inject(SaleProductInstanceBusiness.class))
@@ -88,8 +126,8 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 		return findBySales(Arrays.asList(sale));
 	}*/
 
-	@Override
-	public void process(SalableProductCollectionItem salableProductCollectionItem) {
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void computeCost(SalableProductCollectionItem salableProductCollectionItem) {
 		//logIdentifiable("Processing",saleProduct);
 		if(salableProductCollectionItem.getSalableProduct().getPrice()==null){
 			//This product has no unit price then the price to be paid must be specified by user

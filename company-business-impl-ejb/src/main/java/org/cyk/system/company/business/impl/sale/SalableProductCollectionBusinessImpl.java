@@ -2,6 +2,7 @@ package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collection;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -43,11 +44,12 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 		salableProductCollection.setAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent());
 		return salableProductCollection;
 	}
-	
+		
 	@Override
 	protected SalableProductCollectionItemDao getItemDao() {
 		return salableProductCollectionItemDao;
 	}
+	
 	@Override
 	protected SalableProductCollectionItemBusiness getItemBusiness() { 
 		return inject(SalableProductCollectionItemBusiness.class);
@@ -55,58 +57,55 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public SalableProductCollectionItem add(SalableProductCollection salableProductCollection, SalableProductCollectionItem salableProductCollectionItem) {
-		inject(SalableProductCollectionItemBusiness.class).process(salableProductCollectionItem);
-		Boolean found = Boolean.FALSE;
-		if(salableProductCollection.getCollection()!=null)
-			for(SalableProductCollectionItem index : salableProductCollection.getCollection())
-				if(index == salableProductCollectionItem){
-					found = Boolean.TRUE;
-					break;
-				}
-		if(Boolean.FALSE.equals(found))
-			salableProductCollection.add(salableProductCollectionItem);
-		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_VALUE, salableProductCollectionItem.getCost().getValue());
-		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE);
-		logIdentifiable("Selected", salableProductCollectionItem);
+		return addOrRemove(salableProductCollection, salableProductCollectionItem, Boolean.TRUE);
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public SalableProductCollectionItem remove(SalableProductCollection salableProductCollection,SalableProductCollectionItem salableProductCollectionItem) {
+		return addOrRemove(salableProductCollection, salableProductCollectionItem, Boolean.FALSE);
+	}
+	
+	private SalableProductCollectionItem addOrRemove(SalableProductCollection salableProductCollection, SalableProductCollectionItem salableProductCollectionItem,Boolean add) {
+		inject(SalableProductCollectionItemBusiness.class).computeCost(salableProductCollectionItem);
+		BigDecimal factor;
+		if(Boolean.TRUE.equals(add)){
+			Boolean found = Boolean.FALSE;
+			if(salableProductCollection.getCollection()!=null)
+				for(SalableProductCollectionItem index : salableProductCollection.getCollection())
+					if(index == salableProductCollectionItem){
+						found = Boolean.TRUE;
+						break;
+					}
+			if(Boolean.FALSE.equals(found))
+				salableProductCollection.add(salableProductCollectionItem);	
+			factor = BigDecimal.ONE;
+		}else{
+			if(salableProductCollection.getCollection()!=null)
+				salableProductCollection.getCollection().remove(salableProductCollectionItem);
+			salableProductCollection.addToDelete(salableProductCollectionItem);
+			factor = BigDecimal.ONE.negate();
+		}
+		
+		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_VALUE, salableProductCollectionItem.getCost().getValue().multiply(factor));
+		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE.multiply(factor));
+		logIdentifiable( Boolean.TRUE.equals(add) ? "add" : "remove", salableProductCollectionItem);
 		return salableProductCollectionItem;
 	}
-	/*
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public SalableProductCollectionItem selectProduct(Sale sale, SalableProduct salableProduct) {
-		return selectProduct(sale, salableProduct, BigDecimal.ONE);
-	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void unselectProduct(Sale sale, SalableProductCollectionItem saleProduct) {
-		if(sale.getSaleProducts() instanceof List<?>){
-			List<SaleProduct> list = (List<SaleProduct>) sale.getSaleProducts();
-			for(int i=0;i<list.size();){
-				if(list.get(i)==saleProduct){
-					list.remove(i);
-					break;
-				}else
-					i++;
-			}
+	public void computeCost(SalableProductCollection salableProductCollection,Collection<SalableProductCollectionItem> salableProductCollectionItems) {
+		logTrace("cost {} with items {}", salableProductCollection,salableProductCollectionItems);
+		salableProductCollection.getCost().setValue(BigDecimal.ZERO);
+		for(SalableProductCollectionItem salableProductCollectionItem : salableProductCollectionItems){
+			inject(SalableProductCollectionItemBusiness.class).computeCost(salableProductCollectionItem);
+			commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_VALUE, salableProductCollectionItem.getCost().getValue());
 		}
-		//sale.getCost().setValue(sale.getCost().getValue().subtract(saleProduct.getCost().getValue()));
-		commonUtils.increment(BigDecimal.class, sale.getCost(), Cost.FIELD_VALUE, saleProduct.getCost().getValue().negate());
-		commonUtils.increment(BigDecimal.class, sale.getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE.negate());
-		logIdentifiable("Unselected", saleProduct);
+		logTrace("costed {} with items {}", salableProductCollection,salableProductCollectionItems);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void applyChange(Sale sale, SalableProductCollectionItem saleProduct) {
-		inject(SaleProductBusiness.class).process(saleProduct);
-		updateCost(sale);
-		logIdentifiable("Change applied", saleProduct);
+	public void computeCost(SalableProductCollection salableProductCollection) {
+		computeCost(salableProductCollection,inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
 	}
 	
-	private void updateCost(Sale sale){
-		sale.getCost().setValue(BigDecimal.ZERO);
-		for(SaleProduct saleProduct : sale.getSaleProducts()){
-			sale.getCost().setValue(sale.getCost().getValue().add(saleProduct.getCost().getValue()));
-		}
-	}
-	*/
-
 }

@@ -45,6 +45,13 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 		return instances;
 	}
 	
+	@Override
+	public String getLogMessage() {
+		return String.format(LOG_FORMAT,getCode(),getQuantity(),cost.getLogMessage());
+	}
+	private static final String LOG_FORMAT = SalableProductCollectionItem.class.getSimpleName()+"(C=%s Q=%s %s)";
+	
+	
 	public static final String FIELD_SALABLE_PRODUCT = "salableProduct";
 	public static final String FIELD_QUANTITY = "quantity";
 	public static final String FIELD_REDUCTION = "reduction";

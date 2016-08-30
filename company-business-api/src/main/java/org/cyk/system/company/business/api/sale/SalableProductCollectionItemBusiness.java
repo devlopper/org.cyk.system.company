@@ -16,7 +16,7 @@ public interface SalableProductCollectionItemBusiness extends AbstractCollection
 			,String reduction,String commission);
 	
 	
-	void process(SalableProductCollectionItem salableProductCollectionItem);
+	void computeCost(SalableProductCollectionItem salableProductCollectionItem);
 	
 	/*
 	CartesianModel findCartesianModelTurnOver(SalesResultsCartesianModelParameters parameters);

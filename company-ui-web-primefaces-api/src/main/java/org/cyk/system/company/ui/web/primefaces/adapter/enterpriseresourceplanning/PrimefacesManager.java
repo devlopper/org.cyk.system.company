@@ -50,7 +50,9 @@ import org.cyk.system.company.ui.web.primefaces.structure.EmployeeEditPage;
 import org.cyk.system.company.ui.web.primefaces.structure.EmploymentAgreementEditPage;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.ui.api.command.menu.SystemMenu;
+import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.UserSession;
+import org.cyk.ui.web.primefaces.Table.ColumnAdapter;
 import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.page.DetailsConfiguration;
 
@@ -248,6 +250,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 				,SalableProductCollectionItemEditPage.Form.FIELD_SALABLE_PRODUCT,SalableProductCollectionItemEditPage.Form.FIELD_QUANTITY
 				//,SalableProductCollectionItemEditPage.Form.FIELD_REDUCTION,SalableProductCollectionItemEditPage.Form.FIELD_COMMISSION
 				,SalableProductCollectionItemEditPage.Form.FIELD_COST,CostFormModel.FIELD_VALUE);
+		
 		registerDetailsConfiguration(SalableProductCollectionItemDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
@@ -257,10 +260,27 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean build(Object data,Field field) {
-						return isFieldNameIn(field,SalableProductCollectionItemDetails.FIELD_CODE,SalableProductCollectionItemDetails.FIELD_QUANTITY
-								,SalableProductCollectionItemDetails.FIELD_UNIT_PRICE,SalableProductCollectionItemDetails.FIELD_COST,CostDetails.FIELD_VALUE);
+						if(data instanceof SalableProductCollectionItemDetails)
+							return isFieldNameIn(field,SalableProductCollectionItemDetails.FIELD_SALABLE_PRODUCT,SalableProductCollectionItemDetails.FIELD_QUANTITY
+								,SalableProductCollectionItemDetails.FIELD_COST);
+						if(data instanceof SalableProductDetails)
+							return isFieldNameIn(field,SalableProductDetails.FIELD_CODE,SalableProductDetails.FIELD_PRICE);
+						if(data instanceof CostDetails)
+							return isFieldNameIn(field,CostDetails.FIELD_VALUE);
+						return Boolean.FALSE;
 					}
 				};
+			}
+			@Override
+			public ColumnAdapter getTableColumnAdapter(@SuppressWarnings("rawtypes") Class clazz) {
+				return new Table.ColumnAdapter(){
+					private static final long serialVersionUID = 1L;
+					@Override
+					public Boolean isColumn(Field field) {
+						return isFieldNameIn(field,SalableProductCollectionItemDetails.FIELD_CODE,SalableProductCollectionItemDetails.FIELD_QUANTITY
+								,SalableProductCollectionItemDetails.FIELD_COST,CostDetails.FIELD_VALUE);
+					}
+				};			
 			}
 		});
 		
