@@ -12,12 +12,13 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
+import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
-import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.model.Cost;
+import org.cyk.system.company.model.sale.PointOfSaleReport;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
@@ -25,17 +26,21 @@ import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
-import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
+import org.cyk.system.root.business.api.GenericBusiness;
+import org.cyk.system.root.business.api.file.FileBusiness;
+import org.cyk.system.root.business.api.file.report.ReportBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.model.file.File;
+import org.cyk.system.root.model.file.FileIdentifiableGlobalIdentifier;
+import org.cyk.system.root.model.file.FileRepresentationType;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.party.person.Person;
-import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.ListenerUtils;
 
 @Stateless
@@ -43,8 +48,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	@Inject private PersonDao personDao;
-	@Inject private CashierDao cashierDao;
 	@Inject private CustomerDao customerDao;
 	
 	@Inject
@@ -64,7 +67,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Sale instanciateOne(Person person) {
 		Sale sale = instanciateOne();
-		sale.setCashier(inject(CashierBusiness.class).findByPerson(person));
 		return sale;
 	}
 	
@@ -72,7 +74,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	public Sale instanciateOne(String computedIdentifier,String cashierPersonCode, String customerRegistrationCode,String date,String taxable, String[][] salableProductInfos) {
 		Sale sale = instanciateOne();
 		sale.setCode(computedIdentifier);
-		sale.setCashier(cashierPersonCode==null?cashierDao.select().one():cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)));
+		//sale.setCashier(cashierPersonCode==null?cashierDao.select().one():cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)));
 		sale.setCustomer(customerRegistrationCode==null?null:customerDao.read(customerRegistrationCode));
 		sale.setBirthDate(StringUtils.isBlank(date) ? null : timeBusiness.parse(date));
 		sale.getSalableProductCollection().setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
@@ -160,6 +162,22 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 				listener.afterCreate(sale);
 			}});
 		return sale;
+	}
+	
+	@Override
+	public File createFile(Sale sale, String fileRepresentationTypeCode) {
+		File file = null;
+		if(FileRepresentationType.POINT_OF_SALE.equals(fileRepresentationTypeCode)){
+			SaleReport report = inject(CompanyReportProducer.class).produceSaleReport(sale);
+			PointOfSaleReport pointOfSaleReport = new PointOfSaleReport();
+			pointOfSaleReport.setSale(report);
+			ReportBasedOnTemplateFile<PointOfSaleReport> reportBasedOnTemplateFile = inject(ReportBusiness.class)
+					.buildBinaryContent(pointOfSaleReport, sale.getAccountingPeriod().getSaleConfiguration().getSaleReportTemplate().getTemplate(), ReportBusiness.DEFAULT_FILE_EXTENSION);
+			file = inject(FileBusiness.class).process(reportBasedOnTemplateFile.getBytes(), "report."+ReportBusiness.DEFAULT_FILE_EXTENSION);
+			FileIdentifiableGlobalIdentifier fileIdentifiableGlobalIdentifier = new FileIdentifiableGlobalIdentifier(file, sale);
+			inject(GenericBusiness.class).create(fileIdentifiableGlobalIdentifier);
+		}
+		return file;
 	}
 	
 	private void cascade(Sale sale,Collection<SaleStockTangibleProductMovement> saleStockTangibleProductMovements,Collection<SaleCashRegisterMovement> saleCashRegisterMovements,Crud crud){

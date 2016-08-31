@@ -33,8 +33,8 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	public CashRegisterMovement create(CashRegisterMovement cashRegisterMovement) {
 		inject(MovementBusiness.class).create(cashRegisterMovement.getMovement());
 		super.create(cashRegisterMovement);
-		if(cashRegisterMovement.getComputedIdentifier()==null)
-			cashRegisterMovement.setComputedIdentifier(generateIdentifier(cashRegisterMovement,CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFIER
+		if(cashRegisterMovement.getCode()==null)
+			cashRegisterMovement.setCode(generateIdentifier(cashRegisterMovement,CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFIER
 					,inject(AccountingPeriodBusiness.class).findCurrent()
 				.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator()));
 		dao.update(cashRegisterMovement);

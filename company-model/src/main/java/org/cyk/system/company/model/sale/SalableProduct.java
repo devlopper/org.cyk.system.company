@@ -43,11 +43,8 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 	
 	/**/
 	
-	
-
 	private static final String LOG_FORMAT = SalableProduct.class.getSimpleName()+"(Code=%s Price=%s)";
 
-	
 	/**/
 	
 	public static final String FIELD_PRODUCT = "product";

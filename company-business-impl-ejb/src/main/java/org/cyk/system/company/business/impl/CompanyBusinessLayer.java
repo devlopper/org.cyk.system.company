@@ -30,7 +30,6 @@ import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
-import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.DivisionType;
@@ -105,6 +104,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			@Override
 			public String format(Production production, ContentType contentType) {
 				return inject(TimeBusiness.class).formatDate(production.getExistencePeriod().getFromDate());
+			}
+		});
+		formatterBusiness.registerFormatter(AccountingPeriod.class, new AbstractFormatter<AccountingPeriod>() {
+			private static final long serialVersionUID = 3952155697329951912L;
+			@Override
+			public String format(AccountingPeriod accountingPeriod, ContentType contentType) {
+				return inject(TimeBusiness.class).formatPeriodFromTo(accountingPeriod.getExistencePeriod());
 			}
 		});
 		formatterBusiness.registerFormatter(SalableProductInstance.class, new AbstractFormatter<SalableProductInstance>() {
@@ -227,12 +233,12 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		//ownedCompanyBusiness.create(ownedCompany);
 		installObject(-1,inject(OwnedCompanyBusiness.class),ownedCompany);
 		
-		FiniteStateMachine finiteStateMachine = rootDataProducerHelper.createFiniteStateMachine("SALE_FINITE_MACHINE_STATE"
+		/*FiniteStateMachine finiteStateMachine = rootDataProducerHelper.createFiniteStateMachine("SALE_FINITE_MACHINE_STATE"
     			, new String[]{"SALE_FINITE_MACHINE_ALPHABET_VALID"}
     		, new String[]{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}
     		, Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE, new String[]{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}, new String[][]{
     			{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE,"SALE_FINITE_MACHINE_ALPHABET_VALID",Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}
-    	});
+    	});*/
 		
 		FiniteStateMachine salableProductInstanceCashRegisterFiniteStateMachine = rootDataProducerHelper.createFiniteStateMachine(CompanyConstant.GIFT_CARD_WORKFLOW
     			, new String[]{CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SEND,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_RECEIVE,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE}
@@ -265,7 +271,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		accountingPeriod.getSaleConfiguration().setValueAddedTaxRate(BigDecimal.ZERO);
 		accountingPeriod.getSaleConfiguration().setIdentifierGenerator(stringGenerator("FACT","0", 8l, null, null,8l));
 		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(stringGenerator("PAIE","0", 8l, null, null,8l));
-		accountingPeriod.getSaleConfiguration().setFiniteStateMachine(finiteStateMachine);
+		//accountingPeriod.getSaleConfiguration().setFiniteStateMachine(finiteStateMachine);
 		accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterFiniteStateMachine(salableProductInstanceCashRegisterFiniteStateMachine);
 		accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterSaleConsumeState(inject(FiniteStateMachineStateDao.class).read(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD));
 		

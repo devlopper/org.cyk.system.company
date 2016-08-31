@@ -8,44 +8,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.cyk.system.company.model.accounting.AccountingPeriodReport;
-import org.cyk.system.root.model.party.person.ActorReport;
+import org.cyk.system.company.model.BalanceReport;
+import org.cyk.system.company.model.payment.CashRegisterMovementTermCollectionReport;
 
 @Getter @Setter @NoArgsConstructor
 public class SaleReport extends AbstractSaleReport<SaleReport> implements Serializable {
 
 	private static final long serialVersionUID = 7332510774063666925L;
 
-	private String numberOfProducts,vatRate,vatAmount,amountDueNoTaxes,welcomeMessage,goodByeMessage;
-	
-	private AccountingPeriodReport accountingPeriod = new AccountingPeriodReport();
-	private ActorReport cashier = new ActorReport();
-	private ActorReport customer = new ActorReport();
-	
-	private Collection<SaleProductReport> saleProducts = new ArrayList<>();
+	private BalanceReport balance = new BalanceReport();
+	private CashRegisterMovementTermCollectionReport cashRegisterMovementTermCollection = new CashRegisterMovementTermCollectionReport();
+	private Collection<SaleCashRegisterMovementReport> saleCashRegisterMovements = new ArrayList<>();
 
 	@Override
 	public void generate() {
 		super.generate();
-		title = "Facture";
-		numberOfProducts=provider.randomInt(1, 100)+"";
-		
-		vatRate="18";
-		amountDueNoTaxes=provider.randomInt(1, 1000000)+"";
-		vatAmount=provider.randomInt(1, 1000000)+"";
-		
-		welcomeMessage="Welcome";
-		goodByeMessage="Good bye";
-		
-		for(int i=0;i<6;i++){
-			SaleProductReport sp = new SaleProductReport();
-			sp.generate();
-			sp.setSaleReport(this);
-			saleProducts.add(sp);
+		balance.generate();
+		for(int i = 0 ; i < 2 ; i++){
+			SaleCashRegisterMovementReport saleCashRegisterMovement = new SaleCashRegisterMovementReport();
+			saleCashRegisterMovement.setSale(this);
+			saleCashRegisterMovement.generate();
+			saleCashRegisterMovements.add(saleCashRegisterMovement);
 		}
-		
 	}
-	
-	
-	
 }

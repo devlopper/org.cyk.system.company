@@ -12,6 +12,7 @@ import org.cyk.system.company.business.impl.payment.CashRegisterMovementTermColl
 import org.cyk.system.company.business.impl.payment.CashRegisterMovementTermDetails;
 import org.cyk.system.company.business.impl.payment.CashierDetails;
 import org.cyk.system.company.business.impl.product.IntangibleProductDetails;
+import org.cyk.system.company.business.impl.product.ProductDetails;
 import org.cyk.system.company.business.impl.product.TangibleProductDetails;
 import org.cyk.system.company.business.impl.sale.CustomerSalableProductDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductCollectionDetails;
@@ -106,7 +107,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 		});
 		
 		getFormConfiguration(CashRegisterMovement.class, Crud.CREATE).addRequiredFieldNames(CashRegisterMovementEditPage.Form.FIELD_CASH_REGISTER
-				,CashRegisterMovementEditPage.Form.FIELD_MOVEMENT,CashRegisterMovementEditPage.Form.FIELD_COMPUTED_IDENTIFIER,CashRegisterMovementEditPage.Form.FIELD_MODE);
+				,CashRegisterMovementEditPage.Form.FIELD_MOVEMENT,CashRegisterMovementEditPage.Form.FIELD_CODE,CashRegisterMovementEditPage.Form.FIELD_MODE);
 		registerDetailsConfiguration(CashRegisterMovementDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
@@ -117,7 +118,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					@Override
 					public Boolean build(Object data,Field field) {
 						return isFieldNameIn(field,CashRegisterMovementDetails.FIELD_CASH_REGISTER,CashRegisterMovementDetails.FIELD_MOVEMENT
-								,CashRegisterMovementDetails.FIELD_COMPUTED_IDENTIFIER,CashRegisterMovementDetails.FIELD_MODE);
+								,CashRegisterMovementDetails.FIELD_CODE,CashRegisterMovementDetails.FIELD_MODE);
 					}
 				};
 			}
@@ -249,7 +250,8 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 		getFormConfiguration(SalableProductCollectionItem.class, Crud.CREATE).addRequiredFieldNames(SalableProductCollectionItemEditPage.Form.FIELD_COLLECTION
 				,SalableProductCollectionItemEditPage.Form.FIELD_SALABLE_PRODUCT,SalableProductCollectionItemEditPage.Form.FIELD_QUANTITY
 				//,SalableProductCollectionItemEditPage.Form.FIELD_REDUCTION,SalableProductCollectionItemEditPage.Form.FIELD_COMMISSION
-				,SalableProductCollectionItemEditPage.Form.FIELD_COST,CostFormModel.FIELD_VALUE);
+				//,SalableProductCollectionItemEditPage.Form.FIELD_COST,CostFormModel.FIELD_VALUE
+				);
 		
 		registerDetailsConfiguration(SalableProductCollectionItemDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
@@ -277,8 +279,8 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean isColumn(Field field) {
-						return isFieldNameIn(field,SalableProductCollectionItemDetails.FIELD_CODE,SalableProductCollectionItemDetails.FIELD_QUANTITY
-								,SalableProductCollectionItemDetails.FIELD_COST,CostDetails.FIELD_VALUE);
+						return isFieldNameIn(field,SalableProductCollectionItemDetails.FIELD_SALABLE_PRODUCT,ProductDetails.FIELD_CODE
+								,SalableProductCollectionItemDetails.FIELD_QUANTITY,SalableProductCollectionItemDetails.FIELD_COST,CostDetails.FIELD_VALUE);
 					}
 				};			
 			}

@@ -28,6 +28,7 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 	//ReportBasedOnTemplateFile<SaleReport> findReport(Collection<Sale> sales);
 	ReportBasedOnTemplateFile<SaleReport> findReport(Sale sale);
 	
+	@Deprecated
 	Sale findByComputedIdentifier(String identifier);
 	
 	/**/

@@ -66,8 +66,8 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	
 	protected void set(SaleCashRegisterMovement saleCashRegisterMovement,SaleCashRegisterMovementReport report) {
 		set(saleCashRegisterMovement.getSale(), report.getSale());
-		report.setTitle(languageBusiness.findText("company.report.salecashregistermovement"));
-		report.setIdentifier(saleCashRegisterMovement.getCashRegisterMovement().getComputedIdentifier());
+		//report.setTitle(languageBusiness.findText("company.report.salecashregistermovement"));
+		//report.setIdentifier(saleCashRegisterMovement.getCashRegisterMovement().getCode());
 		
 		Collection<SaleCashRegisterMovement> saleCashRegisterMovements = inject(SaleCashRegisterMovementDao.class).readBySale(saleCashRegisterMovement.getSale());
 		SaleCashRegisterMovement lastSaleCashRegisterMovement = null;
@@ -80,7 +80,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 			}
 			
 		//report.setAmountDue(format(lastSaleCashRegisterMovement==null ? saleCashRegisterMovement.getSale().getCost().getValue() : lastSaleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
-		report.setAccountingPeriod(report.getSale().getAccountingPeriod());
+		//report.setAccountingPeriod(report.getSale().getAccountingPeriod());
 		report.setAmountIn(format(saleCashRegisterMovement.getAmountIn()));
 		report.setAmountOut(format(saleCashRegisterMovement.getAmountOut()));
 		report.setBalance(format(saleCashRegisterMovement.getBalance().getValue()));

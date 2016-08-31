@@ -21,11 +21,13 @@ public class SaleCashRegisterMovementDaoImpl extends AbstractTypedDao<SaleCashRe
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
+		/*
 		registerNamedQuery(readBySale, _select().where(SaleCashRegisterMovement.FIELD_SALE));
 		registerNamedQuery(sumAmount, "SELECT SUM(scrm.cashRegisterMovement.movement.value) FROM SaleCashRegisterMovement scrm WHERE scrm.sale = :sale");
 		registerNamedQuery(readBySupportingDocumentIdentifiers, "SELECT r FROM SaleCashRegisterMovement r WHERE r.cashRegisterMovement.movement.supportingDocumentIdentifier IN :identifiers");
 		registerNamedQuery(readByCashRegisterMovementComputedIdentifier, _select().where(commonUtils
 				.attributePath(SaleCashRegisterMovement.FIELD_CASH_REGISTER_MOVEMENT, CashRegisterMovement.FIELD_COMPUTED_IDENTIFIER),CashRegisterMovement.FIELD_COMPUTED_IDENTIFIER));
+		*/
 	}
 	
 	@Override

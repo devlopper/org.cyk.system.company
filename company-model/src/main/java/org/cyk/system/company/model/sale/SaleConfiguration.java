@@ -34,9 +34,9 @@ public class SaleConfiguration extends AbstractModelElement implements Serializa
 
 	@OneToOne private StringGenerator cashRegisterMovementIdentifierGenerator;
 	
-	@OneToOne @NotNull private FiniteStateMachine finiteStateMachine;
+	@OneToOne private FiniteStateMachine finiteStateMachine;
 	
-	@OneToOne @NotNull private FiniteStateMachine salableProductInstanceCashRegisterFiniteStateMachine;
+	@OneToOne private FiniteStateMachine salableProductInstanceCashRegisterFiniteStateMachine;
 	
 	@OneToOne private FiniteStateMachineState salableProductInstanceCashRegisterSaleConsumeState;
 	

@@ -36,7 +36,7 @@ public class FiniteStateMachineStateLogBusinessAdapter extends FiniteStateMachin
 				for(SalableProductInstanceCashRegister salableProductInstanceCashRegister : utilise)
 					for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovements)
 						if(salableProductInstanceCashRegister.getSalableProductInstance().getCode().equals(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getSupportingDocumentIdentifier())){
-							salableProductInstanceCashRegister.setCashRegister(saleCashRegisterMovement.getSale().getCashier().getCashRegister());
+							;//salableProductInstanceCashRegister.setCashRegister(saleCashRegisterMovement.getSale().getCashier().getCashRegister());
 						}				
 			}	
 		}	

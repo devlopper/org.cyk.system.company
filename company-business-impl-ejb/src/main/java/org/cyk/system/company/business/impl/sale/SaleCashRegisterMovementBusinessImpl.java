@@ -10,12 +10,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.AbstractCompanyBeanAdapter;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.Cashier;
@@ -32,13 +30,11 @@ import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
-import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
-import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 
 @Stateless
@@ -64,7 +60,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		saleCashRegisterMovement.setSale(saleDao.readByComputedIdentifier(saleComputedIdentifier));
 		saleCashRegisterMovement.setAmountIn(numberBusiness.parseBigDecimal(amount));
 		saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement());
-		saleCashRegisterMovement.getCashRegisterMovement().setComputedIdentifier(computedIdentifier);
+		saleCashRegisterMovement.getCashRegisterMovement().setCode(computedIdentifier);
 		saleCashRegisterMovement.getCashRegisterMovement().setCashRegister(cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)).getCashRegister());
 		saleCashRegisterMovement.getCashRegisterMovement().setMovement(inject(MovementBusiness.class).instanciateOne(
 				saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection(),amount));
@@ -93,7 +89,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		Customer customer = sale.getCustomer();
 		Integer soldOut = BigDecimal.ZERO.compareTo(sale.getBalance().getValue());
 		MovementAction movementAction = saleCashRegisterMovement.getCashRegisterMovement().getMovement().getAction();
-		Boolean deposit = movementAction.equals(saleCashRegisterMovement.getSale().getCashier().getCashRegister().getMovementCollection().getIncrementAction());
+		Boolean deposit = movementAction.equals(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction());
 		if(deposit)
 			exceptionUtils().exception(soldOut>=0, "exception.salecashregistermovement.in.soldout.yes");
 		else
@@ -140,8 +136,8 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		
 		if(Boolean.TRUE.equals(generatePos)){
 			SaleCashRegisterMovementReport saleCashRegisterMovementReport = inject(CompanyReportProducer.class).produceSaleCashRegisterMovementReport(saleCashRegisterMovement);
-			if(saleCashRegisterMovement.getReport()==null)
-				saleCashRegisterMovement.setReport(new File());
+			//if(saleCashRegisterMovement.getReport()==null)
+			//	saleCashRegisterMovement.setReport(new File());
 			rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement, saleCashRegisterMovementReport
 					,saleCashRegisterMovement.getSale().getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getSaleCashRegisterMovementReportTemplate().getTemplate(), Boolean.TRUE); 
 		}
@@ -189,8 +185,8 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public ReportBasedOnTemplateFile<SaleReport> findReport(SaleCashRegisterMovement saleCashRegisterMovement) {
-		return rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement.getReport(),
-				CompanyBusinessLayer.getInstance().getPointOfSalePaymentReportName()+Constant.CHARACTER_UNDESCORE+StringUtils.defaultString(saleCashRegisterMovement.getCashRegisterMovement().getComputedIdentifier(), saleCashRegisterMovement.getIdentifier().toString()));
+		return null;//rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement.getReport(),
+				//CompanyBusinessLayer.getInstance().getPointOfSalePaymentReportName()+Constant.CHARACTER_UNDESCORE+StringUtils.defaultString(saleCashRegisterMovement.getCashRegisterMovement().getCode(), saleCashRegisterMovement.getIdentifier().toString()));
 	}
 	
 	@Override

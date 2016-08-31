@@ -18,7 +18,6 @@ import lombok.Setter;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.root.model.AbstractIdentifiable;
-import org.cyk.system.root.model.file.File;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
@@ -36,8 +35,6 @@ public class SaleCashRegisterMovement extends AbstractIdentifiable implements Se
 	
 	@Embedded private Balance balance = new Balance();
 
-	@OneToOne private File report;
-	
 	public SaleCashRegisterMovement(Sale sale,CashRegisterMovement cashRegisterMovement) {
 		super();
 		this.sale = sale;
@@ -55,16 +52,6 @@ public class SaleCashRegisterMovement extends AbstractIdentifiable implements Se
 	@Override
 	public String getLogMessage() {
 		return String.format(LOG_FORMAT,sale==null?Constant.EMPTY_STRING:sale.getIdentifier(),amountIn,amountOut,cashRegisterMovement.getLogMessage(),balance.getLogMessage());
-	}
-	
-	@Override
-	public String toString() {
-		return cashRegisterMovement.getComputedIdentifier();
-	}
-	
-	@Override
-	public String getUiString() {
-		return cashRegisterMovement.getComputedIdentifier();
 	}
 	
 	/**/

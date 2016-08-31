@@ -65,8 +65,7 @@ public abstract class AbstractCashRegisterMovementEditPage<MOVEMENT extends Abst
 		
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull protected Movement movement;
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private CashRegisterMovementMode mode;
-		@Input @InputText private String computedIdentifier;
-		
+		@Input @InputText private String code;
 		
 		protected abstract CashRegisterMovement getCashRegisterMovement();
 		
@@ -76,7 +75,7 @@ public abstract class AbstractCashRegisterMovementEditPage<MOVEMENT extends Abst
 			cashRegister = getCashRegisterMovement().getCashRegister();
 			movement = getCashRegisterMovement().getMovement();
 			mode = getCashRegisterMovement().getMode();
-			computedIdentifier = getCashRegisterMovement().getComputedIdentifier();
+			code = getCashRegisterMovement().getCode();
 		}
 		
 		@Override
@@ -87,7 +86,7 @@ public abstract class AbstractCashRegisterMovementEditPage<MOVEMENT extends Abst
 			getCashRegisterMovement().setCashRegister(cashRegister);
 			getCashRegisterMovement().setMovement(movement);
 			getCashRegisterMovement().setMode(mode);
-			getCashRegisterMovement().setComputedIdentifier(computedIdentifier);
+			getCashRegisterMovement().setCode(code);
 			
 			
 		}
@@ -101,8 +100,7 @@ public abstract class AbstractCashRegisterMovementEditPage<MOVEMENT extends Abst
 		public static final String FIELD_CASH_REGISTER = "cashRegister";
 		public static final String FIELD_MOVEMENT = "movement";
 		public static final String FIELD_MODE = "mode";
-		public static final String FIELD_COMPUTED_IDENTIFIER = "computedIdentifier";
-		
+		public static final String FIELD_CODE = "code";
 	}
 
 }
