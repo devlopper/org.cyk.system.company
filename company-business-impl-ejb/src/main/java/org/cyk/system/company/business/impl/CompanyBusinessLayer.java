@@ -267,9 +267,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		Integer currentYear = new DateTime().getYear();
 		accountingPeriod.setExistencePeriod(new Period(new DateTime(currentYear, 1, 1, 0, 0).toDate(), new DateTime(currentYear, 12, 31, 23, 59).toDate()));
 		
-		accountingPeriod.getSaleConfiguration().setSaleReportTemplate(create(new ReportTemplate("POINT_OF_SALE_REPORT_A4"
-				,createFile("report/sale/point_of_sale_a4.jrxml", "point_of_sale_a4.jrxml"),null,null,null)));
-		accountingPeriod.getSaleConfiguration().setSaleCashRegisterMovementReportTemplate(create(new ReportTemplate("SALE_CASH_REGISTER_MOVEMENT_REPORT_A4"
+		accountingPeriod.getSaleConfiguration().setSaleReportTemplate(create(new ReportTemplate("INVOICE_REPORT_A4"
+				,createFile("report/sale/invoice_a4.jrxml", "invoice_a4.jrxml"),null,null,null)));
+		accountingPeriod.getSaleConfiguration().setSaleCashRegisterMovementReportTemplate(create(new ReportTemplate("PAYMENT_RECEIPT_REPORT_A4"
 				,createFile("report/sale/payment_receipt_a4.jrxml", "payment_receipt_a4.jrxml"),null,null,null)));
 		accountingPeriod.getSaleConfiguration().setValueAddedTaxRate(BigDecimal.ZERO);
 		accountingPeriod.getSaleConfiguration().setIdentifierGenerator(stringGenerator("FACT","0", 8l, null, null,8l));
