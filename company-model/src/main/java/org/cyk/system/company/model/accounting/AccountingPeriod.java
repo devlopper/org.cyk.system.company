@@ -32,6 +32,7 @@ public class AccountingPeriod extends AbstractIdentifiablePeriod implements Seri
 	@Embedded private StockConfiguration stockConfiguration = new StockConfiguration();
 	@Embedded private StockResults stockResults = new StockResults();
 	
+	@Deprecated //TODO is it necessary ? if yes then make it global
 	@Column(nullable=false) @NotNull private Boolean closed = Boolean.FALSE;
 	
 	@Override

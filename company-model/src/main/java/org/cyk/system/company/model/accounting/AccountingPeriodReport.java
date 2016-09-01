@@ -5,7 +5,7 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import org.cyk.system.company.model.sale.SaleConfigurationReport;
 import org.cyk.system.company.model.structure.CompanyReport;
 import org.cyk.utility.common.generator.AbstractGeneratable;
 
@@ -15,12 +15,11 @@ public class AccountingPeriodReport extends AbstractGeneratable<AccountingPeriod
 	private static final long serialVersionUID = 7967195187341455422L;
 	
 	private CompanyReport company = new CompanyReport();
-	private String valueAddedTaxRate;
-	private Boolean valueAddedTaxCollected=Boolean.FALSE;
+	private SaleConfigurationReport saleConfiguration = new SaleConfigurationReport();
 	
 	@Override
 	public void generate() {
-		valueAddedTaxRate = RandomStringUtils.randomNumeric(2);
+		saleConfiguration.generate();
 		company.generate();
 	}
 	

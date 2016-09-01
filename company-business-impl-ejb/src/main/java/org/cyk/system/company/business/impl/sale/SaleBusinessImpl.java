@@ -12,13 +12,13 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
-import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.sale.PointOfSaleReport;
+import org.cyk.system.company.model.sale.InvoiceReport;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
@@ -31,13 +31,8 @@ import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.business.api.GenericBusiness;
-import org.cyk.system.root.business.api.file.FileBusiness;
-import org.cyk.system.root.business.api.file.report.ReportBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.file.File;
-import org.cyk.system.root.model.file.FileIdentifiableGlobalIdentifier;
-import org.cyk.system.root.model.file.FileRepresentationType;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.party.person.Person;
@@ -165,18 +160,16 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	@Override
-	public File createFile(Sale sale, String fileRepresentationTypeCode) {
-		File file = null;
-		if(FileRepresentationType.POINT_OF_SALE.equals(fileRepresentationTypeCode)){
-			SaleReport report = inject(CompanyReportProducer.class).produceSaleReport(sale);
-			PointOfSaleReport pointOfSaleReport = new PointOfSaleReport();
-			pointOfSaleReport.setSale(report);
-			ReportBasedOnTemplateFile<PointOfSaleReport> reportBasedOnTemplateFile = inject(ReportBusiness.class)
-					.buildBinaryContent(pointOfSaleReport, sale.getAccountingPeriod().getSaleConfiguration().getSaleReportTemplate().getTemplate(), ReportBusiness.DEFAULT_FILE_EXTENSION);
-			file = inject(FileBusiness.class).process(reportBasedOnTemplateFile.getBytes(), "report."+ReportBusiness.DEFAULT_FILE_EXTENSION);
-			FileIdentifiableGlobalIdentifier fileIdentifiableGlobalIdentifier = new FileIdentifiableGlobalIdentifier(file, sale);
-			inject(GenericBusiness.class).create(fileIdentifiableGlobalIdentifier);
+	public File createFile(Sale sale, File file) {
+		if(file.getRepresentationType()==null){
+			
+		}else{
+			if(CompanyConstant.REPORT_INVOICE.equals(file.getRepresentationType().getCode())){
+				createReportFile(InvoiceReport.class, sale.getAccountingPeriod().getSaleConfiguration().getSaleReportTemplate().getTemplate(), sale, file);
+			}else if(CompanyConstant.REPORT_INVOICE_AND_PAYMENT_RECEIPT.equals(file.getRepresentationType().getCode()))
+				createReportFile(InvoiceReport.class, sale.getAccountingPeriod().getSaleConfiguration().getSaleReportTemplate().getTemplate(), sale, file);
 		}
+		
 		return file;
 	}
 	

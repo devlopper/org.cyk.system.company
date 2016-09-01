@@ -49,6 +49,7 @@ import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
 import org.cyk.system.root.model.ContentType;
+import org.cyk.system.root.model.file.FileRepresentationType;
 import org.cyk.system.root.model.file.report.ReportTemplate;
 import org.cyk.system.root.model.geography.ContactCollection;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
@@ -266,8 +267,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		Integer currentYear = new DateTime().getYear();
 		accountingPeriod.setExistencePeriod(new Period(new DateTime(currentYear, 1, 1, 0, 0).toDate(), new DateTime(currentYear, 12, 31, 23, 59).toDate()));
 		
-		accountingPeriod.getSaleConfiguration().setSaleReportTemplate(create(new ReportTemplate("SALE_REPORT_A4",createFile("report/sale/sale_a4.jrxml", "sale_a4.jrxml"),null,null,null)));
-		accountingPeriod.getSaleConfiguration().setSaleCashRegisterMovementReportTemplate(create(new ReportTemplate("SALE_CASH_REGISTER_MOVEMENT_REPORT_A4",createFile("report/sale/salecashregistermovement_a4.jrxml", "salecashregistermovement_a4.jrxml"),null,null,null)));
+		accountingPeriod.getSaleConfiguration().setSaleReportTemplate(create(new ReportTemplate("POINT_OF_SALE_REPORT_A4"
+				,createFile("report/sale/point_of_sale_a4.jrxml", "point_of_sale_a4.jrxml"),null,null,null)));
+		accountingPeriod.getSaleConfiguration().setSaleCashRegisterMovementReportTemplate(create(new ReportTemplate("SALE_CASH_REGISTER_MOVEMENT_REPORT_A4"
+				,createFile("report/sale/payment_receipt_a4.jrxml", "payment_receipt_a4.jrxml"),null,null,null)));
 		accountingPeriod.getSaleConfiguration().setValueAddedTaxRate(BigDecimal.ZERO);
 		accountingPeriod.getSaleConfiguration().setIdentifierGenerator(stringGenerator("FACT","0", 8l, null, null,8l));
 		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(stringGenerator("PAIE","0", 8l, null, null,8l));
@@ -290,6 +293,11 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDD);
 		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDI);
+		
+		createEnumeration(FileRepresentationType.class,CompanyConstant.REPORT_INVOICE);
+		createEnumeration(FileRepresentationType.class,CompanyConstant.REPORT_INVOICE_AND_PAYMENT_RECEIPT);
+		createEnumeration(FileRepresentationType.class,CompanyConstant.REPORT_PAYMENT_RECEIPT);
+		createEnumeration(FileRepresentationType.class,CompanyConstant.REPORT_PRO_FORMA_INVOICE);
 	}
 	
 	private void security(){ 

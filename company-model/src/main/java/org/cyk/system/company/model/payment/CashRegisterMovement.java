@@ -42,7 +42,7 @@ public class CashRegisterMovement extends AbstractIdentifiable implements Serial
 	
 	/**/
 	
-	public static final String FIELD_COMPUTED_IDENTIFIER = "computedIdentifier";
+	public static final String FIELD_MODE = "mode";
 	public static final String FIELD_MOVEMENT = "movement";
 	public static final String FIELD_CASH_REGISTER = "cashRegister";
 		

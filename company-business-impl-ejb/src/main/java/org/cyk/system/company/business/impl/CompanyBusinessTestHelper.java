@@ -235,7 +235,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     }
     
     public void writeSaleCashRegisterMovementReport(String identifier){
-    	writeReport(inject(SaleCashRegisterMovementBusiness.class).findReport(saleCashRegisterMovementDao.readByCashRegisterMovementComputedIdentifier(identifier)));
+    	writeReport(inject(SaleCashRegisterMovementBusiness.class).findReport(saleCashRegisterMovementDao.readByCashRegisterMovementCode(identifier)));
     }
     				    
     /*Assertions*/

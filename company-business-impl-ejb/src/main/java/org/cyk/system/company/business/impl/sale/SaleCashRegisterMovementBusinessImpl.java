@@ -10,18 +10,20 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.AbstractCompanyBeanAdapter;
 import org.cyk.system.company.model.Balance;
+import org.cyk.system.company.model.CompanyConstant;
+import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.system.company.model.payment.Cashier;
+import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.sale.Customer;
+import org.cyk.system.company.model.sale.PaymentReceiptReport;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovementReport;
 import org.cyk.system.company.model.sale.SaleReport;
+import org.cyk.system.company.persistence.api.payment.CashRegisterMovementModeDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
@@ -29,11 +31,10 @@ import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementAction;
-import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 
@@ -42,8 +43,6 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	private RootBusinessLayer rootBusinessLayer = RootBusinessLayer.getInstance();
-	
 	@Inject private SaleDao saleDao;
 	@Inject private CustomerDao customerDao;
 	@Inject private CashierDao cashierDao;
@@ -68,10 +67,10 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public SaleCashRegisterMovement instanciateOne(Sale sale,Person person,Boolean input) {
-		Cashier cashier = cashierDao.readByPerson(person);
-		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement(cashier.getCashRegister(),new Movement());
-		cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashier.getCashRegister().getMovementCollection(),input));
+	public SaleCashRegisterMovement instanciateOne(Sale sale,CashRegister cashRegister,Boolean input) {
+		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement(cashRegister,new Movement());
+		cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashRegister.getMovementCollection(),input));
+		cashRegisterMovement.setMode(inject(CashRegisterMovementModeDao.class).read(CashRegisterMovementMode.CASH));
 		SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement(sale,cashRegisterMovement);
 		logInstanceCreated(saleCashRegisterMovement);
 		return saleCashRegisterMovement;
@@ -134,13 +133,13 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		
 		logIdentifiable("Created",saleCashRegisterMovement);
 		
-		if(Boolean.TRUE.equals(generatePos)){
+		/*if(Boolean.TRUE.equals(generatePos)){
 			SaleCashRegisterMovementReport saleCashRegisterMovementReport = inject(CompanyReportProducer.class).produceSaleCashRegisterMovementReport(saleCashRegisterMovement);
 			//if(saleCashRegisterMovement.getReport()==null)
 			//	saleCashRegisterMovement.setReport(new File());
 			rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement, saleCashRegisterMovementReport
 					,saleCashRegisterMovement.getSale().getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getSaleCashRegisterMovementReportTemplate().getTemplate(), Boolean.TRUE); 
-		}
+		}*/
 		return saleCashRegisterMovement;
 	}
 	
@@ -202,6 +201,19 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	}
 	
 	/**/
+	
+	@Override
+	public File createFile(SaleCashRegisterMovement saleCashRegisterMovement, File file) {
+		if(file.getRepresentationType()==null){
+			
+		}else{ 
+			if(CompanyConstant.REPORT_PAYMENT_RECEIPT.equals(file.getRepresentationType().getCode())){
+				createReportFile(PaymentReceiptReport.class, saleCashRegisterMovement.getSale().getAccountingPeriod().getSaleConfiguration()
+						.getSaleCashRegisterMovementReportTemplate().getTemplate(), saleCashRegisterMovement, file);
+			}
+		}
+		return file;
+	}
 	
 	public static interface Listener{
 		

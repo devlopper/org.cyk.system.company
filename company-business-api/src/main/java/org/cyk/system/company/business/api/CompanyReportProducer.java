@@ -9,13 +9,10 @@ import lombok.Setter;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementReport;
-import org.cyk.system.company.model.sale.SaleReport;
-import org.cyk.system.root.business.api.RootReportProducer;
+import org.cyk.system.root.business.api.file.report.RootReportProducer;
 
 public interface CompanyReportProducer extends RootReportProducer {
 
-	SaleReport produceSaleReport(Sale sale);
-	
 	SaleCashRegisterMovementReport produceSaleCashRegisterMovementReport(SaleCashRegisterMovement saleCashRegisterMovement);
 	
 	/**/

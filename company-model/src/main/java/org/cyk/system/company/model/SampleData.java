@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.cyk.system.company.model.sale.PointOfSaleReport;
+import org.cyk.system.company.model.sale.InvoiceReport;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementReport;
 import org.cyk.utility.common.generator.RandomDataProvider;
 
@@ -14,9 +14,9 @@ public class SampleData implements Serializable {
 
 	public SampleData() {}
 	
-	public static Collection<PointOfSaleReport> getPointOfSaleReports(){
-		Collection<PointOfSaleReport> collection = RandomDataProvider.generate(PointOfSaleReport.class, 1);
-		PointOfSaleReport report = collection.iterator().next();
+	public static Collection<InvoiceReport> getPointOfSaleReports(){
+		Collection<InvoiceReport> collection = RandomDataProvider.generate(InvoiceReport.class, 1);
+		InvoiceReport report = collection.iterator().next();
 		
 		report.addLabelValueCollection("Invoice",new String[][]{
 				{"Identifiant", report.getSale().getGlobalIdentifier().getIdentifier()}
@@ -30,7 +30,7 @@ public class SampleData implements Serializable {
 				});
 		
 		report.addLabelValueCollection("TVA",new String[][]{
-				{"Taux TVA", report.getSale().getSalableProductCollection().getAccountingPeriod().getValueAddedTaxRate()}
+				{"Taux TVA", report.getSale().getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate()}
 				,{"Montant Hors Taxe", report.getSale().getSalableProductCollection().getCost().getValue()}
 				,{"TVA", report.getSale().getSalableProductCollection().getCost().getTax()}
 				});

@@ -21,7 +21,6 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.payment.AbstractCashRegisterMovementEditPage;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.network.UniformResourceLocatorParameter;
-import org.cyk.system.root.model.party.person.Person;
 import org.cyk.ui.web.api.data.collector.control.WebInput;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
@@ -94,7 +93,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		Sale sale = webManager.getIdentifiableFromRequestParameter(Sale.class, Boolean.TRUE);
 		//identifiable.setSale();
 		SaleCashRegisterMovement saleCashRegisterMovement = 
-				inject(SaleCashRegisterMovementBusiness.class).instanciateOne(sale, (Person) userSession.getUser(), Boolean.TRUE);
+				inject(SaleCashRegisterMovementBusiness.class).instanciateOne(sale, null/*(Person) userSession.getUser()*/, Boolean.TRUE);
 		String action = requestParameter(UniformResourceLocatorParameter.ACTION_IDENTIFIER);
 		if(CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementInput().equals(action))
 			saleCashRegisterMovement.getCashRegisterMovement().getMovement().setAction(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction());
