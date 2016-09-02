@@ -49,8 +49,6 @@ import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
 import org.cyk.system.root.model.ContentType;
-import org.cyk.system.root.model.file.FileRepresentationType;
-import org.cyk.system.root.model.file.report.ReportTemplate;
 import org.cyk.system.root.model.geography.ContactCollection;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
@@ -80,6 +78,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	private String pointOfSaleInvoiceReportName;
 	private String pointOfSalePaymentReportName;
 	private final String pointOfSaleReportExtension = "pdf";
+	
+	private String actionPrintEmployeeEmploymentContract = "print.employment.contract";
+	private String actionPrintEmployeeWorkCertificate = "print.work.certificate";
+	private String actionPrintEmployeeEmploymentCertificate = "print.employment.certificate";
 	
 	private String actionUpdateSalableProductInstanceCashRegisterState = "auspicrs";
 	//private String action SalableProductInstanceCashRegisterState = "auspicrs";
@@ -262,15 +264,15 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD, "Vendu");
 		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED, "Utilisé");
 		
+		createReportTemplate(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT, "report/employee/employment_contract.jrxml", null, null, null);
+		createReportTemplate(CompanyConstant.REPORT_INVOICE, "report/sale/invoice_a4.jrxml", null, null, null);
+		createReportTemplate(CompanyConstant.REPORT_PAYMENT_RECEIPT, "report/sale/payment_receipt_a4.jrxml", null, null, null);
+		
 		AccountingPeriod accountingPeriod = new AccountingPeriod();
 		accountingPeriod.setOwnedCompany(ownedCompany);
 		Integer currentYear = new DateTime().getYear();
 		accountingPeriod.setExistencePeriod(new Period(new DateTime(currentYear, 1, 1, 0, 0).toDate(), new DateTime(currentYear, 12, 31, 23, 59).toDate()));
 		
-		accountingPeriod.getSaleConfiguration().setSaleReportTemplate(create(new ReportTemplate("INVOICE_REPORT_A4"
-				,createFile("report/sale/invoice_a4.jrxml", "invoice_a4.jrxml"),null,null,null)));
-		accountingPeriod.getSaleConfiguration().setSaleCashRegisterMovementReportTemplate(create(new ReportTemplate("PAYMENT_RECEIPT_REPORT_A4"
-				,createFile("report/sale/payment_receipt_a4.jrxml", "payment_receipt_a4.jrxml"),null,null,null)));
 		accountingPeriod.getSaleConfiguration().setValueAddedTaxRate(BigDecimal.ZERO);
 		accountingPeriod.getSaleConfiguration().setIdentifierGenerator(stringGenerator("FACT","0", 8l, null, null,8l));
 		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(stringGenerator("PAIE","0", 8l, null, null,8l));
@@ -292,12 +294,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		//installObject(PRODUCT_TANGIBLE_SALE_STOCK,tangibleProductBusiness,new TangibleProduct(TangibleProduct.SALE_STOCK, "Marchandise", null, null));
 		
 		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDD);
-		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDI);
+		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDI);	
 		
-		createEnumeration(FileRepresentationType.class,CompanyConstant.REPORT_INVOICE);
-		createEnumeration(FileRepresentationType.class,CompanyConstant.REPORT_INVOICE_AND_PAYMENT_RECEIPT);
-		createEnumeration(FileRepresentationType.class,CompanyConstant.REPORT_PAYMENT_RECEIPT);
-		createEnumeration(FileRepresentationType.class,CompanyConstant.REPORT_PRO_FORMA_INVOICE);
 	}
 	
 	private void security(){ 

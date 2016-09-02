@@ -64,6 +64,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	private final String requestParameterPay = "pay";
 	private final String requestParameterPayback = "payback";
 	
+	private final String outcomePrintEmployeeEmploymentContract = "employmentContractPrintView";
 	private final String outcomeEditSaleDeliveryDetails = "saleDeliveryDetailsView";
 	private final String outcomeStockDashBoard = "stockDashBoardView";
 	private final String outcomeTangibleProductStockMovementList = "tangibleProductStockMovementList";

@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.root.model.AbstractModelElement;
-import org.cyk.system.root.model.file.report.ReportTemplate;
 import org.cyk.system.root.model.generator.StringGenerator;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
@@ -39,12 +38,6 @@ public class SaleConfiguration extends AbstractModelElement implements Serializa
 	@OneToOne private FiniteStateMachine salableProductInstanceCashRegisterFiniteStateMachine;
 	
 	@OneToOne private FiniteStateMachineState salableProductInstanceCashRegisterSaleConsumeState;
-	
-	@OneToOne private ReportTemplate saleReportTemplate;
-	
-	@OneToOne private ReportTemplate saleCashRegisterMovementReportTemplate;
-	
-	@OneToOne private ReportTemplate saleAndSaleCashRegisterMovementReportTemplate;
 	
 	@Column(nullable=false) @NotNull private Boolean balanceMustBeZero = Boolean.FALSE;
 	

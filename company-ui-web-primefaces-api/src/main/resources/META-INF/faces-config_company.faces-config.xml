@@ -37,6 +37,11 @@
 			<to-view-id>/private/company/employmentagreement/consult.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>employmentContractPrintView</from-outcome>
+			<to-view-id>/private/company/employmentagreement/printcontract.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 		
 		
 	</navigation-rule>

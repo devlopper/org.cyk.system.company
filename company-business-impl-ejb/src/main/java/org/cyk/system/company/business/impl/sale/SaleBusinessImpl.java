@@ -165,9 +165,9 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			
 		}else{
 			if(CompanyConstant.REPORT_INVOICE.equals(file.getRepresentationType().getCode())){
-				createReportFile(InvoiceReport.class, sale.getAccountingPeriod().getSaleConfiguration().getSaleReportTemplate().getTemplate(), sale, file);
+				createReportFile(InvoiceReport.class, CompanyConstant.REPORT_INVOICE, sale, file);
 			}else if(CompanyConstant.REPORT_INVOICE_AND_PAYMENT_RECEIPT.equals(file.getRepresentationType().getCode()))
-				createReportFile(InvoiceReport.class, sale.getAccountingPeriod().getSaleConfiguration().getSaleReportTemplate().getTemplate(), sale, file);
+				createReportFile(InvoiceReport.class, CompanyConstant.REPORT_INVOICE_AND_PAYMENT_RECEIPT, sale, file);
 		}
 		
 		return file;

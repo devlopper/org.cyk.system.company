@@ -208,8 +208,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			
 		}else{ 
 			if(CompanyConstant.REPORT_PAYMENT_RECEIPT.equals(file.getRepresentationType().getCode())){
-				createReportFile(PaymentReceiptReport.class, saleCashRegisterMovement.getSale().getAccountingPeriod().getSaleConfiguration()
-						.getSaleCashRegisterMovementReportTemplate().getTemplate(), saleCashRegisterMovement, file);
+				createReportFile(PaymentReceiptReport.class, CompanyConstant.REPORT_PAYMENT_RECEIPT, saleCashRegisterMovement, file);
 			}
 		}
 		return file;

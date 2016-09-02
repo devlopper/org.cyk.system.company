@@ -25,6 +25,8 @@ import org.cyk.system.company.model.sale.SaleConfigurationReport;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.CompanyReport;
+import org.cyk.system.company.model.structure.Employee;
+import org.cyk.system.company.model.structure.EmployeeReportTemplateFile;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
@@ -105,6 +107,12 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		return report;
 	}
 	
+	private EmployeeReportTemplateFile produceEmployeeReport(Employee employee) {
+		EmployeeReportTemplateFile report = new EmployeeReportTemplateFile();
+		
+		return report;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public <REPORT extends AbstractReportTemplateFile<REPORT>> REPORT produce(Class<REPORT> reportClass, AbstractIdentifiable identifiable) {
@@ -114,7 +122,11 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		}else if(PaymentReceiptReport.class.equals(reportClass)){
 			if(identifiable instanceof SaleCashRegisterMovement)
 				return (REPORT) producePaymentReceiptReport((SaleCashRegisterMovement)identifiable);
+		}else if(EmployeeReportTemplateFile.class.equals(reportClass)){
+			if(identifiable instanceof Employee)
+				return (REPORT) produceEmployeeReport((Employee)identifiable);
 		}
+		
 		return super.produce(reportClass, identifiable);
 	}
 	

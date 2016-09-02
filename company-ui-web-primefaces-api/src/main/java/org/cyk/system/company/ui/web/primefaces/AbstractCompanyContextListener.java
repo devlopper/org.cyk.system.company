@@ -67,6 +67,7 @@ import org.cyk.system.company.ui.web.primefaces.sale.SaleProductInstanceQueryOne
 import org.cyk.system.company.ui.web.primefaces.sale.SaleQueryFormModel;
 import org.cyk.system.company.ui.web.primefaces.structure.CompanyEditPage;
 import org.cyk.system.company.ui.web.primefaces.structure.EmployeeEditPage;
+import org.cyk.system.company.ui.web.primefaces.structure.EmployeeQueryOneFormModel;
 import org.cyk.system.company.ui.web.primefaces.structure.EmploymentAgreementEditPage;
 import org.cyk.ui.api.config.IdentifiableConfiguration;
 import org.cyk.ui.web.primefaces.AbstractContextListener;
@@ -94,8 +95,10 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 		uiManager.registerConfiguration(new IdentifiableConfiguration(Company.class, CompanyEditPage.Form.class, CompanyDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(Company.class, null);
 		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(Employee.class, EmployeeEditPage.Form.class, EmployeeDetails.class,null,null,null));
+		uiManager.registerConfiguration(new IdentifiableConfiguration(Employee.class, EmployeeEditPage.Form.class, EmployeeDetails.class,EmployeeQueryOneFormModel.class,null,null));
 		uiManager.configBusinessIdentifiable(Employee.class, null);
+		AbstractSelectOnePage.Listener.COLLECTION.add(new EmployeeQueryOneFormModel.PageAdapter());
+		webNavigationManager.useDynamicSelectView(Employee.class);
 		
 		uiManager.registerConfiguration(new IdentifiableConfiguration(EmploymentAgreement.class, EmploymentAgreementEditPage.Form.class, EmploymentAgreementDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(EmploymentAgreement.class, null);
