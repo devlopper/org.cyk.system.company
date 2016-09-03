@@ -3,24 +3,15 @@ package org.cyk.system.company.persistence.impl.sale;
 import java.math.BigDecimal;
 import java.util.Collection;
 
-import javax.persistence.NoResultException;
-
 import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.model.Balance;
-import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
-import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
-import org.cyk.system.root.persistence.impl.QueryStringBuilder;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
-import org.cyk.utility.common.Constant;
-import org.cyk.utility.common.computation.ArithmeticOperator;
-import org.cyk.utility.common.computation.LogicalOperator;
 
 public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 
@@ -29,7 +20,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	private static final BigDecimal BALANCE_MIN=new BigDecimal("-1"+StringUtils.repeat('0', 18)),BALANCE_MAX=new BigDecimal("1"+StringUtils.repeat('0', 18));
 	private static final BigDecimal BALANCE_ZERO_MIN=new BigDecimal("-0."+StringUtils.repeat('0', 18)+"1"),BALANCE_ZERO_MAX=new BigDecimal("0."+StringUtils.repeat('0', 18)+"1");
 	
-	private String readAllSortedByDate,readByComputedIdentifier,readByCriteria,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,computeByCriteria
+	private String readAllSortedByDate/*,readByComputedIdentifier,readByCriteria*/,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,computeByCriteria
 		,computeByCriteriaWhereCashRegisterMovementNotExists,computeByCriteriaWhereCashRegisterMovementExists;
 	
 	@Override
@@ -72,15 +63,15 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
     	registerNamedQuery(computeByCriteriaWhereCashRegisterMovementExists,queryStringBuilder);
     	*/
     }	
-	
+	/*
 	private void whereSearchCriteria(QueryStringBuilder queryStringBuilder){
 		/*queryStringBuilder.where(Sale.FIELD_COMPUTED_IDENTIFIER,ArithmeticOperator.LIKE)
 		.and().between(Sale.FIELD_DATE)
 		.and()
 		.between(commonUtils.attributePath(Sale.FIELD_BALANCE,Balance.FIELD_VALUE), Constant.CHARACTER_COLON+PARAM_BALANCE_MIN, Constant.CHARACTER_COLON+PARAM_BALANCE_MAX)
 		.and().in(commonUtils.attributePath(Sale.FIELD_FINITE_STATE_MACHINE_STATE,AbstractIdentifiable.FIELD_IDENTIFIER), PARAM_FINITE_STATE_MACHINE_STATE_IDENTIFIERS)
-		;*/
-	}
+		;
+	}*/
 	
 	/**/
 	

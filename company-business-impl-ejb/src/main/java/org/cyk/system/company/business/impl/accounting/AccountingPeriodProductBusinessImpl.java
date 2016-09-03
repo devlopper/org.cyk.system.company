@@ -1,28 +1,20 @@
 package org.cyk.system.company.business.impl.accounting;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
-import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleResults;
-import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductCategoryDao;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
-import org.cyk.system.company.persistence.api.product.ProductCategoryDao;
 import org.cyk.system.root.business.api.Crud;
 
 public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPeriodResultsBusinessImpl<AccountingPeriodProduct, AccountingPeriodProductDao,Product> implements AccountingPeriodProductBusiness, Serializable {
 
 	private static final long serialVersionUID = -1843616492544404846L;
-	
-	@Inject private ProductCategoryDao productCategoryDao;
-	@Inject private AccountingPeriodProductCategoryDao accountingPeriodProductCategoryDao;
 	
 	@Inject
 	public AccountingPeriodProductBusinessImpl(AccountingPeriodProductDao dao) {
@@ -58,7 +50,7 @@ public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPerio
 			}
 		}*/
 	}
-	
+	/*
 	private void updateSalesResults(SaleResults salesResults, Crud crud, Boolean first,BigDecimal count,BigDecimal cost,BigDecimal vat,BigDecimal turnover){
 		BigDecimal sign = null;
 		if(Crud.CREATE.equals(crud)){
@@ -72,7 +64,7 @@ public class AccountingPeriodProductBusinessImpl extends AbstractAccountingPerio
 		commonUtils.increment(BigDecimal.class, salesResults.getCost(), Cost.FIELD_VALUE, cost.multiply(sign));
 		commonUtils.increment(BigDecimal.class, salesResults.getCost(), Cost.FIELD_TAX, vat.multiply(sign));
 		commonUtils.increment(BigDecimal.class, salesResults.getCost(), Cost.FIELD_TURNOVER, turnover.multiply(sign));
-	}
+	}*/
 	
 	/**/
 	

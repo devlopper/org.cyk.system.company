@@ -70,7 +70,8 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
     	return super.delete(product); 
     }
         
-    @Override
+    @SuppressWarnings("null")
+	@Override
 	public void consume(Sale sale, Crud crud, Boolean first) {
 		Collection<SalableProductCollectionItem> saleProducts = null;//saleProductDao.readBySale(sale);
     	Set<PRODUCT> products = products(saleProducts);

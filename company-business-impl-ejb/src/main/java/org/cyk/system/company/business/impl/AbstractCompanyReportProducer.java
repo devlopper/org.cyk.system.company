@@ -33,14 +33,10 @@ import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.report.AbstractReportTemplateFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractCompanyReportProducer extends AbstractRootReportProducer implements CompanyReportProducer,Serializable {
 
 	private static final long serialVersionUID = 7126711234011563710L;
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCompanyReportProducer.class);
 
 	@Override
 	public Class<?> getReportTemplateFileClass(AbstractIdentifiable identifiable, String reportTemplateCode) {
@@ -216,11 +212,11 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		report.setAmountOut(format(saleCashRegisterMovement.getAmountOut()));
 		report.setBalance(format(saleCashRegisterMovement.getBalance().getValue()));
 	}
-			
-	@Override
-	protected Logger __logger__() {
-		return LOGGER;
+	
+	/**/
+	
+	public static class Default extends AbstractCompanyReportProducer implements Serializable {
+		private static final long serialVersionUID = 1L;
+		
 	}
-	
-	
 }

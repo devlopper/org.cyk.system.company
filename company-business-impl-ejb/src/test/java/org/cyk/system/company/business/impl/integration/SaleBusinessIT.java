@@ -3,17 +3,11 @@ package org.cyk.system.company.business.impl.integration;
 import java.math.BigDecimal;
 
 import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.structure.Employee;
-import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.root.business.api.TypedBusiness.CreateReportFileArguments;
 import org.cyk.system.root.business.impl.RootBusinessTestHelper;
-import org.cyk.system.root.model.file.File;
-import org.cyk.system.root.persistence.api.file.FileRepresentationTypeDao;
 
 public class SaleBusinessIT extends AbstractBusinessIT {
 

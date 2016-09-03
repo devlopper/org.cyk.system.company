@@ -42,8 +42,8 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 	@Override
 	public AccountingPeriod create(AccountingPeriod accountingPeriod) {
 		exceptionUtils().exception(findCurrent(accountingPeriod.getOwnedCompany())!=null, "exception.accountingperiod.oneisrunning");
-		AccountingPeriod previous = findPrevious(accountingPeriod.getOwnedCompany());
-		exceptionUtils().exception(previous!=null && Boolean.FALSE.equals(previous.getClosed()), "exception.accountingperiod.previousnotclosed");
+		//AccountingPeriod previous = findPrevious(accountingPeriod.getOwnedCompany());
+		//exceptionUtils().exception(previous!=null && Boolean.FALSE.equals(previous.getClosed()), "exception.accountingperiod.previousnotclosed");
 		super.create(accountingPeriod);
 		for(Product product : productDao.readAll())
 			accountingPeriodProductDao.create(new AccountingPeriodProduct(accountingPeriod, product));
@@ -52,7 +52,7 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 	
 	@Override
 	public void close(AccountingPeriod accountingPeriod) {
-		accountingPeriod.setClosed(Boolean.TRUE);
+		//accountingPeriod.setClosed(Boolean.TRUE);
 		dao.update(accountingPeriod);
 	}
 
@@ -105,14 +105,14 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 		
 		@Override
 		public void processOnConsume(Sale sale, Crud crud, Boolean first) {
-			BigDecimal sign = null;
+			/*BigDecimal sign = null;
 			if(Crud.CREATE.equals(crud)){
 				sign = BigDecimal.ONE;
 			}else if(Crud.UPDATE.equals(crud)) {
 				sign = BigDecimal.ONE;
 			}else if(Crud.DELETE.equals(crud)) {
 				sign = BigDecimal.ONE.negate();
-			}
+			}*/
 			/*
 			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE.multiply(sign));
 			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_VALUE, sale.getCost().getValue().multiply(sign));

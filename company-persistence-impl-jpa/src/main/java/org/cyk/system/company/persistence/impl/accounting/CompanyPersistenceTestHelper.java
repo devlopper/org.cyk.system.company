@@ -1,15 +1,12 @@
 package org.cyk.system.company.persistence.impl.accounting;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.inject.Inject;
 
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
-import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.utility.common.cdi.AbstractBean;
 
@@ -18,8 +15,6 @@ public class CompanyPersistenceTestHelper extends AbstractBean implements Serial
 	private static final long serialVersionUID = 2499068990390871628L;
 
 	@Inject private ProductDao productDao;
-	@Inject private AccountingPeriodDao accountingPeriodDao;
-	@Inject private CashierDao cashierDao;
 	
 	public void set(Product product,String code){
 		product.setCode(code);

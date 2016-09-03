@@ -8,7 +8,6 @@ import java.util.Collection;
 import javax.inject.Singleton;
 
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
-import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
@@ -36,8 +35,6 @@ import org.cyk.system.company.model.structure.EmploymentAgreementType;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
-import org.cyk.system.root.business.api.TypedBusiness.CreateReportFileArguments;
-import org.cyk.system.root.business.api.file.report.RootReportProducer;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.time.TimeBusiness;
@@ -47,6 +44,7 @@ import org.cyk.system.root.business.impl.BusinessServiceProvider;
 import org.cyk.system.root.business.impl.BusinessServiceProvider.Service;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
+import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
 import org.cyk.system.root.model.ContentType;
@@ -105,7 +103,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	protected void initialisation() {
 		INSTANCE = this;
 		super.initialisation();
-		CreateReportFileArguments.DEFAULT_REPORT_PRODUCER = inject(CompanyReportProducer.class);
+		AbstractRootReportProducer.DEFAULT = new AbstractCompanyReportProducer.Default();
 		formatterBusiness.registerFormatter(Production.class, new AbstractFormatter<Production>() {
 			private static final long serialVersionUID = 3952155697329951912L;
 			@Override
@@ -177,10 +175,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		return inject(CompanyReportRepository.class);
 	}
 	
-	@Override
+	/*@Override
 	protected RootReportProducer getReportProducer() {
 		return inject(CompanyReportProducer.class);
-	}
+	}*/
 	
 	@Override
 	protected void persistData() {

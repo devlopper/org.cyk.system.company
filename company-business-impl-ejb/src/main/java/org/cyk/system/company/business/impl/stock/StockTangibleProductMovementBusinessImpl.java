@@ -68,6 +68,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 		return stockTangibleProductMovement;
 	}
 	
+	@SuppressWarnings("null")
 	@Override
 	public void consume(Sale sale, Crud crud, Boolean first) {
 		/*
