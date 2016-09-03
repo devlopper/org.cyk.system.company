@@ -7,20 +7,17 @@ import java.util.Collection;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.EmploymentAgreementBusiness;
-import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.structure.Employee;
-import org.cyk.system.company.model.structure.EmployeeReportTemplateFile;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.company.persistence.api.structure.EmployeeDao;
 import org.cyk.system.company.persistence.api.structure.EmploymentAgreementDao;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
-import org.cyk.system.root.model.file.File;
 import org.cyk.utility.common.ListenerUtils;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Stateless
 public class EmployeeBusinessImpl extends AbstractActorBusinessImpl<Employee, EmployeeDao,Employee.SearchCriteria> implements EmployeeBusiness,Serializable {
@@ -80,28 +77,15 @@ public class EmployeeBusinessImpl extends AbstractActorBusinessImpl<Employee, Em
 		return employee;
 	}
 	
-	@Override
-	public File createFile(Employee employee, File file) {
-		if(file.getRepresentationType()==null){
-			
-		}else{
-			if(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT.equals(file.getRepresentationType().getCode())){
-				createReportFile(EmployeeReportTemplateFile.class, CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT, employee, file);
-			}
-		}
-		
-		return file;
-	}
-	
 	/**/
 	
-	public static interface Listener extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<Employee>{
+	public static interface Listener extends org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl.Listener<Employee>{
 		
 		Collection<Listener> COLLECTION = new ArrayList<>();
 		
 		/**/
 
-		public static class Adapter extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener.Adapter<Employee> implements Listener, Serializable {
+		public static class Adapter extends org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl.Listener.Adapter<Employee> implements Listener, Serializable {
 			private static final long serialVersionUID = -1625238619828187690L;
 			
 			/**/

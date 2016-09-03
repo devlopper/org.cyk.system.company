@@ -16,9 +16,7 @@ import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
-import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.sale.InvoiceReport;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
@@ -32,7 +30,6 @@ import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.party.person.Person;
@@ -157,20 +154,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 				listener.afterCreate(sale);
 			}});
 		return sale;
-	}
-	
-	@Override
-	public File createFile(Sale sale, File file) {
-		if(file.getRepresentationType()==null){
-			
-		}else{
-			if(CompanyConstant.REPORT_INVOICE.equals(file.getRepresentationType().getCode())){
-				createReportFile(InvoiceReport.class, CompanyConstant.REPORT_INVOICE, sale, file);
-			}else if(CompanyConstant.REPORT_INVOICE_AND_PAYMENT_RECEIPT.equals(file.getRepresentationType().getCode()))
-				createReportFile(InvoiceReport.class, CompanyConstant.REPORT_INVOICE_AND_PAYMENT_RECEIPT, sale, file);
-		}
-		
-		return file;
 	}
 	
 	private void cascade(Sale sale,Collection<SaleStockTangibleProductMovement> saleStockTangibleProductMovements,Collection<SaleCashRegisterMovement> saleCashRegisterMovements,Crud crud){

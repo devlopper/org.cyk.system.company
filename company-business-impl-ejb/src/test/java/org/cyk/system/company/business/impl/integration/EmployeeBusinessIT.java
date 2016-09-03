@@ -1,11 +1,14 @@
 package org.cyk.system.company.business.impl.integration;
 
+import java.util.Collection;
+
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.structure.Employee;
+import org.cyk.system.root.business.api.TypedBusiness.CreateReportFileArguments;
 import org.cyk.system.root.business.impl.RootBusinessTestHelper;
-import org.cyk.system.root.model.file.File;
-import org.cyk.system.root.persistence.api.file.FileRepresentationTypeDao;
+import org.cyk.system.root.model.file.FileIdentifiableGlobalIdentifier;
+import org.cyk.system.root.persistence.api.file.FileIdentifiableGlobalIdentifierDao;
 
 public class EmployeeBusinessIT extends AbstractBusinessIT {
 
@@ -17,10 +20,23 @@ public class EmployeeBusinessIT extends AbstractBusinessIT {
     	employee.setCode("A");
     	create(employee);
     	
-    	File file = new File();
-    	file.setRepresentationType(inject(FileRepresentationTypeDao.class).read(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT));
-    	inject(EmployeeBusiness.class).createFile(employee, file);
-    	inject(RootBusinessTestHelper.class).write(file);
+    	CreateReportFileArguments<Employee> arguments = new CreateReportFileArguments<Employee>(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT, employee);
+    	inject(EmployeeBusiness.class).createReportFile(employee, arguments);
+    	FileIdentifiableGlobalIdentifier.SearchCriteria searchCriteria = new FileIdentifiableGlobalIdentifier.SearchCriteria();
+    	searchCriteria.addIdentifiableGlobalIdentifier(employee);
+    	searchCriteria.addRepresentationType(arguments.getFile().getRepresentationType());
+    	Collection<FileIdentifiableGlobalIdentifier> fileIdentifiableGlobalIdentifiers = inject(FileIdentifiableGlobalIdentifierDao.class).readByCriteria(searchCriteria);
+    	assertEquals(1, fileIdentifiableGlobalIdentifiers.size());
+    	
+    	arguments = new CreateReportFileArguments<Employee>(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT, employee);
+    	inject(EmployeeBusiness.class).createReportFile(employee, arguments);
+    	searchCriteria = new FileIdentifiableGlobalIdentifier.SearchCriteria();
+    	searchCriteria.addIdentifiableGlobalIdentifier(employee);
+    	searchCriteria.addRepresentationType(arguments.getFile().getRepresentationType());
+    	fileIdentifiableGlobalIdentifiers = inject(FileIdentifiableGlobalIdentifierDao.class).readByCriteria(searchCriteria);
+    	assertEquals(1, fileIdentifiableGlobalIdentifiers.size());
+    	
+    	inject(RootBusinessTestHelper.class).write(fileIdentifiableGlobalIdentifiers.iterator().next().getFile());
     }
     
 }

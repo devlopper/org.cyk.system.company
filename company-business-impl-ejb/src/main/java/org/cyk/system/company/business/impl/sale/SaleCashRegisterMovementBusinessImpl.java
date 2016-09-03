@@ -14,12 +14,10 @@ import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.AbstractCompanyBeanAdapter;
 import org.cyk.system.company.model.Balance;
-import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.sale.Customer;
-import org.cyk.system.company.model.sale.PaymentReceiptReport;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
@@ -31,7 +29,6 @@ import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementAction;
@@ -201,18 +198,6 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	}
 	
 	/**/
-	
-	@Override
-	public File createFile(SaleCashRegisterMovement saleCashRegisterMovement, File file) {
-		if(file.getRepresentationType()==null){
-			
-		}else{ 
-			if(CompanyConstant.REPORT_PAYMENT_RECEIPT.equals(file.getRepresentationType().getCode())){
-				createReportFile(PaymentReceiptReport.class, CompanyConstant.REPORT_PAYMENT_RECEIPT, saleCashRegisterMovement, file);
-			}
-		}
-		return file;
-	}
 	
 	public static interface Listener{
 		

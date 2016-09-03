@@ -7,6 +7,7 @@ import java.util.Collection;
 import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.BalanceReport;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.CostReport;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
@@ -40,6 +41,23 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	private static final long serialVersionUID = 7126711234011563710L;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCompanyReportProducer.class);
+
+	@Override
+	public Class<?> getReportTemplateFileClass(AbstractIdentifiable identifiable, String reportTemplateCode) {
+		if(identifiable instanceof Employee){
+			if(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT.equals(reportTemplateCode))
+				return EmployeeReportTemplateFile.class;
+		}
+		
+		if(identifiable instanceof Sale){
+			if(CompanyConstant.REPORT_INVOICE.equals(reportTemplateCode))
+				return InvoiceReport.class;
+			if(CompanyConstant.REPORT_INVOICE_AND_PAYMENT_RECEIPT.equals(reportTemplateCode))
+				return InvoiceReport.class;
+		}
+		
+		return super.getReportTemplateFileClass(identifiable, reportTemplateCode);
+	}
 	
 	private InvoiceReport produceInvoiceReport(Sale sale) {
 		logDebug("Prepare Sale report");

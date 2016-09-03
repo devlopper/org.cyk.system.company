@@ -7,9 +7,8 @@ import java.util.Collection;
 
 import javax.inject.Singleton;
 
-import lombok.Getter;
-
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
+import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
@@ -37,6 +36,8 @@ import org.cyk.system.company.model.structure.EmploymentAgreementType;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
+import org.cyk.system.root.business.api.TypedBusiness.CreateReportFileArguments;
+import org.cyk.system.root.business.api.file.report.RootReportProducer;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.time.TimeBusiness;
@@ -63,6 +64,8 @@ import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.cyk.utility.common.computation.DataReadConfiguration;
 import org.joda.time.DateTime;
+
+import lombok.Getter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER) @Getter
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
@@ -102,6 +105,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	protected void initialisation() {
 		INSTANCE = this;
 		super.initialisation();
+		CreateReportFileArguments.DEFAULT_REPORT_PRODUCER = inject(CompanyReportProducer.class);
 		formatterBusiness.registerFormatter(Production.class, new AbstractFormatter<Production>() {
 			private static final long serialVersionUID = 3952155697329951912L;
 			@Override
@@ -171,6 +175,11 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Override
 	protected AbstractReportRepository getReportRepository() {
 		return inject(CompanyReportRepository.class);
+	}
+	
+	@Override
+	protected RootReportProducer getReportProducer() {
+		return inject(CompanyReportProducer.class);
 	}
 	
 	@Override

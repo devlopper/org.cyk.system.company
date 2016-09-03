@@ -8,7 +8,9 @@ import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
+import org.cyk.system.root.business.api.TypedBusiness.CreateReportFileArguments;
 import org.cyk.system.root.business.impl.RootBusinessTestHelper;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.persistence.api.file.FileRepresentationTypeDao;
@@ -26,11 +28,11 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	sale.getSalableProductCollection().getCost().setValue(new BigDecimal("10000"));
     	create(sale); 
     	
-    	File file = new File();
-    	file.setRepresentationType(inject(FileRepresentationTypeDao.class).read(CompanyConstant.REPORT_INVOICE));
-    	saleBusiness.createFile(sale, file);
-    	inject(RootBusinessTestHelper.class).write(file);
+    	CreateReportFileArguments<Sale> arguments = new CreateReportFileArguments<Sale>(CompanyConstant.REPORT_INVOICE, sale);
+    	saleBusiness.createReportFile(sale, arguments);
+    	inject(RootBusinessTestHelper.class).write(arguments.getFile());
     	
+    	/*
     	SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness = inject(SaleCashRegisterMovementBusiness.class);
     	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness
     			.instanciateOne(sale,inject(CashRegisterDao.class).readOneRandomly(),Boolean.TRUE);
@@ -42,6 +44,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	file.setRepresentationType(inject(FileRepresentationTypeDao.class).read(CompanyConstant.REPORT_PAYMENT_RECEIPT));
     	saleCashRegisterMovementBusiness.createFile(saleCashRegisterMovement, file);
     	inject(RootBusinessTestHelper.class).write(file);
+    	*/
     	
     }
     
