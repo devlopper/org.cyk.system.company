@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.EmploymentAgreementBusiness;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.company.persistence.api.structure.EmployeeDao;
@@ -118,6 +119,7 @@ public class EmployeeBusinessImpl extends AbstractActorBusinessImpl<Employee, Em
 				private void createEmploymentAgreement(Employee employee){
 					employee.getEmploymentAgreement().setEmployee(employee);
 					inject(EmploymentAgreementBusiness.class).create(employee.getEmploymentAgreement());
+					//createReportFile(employee, CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT, Boolean.TRUE);
 				}
 				
 				@Override

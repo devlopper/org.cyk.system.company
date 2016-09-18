@@ -14,7 +14,7 @@ import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
-import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
+import org.cyk.utility.common.annotation.user.interfaces.InputOneRadio;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +27,7 @@ public class EmployeeEditPage extends AbstractCrudOnePage<Employee> implements S
 	public static class Form extends AbstractActorEditFormModel.AbstractDefault.Default<Employee> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
-		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private EmploymentAgreementType employmentAgreementType;
+		@Input @InputChoice @InputOneChoice @InputOneRadio @NotNull private EmploymentAgreementType employmentAgreementType;
 		
 		public static final String FIELD_EMPLOYMENT_AGREEMENT_TYPE = "employmentAgreementType";
 		

@@ -39,7 +39,17 @@
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>employmentContractPrintView</from-outcome>
-			<to-view-id>/private/company/employmentagreement/printcontract.xhtml</to-view-id>
+			<to-view-id>/private/company/employmentagreement/print/employmentcontract.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>employmentContractPrintView</from-outcome>
+			<to-view-id>/private/company/employmentagreement/print/workcertificate.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>employmentContractPrintView</from-outcome>
+			<to-view-id>/private/company/employmentagreement/print/employmentcertificate.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		
