@@ -272,6 +272,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED, "Utilisé");
 		
 		createReportTemplate(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT, "report/employee/employment_contract.jrxml", null, null, null);
+		createReportTemplate(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CERTIFICATE, "report/employee/employment_certificate.jrxml", null, null, null);
+		createReportTemplate(CompanyConstant.REPORT_EMPLOYEE_WORK_CERTIFICATE, "report/employee/work_certificate.jrxml", null, null, null);
 		createReportTemplate(CompanyConstant.REPORT_INVOICE, "report/sale/invoice_a4.jrxml", null, null, null);
 		createReportTemplate(CompanyConstant.REPORT_PAYMENT_RECEIPT, "report/sale/payment_receipt_a4.jrxml", null, null, null);
 		
