@@ -43,6 +43,10 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		if(identifiable instanceof Employee){
 			if(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT.equals(reportTemplateCode))
 				return EmployeeReportTemplateFile.class;
+			if(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CERTIFICATE.equals(reportTemplateCode))
+				return EmployeeReportTemplateFile.class;
+			if(CompanyConstant.REPORT_EMPLOYEE_WORK_CERTIFICATE.equals(reportTemplateCode))
+				return EmployeeReportTemplateFile.class;
 		}
 		
 		if(identifiable instanceof Sale){
@@ -123,7 +127,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	
 	private EmployeeReportTemplateFile produceEmployeeReport(Employee employee) {
 		EmployeeReportTemplateFile report = new EmployeeReportTemplateFile();
-		
+		set(employee, report.getActor());
 		return report;
 	}
 	

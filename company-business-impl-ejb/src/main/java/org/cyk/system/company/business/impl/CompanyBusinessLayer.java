@@ -7,6 +7,8 @@ import java.util.Collection;
 
 import javax.inject.Singleton;
 
+import lombok.Getter;
+
 import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
@@ -35,6 +37,7 @@ import org.cyk.system.company.model.structure.EmploymentAgreementType;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
+import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.time.TimeBusiness;
@@ -62,8 +65,6 @@ import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.cyk.utility.common.computation.DataReadConfiguration;
 import org.joda.time.DateTime;
-
-import lombok.Getter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER) @Getter
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
@@ -224,11 +225,11 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			if(value!=null)
 				bytes = value;
 		}
-		company.setImage(fileBusiness.process(bytes==null?getResourceAsBytes("image/logo.png"):bytes,"companylogo.png"));
+		company.setImage(inject(FileBusiness.class).process(bytes==null?getResourceAsBytes("image/logo.png"):bytes,"companylogo.png"));
 		//fileBusiness.create(company.getImage());
 		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
 			listener.handleCompanyLogoToInstall(company.getImage());
-		installObject(FILE_COMPANY_LOGO,fileBusiness,company.getImage());
+		installObject(FILE_COMPANY_LOGO,inject(FileBusiness.class),company.getImage());
 		company.setContactCollection(new ContactCollection());
 		//company.getContactCollection().setPhoneNumbers(new ArrayList<PhoneNumber>());
 		//RootRandomDataProvider.getInstance().phoneNumber(company.getContactCollection());

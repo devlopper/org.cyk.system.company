@@ -13,7 +13,10 @@
  		<ui:param name="pageController" value="#{employeeConsultPage}" />
  		<ui:define name="body">
  			<cyk:formOneData value="#{employeeConsultPage.details}" />	
- 			<cyk:formOneData value="#{employeeConsultPage.employmentAgreementDetails}" />		
+ 			<cyk:formOneData value="#{employeeConsultPage.employmentAgreementDetails}" />
+ 			
+ 			<cyk:fileIdentifiableGlobalIdentifiers value="#{employeeConsultPage.fileIdentifiableGlobalIdentifiers}" />
+ 			<cyk:comments value="#{employeeConsultPage.comments}" />		
  		</ui:define>
  	</ui:decorate>
  

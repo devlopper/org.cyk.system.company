@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.cyk.system.company.model.sale.InvoiceReport;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementReport;
+import org.cyk.system.company.model.structure.EmployeeReportTemplateFile;
 import org.cyk.utility.common.generator.RandomDataProvider;
 
 public class SampleData implements Serializable {
@@ -13,6 +14,12 @@ public class SampleData implements Serializable {
 	private static final long serialVersionUID = 5898014003593786829L;
 
 	public SampleData() {}
+	
+	public static Collection<EmployeeReportTemplateFile> getEmployeeReports(){
+		Collection<EmployeeReportTemplateFile> collection = RandomDataProvider.generate(EmployeeReportTemplateFile.class, 1);
+		//EmployeeReportTemplateFile report = collection.iterator().next();
+		return collection;
+	}
 	
 	public static Collection<InvoiceReport> getPointOfSaleReports(){
 		Collection<InvoiceReport> collection = RandomDataProvider.generate(InvoiceReport.class, 1);

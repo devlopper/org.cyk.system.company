@@ -7,18 +7,17 @@ import java.util.Collection;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.EmploymentAgreementBusiness;
-import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.company.persistence.api.structure.EmployeeDao;
 import org.cyk.system.company.persistence.api.structure.EmploymentAgreementDao;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
 import org.cyk.utility.common.ListenerUtils;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Stateless
 public class EmployeeBusinessImpl extends AbstractActorBusinessImpl<Employee, EmployeeDao,Employee.SearchCriteria> implements EmployeeBusiness,Serializable {
@@ -86,7 +85,7 @@ public class EmployeeBusinessImpl extends AbstractActorBusinessImpl<Employee, Em
 		
 		/**/
 
-		public static class Adapter extends org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl.Listener.Adapter<Employee> implements Listener, Serializable {
+		public static class Adapter extends org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl.Listener.Adapter.Default<Employee> implements Listener, Serializable {
 			private static final long serialVersionUID = -1625238619828187690L;
 			
 			/**/
@@ -105,15 +104,14 @@ public class EmployeeBusinessImpl extends AbstractActorBusinessImpl<Employee, Em
 				}
 				
 				@Override
-				public void beforeUpdate(Employee employee) {
-					super.beforeUpdate(employee);
+				public void afterUpdate(Employee employee) {
+					super.afterUpdate(employee);
 					if(containsCascadeToClass(EmploymentAgreement.class)){
 						if(employee.getEmploymentAgreement()!=null && employee.getEmploymentAgreement().getIdentifier()==null)
 							createEmploymentAgreement(employee);
 						else if(employee.getEmploymentAgreement()!=null)
 							inject(EmploymentAgreementBusiness.class).update(employee.getEmploymentAgreement());
 					}
-					
 				}
 				
 				private void createEmploymentAgreement(Employee employee){
@@ -126,8 +124,7 @@ public class EmployeeBusinessImpl extends AbstractActorBusinessImpl<Employee, Em
 				public void beforeDelete(Employee employee) {
 					super.beforeDelete(employee);
 					if(containsCascadeToClass(EmploymentAgreement.class)){
-						EmploymentAgreement employmentAgreement = inject(EmploymentAgreementDao.class).readByEmployee(employee);
-						if(employmentAgreement!=null)
+						for(EmploymentAgreement employmentAgreement : inject(EmploymentAgreementDao.class).readByEmployee(employee))
 							inject(EmploymentAgreementBusiness.class).delete(employmentAgreement);
 					}
 				}

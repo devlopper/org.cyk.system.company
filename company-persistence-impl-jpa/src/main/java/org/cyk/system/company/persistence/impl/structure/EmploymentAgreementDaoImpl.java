@@ -1,8 +1,7 @@
 package org.cyk.system.company.persistence.impl.structure;
 
 import java.io.Serializable;
-
-import javax.persistence.NoResultException;
+import java.util.Collection;
 
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
@@ -22,8 +21,8 @@ public class EmploymentAgreementDaoImpl extends AbstractTypedDao<EmploymentAgree
 	}
 	
 	@Override
-	public EmploymentAgreement readByEmployee(Employee employee) {
-		return namedQuery(readByEmployee).parameter(EmploymentAgreement.FIELD_EMPLOYEE, employee).ignoreThrowable(NoResultException.class).resultOne();
+	public Collection<EmploymentAgreement> readByEmployee(Employee employee) {
+		return namedQuery(readByEmployee).parameter(EmploymentAgreement.FIELD_EMPLOYEE, employee).resultMany();
 	}
 
 	

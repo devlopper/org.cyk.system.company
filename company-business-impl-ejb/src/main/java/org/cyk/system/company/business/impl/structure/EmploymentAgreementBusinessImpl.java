@@ -1,10 +1,12 @@
 package org.cyk.system.company.business.impl.structure;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.structure.EmploymentAgreementBusiness;
+import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.company.persistence.api.structure.EmploymentAgreementDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
@@ -16,6 +18,11 @@ public class EmploymentAgreementBusinessImpl extends AbstractTypedBusinessServic
 	@Inject
 	public EmploymentAgreementBusinessImpl(EmploymentAgreementDao dao) {
 		super(dao);
+	}
+
+	@Override
+	public Collection<EmploymentAgreement> findByEmployee(Employee employee) {
+		return dao.readByEmployee(employee);
 	}
 
 }

@@ -3,6 +3,21 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="actor" class="org.cyk.system.company.model.structure.EmployeeReport">
+		<fieldDescription><![CDATA[actor]]></fieldDescription>
+	</field>
+	<field name="footer" class="java.lang.String">
+		<fieldDescription><![CDATA[footer]]></fieldDescription>
+	</field>
+	<field name="header" class="java.lang.String">
+		<fieldDescription><![CDATA[header]]></fieldDescription>
+	</field>
+	<field name="title" class="java.lang.String">
+		<fieldDescription><![CDATA[title]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -13,7 +28,7 @@
 				<textElement>
 					<font size="40"/>
 				</textElement>
-				<text><![CDATA[This is to be a contract report]]></text>
+				<text><![CDATA[Employment contract]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -21,7 +36,32 @@
 		<band height="35" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="61" splitType="Stretch"/>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="f0a1ef22-b66a-48a4-abad-4a443e8234fe"/>
+				<text><![CDATA[Name :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="100" height="20" uuid="90201136-8591-45f5-9b48-70707cb4b435"/>
+				<text><![CDATA[Lastnames :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="41" width="100" height="20" uuid="2aa06d03-dfad-469a-a2bb-34206f0a9847"/>
+				<text><![CDATA[Date of birth :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="0" width="375" height="20" uuid="694da90c-92b3-4c3e-b2b0-414263e746b0"/>
+				<textFieldExpression><![CDATA[$F{actor}.getPerson().getGlobalIdentifier().getName()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="21" width="375" height="20" uuid="f9e11e92-beb1-42c0-a0d3-0bacef73ac7f"/>
+				<textFieldExpression><![CDATA[$F{actor}.getPerson().getLastnames()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="40" width="375" height="20" uuid="3692f34c-a0b3-4330-b39d-60235afbbd2d"/>
+				<textFieldExpression><![CDATA[$F{actor}.getPerson().getGlobalIdentifier().getExistencePeriod().getFrom()]]></textFieldExpression>
+			</textField>
+		</band>
 	</columnHeader>
 	<detail>
 		<band height="125" splitType="Stretch"/>
