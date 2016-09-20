@@ -80,11 +80,11 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	private String pointOfSaleInvoiceReportName;
 	private String pointOfSalePaymentReportName;
 	private final String pointOfSaleReportExtension = "pdf";
-	
+	/*
 	private String actionPrintEmployeeEmploymentContract = "print.employment.contract";
 	private String actionPrintEmployeeWorkCertificate = "print.work.certificate";
 	private String actionPrintEmployeeEmploymentCertificate = "print.employment.certificate";
-	
+	*/
 	private String actionUpdateSalableProductInstanceCashRegisterState = "auspicrs";
 	//private String action SalableProductInstanceCashRegisterState = "auspicrs";
 	private final String actionCreateSaleCashRegisterMovementInput = "acscrmi";
