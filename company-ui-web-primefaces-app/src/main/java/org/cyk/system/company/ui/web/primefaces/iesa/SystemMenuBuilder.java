@@ -3,7 +3,7 @@ package org.cyk.system.company.ui.web.primefaces.iesa;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.business.impl.structure.EmployeeBusinessImpl;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.Vehicle;
@@ -32,9 +32,7 @@ public class SystemMenuBuilder extends org.cyk.system.company.ui.web.primefaces.
 		Commandable module = createModuleCommandable("commandable.personel.management", null);
 		module.setLabel("Gestion du personnel");
 		module.addChild(createListCommandable(Employee.class, null));
-		module.addChild(createSelectOneCommandable(Employee.class, inject(CompanyBusinessLayer.class).getActionPrintEmployeeEmploymentContract(), null));
-		module.addChild(createSelectOneCommandable(Employee.class, inject(CompanyBusinessLayer.class).getActionPrintEmployeeWorkCertificate(), null));
-		module.addChild(createSelectOneCommandable(Employee.class, inject(CompanyBusinessLayer.class).getActionPrintEmployeeEmploymentCertificate(), null));
+		addReportCommandables(Employee.class,module, EmployeeBusinessImpl.Listener.COLLECTION);
 		return module;
 	}
 	

@@ -272,11 +272,11 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD, "Vendu");
 		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED, "Utilisé");
 		
-		createReportTemplate(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT, "report/employee/employment_contract.jrxml", null, null, null);
-		createReportTemplate(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CERTIFICATE, "report/employee/employment_certificate.jrxml", null, null, null);
-		createReportTemplate(CompanyConstant.REPORT_EMPLOYEE_WORK_CERTIFICATE, "report/employee/work_certificate.jrxml", null, null, null);
-		createReportTemplate(CompanyConstant.REPORT_INVOICE, "report/sale/invoice_a4.jrxml", null, null, null);
-		createReportTemplate(CompanyConstant.REPORT_PAYMENT_RECEIPT, "report/sale/payment_receipt_a4.jrxml", null, null, null);
+		createReportTemplate(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT,"contrat de travail",Boolean.TRUE, "report/employee/employment_contract.jrxml", null, null, null);
+		createReportTemplate(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CERTIFICATE,"certificat d'emploi",Boolean.TRUE, "report/employee/employment_certificate.jrxml", null, null, null);
+		createReportTemplate(CompanyConstant.REPORT_EMPLOYEE_WORK_CERTIFICATE,"certificat de travail",Boolean.TRUE, "report/employee/work_certificate.jrxml", null, null, null);
+		createReportTemplate(CompanyConstant.REPORT_INVOICE,"facture",Boolean.FALSE, "report/sale/invoice_a4.jrxml", null, null, null);
+		createReportTemplate(CompanyConstant.REPORT_PAYMENT_RECEIPT,"reçu de paiement",Boolean.TRUE, "report/sale/payment_receipt_a4.jrxml", null, null, null);
 		
 		AccountingPeriod accountingPeriod = new AccountingPeriod();
 		accountingPeriod.setOwnedCompany(ownedCompany);

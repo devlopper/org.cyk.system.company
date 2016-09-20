@@ -94,6 +94,8 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 		return module;
 	}
 	
+	/**/
+	
 	public static SystemMenuBuilder getInstance(){
 		if(INSTANCE==null)
 			INSTANCE = new SystemMenuBuilder();

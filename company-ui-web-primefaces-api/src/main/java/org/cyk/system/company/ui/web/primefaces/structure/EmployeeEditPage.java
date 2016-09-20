@@ -32,7 +32,8 @@ public class EmployeeEditPage extends AbstractCrudOnePage<Employee> implements S
 	protected <T extends AbstractIdentifiable> T identifiableFromRequestParameter(Class<T> aClass, String identifierId) {
 		Employee identifiable = (Employee) super.identifiableFromRequestParameter(aClass, identifierId);
 		Collection<EmploymentAgreement> employmentAgreements = inject(EmploymentAgreementBusiness.class).findByEmployee(identifiable);
-		identifiable.setEmploymentAgreement(employmentAgreements.isEmpty() ? null : employmentAgreements.iterator().next());
+		if(identifiable!=null)
+			identifiable.setEmploymentAgreement(employmentAgreements.isEmpty() ? null : employmentAgreements.iterator().next());
 		return (T) identifiable;
 	}
 	
