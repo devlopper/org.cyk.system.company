@@ -117,7 +117,6 @@ public class EmployeeBusinessImpl extends AbstractActorBusinessImpl<Employee, Em
 				private void createEmploymentAgreement(Employee employee){
 					employee.getEmploymentAgreement().setEmployee(employee);
 					inject(EmploymentAgreementBusiness.class).create(employee.getEmploymentAgreement());
-					//createReportFile(employee, CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT, Boolean.TRUE);
 				}
 				
 				@Override
