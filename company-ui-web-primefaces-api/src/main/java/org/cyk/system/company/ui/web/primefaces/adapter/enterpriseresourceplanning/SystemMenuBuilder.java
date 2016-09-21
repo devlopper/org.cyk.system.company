@@ -3,6 +3,7 @@ package org.cyk.system.company.ui.web.primefaces.adapter.enterpriseresourceplann
 import java.io.Serializable;
 import java.util.Collection;
 
+import org.cyk.system.company.business.impl.structure.EmployeeBusinessImpl;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
@@ -23,6 +24,7 @@ import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.company.model.structure.EmploymentAgreementType;
+import org.cyk.system.company.model.structure.Vehicle;
 import org.cyk.system.root.business.api.security.BusinessServiceCollectionBusiness;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.menu.SystemMenu;
@@ -53,6 +55,13 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 		module.addChild(createListCommandable(EmploymentAgreement.class, null));
 		module.addChild(createListCommandable(Employee.class, null));
 		
+		return module;
+	}
+	
+	public Commandable getEmployeeCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
+		Commandable module = createModuleCommandable("command.employee.management", null);
+		module.addChild(createListCommandable(Employee.class, null));
+		addReportCommandables(Employee.class,module, EmployeeBusinessImpl.Listener.COLLECTION);
 		return module;
 	}
 	
@@ -91,6 +100,20 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 		
 		module.addChild(createListCommandable(Customer.class, null));
 		module.addChild(createListCommandable(CustomerSalableProduct.class, null));
+		return module;
+	}
+	
+	public Commandable getServiceCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
+		Commandable module = createModuleCommandable("command.service.management", null);
+		module.addChild(createListCommandable(Vehicle.class, null));
+		
+		return module;
+	}
+	
+	public Commandable getFinanceCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
+		Commandable module = createModuleCommandable("command.finance.management", null);
+		module.addChild(createListCommandable(Sale.class, null));
+		
 		return module;
 	}
 	
