@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.cyk.system.root.model.AbstractIdentifiable;
-import org.cyk.system.root.model.ValueDetails;
+import org.cyk.system.root.model.Value;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 
@@ -39,7 +39,7 @@ public class ResellerProduction extends AbstractIdentifiable implements Serializ
 			,@AttributeOverride(name="system",column=@Column(name="sold_amount_computed"))
 			,@AttributeOverride(name="gap",column=@Column(name="sold_amount_gap"))
 	})
-	@Embedded private ValueDetails amount = new ValueDetails();
+	@Embedded private Value amount = new Value();
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountGapCumul = BigDecimal.ZERO;
 	
 	/* Return */

@@ -19,11 +19,7 @@ public class ProductDaoImpl extends AbstractProductDaoImpl<Product> implements P
         super.namedQueriesInitialisation();
         //registerNamedQuery(readByCollection, "SELECT product FROM Product product WHERE "
         //		+ "EXISTS(SELECT pCollection FROM ProductCollection pCollection WHERE pCollection = :collection AND product MEMBER OF pCollection.collection)");
-    }
-    
-    @Override
-    protected Boolean readByClassEnabled() {
-    	return Boolean.TRUE;
+        getConfiguration().setReadByClasses(Boolean.TRUE).setReadByNotClasses(Boolean.TRUE);
     }
     
 	@Override

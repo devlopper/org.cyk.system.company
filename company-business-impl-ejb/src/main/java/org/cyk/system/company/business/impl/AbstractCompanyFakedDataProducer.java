@@ -172,8 +172,8 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 		resellerProduction.setTakenQuantity(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 1000)));
 		resellerProduction.setSoldQuantity(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 1000)));
 		resellerProduction.setReturnedQuantity(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 1000)));
-		resellerProduction.getAmount().setUser(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 1000)));
-		resellerProduction.getAmount().setSystem(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 1000)));
+		//resellerProduction.getAmount().setUser(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 1000)));
+		//resellerProduction.getAmount().setSystem(new BigDecimal(RandomDataProvider.getInstance().randomInt(0, 1000)));
 		return resellerProduction;
 	}
 		
