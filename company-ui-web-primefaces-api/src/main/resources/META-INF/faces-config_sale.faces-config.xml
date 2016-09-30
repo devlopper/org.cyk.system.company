@@ -7,6 +7,22 @@
 		<from-view-id>*</from-view-id>
 		<!-- ########################################### Private Navigations Cases ############################################### -->
 		<navigation-case>
+			<from-outcome>proFormaInvoiceEditView</from-outcome>
+			<to-view-id>/private/sale/proformainvoice/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>proFormaInvoiceListView</from-outcome>
+			<to-view-id>/private/sale/proformainvoice/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>proFormaInvoiceConsultView</from-outcome>
+			<to-view-id>/private/sale/proformainvoice/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
 			<from-outcome>saleEditView</from-outcome>
 			<to-view-id>/private/sale/sale/edit.xhtml</to-view-id>
 			<redirect />

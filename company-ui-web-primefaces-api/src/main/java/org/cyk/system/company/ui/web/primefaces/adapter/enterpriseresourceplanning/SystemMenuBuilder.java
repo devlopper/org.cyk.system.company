@@ -16,10 +16,12 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.CustomerSalableProduct;
+import org.cyk.system.company.model.sale.ProFormaInvoice;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
@@ -113,6 +115,8 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 	public Commandable getFinanceCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = createModuleCommandable("command.finance.management", null);
 		module.addChild(createListCommandable(Sale.class, null));
+		module.addChild(createListCommandable(SaleCashRegisterMovement.class, null));
+		module.addChild(createListCommandable(ProFormaInvoice.class, null));
 		
 		return module;
 	}
