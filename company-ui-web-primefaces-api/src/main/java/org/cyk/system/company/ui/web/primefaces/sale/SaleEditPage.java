@@ -15,18 +15,27 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
+import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleConfiguration;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
+import org.cyk.ui.api.model.AbstractItemCollection;
+import org.cyk.ui.api.model.AbstractItemCollectionItem;
+import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
+import org.cyk.ui.web.api.ItemCollectionWebAdapter;
+import org.cyk.ui.web.primefaces.ItemCollection;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputCalendar;
@@ -62,9 +71,9 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			,showInstanceColumn = SHOW_INSTANCE_COLUMN,showProductTable=Boolean.TRUE;
 	
 	@Inject private SaleCashRegisterMovementController cashRegisterController;
-	
-	//private ItemCollection<SaleProductItem,SaleProduct> saleProductCollection;
 	/*
+	private ItemCollection<SaleProductItem,SaleProduct> saleProductCollection;
+	
 	@Override
 	protected void initialisation() {
 		super.initialisation();
@@ -364,9 +373,9 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	public Boolean getIsFormOneSaleProduct(){
 		return FormOneSaleProduct.class.equals(FORM_EDIT_CLASS);
 	}
-			
+	*/		
 	@Getter @Setter
-	public static class SaleProductItem extends AbstractItemCollectionItem<SaleProduct> implements Serializable {
+	public static class SaleProductItem extends AbstractItemCollectionItem<SalableProductCollectionItem> implements Serializable {
 		private static final long serialVersionUID = 3828481396841243726L;
 		private String code,name,unitPrice,totalPrice;
 		private BigDecimal quantity;
@@ -374,7 +383,7 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 		
 		private List<SalableProductInstance> instanceChoices;
 		
-	}*/
+	}
 	
 	/**/
 	

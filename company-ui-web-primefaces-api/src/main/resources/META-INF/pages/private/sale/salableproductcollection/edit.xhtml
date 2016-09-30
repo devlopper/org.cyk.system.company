@@ -5,6 +5,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:cyk="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces/component"
       xmlns:company="http://xmlns.jcp.org/jsf/composite/org.cyk.ui.web.primefaces.company/component">
@@ -13,6 +14,74 @@
         <ui:param name="pageController" value="#{salableProductCollectionEditPage}" />
         <ui:define name="body">
         	<cyk:formOneData value="#{salableProductCollectionEditPage.form}"/>
+
+        	<ui:fragment rendered="#{true}">
+	        	<p:panelGrid id="optionsPanel" columns="5">
+	        
+	        		<p:outputLabel value="#{uiManager.text('model.entity.customer')}" for="customer" />
+	        		<p:selectOneMenu id="customer" value="#{salableProductCollectionEditPage.selectedCustomer}" var="customer"  converter="#{objectConverter}" 
+	        			filter="true" filterMatchMode="contains">
+	        			<f:selectItems value="#{salableProductCollectionEditPage.customers}" var="c" itemLabel="#{c.person.names}"  />
+	        			<p:column><h:outputText value="#{customer.registration.code}" /></p:column>
+			            <p:column><h:outputText value="#{customer.person.names}" /></p:column>
+	        		</p:selectOneMenu>
+	        		
+	        		<p:outputLabel value="#{uiManager.text('model.entity.product')}" for="salableProduct" />
+	        		<p:selectOneMenu id="salableProduct" value="#{salableProductCollectionEditPage.selectedSalableProduct}" var="salableProduct" converter="#{objectConverter}" 
+	        			filter="true" filterMatchMode="contains" >
+	        			<f:selectItems value="#{salableProductCollectionEditPage.salableProducts}" />
+	        			<p:column><h:outputText value="#{salableProduct.product.code}" /></p:column>
+			            <p:column><h:outputText value="#{salableProduct.product.name}" /></p:column>
+	        		</p:selectOneMenu>
+	        		<cyk:command value="#{salableProductCollectionEditPage.salableCollection.addCommandable}"/>
+	        			 		
+	        	</p:panelGrid>
+	        	
+	        	<p:remoteCommand name="refreshFooter" update=":form:collection:datatable:grandtotal"/>
+	        	
+	        	<cyk:itemCollection id="collection" value="#{salableProductCollectionEditPage.salableCollection}" >
+	 				<p:column headerText="#{uiManager.text('field.code')}" width="7%">
+	 					<h:outputText value="#{item.code}" />
+	 				</p:column>
+	 				<p:column headerText="#{uiManager.text('field.name')}" >
+	 					<h:outputText value="#{item.name}" />
+	 				</p:column>
+	 				<p:column headerText="#{uiManager.text('field.unit.price')}" width="10%">
+	 					<h:outputText value="#{item.unitPrice}" />
+	 				</p:column>
+	 				<p:column headerText="#{uiManager.text('field.quantity')}" rendered="#{salableProductCollectionEditPage.showQuantityColumn}" width="10%">
+	        			<pe:inputNumber id="quantity" value="#{item.quantity}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}" 
+	        				minValue="1" decimalPlaces="0" styleClass="quantityClass">
+	        				<p:ajax event="change" listener="#{salableProductCollectionEditPage.productQuantityChanged(item)}" process="quantity" update="total,grandtotal" 
+	        					oncomplete="refreshFooter();"/>
+	        			</pe:inputNumber>
+	        			<h:outputText value="#{saleProduct.quantity}" rendered="#{salableProductCollectionEditPage.collectMoney}" />
+	        		</p:column>
+	        		
+	        		<p:column headerText="#{uiManager.text('field.price.total')}" width="12%">
+	        			<h:outputText id="total" value="#{item.totalPrice}" rendered="#{item.identifiable.salableProduct.price!=null}" />
+	        			<pe:inputNumber id="totalInput" value="#{item.totalPrice}" required="true" requiredMessage="#{item.name} - #{uiManager.textInputValueRequired('field.value')}" 
+	        				minValue="1" decimalPlaces="0" rendered="#{item.identifiable.salableProduct.price==null}">
+	        				<p:ajax event="change" listener="#{salableProductCollectionEditPage.productQuantityChanged(item)}" process="totalInput" update="grandtotal" oncomplete="refreshFooter();"/>
+	        			</pe:inputNumber>
+	        			<f:facet name="footer">
+	        				<h:outputText id="grandtotal" value="#{salableProductCollectionEditPage.identifiable.cost.value}" />
+	        			</f:facet>
+	        		</p:column>
+	        		
+	        		<p:column headerText="#{uiManager.text('field.instance')}" rendered="#{salableProductCollectionEditPage.showInstanceColumn}" width="30%">
+	        			<p:selectOneMenu id="instance" value="#{item.instance}" var="instance" converter="#{objectConverter}" 
+		        			filter="true" filterMatchMode="contains" disabled="#{salableProductCollectionEditPage.collectMoney}" >
+		        			<f:selectItems value="#{item.instanceChoices}" var="spi" itemLabel="#{spi.code}" />
+		        			<p:column><h:outputText value="#{instance.code}" /></p:column>
+		        		</p:selectOneMenu>
+	        			<h:outputText value="#{instance.code}" rendered="#{salableProductCollectionEditPage.collectMoney}" />
+	        		</p:column>
+	        		
+	 			</cyk:itemCollection>
+        	
+        	</ui:fragment>
+        	
         </ui:define>
         
         <ui:define name="contentMenuBar">

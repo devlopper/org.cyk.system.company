@@ -230,7 +230,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			}
 		});
 		
-		getFormConfiguration(SalableProductCollection.class, Crud.CREATE).addRequiredFieldNames(SalableProductCollectionEditPage.Form.FIELD_ACCOUNTINGPERIOD
+		getFormConfiguration(SalableProductCollection.class, Crud.CREATE).addFieldNames(SalableProductCollectionEditPage.Form.FIELD_ACCOUNTINGPERIOD
 				,SalableProductCollectionEditPage.Form.FIELD_COST,CostFormModel.FIELD_VALUE);
 		registerDetailsConfiguration(SalableProductCollectionDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
