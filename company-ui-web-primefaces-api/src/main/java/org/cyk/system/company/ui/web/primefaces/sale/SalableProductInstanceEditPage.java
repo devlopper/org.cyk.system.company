@@ -43,7 +43,7 @@ public class SalableProductInstanceEditPage extends AbstractCrudOnePage<SalableP
 		@Override
 		public Boolean build(Object data,Field field) {
 			if(Boolean.TRUE.equals(CREATE_ON_SALABLE_PRODUCT))
-				return ArrayUtils.contains(new String[]{Form.FIELD_SALABLE_PRODUCT,CodesFormModel.FIELD_CODE}, field.getName());
+				return ArrayUtils.contains(new String[]{SalableProductInstanceEditPage.Form.FIELD_SALABLE_PRODUCT,CodesFormModel.FIELD_CODE}, field.getName());
 			else
 				return !ArrayUtils.contains(new String[]{CodesFormModel.FIELD_CODE}, field.getName());
 		}
@@ -58,7 +58,7 @@ public class SalableProductInstanceEditPage extends AbstractCrudOnePage<SalableP
 
 		@Override
 		public Boolean build(Object data,Field field) {
-			return ArrayUtils.contains(new String[]{Form.FIELD_SALABLE_PRODUCT,CodesFormModel.FIELD_CODE}, field.getName());
+			return ArrayUtils.contains(new String[]{SalableProductInstanceEditPage.Form.FIELD_SALABLE_PRODUCT,CodesFormModel.FIELD_CODE}, field.getName());
 		}
 	};
 	

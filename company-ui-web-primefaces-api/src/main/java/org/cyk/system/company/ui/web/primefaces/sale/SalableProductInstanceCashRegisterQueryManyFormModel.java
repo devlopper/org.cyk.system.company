@@ -221,7 +221,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 
 				@Override
 				public Boolean build(Object data,Field field) {
-					if(field.getName().equals(Form.FIELD_FINITESTATEMACHINESTATE))
+					if(field.getName().equals(ProcessPageAdapter.Form.FIELD_FINITESTATEMACHINESTATE))
 						return getFiniteStateMachineState() == null;
 					return super.build(data,field);
 				}

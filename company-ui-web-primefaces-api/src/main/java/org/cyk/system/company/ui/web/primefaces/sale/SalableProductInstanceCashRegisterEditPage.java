@@ -40,9 +40,12 @@ public class SalableProductInstanceCashRegisterEditPage extends AbstractCrudOneP
 		@Override
 		public Boolean build(Object data,Field field) {
 			if(Boolean.TRUE.equals(CREATE_ON_CASH_REGISTER))
-				return ArrayUtils.contains(new String[]{Form.FIELD_CASH_REGISTER,Form.FIELD_SALABLE_PRODUCT_INSTANCE,Form.FIELD_FINITE_STATE_MACHINE_STATE}, field.getName());
+				return ArrayUtils.contains(new String[]{SalableProductInstanceCashRegisterEditPage.Form.FIELD_CASH_REGISTER
+						,SalableProductInstanceCashRegisterEditPage.Form.FIELD_SALABLE_PRODUCT_INSTANCE
+						,SalableProductInstanceCashRegisterEditPage.Form.FIELD_FINITE_STATE_MACHINE_STATE}, field.getName());
 			else
-				return !ArrayUtils.contains(new String[]{Form.FIELD_SALABLE_PRODUCT_INSTANCE,CodesFormModel.FIELD_CODE,Form.FIELD_FINITE_STATE_MACHINE_STATE}, field.getName());
+				return !ArrayUtils.contains(new String[]{SalableProductInstanceCashRegisterEditPage.Form.FIELD_SALABLE_PRODUCT_INSTANCE,CodesFormModel.FIELD_CODE
+						,SalableProductInstanceCashRegisterEditPage.Form.FIELD_FINITE_STATE_MACHINE_STATE}, field.getName());
 		}
 	};
 	
@@ -51,7 +54,9 @@ public class SalableProductInstanceCashRegisterEditPage extends AbstractCrudOneP
 
 		@Override
 		public Boolean build(Object data,Field field) {
-			return ArrayUtils.contains(new String[]{Form.FIELD_CASH_REGISTER,Form.FIELD_SALABLE_PRODUCT_INSTANCE,Form.FIELD_FINITE_STATE_MACHINE_STATE}, field.getName());
+			return ArrayUtils.contains(new String[]{SalableProductInstanceCashRegisterEditPage.Form.FIELD_CASH_REGISTER
+					,SalableProductInstanceCashRegisterEditPage.Form.FIELD_SALABLE_PRODUCT_INSTANCE
+					,SalableProductInstanceCashRegisterEditPage.Form.FIELD_FINITE_STATE_MACHINE_STATE}, field.getName());
 		}
 	};
 	

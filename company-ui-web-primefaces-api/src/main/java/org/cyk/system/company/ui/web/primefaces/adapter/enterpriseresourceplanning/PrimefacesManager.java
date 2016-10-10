@@ -80,7 +80,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
@@ -96,7 +96,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
@@ -113,7 +113,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
@@ -131,7 +131,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
@@ -148,7 +148,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
@@ -164,7 +164,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
@@ -183,7 +183,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
@@ -200,7 +200,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
@@ -219,7 +219,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
@@ -236,7 +236,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
@@ -258,7 +258,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
@@ -293,7 +293,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
@@ -308,13 +308,26 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 	}
 	
 	protected void configureCompanyModule() {
-		configurePersonFormConfiguration(Employee.class,null,new String[]{EmployeeEditPage.Form.FIELD_JOB_FUNCTION,EmployeeEditPage.Form.FIELD_EMPLOYMENT_AGREEMENT_TYPE});
+		configureActorFormConfiguration(Employee.class, new ActorFormConfigurationControlSetAdapter(Employee.class){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String[] getFieldNames() {
+				return ArrayUtils.addAll(super.getFieldNames(), EmployeeEditPage.Form.FIELD_JOB_FUNCTION,EmployeeEditPage.Form.FIELD_EMPLOYMENT_AGREEMENT_TYPE);
+			}
+		});
+		
 		registerDetailsConfiguration(EmployeeDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
-				return new PersonDetailsControlSetAdapter(new String[]{EmployeeDetails.FIELD_JOB_FUNCTION});
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
+				return new ActorDetailsControlSetAdapter(Employee.class){
+					private static final long serialVersionUID = 1L;
+					@Override
+					public String[] getFieldNames() {
+						return ArrayUtils.addAll(super.getFieldNames(), EmployeeDetails.FIELD_JOB_FUNCTION);
+					}
+				};
 			}
 		});
 		
@@ -324,7 +337,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			@Override
-			public ControlSetAdapter getFormControlSetAdapter(Class clazz) {
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
 					@Override
