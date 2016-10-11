@@ -54,6 +54,7 @@ import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.Table.ColumnAdapter;
 import org.cyk.ui.web.primefaces.UserSession;
+import org.cyk.ui.web.primefaces.adapter.enterpriseresourceplanning.ActorDetailsConfiguration;
 import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.page.AbstractPrimefacesPage;
 import org.cyk.ui.web.primefaces.page.DetailsConfiguration;
@@ -308,7 +309,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 	}
 	
 	protected void configureCompanyModule() {
-		configureActorFormConfiguration(Employee.class, new ActorFormConfigurationControlSetAdapter(Employee.class){
+		configureActorFormConfiguration(Employee.class, new ActorDetailsConfiguration.FormControlSetAdapter(Employee.class){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String[] getFieldNames() {
@@ -321,7 +322,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			@SuppressWarnings("rawtypes")
 			@Override
 			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
-				return new ActorDetailsControlSetAdapter(Employee.class){
+				return new ActorDetailsConfiguration.DetailsControlSetAdapter(Employee.class){
 					private static final long serialVersionUID = 1L;
 					@Override
 					public String[] getFieldNames() {
