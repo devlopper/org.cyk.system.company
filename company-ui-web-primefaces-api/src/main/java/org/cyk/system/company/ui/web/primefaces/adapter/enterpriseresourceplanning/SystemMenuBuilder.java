@@ -118,6 +118,8 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 		module.addChild(createListCommandable(SaleCashRegisterMovement.class, null));
 		module.addChild(createListCommandable(ProFormaInvoice.class, null));
 		
+		module.addChild(createListCommandable(Customer.class, null));
+		
 		return module;
 	}
 	
