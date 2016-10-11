@@ -1,11 +1,7 @@
 package org.cyk.system.company.business.impl.adapter;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
-import org.cyk.system.company.business.api.sale.CustomerBusiness;
-import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.party.person.AbstractActor;
 
@@ -13,8 +9,8 @@ public class ActorBusinessServiceAdapter<ACTOR extends AbstractActor> extends Ab
 
 	private static final long serialVersionUID = -8384047237353201461L;
 
-	public static final Set<Class<?>> ARE_CUSTOMERS = new HashSet<>();
-	
+	//public static final Set<Class<?>> ARE_CUSTOMERS = new HashSet<>();
+	/*
 	@Override
 	public void processOnCreated(ACTOR actor) {
 		super.processOnCreated(actor);
@@ -23,11 +19,11 @@ public class ActorBusinessServiceAdapter<ACTOR extends AbstractActor> extends Ab
 			inject(CustomerBusiness.class).create(customer);
 		}
 	}
-	
+	*/
 	/**/
-	
+	/*
 	protected Boolean isCustomer(ACTOR actor){
 		return ARE_CUSTOMERS.contains(actor.getClass());
 	}
-	
+	*/
 }
