@@ -39,7 +39,7 @@ public class IesaEmployeeBusinessIT extends AbstractIesaBusinessIT {
     	employee = inject(EmployeeBusiness.class).find("EMP001");
     	employee.setName("Komenan");
     	employee.getPerson().setLastnames("Yao christian");
-    	inject(EmployeeBusiness.class).update(employee);
+    	employee = inject(EmployeeBusiness.class).update(employee);
     	
     	inject(EmployeeBusiness.class).createReportFile(employee, new CreateReportFileArguments<Employee>(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT, employee));
     	
