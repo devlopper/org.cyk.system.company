@@ -7,9 +7,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
@@ -34,7 +34,7 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 		inject(MovementBusiness.class).create(cashRegisterMovement.getMovement());
 		super.create(cashRegisterMovement);
 		if(cashRegisterMovement.getCode()==null)
-			cashRegisterMovement.setCode(generateIdentifier(cashRegisterMovement,CompanyBusinessLayerListener.CASH_MOVEMENT_IDENTIFIER
+			cashRegisterMovement.setCode(generateIdentifier(cashRegisterMovement,CompanyBusinessLayer.Listener.CASH_MOVEMENT_IDENTIFIER
 					,inject(AccountingPeriodBusiness.class).findCurrent()
 				.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator()));
 		dao.update(cashRegisterMovement);

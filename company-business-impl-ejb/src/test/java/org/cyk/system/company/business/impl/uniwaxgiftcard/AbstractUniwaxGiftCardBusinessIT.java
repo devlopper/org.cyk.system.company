@@ -2,7 +2,7 @@ package org.cyk.system.company.business.impl.uniwaxgiftcard;
 
 import javax.inject.Inject;
 
-import org.cyk.system.company.business.impl.CompanyBusinessLayerAdapter;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.integration.AbstractBusinessIT;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
@@ -40,7 +40,7 @@ public abstract class AbstractUniwaxGiftCardBusinessIT extends AbstractBusinessI
     		}
     	});
     	
-    	companyBusinessLayer.getCompanyBusinessLayerListeners().add(new CompanyBusinessLayerAdapter() {
+    	CompanyBusinessLayer.Listener.COLLECTION.add(new CompanyBusinessLayer.Listener.Adapter() {
 			private static final long serialVersionUID = 5179809445850168706L;
 
 			@Override

@@ -11,11 +11,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
@@ -104,7 +104,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		
 		if(sale.getAccountingPeriod()!=null){
 			if(sale.getCode()==null)
-				sale.setCode(generateIdentifier(sale,CompanyBusinessLayerListener.SALE_IDENTIFIER,sale.getAccountingPeriod().getSaleConfiguration().getIdentifierGenerator()));
+				sale.setCode(generateIdentifier(sale,CompanyBusinessLayer.Listener.SALE_IDENTIFIER,sale.getAccountingPeriod().getSaleConfiguration().getIdentifierGenerator()));
 			
 			Cost cost = sale.getSalableProductCollection().getCost();
 			if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))

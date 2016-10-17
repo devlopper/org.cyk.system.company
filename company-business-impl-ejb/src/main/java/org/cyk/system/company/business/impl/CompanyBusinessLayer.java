@@ -9,7 +9,6 @@ import javax.inject.Singleton;
 
 import lombok.Getter;
 
-import org.cyk.system.company.business.api.CompanyBusinessLayerListener;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
@@ -51,6 +50,8 @@ import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
 import org.cyk.system.root.model.ContentType;
+import org.cyk.system.root.model.file.File;
+import org.cyk.system.root.model.generator.StringGenerator;
 import org.cyk.system.root.model.geography.ContactCollection;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
@@ -97,8 +98,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	public static final Integer STRUCTURE_COMPANY = 2000;
 	public static final Integer FILE_COMPANY_LOGO = 3000;
 	public static final Integer ACCOUNTING_PERIOD = 4000;
-	
-	private static final Collection<CompanyBusinessLayerListener> COMPANY_BUSINESS_LAYER_LISTENERS = new ArrayList<>();
 	
 	@Override
 	protected void initialisation() {
@@ -213,28 +212,28 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		Company company = new Company();
 		company.setCode("C01");
 		String companyName = null;
-		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS){
+		for(Listener listener : Listener.COLLECTION){
 			String value = listener.getCompanyName();
 			if(value!=null)
 				companyName = value;
 		}
 		company.setName(companyName==null?"MyCompany":companyName);
 		bytes = null;
-		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS){
+		for(Listener listener : Listener.COLLECTION){
 			byte[] value = listener.getCompanyLogoBytes();
 			if(value!=null)
 				bytes = value;
 		}
 		company.setImage(inject(FileBusiness.class).process(bytes==null?getResourceAsBytes("image/logo.png"):bytes,"companylogo.png"));
 		//fileBusiness.create(company.getImage());
-		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
+		for(Listener listener : Listener.COLLECTION)
 			listener.handleCompanyLogoToInstall(company.getImage());
 		installObject(FILE_COMPANY_LOGO,inject(FileBusiness.class),company.getImage());
 		company.setContactCollection(new ContactCollection());
 		//company.getContactCollection().setPhoneNumbers(new ArrayList<PhoneNumber>());
 		//RootRandomDataProvider.getInstance().phoneNumber(company.getContactCollection());
 		
-		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
+		for(Listener listener : Listener.COLLECTION)
 			listener.handleCompanyToInstall(company);
 		installObject(STRUCTURE_COMPANY,inject(CompanyBusiness.class),company);
 		
@@ -293,7 +292,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		inject(StringGeneratorBusiness.class).create(accountingPeriod.getSaleConfiguration().getIdentifierGenerator());
 		inject(StringGeneratorBusiness.class).create(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());
 		//accountingPeriodBusiness.create(accountingPeriod);
-		for(CompanyBusinessLayerListener listener : COMPANY_BUSINESS_LAYER_LISTENERS)
+		for(Listener listener : Listener.COLLECTION)
 			listener.handleAccountingPeriodToInstall(accountingPeriod);
 		installObject(ACCOUNTING_PERIOD,inject(AccountingPeriodBusiness.class),accountingPeriod);
 		
@@ -353,10 +352,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	public void installApplication() {
 		super.installApplication();
 	}
-	
-	public Collection<CompanyBusinessLayerListener> getCompanyBusinessLayerListeners() {
-		return COMPANY_BUSINESS_LAYER_LISTENERS;
-	}
 		
 	/**/
 	
@@ -364,4 +359,83 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	
 	/**/
 	
+	public static interface Listener extends AbstractBusinessLayer.Listener {
+		
+		Collection<Listener> COLLECTION = new ArrayList<>();
+		
+		void handleCompanyToInstall(Company company);
+		void handleCompanyLogoToInstall(File file);
+		void handlePointOfSaleToInstall(File file);
+		void handleAccountingPeriodToInstall(AccountingPeriod accountingPeriod);
+		
+		String getCompanyName();
+		
+		/* File */
+		
+		byte[] getCompanyLogoBytes();
+		byte[] getCompanyPointOfSaleBytes();
+		
+		/* Identifier */
+
+		StringGenerator getSaleIdentifierGenerator();
+		StringGenerator getCashRegisterMovementIdentifierGenerator();
+		
+		/**/
+		/*
+		Collection<Employee> getEmployees();
+		Employee getManager();
+		
+		UserAccount getUserAccount(Person person);
+		*/
+		/**/
+		
+		String SALE_IDENTIFIER = "SALE_IDENTIFIER";
+		String CASH_MOVEMENT_IDENTIFIER = "CASH_MOVEMENT_IDENTIFIER";
+		
+		/**/
+		
+		public static class Adapter extends AbstractBusinessLayer.Listener.Adapter implements Listener {
+
+			private static final long serialVersionUID = -3717816726680012239L;
+
+			@Override
+			public void handleCompanyToInstall(Company company) {}
+
+			@Override
+			public void handleCompanyLogoToInstall(File file) {}
+
+			@Override
+			public void handlePointOfSaleToInstall(File file) {}
+
+			@Override
+			public void handleAccountingPeriodToInstall(AccountingPeriod accountingPeriod) {}
+
+			@Override
+			public String getCompanyName() {
+				return null;
+			}
+
+			@Override
+			public byte[] getCompanyLogoBytes() {
+				return null;
+			}
+
+			@Override
+			public byte[] getCompanyPointOfSaleBytes() {
+				return null;
+			}
+
+			@Override
+			public StringGenerator getSaleIdentifierGenerator() {
+				return null;
+			}
+
+			@Override
+			public StringGenerator getCashRegisterMovementIdentifierGenerator() {
+				return null;
+			}
+
+		}
+
+	}
 }
