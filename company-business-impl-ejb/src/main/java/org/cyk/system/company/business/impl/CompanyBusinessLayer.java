@@ -306,8 +306,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDI);	
 		
 		
-		//createFile(CompanyConstant.FILE_DOCUMENT_HEADER,null);
-    	//createFile(CompanyConstant.FILE_DOCUMENT_BACKGROUND,null);
+		createFile(CompanyConstant.FILE_DOCUMENT_HEADER,null);
+    	createFile(CompanyConstant.FILE_DOCUMENT_BACKGROUND,null);
 	}
 	
 	private void security(){ 
