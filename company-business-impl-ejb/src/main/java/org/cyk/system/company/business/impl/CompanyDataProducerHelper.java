@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import javax.inject.Singleton;
 
+import org.cyk.system.company.model.CompanyConstant;
+import org.cyk.system.root.business.impl.RootDataProducerHelper;
+import org.cyk.system.root.model.file.report.ReportTemplate;
+import org.cyk.system.root.persistence.api.file.FileDao;
 import org.cyk.utility.common.cdi.AbstractBean;
 
 @Singleton
@@ -15,6 +19,9 @@ public class CompanyDataProducerHelper extends AbstractBean implements Serializa
 		return CompanyBusinessLayer.getInstance();
 	}
 	
-	
+	public ReportTemplate createReportTemplate(String code,String name,Boolean male,String templateRelativeFileName){
+		return inject(RootDataProducerHelper.class).createReportTemplate(code, name, male, templateRelativeFileName, inject(FileDao.class).read(CompanyConstant.FILE_DOCUMENT_HEADER)
+				, inject(FileDao.class).read(CompanyConstant.FILE_DOCUMENT_BACKGROUND), inject(FileDao.class).read(CompanyConstant.FILE_DOCUMENT_BACKGROUND_DRAFT));
+	}
 	
 }

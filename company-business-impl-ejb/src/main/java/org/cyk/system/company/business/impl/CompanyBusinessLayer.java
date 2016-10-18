@@ -308,6 +308,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 		createFile(CompanyConstant.FILE_DOCUMENT_HEADER,null);
     	createFile(CompanyConstant.FILE_DOCUMENT_BACKGROUND,null);
+    	createFile(CompanyConstant.FILE_DOCUMENT_BACKGROUND_DRAFT,null);
 	}
 	
 	private void security(){ 
