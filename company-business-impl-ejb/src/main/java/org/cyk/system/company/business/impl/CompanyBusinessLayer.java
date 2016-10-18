@@ -305,6 +305,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDD);
 		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDI);	
 		
+		
+		//createFile(CompanyConstant.FILE_DOCUMENT_HEADER,null);
+    	//createFile(CompanyConstant.FILE_DOCUMENT_BACKGROUND,null);
 	}
 	
 	private void security(){ 
@@ -380,6 +383,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		StringGenerator getSaleIdentifierGenerator();
 		StringGenerator getCashRegisterMovementIdentifierGenerator();
 		
+		String getDocumentHeaderFileRelativePath();
+		String getDocumentBackgroundFileRelativePath();
+		
 		/**/
 		/*
 		Collection<Employee> getEmployees();
@@ -432,6 +438,15 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 
 			@Override
 			public StringGenerator getCashRegisterMovementIdentifierGenerator() {
+				return null;
+			}
+			
+			@Override
+			public String getDocumentBackgroundFileRelativePath() {
+				return null;
+			}
+			@Override
+			public String getDocumentHeaderFileRelativePath() {
 				return null;
 			}
 
