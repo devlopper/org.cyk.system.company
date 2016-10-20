@@ -12,6 +12,7 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.EmploymentAgreementBusiness;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.company.persistence.api.structure.EmployeeDao;
@@ -127,6 +128,20 @@ public class EmployeeBusinessImpl extends AbstractActorBusinessImpl<Employee, Em
 							inject(EmploymentAgreementBusiness.class).delete(employmentAgreement);
 					}
 				}
+				
+				/**/
+				
+				public class EnterpriseResourcePlanning extends EmployeeBusinessImpl.Listener.Adapter.Default implements Serializable {
+					
+					private static final long serialVersionUID = 1L;
+
+					public EnterpriseResourcePlanning() {
+						addCascadeToClass(EmploymentAgreement.class).addCascadeToReportTemplateCodes(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT,
+								CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CERTIFICATE,CompanyConstant.REPORT_EMPLOYEE_WORK_CERTIFICATE);
+					}
+					
+				}
+
 			}
 			
 		}
