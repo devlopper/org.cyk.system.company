@@ -131,7 +131,7 @@ public class EmployeeBusinessImpl extends AbstractActorBusinessImpl<Employee, Em
 				
 				/**/
 				
-				public class EnterpriseResourcePlanning extends EmployeeBusinessImpl.Listener.Adapter.Default implements Serializable {
+				public static class EnterpriseResourcePlanning extends EmployeeBusinessImpl.Listener.Adapter.Default implements Serializable {
 					
 					private static final long serialVersionUID = 1L;
 
