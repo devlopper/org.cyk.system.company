@@ -7,23 +7,23 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.business.api.structure.EmploymentAgreementBusiness;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.company.model.structure.EmploymentAgreementType;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.ui.api.model.party.AbstractActorEditFormModel;
-import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
+import org.cyk.ui.web.primefaces.page.party.AbstractActorEditPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneRadio;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @Named @ViewScoped @Getter @Setter
-public class EmployeeEditPage extends AbstractCrudOnePage<Employee> implements Serializable {
+public class EmployeeEditPage extends AbstractActorEditPage.AbstractDefault.Default<Employee> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 
