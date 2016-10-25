@@ -30,7 +30,7 @@ public class SalableProductCollectionItemEditPage extends AbstractCollectionItem
 	private static final long serialVersionUID = 3274187086682750183L;
 	
 	@Getter @Setter @FieldOverride(name=Form.FIELD_COLLECTION,type=SalableProductCollection.class)
-	public static class Form extends AbstractCollectionItemEditPage.AbstractForm.AbstractDefault<SalableProductCollection,SalableProductCollectionItem> implements Serializable{
+	public static class Form extends AbstractCollectionItemEditPage.AbstractForm.AbstractDefault<SalableProductCollectionItem,SalableProductCollection> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 	
 		@Input @InputChoice @InputChoiceAutoComplete @InputOneChoice @InputOneAutoComplete @NotNull private SalableProduct salableProduct;

@@ -33,7 +33,7 @@ public class CashRegisterMovementTermEditPage extends AbstractCollectionItemEdit
 	}
 	
 	@Getter @Setter @FieldOverride(name=AbstractForm.FIELD_COLLECTION,type=CashRegisterMovementTermCollection.class)
-	public static class Form extends AbstractForm.AbstractDefault<CashRegisterMovementTermCollection,CashRegisterMovementTerm> implements Serializable{
+	public static class Form extends AbstractForm.AbstractDefault<CashRegisterMovementTerm,CashRegisterMovementTermCollection> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		@Input @InputNumber @NotNull private BigDecimal amount;
