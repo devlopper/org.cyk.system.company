@@ -18,6 +18,7 @@ import org.cyk.system.company.business.impl.accounting.AccountingPeriodProductBu
 import org.cyk.system.company.business.impl.sale.CustomerBusinessImpl;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.business.impl.stock.StockTangibleProductMovementBusinessImpl;
+import org.cyk.system.company.business.impl.structure.EmployeeBusinessImpl;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
@@ -360,6 +361,12 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	/**/
 	
 	protected void fakeTransactions(){}
+	
+	/**/
+	
+	public void enableEnterpriseResourcePlanning(){
+		EmployeeBusinessImpl.Listener.COLLECTION.add(new EmployeeBusinessImpl.Listener.Adapter.Default.EnterpriseResourcePlanning()); 
+	}
 	
 	/**/
 	

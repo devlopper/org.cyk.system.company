@@ -28,6 +28,7 @@ import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.company.model.structure.EmploymentAgreementType;
 import org.cyk.system.company.model.structure.Vehicle;
 import org.cyk.system.root.business.api.security.BusinessServiceCollectionBusiness;
+import org.cyk.ui.api.UIManager;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.web.primefaces.Commandable;
@@ -42,27 +43,34 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 	@Override
 	public SystemMenu build(UserSession userSession) {
 		SystemMenu systemMenu = super.build(userSession);
-		addBusinessMenu(userSession,systemMenu,getProductCommandable(userSession, null));
-		addBusinessMenu(userSession,systemMenu,getPaymentCommandable(userSession, null));
-		addBusinessMenu(userSession,systemMenu,getSaleCommandable(userSession, null));
-		addBusinessMenu(userSession,systemMenu,getCompanyCommandable(userSession, null));
+		addBusinessMenu(userSession,systemMenu,getEmployeeCommandable(userSession, null));
+		//addBusinessMenu(userSession,systemMenu,getProductCommandable(userSession, null));
+		//addBusinessMenu(userSession,systemMenu,getPaymentCommandable(userSession, null));
+		//addBusinessMenu(userSession,systemMenu,getSaleCommandable(userSession, null));
+		//addBusinessMenu(userSession,systemMenu,getCompanyCommandable(userSession, null));
 		return systemMenu;
+	}
+	
+	@Override
+	protected void addReferences(UserSession userSession,SystemMenu systemMenu, Collection<UICommandable> mobileCommandables) {
+		super.addReferences(userSession, systemMenu, mobileCommandables);
+		addReference(userSession, systemMenu, getReferenceCompanyCommandable(userSession, mobileCommandables));
+		addReference(userSession, systemMenu, getReferenceEmployeeCommandable(userSession, mobileCommandables));
+		addReference(userSession, systemMenu, getReferenceProductCommandable(userSession, mobileCommandables));
+		addReference(userSession, systemMenu, getReferencePaymentCommandable(userSession, mobileCommandables));
 	}
 	
 	public Commandable getCompanyCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = createModuleCommandable(Company.class, null);
 		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_COMPANY).getName());
-		//module.addChild(createListCommandable(Company.class, null));
-		module.addChild(createListCommandable(EmploymentAgreementType.class, null));
-		module.addChild(createListCommandable(EmploymentAgreement.class, null));
-		module.addChild(createListCommandable(Employee.class, null));
 		
 		return module;
 	}
 	
 	public Commandable getEmployeeCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
-		Commandable module = createModuleCommandable("command.employee.management", null);
+		Commandable module = createModuleCommandable(UIManager.getInstance().businessEntityInfos(Employee.class).getUserInterface().getLabelId() /*"command.employee.management"*/, null);
 		module.addChild(createListCommandable(Employee.class, null));
+		module.addChild(createListCommandable(EmploymentAgreement.class, null));
 		addReportCommandables(Employee.class,module, EmployeeBusinessImpl.Listener.COLLECTION);
 		return module;
 	}
@@ -70,22 +78,13 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 	public Commandable getProductCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = createModuleCommandable(Product.class, null);
 		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_PRODUCT).getName());
-		module.addChild(createListCommandable(TangibleProduct.class, null));
-		module.addChild(createListCommandable(IntangibleProduct.class, null));
-		/*module.addChild(createListCommandable(ProductCategory.class, null));
-		module.addChild(createListCommandable(ProductCollection.class, null));
-		module.addChild(createListCommandable(ProductCollectionItem.class, null));*/
-		//module.addChild(createListCommandable(TangibleProductInstance.class, null));
-		/*module.addChild(createListCommandable(TangibleProductInventory.class, null));*/
+		
 		return module;
 	}
 	
 	public Commandable getPaymentCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = createModuleCommandable("payment", null);
 		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_PAYMENT).getName());
-		module.addChild(createListCommandable(CashRegister.class, null));
-		module.addChild(createListCommandable(Cashier.class, null));
-		module.addChild(createListCommandable(CashRegisterMovementMode.class, null));
 		module.addChild(createListCommandable(CashRegisterMovement.class, null));
 		module.addChild(createListCommandable(CashRegisterMovementTermCollection.class, null));
 		module.addChild(createListCommandable(CashRegisterMovementTerm.class, null));
@@ -120,6 +119,41 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 		
 		module.addChild(createListCommandable(Customer.class, null));
 		
+		return module;
+	}
+	
+	/**/
+	
+	public Commandable getReferenceCompanyCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
+		Commandable module = createModuleCommandable(UIManager.getInstance().businessEntityInfos(Company.class).getUserInterface().getLabelId(), null);
+		module.addChild(createListCommandable(Company.class, null));
+		//module.addChild(createListCommandable(OwnedCompany.class, null));
+		return module;
+	}
+	
+	public Commandable getReferenceProductCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
+		Commandable module = createModuleCommandable(UIManager.getInstance().businessEntityInfos(Product.class).getUserInterface().getLabelId(), null);
+		module.addChild(createListCommandable(TangibleProduct.class, null));
+		module.addChild(createListCommandable(IntangibleProduct.class, null));
+		/*module.addChild(createListCommandable(ProductCategory.class, null));
+		module.addChild(createListCommandable(ProductCollection.class, null));
+		module.addChild(createListCommandable(ProductCollectionItem.class, null));*/
+		//module.addChild(createListCommandable(TangibleProductInstance.class, null));
+		/*module.addChild(createListCommandable(TangibleProductInventory.class, null));*/
+		return module;
+	}
+	
+	public Commandable getReferenceEmployeeCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
+		Commandable module = createModuleCommandable(UIManager.getInstance().businessEntityInfos(Employee.class).getUserInterface().getLabelId(), null);
+		module.addChild(createListCommandable(EmploymentAgreementType.class, null));
+		return module;
+	}
+	
+	public Commandable getReferencePaymentCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
+		Commandable module = createModuleCommandable("payment", null);
+		module.addChild(createListCommandable(CashRegister.class, null));
+		module.addChild(createListCommandable(Cashier.class, null));
+		module.addChild(createListCommandable(CashRegisterMovementMode.class, null));
 		return module;
 	}
 	
