@@ -11,7 +11,7 @@
 
 	<name>Application</name>
 
-	<artifactId>application</artifactId>
+	<artifactId>company-application</artifactId>
 	<packaging>ear</packaging>
 
 	<pluginRepositories>
