@@ -20,6 +20,7 @@ import org.cyk.system.company.model.sale.ProFormaInvoice;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.structure.Company;
@@ -58,6 +59,7 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 		addReference(userSession, systemMenu, getReferenceEmployeeCommandable(userSession, mobileCommandables));
 		addReference(userSession, systemMenu, getReferenceProductCommandable(userSession, mobileCommandables));
 		addReference(userSession, systemMenu, getReferencePaymentCommandable(userSession, mobileCommandables));
+		addReference(userSession, systemMenu, getReferenceSaleCommandable(userSession, mobileCommandables));
 	}
 	
 	public Commandable getCompanyCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
@@ -94,11 +96,8 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 	public Commandable getSaleCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = createModuleCommandable(Sale.class, null);
 		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_SALE).getName());
-		module.addChild(createListCommandable(SalableProduct.class, null));
 		module.addChild(createListCommandable(SalableProductCollection.class, null));
 		module.addChild(createListCommandable(SalableProductCollectionItem.class, null));
-		//module.addChild(createListCommandable(SalableProductInstance.class, null));
-		
 		module.addChild(createListCommandable(Customer.class, null));
 		module.addChild(createListCommandable(CustomerSalableProduct.class, null));
 		return module;
@@ -154,6 +153,13 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 		module.addChild(createListCommandable(CashRegister.class, null));
 		module.addChild(createListCommandable(Cashier.class, null));
 		module.addChild(createListCommandable(CashRegisterMovementMode.class, null));
+		return module;
+	}
+	
+	public Commandable getReferenceSaleCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
+		Commandable module = createModuleCommandable(UIManager.getInstance().businessEntityInfos(Sale.class).getUserInterface().getLabelId(), null);
+		module.addChild(createListCommandable(SalableProduct.class, null));
+		module.addChild(createListCommandable(SalableProductInstance.class, null));
 		return module;
 	}
 	
