@@ -7,6 +7,22 @@
 		<from-view-id>*</from-view-id>
 		<!-- ########################################### Private Navigations Cases ############################################### -->
 		<navigation-case>
+			<from-outcome>companyEditView</from-outcome>
+			<to-view-id>/private/company/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>companyListView</from-outcome>
+			<to-view-id>/private/company/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>companyConsultView</from-outcome>
+			<to-view-id>/private/company/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
 			<from-outcome>employeeEditView</from-outcome>
 			<to-view-id>/private/company/employee/edit.xhtml</to-view-id>
 			<redirect />
