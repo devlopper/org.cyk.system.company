@@ -12,12 +12,13 @@ import org.cyk.system.company.business.impl.payment.CashRegisterMovementTermColl
 import org.cyk.system.company.business.impl.payment.CashRegisterMovementTermDetails;
 import org.cyk.system.company.business.impl.payment.CashierDetails;
 import org.cyk.system.company.business.impl.product.IntangibleProductDetails;
-import org.cyk.system.company.business.impl.product.ProductDetails;
 import org.cyk.system.company.business.impl.product.TangibleProductDetails;
 import org.cyk.system.company.business.impl.sale.CustomerSalableProductDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductCollectionDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductCollectionItemDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductDetails;
+import org.cyk.system.company.business.impl.sale.SaleCashRegisterMovementDetails;
+import org.cyk.system.company.business.impl.sale.SaleDetails;
 import org.cyk.system.company.business.impl.structure.EmployeeDetails;
 import org.cyk.system.company.business.impl.structure.EmploymentAgreementDetails;
 import org.cyk.system.company.model.payment.CashRegister;
@@ -32,6 +33,8 @@ import org.cyk.system.company.model.sale.CustomerSalableProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.company.ui.web.primefaces.CostFormModel;
@@ -47,11 +50,12 @@ import org.cyk.system.company.ui.web.primefaces.sale.CustomerSalableProductEditP
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductCollectionEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductCollectionItemEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.SaleCashRegisterMovementEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
 import org.cyk.system.company.ui.web.primefaces.structure.EmployeeEditPage;
 import org.cyk.system.company.ui.web.primefaces.structure.EmploymentAgreementEditPage;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.ui.api.command.menu.SystemMenu;
-import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.Table.ColumnAdapter;
 import org.cyk.ui.web.primefaces.UserSession;
 import org.cyk.ui.web.primefaces.adapter.enterpriseresourceplanning.ActorDetailsConfiguration;
@@ -109,7 +113,8 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 		});
 		
 		getFormConfiguration(CashRegisterMovement.class, Crud.CREATE).addRequiredFieldNames(CashRegisterMovementEditPage.Form.FIELD_CASH_REGISTER
-				,CashRegisterMovementEditPage.Form.FIELD_MOVEMENT,CashRegisterMovementEditPage.Form.FIELD_CODE,CashRegisterMovementEditPage.Form.FIELD_MODE);
+				,CashRegisterMovementEditPage.Form.FIELD_MOVEMENT)
+				.addFieldNames(CashRegisterMovementEditPage.Form.FIELD_CODE,CashRegisterMovementEditPage.Form.FIELD_MODE);
 		registerDetailsConfiguration(CashRegisterMovementDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
@@ -127,7 +132,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 		});
 		
 		getFormConfiguration(CashRegisterMovementMode.class, Crud.CREATE).addRequiredFieldNames(CashRegisterMovementModeEditPage.Form.FIELD_CODE
-				,CashRegisterMovementModeEditPage.Form.FIELD_NAME);
+				,CashRegisterMovementModeEditPage.Form.FIELD_NAME,CashRegisterMovementModeEditPage.Form.FIELD_SUPPORT_DOCUMENT_IDENTIFIER);
 		registerDetailsConfiguration(CashRegisterMovementModeDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
@@ -137,7 +142,8 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean build(Object data,Field field) {
-						return isFieldNameIn(field,CashRegisterMovementModeDetails.FIELD_CODE,CashRegisterMovementModeDetails.FIELD_NAME);
+						return isFieldNameIn(field,CashRegisterMovementModeDetails.FIELD_CODE,CashRegisterMovementModeDetails.FIELD_NAME
+								,CashRegisterMovementModeDetails.FIELD_SUPPORT_DOCUMENT_IDENTIFIER);
 					}
 				};
 			}
@@ -154,13 +160,25 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean build(Object data,Field field) {
+						return isFieldNameIn(field,CashRegisterMovementTermDetails.FIELD_COLLECTION,CashRegisterMovementTermDetails.FIELD_AMOUNT,CashRegisterMovementTermDetails.FIELD_EVENT);
+					}
+				};
+			}
+			
+			@Override
+			public ColumnAdapter getTableColumnAdapter(@SuppressWarnings("rawtypes") Class clazz,AbstractPrimefacesPage page) {
+				return new DetailsConfiguration.DefaultColumnAdapter(){
+					private static final long serialVersionUID = 1L;
+					@Override
+					public Boolean isColumn(Field field) {
 						return isFieldNameIn(field,CashRegisterMovementTermDetails.FIELD_AMOUNT,CashRegisterMovementTermDetails.FIELD_EVENT);
 					}
 				};
 			}
 		});
 		
-		getFormConfiguration(CashRegisterMovementTermCollection.class, Crud.CREATE).addRequiredFieldNames(CashRegisterMovementTermCollectionEditPage.Form.FIELD_AMOUNT);
+		getFormConfiguration(CashRegisterMovementTermCollection.class, Crud.CREATE).addRequiredFieldNames(CashRegisterMovementTermCollectionEditPage.Form.FIELD_CODE
+				,CashRegisterMovementTermCollectionEditPage.Form.FIELD_NAME,CashRegisterMovementTermCollectionEditPage.Form.FIELD_AMOUNT);
 		registerDetailsConfiguration(CashRegisterMovementTermCollectionDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
@@ -170,7 +188,8 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean build(Object data,Field field) {
-						return isFieldNameIn(field,CashRegisterMovementTermCollectionDetails.FIELD_AMOUNT);
+						return isFieldNameIn(field,CashRegisterMovementTermCollectionDetails.FIELD_CODE,CashRegisterMovementTermCollectionDetails.FIELD_NAME
+								,CashRegisterMovementTermCollectionDetails.FIELD_AMOUNT);
 					}
 				};
 			}
@@ -214,8 +233,8 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 	}
 	
 	protected void configureSaleModule() {
-		getFormConfiguration(SalableProduct.class, Crud.CREATE).addRequiredFieldNames(SalableProductEditPage.Form.FIELD_CODE
-				,SalableProductEditPage.Form.FIELD_NAME);
+		getFormConfiguration(SalableProduct.class, Crud.CREATE).addRequiredFieldNames(SalableProductEditPage.Form.FIELD_PRODUCT,SalableProductEditPage.Form.FIELD_CODE
+				,SalableProductEditPage.Form.FIELD_NAME).addFieldNames(SalableProductEditPage.Form.FIELD_PRICE);
 		registerDetailsConfiguration(SalableProductDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
@@ -225,14 +244,17 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean build(Object data,Field field) {
-						return isFieldNameIn(field,SalableProductDetails.FIELD_CODE,SalableProductDetails.FIELD_NAME);
+						return isFieldNameIn(field,SalableProductDetails.FIELD_PRODUCT,SalableProductDetails.FIELD_CODE,SalableProductDetails.FIELD_NAME
+								,SalableProductDetails.FIELD_PRICE);
 					}
 				};
 			}
 		});
 		
 		getFormConfiguration(SalableProductCollection.class, Crud.CREATE).addFieldNames(SalableProductCollectionEditPage.Form.FIELD_ACCOUNTINGPERIOD
-				,SalableProductCollectionEditPage.Form.FIELD_COST,CostFormModel.FIELD_VALUE);
+				,SalableProductCollectionEditPage.Form.FIELD_CODE
+				,SalableProductCollectionEditPage.Form.FIELD_NAME,SalableProductCollectionEditPage.Form.FIELD_AUTO_COMPUTE_VALUE_ADDED_TAX
+				,SalableProductCollectionEditPage.Form.FIELD_COST,CostFormModel.FIELD_VALUE,CostFormModel.FIELD_TAX,CostFormModel.FIELD_TURNOVER);
 		registerDetailsConfiguration(SalableProductCollectionDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
@@ -242,8 +264,9 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean build(Object data,Field field) {
-						return isFieldNameIn(field,SalableProductCollectionDetails.FIELD_ACCOUNTING_PERIOD,SalableProductCollectionDetails.FIELD_COST
-								,CostDetails.FIELD_VALUE);
+						return isFieldNameIn(field,SalableProductCollectionDetails.FIELD_ACCOUNTING_PERIOD,SalableProductCollectionDetails.FIELD_CODE
+							,SalableProductCollectionDetails.FIELD_NAME,SalableProductCollectionDetails.FIELD_COST,CostDetails.FIELD_VALUE
+							,CostDetails.FIELD_TAX,CostDetails.FIELD_TURNOVER);
 					}
 				};
 			}
@@ -251,42 +274,13 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 		
 		getFormConfiguration(SalableProductCollectionItem.class, Crud.CREATE).addRequiredFieldNames(SalableProductCollectionItemEditPage.Form.FIELD_COLLECTION
 				,SalableProductCollectionItemEditPage.Form.FIELD_SALABLE_PRODUCT,SalableProductCollectionItemEditPage.Form.FIELD_QUANTITY
-				//,SalableProductCollectionItemEditPage.Form.FIELD_REDUCTION,SalableProductCollectionItemEditPage.Form.FIELD_COMMISSION
-				//,SalableProductCollectionItemEditPage.Form.FIELD_COST,CostFormModel.FIELD_VALUE
-				);
+				/*,SalableProductCollectionItemEditPage.Form.FIELD_COST,CostFormModel.FIELD_VALUE*/
+				).addFieldNames(/*SalableProductCollectionItemEditPage.Form.FIELD_CODE,SalableProductCollectionItemEditPage.Form.FIELD_NAME
+					,SalableProductCollectionItemEditPage.Form.FIELD_REDUCTION,SalableProductCollectionItemEditPage.Form.FIELD_COMMISSION
+					,CostFormModel.FIELD_TURNOVER,CostFormModel.FIELD_TAX*/)
+				.addControlSetListener(new SalableProductCollectionItemDetailsConfiguration.FormControlSetAdapter(SalableProductCollectionItem.class));
 		
-		registerDetailsConfiguration(SalableProductCollectionItemDetails.class, new DetailsConfiguration(){
-			private static final long serialVersionUID = 1L;
-			@SuppressWarnings("rawtypes")
-			@Override
-			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
-				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
-					private static final long serialVersionUID = 1L;
-					@Override
-					public Boolean build(Object data,Field field) {
-						if(data instanceof SalableProductCollectionItemDetails)
-							return isFieldNameIn(field,SalableProductCollectionItemDetails.FIELD_SALABLE_PRODUCT,SalableProductCollectionItemDetails.FIELD_QUANTITY
-								,SalableProductCollectionItemDetails.FIELD_COST);
-						if(data instanceof SalableProductDetails)
-							return isFieldNameIn(field,SalableProductDetails.FIELD_CODE,SalableProductDetails.FIELD_PRICE);
-						if(data instanceof CostDetails)
-							return isFieldNameIn(field,CostDetails.FIELD_VALUE);
-						return Boolean.FALSE;
-					}
-				};
-			}
-			@Override
-			public ColumnAdapter getTableColumnAdapter(@SuppressWarnings("rawtypes") Class clazz,AbstractPrimefacesPage page) {
-				return new Table.ColumnAdapter(){
-					private static final long serialVersionUID = 1L;
-					@Override
-					public Boolean isColumn(Field field) {
-						return isFieldNameIn(field,SalableProductCollectionItemDetails.FIELD_SALABLE_PRODUCT,ProductDetails.FIELD_CODE
-								,SalableProductCollectionItemDetails.FIELD_QUANTITY,SalableProductCollectionItemDetails.FIELD_COST,CostDetails.FIELD_VALUE);
-					}
-				};			
-			}
-		});
+		registerDetailsConfiguration(SalableProductCollectionItemDetails.class, new SalableProductCollectionItemDetailsConfiguration());
 		
 		getFormConfiguration(CustomerSalableProduct.class, Crud.CREATE).addRequiredFieldNames(CustomerSalableProductEditPage.Form.FIELD_CUSTOMER
 				,CustomerSalableProductEditPage.Form.FIELD_SALABLE_PRODUCT,CustomerSalableProductEditPage.Form.FIELD_PRICE);
@@ -306,6 +300,50 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			}
 		});
 		
+		getFormConfiguration(Sale.class, Crud.CREATE).addRequiredFieldNames(SaleEditPage.Form.FIELD_CUSTOMER
+				,SaleEditPage.Form.FIELD_SALABLE_PRODUCT_COLLECTION);
+		registerDetailsConfiguration(SaleDetails.class, new DetailsConfiguration(){
+			private static final long serialVersionUID = 1L;
+			@SuppressWarnings("rawtypes")
+			@Override
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
+				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
+					private static final long serialVersionUID = 1L;
+					@Override
+					public Boolean build(Object data,Field field) {
+						return isFieldNameIn(field,SaleDetails.FIELD_CUSTOMER,SaleDetails.FIELD_SALABLE_PRODUCT_COLLECTION);
+					}
+				};
+			}
+		});
+		
+		getFormConfiguration(SaleCashRegisterMovement.class, Crud.CREATE).addRequiredFieldNames(SaleCashRegisterMovementEditPage.Form.FIELD_SALE
+				,SaleCashRegisterMovementEditPage.Form.FIELD_CASH_REGISTER);
+		registerDetailsConfiguration(SaleCashRegisterMovementDetails.class, new DetailsConfiguration(){
+			private static final long serialVersionUID = 1L;
+			@SuppressWarnings("rawtypes")
+			@Override
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
+				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
+					private static final long serialVersionUID = 1L;
+					@Override
+					public Boolean build(Object data,Field field) {
+						return isFieldNameIn(field,SaleCashRegisterMovementDetails.FIELD_SALE,SaleCashRegisterMovementDetails.FIELD_CASH_REGISTER_MOVEMENT);
+					}
+				};
+			}
+			
+			@Override
+			public ColumnAdapter getTableColumnAdapter(@SuppressWarnings("rawtypes") Class clazz,AbstractPrimefacesPage page) {
+				return new DetailsConfiguration.DefaultColumnAdapter(){
+					private static final long serialVersionUID = 1L;
+					@Override
+					public Boolean isColumn(Field field) {
+						return isFieldNameIn(field,SaleCashRegisterMovementDetails.FIELD_CASH_REGISTER_MOVEMENT);
+					}
+				};
+			}
+		});
 	}
 	
 	protected void configureCompanyModule() {

@@ -36,7 +36,7 @@ public class Balance extends AbstractModelElement implements Serializable {
 		return String.format(LOG_FORMAT,value,cumul);
 	}
 	
-	private static final String LOG_FORMAT = "Balance(V=%s C=%s)";
+	private static final String LOG_FORMAT = Balance.class.getSimpleName()+"(V=%s C=%s)";
 	
 	/**/
 	

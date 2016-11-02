@@ -2,31 +2,26 @@ package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
 
-import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.root.business.impl.AbstractOutputDetails;
-import org.cyk.utility.common.annotation.user.interfaces.Input;
-import org.cyk.utility.common.annotation.user.interfaces.InputText;
-
 import lombok.Getter;
 import lombok.Setter;
 
+import org.cyk.system.company.business.impl.BalanceDetails;
+import org.cyk.system.company.model.sale.Sale;
+import org.cyk.utility.common.annotation.user.interfaces.IncludeInputs;
+import org.cyk.utility.common.annotation.user.interfaces.Input;
+import org.cyk.utility.common.annotation.user.interfaces.InputText;
+
 @Getter @Setter
-public class SaleDetails extends AbstractOutputDetails<Sale> implements Serializable {
+public class SaleDetails extends AbstractSaleDetails<Sale> implements Serializable {
 	private static final long serialVersionUID = -1498269103849317057L;
 	
-	@Input @InputText
-	private String identifier,externalIdentifier,cost,balance,customer,date;
+	@Input @InputText private String cashRegisterMovementTermCollection;
+	@IncludeInputs private BalanceDetails balance = new BalanceDetails(null);
 	
 	public SaleDetails(Sale sale) {
 		super(sale);
-		/*
-		this.identifier = sale.getComputedIdentifier();
-		this.externalIdentifier = sale.getExternalIdentifier();
-		this.cost = formatNumber(sale.getCost().getValue());
-		this.balance = formatNumber(sale.getBalance().getValue().abs());
-		this.customer = sale.getCustomer()==null?Constant.EMPTY_STRING:(sale.getCustomer().getCode()+Constant.CHARACTER_SLASH+sale.getCustomer().getPerson().getNames());
-		this.date = formatDateTime(sale.getDate());
-		*/
+		balance.set(sale.getBalance());
+		cashRegisterMovementTermCollection = formatUsingBusiness(sale.getCashRegisterMovementTermCollection());
 	}
 	
 	/**/

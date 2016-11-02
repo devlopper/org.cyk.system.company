@@ -29,8 +29,19 @@ public class CostFormModel implements Serializable {
 		tax = cost.getTax();
 	}
 	
+	public void write(Cost cost,Boolean computeTax) {
+		cost.setValue(value);
+		if(Boolean.TRUE.equals(computeTax)){
+			
+		}else{
+			cost.setTurnover(turnover);
+			cost.setTax(tax);
+		}
+	}
+	
 	public static final String FIELD_VALUE = "value";
 	public static final String FIELD_TURNOVER = "turnover";
 	public static final String FIELD_TAX = "tax";
+
 	
 }

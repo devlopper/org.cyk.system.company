@@ -9,10 +9,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.cyk.system.company.model.sale.SalableProductCollection;
-import org.cyk.ui.web.primefaces.page.crud.AbstractCrudManyPage;
 
 @Named @ViewScoped @Getter @Setter
-public class SalableProductCollectionListPage extends AbstractCrudManyPage<SalableProductCollection> implements Serializable {
+public class SalableProductCollectionListPage extends AbstractSalableProductCollectionListPage<SalableProductCollection> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	

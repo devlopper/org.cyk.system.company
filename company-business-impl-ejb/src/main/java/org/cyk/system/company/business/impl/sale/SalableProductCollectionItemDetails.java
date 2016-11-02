@@ -17,14 +17,13 @@ import org.cyk.utility.common.annotation.user.interfaces.InputText;
 public class SalableProductCollectionItemDetails extends AbstractCollectionItemDetails<SalableProductCollectionItem> implements Serializable{
 	private static final long serialVersionUID = -4741435164709063863L;
 	
-	@IncludeInputs private SalableProductDetails salableProduct;
-	@Input @InputText private String quantity,reduction,commission/*,instances*/;
+	@Input @InputText private String salableProduct,quantity,reduction,commission/*,instances*/;
 	
 	@IncludeInputs(layout=Layout.VERTICAL) private CostDetails cost;
 	
 	public SalableProductCollectionItemDetails(SalableProductCollectionItem salableProductCollectionItem) {
 		super(salableProductCollectionItem);
-		this.salableProduct = new SalableProductDetails(salableProductCollectionItem.getSalableProduct());
+		this.salableProduct = formatUsingBusiness(salableProductCollectionItem.getSalableProduct());
 		this.quantity = formatNumber(salableProductCollectionItem.getQuantity());
 		this.reduction = formatNumber(salableProductCollectionItem.getReduction());
 		this.commission = formatNumber(salableProductCollectionItem.getCommission());

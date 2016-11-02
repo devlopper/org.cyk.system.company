@@ -48,7 +48,6 @@ public class Sale extends AbstractSale implements Serializable {
 	*/
 	/**/
 	
-	public static final String FIELD_CASHIER = "cashier";
 	public static final String FIELD_BALANCE = "balance";
 	public static final String FIELD_CASH_REGISTER_MOVEMENT_TERM_COLLECTION = "cashRegisterMovementTermCollection";
 	

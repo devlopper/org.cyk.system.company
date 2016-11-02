@@ -7,28 +7,35 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
-import org.cyk.system.company.model.payment.CashRegisterMovementTermCollection;
-import org.cyk.ui.api.data.collector.form.AbstractFormModel;
-import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
-import org.cyk.utility.common.annotation.user.interfaces.Input;
-import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
-
 import lombok.Getter;
 import lombok.Setter;
 
+import org.cyk.system.company.model.payment.CashRegisterMovementTermCollection;
+import org.cyk.system.root.model.AbstractCollection;
+import org.cyk.ui.web.primefaces.page.AbstractCollectionEditPage;
+import org.cyk.utility.common.annotation.user.interfaces.Input;
+import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
+
 @Named @ViewScoped @Getter @Setter
-public class CashRegisterMovementTermCollectionEditPage extends AbstractCrudOnePage<CashRegisterMovementTermCollection> implements Serializable {
+public class CashRegisterMovementTermCollectionEditPage extends AbstractCollectionEditPage<CashRegisterMovementTermCollection> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
+	@Override
+	protected AbstractCollection<?> getCollection() {
+		return identifiable;
+	}
+	
 	@Getter @Setter
-	public static class Form extends AbstractFormModel<CashRegisterMovementTermCollection> implements Serializable{
+	public static class Form extends AbstractForm.AbstractDefault<CashRegisterMovementTermCollection> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		@Input @InputNumber @NotNull private BigDecimal amount;
-
-		public static final String FIELD_AMOUNT = "amount";
 		
+		public static final String FIELD_AMOUNT = "amount";
+
 	}
+
+	
 
 }

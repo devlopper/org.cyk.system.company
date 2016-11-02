@@ -168,7 +168,19 @@ public class SalableProductCollectionEditPage extends AbstractSalableProductColl
 		@IncludeInputs(layout=IncludeInputs.Layout.VERTICAL) private CostFormModel cost = new CostFormModel();
 		
 		@Input @InputBooleanButton private Boolean autoComputeValueAddedTax = Boolean.TRUE;
-				
+		
+		@Override
+		public void read() {
+			super.read();
+			cost.set(identifiable.getCost());
+		}
+		
+		@Override
+		public void write() {
+			super.write();
+			cost.write(identifiable.getCost(),autoComputeValueAddedTax);
+		}
+		
 		public static final String FIELD_ACCOUNTINGPERIOD = "accountingPeriod";
 		public static final String FIELD_COST = "cost";
 		public static final String FIELD_AUTO_COMPUTE_VALUE_ADDED_TAX = "autoComputeValueAddedTax";

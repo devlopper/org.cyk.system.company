@@ -29,6 +29,7 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Company;
@@ -43,6 +44,7 @@ import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.time.TimeBusiness;
 import org.cyk.system.root.business.impl.AbstractBusinessLayer;
 import org.cyk.system.root.business.impl.AbstractFormatter;
+import org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl;
 import org.cyk.system.root.business.impl.BusinessServiceProvider;
 import org.cyk.system.root.business.impl.BusinessServiceProvider.Service;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
@@ -54,6 +56,7 @@ import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.generator.StringGenerator;
 import org.cyk.system.root.model.geography.ContactCollection;
+import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
@@ -366,6 +369,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	
 	public void enableEnterpriseResourcePlanning(){
 		EmployeeBusinessImpl.Listener.COLLECTION.add(new EmployeeBusinessImpl.Listener.Adapter.Default.EnterpriseResourcePlanning()); 
+		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{GlobalIdentifier.FIELD_CODE}, SalableProductCollectionItem.class);
 	}
 	
 	/**/

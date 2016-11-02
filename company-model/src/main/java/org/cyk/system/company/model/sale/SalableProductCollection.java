@@ -30,5 +30,9 @@ public class SalableProductCollection extends AbstractCollection<SalableProductC
 	
 	@Transient protected Boolean autoComputeValueAddedTax = Boolean.TRUE;
 	
+	/**/
 	
+	public static final String FIELD_ACCOUNTING_PERIOD = "accountingPeriod";
+	public static final String FIELD_COST = "cost";
+	public static final String FIELD_AUTO_COMPUTE_VALUE_ADDED_TAX = "autoComputeValueAddedTax";
 }

@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 import org.apache.commons.lang3.StringUtils;
+import org.cyk.system.company.model.Balance;
+import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleResults;
@@ -11,7 +13,10 @@ import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
+import org.cyk.system.root.persistence.impl.QueryStringBuilder;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
+import org.cyk.utility.common.computation.ArithmeticOperator;
+import org.cyk.utility.common.computation.LogicalOperator;
 
 public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 
@@ -36,8 +41,10 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
     	
     	String readByCriteriaDateAscendingOrderQuery = queryStringBuilder.orderBy(Sale.FIELD_DATE, Boolean.TRUE).getValue();
     	registerNamedQuery(readByComputedIdentifier,_select().where(Sale.FIELD_COMPUTED_IDENTIFIER));
-    	registerNamedQuery(readAllSortedByDate,readByCriteriaDateAscendingOrderQuery);
-        registerNamedQuery(readByCriteria,readByCriteriaDateAscendingOrderQuery);
+    	*/
+    	registerNamedQuery(readAllSortedByDate,/*readByCriteriaDateAscendingOrderQuery*/_select());
+        /*
+    	registerNamedQuery(readByCriteria,readByCriteriaDateAscendingOrderQuery);
         registerNamedQuery(readByCriteriaDateAscendingOrder,readByCriteriaDateAscendingOrderQuery );
         registerNamedQuery(readByCriteriaDateDescendingOrder,queryStringBuilder.orderBy(Sale.FIELD_DATE, Boolean.FALSE));
     	

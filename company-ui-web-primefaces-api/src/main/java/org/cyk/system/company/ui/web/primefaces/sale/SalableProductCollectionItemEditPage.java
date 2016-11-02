@@ -29,6 +29,12 @@ public class SalableProductCollectionItemEditPage extends AbstractCollectionItem
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
+	@Override
+	protected void initialisation() {
+		super.initialisation();
+		
+	}
+	
 	@Getter @Setter @FieldOverride(name=Form.FIELD_COLLECTION,type=SalableProductCollection.class)
 	public static class Form extends AbstractCollectionItemEditPage.AbstractForm.AbstractDefault<SalableProductCollectionItem,SalableProductCollection> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;

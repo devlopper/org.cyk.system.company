@@ -15,32 +15,29 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
-import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleConfiguration;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
-import org.cyk.ui.api.model.AbstractItemCollection;
+import org.cyk.ui.api.model.AbstractBusinessIdentifiedEditFormModel;
 import org.cyk.ui.api.model.AbstractItemCollectionItem;
-import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
-import org.cyk.ui.web.api.ItemCollectionWebAdapter;
-import org.cyk.ui.web.primefaces.ItemCollection;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputCalendar;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
+import org.cyk.utility.common.annotation.user.interfaces.InputChoiceAutoComplete;
 import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
+import org.cyk.utility.common.annotation.user.interfaces.InputOneAutoComplete;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
@@ -387,9 +384,14 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	
 	/**/
 	
-	public static class Form extends AbstractFormModel<Sale> implements Serializable{
+	public static class Form extends AbstractBusinessIdentifiedEditFormModel<Sale> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
+		@Input @InputChoice @InputChoiceAutoComplete @InputOneChoice @InputOneAutoComplete private Customer customer;
+		@Input @InputChoice @InputChoiceAutoComplete @InputOneChoice @InputOneAutoComplete private SalableProductCollection salableProductCollection;
+		
+		public static final String FIELD_SALABLE_PRODUCT_COLLECTION = "salableProductCollection";
+		public static final String FIELD_CUSTOMER = "customer";
 	}
 	
 	@Getter @Setter

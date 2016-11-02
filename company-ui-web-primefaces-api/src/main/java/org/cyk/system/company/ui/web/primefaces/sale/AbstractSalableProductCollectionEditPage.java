@@ -44,7 +44,7 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 	}
 	
 	@Getter @Setter
-	public static abstract class AbstractDefaultForm<COLLECTION extends AbstractCollection<?>> extends AbstractForm.Default<COLLECTION> implements Serializable{
+	public static abstract class AbstractDefaultForm<COLLECTION extends AbstractCollection<?>> extends AbstractForm.AbstractDefault<COLLECTION> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 
 		
