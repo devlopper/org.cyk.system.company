@@ -55,6 +55,7 @@ import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
 import org.cyk.system.company.ui.web.primefaces.structure.EmployeeEditPage;
 import org.cyk.system.company.ui.web.primefaces.structure.EmploymentAgreementEditPage;
 import org.cyk.system.root.business.api.Crud;
+import org.cyk.system.root.business.impl.time.PeriodDetails;
 import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.web.primefaces.Table.ColumnAdapter;
 import org.cyk.ui.web.primefaces.UserSession;
@@ -96,7 +97,8 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			}
 		});
 		
-		getFormConfiguration(CashRegister.class, Crud.CREATE).addRequiredFieldNames(CashRegisterEditPage.Form.FIELD_MOVEMENT_COLLECTION,CashRegisterEditPage.Form.FIELD_CODE,CashRegisterEditPage.Form.FIELD_NAME);
+		getFormConfiguration(CashRegister.class, Crud.CREATE).addRequiredFieldNames(CashRegisterEditPage.Form.FIELD_MOVEMENT_COLLECTION,CashRegisterEditPage.Form.FIELD_CODE)
+			.addFieldNames(CashRegisterEditPage.Form.FIELD_NAME);
 		registerDetailsConfiguration(CashRegisterDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
@@ -112,9 +114,11 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			}
 		});
 		
-		getFormConfiguration(CashRegisterMovement.class, Crud.CREATE).addRequiredFieldNames(CashRegisterMovementEditPage.Form.FIELD_CASH_REGISTER
-				,CashRegisterMovementEditPage.Form.FIELD_MOVEMENT)
-				.addFieldNames(CashRegisterMovementEditPage.Form.FIELD_CODE,CashRegisterMovementEditPage.Form.FIELD_MODE);
+		getFormConfiguration(CashRegisterMovement.class,Crud.CREATE)
+		.addRequiredFieldNames(CashRegisterMovementEditPage.Form.FIELD_COLLECTION,CashRegisterMovementEditPage.Form.FIELD_VALUE)
+		.addFieldNames(CashRegisterMovementEditPage.Form.FIELD_ACTION,CashRegisterMovementEditPage.Form.FIELD_CURRENT_TOTAL,CashRegisterMovementEditPage.Form.FIELD_NEXT_TOTAL
+				,CashRegisterMovementEditPage.Form.FIELD_CODE,CashRegisterMovementEditPage.Form.FIELD_MODE,CashRegisterMovementEditPage.Form.FIELD_DATE);
+		
 		registerDetailsConfiguration(CashRegisterMovementDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
@@ -124,8 +128,12 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean build(Object data,Field field) {
-						return isFieldNameIn(field,CashRegisterMovementDetails.FIELD_CASH_REGISTER,CashRegisterMovementDetails.FIELD_MOVEMENT
-								,CashRegisterMovementDetails.FIELD_CODE,CashRegisterMovementDetails.FIELD_MODE);
+						if(data instanceof CashRegisterMovementDetails)
+							return isFieldNameIn(field,CashRegisterMovementDetails.FIELD_COLLECTION,CashRegisterMovementDetails.FIELD_VALUE
+									,CashRegisterMovementDetails.FIELD_EXISTENCE_PERIOD,CashRegisterMovementDetails.FIELD_CODE,CashRegisterMovementDetails.FIELD_MODE);
+						if(data instanceof PeriodDetails)
+							return isFieldNameIn(field,PeriodDetails.FIELD_FROM_DATE);
+						return Boolean.FALSE;
 					}
 				};
 			}

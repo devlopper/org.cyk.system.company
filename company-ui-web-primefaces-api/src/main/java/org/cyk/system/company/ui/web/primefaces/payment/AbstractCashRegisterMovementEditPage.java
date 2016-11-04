@@ -22,7 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public abstract class AbstractCashRegisterMovementEditPage<MOVEMENT extends AbstractIdentifiable> extends AbstractMovementEditPage<MOVEMENT> implements Serializable {
+public abstract class AbstractCashRegisterMovementEditPage<ITEM extends AbstractIdentifiable,COLLECTION extends AbstractIdentifiable> extends AbstractMovementEditPage<ITEM,COLLECTION> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
@@ -57,22 +57,23 @@ public abstract class AbstractCashRegisterMovementEditPage<MOVEMENT extends Abst
 	}
 		
 	@Getter @Setter
-	public static abstract class AbstractCashRegisterMovementForm<MOVEMENT extends AbstractIdentifiable> extends AbstractMovementForm<MOVEMENT> implements Serializable{
+	public static abstract class AbstractCashRegisterMovementForm<ITEM extends AbstractIdentifiable,COLLECTION extends AbstractIdentifiable> extends AbstractMovementForm<ITEM,COLLECTION> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		//@Sequence(direction=Direction.BEFORE,field=AbstractMovementForm.FIELD_CURRENT_TOTAL)
-		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull protected CashRegister cashRegister;
+		//@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull protected CashRegister cashRegister;
 		
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull protected Movement movement;
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private CashRegisterMovementMode mode;
 		@Input @InputText private String code;
 		
+		protected abstract CashRegister getCashRegister();
 		protected abstract CashRegisterMovement getCashRegisterMovement();
 		
 		@Override
 		public void read() {
 			super.read();
-			cashRegister = getCashRegisterMovement().getCashRegister();
+			//cashRegister = getCashRegisterMovement().getCashRegister();
 			movement = getCashRegisterMovement().getMovement();
 			mode = getCashRegisterMovement().getMode();
 			code = getCashRegisterMovement().getCode();
@@ -80,10 +81,10 @@ public abstract class AbstractCashRegisterMovementEditPage<MOVEMENT extends Abst
 		
 		@Override
 		public void write() {
-			collection = cashRegister.getMovementCollection();
-			value = movement.getValue();
+			//collection = cashRegister.getMovementCollection();
+			//value = movement.getValue();
 			super.write();
-			getCashRegisterMovement().setCashRegister(cashRegister);
+			getCashRegisterMovement().setCashRegister(getCashRegister());
 			getCashRegisterMovement().setMovement(movement);
 			getCashRegisterMovement().setMode(mode);
 			getCashRegisterMovement().setCode(code);

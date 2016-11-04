@@ -15,6 +15,7 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
@@ -30,7 +31,7 @@ import org.cyk.utility.common.annotation.user.interfaces.Sequence;
 import org.cyk.utility.common.annotation.user.interfaces.Sequence.Direction;
 
 @Named @ViewScoped @Getter @Setter
-public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMovementEditPage<SaleCashRegisterMovement> implements Serializable {
+public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMovementEditPage<SaleCashRegisterMovement,Sale> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 	
@@ -122,7 +123,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		
 	/**/
 	
-	public static class Form extends AbstractCashRegisterMovementForm<SaleCashRegisterMovement> implements Serializable{
+	public static class Form extends AbstractCashRegisterMovementForm<SaleCashRegisterMovement,Sale> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		@Sequence(direction=Direction.BEFORE,field=AbstractCashRegisterMovementForm.FIELD_CURRENT_TOTAL)
@@ -143,6 +144,12 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		/**/
 		
 		public static final String FIELD_SALE = "sale";
+
+		@Override
+		protected CashRegister getCashRegister() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 		
 	}
 	

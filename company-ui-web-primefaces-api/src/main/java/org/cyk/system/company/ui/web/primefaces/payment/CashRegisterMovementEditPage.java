@@ -5,13 +5,14 @@ import java.io.Serializable;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
-public class CashRegisterMovementEditPage extends AbstractCashRegisterMovementEditPage<CashRegisterMovement> implements Serializable {
+public class CashRegisterMovementEditPage extends AbstractCashRegisterMovementEditPage<CashRegisterMovement,CashRegister> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
@@ -26,12 +27,17 @@ public class CashRegisterMovementEditPage extends AbstractCashRegisterMovementEd
 	}*/
 	
 	@Getter @Setter
-	public static class Form extends AbstractCashRegisterMovementForm<CashRegisterMovement> implements Serializable{
+	public static class Form extends AbstractCashRegisterMovementForm<CashRegisterMovement,CashRegister> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		@Override
 		protected CashRegisterMovement getCashRegisterMovement() {
 			return identifiable;
+		}
+
+		@Override
+		protected CashRegister getCashRegister() {
+			return getCashRegisterMovement().getCashRegister();
 		}
 		
 	}

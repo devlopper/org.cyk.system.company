@@ -17,7 +17,7 @@ import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
 
 @Named @ViewScoped @Getter @Setter
-public class CashRegisterConsultPage extends AbstractConsultPage<CashRegister> implements Serializable {
+public class CashRegisterConsultPage extends AbstractConsultPage <CashRegister> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
