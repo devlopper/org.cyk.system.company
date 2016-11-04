@@ -5,6 +5,9 @@ import java.lang.reflect.Field;
 
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
@@ -16,10 +19,6 @@ import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
-import org.cyk.utility.common.annotation.user.interfaces.InputText;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter @Setter
 public abstract class AbstractCashRegisterMovementEditPage<ITEM extends AbstractIdentifiable,COLLECTION extends AbstractIdentifiable> extends AbstractMovementEditPage<ITEM,COLLECTION> implements Serializable {
@@ -33,8 +32,8 @@ public abstract class AbstractCashRegisterMovementEditPage<ITEM extends Abstract
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Boolean build(Object data,Field field) {
-				if(field.getName().equals(AbstractCashRegisterMovementForm.FIELD_CASH_REGISTER))
-					return Boolean.TRUE.equals(showCashRegisterField());
+				//if(field.getName().equals(AbstractCashRegisterMovementForm.FIELD_CASH_REGISTER))
+				//	return Boolean.TRUE.equals(showCashRegisterField());
 				return super.build(data,field);
 			}
 		});
@@ -60,12 +59,8 @@ public abstract class AbstractCashRegisterMovementEditPage<ITEM extends Abstract
 	public static abstract class AbstractCashRegisterMovementForm<ITEM extends AbstractIdentifiable,COLLECTION extends AbstractIdentifiable> extends AbstractMovementForm<ITEM,COLLECTION> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
-		//@Sequence(direction=Direction.BEFORE,field=AbstractMovementForm.FIELD_CURRENT_TOTAL)
-		//@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull protected CashRegister cashRegister;
-		
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull protected Movement movement;
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private CashRegisterMovementMode mode;
-		@Input @InputText private String code;
 		
 		protected abstract CashRegister getCashRegister();
 		protected abstract CashRegisterMovement getCashRegisterMovement();
@@ -73,7 +68,6 @@ public abstract class AbstractCashRegisterMovementEditPage<ITEM extends Abstract
 		@Override
 		public void read() {
 			super.read();
-			//cashRegister = getCashRegisterMovement().getCashRegister();
 			movement = getCashRegisterMovement().getMovement();
 			mode = getCashRegisterMovement().getMode();
 			code = getCashRegisterMovement().getCode();
@@ -81,15 +75,11 @@ public abstract class AbstractCashRegisterMovementEditPage<ITEM extends Abstract
 		
 		@Override
 		public void write() {
-			//collection = cashRegister.getMovementCollection();
-			//value = movement.getValue();
 			super.write();
 			getCashRegisterMovement().setCashRegister(getCashRegister());
 			getCashRegisterMovement().setMovement(movement);
 			getCashRegisterMovement().setMode(mode);
 			getCashRegisterMovement().setCode(code);
-			
-			
 		}
 		
 		@Override
@@ -98,7 +88,6 @@ public abstract class AbstractCashRegisterMovementEditPage<ITEM extends Abstract
 		}
 		
 		/**/
-		public static final String FIELD_CASH_REGISTER = "cashRegister";
 		public static final String FIELD_MOVEMENT = "movement";
 		public static final String FIELD_MODE = "mode";
 		public static final String FIELD_CODE = "code";

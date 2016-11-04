@@ -14,7 +14,7 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.ui.web.primefaces.page.AbstractCollectionConsultPage;
 
 @Named @ViewScoped @Getter @Setter
-public class SalableProductCollectionConsultPage extends AbstractCollectionConsultPage.AbstractDefault<SalableProductCollection,SalableProductCollectionItem,SalableProductCollectionItemDetails> implements Serializable {
+public class SalableProductCollectionConsultPage extends AbstractCollectionConsultPage.Extends<SalableProductCollection,SalableProductCollectionItem,SalableProductCollectionItemDetails> implements Serializable {
 	
 	private static final long serialVersionUID = 3274187086682750183L;
 	

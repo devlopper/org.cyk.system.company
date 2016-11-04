@@ -17,9 +17,10 @@ import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
+import org.cyk.system.company.business.impl.sale.SalableProductCollectionItemDetails;
 import org.cyk.system.company.business.impl.sale.SaleCashRegisterMovementDetails;
 import org.cyk.system.company.model.payment.Cashier;
-import org.cyk.system.company.model.sale.SalableProductCollection;
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
@@ -34,7 +35,7 @@ import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.Table.ColumnAdapter;
 
 @Named @ViewScoped @Getter @Setter
-public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage<Sale> implements Serializable {
+public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage<Sale,SalableProductCollectionItem,SalableProductCollectionItemDetails> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
@@ -45,10 +46,11 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 	
 	private Table<SaleCashRegisterMovementDetails> saleCashRegisterMovementTable;
 	
+	/*
 	@Override
 	protected SalableProductCollection getCollection() {
 		return identifiable.getSalableProductCollection();
-	}
+	}*/
 	
 	@Override
 	protected void consultInitialisation() {

@@ -40,7 +40,7 @@ import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 
 @Named @ViewScoped @Getter @Setter
-public class SalableProductCollectionEditPage extends AbstractSalableProductCollectionEditPage<SalableProductCollection> implements Serializable {
+public class SalableProductCollectionEditPage extends AbstractSalableProductCollectionEditPage<SalableProductCollection,SalableProductCollectionItem> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
@@ -160,7 +160,7 @@ public class SalableProductCollectionEditPage extends AbstractSalableProductColl
 	}
 	
 	@Getter @Setter
-	public static class Form extends AbstractDefaultForm<SalableProductCollection> implements Serializable{
+	public static class Form extends AbstractDefaultForm<SalableProductCollection,SalableProductCollectionItem> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		@Input @InputChoice @InputOneChoice @InputOneCombo private AccountingPeriod accountingPeriod;

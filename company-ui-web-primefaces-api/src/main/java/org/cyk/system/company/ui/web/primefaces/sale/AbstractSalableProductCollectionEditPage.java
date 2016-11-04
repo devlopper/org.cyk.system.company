@@ -7,11 +7,12 @@ import lombok.Setter;
 
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.root.model.AbstractCollection;
+import org.cyk.system.root.model.AbstractCollectionItem;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.ui.web.primefaces.page.AbstractCollectionEditPage;
 
 @Getter @Setter
-public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extends AbstractIdentifiable> extends AbstractCollectionEditPage<COLLECTION> implements Serializable {
+public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extends AbstractIdentifiable,ITEM extends AbstractIdentifiable> extends AbstractCollectionEditPage<COLLECTION,ITEM> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
@@ -23,7 +24,7 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 	}
 	
 	@Getter @Setter
-	public static abstract class AbstractgetSalableProductCollectionForm<COLLECTION extends AbstractIdentifiable> extends AbstractForm<COLLECTION> implements Serializable{
+	public static abstract class AbstractgetSalableProductCollectionForm<COLLECTION extends AbstractIdentifiable,ITEM extends AbstractIdentifiable> extends AbstractCollectionEditPage.AbstractForm<COLLECTION,ITEM> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		protected abstract SalableProductCollection getSalableProductCollection();
@@ -36,7 +37,7 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 		/**/
 		
 		@Getter @Setter
-		public static abstract class Default<COLLECTION extends AbstractCollection<?>> extends AbstractgetSalableProductCollectionForm<COLLECTION> implements Serializable{
+		public static abstract class Default<COLLECTION extends AbstractCollection<ITEM>,ITEM extends AbstractCollectionItem<COLLECTION>> extends AbstractgetSalableProductCollectionForm<COLLECTION,ITEM> implements Serializable{
 			private static final long serialVersionUID = -4741435164709063863L;
 			
 		}
@@ -44,7 +45,7 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 	}
 	
 	@Getter @Setter
-	public static abstract class AbstractDefaultForm<COLLECTION extends AbstractCollection<?>> extends AbstractForm.AbstractDefault<COLLECTION> implements Serializable{
+	public static abstract class AbstractDefaultForm<COLLECTION extends AbstractCollection<ITEM>,ITEM extends AbstractCollectionItem<COLLECTION>> extends AbstractForm.Extends<COLLECTION,ITEM> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 
 		

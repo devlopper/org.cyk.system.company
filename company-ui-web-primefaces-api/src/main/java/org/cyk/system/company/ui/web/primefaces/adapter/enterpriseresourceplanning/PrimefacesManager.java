@@ -108,7 +108,10 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean build(Object data,Field field) {
-						return isFieldNameIn(field,CashRegisterDetails.FIELD_MOVEMENT_COLLECTION,CashRegisterDetails.FIELD_CODE,CashRegisterDetails.FIELD_NAME);
+						if(data instanceof CashRegisterDetails)
+							return isFieldNameIn(field,CashRegisterDetails.FIELD_MOVEMENT_COLLECTION,CashRegisterDetails.FIELD_CODE,CashRegisterDetails.FIELD_NAME
+									,CashRegisterDetails.FIELD_VALUE);
+						return Boolean.FALSE;
 					}
 				};
 			}
@@ -134,6 +137,18 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 						if(data instanceof PeriodDetails)
 							return isFieldNameIn(field,PeriodDetails.FIELD_FROM_DATE);
 						return Boolean.FALSE;
+					}
+				};
+			}
+			
+			@Override
+			public ColumnAdapter getTableColumnAdapter(@SuppressWarnings("rawtypes") Class clazz,AbstractPrimefacesPage page) {
+				return new DetailsConfiguration.DefaultColumnAdapter(){
+					private static final long serialVersionUID = 1L;
+					@Override
+					public Boolean isColumn(Field field) {
+						return isFieldNameIn(field,CashRegisterMovementDetails.FIELD_VALUE,CashRegisterMovementDetails.FIELD_EXISTENCE_PERIOD
+								,CashRegisterMovementDetails.FIELD_CODE,CashRegisterMovementDetails.FIELD_MODE);
 					}
 				};
 			}
@@ -325,8 +340,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			}
 		});
 		
-		getFormConfiguration(SaleCashRegisterMovement.class, Crud.CREATE).addRequiredFieldNames(SaleCashRegisterMovementEditPage.Form.FIELD_SALE
-				,SaleCashRegisterMovementEditPage.Form.FIELD_CASH_REGISTER);
+		getFormConfiguration(SaleCashRegisterMovement.class, Crud.CREATE).addRequiredFieldNames(SaleCashRegisterMovementEditPage.Form.FIELD_SALE);
 		registerDetailsConfiguration(SaleCashRegisterMovementDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")

@@ -8,11 +8,12 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.ui.web.primefaces.page.crud.AbstractConsultPage;
+import org.cyk.ui.web.primefaces.page.mathematics.AbstractMovementConsultPage;
 
 @Named @ViewScoped @Getter @Setter
-public class CashRegisterMovementConsultPage extends AbstractConsultPage<CashRegisterMovement> implements Serializable {
+public class CashRegisterMovementConsultPage extends AbstractMovementConsultPage<CashRegisterMovement,CashRegister> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	

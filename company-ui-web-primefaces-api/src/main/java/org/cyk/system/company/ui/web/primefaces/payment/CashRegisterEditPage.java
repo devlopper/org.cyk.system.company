@@ -7,6 +7,7 @@ import javax.inject.Named;
 
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
+import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.ui.web.primefaces.page.mathematics.AbstractMovementCollectionEditPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
@@ -18,7 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
-public class CashRegisterEditPage extends AbstractMovementCollectionEditPage<CashRegister> implements Serializable {
+public class CashRegisterEditPage extends AbstractMovementCollectionEditPage<CashRegister,CashRegisterMovement> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
@@ -35,7 +36,7 @@ public class CashRegisterEditPage extends AbstractMovementCollectionEditPage<Cas
 	}
 	
 	@Getter @Setter
-	public static class Form extends AbstractMovementCollectionForm<CashRegister> implements Serializable{
+	public static class Form extends AbstractMovementCollectionEditPage.Form<CashRegister,CashRegisterMovement> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		@Input @InputChoice @InputOneChoice @InputOneCombo private MovementCollection movementCollection;
