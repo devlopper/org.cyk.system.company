@@ -153,9 +153,10 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 		Commandable module = createModuleCommandable(UIManager.getInstance().businessEntityInfos(Sale.class).getUserInterface().getLabelId(), null);
 		module.addChild(createListCommandable(SalableProduct.class, null));
 		module.addChild(createListCommandable(SalableProductInstance.class, null));
+		module.addChild(createListCommandable(SalableProductCollection.class, null));
 		module.addChild(createListCommandable(SalableProductCollectionItem.class, null));
 		//module.addChild(createListCommandable(CustomerSalableProduct.class, null));
-		module.addChild(createListCommandable(SalableProductCollection.class, null));
+		
 		module.addChild(createListCommandable(SaleCashRegisterMovement.class, null));
 		return module;
 	}

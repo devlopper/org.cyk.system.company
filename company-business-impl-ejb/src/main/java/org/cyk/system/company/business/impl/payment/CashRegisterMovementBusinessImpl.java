@@ -13,8 +13,8 @@ import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
+import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementDao;
-import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.party.person.Person;
@@ -25,8 +25,6 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 
 	private static final long serialVersionUID = -7830673760640348717L;
 	
-	@Inject private CashierDao cashierDao;
-	
 	@Inject
 	public CashRegisterMovementBusinessImpl(CashRegisterMovementDao dao) {
 		super(dao);
@@ -34,7 +32,11 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	
 	@Override
 	public CashRegisterMovement create(CashRegisterMovement cashRegisterMovement) {
-		inject(MovementBusiness.class).create(cashRegisterMovement.getMovement());
+		if(isNotIdentified(cashRegisterMovement.getMovement())){
+			exceptionUtils().exception(!cashRegisterMovement.getCashRegister().getMovementCollection().equals(cashRegisterMovement.getMovement().getCollection()),
+					"movementcollectiondoesnotmacth");
+			inject(MovementBusiness.class).create(cashRegisterMovement.getMovement());
+		}
 		super.create(cashRegisterMovement);
 		if(cashRegisterMovement.getCode()==null)
 			cashRegisterMovement.setCode(generateIdentifier(cashRegisterMovement,CompanyBusinessLayer.Listener.CASH_MOVEMENT_IDENTIFIER
@@ -65,24 +67,32 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public CashRegisterMovement instanciateOne(CashRegister cashRegister) {
+	public CashRegisterMovement instanciateOne(UserAccount userAccount,CashRegister cashRegister) {
 		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
-		cashRegisterMovement.setCashRegister(cashRegister);
-		if(cashRegisterMovement.getCashRegister()!=null)
-			cashRegisterMovement.setMovement(inject(MovementBusiness.class)
-				.instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection(), Boolean.TRUE));
+		setCashRegister(cashRegisterMovement, cashRegister);
 		return cashRegisterMovement;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public CashRegisterMovement instanciateOne(Person person) {
-		return instanciateOne(cashierDao.readByPerson(person).getCashRegister());
+	public void setCashRegister(CashRegisterMovement cashRegisterMovement,CashRegister cashRegister) {
+		cashRegisterMovement.setCashRegister(cashRegister);
+		if(cashRegisterMovement.getCashRegister()!=null)
+			cashRegisterMovement.setMovement(inject(MovementBusiness.class)
+				.instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection(), Boolean.TRUE));
 	}
-
+	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public CashRegisterMovement instanciateOne(UserAccount userAccount) {
-		if(userAccount.getUser() instanceof Person)
-			return instanciateOne((Person)userAccount.getUser());
-		return instanciateOne();
+		CashRegister cashRegister;
+		if(userAccount.getUser() instanceof Person){
+			Collection<CashRegister> cashRegisters = inject(CashRegisterDao.class).readByPerson((Person) userAccount.getUser());
+			if(cashRegisters==null || cashRegisters.isEmpty())
+				cashRegister = null;
+			else
+				cashRegister = cashRegisters.iterator().next();
+		}else{
+			cashRegister = null;
+		}
+		return instanciateOne(userAccount,cashRegister);
 	}
 }

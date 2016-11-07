@@ -23,7 +23,7 @@ import org.cyk.utility.common.annotation.user.interfaces.InputOneAutoComplete;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 
 @Named @ViewScoped @Getter @Setter
-public class CashRegisterMovementTermEditPage extends AbstractCollectionItemEditPage.AbstractDefault<CashRegisterMovementTerm,CashRegisterMovementTermCollection> implements Serializable {
+public class CashRegisterMovementTermEditPage extends AbstractCollectionItemEditPage.Extends<CashRegisterMovementTerm,CashRegisterMovementTermCollection> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 		

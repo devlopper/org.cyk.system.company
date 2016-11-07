@@ -112,7 +112,7 @@ public class SaleSearchListPage extends AbstractBusinessQueryPage<Sale,SaleQuery
 		criteria.getReadConfig().setFirstResultIndex(queryFirst);
 		criteria.getReadConfig().setMaximumResultCount(20l);
 		SaleResults results = inject(SaleBusiness.class).computeByCriteria(criteria); 
-		table.getColumn(SaleDetails.FIELD_COST).setFooter(numberBusiness.format(results.getCost().getValue()));
+		//table.getColumn(SaleDetails.FIELD_COST).setFooter(numberBusiness.format(results.getCost().getValue()));
 		if(!BalanceType.ZERO.equals(balanceType)){
 			table.getColumn(SaleDetails.FIELD_BALANCE).setFooter(numberBusiness.format(results.getBalance()));
 		}

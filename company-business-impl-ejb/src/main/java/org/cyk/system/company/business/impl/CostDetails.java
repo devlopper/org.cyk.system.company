@@ -15,9 +15,18 @@ public class CostDetails extends AbstractModelElementOutputDetails<Cost> impleme
 
 	public CostDetails(Cost cost) {
 		super(cost);
-		value = formatNumber(cost.getValue());
-		turnover = formatNumber(cost.getTurnover());
-		tax = formatNumber(cost.getTax());
+		set(cost);
+	}
+	
+	public void set(Cost cost) {
+		if(cost==null){
+			
+		}else{
+			value = formatNumber(cost.getValue());
+			turnover = formatNumber(cost.getTurnover());
+			tax = formatNumber(cost.getTax());	
+		}
+		
 	}
 	
 	public static final String FIELD_VALUE = "value";

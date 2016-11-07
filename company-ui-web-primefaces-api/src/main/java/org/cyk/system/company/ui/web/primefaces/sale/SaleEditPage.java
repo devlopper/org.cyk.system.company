@@ -44,7 +44,7 @@ import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.cyk.utility.common.cdi.BeanAdapter;
 
 @Named @ViewScoped @Getter @Setter
-public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializable {
+public class SaleEditPage extends AbstractSalableProductCollectionEditPage<Sale,SalableProductCollectionItem> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
@@ -370,7 +370,13 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 	public Boolean getIsFormOneSaleProduct(){
 		return FormOneSaleProduct.class.equals(FORM_EDIT_CLASS);
 	}
-	*/		
+	*/
+	
+	@Override
+	protected SalableProductCollection getSalableProductCollection() {
+		return identifiable.getSalableProductCollection();
+	}
+	
 	@Getter @Setter
 	public static class SaleProductItem extends AbstractItemCollectionItem<SalableProductCollectionItem> implements Serializable {
 		private static final long serialVersionUID = 3828481396841243726L;
@@ -496,4 +502,6 @@ public class SaleEditPage extends AbstractCrudOnePage<Sale> implements Serializa
 			
 		}
 	}
+
+	
 }

@@ -323,8 +323,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			}
 		});
 		
-		getFormConfiguration(Sale.class, Crud.CREATE).addRequiredFieldNames(SaleEditPage.Form.FIELD_CUSTOMER
-				,SaleEditPage.Form.FIELD_SALABLE_PRODUCT_COLLECTION);
+		getFormConfiguration(Sale.class, Crud.CREATE).addRequiredFieldNames(SaleEditPage.Form.FIELD_CUSTOMER,SaleEditPage.Form.FIELD_SALABLE_PRODUCT_COLLECTION);
 		registerDetailsConfiguration(SaleDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
@@ -334,13 +333,19 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean build(Object data,Field field) {
-						return isFieldNameIn(field,SaleDetails.FIELD_CUSTOMER,SaleDetails.FIELD_SALABLE_PRODUCT_COLLECTION);
+						return isFieldNameIn(field,SaleDetails.FIELD_CUSTOMER,SaleDetails.FIELD_ACCOUNTING_PERIOD,SaleDetails.FIELD_CODE
+								,SaleDetails.FIELD_NAME,SaleDetails.FIELD_COST,CostDetails.FIELD_VALUE,CostDetails.FIELD_TAX,CostDetails.FIELD_TURNOVER);
 					}
 				};
 			}
 		});
 		
-		getFormConfiguration(SaleCashRegisterMovement.class, Crud.CREATE).addRequiredFieldNames(SaleCashRegisterMovementEditPage.Form.FIELD_SALE);
+		getFormConfiguration(SaleCashRegisterMovement.class, Crud.CREATE)
+		.addRequiredFieldNames(SaleCashRegisterMovementEditPage.Form.FIELD_COLLECTION,SaleCashRegisterMovementEditPage.Form.FIELD_CASH_REGISTER
+				,SaleCashRegisterMovementEditPage.Form.FIELD_VALUE)
+		.addFieldNames(SaleCashRegisterMovementEditPage.Form.FIELD_ACTION,SaleCashRegisterMovementEditPage.Form.FIELD_CURRENT_TOTAL,SaleCashRegisterMovementEditPage.Form.FIELD_NEXT_TOTAL
+				,SaleCashRegisterMovementEditPage.Form.FIELD_CODE,SaleCashRegisterMovementEditPage.Form.FIELD_MODE,SaleCashRegisterMovementEditPage.Form.FIELD_DATE
+				);
 		registerDetailsConfiguration(SaleCashRegisterMovementDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
@@ -350,7 +355,9 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean build(Object data,Field field) {
-						return isFieldNameIn(field,SaleCashRegisterMovementDetails.FIELD_SALE,SaleCashRegisterMovementDetails.FIELD_CASH_REGISTER_MOVEMENT);
+						return isFieldNameIn(field,SaleCashRegisterMovementDetails.FIELD_SALE,SaleCashRegisterMovementDetails.FIELD_CODE
+								,SaleCashRegisterMovementDetails.FIELD_VALUE,SaleCashRegisterMovementDetails.FIELD_MODE
+								,SaleCashRegisterMovementDetails.FIELD_EXISTENCE_PERIOD,PeriodDetails.FIELD_FROM_DATE);
 					}
 				};
 			}
@@ -361,7 +368,8 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean isColumn(Field field) {
-						return isFieldNameIn(field,SaleCashRegisterMovementDetails.FIELD_CASH_REGISTER_MOVEMENT);
+						return isFieldNameIn(field,SaleCashRegisterMovementDetails.FIELD_CODE,SaleCashRegisterMovementDetails.FIELD_VALUE
+								,SaleCashRegisterMovementDetails.FIELD_MODE,SaleCashRegisterMovementDetails.FIELD_EXISTENCE_PERIOD,PeriodDetails.FIELD_FROM_DATE);
 					}
 				};
 			}

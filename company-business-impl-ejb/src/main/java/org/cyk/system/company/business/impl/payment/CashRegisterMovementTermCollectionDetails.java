@@ -11,7 +11,7 @@ import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 
 @Getter @Setter
-public class CashRegisterMovementTermCollectionDetails extends AbstractCollectionDetails<CashRegisterMovementTermCollection> implements Serializable{
+public class CashRegisterMovementTermCollectionDetails extends AbstractCollectionDetails.Extends<CashRegisterMovementTermCollection> implements Serializable{
 	
 	private static final long serialVersionUID = -4741435164709063863L;
 	

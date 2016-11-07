@@ -26,10 +26,6 @@ public class SaleDetails extends AbstractSaleDetails<Sale> implements Serializab
 	
 	/**/
 	
-	public static final String FIELD_IDENTIFIER = "identifier";
-	public static final String FIELD_EXTERNAL_IDENTIFIER = "externalIdentifier";
-	public static final String FIELD_COST = "cost";
 	public static final String FIELD_BALANCE = "balance";
-	public static final String FIELD_CUSTOMER = "customer";
-	public static final String FIELD_DATE = "date";
+	
 }

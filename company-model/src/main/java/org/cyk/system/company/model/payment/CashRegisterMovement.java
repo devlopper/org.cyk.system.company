@@ -22,8 +22,8 @@ public class CashRegisterMovement extends AbstractIdentifiable implements Serial
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne @NotNull private CashRegister cashRegister;
-	@ManyToOne @NotNull private CashRegisterMovementMode mode;
 	@ManyToOne @NotNull private Movement movement;
+	@ManyToOne private CashRegisterMovementMode mode;
 	
 	public CashRegisterMovement(CashRegister cashRegister,Movement movement) {
 		super();

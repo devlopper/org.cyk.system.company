@@ -11,7 +11,7 @@ import lombok.Setter;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.system.root.business.impl.BusinessInterfaceLocator;
+import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.utility.common.annotation.FieldOverride;
 
 @Named @ViewScoped @Getter @Setter
@@ -29,18 +29,21 @@ public class CashRegisterMovementEditPage extends AbstractCashRegisterMovementEd
 	protected CashRegisterMovement getCashRegisterMovement() {
 		return identifiable;
 	}
+	
+	@Override
+	protected MovementCollection getMovementCollection(CashRegister cashRegister) {
+		return cashRegister.getMovementCollection();
+	}
+	
+	@Override
+	protected void selectCollection(CashRegister cashRegister) {
+		inject(CashRegisterMovementBusiness.class).setCashRegister(identifiable, cashRegister);
+		super.selectCollection(cashRegister);
+	}
 		
 	@Override
-	protected CashRegisterMovement instanciateIdentifiable() {
-		CashRegisterMovement identifiable;
-		Long collectionIdentifier = requestParameterLong(CashRegister.class);
-		if(collectionIdentifier==null){
-			return identifiable = super.instanciateIdentifiable();
-		}else{
-			CashRegister collection = inject(BusinessInterfaceLocator.class).injectTyped(CashRegister.class).find(collectionIdentifier);
-			identifiable = inject(CashRegisterMovementBusiness.class).instanciateOne(collection);
-		}
-		return identifiable;
+	protected CashRegisterMovement instanciateIdentifiable(CashRegister cashRegister) {
+		return inject(CashRegisterMovementBusiness.class).instanciateOne(userSession.getUserAccount(),cashRegister);
 	}
 	
 	@Getter @Setter @FieldOverride(name=AbstractCashRegisterMovementForm.FIELD_COLLECTION,type=CashRegister.class)
@@ -54,12 +57,7 @@ public class CashRegisterMovementEditPage extends AbstractCashRegisterMovementEd
 
 		@Override
 		protected CashRegister getCashRegister() {
-			return getCashRegisterMovement().getCashRegister();
-		}
-		
-		@Override
-		public void write() {
-			super.write();
+			return collection;
 		}
 		
 	}

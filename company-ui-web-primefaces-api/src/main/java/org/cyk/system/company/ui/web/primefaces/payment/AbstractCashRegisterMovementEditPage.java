@@ -1,7 +1,6 @@
 package org.cyk.system.company.ui.web.primefaces.payment;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 
 import javax.validation.constraints.NotNull;
 
@@ -13,7 +12,6 @@ import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.mathematics.Movement;
-import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
 import org.cyk.ui.web.primefaces.page.mathematics.AbstractMovementEditPage;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
@@ -25,20 +23,6 @@ public abstract class AbstractCashRegisterMovementEditPage<ITEM extends Abstract
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
-	@Override
-	protected void initialisation() {
-		super.initialisation();
-		form.getControlSetListeners().add(new ControlSetAdapter<Object>(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public Boolean build(Object data,Field field) {
-				//if(field.getName().equals(AbstractCashRegisterMovementForm.FIELD_CASH_REGISTER))
-				//	return Boolean.TRUE.equals(showCashRegisterField());
-				return super.build(data,field);
-			}
-		});
-	}
-	
 	protected abstract CashRegisterMovement getCashRegisterMovement();
 	
 	@Override
@@ -47,8 +31,14 @@ public abstract class AbstractCashRegisterMovementEditPage<ITEM extends Abstract
 	}
 	
 	@Override
+	protected void selectCollection(COLLECTION collection) {
+		super.selectCollection(collection);
+		((AbstractCashRegisterMovementForm<?,?>)form.getData()).setMovement(getMovement());
+	}
+	
+	@Override
 	protected Boolean showCollectionField() {
-		return Boolean.FALSE;
+		return Boolean.TRUE;
 	}
 	
 	protected Boolean showCashRegisterField(){
@@ -60,7 +50,7 @@ public abstract class AbstractCashRegisterMovementEditPage<ITEM extends Abstract
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull protected Movement movement;
-		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private CashRegisterMovementMode mode;
+		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull protected CashRegisterMovementMode mode;
 		
 		protected abstract CashRegister getCashRegister();
 		protected abstract CashRegisterMovement getCashRegisterMovement();

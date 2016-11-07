@@ -25,7 +25,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
-public class SalableProductCollectionItemEditPage extends AbstractCollectionItemEditPage.AbstractDefault<SalableProductCollectionItem,SalableProductCollection> implements Serializable {
+public class SalableProductCollectionItemEditPage extends AbstractCollectionItemEditPage.Extends<SalableProductCollectionItem,SalableProductCollection> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
 	
