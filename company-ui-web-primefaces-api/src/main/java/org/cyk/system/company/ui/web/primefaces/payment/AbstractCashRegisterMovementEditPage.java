@@ -27,6 +27,8 @@ public abstract class AbstractCashRegisterMovementEditPage<ITEM extends Abstract
 	
 	@Override
 	protected Movement getMovement() {
+		if(getCashRegisterMovement()==null)
+			return null;
 		return getCashRegisterMovement().getMovement();
 	}
 	
@@ -58,9 +60,13 @@ public abstract class AbstractCashRegisterMovementEditPage<ITEM extends Abstract
 		@Override
 		public void read() {
 			super.read();
-			movement = getCashRegisterMovement().getMovement();
-			mode = getCashRegisterMovement().getMode();
-			code = getCashRegisterMovement().getCode();
+			if(getCashRegisterMovement()==null){
+				
+			}else{
+				movement = getCashRegisterMovement().getMovement();
+				mode = getCashRegisterMovement().getMode();
+				code = getCashRegisterMovement().getCode();
+			}
 		}
 		
 		@Override
@@ -74,6 +80,8 @@ public abstract class AbstractCashRegisterMovementEditPage<ITEM extends Abstract
 		
 		@Override
 		protected Movement getMovement() {
+			if(getCashRegisterMovement()==null)
+				return null;
 			return getCashRegisterMovement().getMovement();
 		}
 		

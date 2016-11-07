@@ -32,6 +32,7 @@ import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementAction;
+import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 
@@ -60,6 +61,14 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		saleCashRegisterMovement.getCashRegisterMovement().setCashRegister(cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)).getCashRegister());
 		saleCashRegisterMovement.getCashRegisterMovement().setMovement(inject(MovementBusiness.class).instanciateOne(
 				saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection(),amount));
+		return saleCashRegisterMovement;
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public SaleCashRegisterMovement instanciateOne(UserAccount userAccount,Sale sale,CashRegister cashRegister) {
+		SaleCashRegisterMovement saleCashRegisterMovement = instanciateOne();
+		saleCashRegisterMovement.setSale(sale);
+		saleCashRegisterMovement.setCashRegisterMovement(inject(CashRegisterMovementBusiness.class).instanciateOne(userAccount, cashRegister));
 		return saleCashRegisterMovement;
 	}
 

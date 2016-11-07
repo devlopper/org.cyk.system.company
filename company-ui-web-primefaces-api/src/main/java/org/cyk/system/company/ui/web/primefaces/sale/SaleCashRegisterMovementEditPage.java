@@ -74,9 +74,9 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		
 	@Override
 	protected Boolean showCashRegisterField() {
-		return Boolean.FALSE;
+		return Boolean.TRUE;
 	}
-
+	/*
 	@Override
 	protected SaleCashRegisterMovement instanciateIdentifiable() {
 		SaleCashRegisterMovement identifiable;
@@ -88,7 +88,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 			identifiable = inject(SaleCashRegisterMovementBusiness.class).instanciateOne(collection,null,Boolean.TRUE);
 		}
 		return identifiable;
-		/*
+		
 		Sale sale = webManager.getIdentifiableFromRequestParameter(Sale.class, Boolean.TRUE);
 		//identifiable.setSale();
 		SaleCashRegisterMovement saleCashRegisterMovement = 
@@ -101,7 +101,19 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		else
 			saleCashRegisterMovement.getCashRegisterMovement().getMovement().setAction(null);
 		return saleCashRegisterMovement;
-		*/
+		
+	}*/
+	
+	@Override
+	protected SaleCashRegisterMovement instanciateIdentifiable(Sale sale) {
+		return inject(SaleCashRegisterMovementBusiness.class).instanciateOne(userSession.getUserAccount(),sale
+				,webManager.getIdentifiableFromRequestParameter(CashRegister.class,Boolean.TRUE));
+	}
+	
+	@Override
+	protected void selectCollection(Sale sale) {
+		//inject(SaleCashRegisterMovementBusiness.class).setSale(sale);
+		super.selectCollection(sale);
 	}
 	
 	@Override
