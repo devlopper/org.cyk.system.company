@@ -16,9 +16,9 @@ import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.payment.AbstractCashRegisterMovementEditPage;
-import org.cyk.system.root.business.impl.BusinessInterfaceLocator;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
 import org.cyk.utility.common.annotation.FieldOverride;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
@@ -57,63 +57,35 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		return string;
 	}*/
 	
-	/*@Override
+	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
-		form.findInputByFieldName(Form.FIELD_SALE).setDisabled(identifiable.getSale()!=null);
-		addInputListener(Form.FIELD_VALUE, new WebInput.Listener.Adapter(){
-			private static final long serialVersionUID = 7526066306750441853L;
+		createAjaxBuilder(Form.FIELD_CASH_REGISTER)
+		.method(CashRegister.class,new ListenValueMethod<CashRegister>() {
 			@Override
-			public void validate(FacesContext facesContext,UIComponent uiComponent, Object value) throws ValidatorException {
-				BigDecimal total = computeNextTotal((BigDecimal) value);
-				if(total.signum() == -1)
-					webManager.throwValidationException("invalidvalue", new Object[]{});
+			public void execute(CashRegister cashRegister) {
+				inject(SaleCashRegisterMovementBusiness.class).setCashRegister(userSession.getUserAccount(), identifiable, cashRegister);
+				identifiable.setAmountIn(((Form)form.getData()).getValue());
 			}
-		});
-	}*/
-		
-	@Override
-	protected Boolean showCashRegisterField() {
-		return Boolean.TRUE;
+		}).build();
 	}
-	/*
-	@Override
-	protected SaleCashRegisterMovement instanciateIdentifiable() {
-		SaleCashRegisterMovement identifiable;
-		Long collectionIdentifier = requestParameterLong(Sale.class);
-		if(collectionIdentifier==null){
-			return identifiable = super.instanciateIdentifiable();
-		}else{
-			Sale collection = inject(BusinessInterfaceLocator.class).injectTyped(Sale.class).find(collectionIdentifier);
-			identifiable = inject(SaleCashRegisterMovementBusiness.class).instanciateOne(collection,null,Boolean.TRUE);
-		}
-		return identifiable;
-		
-		Sale sale = webManager.getIdentifiableFromRequestParameter(Sale.class, Boolean.TRUE);
-		//identifiable.setSale();
-		SaleCashRegisterMovement saleCashRegisterMovement = 
-				inject(SaleCashRegisterMovementBusiness.class).instanciateOne(sale, null, Boolean.TRUE);
-		String action = requestParameter(UniformResourceLocatorParameter.ACTION_IDENTIFIER);
-		if(CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementInput().equals(action))
-			saleCashRegisterMovement.getCashRegisterMovement().getMovement().setAction(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction());
-		else if(CompanyBusinessLayer.getInstance().getActionCreateSaleCashRegisterMovementOutput().equals(action))
-			saleCashRegisterMovement.getCashRegisterMovement().getMovement().setAction(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getDecrementAction());
-		else
-			saleCashRegisterMovement.getCashRegisterMovement().getMovement().setAction(null);
-		return saleCashRegisterMovement;
-		
-	}*/
 	
 	@Override
 	protected SaleCashRegisterMovement instanciateIdentifiable(Sale sale) {
-		return inject(SaleCashRegisterMovementBusiness.class).instanciateOne(userSession.getUserAccount(),sale
-				,webManager.getIdentifiableFromRequestParameter(CashRegister.class,Boolean.TRUE));
+		return inject(SaleCashRegisterMovementBusiness.class).instanciateOne(userSession.getUserAccount(),sale,webManager.getIdentifiableFromRequestParameter(CashRegister.class,Boolean.TRUE));
+	}
+	
+	@Override
+	protected SaleCashRegisterMovement instanciateIdentifiable() {
+		return inject(SaleCashRegisterMovementBusiness.class).instanciateOne(userSession.getUserAccount(), null
+				, webManager.getIdentifiableFromRequestParameter(CashRegister.class,Boolean.TRUE));
 	}
 	
 	@Override
 	protected void selectCollection(Sale sale) {
-		//inject(SaleCashRegisterMovementBusiness.class).setSale(sale);
 		super.selectCollection(sale);
+		inject(SaleCashRegisterMovementBusiness.class).setSale(identifiable, sale);
+		updateCurrentTotal();
 	}
 	
 	@Override
@@ -123,16 +95,22 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 	
 	@Override
 	protected MovementCollection getMovementCollection(Sale sale) {
+		if(((Form)form.getData()).getCashRegister()==null)
+			return null;
 		return ((Form)form.getData()).getCashRegister().getMovementCollection();
 	}
 	
 	@Override
 	protected BigDecimal getCurrentTotal() {
+		if(identifiable.getSale()==null)
+			return null;
 		return identifiable.getSale().getBalance().getValue();
 	}
 	
 	@Override
-	protected BigDecimal computeNextTotal(BigDecimal increment) {
+	protected BigDecimal getNextTotal(BigDecimal increment) {
+		if(identifiable.getSale()==null)
+			return null;
 		return inject(SaleCashRegisterMovementBusiness.class).computeBalance(identifiable,(MovementAction) form.findInputByFieldName(Form.FIELD_ACTION).getValue()
 				,increment);
 	}
@@ -151,7 +129,15 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		}
 		
 		@Override
+		public void read() {
+			cashRegister = identifiable.getCashRegisterMovement().getCashRegister();
+			super.read();
+		}
+		
+		@Override
 		public void write() {
+			identifiable.getCashRegisterMovement().setCashRegister(cashRegister);
+			identifiable.getCashRegisterMovement().getMovement().setCollection(cashRegister.getMovementCollection());
 			super.write();
 			identifiable.setAmountIn(getCashRegisterMovement().getMovement().getValue());
 			identifiable.setAmountOut(BigDecimal.ZERO);

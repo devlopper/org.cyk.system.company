@@ -28,10 +28,11 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleConfiguration;
+import org.cyk.system.company.ui.web.primefaces.BalanceFormModel;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.api.model.AbstractBusinessIdentifiedEditFormModel;
 import org.cyk.ui.api.model.AbstractItemCollectionItem;
-import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
+import org.cyk.utility.common.annotation.user.interfaces.IncludeInputs;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputCalendar;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
@@ -395,9 +396,23 @@ public class SaleEditPage extends AbstractSalableProductCollectionEditPage<Sale,
 		
 		@Input @InputChoice @InputChoiceAutoComplete @InputOneChoice @InputOneAutoComplete private Customer customer;
 		@Input @InputChoice @InputChoiceAutoComplete @InputOneChoice @InputOneAutoComplete private SalableProductCollection salableProductCollection;
+		@IncludeInputs(layout=IncludeInputs.Layout.VERTICAL) private BalanceFormModel balance = new BalanceFormModel();
 		
 		public static final String FIELD_SALABLE_PRODUCT_COLLECTION = "salableProductCollection";
 		public static final String FIELD_CUSTOMER = "customer";
+		public static final String FIELD_BALANCE = "balance";
+		
+		@Override
+		public void read() {
+			super.read();
+			balance.set(identifiable.getBalance());
+		}
+		
+		@Override
+		public void write() {
+			super.write();
+			balance.write(identifiable.getBalance());
+		}
 	}
 	
 	@Getter @Setter

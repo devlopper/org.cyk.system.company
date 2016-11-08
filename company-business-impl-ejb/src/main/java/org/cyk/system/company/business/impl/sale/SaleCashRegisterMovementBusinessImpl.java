@@ -11,6 +11,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.AbstractCompanyBeanAdapter;
 import org.cyk.system.company.model.Balance;
@@ -27,6 +28,7 @@ import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
+import org.cyk.system.root.business.api.mathematics.MovementActionBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
@@ -67,9 +69,21 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public SaleCashRegisterMovement instanciateOne(UserAccount userAccount,Sale sale,CashRegister cashRegister) {
 		SaleCashRegisterMovement saleCashRegisterMovement = instanciateOne();
-		saleCashRegisterMovement.setSale(sale);
-		saleCashRegisterMovement.setCashRegisterMovement(inject(CashRegisterMovementBusiness.class).instanciateOne(userAccount, cashRegister));
+		setSale(saleCashRegisterMovement, sale);
+		saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement());
+		setCashRegister(userAccount, saleCashRegisterMovement, cashRegister);
 		return saleCashRegisterMovement;
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void setSale(SaleCashRegisterMovement saleCashRegisterMovement,Sale sale) {
+		saleCashRegisterMovement.setSale(sale);
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void setCashRegister(UserAccount userAccount,SaleCashRegisterMovement saleCashRegisterMovement,CashRegister cashRegister) {
+		saleCashRegisterMovement.getCashRegisterMovement().setCashRegister(cashRegister);
+		saleCashRegisterMovement.getCashRegisterMovement().setMovement(cashRegister == null ? null : inject(MovementBusiness.class).instanciateOne(cashRegister.getMovementCollection()));
 	}
 
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -84,42 +98,50 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	
 	@Override
 	public SaleCashRegisterMovement create(SaleCashRegisterMovement saleCashRegisterMovement) {
-		return create(saleCashRegisterMovement,Boolean.TRUE);
-	}
-	
-	@Override
-	public SaleCashRegisterMovement create(SaleCashRegisterMovement saleCashRegisterMovement,Boolean generatePos) {
-		//exceptionUtils().exception(saleCashRegisterMovement.getAmountIn().equals(saleCashRegisterMovement.getAmountOut()) && saleCashRegisterMovement.getAmountIn().equals(BigDecimal.ZERO), "");
+		if(isNotIdentified(saleCashRegisterMovement.getSale())){
+			inject(SaleBusiness.class).create(saleCashRegisterMovement.getSale());
+		}
+		if(isNotIdentified(saleCashRegisterMovement.getCashRegisterMovement())){
+			inject(CashRegisterMovementBusiness.class).create(saleCashRegisterMovement.getCashRegisterMovement());
+		}
+		
 		Sale sale = saleCashRegisterMovement.getSale();
-		Customer customer = sale.getCustomer();
+		/*Customer customer = sale.getCustomer();
 		Integer soldOut = BigDecimal.ZERO.compareTo(sale.getBalance().getValue());
-		MovementAction movementAction = saleCashRegisterMovement.getCashRegisterMovement().getMovement().getAction();
-		Boolean deposit = movementAction.equals(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction());
+		BigDecimal amount = null;
+		Boolean deposit = null;
+		if(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getAction()==null){
+			amount = saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue();
+			deposit = saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().signum() <= 0;
+		}else{
+			exceptionUtils().exception(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getAction()
+					.equals(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction())
+					&& saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().signum()<0, "");
+			deposit = saleCashRegisterMovement.getCashRegisterMovement().getMovement().getAction()
+				.equals(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction());
+		}
+		
 		if(deposit)
 			exceptionUtils().exception(soldOut>=0, "exception.salecashregistermovement.in.soldout.yes");
 		else
 			exceptionUtils().exception(soldOut<0, "exception.salecashregistermovement.in.soldout.no");
 		inject(CashRegisterMovementBusiness.class).create(saleCashRegisterMovement.getCashRegisterMovement());
-		
+		*/
 		BigDecimal oldBalance = sale.getBalance().getValue(),increment=saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate();
 		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE,increment);
 		exceptionUtils().comparison(!Boolean.TRUE.equals(sale.getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getBalanceCanBeNegative()) 
 				&& sale.getBalance().getValue().signum() == -1
 				, inject(LanguageBusiness.class).findText("field.balance"),ArithmeticOperator.GTE,BigDecimal.ZERO);
 		logTrace("Old balance={} , Increment={} , New balance={}",oldBalance,increment, sale.getBalance().getValue());
+		
 		//cumul balance must be link to a date , so do not update a cumulated balance
 		//sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
 		
 		saleCashRegisterMovement.getBalance().setValue(sale.getBalance().getValue());
 		saleDao.update(sale);
-		if(customer!=null){
-			/*Boolean firstSaleCashRegisterMovement = dao.countBySale(sale)==0;
-			if(firstSaleCashRegisterMovement){
-				customer.setBalance(customer.getBalance().add(sale.getBalance()));
-			}else{*/
-				customer.setBalance(customer.getBalance().subtract(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
-			//}
-			
+		/*if(customer!=null){
+			customer.setBalance(customer.getBalance().subtract(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
+		
 			if(Boolean.TRUE.equals(deposit)){
 				customer.setPaid(customer.getPaid().add(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
 				customer.setPaymentCount(customer.getPaymentCount().add(BigDecimal.ONE));
@@ -134,11 +156,11 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			sale.getCustomer().setPaymentCount(customer.getPaymentCount());
 			saleCashRegisterMovement.getBalance().setCumul(customer.getBalance());
 		}
-		
+		*/
 		saleCashRegisterMovement = super.create(saleCashRegisterMovement);
-		
+		/*
 		logIdentifiable("Created",saleCashRegisterMovement);
-		
+		*/
 		/*if(Boolean.TRUE.equals(generatePos)){
 			SaleCashRegisterMovementReport saleCashRegisterMovementReport = inject(CompanyReportProducer.class).produceSaleCashRegisterMovementReport(saleCashRegisterMovement);
 			//if(saleCashRegisterMovement.getReport()==null)
@@ -165,12 +187,13 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public BigDecimal computeBalance(SaleCashRegisterMovement saleCashRegisterMovement, MovementAction movementAction,BigDecimal increment) {
-		increment = increment.abs();
-		if(movementAction.equals(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction()))
-			return saleCashRegisterMovement.getSale().getBalance().getValue().subtract(increment);
-		else if(movementAction.equals(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getDecrementAction()))
-			return saleCashRegisterMovement.getSale().getBalance().getValue().add(increment);
-		return null;
+		//Increment value is added to the cash register but subtracted to sale balance
+		/*if(movementAction!=null && saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction().equals(movementAction) )
+			increment = increment.negate();
+		else if(movementAction!=null && saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getDecrementAction().equals(movementAction))
+			;
+		*/
+		return inject(MovementActionBusiness.class).computeValue(movementAction, saleCashRegisterMovement.getSale().getBalance().getValue(), increment.negate());
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)

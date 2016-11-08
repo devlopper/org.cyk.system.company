@@ -95,7 +95,7 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 		return inject(SalableProductCollectionItemBusiness.class).findByCollection(sale.getSalableProductCollection());
 	}
 	
-	@Override
+	/*@Override
 	protected Boolean showContextualEditCommandable() {
 		return Boolean.FALSE;
 	}
@@ -103,8 +103,8 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 	@Override
 	protected Boolean showContextualDeleteCommandable() {
 		return Boolean.TRUE;
-	}
-	
+	}*/
+	/*
 	@Override
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
 		super.processIdentifiableContextualCommandable(commandable);
@@ -130,6 +130,6 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 		}
 		
 		commandable.addChild(Builder.createReport(identifiable, CompanyReportRepository.getInstance().getReportPointOfSale(),"command.see.invoice", null));
-	}
+	}*/
 				
 }

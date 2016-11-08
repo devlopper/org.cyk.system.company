@@ -37,15 +37,6 @@ public abstract class AbstractCashRegisterMovementEditPage<ITEM extends Abstract
 		super.selectCollection(collection);
 		((AbstractCashRegisterMovementForm<?,?>)form.getData()).setMovement(getMovement());
 	}
-	
-	@Override
-	protected Boolean showCollectionField() {
-		return Boolean.TRUE;
-	}
-	
-	protected Boolean showCashRegisterField(){
-		return Boolean.TRUE;
-	}
 		
 	@Getter @Setter
 	public static abstract class AbstractCashRegisterMovementForm<ITEM extends AbstractIdentifiable,COLLECTION extends AbstractIdentifiable> extends AbstractMovementForm<ITEM,COLLECTION> implements Serializable{
@@ -88,7 +79,7 @@ public abstract class AbstractCashRegisterMovementEditPage<ITEM extends Abstract
 		/**/
 		public static final String FIELD_MOVEMENT = "movement";
 		public static final String FIELD_MODE = "mode";
-		public static final String FIELD_CODE = "code";
+
 	}
 
 }

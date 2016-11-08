@@ -2,8 +2,11 @@ package org.cyk.system.company.ui.web.primefaces.adapter.enterpriseresourceplann
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.cyk.system.company.business.impl.BalanceDetails;
 import org.cyk.system.company.business.impl.CostDetails;
 import org.cyk.system.company.business.impl.payment.CashRegisterDetails;
 import org.cyk.system.company.business.impl.payment.CashRegisterMovementDetails;
@@ -37,6 +40,7 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
+import org.cyk.system.company.ui.web.primefaces.BalanceFormModel;
 import org.cyk.system.company.ui.web.primefaces.CostFormModel;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterEditPage;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementEditPage;
@@ -57,6 +61,7 @@ import org.cyk.system.company.ui.web.primefaces.structure.EmploymentAgreementEdi
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.time.PeriodDetails;
 import org.cyk.ui.api.command.menu.SystemMenu;
+import org.cyk.ui.api.model.time.PeriodFormModel;
 import org.cyk.ui.web.primefaces.Table.ColumnAdapter;
 import org.cyk.ui.web.primefaces.UserSession;
 import org.cyk.ui.web.primefaces.adapter.enterpriseresourceplanning.ActorDetailsConfiguration;
@@ -120,7 +125,8 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 		getFormConfiguration(CashRegisterMovement.class,Crud.CREATE)
 		.addRequiredFieldNames(CashRegisterMovementEditPage.Form.FIELD_COLLECTION,CashRegisterMovementEditPage.Form.FIELD_VALUE)
 		.addFieldNames(CashRegisterMovementEditPage.Form.FIELD_ACTION,CashRegisterMovementEditPage.Form.FIELD_CURRENT_TOTAL,CashRegisterMovementEditPage.Form.FIELD_NEXT_TOTAL
-				,CashRegisterMovementEditPage.Form.FIELD_CODE,CashRegisterMovementEditPage.Form.FIELD_MODE,CashRegisterMovementEditPage.Form.FIELD_DATE);
+				,CashRegisterMovementEditPage.Form.FIELD_CODE,CashRegisterMovementEditPage.Form.FIELD_MODE,CashRegisterMovementEditPage.Form.FIELD_EXISTENCE_PERIOD
+				,PeriodFormModel.FIELD_FROM_DATE);
 		
 		registerDetailsConfiguration(CashRegisterMovementDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
@@ -323,7 +329,8 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			}
 		});
 		
-		getFormConfiguration(Sale.class, Crud.CREATE).addRequiredFieldNames(SaleEditPage.Form.FIELD_CUSTOMER,SaleEditPage.Form.FIELD_SALABLE_PRODUCT_COLLECTION);
+		getFormConfiguration(Sale.class, Crud.CREATE).addRequiredFieldNames(SaleEditPage.Form.FIELD_SALABLE_PRODUCT_COLLECTION)
+		.addFieldNames(SaleEditPage.Form.FIELD_CUSTOMER,SaleEditPage.Form.FIELD_BALANCE,BalanceFormModel.FIELD_VALUE);
 		registerDetailsConfiguration(SaleDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
@@ -334,7 +341,8 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					@Override
 					public Boolean build(Object data,Field field) {
 						return isFieldNameIn(field,SaleDetails.FIELD_CUSTOMER,SaleDetails.FIELD_ACCOUNTING_PERIOD,SaleDetails.FIELD_CODE
-								,SaleDetails.FIELD_NAME,SaleDetails.FIELD_COST,CostDetails.FIELD_VALUE,CostDetails.FIELD_TAX,CostDetails.FIELD_TURNOVER);
+								,SaleDetails.FIELD_NAME,SaleDetails.FIELD_COST,CostDetails.FIELD_VALUE,CostDetails.FIELD_TAX,CostDetails.FIELD_TURNOVER
+								,SaleDetails.FIELD_BALANCE,BalanceDetails.FIELD_VALUE);
 					}
 				};
 			}
@@ -344,8 +352,21 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 		.addRequiredFieldNames(SaleCashRegisterMovementEditPage.Form.FIELD_COLLECTION,SaleCashRegisterMovementEditPage.Form.FIELD_CASH_REGISTER
 				,SaleCashRegisterMovementEditPage.Form.FIELD_VALUE)
 		.addFieldNames(SaleCashRegisterMovementEditPage.Form.FIELD_ACTION,SaleCashRegisterMovementEditPage.Form.FIELD_CURRENT_TOTAL,SaleCashRegisterMovementEditPage.Form.FIELD_NEXT_TOTAL
-				,SaleCashRegisterMovementEditPage.Form.FIELD_CODE,SaleCashRegisterMovementEditPage.Form.FIELD_MODE,SaleCashRegisterMovementEditPage.Form.FIELD_DATE
-				);
+				,SaleCashRegisterMovementEditPage.Form.FIELD_CODE,SaleCashRegisterMovementEditPage.Form.FIELD_MODE,SaleCashRegisterMovementEditPage.Form.FIELD_EXISTENCE_PERIOD
+				,PeriodFormModel.FIELD_FROM_DATE
+				)
+			.addControlSetListener(new ControlSetAdapter.Form<Object>(){
+				private static final long serialVersionUID = 1L;
+				@Override
+				public List<String> getExpectedFieldNames() {
+					return Arrays.asList(SaleCashRegisterMovementEditPage.Form.FIELD_CODE,SaleCashRegisterMovementEditPage.Form.FIELD_CASH_REGISTER
+							,SaleCashRegisterMovementEditPage.Form.FIELD_COLLECTION,SaleCashRegisterMovementEditPage.Form.FIELD_CURRENT_TOTAL
+							,SaleCashRegisterMovementEditPage.Form.FIELD_ACTION,SaleCashRegisterMovementEditPage.Form.FIELD_VALUE
+							,SaleCashRegisterMovementEditPage.Form.FIELD_NEXT_TOTAL,SaleCashRegisterMovementEditPage.Form.FIELD_MODE
+							,PeriodFormModel.FIELD_FROM_DATE
+							);
+				}
+			});
 		registerDetailsConfiguration(SaleCashRegisterMovementDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")

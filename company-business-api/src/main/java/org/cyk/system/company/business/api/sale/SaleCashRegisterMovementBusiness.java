@@ -23,12 +23,11 @@ public interface SaleCashRegisterMovementBusiness extends TypedBusiness<SaleCash
 	void in(SaleCashRegisterMovement saleCashRegisterMovement);
 	void out(SaleCashRegisterMovement saleCashRegisterMovement);
 	
-	SaleCashRegisterMovement create(SaleCashRegisterMovement saleCashRegisterMovement,Boolean generatePos);
-	
 	BigDecimal computeBalance(SaleCashRegisterMovement payment);
 	BigDecimal computeBalance(SaleCashRegisterMovement saleCashRegisterMovement,MovementAction movementAction,BigDecimal increment);
 	
 	ReportBasedOnTemplateFile<SaleReport> findReport(SaleCashRegisterMovement saleCashRegisterMovement);
 	
-	
+	void setSale(SaleCashRegisterMovement saleCashRegisterMovement,Sale sale);
+	void setCashRegister(UserAccount userAccount,SaleCashRegisterMovement saleCashRegisterMovement,CashRegister cashRegister);
 }
