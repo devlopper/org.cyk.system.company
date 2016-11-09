@@ -15,13 +15,16 @@ import org.cyk.system.company.business.api.structure.CompanyBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.accounting.AccountingPeriodBusinessImpl;
 import org.cyk.system.company.business.impl.accounting.AccountingPeriodProductBusinessImpl;
+import org.cyk.system.company.business.impl.payment.CashRegisterMovementBusinessImpl;
 import org.cyk.system.company.business.impl.sale.CustomerBusinessImpl;
+import org.cyk.system.company.business.impl.sale.SalableProductCollectionBusinessImpl;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.business.impl.stock.StockTangibleProductMovementBusinessImpl;
 import org.cyk.system.company.business.impl.structure.EmployeeBusinessImpl;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
+import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
@@ -31,6 +34,8 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.SalableProductInstance;
+import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.DivisionType;
@@ -368,10 +373,28 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	/**/
 	
 	public void enableEnterpriseResourcePlanning(){
-		EmployeeBusinessImpl.Listener.COLLECTION.add(new EmployeeBusinessImpl.Listener.Adapter.Default.EnterpriseResourcePlanning()); 
-		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{GlobalIdentifier.FIELD_CODE}, SalableProductCollectionItem.class);
+		EmployeeBusinessImpl.Listener.COLLECTION.add(EMPLOYEE_BUSINESS_LISTENER); 
+		CashRegisterMovementBusinessImpl.Listener.COLLECTION.add(CASH_REGISTER_MOVEMENT_BUSINESS_LISTENER);
+		SalableProductCollectionBusinessImpl.Listener.COLLECTION.add(SALABLE_PRODUCT_COLLECTION_BUSINESS_LISTENER);
+		SaleBusinessImpl.Listener.COLLECTION.add(SALE_BUSINESS_LISTENER);
+		
+		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{GlobalIdentifier.FIELD_CODE}, SalableProductCollectionItem.class
+				,SaleCashRegisterMovement.class);
+		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{
+				commonUtils.attributePath(GlobalIdentifier.FIELD_EXISTENCE_PERIOD,Period.FIELD_FROM_DATE)}, CashRegisterMovement.class,Sale.class
+				,SaleCashRegisterMovement.class);
 	}
 	
+	/**/
+	
+	public static EmployeeBusinessImpl.Listener EMPLOYEE_BUSINESS_LISTENER 
+		= new EmployeeBusinessImpl.Listener.Adapter.Default.EnterpriseResourcePlanning();
+	public static SalableProductCollectionBusinessImpl.Listener SALABLE_PRODUCT_COLLECTION_BUSINESS_LISTENER 
+	= new SalableProductCollectionBusinessImpl.Listener.Adapter.Default.EnterpriseResourcePlanning();
+	public static SaleBusinessImpl.Listener SALE_BUSINESS_LISTENER 
+		= new SaleBusinessImpl.Listener.Adapter.Default.EnterpriseResourcePlanning();
+	public static CashRegisterMovementBusinessImpl.Listener CASH_REGISTER_MOVEMENT_BUSINESS_LISTENER 
+		= new CashRegisterMovementBusinessImpl.Listener.Adapter.Default.EnterpriseResourcePlanning();
 	/**/
 	
 	public static interface Listener extends AbstractBusinessLayer.Listener {
@@ -407,8 +430,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		*/
 		/**/
 		
-		String SALE_IDENTIFIER = "SALE_IDENTIFIER";
-		String CASH_MOVEMENT_IDENTIFIER = "CASH_MOVEMENT_IDENTIFIER";
+		//String SALE_IDENTIFIER = "SALE_IDENTIFIER";
+		//String CASH_MOVEMENT_IDENTIFIER = "CASH_MOVEMENT_IDENTIFIER";
 		
 		/**/
 		

@@ -126,9 +126,9 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 	public static class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter implements Serializable {
 		private static final long serialVersionUID = 5585791722273454192L;
 		
-		@Override
+		/*@Override
 		public void processOnConsume(Sale sale, Crud crud, Boolean first) {
 			inject(StockTangibleProductMovementBusiness.class).consume(sale,crud,first);
-		}
+		}*/
 	}
 }

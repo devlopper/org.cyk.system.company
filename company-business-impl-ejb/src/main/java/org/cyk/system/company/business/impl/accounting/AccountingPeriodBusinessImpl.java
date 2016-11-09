@@ -103,8 +103,8 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 	public static class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter implements Serializable {
 		private static final long serialVersionUID = 5585791722273454192L;
 		
-		@Override
-		public void processOnConsume(Sale sale, Crud crud, Boolean first) {
+		//@Override
+		//public void processOnConsume(Sale sale, Crud crud, Boolean first) {
 			/*BigDecimal sign = null;
 			if(Crud.CREATE.equals(crud)){
 				sign = BigDecimal.ONE;
@@ -119,7 +119,7 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_TAX, sale.getCost().getTax().multiply(sign));
 			commonUtils.increment(BigDecimal.class, sale.getAccountingPeriod().getSaleResults().getCost(), Cost.FIELD_TURNOVER, sale.getCost().getTurnover().multiply(sign));
 			*/
-			inject(AccountingPeriodDao.class).update(sale.getAccountingPeriod());
-		}
+		//	inject(AccountingPeriodDao.class).update(sale.getAccountingPeriod());
+		//}
 	}
 }

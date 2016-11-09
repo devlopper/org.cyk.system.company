@@ -33,13 +33,24 @@ public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashR
 		if(cashRegister.getMovementCollection()==null){
 			cashRegister.setMovementCollection((inject(MovementCollectionBusiness.class).instanciateOne(cashRegister.getCode()
 					, cashRegister.getCode()+MovementAction.INCREMENT, cashRegister.getCode()+MovementAction.DECREMENT)));
-			inject(MovementCollectionBusiness.class).create(cashRegister.getMovementCollection());
 		}
+		
+		if(isNotIdentified(cashRegister.getMovementCollection()))
+			inject(MovementCollectionBusiness.class).create(cashRegister.getMovementCollection());
+		
 		return super.create(cashRegister);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<CashRegister> findByPerson(Person person) {
 		return dao.readByPerson(person);
+	}
+	
+	@Override
+	public CashRegister instanciateOneRandomly(String code) {
+		CashRegister cashRegister = super.instanciateOneRandomly(code);
+		cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaultOwnedCompany());
+		cashRegister.setMovementCollection(inject(MovementCollectionBusiness.class).instanciateOneRandomly(code));
+		return cashRegister;
 	}
 }

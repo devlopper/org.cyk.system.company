@@ -1,6 +1,7 @@
 package org.cyk.system.company.business.impl.payment;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.ejb.Stateless;
@@ -8,17 +9,21 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementDao;
+import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
+import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.UserAccount;
+import org.cyk.system.root.persistence.api.mathematics.MovementDao;
 
 @Stateless
 public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessService<CashRegisterMovement, CashRegisterMovementDao> implements CashRegisterMovementBusiness,Serializable {
@@ -31,21 +36,21 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	}
 	
 	@Override
-	public CashRegisterMovement create(CashRegisterMovement cashRegisterMovement) {
+	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
+		return CashRegisterMovementBusinessImpl.Listener.COLLECTION;
+	}
+		
+	@Override
+	protected void beforeCreate(CashRegisterMovement cashRegisterMovement) {
+		super.beforeCreate(cashRegisterMovement);
 		if(isNotIdentified(cashRegisterMovement.getMovement())){
 			exceptionUtils().exception(!cashRegisterMovement.getCashRegister().getMovementCollection().equals(cashRegisterMovement.getMovement().getCollection()),
 					"movementcollectiondoesnotmacth");
+			cashRegisterMovement.set(cashRegisterMovement.getMovement(), GlobalIdentifier.FIELD_CODE,GlobalIdentifier.FIELD_NAME,GlobalIdentifier.FIELD_EXISTENCE_PERIOD);
 			inject(MovementBusiness.class).create(cashRegisterMovement.getMovement());
 		}
-		super.create(cashRegisterMovement);
-		if(cashRegisterMovement.getCode()==null)
-			cashRegisterMovement.setCode(generateIdentifier(cashRegisterMovement,CompanyBusinessLayer.Listener.CASH_MOVEMENT_IDENTIFIER
-					,inject(AccountingPeriodBusiness.class).findCurrent()
-				.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator()));
-		dao.update(cashRegisterMovement);
-		return cashRegisterMovement;
 	}
-	
+		
 	@Override
 	public CashRegisterMovement update(CashRegisterMovement cashRegisterMovement) {
 		if(cashRegisterMovement.getMovement()!=null)
@@ -94,5 +99,49 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 			cashRegister = null;
 		}
 		return instanciateOne(userAccount,cashRegister);
+	}
+	
+	/**/
+	
+	public static interface Listener extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<CashRegisterMovement>{
+		
+		Collection<Listener> COLLECTION = new ArrayList<>();
+		
+		/**/
+		
+		public static class Adapter extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener.Adapter<CashRegisterMovement> implements Listener, Serializable {
+			private static final long serialVersionUID = -1625238619828187690L;
+			
+			/**/
+			
+			public static class Default extends Listener.Adapter implements Serializable {
+				private static final long serialVersionUID = -1625238619828187690L;
+				
+				/**/
+				
+				public static class EnterpriseResourcePlanning extends Listener.Adapter.Default implements Serializable {
+					private static final long serialVersionUID = -1625238619828187690L;
+					
+					/**/
+					
+					@Override
+					public void afterCreate(CashRegisterMovement cashRegisterMovement) {
+						super.afterCreate(cashRegisterMovement);
+						if(StringUtils.isBlank(cashRegisterMovement.getCode()))
+							cashRegisterMovement.setCode(inject(StringGeneratorBusiness.class).generateIdentifier(cashRegisterMovement,null
+									,inject(AccountingPeriodBusiness.class).findCurrent()
+								.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator()));
+						
+						inject(CashRegisterMovementDao.class).update(cashRegisterMovement);
+						if(cashRegisterMovement.getMovement()!=null){
+							cashRegisterMovement.getMovement().setCode(AbstractCollectionItemBusinessImpl.buildCode(cashRegisterMovement.getMovement().getCollection(), cashRegisterMovement.getCode()));
+							inject(MovementDao.class).update(cashRegisterMovement.getMovement());
+						}
+					}
+					
+				}
+			}
+			
+		}
 	}
 }

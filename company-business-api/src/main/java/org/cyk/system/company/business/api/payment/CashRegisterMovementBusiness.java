@@ -12,4 +12,8 @@ public interface CashRegisterMovementBusiness extends TypedBusiness<CashRegister
 	CashRegisterMovement instanciateOne(UserAccount userAccount,CashRegister cashRegister);
 	void setCashRegister(CashRegisterMovement cashRegisterMovement,CashRegister cashRegister);
 	Collection<CashRegisterMovement> findByCashRegister(CashRegister cashRegister);
+	
+	/**/
+	
+	String RUNTIME_CODE_GENERATOR_IDENTIFIER = "CASH_REGISTER_MOVEMENT_RUNTIME_CODE_GENERATOR_IDENTIFIER";//TODO can use script concept
 }

@@ -44,8 +44,5 @@ public class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter imple
 			inject(SalableProductInstanceCashRegisterBusiness.class).update(salableProductInstanceCashRegisters);
 		}
 	}
-	@Override
-	public Boolean isReportUpdatable(Sale sale) {
-		return Boolean.FALSE;
-	}
+	
 }

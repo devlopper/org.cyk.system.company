@@ -18,7 +18,6 @@ import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.company.persistence.api.structure.EmployeeDao;
 import org.cyk.system.company.persistence.api.structure.EmploymentAgreementDao;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
-import org.cyk.utility.common.ListenerUtils;
 
 @Stateless
 public class EmployeeBusinessImpl extends AbstractActorBusinessImpl<Employee, EmployeeDao,Employee.SearchCriteria> implements EmployeeBusiness,Serializable {
@@ -31,51 +30,8 @@ public class EmployeeBusinessImpl extends AbstractActorBusinessImpl<Employee, Em
 	}
 	
 	@Override
-	public Employee create(final Employee employee) {
-		listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>(){
-			@Override
-			public void execute(Listener listener) {
-				listener.beforeCreate(employee);
-			}});
-		super.create(employee);
-		listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>(){
-			@Override
-			public void execute(Listener listener) {
-				listener.afterCreate(employee);
-			}});
-		return employee;
-	}
-	
-	@Override
-	public Employee update(final Employee employee) {
-		listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>(){
-			@Override
-			public void execute(Listener listener) {
-				listener.beforeUpdate(employee);
-			}});
-		super.update(employee);
-		listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>(){
-			@Override
-			public void execute(Listener listener) {
-				listener.afterUpdate(employee);
-			}});
-		return employee;
-	}
-	
-	@Override
-	public Employee delete(final Employee employee) {
-		listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>(){
-			@Override
-			public void execute(Listener listener) {
-				listener.beforeDelete(employee);
-			}});
-		super.delete(employee);
-		listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>(){
-			@Override
-			public void execute(Listener listener) {
-				listener.afterDelete(employee);
-			}});
-		return employee;
+	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
+		return Listener.COLLECTION;
 	}
 	
 	/**/

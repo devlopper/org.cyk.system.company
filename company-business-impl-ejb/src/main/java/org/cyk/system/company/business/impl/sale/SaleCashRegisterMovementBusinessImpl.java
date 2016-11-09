@@ -10,10 +10,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.impl.AbstractCompanyBeanAdapter;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
@@ -24,7 +24,6 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementModeDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
-import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
@@ -32,6 +31,7 @@ import org.cyk.system.root.business.api.mathematics.MovementActionBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
+import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.security.UserAccount;
@@ -44,13 +44,24 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	private static final long serialVersionUID = -7830673760640348717L;
 
 	@Inject private SaleDao saleDao;
-	@Inject private CustomerDao customerDao;
 	@Inject private CashierDao cashierDao;
 	@Inject private PersonDao personDao;
 	
 	@Inject
 	public SaleCashRegisterMovementBusinessImpl(SaleCashRegisterMovementDao dao) {
 		super(dao);
+	}
+	
+	@Override
+	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
+		return Listener.COLLECTION;
+	}
+	
+	@Override
+	protected Object[] getPropertyValueTokens(SaleCashRegisterMovement saleCashRegisterMovement, String name) {
+		if(ArrayUtils.contains(new String[]{GlobalIdentifier.FIELD_CODE}, name))
+			return new Object[]{saleCashRegisterMovement.getCashRegisterMovement()};
+		return super.getPropertyValueTokens(saleCashRegisterMovement, name);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -231,27 +242,30 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	
 	/**/
 	
-	public static interface Listener{
+	public static interface Listener extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<SaleCashRegisterMovement>{
 		
 		Collection<Listener> COLLECTION = new ArrayList<>();
 		
 		/**/
 		
-		
-		public static class Adapter extends AbstractCompanyBeanAdapter implements Listener, Serializable {
+		public static class Adapter extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener.Adapter<SaleCashRegisterMovement> implements Listener, Serializable {
 			private static final long serialVersionUID = -1625238619828187690L;
 			
 			/**/
-		
 			
-			public static class Default extends Adapter implements Serializable {
+			public static class Default extends Listener.Adapter implements Serializable {
 				private static final long serialVersionUID = -1625238619828187690L;
 				
 				/**/
 				
-				
+				public static class EnterpriseResourcePlanning extends Listener.Adapter.Default implements Serializable {
+					private static final long serialVersionUID = -1625238619828187690L;
+					
+					/**/
+					
+					
+				}
 			}
-			
 		}
 		
 	}

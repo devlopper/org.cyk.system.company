@@ -154,7 +154,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					@Override
 					public Boolean isColumn(Field field) {
 						return isFieldNameIn(field,CashRegisterMovementDetails.FIELD_VALUE,CashRegisterMovementDetails.FIELD_EXISTENCE_PERIOD
-								,CashRegisterMovementDetails.FIELD_CODE,CashRegisterMovementDetails.FIELD_MODE);
+								,CashRegisterMovementDetails.FIELD_CODE,CashRegisterMovementDetails.FIELD_MODE,PeriodDetails.FIELD_FROM_DATE);
 					}
 				};
 			}

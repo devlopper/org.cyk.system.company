@@ -1,19 +1,18 @@
-package org.cyk.system.company.business.impl.integration.own;
+package org.cyk.system.company.business.impl.integration.enterpriseresourceplanning;
 
 import java.io.Serializable;
 import java.util.Collection;
 
 import javax.inject.Singleton;
 
-import org.cyk.system.company.business.api.sale.CustomerBusiness;
+import lombok.Getter;
+
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
 import org.cyk.system.company.model.sale.Sale;
 
-import lombok.Getter;
-
 @Singleton @Getter
-public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer implements Serializable {
+public class EnterpriseResourcePlanningFakedDataProducer extends AbstractCompanyFakedDataProducer implements Serializable {
 
 	private static final long serialVersionUID = -1832900422621121762L;
 	
@@ -43,12 +42,12 @@ public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer imple
 		});
 		flush(SalableProduct.class, salableProducts);
 		*/
-		inject(CustomerBusiness.class).create(inject(CustomerBusiness.class).instanciateManyRandomly(5));
+		//inject(CustomerBusiness.class).create(inject(CustomerBusiness.class).instanciateManyRandomly(5));
 	}
 
 	@Override
 	protected void doBusiness(Listener listener) {
-		Collection<Sale> sales = inject(SaleBusiness.class).instanciateMany(new Object[][]{
+		/*Collection<Sale> sales = inject(SaleBusiness.class).instanciateMany(new Object[][]{
 				new Object[]{"sale001",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getCode(),"1/1/2000 05:00","false"
 						,new String[][]{ new String[]{"TP2","2"} }}
 				,new Object[]{"sale002",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getCode(),"1/1/2000 05:15","false"
@@ -56,7 +55,7 @@ public class OwnFakedDataProducer extends AbstractCompanyFakedDataProducer imple
 				,new Object[]{"sale003",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getCode(),"1/1/2000 08:00","false"
 						,new String[][]{ new String[]{"TP2","1"},new String[]{"TP5","3"} }}
 		});
-		flush(Sale.class, sales);
+		flush(Sale.class, sales);*/
 	}
 
 	

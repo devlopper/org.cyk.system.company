@@ -2,6 +2,7 @@ package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.ejb.Stateless;
@@ -29,6 +30,11 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	@Inject
 	public SalableProductCollectionBusinessImpl(SalableProductCollectionDao dao) {
 		super(dao); 
+	}
+	
+	@Override
+	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
+		return Listener.COLLECTION;
 	}
 	
 	@Override
@@ -106,6 +112,36 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void computeCost(SalableProductCollection salableProductCollection) {
 		computeCost(salableProductCollection,inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
+	}
+	
+	/**/
+	
+	public static interface Listener extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<SalableProductCollection>{
+		
+		Collection<Listener> COLLECTION = new ArrayList<>();
+		
+		/**/
+		
+		public static class Adapter extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener.Adapter<SalableProductCollection> implements Listener, Serializable {
+			private static final long serialVersionUID = -1625238619828187690L;
+			
+			/**/
+			
+			public static class Default extends Listener.Adapter implements Serializable {
+				private static final long serialVersionUID = -1625238619828187690L;
+				
+				/**/
+				
+				public static class EnterpriseResourcePlanning extends Listener.Adapter.Default implements Serializable {
+					private static final long serialVersionUID = -1625238619828187690L;
+					
+					/**/
+					
+					
+				}
+			}
+		}
+		
 	}
 	
 }

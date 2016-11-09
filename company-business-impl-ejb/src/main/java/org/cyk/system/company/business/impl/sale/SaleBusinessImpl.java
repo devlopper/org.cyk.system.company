@@ -1,6 +1,7 @@
 package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,10 +13,10 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
@@ -29,11 +30,11 @@ import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
+import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.party.person.Person;
-import org.cyk.utility.common.ListenerUtils;
 
 @Stateless
 public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao> implements SaleBusiness,Serializable {
@@ -81,6 +82,14 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public Sale instanciateOneRandomly(String code) {
+		Sale sale = super.instanciateOneRandomly(code);
+		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOneRandomly(code));
+		sale.getBalance().setValue(new BigDecimal("15"));
+		return sale;
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<Sale> instanciateMany(Object[][] arguments) {
 		List<Sale> list = new ArrayList<>();
 		for(Object[] argument : arguments)
@@ -88,83 +97,14 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 					, (String[][])argument[5]));
 		return list;
 	}
-			
+	
 	@Override
-	public Sale create(final Sale sale) {
-		listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>(){
-			@Override
-			public void execute(Listener listener) {
-				listener.beforeCreate(sale);
-			}});
-		if(sale.getBirthDate()==null)
-			sale.setBirthDate(universalTimeCoordinated());
-		super.create(sale);
-		
-		cascade(sale,null,sale.getSaleCashRegisterMovements(), Crud.CREATE);
-		
-		if(sale.getAccountingPeriod()!=null){
-			if(sale.getCode()==null)
-				sale.setCode(generateIdentifier(sale,CompanyBusinessLayer.Listener.SALE_IDENTIFIER,sale.getAccountingPeriod().getSaleConfiguration().getIdentifierGenerator()));
-			
-			Cost cost = sale.getSalableProductCollection().getCost();
-			if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))
-				cost.setTax(inject(AccountingPeriodBusiness.class).computeValueAddedTax(sale.getAccountingPeriod(), cost.getValue()));
-			cost.setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(sale.getAccountingPeriod(), cost.getValue(), cost.getTax()));	
-		}
-		sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue());
-		/*
-		if(sale.getSaleCashRegisterMovements()!=null)
-			for(SaleCashRegisterMovement saleCashRegisterMovement : sale.getSaleCashRegisterMovements()){
-				saleCashRegisterMovement.setSale(sale);
-				inject(SaleCashRegisterMovementBusiness.class).create(saleCashRegisterMovement);
-				commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_CUMUL
-						, saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate());	 
-			}
-		*/	
-		if(Boolean.TRUE.equals(ListenerUtils.getInstance().getBoolean(Listener.COLLECTION, new ListenerUtils.BooleanMethod<Listener>() {
-			@Override
-			public Boolean execute(Listener listener) {
-				return listener.isReportUpdatable(sale);
-			}
-			@Override
-			public Boolean getNullValue() {
-				return Boolean.TRUE;
-			}
-		}))){
-			/*
-			final SaleReport saleReport = inject(CompanyReportProducer.class).produceSaleReport(sale);
-			if(sale.getReport()==null)
-				sale.setReporù8t(new File());
-			inject(ReportBusiness.class).buildBinaryContent(sale, saleReport, sale.getAccountingPeriod().getSaleConfiguration().getSaleReportTemplate().getTemplate(), Boolean.TRUE);
-			
-			listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>() {
-				@Override
-				public void execute(Listener listener) {
-					listener.processOnReportUpdated(saleReport, Boolean.TRUE);
-				}
-			});
-			*/
-		}
-		dao.update(sale);
-		
-		logIdentifiable("Created",sale);
-		listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>(){
-			@Override
-			public void execute(Listener listener) {
-				listener.afterCreate(sale);
-			}});
-		return sale;
+	public Sale create(Sale sale) {
+		if(isNotIdentified(sale.getSalableProductCollection()))
+			inject(SalableProductCollectionBusiness.class).create(sale.getSalableProductCollection());
+		return super.create(sale);
 	}
-	
-	private void cascade(Sale sale,Collection<SaleStockTangibleProductMovement> saleStockTangibleProductMovements,Collection<SaleCashRegisterMovement> saleCashRegisterMovements,Crud crud){
-		new CascadeOperationListener.Adapter.Default<SaleStockTangibleProductMovement,SaleStockTangibleProductMovementDao,SaleStockTangibleProductMovementBusiness>(null,
-				inject(SaleStockTangibleProductMovementBusiness.class))
-		.operate(saleStockTangibleProductMovements, crud);
-		new CascadeOperationListener.Adapter.Default<SaleCashRegisterMovement,SaleCashRegisterMovementDao,SaleCashRegisterMovementBusiness>(null,
-				inject(SaleCashRegisterMovementBusiness.class))
-		.operate(saleCashRegisterMovements, crud);
-	}
-	
+			
 	@Override
 	public void update(Sale sale,FiniteStateMachineAlphabet finiteStateMachineAlphabet) {
 		consume(sale,Crud.UPDATE);
@@ -232,17 +172,17 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		
 		/**/
 
-		void processOnConsume(Sale sale,Crud crud, Boolean first);
+		//void processOnConsume(Sale sale,Crud crud, Boolean first);
 		
-		Boolean isReportUpdatable(Sale sale);
+		//Boolean isReportUpdatable(Sale sale);
 		
-		void processOnReportUpdated(SaleReport saleReport,Boolean invoice);
+		//void processOnReportUpdated(SaleReport saleReport,Boolean invoice);
 		
 		public static class Adapter extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener.Adapter<Sale> implements Listener, Serializable {
 			private static final long serialVersionUID = -1625238619828187690L;
 			
 			/**/
-			
+			/*
 			@Override public void processOnConsume(Sale sale, Crud crud, Boolean first) {}
 			
 			@Override public Boolean isReportUpdatable(Sale sale) {
@@ -250,7 +190,71 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			}
 			
 			@Override public void processOnReportUpdated(SaleReport saleReport,Boolean invoice) {}
+			*/
+			protected void cascade(Sale sale,Collection<SaleStockTangibleProductMovement> saleStockTangibleProductMovements,Collection<SaleCashRegisterMovement> saleCashRegisterMovements,Crud crud){
+				new CascadeOperationListener.Adapter.Default<SaleStockTangibleProductMovement,SaleStockTangibleProductMovementDao,SaleStockTangibleProductMovementBusiness>(null,
+						inject(SaleStockTangibleProductMovementBusiness.class))
+				.operate(saleStockTangibleProductMovements, crud);
+				new CascadeOperationListener.Adapter.Default<SaleCashRegisterMovement,SaleCashRegisterMovementDao,SaleCashRegisterMovementBusiness>(null,
+						inject(SaleCashRegisterMovementBusiness.class))
+				.operate(saleCashRegisterMovements, crud);
+			}
 			
+			/**/
+			
+			public static class Default extends Listener.Adapter implements Serializable {
+				private static final long serialVersionUID = -1625238619828187690L;
+				
+				/**/
+				
+				public static class EnterpriseResourcePlanning extends Listener.Adapter.Default implements Serializable {
+					private static final long serialVersionUID = -1625238619828187690L;
+					
+					/**/
+					
+					@Override
+					public void afterCreate(final Sale sale) {
+						super.afterCreate(sale);
+						cascade(sale,null,sale.getSaleCashRegisterMovements(), Crud.CREATE);
+						
+						if(sale.getAccountingPeriod()!=null){
+							if(sale.getCode()==null)
+								sale.setCode(inject(StringGeneratorBusiness.class).generateIdentifier(sale,null,sale.getAccountingPeriod().getSaleConfiguration().getIdentifierGenerator()));
+							
+							Cost cost = sale.getSalableProductCollection().getCost();
+							if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))
+								cost.setTax(inject(AccountingPeriodBusiness.class).computeValueAddedTax(sale.getAccountingPeriod(), cost.getValue()));
+							cost.setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(sale.getAccountingPeriod(), cost.getValue(), cost.getTax()));	
+						}
+						sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue());
+						/*if(Boolean.TRUE.equals(ListenerUtils.getInstance().getBoolean(Listener.COLLECTION, new ListenerUtils.BooleanMethod<Listener>() {
+							@Override
+							public Boolean execute(Listener listener) {
+								return listener.isReportUpdatable(sale);
+							}
+							@Override
+							public Boolean getNullValue() {
+								return Boolean.TRUE;
+							}
+						}))){*/
+							/*
+							final SaleReport saleReport = inject(CompanyReportProducer.class).produceSaleReport(sale);
+							if(sale.getReport()==null)
+								sale.setReporù8t(new File());
+							inject(ReportBusiness.class).buildBinaryContent(sale, saleReport, sale.getAccountingPeriod().getSaleConfiguration().getSaleReportTemplate().getTemplate(), Boolean.TRUE);
+							
+							listenerUtils.execute(Listener.COLLECTION, new ListenerUtils.VoidMethod<Listener>() {
+								@Override
+								public void execute(Listener listener) {
+									listener.processOnReportUpdated(saleReport, Boolean.TRUE);
+								}
+							});
+							*/
+						//}
+						inject(SaleDao.class).update(sale);
+					}
+				}
+			}
 		}
 		
 	}

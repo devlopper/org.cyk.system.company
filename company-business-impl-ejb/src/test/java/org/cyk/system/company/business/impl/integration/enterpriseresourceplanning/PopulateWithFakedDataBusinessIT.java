@@ -1,7 +1,7 @@
-package org.cyk.system.company.business.impl.integration.own;
+package org.cyk.system.company.business.impl.integration.enterpriseresourceplanning;
 
 
-public class PopulateWithFakedDataBusinessIT extends AbstractOwnBusinessIT {
+public class PopulateWithFakedDataBusinessIT extends AbstractEnterpriseResourcePlanningBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
  
