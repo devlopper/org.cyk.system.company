@@ -114,6 +114,13 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 		computeCost(salableProductCollection,inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
 	}
 	
+	@Override
+	public SalableProductCollection instanciateOneRandomly(String code) {
+		SalableProductCollection salableProductCollection = super.instanciateOneRandomly(code);
+		salableProductCollection.getCost().setValue(new BigDecimal("100"));
+		return salableProductCollection;
+	}
+	
 	/**/
 	
 	public static interface Listener extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<SalableProductCollection>{

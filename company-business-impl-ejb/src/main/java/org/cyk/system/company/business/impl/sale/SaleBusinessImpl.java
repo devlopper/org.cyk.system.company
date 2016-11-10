@@ -1,7 +1,6 @@
 package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -48,6 +47,11 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		super(dao);
 	}
 	
+	@Override
+	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
+		return Listener.COLLECTION;
+	}
+	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Sale instanciateOne() {
 		Sale sale = super.instanciateOne();
@@ -85,7 +89,6 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	public Sale instanciateOneRandomly(String code) {
 		Sale sale = super.instanciateOneRandomly(code);
 		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOneRandomly(code));
-		sale.getBalance().setValue(new BigDecimal("15"));
 		return sale;
 	}
 	
@@ -218,9 +221,8 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 						cascade(sale,null,sale.getSaleCashRegisterMovements(), Crud.CREATE);
 						
 						if(sale.getAccountingPeriod()!=null){
-							if(sale.getCode()==null)
+							if(StringUtils.isEmpty(sale.getCode()))
 								sale.setCode(inject(StringGeneratorBusiness.class).generateIdentifier(sale,null,sale.getAccountingPeriod().getSaleConfiguration().getIdentifierGenerator()));
-							
 							Cost cost = sale.getSalableProductCollection().getCost();
 							if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))
 								cost.setTax(inject(AccountingPeriodBusiness.class).computeValueAddedTax(sale.getAccountingPeriod(), cost.getValue()));

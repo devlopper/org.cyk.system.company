@@ -2,6 +2,7 @@ package org.cyk.system.company.business.impl.integration.enterpriseresourceplann
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
@@ -26,7 +27,8 @@ public class EnterpriseResourcePlanningSaleBusinessIT extends AbstractEnterprise
     	UserAccount userAccount = inject(UserAccountDao.class).readOneRandomly();
     	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_001));
     	
-    	create(inject(SaleBusiness.class).instanciateOneRandomly(SALE_001));
+    	sale = inject(SaleBusiness.class).instanciateOneRandomly(SALE_001);
+    	create(sale);
     	assertThat("Sale "+SALE_001+" exists", inject(SaleBusiness.class).find(SALE_001)!=null);
     	assertThat("Salable product collection "+SALE_001+" exists", inject(SalableProductCollectionBusiness.class).find(SALE_001)!=null);
     	
@@ -35,14 +37,18 @@ public class EnterpriseResourcePlanningSaleBusinessIT extends AbstractEnterprise
     	saleCashRegisterMovement.getCashRegisterMovement().getMovement().setValue(new BigDecimal("5"));
     	create(saleCashRegisterMovement);
     	assertEquals(saleCashRegisterMovement.getCode(),saleCashRegisterMovement.getCashRegisterMovement().getCode());
+    	
+    	sale = inject(SaleBusiness.class).instanciateOneRandomly("");
+    	create(sale);
+    	assertThat("Sale code start with FACT", StringUtils.startsWith(sale.getCode(), "FACT"));
     }
     
     @Test
     public void cashRegister002(){
     	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_002));
     	
-    	sale = inject(SaleBusiness.class).instanciateOneRandomly(SALE_002);
-    	sale.getBalance().setValue(new BigDecimal("1000"));		
+    	sale = inject(SaleBusiness.class).instanciateOneRandomly(SALE_002);	
+    	sale.getSalableProductCollection().getCost().setValue(new BigDecimal("1000"));
     	create(sale);
     	saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement(SALE_002, CASH_REGISTER_002, "150", "150", "850");
     	saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement(SALE_002, CASH_REGISTER_002, "200", "350", "650");
