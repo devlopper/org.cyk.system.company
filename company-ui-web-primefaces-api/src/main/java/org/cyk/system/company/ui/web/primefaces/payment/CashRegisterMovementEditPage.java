@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.utility.common.annotation.FieldOverride;
 
@@ -25,13 +26,19 @@ public class CashRegisterMovementEditPage extends AbstractCashRegisterMovementEd
 	}
 	
 	@Override
+	protected CashRegister getCollection(CashRegisterMovement cashRegisterMovement) {
+		return cashRegisterMovement.getCashRegister();
+	}
+	
+	@Override
 	protected MovementCollection getMovementCollection(CashRegister cashRegister) {
 		return cashRegister.getMovementCollection();
 	}
 	
 	@Override
 	protected void selectCollection(CashRegister cashRegister) {
-		inject(CashRegisterMovementBusiness.class).setCashRegister(identifiable, cashRegister);
+		if(Crud.CREATE.equals(crud))
+			inject(CashRegisterMovementBusiness.class).setCashRegister(identifiable, cashRegister);
 		super.selectCollection(cashRegister);
 	}
 		

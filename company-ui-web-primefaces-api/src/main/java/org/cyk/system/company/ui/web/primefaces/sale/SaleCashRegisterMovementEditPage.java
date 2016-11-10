@@ -16,6 +16,7 @@ import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.payment.AbstractCashRegisterMovementEditPage;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
@@ -64,7 +65,8 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		.method(CashRegister.class,new ListenValueMethod<CashRegister>() {
 			@Override
 			public void execute(CashRegister cashRegister) {
-				inject(SaleCashRegisterMovementBusiness.class).setCashRegister(userSession.getUserAccount(), identifiable, cashRegister);
+				if(Crud.CREATE.equals(crud))
+					inject(SaleCashRegisterMovementBusiness.class).setCashRegister(userSession.getUserAccount(), identifiable, cashRegister);
 				identifiable.setAmountIn(((Form)form.getData()).getValue());
 				((Form)form.getData()).setMovement(identifiable.getCashRegisterMovement().getMovement());
 			}
@@ -83,9 +85,15 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 	}
 	
 	@Override
+	protected Sale getCollection(SaleCashRegisterMovement saleCashRegisterMovement) {
+		return saleCashRegisterMovement.getSale();
+	}
+	
+	@Override
 	protected void selectCollection(Sale sale) {
 		super.selectCollection(sale);
-		inject(SaleCashRegisterMovementBusiness.class).setSale(identifiable, sale);
+		if(Crud.CREATE.equals(crud))
+			inject(SaleCashRegisterMovementBusiness.class).setSale(identifiable, sale);
 		updateCurrentTotal();
 	}
 	
@@ -113,7 +121,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 		if(identifiable.getSale()==null)
 			return null;
 		return inject(SaleCashRegisterMovementBusiness.class).computeBalance(identifiable,(MovementAction) form.findInputByFieldName(Form.FIELD_ACTION).getValue()
-				,increment);
+				,increment == null ? BigDecimal.ZERO : increment);
 	}
 		
 	/**/
