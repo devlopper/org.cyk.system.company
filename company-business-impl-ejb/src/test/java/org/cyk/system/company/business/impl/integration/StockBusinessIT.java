@@ -32,10 +32,10 @@ public class StockBusinessIT extends AbstractBusinessIT {
     
     /* Exceptions */
     
-    @Test
+    /*@Test
     public void incrementValueMustNotBeLessThanIntervalLow(){
     	rootBusinessTestHelper.incrementValueMustNotBeLessThanIntervalLow("TP1_movcol");
-    }
+    }*/
     @Test
     public void incrementValueMustNotBeGreaterThanIntervalHigh(){
     	rootBusinessTestHelper.incrementValueMustNotBeGreaterThanIntervalHigh("TP1_movcol");
@@ -44,10 +44,10 @@ public class StockBusinessIT extends AbstractBusinessIT {
     public void decrementValueMustNotBeLessThanIntervalLow(){
     	rootBusinessTestHelper.decrementValueMustNotBeLessThanIntervalLow("TP1_movcol");
     }
-    @Test
+    /*@Test
     public void decrementValueMustNotBeGreaterThanIntervalHigh(){
     	rootBusinessTestHelper.decrementValueMustNotBeGreaterThanIntervalHigh("TP1_movcol");
-    }
+    }*/
     
     @Test
     public void collectionValueMustNotBeLessThanIntervalLow(){

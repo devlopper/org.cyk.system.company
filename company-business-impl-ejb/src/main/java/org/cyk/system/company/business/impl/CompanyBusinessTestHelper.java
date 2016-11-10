@@ -15,11 +15,14 @@ import lombok.Setter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
+import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
@@ -29,6 +32,7 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleResults;
@@ -44,13 +48,13 @@ import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.impl.AbstractBusinessTestHelper;
-import org.cyk.system.root.business.impl.RootDataProducerHelper;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineAlphabetDao;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
+import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.ObjectFieldValues;
 import org.cyk.utility.common.test.TestEnvironmentListener.Try;
 
@@ -61,8 +65,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	
 	private static CompanyBusinessTestHelper INSTANCE;
 	
-	@Inject private RootDataProducerHelper rootDataProducerHelper;
-    
     @Inject private ProductDao productDao;
     @Inject private SalableProductDao salableProductDao;
     @Inject private CustomerDao customerDao;
@@ -102,19 +104,127 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaultOwnedCompany());
 		cashRegister.setMovementCollection(new MovementCollection());
 	}
+		
+	public CashRegisterMovement createCashRegisterMovement(String cashRegisterCode,String value,String expectedValue,String expectedThrowableMessage){
+		CashRegister cashRegister = inject(CashRegisterBusiness.class).find(cashRegisterCode);
+    	final CashRegisterMovement cashRegisterMovement = inject(CashRegisterMovementBusiness.class).instanciateOne(null,cashRegister);
+    	cashRegisterMovement.getMovement().setValue(commonUtils.getBigDecimal(value));
+    	cashRegisterMovement.getMovement().setAction(StringUtils.startsWith(value, Constant.CHARACTER_MINUS.toString()) ? cashRegister.getMovementCollection().getDecrementAction()
+    			:cashRegister.getMovementCollection().getIncrementAction());
+    	if(expectedThrowableMessage!=null){
+    		new Try(expectedThrowableMessage){ 
+    			private static final long serialVersionUID = -8176804174113453706L;
+    			@Override protected void code() {create(cashRegisterMovement);}
+    		}.execute();
+    	}else{
+    		create(cashRegisterMovement);
+    		assertMovementCollection(cashRegisterMovement.getCashRegister().getMovementCollection(), expectedValue);
+    	}
+    	return cashRegisterMovement;
+    }
+	public CashRegisterMovement createCashRegisterMovement(String cashRegisterCode,String value,String expectedValue){
+		return createCashRegisterMovement(cashRegisterCode,value, expectedValue,null);
+	}
 	
-	public void set(CashRegisterMovement cashRegisterMovement,String cashRegisterCode,String amount){
-		cashRegisterMovement.setCashRegister(rootDataProducerHelper.getEnumeration(CashRegister.class, cashRegisterCode));
-		cashRegisterMovement.setMovement(new Movement());
-		set(cashRegisterMovement.getMovement(), cashRegisterMovement.getCashRegister().getMovementCollection().getCode(), amount);
-		cashRegisterMovement.getMovement().setValue(new BigDecimal(amount));
+	public CashRegisterMovement updateCashRegisterMovement(final CashRegisterMovement cashRegisterMovement,String value,String expectedValue,String expectedThrowableMessage){
+		cashRegisterMovement.getMovement().setValue(commonUtils.getBigDecimal(value));
+    	if(expectedThrowableMessage!=null){
+    		new Try(expectedThrowableMessage){ 
+    			private static final long serialVersionUID = -8176804174113453706L;
+    			@Override protected void code() {update(cashRegisterMovement);}
+    		}.execute();
+    	}else{
+    		update(cashRegisterMovement);
+    		assertMovementCollection(cashRegisterMovement.getCashRegister().getMovementCollection(), expectedValue);
+    	}
+    	return cashRegisterMovement;
+    }
+	public CashRegisterMovement updateCashRegisterMovement(CashRegisterMovement cashRegisterMovement,String value,String expectedValue){
+		return updateCashRegisterMovement(cashRegisterMovement,value, expectedValue,null);
+	}
+	
+	public CashRegisterMovement deleteCashRegisterMovement(final CashRegisterMovement cashRegisterMovement,String expectedValue,String expectedThrowableMessage){
+    	if(expectedThrowableMessage!=null){
+    		new Try(expectedThrowableMessage){ 
+    			private static final long serialVersionUID = -8176804174113453706L;
+    			@Override protected void code() {delete(cashRegisterMovement);}
+    		}.execute();
+    	}else{
+    		delete(cashRegisterMovement);
+    		assertMovementCollection(cashRegisterMovement.getCashRegister().getMovementCollection(), expectedValue);
+    	}
+    	return cashRegisterMovement;
+    }
+	public CashRegisterMovement deleteCashRegisterMovement(final CashRegisterMovement cashRegisterMovement,String expectedValue){
+		return deleteCashRegisterMovement(cashRegisterMovement, expectedValue,null);
+	}
+	
+	public SaleCashRegisterMovement createSaleCashRegisterMovement(String saleCode,String cashRegisterCode,String value,String expectedCashRegisterValue,String expectedSaleBalance,String expectedThrowableMessage){
+		Sale sale = inject(SaleBusiness.class).find(saleCode);
+		CashRegister cashRegister = inject(CashRegisterBusiness.class).find(cashRegisterCode);
+    	final SaleCashRegisterMovement saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne(null,sale,cashRegister);
+    	saleCashRegisterMovement.getCashRegisterMovement().getMovement().setValue(commonUtils.getBigDecimal(value));
+    	saleCashRegisterMovement.getCashRegisterMovement().getMovement().setAction(StringUtils.startsWith(value, Constant.CHARACTER_MINUS.toString()) ? cashRegister.getMovementCollection().getDecrementAction()
+    			:cashRegister.getMovementCollection().getIncrementAction());
+    	if(expectedThrowableMessage!=null){
+    		new Try(expectedThrowableMessage){ 
+    			private static final long serialVersionUID = -8176804174113453706L;
+    			@Override protected void code() {create(saleCashRegisterMovement);}
+    		}.execute();
+    	}else{
+    		create(saleCashRegisterMovement);
+    		assertMovementCollection(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection(), expectedCashRegisterValue);
+    		assertSale(sale,expectedSaleBalance);
+    	}
+    	return saleCashRegisterMovement;
+    }
+	public SaleCashRegisterMovement createSaleCashRegisterMovement(String saleCode,String cashRegisterCode,String value,String expectedValue,String expectedSaleBalance){
+		return createSaleCashRegisterMovement(saleCode,cashRegisterCode,value, expectedValue,expectedSaleBalance,null);
+	}
+	
+	public SaleCashRegisterMovement updateSaleCashRegisterMovement(SaleCashRegisterMovement pSaleCashRegisterMovement,String value,String expectedCashRegisterValue,String expectedSaleBalance,String expectedThrowableMessage){
+		final SaleCashRegisterMovement saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).find(pSaleCashRegisterMovement.getIdentifier());
+		saleCashRegisterMovement.getCashRegisterMovement().getMovement().setValue(commonUtils.getBigDecimal(value));
+    	if(expectedThrowableMessage!=null){
+    		new Try(expectedThrowableMessage){ 
+    			private static final long serialVersionUID = -8176804174113453706L;
+    			@Override protected void code() {update(saleCashRegisterMovement);}
+    		}.execute();
+    	}else{
+    		update(saleCashRegisterMovement);
+    		assertMovementCollection(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection(), expectedCashRegisterValue);
+    		assertSale(saleCashRegisterMovement.getSale(),expectedSaleBalance);
+    	}
+    	return saleCashRegisterMovement;
+    }
+	public SaleCashRegisterMovement updateSaleCashRegisterMovement(SaleCashRegisterMovement saleCashRegisterMovement,String value,String expectedCashRegisterValue,String expectedSaleBalance){
+		return updateSaleCashRegisterMovement(saleCashRegisterMovement,value, expectedCashRegisterValue,expectedSaleBalance,null);
+	}
+	
+	public SaleCashRegisterMovement deleteSaleCashRegisterMovement(SaleCashRegisterMovement pSaleCashRegisterMovement,String expectedCashRegisterValue,String expectedSaleBalance,String expectedThrowableMessage){
+		final SaleCashRegisterMovement saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).find(pSaleCashRegisterMovement.getIdentifier());
+		if(expectedThrowableMessage!=null){
+    		new Try(expectedThrowableMessage){ 
+    			private static final long serialVersionUID = -8176804174113453706L;
+    			@Override protected void code() {delete(saleCashRegisterMovement);}
+    		}.execute();
+    	}else{
+    		CashRegister cashRegister = saleCashRegisterMovement.getCashRegisterMovement().getCashRegister();
+    		delete(saleCashRegisterMovement);
+    		assertMovementCollection(cashRegister.getMovementCollection(), expectedCashRegisterValue);
+    		assertSale(saleCashRegisterMovement.getSale(), expectedSaleBalance);
+    	}
+    	return saleCashRegisterMovement;
+    }
+	public SaleCashRegisterMovement deleteSaleCashRegisterMovement(final SaleCashRegisterMovement saleCashRegisterMovement,String expectedCashRegisterValue,String expectedSaleBalance){
+		return deleteSaleCashRegisterMovement(saleCashRegisterMovement, expectedCashRegisterValue,expectedSaleBalance,null);
 	}
 	
 	public void set(StockTangibleProductMovement stockTangibleProductMovement,String tangibleProductCode,String quantity){
 		if(tangibleProductCode!=null)
 			stockTangibleProductMovement.setStockableTangibleProduct(stockableTangibleProductDao.readByTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode)));
 		stockTangibleProductMovement.setMovement(new Movement());
-		set(stockTangibleProductMovement.getMovement(), stockTangibleProductMovement.getStockableTangibleProduct().getMovementCollection().getCode(), quantity);
+		//set(stockTangibleProductMovement.getMovement(), stockTangibleProductMovement.getStockableTangibleProduct().getMovementCollection().getCode(), quantity);
 	}
 	
 	public void set(Sale sale,String identifier,String date,String cashierCode,String customerCode,String[][] products,String taxable){
@@ -161,16 +271,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	}
 	
 	/* Creators */
-	
-	public void createCashRegisterMovement(String cashRegisterCode,String amount,String expectedBalance,String expectedThrowableMessage){
-    	final CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
-    	set(cashRegisterMovement, cashRegisterCode, amount);
-    	inject(CashRegisterMovementBusiness.class).create(cashRegisterMovement);
-    }
-	public void createCashRegisterMovement(String cashRegisterCode,String amount,String expectedBalance){
-		createCashRegisterMovement(cashRegisterCode, amount, expectedBalance,null);
-	}
-	
+
     public void createStockTangibleProductMovement(String tangibleProductCode,String quantity){
     	StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement();
     	set(stockTangibleProductMovement, tangibleProductCode, quantity);
@@ -220,25 +321,28 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	Sale sale = saleDao.readByComputedIdentifier(identifier);
     	inject(SaleBusiness.class).delete(sale);
     }
-    
-    public void createSaleCashRegisterMovement(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode,String amount,String expectedThrowableMessage){
-    	final SaleCashRegisterMovement saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class)
-    			.instanciateOne(saleComputedIdentifier,computedIdentifier, cashierPersonCode==null?cashierDao.readOneRandomly().getPerson().getCode():cashierPersonCode, amount);
-    	if(expectedThrowableMessage!=null){
-    		new Try(expectedThrowableMessage){ 
-    			private static final long serialVersionUID = -8176804174113453706L;
-    			@Override protected void code() {inject(SaleCashRegisterMovementBusiness.class).create(saleCashRegisterMovement);}
-    		}.execute();
-    	}else{
-    		inject(SaleCashRegisterMovementBusiness.class).create(saleCashRegisterMovement);
-    	}	
-    }
-    
+     
     public void writeSaleCashRegisterMovementReport(String identifier){
     	writeReport(inject(SaleCashRegisterMovementBusiness.class).findReport(saleCashRegisterMovementDao.readByCashRegisterMovementCode(identifier)));
     }
     				    
     /*Assertions*/
+    
+    public void assertCashRegister(CashRegister cashRegister){
+    	
+    }
+    
+    public void assertSalableProductCollection(SalableProductCollection salableProductCollection,String costValue){
+    	salableProductCollection = inject(SalableProductCollectionBusiness.class).find(salableProductCollection.getIdentifier());
+    	assertCost(salableProductCollection.getCost(), new ObjectFieldValues(Cost.class)
+		.set(Cost.FIELD_VALUE,costValue));
+    }
+    
+    public void assertSale(Sale sale,String balanceValue){
+    	sale = inject(SaleBusiness.class).find(sale.getIdentifier());
+    	assertBalance(sale.getBalance(), new ObjectFieldValues(Balance.class)
+		.set(Balance.FIELD_VALUE,balanceValue));
+    }
        
     public void assertSale(String computedIdentifier,ObjectFieldValues expectedValues){
     	Sale sale = saleDao.readByComputedIdentifier(computedIdentifier);
@@ -291,6 +395,10 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     
     public void assertCost(Cost cost,ObjectFieldValues expectedValues){
     	doAssertions(cost, expectedValues);
+    }
+    
+    public void assertBalance(Balance balance,ObjectFieldValues expectedValues){
+    	doAssertions(balance, expectedValues);
     }
     
     public void assertSaleFiniteStateMachineStateCount(Object[][] datas){

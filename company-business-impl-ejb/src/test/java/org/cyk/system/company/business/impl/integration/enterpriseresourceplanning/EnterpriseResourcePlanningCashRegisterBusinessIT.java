@@ -11,12 +11,14 @@ import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.persistence.api.security.UserAccountDao;
+import org.junit.Test;
 
 public class EnterpriseResourcePlanningCashRegisterBusinessIT extends AbstractEnterpriseResourcePlanningBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
     
-    private String CASH_REGISTER_001 = "CR001";
+    private String CASH_REGISTER_001 = "CR001",CASH_REGISTER_002 = "CR002";
+    private CashRegisterMovement cashRegisterMovement;
     
     @Override
     protected void businesses() {
@@ -29,6 +31,17 @@ public class EnterpriseResourcePlanningCashRegisterBusinessIT extends AbstractEn
     	create(cashRegisterMovement);
     	Movement movement = inject(MovementBusiness.class).findByCollection(cashRegisterMovement.getCashRegister().getMovementCollection()).iterator().next();
     	assertEquals(AbstractCollectionItemBusinessImpl.getRelativeCode(movement.getCollection(), movement.getCode()),cashRegisterMovement.getCode());
+    }
+    
+    @Test
+    public void cashRegisterMovement002(){
+    	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_002));
+    	cashRegisterMovement = companyBusinessTestHelper.createCashRegisterMovement(CASH_REGISTER_002, "1", "1");
+    	cashRegisterMovement = companyBusinessTestHelper.createCashRegisterMovement(CASH_REGISTER_002, "1", "2");
+    	cashRegisterMovement = companyBusinessTestHelper.createCashRegisterMovement(CASH_REGISTER_002, "3", "5");
+    	cashRegisterMovement = companyBusinessTestHelper.updateCashRegisterMovement(cashRegisterMovement, "5", "7");
+    	cashRegisterMovement = companyBusinessTestHelper.createCashRegisterMovement(CASH_REGISTER_002, "3", "10");
+    	cashRegisterMovement = companyBusinessTestHelper.deleteCashRegisterMovement(cashRegisterMovement, "7");
     }
          
 }

@@ -83,7 +83,7 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 		cashRegisterMovement.setCashRegister(cashRegister);
 		if(cashRegisterMovement.getCashRegister()!=null)
 			cashRegisterMovement.setMovement(inject(MovementBusiness.class)
-				.instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection(), Boolean.TRUE));
+				.instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection(),null,null ));
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)

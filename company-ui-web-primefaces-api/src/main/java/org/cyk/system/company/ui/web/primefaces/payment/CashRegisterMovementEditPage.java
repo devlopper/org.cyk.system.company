@@ -18,13 +18,7 @@ import org.cyk.utility.common.annotation.FieldOverride;
 public class CashRegisterMovementEditPage extends AbstractCashRegisterMovementEditPage<CashRegisterMovement,CashRegister> implements Serializable {
 
 	private static final long serialVersionUID = 3274187086682750183L;
-	
-	@Override
-	protected void afterInitialisation() {
-		super.afterInitialisation();
-		setFieldValue(AbstractMovementForm.FIELD_COLLECTION, getCashRegisterMovement().getCashRegister());
-	}
-	
+		
 	@Override
 	protected CashRegisterMovement getCashRegisterMovement() {
 		return identifiable;

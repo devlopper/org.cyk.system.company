@@ -66,6 +66,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 			public void execute(CashRegister cashRegister) {
 				inject(SaleCashRegisterMovementBusiness.class).setCashRegister(userSession.getUserAccount(), identifiable, cashRegister);
 				identifiable.setAmountIn(((Form)form.getData()).getValue());
+				((Form)form.getData()).setMovement(identifiable.getCashRegisterMovement().getMovement());
 			}
 		}).build();
 	}

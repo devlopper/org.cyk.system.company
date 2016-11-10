@@ -1,7 +1,6 @@
 package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
 
 import javax.faces.view.ViewScoped;
@@ -21,7 +20,6 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.ui.web.primefaces.Table;
 
 @Named @ViewScoped @Getter @Setter
@@ -45,30 +43,8 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 			public Collection<SaleCashRegisterMovement> getIdentifiables() {
 				return inject(SaleCashRegisterMovementBusiness.class).findBySale(identifiable);
 			}
-			@Override
-			public Collection<? extends AbstractIdentifiable> getMasters() {
-				return Arrays.asList(identifiable.getSalableProductCollection());
-			}
-			
-			@Override
-			public Boolean getIsIdentifiableMaster() {
-				return Boolean.FALSE;
-			}
 		});
 		
-		/*saleCashRegisterMovementTable.getColumnListeners().add(new ColumnAdapter(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public Boolean isColumn(Field field) {
-				return !ArrayUtils.contains(SaleCashRegisterMovementDetails.getFieldsToHide(), field.getName());
-			}
-			@Override
-			public void added(Column column) {
-				super.added(column);
-				if(column.getField().getName().equals(MovementDetails.FIELD_VALUE))
-					column.setTitle(text("field.amount"));
-			}
-		});*/
 	}
 	
 	@Override
@@ -81,15 +57,6 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 		return inject(SalableProductCollectionItemBusiness.class).findByCollection(sale.getSalableProductCollection());
 	}
 	
-	/*@Override
-	protected Boolean showContextualEditCommandable() {
-		return Boolean.FALSE;
-	}
-	
-	@Override
-	protected Boolean showContextualDeleteCommandable() {
-		return Boolean.TRUE;
-	}*/
 	/*
 	@Override
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {

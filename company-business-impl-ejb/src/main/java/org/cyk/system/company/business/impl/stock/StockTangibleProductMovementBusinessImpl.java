@@ -45,8 +45,8 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 		StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement();
 		stockTangibleProductMovement.setStockableTangibleProduct(stockableTangibleProductDao.readByTangibleProduct(tangibleProductDao.read(arguments[0])));
 		BigDecimal value = numberBusiness.parseBigDecimal(arguments[1]);
-		stockTangibleProductMovement.setMovement(inject(MovementBusiness.class)
-				.instanciateOne(stockTangibleProductMovement.getStockableTangibleProduct().getMovementCollection(), value.compareTo(BigDecimal.ZERO) >= 0));
+		//stockTangibleProductMovement.setMovement(inject(MovementBusiness.class)
+		//		.instanciateOne(stockTangibleProductMovement.getStockableTangibleProduct().getMovementCollection(), value.compareTo(BigDecimal.ZERO) >= 0));
 		stockTangibleProductMovement.getMovement().setValue(value);
 		return stockTangibleProductMovement;
 	}
@@ -89,10 +89,10 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 				for(SalableProductCollectionItem saleProduct : saleProducts)
 					if(saleProduct.getSalableProduct().getProduct().equals(stockableTangibleProduct.getTangibleProduct()))
 						count = count.add(saleProduct.getQuantity());
-				StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement(stockableTangibleProduct
-						,inject(MovementBusiness.class).instanciateOne(stockableTangibleProduct.getMovementCollection(), Boolean.FALSE));
-				stockTangibleProductMovement.getMovement().setValue(count.negate());
-				inject(StockTangibleProductMovementBusiness.class).create(stockTangibleProductMovement);
+				//StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement(stockableTangibleProduct
+				//		,inject(MovementBusiness.class).instanciateOne(stockableTangibleProduct.getMovementCollection(), Boolean.FALSE));
+				//stockTangibleProductMovement.getMovement().setValue(count.negate());
+				//inject(StockTangibleProductMovementBusiness.class).create(stockTangibleProductMovement);
 				//logTrace("Updated : {}",stockableTangibleProduct.getLogMessage());
 			}
 		}

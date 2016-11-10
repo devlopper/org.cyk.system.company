@@ -22,6 +22,7 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
+import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementModeDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
@@ -72,8 +73,9 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement());
 		saleCashRegisterMovement.getCashRegisterMovement().setCode(computedIdentifier);
 		saleCashRegisterMovement.getCashRegisterMovement().setCashRegister(cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)).getCashRegister());
-		saleCashRegisterMovement.getCashRegisterMovement().setMovement(inject(MovementBusiness.class).instanciateOne(
+		/*saleCashRegisterMovement.getCashRegisterMovement().setMovement(inject(MovementBusiness.class).instanciateOne(
 				saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection(),amount));
+		*/
 		return saleCashRegisterMovement;
 	}
 	
@@ -97,10 +99,10 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		saleCashRegisterMovement.getCashRegisterMovement().setMovement(cashRegister == null ? null : inject(MovementBusiness.class).instanciateOne(cashRegister.getMovementCollection()));
 	}
 
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS) @Deprecated
 	public SaleCashRegisterMovement instanciateOne(Sale sale,CashRegister cashRegister,Boolean input) {
 		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement(cashRegister,new Movement());
-		cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashRegister.getMovementCollection(),input));
+		//cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashRegister.getMovementCollection(),input));
 		cashRegisterMovement.setMode(inject(CashRegisterMovementModeDao.class).read(CashRegisterMovementMode.CASH));
 		SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement(sale,cashRegisterMovement);
 		logInstanceCreated(saleCashRegisterMovement);
@@ -182,6 +184,34 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		return saleCashRegisterMovement;
 	}
 	
+	@Override
+	public SaleCashRegisterMovement update(SaleCashRegisterMovement saleCashRegisterMovement) {
+		BigDecimal oldCashRegisterValue = inject(CashRegisterDao.class).read(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getCode()).getMovementCollection().getValue();
+		inject(CashRegisterMovementBusiness.class).update(saleCashRegisterMovement.getCashRegisterMovement());
+		saleCashRegisterMovement = super.update(saleCashRegisterMovement);
+		BigDecimal newCashRegisterValue = inject(CashRegisterDao.class).read(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getCode()).getMovementCollection().getValue();
+		commonUtils.increment(BigDecimal.class, saleCashRegisterMovement.getSale().getBalance(), Balance.FIELD_VALUE,oldCashRegisterValue.subtract(newCashRegisterValue));
+		inject(SaleDao.class).update(saleCashRegisterMovement.getSale());
+		return saleCashRegisterMovement;
+	}
+	
+	@Override
+	public SaleCashRegisterMovement delete(SaleCashRegisterMovement saleCashRegisterMovement) {
+		if(saleCashRegisterMovement.getSale().getCustomer()!=null){
+			commonUtils.increment(BigDecimal.class, saleCashRegisterMovement.getSale().getCustomer(), Customer.FIELD_PAYMENT_COUNT, BigDecimal.ONE.negate());
+			commonUtils.increment(BigDecimal.class, saleCashRegisterMovement.getSale().getCustomer(), Customer.FIELD_PAID
+					, saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate());
+		}
+		Sale sale = saleCashRegisterMovement.getSale();
+		BigDecimal oldBalance = sale.getBalance().getValue(),increment=saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue();
+		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE,increment);
+		logTrace("Old balance={} , Increment={} , New balance={}",oldBalance,increment, sale.getBalance().getValue());
+		saleDao.update(sale);
+		inject(CashRegisterMovementBusiness.class).delete(saleCashRegisterMovement.getCashRegisterMovement());
+		saleCashRegisterMovement.setCashRegisterMovement(null);
+		return super.delete(saleCashRegisterMovement);
+	}
+	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public BigDecimal computeBalance(SaleCashRegisterMovement saleCashRegisterMovement) {
 		BigDecimal saleCashRegisterMovementAmount = saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue();
@@ -228,17 +258,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 				//CompanyBusinessLayer.getInstance().getPointOfSalePaymentReportName()+Constant.CHARACTER_UNDESCORE+StringUtils.defaultString(saleCashRegisterMovement.getCashRegisterMovement().getCode(), saleCashRegisterMovement.getIdentifier().toString()));
 	}
 	
-	@Override
-	public SaleCashRegisterMovement delete(SaleCashRegisterMovement saleCashRegisterMovement) {
-		if(saleCashRegisterMovement.getSale().getCustomer()!=null){
-			commonUtils.increment(BigDecimal.class, saleCashRegisterMovement.getSale().getCustomer(), Customer.FIELD_PAYMENT_COUNT, BigDecimal.ONE.negate());
-			commonUtils.increment(BigDecimal.class, saleCashRegisterMovement.getSale().getCustomer(), Customer.FIELD_PAID
-					, saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate());
-		}
-		inject(CashRegisterMovementBusiness.class).delete(saleCashRegisterMovement.getCashRegisterMovement());
-		saleCashRegisterMovement.setCashRegisterMovement(null);
-		return super.delete(saleCashRegisterMovement);
-	}
+	
 	
 	/**/
 	

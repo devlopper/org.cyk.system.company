@@ -102,8 +102,8 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			}
 		});
 		
-		getFormConfiguration(CashRegister.class, Crud.CREATE).addRequiredFieldNames(CashRegisterEditPage.Form.FIELD_MOVEMENT_COLLECTION,CashRegisterEditPage.Form.FIELD_CODE)
-			.addFieldNames(CashRegisterEditPage.Form.FIELD_NAME);
+		getFormConfiguration(CashRegister.class, Crud.CREATE).addRequiredFieldNames(CashRegisterEditPage.Form.FIELD_CODE)
+			.addFieldNames(CashRegisterEditPage.Form.FIELD_NAME,CashRegisterEditPage.Form.FIELD_MOVEMENT_COLLECTION);
 		registerDetailsConfiguration(CashRegisterDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
@@ -330,7 +330,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 		});
 		
 		getFormConfiguration(Sale.class, Crud.CREATE).addRequiredFieldNames(SaleEditPage.Form.FIELD_SALABLE_PRODUCT_COLLECTION)
-		.addFieldNames(SaleEditPage.Form.FIELD_CUSTOMER,SaleEditPage.Form.FIELD_BALANCE,BalanceFormModel.FIELD_VALUE);
+		.addFieldNames(SaleEditPage.Form.FIELD_CODE,SaleEditPage.Form.FIELD_CUSTOMER,SaleEditPage.Form.FIELD_BALANCE,BalanceFormModel.FIELD_VALUE);
 		registerDetailsConfiguration(SaleDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
