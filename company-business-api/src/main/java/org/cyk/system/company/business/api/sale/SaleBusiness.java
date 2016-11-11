@@ -16,6 +16,7 @@ public interface SaleBusiness extends TypedBusiness<Sale> {
 
 	Sale instanciateOne(Person person);
 	Sale instanciateOne(String computedIdentifier,String cashierPersonCode,String customerRegistrationCode,String date,String taxable,String[][] salableProductInfos);
+	Sale instanciateOne(String code,String customerCode,Object[][] salableProducts);
 	List<Sale> instanciateMany(Object[][] arguments);
 
 	void update(Sale sale,FiniteStateMachineAlphabet finiteStateMachineAlphabet);

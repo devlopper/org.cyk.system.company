@@ -80,11 +80,6 @@ public class SaleDaoImpl extends AbstractSaleDaoImpl<Sale> implements SaleDao {
 	public Collection<Sale> readAll() {
 		return namedQuery(readAllSortedByDate).resultMany();
 	}
-	
-	@Override
-	public Sale readByComputedIdentifier(String identifier) {
-		return null;//namedQuery(readByComputedIdentifier).parameter(Sale.FIELD_COMPUTED_IDENTIFIER, identifier).ignoreThrowable(NoResultException.class).resultOne();
-	}
 		
 	@SuppressWarnings("unchecked")
 	@Override

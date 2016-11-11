@@ -18,7 +18,9 @@ import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
+import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
+import org.cyk.utility.common.LogMessage;
 
 @Stateless
 public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusinessImpl<SalableProductCollection,SalableProductCollectionItem, SalableProductCollectionDao,SalableProductCollectionItemDao,SalableProductCollectionItemBusiness> implements SalableProductCollectionBusiness,Serializable {
@@ -50,6 +52,19 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 		salableProductCollection.setAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent());
 		return salableProductCollection;
 	}
+	
+	@Override
+	public SalableProductCollection instanciateOne(String code,Object[][] salableProducts) {
+		SalableProductCollection salableProductCollection = instanciateOne(code);
+		System.out.println("#####################################");
+		for(Object[] salableProduct : salableProducts){
+			SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class)
+					.instanciateOne(salableProductCollection, inject(SalableProductDao.class).read((String)salableProduct[0])
+							, commonUtils.getBigDecimal(salableProduct[1].toString()), BigDecimal.ZERO, BigDecimal.ZERO);
+			add(salableProductCollection, salableProductCollectionItem);
+		}
+		return salableProductCollection;
+	}
 		
 	@Override
 	protected SalableProductCollectionItemDao getItemDao() {
@@ -72,7 +87,15 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	}
 	
 	private SalableProductCollectionItem addOrRemove(SalableProductCollection salableProductCollection, SalableProductCollectionItem salableProductCollectionItem,Boolean add) {
+		System.out
+				.println("SalableProductCollectionBusinessImpl.addOrRemove()");
+		String action = Boolean.TRUE.equals(add) ? "ADD":"REMOVE";
+		LogMessage.Builder logMessageBuilder = new LogMessage.Builder(action,SalableProductCollectionItem.class);
+		logMessageBuilder.setAction("ADD/REMOVE");
+		logMessageBuilder.setSubject("S");
 		inject(SalableProductCollectionItemBusiness.class).computeCost(salableProductCollectionItem);
+		logMessageBuilder.addParameters("salableProductCollection.cost.value",salableProductCollection.getCost().getValue()
+				,"salableProductCollectionItem.cost.value",salableProductCollectionItem.getCost().getValue());
 		BigDecimal factor;
 		if(Boolean.TRUE.equals(add)){
 			Boolean found = Boolean.FALSE;
@@ -94,7 +117,10 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 		
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_VALUE, salableProductCollectionItem.getCost().getValue().multiply(factor));
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE.multiply(factor));
-		logIdentifiable( Boolean.TRUE.equals(add) ? "add" : "remove", salableProductCollectionItem);
+		logMessageBuilder.addParameters("salableProductCollection.cost.newValue",salableProductCollection.getCost().getValue());
+		logTrace(logMessageBuilder.build());
+		System.out
+				.println("SalableProductCollectionBusinessImpl.addOrRemove() : DONE");
 		return salableProductCollectionItem;
 	}
 	

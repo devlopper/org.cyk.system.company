@@ -14,6 +14,4 @@ public interface SaleDao extends AbstractSaleDao<Sale> {
 	
 	SaleResults computeByCriteria(SaleSearchCriteria criteria);
 	
-	Sale readByComputedIdentifier(String identifier);
-
 }

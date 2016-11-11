@@ -63,6 +63,12 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		return sale;
 	}
 	
+	@Override
+	public Sale instanciateOne(String code, String customerCode,Object[][] salableProducts) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Sale instanciateOne(String computedIdentifier,String cashierPersonCode, String customerRegistrationCode,String date,String taxable, String[][] salableProductInfos) {
 		Sale sale = instanciateOne();
@@ -107,7 +113,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			
 	@Override
 	public void update(Sale sale,FiniteStateMachineAlphabet finiteStateMachineAlphabet) {
-		consume(sale,Crud.UPDATE);
+		//consume(sale,Crud.UPDATE);
 		dao.update(sale);
 	}
 	
@@ -161,7 +167,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Sale findByComputedIdentifier(String identifier) {
-		return dao.readByComputedIdentifier(identifier);
+		return null;//dao.readByComputedIdentifier(identifier);
 	}
 	
 	/**/

@@ -72,12 +72,14 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 	
 	@Override
 	public SalableProduct create(SalableProduct salableProduct) {
-		if(StringUtils.isBlank(salableProduct.getCode()))
-			salableProduct.setCode(salableProduct.getProduct().getCode());
-		if(StringUtils.isBlank(salableProduct.getName()))
-			salableProduct.setName(salableProduct.getProduct().getName());
-		if(salableProduct.getProduct()==null)
+		if(salableProduct.getProduct()==null){	
 			salableProduct.setProduct(inject(ProductDao.class).read(salableProduct.getCode()));
+		}else{
+			if(StringUtils.isBlank(salableProduct.getCode()))
+				salableProduct.setCode(salableProduct.getProduct().getCode());
+			if(StringUtils.isBlank(salableProduct.getName()))
+				salableProduct.setName(salableProduct.getProduct().getName());	
+		}
 		return super.create(salableProduct);
 	}
 	

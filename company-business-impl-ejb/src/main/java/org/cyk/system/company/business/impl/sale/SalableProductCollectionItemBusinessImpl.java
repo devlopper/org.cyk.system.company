@@ -18,6 +18,7 @@ import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
+import org.cyk.utility.common.LogMessage;
 
 public class SalableProductCollectionItemBusinessImpl extends AbstractCollectionItemBusinessImpl<SalableProductCollectionItem, SalableProductCollectionItemDao,SalableProductCollection> implements SalableProductCollectionItemBusiness,Serializable {
 
@@ -128,7 +129,8 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void computeCost(SalableProductCollectionItem salableProductCollectionItem) {
-		//logIdentifiable("Processing",saleProduct);
+		LogMessage.Builder logMessageBuilder = new LogMessage.Builder("COMPUTE Cost",SalableProductCollectionItem.class);
+		logMessageBuilder.addParameters("salableProductCollectionItem.salableProduct.price",salableProductCollectionItem.getSalableProduct().getPrice());
 		if(salableProductCollectionItem.getSalableProduct().getPrice()==null){
 			//This product has no unit price then the price to be paid must be specified by user
 			
@@ -141,7 +143,7 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 					.add(salableProductCollectionItem.getCommission());
 			salableProductCollectionItem.getCost().setValue(cost);
 		}
-		
+		logMessageBuilder.addParameters("salableProductCollectionItem.cost.value",salableProductCollectionItem.getCost().getValue());
 		if(salableProductCollectionItem.getCost().getValue()==null){
 			
 		}else{
@@ -154,7 +156,9 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 			salableProductCollectionItem.getCost().setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(accountingPeriod
 					, salableProductCollectionItem.getCost().getValue(),salableProductCollectionItem.getCost().getTax()));	
 		}
-		logIdentifiable("Processed",salableProductCollectionItem);
+		logMessageBuilder.addParameters("salableProductCollectionItem.cost.turnover",salableProductCollectionItem.getCost().getTurnover());
+		logMessageBuilder.addParameters("salableProductCollectionItem.cost.tax",salableProductCollectionItem.getCost().getTax());
+		logTrace(logMessageBuilder);
 	}
 	/*
 	private CartesianModel salesCartesianModel(SalesResultsCartesianModelParameters parameters,CartesianModelListener<SaleProduct> cartesianModelListener,String nameId,String yAxisLabelId){

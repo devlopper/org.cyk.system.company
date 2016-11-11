@@ -22,7 +22,6 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
-import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementModeDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
@@ -37,6 +36,7 @@ import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
+import org.cyk.utility.common.LogMessage;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 
 @Stateless
@@ -68,7 +68,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public SaleCashRegisterMovement instanciateOne(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode, String amount) {
 		SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement();
-		saleCashRegisterMovement.setSale(saleDao.readByComputedIdentifier(saleComputedIdentifier));
+		//saleCashRegisterMovement.setSale(saleDao.readByComputedIdentifier(saleComputedIdentifier));
 		saleCashRegisterMovement.setAmountIn(numberBusiness.parseBigDecimal(amount));
 		saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement());
 		saleCashRegisterMovement.getCashRegisterMovement().setCode(computedIdentifier);
@@ -186,13 +186,20 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	
 	@Override
 	public SaleCashRegisterMovement update(SaleCashRegisterMovement saleCashRegisterMovement) {
-		BigDecimal oldCashRegisterValue = inject(CashRegisterDao.class).read(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getCode()).getMovementCollection().getValue();
+		LogMessage.Builder logMessageBuilder = new LogMessage.Builder();
+		logMessageBuilder.setAction("UPDATE");
+		logMessageBuilder.setSubject("SaleCashRegisterMovement");
+		BigDecimal oldCashRegisterValue = saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getValue();
 		inject(CashRegisterMovementBusiness.class).update(saleCashRegisterMovement.getCashRegisterMovement());
-		saleCashRegisterMovement = super.update(saleCashRegisterMovement);
-		BigDecimal newCashRegisterValue = inject(CashRegisterDao.class).read(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getCode()).getMovementCollection().getValue();
-		commonUtils.increment(BigDecimal.class, saleCashRegisterMovement.getSale().getBalance(), Balance.FIELD_VALUE,oldCashRegisterValue.subtract(newCashRegisterValue));
-		inject(SaleDao.class).update(saleCashRegisterMovement.getSale());
-		return saleCashRegisterMovement;
+		BigDecimal newCashRegisterValue = saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getValue();
+		BigDecimal difference = oldCashRegisterValue.subtract(newCashRegisterValue);
+		Sale sale = saleCashRegisterMovement.getSale();
+		logMessageBuilder.addParameters("sale.balance.value",sale.getBalance().getValue());
+		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE,difference);
+		logMessageBuilder.addParameters("sale.balance.newValue",sale.getBalance().getValue());
+		inject(SaleDao.class).update(sale);
+		logTrace(logMessageBuilder.build());
+		return super.update(saleCashRegisterMovement);
 	}
 	
 	@Override
