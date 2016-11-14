@@ -15,6 +15,7 @@ public interface SalableProductCollectionItemBusiness extends AbstractCollection
 	SalableProductCollectionItem instanciateOne(SalableProductCollection salableProductCollection,String salableProductCode,String quantity
 			,String reduction,String commission);
 	
+	SalableProductCollectionItem instanciateOne(String salableProductCollectionCode,Object[] salableProduct);
 	
 	void computeCost(SalableProductCollectionItem salableProductCollectionItem);
 	

@@ -31,31 +31,25 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	
 	@Override
 	public SalableProductCollectionItem create(SalableProductCollectionItem salableProductCollectionItem) {
-		logTrace("create {}", salableProductCollectionItem);
 		super.create(salableProductCollectionItem);
 		if(Boolean.TRUE.equals(salableProductCollectionItem.getCascadeOperationToMaster()))
 			cascadeUpdateCollectionCost(salableProductCollectionItem);
-		logTrace("created {}", salableProductCollectionItem);
 		return salableProductCollectionItem;
 	}
 	
 	@Override
 	public SalableProductCollectionItem update(SalableProductCollectionItem salableProductCollectionItem) {
-		logTrace("update {}", salableProductCollectionItem);
 		super.update(salableProductCollectionItem);
 		if(Boolean.TRUE.equals(salableProductCollectionItem.getCascadeOperationToMaster()))
 			cascadeUpdateCollectionCost(salableProductCollectionItem);
-		logTrace("updated {}", salableProductCollectionItem);
 		return salableProductCollectionItem;
 	}
 	
 	@Override
 	public SalableProductCollectionItem delete(SalableProductCollectionItem salableProductCollectionItem) {
-		logTrace("delete {}", salableProductCollectionItem);
 		super.delete(salableProductCollectionItem);
 		if(Boolean.TRUE.equals(salableProductCollectionItem.getCascadeOperationToMaster()))
 			cascadeUpdateCollectionCost(salableProductCollectionItem);
-		logTrace("deleted {}", salableProductCollectionItem);
 		return salableProductCollectionItem;
 	}
 	
@@ -82,6 +76,14 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 			String salableProductCode, String quantity, String reduction, String commission) {
 		return instanciateOne(salableProductCollection, inject(SalableProductDao.class).read(salableProductCode), commonUtils.getBigDecimal(quantity)
 				, commonUtils.getBigDecimal(reduction), commonUtils.getBigDecimal(commission));
+	}
+	
+	@Override
+	public SalableProductCollectionItem instanciateOne(String salableProductCollectionCode,Object[] salableProduct) {
+		return instanciateOne(inject(SalableProductCollectionDao.class).read(salableProductCollectionCode), inject(SalableProductDao.class).read((String)salableProduct[0])
+				, commonUtils.getBigDecimal(commonUtils.getValueAt(salableProduct, 1, "0").toString())
+				, commonUtils.getBigDecimal(commonUtils.getValueAt(salableProduct, 2, "0").toString())
+				, commonUtils.getBigDecimal(commonUtils.getValueAt(salableProduct, 3, "0").toString()));
 	}
 		
 	/*

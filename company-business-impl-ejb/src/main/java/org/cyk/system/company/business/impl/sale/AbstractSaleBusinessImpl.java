@@ -3,96 +3,85 @@ package org.cyk.system.company.business.impl.sale;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
+import org.cyk.system.company.business.api.sale.AbstractSaleBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.model.Cost;
+import org.cyk.system.company.model.sale.AbstractSale;
+import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.sale.SaleReport;
-import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
-import org.cyk.system.company.persistence.api.sale.CustomerDao;
+import org.cyk.system.company.persistence.api.sale.AbstractSaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
-import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
-import org.cyk.system.root.model.party.person.Person;
+import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
-@Stateless
-public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sale.SearchCriteria> implements SaleBusiness,Serializable {
+public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO extends AbstractSaleDao<SALE,SEARCH_CRITERIA>,SEARCH_CRITERIA extends AbstractSale.SearchCriteria> extends AbstractTypedBusinessService<SALE, DAO> implements AbstractSaleBusiness<SALE,SEARCH_CRITERIA>,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	@Inject private CustomerDao customerDao;
-	
-	@Inject
-	public SaleBusinessImpl(SaleDao dao) {
+	public AbstractSaleBusinessImpl(DAO dao) {
 		super(dao);
 	}
 	
-	@Override
-	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
-		return Listener.COLLECTION;
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public SALE instanciateOne() {
+		SALE sale = super.instanciateOne();
+		sale.setSalableProductCollection(new SalableProductCollection());
+		sale.getSalableProductCollection().setAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent());
+		sale.getSalableProductCollection().setAutoComputeValueAddedTax(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().signum()!=0);
+		return sale;
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public Sale instanciateOne(Person person) {
-		Sale sale = instanciateOne();
+	@Override
+	public SALE instanciateOne(String code, String customerCode,Object[][] salableProducts) {
+		SALE sale = instanciateOne();
+		sale.setCode(code);
+		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne(code, salableProducts));
+		sale.getSalableProductCollection().setAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent());
+		sale.getSalableProductCollection().setAutoComputeValueAddedTax(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().signum()!=0);
 		return sale;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public Sale instanciateOne(String computedIdentifier,String cashierPersonCode, String customerRegistrationCode,String date,String taxable, String[][] salableProductInfos) {
-		Sale sale = instanciateOne();
-		sale.setCode(computedIdentifier);
-		//sale.setCashier(cashierPersonCode==null?cashierDao.select().one():cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)));
-		sale.setCustomer(customerRegistrationCode==null?null:customerDao.read(customerRegistrationCode));
-		sale.setBirthDate(StringUtils.isBlank(date) ? null : timeBusiness.parse(date));
-		sale.getSalableProductCollection().setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
-		/*for(String[] info : salableProductInfos){
-			SalableProductCollectionItem saleProduct =  selectProduct(sale, salableProductDao.readByProduct(productDao.read(info[0])), numberBusiness.parseBigDecimal(info[1]));
-			if(info.length>2){
-				saleProduct.getCost().setValue(numberBusiness.parseBigDecimal(info[2]));
-				applyChange(sale, saleProduct);
-			}
-		}*/
+	public SALE instanciateOneRandomly(String code) {
+		SALE sale = super.instanciateOneRandomly(code);
+		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOneRandomly(code));
 		return sale;
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<Sale> instanciateMany(Object[][] arguments) {
-		List<Sale> list = new ArrayList<>();
-		for(Object[] argument : arguments)
-			list.add(instanciateOne((String)argument[0], (String)argument[1], (String)argument[2], (String)argument[3], (String)argument[4]
-					, (String[][])argument[5]));
-		return list;
+	@Override
+	public SALE create(SALE sale) {
+		if(isNotIdentified(sale.getSalableProductCollection()))
+			inject(SalableProductCollectionBusiness.class).create(sale.getSalableProductCollection());
+		return super.create(sale);
 	}
 	
 	@Override
-	protected void beforeDelete(Sale sale) {
-		super.beforeDelete(sale);
-		inject(SaleCashRegisterMovementBusiness.class).delete(inject(SaleCashRegisterMovementDao.class).readBySale(sale));
+	protected void afterDelete(SALE sale) {
+		super.afterDelete(sale);
+		if(isIdentified(sale.getSalableProductCollection()))
+			inject(SalableProductCollectionBusiness.class).delete(sale.getSalableProductCollection());
+	}
+	
+	@Override
+	public Collection<SALE> findByCriteria(SEARCH_CRITERIA criteria) {
+		return null;
 	}
 
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public SaleResults computeByCriteria(Sale.SearchCriteria criteria) {
-		return dao.computeByCriteria(criteria);
-	}
-		
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public ReportBasedOnTemplateFile<SaleReport> findReport(Sale sale) {
+	@Override
+	public Long countByCriteria(SEARCH_CRITERIA criteria) {
 		return null;
 	}
 		
@@ -184,5 +173,7 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		}
 		
 	}
+
+	
 	
 }

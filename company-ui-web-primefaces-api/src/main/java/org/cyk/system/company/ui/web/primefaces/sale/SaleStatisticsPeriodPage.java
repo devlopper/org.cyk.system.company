@@ -8,18 +8,18 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang3.time.DateUtils;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.model.sale.SaleSearchCriteria;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.business.api.time.TimeDivisionTypeBusiness;
 import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.ui.web.primefaces.page.AbstractChartPage;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
 import org.primefaces.model.chart.BarChartModel;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleStatisticsPeriodPage extends AbstractChartPage implements Serializable {
@@ -31,14 +31,14 @@ public class SaleStatisticsPeriodPage extends AbstractChartPage implements Seria
  	
 	private TimeDivisionType selectedTimeDivisionType;
 	private List<TimeDivisionType> timeDivisionTypes; 
-	private SaleSearchCriteria saleSearchCriteria;
+	private Sale.SearchCriteria saleSearchCriteria;
 	
  	private BarChartModel turnoverBarChartModel,countBarChartModel;
     
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		saleSearchCriteria = new SaleSearchCriteria(DateUtils.addDays(new Date(),-4), DateUtils.addDays(new Date(),4));
+		saleSearchCriteria = new Sale.SearchCriteria(DateUtils.addDays(new Date(),-4), DateUtils.addDays(new Date(),4));
 		selectedTimeDivisionType = timeDivisionTypeBusiness.find(TimeDivisionType.DAY);
         update();
 	}

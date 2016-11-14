@@ -3,22 +3,16 @@ package org.cyk.system.company.persistence.impl.sale;
 import java.math.BigDecimal;
 import java.util.Collection;
 
-import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleResults;
-import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
 
-public class SaleDaoImpl extends AbstractSaleDaoImpl<Sale> implements SaleDao {
+public class SaleDaoImpl extends AbstractSaleDaoImpl<Sale,Sale.SearchCriteria> implements SaleDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	private static final BigDecimal BALANCE_MIN=new BigDecimal("-1"+StringUtils.repeat('0', 18)),BALANCE_MAX=new BigDecimal("1"+StringUtils.repeat('0', 18));
-	private static final BigDecimal BALANCE_ZERO_MIN=new BigDecimal("-0."+StringUtils.repeat('0', 18)+"1"),BALANCE_ZERO_MAX=new BigDecimal("0."+StringUtils.repeat('0', 18)+"1");
-	
 	private String readAllSortedByDate/*,readByComputedIdentifier,readByCriteria*/,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,computeByCriteria
 		,computeByCriteriaWhereCashRegisterMovementNotExists,computeByCriteriaWhereCashRegisterMovementExists;
 	
@@ -83,7 +77,7 @@ public class SaleDaoImpl extends AbstractSaleDaoImpl<Sale> implements SaleDao {
 		
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<Sale> readByCriteria(SaleSearchCriteria searchCriteria) {
+	public Collection<Sale> readByCriteria(Sale.SearchCriteria searchCriteria) {
 		String queryName = null;
 		if(searchCriteria.getFromDateSearchCriteria().getAscendingOrdered()!=null){
 			queryName = Boolean.TRUE.equals(searchCriteria.getFromDateSearchCriteria().getAscendingOrdered())?
@@ -95,15 +89,15 @@ public class SaleDaoImpl extends AbstractSaleDaoImpl<Sale> implements SaleDao {
 		return (Collection<Sale>) queryWrapper.resultMany();
 	}
 
-	@Override
-	public Long countByCriteria(SaleSearchCriteria searchCriteria) {
+	@Override 
+	public Long countByCriteria(Sale.SearchCriteria searchCriteria) {
 		QueryWrapper<?> queryWrapper = countNamedQuery(countByCriteria);
 		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
 		return (Long) queryWrapper.resultOne();
 	}
 	
 	@Override
-	public SaleResults computeByCriteria(SaleSearchCriteria criteria) {
+	public SaleResults computeByCriteria(Sale.SearchCriteria criteria) {
 		QueryWrapper<?> queryWrapper = namedQuery(
 				criteria.getHasAtLeastOneCashRegisterMovement()==null?computeByCriteria
 						:Boolean.TRUE.equals(criteria.getHasAtLeastOneCashRegisterMovement())?
@@ -126,11 +120,11 @@ public class SaleDaoImpl extends AbstractSaleDaoImpl<Sale> implements SaleDao {
 	@Override
 	protected void applyPeriodSearchCriteriaParameters(QueryWrapper<?> queryWrapper,AbstractPeriodSearchCriteria searchCriteria) {
 		super.applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
-		SaleSearchCriteria saleSearchCriteria = (SaleSearchCriteria) searchCriteria;
+		Sale.SearchCriteria saleSearchCriteria = (Sale.SearchCriteria) searchCriteria;
 		//queryWrapper.parameterLike(Sale.FIELD_COMPUTED_IDENTIFIER,saleSearchCriteria.getIdentifierStringSearchCriteria().getPreparedValue());
-		queryWrapper.parameterIdentifiers(PARAM_FINITE_STATE_MACHINE_STATE_IDENTIFIERS, saleSearchCriteria.getFiniteStateMachineStates());
+		//queryWrapper.parameterIdentifiers(PARAM_FINITE_STATE_MACHINE_STATE_IDENTIFIERS, saleSearchCriteria.getFiniteStateMachineStates());
 		//queryWrapper.parameterIdentifiers(saleSearchCriteria.getCustomers());
-		BigDecimal minBalance=BALANCE_ZERO_MIN,maxBalance=BALANCE_ZERO_MAX;
+		/*BigDecimal minBalance=Constant.NUMBER_HIGHEST_NEGATIVE_LOWER_THAN_ZERO BALANCE_ZERO_MIN,maxBalance=BALANCE_ZERO_MAX;
 		if(saleSearchCriteria.getBalanceTypes().contains(BalanceType.NEGAITVE)){
 			minBalance = BALANCE_MIN;
 			maxBalance = BALANCE_ZERO_MIN;
@@ -146,6 +140,7 @@ public class SaleDaoImpl extends AbstractSaleDaoImpl<Sale> implements SaleDao {
 		}
 		queryWrapper.parameter(PARAM_BALANCE_MIN,minBalance);
 		queryWrapper.parameter(PARAM_BALANCE_MAX,maxBalance);
+		*/
 	}
 	
 	public static final String PARAM_FINITE_STATE_MACHINE_STATE_IDENTIFIERS = "finiteStateMachineStateIdentifiers";

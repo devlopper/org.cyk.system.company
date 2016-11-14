@@ -6,22 +6,19 @@ import java.util.Collection;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SaleDetails;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleResults;
-import org.cyk.system.company.model.sale.SaleSearchCriteria;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.model.SaleQueryFormModel;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessQueryPage;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter @Named @ViewScoped
 public class SaleSearchListPage extends AbstractBusinessQueryPage<Sale,SaleQueryFormModel, SaleDetails> implements Serializable {
@@ -108,10 +105,10 @@ public class SaleSearchListPage extends AbstractBusinessQueryPage<Sale,SaleQuery
 	
 	@Override
 	protected Collection<Sale> __query__() {
-		SaleSearchCriteria criteria = searchCriteria();
+		Sale.SearchCriteria criteria = searchCriteria();
 		criteria.getReadConfig().setFirstResultIndex(queryFirst);
 		criteria.getReadConfig().setMaximumResultCount(20l);
-		SaleResults results = inject(SaleBusiness.class).computeByCriteria(criteria); 
+		SaleResults results = null;//inject(SaleBusiness.class).computeByCriteria(criteria); 
 		//table.getColumn(SaleDetails.FIELD_COST).setFooter(numberBusiness.format(results.getCost().getValue()));
 		if(!BalanceType.ZERO.equals(balanceType)){
 			table.getColumn(SaleDetails.FIELD_BALANCE).setFooter(numberBusiness.format(results.getBalance()));
@@ -121,26 +118,26 @@ public class SaleSearchListPage extends AbstractBusinessQueryPage<Sale,SaleQuery
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterToDate(),criteria.getToDateSearchCriteria().getPreparedValue().getTime());
 		if(balanceType!=null)
 			table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterBalanceType(),balanceType.name());
-		return inject(SaleBusiness.class).findByCriteria(criteria);
+		return null;//inject(SaleBusiness.class).findByCriteria(criteria);
 	}
 	
 	@Override
 	protected Long __count__() {
-		return inject(SaleBusiness.class).countByCriteria(searchCriteria());
+		return null;//inject(SaleBusiness.class).countByCriteria(searchCriteria());
 	}
 
-	protected SaleSearchCriteria searchCriteria(){
-		SaleSearchCriteria criteria = new SaleSearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
+	protected Sale.SearchCriteria searchCriteria(){
+		Sale.SearchCriteria criteria = new Sale.SearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
 		criteria.getBalanceTypes().clear();
 		if(balanceType!=null)
 			criteria.getBalanceTypes().add(balanceType);
 		processSearchCriteria(criteria);
-		if(criteria.getFiniteStateMachineStates().isEmpty())
-			criteria.getFiniteStateMachineStates().add(inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration().getFiniteStateMachine().getInitialState());
+		//if(criteria.getFiniteStateMachineStates().isEmpty())
+		//	criteria.getFiniteStateMachineStates().add(inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration().getFiniteStateMachine().getInitialState());
 		return criteria;
 	}
 	
-	protected void processSearchCriteria(SaleSearchCriteria saleSearchCriteria){
+	protected void processSearchCriteria(Sale.SearchCriteria saleSearchCriteria){
 		
 	}
 		

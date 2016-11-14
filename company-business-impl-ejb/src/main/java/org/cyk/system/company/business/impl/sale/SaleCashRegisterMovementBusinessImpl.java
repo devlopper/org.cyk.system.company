@@ -14,7 +14,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
@@ -26,6 +25,8 @@ import org.cyk.system.company.persistence.api.payment.CashRegisterMovementModeDa
 import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
+import org.cyk.system.root.business.api.CommonBusinessAction;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementActionBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
@@ -44,7 +45,6 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	@Inject private SaleDao saleDao;
 	@Inject private CashierDao cashierDao;
 	@Inject private PersonDao personDao;
 	
@@ -111,6 +111,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	
 	@Override
 	public SaleCashRegisterMovement create(SaleCashRegisterMovement saleCashRegisterMovement) {
+		LogMessage.Builder logMessageBuilder = createLogMessageBuilder(CommonBusinessAction.CREATE);
 		if(isNotIdentified(saleCashRegisterMovement.getSale())){
 			inject(SaleBusiness.class).create(saleCashRegisterMovement.getSale());
 		}
@@ -118,7 +119,6 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			inject(CashRegisterMovementBusiness.class).create(saleCashRegisterMovement.getCashRegisterMovement());
 		}
 		
-		Sale sale = saleCashRegisterMovement.getSale();
 		/*Customer customer = sale.getCustomer();
 		Integer soldOut = BigDecimal.ZERO.compareTo(sale.getBalance().getValue());
 		BigDecimal amount = null;
@@ -140,18 +140,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			exceptionUtils().exception(soldOut<0, "exception.salecashregistermovement.in.soldout.no");
 		inject(CashRegisterMovementBusiness.class).create(saleCashRegisterMovement.getCashRegisterMovement());
 		*/
-		BigDecimal oldBalance = sale.getBalance().getValue(),increment=saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate();
-		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE,increment);
-		exceptionUtils().comparison(!Boolean.TRUE.equals(sale.getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getBalanceCanBeNegative()) 
-				&& sale.getBalance().getValue().signum() == -1
-				, inject(LanguageBusiness.class).findText("field.balance"),ArithmeticOperator.GTE,BigDecimal.ZERO);
-		logTrace("Old balance={} , Increment={} , New balance={}",oldBalance,increment, sale.getBalance().getValue());
-		
-		//cumul balance must be link to a date , so do not update a cumulated balance
-		//sale.getBalance().setCumul(sale.getBalance().getCumul().subtract(saleCashRegisterMovement.getCashRegisterMovement().getAmount()));
-		
-		saleCashRegisterMovement.getBalance().setValue(sale.getBalance().getValue());
-		saleDao.update(sale);
+		updateSale(saleCashRegisterMovement, Crud.CREATE, logMessageBuilder);
 		/*if(customer!=null){
 			customer.setBalance(customer.getBalance().subtract(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
 		
@@ -181,42 +170,64 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement, saleCashRegisterMovementReport
 					,saleCashRegisterMovement.getSale().getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getSaleCashRegisterMovementReportTemplate().getTemplate(), Boolean.TRUE); 
 		}*/
+		logTrace(logMessageBuilder);
 		return saleCashRegisterMovement;
+	}
+	
+	private void updateSale(SaleCashRegisterMovement saleCashRegisterMovement,Crud crud,LogMessage.Builder logMessageBuilder){
+		logMessageBuilder.addParameters("saleCashRegisterMovement.cashRegisterMovement.movement.value",saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue());
+		Sale sale = saleCashRegisterMovement.getSale();
+		BigDecimal oldBalance=sale.getBalance().getValue(),increment=null,newBalance=null;
+		logMessageBuilder.addParameters("sale.balance.value",oldBalance);
+		if(Crud.CREATE.equals(crud)){
+			//When cash register increase or decrease then sale cash register respectively decrease or increase
+			increment=saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate();
+		}else if(Crud.UPDATE.equals(crud)) {
+			BigDecimal oldCashRegisterValue = saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getValue();
+			inject(CashRegisterMovementBusiness.class).update(saleCashRegisterMovement.getCashRegisterMovement());
+			BigDecimal newCashRegisterValue = saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getValue();
+			increment = oldCashRegisterValue.subtract(newCashRegisterValue);
+		}else if(Crud.DELETE.equals(crud)) {
+			increment=saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue();
+			
+		}else
+			return;
+		newBalance = sale.getBalance().getValue().add(increment);
+		exceptionUtils().comparison(!Boolean.TRUE.equals(sale.getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getBalanceCanBeNegative()) 
+				&& newBalance.signum() == -1, inject(LanguageBusiness.class).findText("field.balance"),ArithmeticOperator.GTE,BigDecimal.ZERO);
+		sale.getBalance().setValue(newBalance);
+		if(Crud.isCreateOrUpdate(crud)){
+			saleCashRegisterMovement.getBalance().setValue(sale.getBalance().getValue());
+		}
+		logMessageBuilder.addParameters("increment",increment,"sale.balance.newValue",sale.getBalance().getValue());
+		inject(SaleDao.class).update(sale);
 	}
 	
 	@Override
 	public SaleCashRegisterMovement update(SaleCashRegisterMovement saleCashRegisterMovement) {
-		LogMessage.Builder logMessageBuilder = new LogMessage.Builder();
-		logMessageBuilder.setAction("UPDATE");
-		logMessageBuilder.setSubject("SaleCashRegisterMovement");
-		BigDecimal oldCashRegisterValue = saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getValue();
-		inject(CashRegisterMovementBusiness.class).update(saleCashRegisterMovement.getCashRegisterMovement());
-		BigDecimal newCashRegisterValue = saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getValue();
-		BigDecimal difference = oldCashRegisterValue.subtract(newCashRegisterValue);
-		Sale sale = saleCashRegisterMovement.getSale();
-		logMessageBuilder.addParameters("sale.balance.value",sale.getBalance().getValue());
-		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE,difference);
-		logMessageBuilder.addParameters("sale.balance.newValue",sale.getBalance().getValue());
-		inject(SaleDao.class).update(sale);
-		logTrace(logMessageBuilder.build());
+		LogMessage.Builder logMessageBuilder = createLogMessageBuilder(CommonBusinessAction.UPDATE);
+		updateSale(saleCashRegisterMovement, Crud.UPDATE, logMessageBuilder);
+		logTrace(logMessageBuilder);
 		return super.update(saleCashRegisterMovement);
 	}
 	
 	@Override
 	public SaleCashRegisterMovement delete(SaleCashRegisterMovement saleCashRegisterMovement) {
+		LogMessage.Builder logMessageBuilder = createLogMessageBuilder(CommonBusinessAction.DELETE);
 		if(saleCashRegisterMovement.getSale().getCustomer()!=null){
 			commonUtils.increment(BigDecimal.class, saleCashRegisterMovement.getSale().getCustomer(), Customer.FIELD_PAYMENT_COUNT, BigDecimal.ONE.negate());
 			commonUtils.increment(BigDecimal.class, saleCashRegisterMovement.getSale().getCustomer(), Customer.FIELD_PAID
 					, saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate());
 		}
-		Sale sale = saleCashRegisterMovement.getSale();
-		BigDecimal oldBalance = sale.getBalance().getValue(),increment=saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue();
-		commonUtils.increment(BigDecimal.class, sale.getBalance(), Balance.FIELD_VALUE,increment);
-		logTrace("Old balance={} , Increment={} , New balance={}",oldBalance,increment, sale.getBalance().getValue());
-		saleDao.update(sale);
-		inject(CashRegisterMovementBusiness.class).delete(saleCashRegisterMovement.getCashRegisterMovement());
+		updateSale(saleCashRegisterMovement, Crud.DELETE, logMessageBuilder);
+		if(isIdentified(saleCashRegisterMovement.getCashRegisterMovement()))
+			inject(CashRegisterMovementBusiness.class).delete(saleCashRegisterMovement.getCashRegisterMovement());
+		
 		saleCashRegisterMovement.setCashRegisterMovement(null);
-		return super.delete(saleCashRegisterMovement);
+		saleCashRegisterMovement.setSale(null);
+		saleCashRegisterMovement = super.delete(saleCashRegisterMovement);
+		logTrace(logMessageBuilder);
+		return saleCashRegisterMovement;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)

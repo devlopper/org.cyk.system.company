@@ -38,7 +38,7 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
 		return Listener.COLLECTION;
 	}
-	
+
 	@Override
 	public SalableProductCollection instanciateOne() {
 		SalableProductCollection salableProductCollection = super.instanciateOne();
@@ -56,12 +56,10 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	@Override
 	public SalableProductCollection instanciateOne(String code,Object[][] salableProducts) {
 		SalableProductCollection salableProductCollection = instanciateOne(code);
-		System.out.println("#####################################");
 		for(Object[] salableProduct : salableProducts){
-			SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class)
+			inject(SalableProductCollectionItemBusiness.class)
 					.instanciateOne(salableProductCollection, inject(SalableProductDao.class).read((String)salableProduct[0])
 							, commonUtils.getBigDecimal(salableProduct[1].toString()), BigDecimal.ZERO, BigDecimal.ZERO);
-			add(salableProductCollection, salableProductCollectionItem);
 		}
 		return salableProductCollection;
 	}
@@ -87,12 +85,8 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	}
 	
 	private SalableProductCollectionItem addOrRemove(SalableProductCollection salableProductCollection, SalableProductCollectionItem salableProductCollectionItem,Boolean add) {
-		System.out
-				.println("SalableProductCollectionBusinessImpl.addOrRemove()");
 		String action = Boolean.TRUE.equals(add) ? "ADD":"REMOVE";
 		LogMessage.Builder logMessageBuilder = new LogMessage.Builder(action,SalableProductCollectionItem.class);
-		logMessageBuilder.setAction("ADD/REMOVE");
-		logMessageBuilder.setSubject("S");
 		inject(SalableProductCollectionItemBusiness.class).computeCost(salableProductCollectionItem);
 		logMessageBuilder.addParameters("salableProductCollection.cost.value",salableProductCollection.getCost().getValue()
 				,"salableProductCollectionItem.cost.value",salableProductCollectionItem.getCost().getValue());
@@ -118,26 +112,34 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_VALUE, salableProductCollectionItem.getCost().getValue().multiply(factor));
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE.multiply(factor));
 		logMessageBuilder.addParameters("salableProductCollection.cost.newValue",salableProductCollection.getCost().getValue());
-		logTrace(logMessageBuilder.build());
-		System.out
-				.println("SalableProductCollectionBusinessImpl.addOrRemove() : DONE");
+		logTrace(logMessageBuilder);
 		return salableProductCollectionItem;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void computeCost(SalableProductCollection salableProductCollection,Collection<SalableProductCollectionItem> salableProductCollectionItems) {
-		logTrace("cost {} with items {}", salableProductCollection,salableProductCollectionItems);
+	public void computeCost(SalableProductCollection salableProductCollection,Collection<SalableProductCollectionItem> salableProductCollectionItems,LogMessage.Builder logMessageBuilder) {
+		addLogMessageBuilderParameters(logMessageBuilder, "cost of",salableProductCollection.getCode(),"items", salableProductCollection,salableProductCollectionItems);
 		salableProductCollection.getCost().setValue(BigDecimal.ZERO);
 		for(SalableProductCollectionItem salableProductCollectionItem : salableProductCollectionItems){
 			inject(SalableProductCollectionItemBusiness.class).computeCost(salableProductCollectionItem);
 			commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_VALUE, salableProductCollectionItem.getCost().getValue());
 		}
-		logTrace("costed {} with items {}", salableProductCollection,salableProductCollectionItems);
+		addLogMessageBuilderParameters(logMessageBuilder, "cost",salableProductCollection.getCost().getValue());
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void computeCost(SalableProductCollection salableProductCollection,Collection<SalableProductCollectionItem> salableProductCollectionItems) {
+		computeCost(salableProductCollection, salableProductCollectionItems, null);
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void computeCost(SalableProductCollection salableProductCollection,LogMessage.Builder logMessageBuilder) {
+		computeCost(salableProductCollection,inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection),logMessageBuilder);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void computeCost(SalableProductCollection salableProductCollection) {
-		computeCost(salableProductCollection,inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
+		computeCost(salableProductCollection,inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection),null);
 	}
 	
 	@Override
