@@ -10,6 +10,7 @@ import org.cyk.system.company.persistence.api.structure.EmploymentAgreementTypeD
 import org.cyk.system.root.business.api.TypedBusiness.CreateReportFileArguments;
 import org.cyk.system.root.business.impl.RootBusinessTestHelper;
 import org.cyk.system.root.model.file.FileIdentifiableGlobalIdentifier;
+import org.cyk.system.root.persistence.api.file.FileDao;
 import org.cyk.system.root.persistence.api.file.FileIdentifiableGlobalIdentifierDao;
 import org.cyk.system.root.persistence.api.file.FileRepresentationTypeDao;
 
@@ -26,8 +27,9 @@ public class IesaEmployeeBusinessIT extends AbstractIesaBusinessIT {
     	employee.setEmploymentAgreement(new EmploymentAgreement());
     	employee.getEmploymentAgreement().setType(inject(EmploymentAgreementTypeDao.class).readOneRandomly());
     	create(employee);
-    	
-    	inject(EmployeeBusiness.class).createReportFile(employee, new CreateReportFileArguments<Employee>(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT, employee));
+    	Long fileCount = inject(FileDao.class).countAll();
+    	inject(EmployeeBusiness.class).createReportFile(new CreateReportFileArguments.Builder<Employee>(employee).setReportTemplate(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT).build());
+    	assertEquals(fileCount+1, inject(FileDao.class).countAll());
     	
     	FileIdentifiableGlobalIdentifier.SearchCriteria searchCriteria = new FileIdentifiableGlobalIdentifier.SearchCriteria();
     	searchCriteria.addIdentifiableGlobalIdentifier(employee);
@@ -41,7 +43,9 @@ public class IesaEmployeeBusinessIT extends AbstractIesaBusinessIT {
     	employee.getPerson().setLastnames("Yao christian");
     	employee = inject(EmployeeBusiness.class).update(employee);
     	
-    	inject(EmployeeBusiness.class).createReportFile(employee, new CreateReportFileArguments<Employee>(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT, employee));
+    	fileCount = inject(FileDao.class).countAll();
+    	inject(EmployeeBusiness.class).createReportFile(new CreateReportFileArguments.Builder<Employee>(employee).setReportTemplate(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT).build());
+    	assertEquals(fileCount, inject(FileDao.class).countAll());
     	
     	searchCriteria = new FileIdentifiableGlobalIdentifier.SearchCriteria();
     	searchCriteria.addIdentifiableGlobalIdentifier(employee);

@@ -3,11 +3,8 @@ package org.cyk.system.company.business.impl.integration;
 import java.math.BigDecimal;
 
 import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.root.business.api.TypedBusiness.CreateReportFileArguments;
-import org.cyk.system.root.business.impl.RootBusinessTestHelper;
 
 public class SaleBusinessIT extends AbstractBusinessIT {
 
@@ -21,11 +18,11 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	Sale sale = saleBusiness.instanciateOne();
     	sale.getSalableProductCollection().getCost().setValue(new BigDecimal("10000"));
     	create(sale); 
-    	
+    	/*
     	CreateReportFileArguments<Sale> arguments = new CreateReportFileArguments<Sale>(CompanyConstant.REPORT_INVOICE, sale);
     	saleBusiness.createReportFile(sale, arguments);
     	inject(RootBusinessTestHelper.class).write(arguments.getFile());
-    	
+    	*/
     	/*
     	SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness = inject(SaleCashRegisterMovementBusiness.class);
     	SaleCashRegisterMovement saleCashRegisterMovement = saleCashRegisterMovementBusiness

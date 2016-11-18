@@ -29,6 +29,7 @@ import org.cyk.system.company.model.structure.CompanyReport;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmployeeReportTemplateFile;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
+import org.cyk.system.root.business.api.TypedBusiness.CreateReportFileArguments;
 import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
 import org.cyk.system.root.model.AbstractIdentifiable;
@@ -133,19 +134,19 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <REPORT extends AbstractReportTemplateFile<REPORT>> REPORT produce(Class<REPORT> reportClass, AbstractIdentifiable identifiable) {
+	public <REPORT extends AbstractReportTemplateFile<REPORT>> REPORT produce(Class<REPORT> reportClass,CreateReportFileArguments<?> createReportFileArguments) {
 		if(InvoiceReport.class.equals(reportClass)){
-			if(identifiable instanceof Sale)
-				return (REPORT) produceInvoiceReport((Sale)identifiable);
+			if(createReportFileArguments.getIdentifiable() instanceof Sale)
+				return (REPORT) produceInvoiceReport((Sale)createReportFileArguments.getIdentifiable());
 		}else if(PaymentReceiptReport.class.equals(reportClass)){
-			if(identifiable instanceof SaleCashRegisterMovement)
-				return (REPORT) producePaymentReceiptReport((SaleCashRegisterMovement)identifiable);
+			if(createReportFileArguments.getIdentifiable() instanceof SaleCashRegisterMovement)
+				return (REPORT) producePaymentReceiptReport((SaleCashRegisterMovement)createReportFileArguments.getIdentifiable());
 		}else if(EmployeeReportTemplateFile.class.equals(reportClass)){
-			if(identifiable instanceof Employee)
-				return (REPORT) produceEmployeeReport((Employee)identifiable);
+			if(createReportFileArguments.getIdentifiable() instanceof Employee)
+				return (REPORT) produceEmployeeReport((Employee)createReportFileArguments.getIdentifiable());
 		}
 		
-		return super.produce(reportClass, identifiable);
+		return super.produce(reportClass, createReportFileArguments);
 	}
 	
 	@Override

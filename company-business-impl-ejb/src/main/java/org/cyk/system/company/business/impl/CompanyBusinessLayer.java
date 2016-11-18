@@ -7,6 +7,7 @@ import java.util.Collection;
 
 import javax.inject.Singleton;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
@@ -49,6 +50,7 @@ import org.cyk.system.root.business.impl.AbstractFormatter;
 import org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl;
 import org.cyk.system.root.business.impl.BusinessServiceProvider;
 import org.cyk.system.root.business.impl.BusinessServiceProvider.Service;
+import org.cyk.system.root.business.impl.PersistDataListener;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
@@ -111,6 +113,19 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	protected void initialisation() {
 		INSTANCE = this;
 		super.initialisation();
+		PersistDataListener.COLLECTION.add(new PersistDataListener.Adapter.Default(){
+			private static final long serialVersionUID = -950053441831528010L;
+			@SuppressWarnings("unchecked")
+			@Override
+			public <T> T processPropertyValue(Class<?> aClass,String instanceCode, String name, T value) {
+				if(ArrayUtils.contains(new String[]{CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT}, instanceCode)){
+					if(PersistDataListener.BASE_PACKAGE.equals(name))
+						return (T) CompanyBusinessLayer.class.getPackage();
+				}
+				return super.processPropertyValue(aClass, instanceCode, name, value);
+			}
+		});
+		
 		AbstractRootReportProducer.DEFAULT = new AbstractCompanyReportProducer.Default();
 		formatterBusiness.registerFormatter(Production.class, new AbstractFormatter<Production>() {
 			private static final long serialVersionUID = 3952155697329951912L;
