@@ -25,7 +25,6 @@ public class MailBusinessUT extends AbstractUnitTest {
 	
 	@Test
 	public void sendToOneBlocking() {
-		MessageSendingBusiness.SendOptions.BLOCKING=Boolean.TRUE;
 		Notification notification = new Notification();
 		notification.setDate(new Date());
 		notification.setTitle("TestTitle");
