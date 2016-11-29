@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +16,6 @@ import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 
-@Stateless
 public class SalableProductInstanceBusinessImpl extends AbstractCollectionItemBusinessImpl<SalableProductInstance, SalableProductInstanceDao,SalableProduct> implements SalableProductInstanceBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;

@@ -1,6 +1,5 @@
 package org.cyk.system.company.business.impl.product;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
@@ -14,7 +13,6 @@ import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProduct
 import org.cyk.system.company.persistence.api.product.ProductCategoryDao;
 import org.cyk.system.root.business.impl.pattern.tree.AbstractDataTreeTypeBusinessImpl;
 
-@Stateless
 public class ProductCategoryBusinessImpl extends AbstractDataTreeTypeBusinessImpl<ProductCategory,ProductCategoryDao> implements ProductCategoryBusiness {
 
 	private static final long serialVersionUID = -5970296090669949506L;

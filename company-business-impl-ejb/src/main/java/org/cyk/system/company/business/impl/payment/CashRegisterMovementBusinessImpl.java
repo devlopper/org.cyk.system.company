@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -25,7 +24,6 @@ import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.persistence.api.mathematics.MovementDao;
 
-@Stateless
 public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessService<CashRegisterMovement, CashRegisterMovementDao> implements CashRegisterMovementBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;

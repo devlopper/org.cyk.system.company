@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -20,9 +19,7 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.product.ProductDao;
-import org.cyk.system.root.business.api.Crud;
 
-@Stateless
 public class ProductBusinessImpl extends AbstractProductBusinessImpl<Product,ProductDao> implements ProductBusiness,Serializable  {
 	
 	private static final long serialVersionUID = 2801588592108008404L;

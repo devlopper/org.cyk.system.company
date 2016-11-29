@@ -2,7 +2,6 @@ package org.cyk.system.company.business.impl.payment;
 
 import java.io.Serializable;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.payment.CashRegisterMovementTermBusiness;
@@ -13,7 +12,6 @@ import org.cyk.system.company.persistence.api.payment.CashRegisterMovementTermCo
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementTermDao;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
 
-@Stateless
 public class CashRegisterMovementTermCollectionBusinessImpl extends AbstractCollectionBusinessImpl<CashRegisterMovementTermCollection,CashRegisterMovementTerm, CashRegisterMovementTermCollectionDao,CashRegisterMovementTermDao,CashRegisterMovementTermBusiness> implements CashRegisterMovementTermCollectionBusiness,Serializable {
 
 	private static final long serialVersionUID = -3799482462496328200L;

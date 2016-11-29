@@ -3,7 +3,6 @@ package org.cyk.system.company.business.impl.production;
 import java.io.Serializable;
 import java.util.Collection;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
@@ -16,7 +15,6 @@ import org.cyk.system.company.persistence.api.production.ProductionPlanMetricDao
 import org.cyk.system.company.persistence.api.production.ProductionPlanResourceDao;
 import org.cyk.system.root.business.impl.spreadsheet.AbstractSpreadSheetTemplateBusinessImpl;
 
-@Stateless
 public class ProductionPlanBusinessImpl extends AbstractSpreadSheetTemplateBusinessImpl<ProductionPlan,ProductionPlanResource,ProductionPlanMetric,ProductionPlanDao> implements ProductionPlanBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;

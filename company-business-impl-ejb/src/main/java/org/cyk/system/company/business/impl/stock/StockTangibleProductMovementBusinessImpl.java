@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -27,7 +26,6 @@ import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
-@Stateless
 public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusinessService<StockTangibleProductMovement, StockTangibleProductMovementDao> implements StockTangibleProductMovementBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;

@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -22,7 +21,6 @@ import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
 import org.cyk.utility.common.LogMessage;
 
-@Stateless
 public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusinessImpl<SalableProductCollection,SalableProductCollectionItem, SalableProductCollectionDao,SalableProductCollectionItemDao,SalableProductCollectionItemBusiness> implements SalableProductCollectionBusiness,Serializable {
 
 	private static final long serialVersionUID = -3799482462496328200L;
