@@ -2,6 +2,7 @@ package org.cyk.system.company.business.impl;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.cyk.system.company.business.api.CompanyReportProducer;
@@ -216,6 +217,27 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		report.setAmountIn(format(saleCashRegisterMovement.getAmountIn()));
 		report.setAmountOut(format(saleCashRegisterMovement.getAmountOut()));
 		report.setBalance(format(saleCashRegisterMovement.getBalance().getValue()));
+	}
+	
+	/**/
+	
+	public static interface Listener extends AbstractRootReportProducer.Listener {
+		
+		Collection<Listener> COLLECTION = new ArrayList<>();
+		
+		/**/
+		
+		public static class Adapter extends AbstractRootReportProducer.Listener.Adapter implements Listener,Serializable {
+			private static final long serialVersionUID = 1L;
+			
+			/**/
+			
+			public static class Default extends Listener.Adapter implements Serializable {
+				private static final long serialVersionUID = 1L;
+				
+			}
+			
+		}
 	}
 	
 	/**/
