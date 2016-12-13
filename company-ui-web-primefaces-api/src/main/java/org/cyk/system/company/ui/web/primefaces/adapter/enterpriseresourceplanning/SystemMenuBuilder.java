@@ -27,6 +27,7 @@ import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.company.model.structure.EmploymentAgreementType;
 import org.cyk.system.root.business.api.security.BusinessServiceCollectionBusiness;
+import org.cyk.system.root.model.security.Role;
 import org.cyk.ui.api.UIManager;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.menu.SystemMenu;
@@ -42,7 +43,8 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 	@Override
 	public SystemMenu build(UserSession userSession) {
 		SystemMenu systemMenu = super.build(userSession);
-		addBusinessMenu(userSession,systemMenu,getEmployeeCommandable(userSession, null));
+		if(userSession.hasRole(Role.MANAGER))
+			addBusinessMenu(userSession,systemMenu,getEmployeeCommandable(userSession, null));
 		//addBusinessMenu(userSession,systemMenu,getProductCommandable(userSession, null));
 		addBusinessMenu(userSession,systemMenu,getPaymentCommandable(userSession, null));
 		addBusinessMenu(userSession,systemMenu,getSaleCommandable(userSession, null));

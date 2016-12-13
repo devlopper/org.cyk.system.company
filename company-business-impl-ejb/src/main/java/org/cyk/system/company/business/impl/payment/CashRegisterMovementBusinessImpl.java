@@ -17,8 +17,8 @@ import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementDao;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
-import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.UserAccount;
@@ -132,7 +132,7 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 						
 						inject(CashRegisterMovementDao.class).update(cashRegisterMovement);
 						if(cashRegisterMovement.getMovement()!=null){
-							cashRegisterMovement.getMovement().setCode(AbstractCollectionItemBusinessImpl.buildCode(cashRegisterMovement.getMovement().getCollection(), cashRegisterMovement.getCode()));
+							cashRegisterMovement.getMovement().setCode(RootConstant.Code.generate(cashRegisterMovement.getMovement().getCollection(), cashRegisterMovement.getCode()));
 							inject(MovementDao.class).update(cashRegisterMovement.getMovement());
 						}
 					}
