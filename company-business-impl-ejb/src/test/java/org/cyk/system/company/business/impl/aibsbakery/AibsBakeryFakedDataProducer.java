@@ -21,6 +21,7 @@ import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResourceProduct;
 import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.system.root.model.userinterface.InputName;
 
@@ -75,7 +76,7 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 		flush(ProductionUnit.class, productionUnitBusiness, productionUnits);
 		
 		Collection<ProductionPlan> productionPlans = new ArrayList<>();
-		productionPlanPain = createProductionPlan("PP1", productionUnit1, manufacturedProductPain, getEnumeration(ProductionEnergy.class, ProductionEnergy.GAS),getEnumeration(TimeDivisionType.class, TimeDivisionType.DAY), productionPlans);
+		productionPlanPain = createProductionPlan("PP1", productionUnit1, manufacturedProductPain, getEnumeration(ProductionEnergy.class, ProductionEnergy.GAS),getEnumeration(TimeDivisionType.class, RootConstant.Code.TimeDivisionType.DAY), productionPlans);
 		for(AbstractIdentifiable identifiable : genericBusiness.use(ResourceProduct.class).find().all())
 			createProductionPlanResource(productionPlanPain,(ResourceProduct) identifiable);
 		for(AbstractIdentifiable identifiable : genericBusiness.use(InputName.class).find().all())

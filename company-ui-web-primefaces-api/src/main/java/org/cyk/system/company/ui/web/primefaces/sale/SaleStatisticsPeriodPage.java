@@ -12,6 +12,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.business.api.time.TimeDivisionTypeBusiness;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.ui.web.primefaces.page.AbstractChartPage;
 import org.joda.time.DateTimeConstants;
@@ -39,7 +40,7 @@ public class SaleStatisticsPeriodPage extends AbstractChartPage implements Seria
 	protected void initialisation() {
 		super.initialisation();
 		saleSearchCriteria = new Sale.SearchCriteria(DateUtils.addDays(new Date(),-4), DateUtils.addDays(new Date(),4));
-		selectedTimeDivisionType = timeDivisionTypeBusiness.find(TimeDivisionType.DAY);
+		selectedTimeDivisionType = timeDivisionTypeBusiness.find(RootConstant.Code.TimeDivisionType.DAY);
         update();
 	}
 	

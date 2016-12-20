@@ -37,6 +37,7 @@ import org.cyk.system.root.business.impl.file.report.DefaultReportBasedOnDynamic
 import org.cyk.system.root.business.impl.file.report.ReportBasedOnDynamicBuilderAdapter;
 import org.cyk.system.root.business.impl.file.report.jasper.DefaultJasperReportBasedOnDynamicBuilder;
 import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilder;
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderConfiguration;
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderIdentifiableConfiguration;
@@ -44,7 +45,6 @@ import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParamete
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFileConfiguration;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateLog;
-import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
@@ -470,7 +470,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			for(String value : StringUtils.split(salableProductInstanceCashRegisterStateLogDetails.getCode(), Constant.CHARACTER_COMA))
 				identifiers.add(Long.parseLong(value));
 			salableProductInstanceCashRegisterStateLogDetails.setCode(inject(NumberBusiness.class).formatSequences(identifiers, arguments));
-			if(TimeDivisionType.DAY.equals(timeDivisionTypeCode))
+			if(RootConstant.Code.TimeDivisionType.DAY.equals(timeDivisionTypeCode))
 				salableProductInstanceCashRegisterStateLogDetails.setDate(formatDate(salableProductInstanceCashRegisterStateLogDetails.getMaster().getDate()));
 		}
 		

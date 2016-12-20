@@ -7,9 +7,6 @@ import java.util.Collection;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
@@ -19,15 +16,18 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateBusiness;
 import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateLogBusiness;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateLog;
-import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.ui.api.UIManager;
 import org.cyk.ui.api.model.table.ColumnAdapter;
 import org.cyk.ui.web.api.WebManager;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.ui.web.primefaces.page.AbstractPrimefacesPage;
 import org.cyk.utility.common.Constant;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SalableProductInstanceCashRegisterStateLogListPage extends AbstractPrimefacesPage implements Serializable {
@@ -67,7 +67,7 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 
 		private static final long serialVersionUID = 202093846160625878L;
 
-		private String timeDivisionTypeCode = TimeDivisionType.DAY;
+		private String timeDivisionTypeCode = RootConstant.Code.TimeDivisionType.DAY;
 		
 		public TableAdapter() {
 			super(FiniteStateMachineStateLog.class, SalableProductInstanceCashRegisterStateLogDetails.class);
