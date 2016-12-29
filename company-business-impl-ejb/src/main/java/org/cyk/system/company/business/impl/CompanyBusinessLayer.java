@@ -58,6 +58,7 @@ import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
 import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.File;
+import org.cyk.system.root.model.file.report.ReportTemplate;
 import org.cyk.system.root.model.generator.StringGenerator;
 import org.cyk.system.root.model.geography.ContactCollection;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
@@ -118,7 +119,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			@SuppressWarnings("unchecked")
 			@Override
 			public <T> T processPropertyValue(Class<?> aClass,String instanceCode, String name, T value) {
-				if(ArrayUtils.contains(new String[]{CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT}, instanceCode)){
+				if(ArrayUtils.contains(new String[]{CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CONTRACT}, instanceCode)){
 					if(PersistDataListener.BASE_PACKAGE.equals(name))
 						return (T) CompanyBusinessLayer.class.getPackage();
 				}
@@ -293,13 +294,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED, "Réceptionné");
 		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD, "Vendu");
 		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED, "Utilisé");
-		
-		createReportTemplate(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT,"contrat de travail",Boolean.TRUE, "report/employee/employment_contract.jrxml", null, null, null);
-		createReportTemplate(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CERTIFICATE,"certificat d'emploi",Boolean.TRUE, "report/employee/employment_certificate.jrxml", null, null, null);
-		createReportTemplate(CompanyConstant.REPORT_EMPLOYEE_WORK_CERTIFICATE,"certificat de travail",Boolean.TRUE, "report/employee/work_certificate.jrxml", null, null, null);
-		createReportTemplate(CompanyConstant.REPORT_INVOICE,"facture",Boolean.FALSE, "report/sale/invoice_a4.jrxml", null, null, null);
-		createReportTemplate(CompanyConstant.REPORT_PAYMENT_RECEIPT,"reçu de paiement",Boolean.TRUE, "report/sale/payment_receipt_a4.jrxml", null, null, null);
-		
+		/*
+		createReportTemplate(CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CONTRACT,"contrat de travail",Boolean.TRUE, "report/employee/employment_contract.jrxml", null, null, null);
+		createReportTemplate(CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CERTIFICATE,"certificat d'emploi",Boolean.TRUE, "report/employee/employment_certificate.jrxml", null, null, null);
+		createReportTemplate(CompanyConstant.Code.ReportTemplate.EMPLOYEE_WORK_CERTIFICATE,"certificat de travail",Boolean.TRUE, "report/employee/work_certificate.jrxml", null, null, null);
+		createReportTemplate(CompanyConstant.Code.ReportTemplate.INVOICE,"facture",Boolean.FALSE, "report/sale/invoice_a4.jrxml", null, null, null);
+		createReportTemplate(CompanyConstant.Code.ReportTemplate.PAYMENT_RECEIPT,"reçu de paiement",Boolean.TRUE, "report/sale/payment_receipt_a4.jrxml", null, null, null);
+		*/
 		AccountingPeriod accountingPeriod = new AccountingPeriod();
 		accountingPeriod.setOwnedCompany(ownedCompany);
 		Integer currentYear = new DateTime().getYear();
@@ -329,9 +330,12 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDI);	
 		
 		
-		createFile(CompanyConstant.FILE_DOCUMENT_HEADER,null);
-    	createFile(CompanyConstant.FILE_DOCUMENT_BACKGROUND,null);
-    	createFile(CompanyConstant.FILE_DOCUMENT_BACKGROUND_DRAFT,null);
+		/*createFile(CompanyConstant.Code.File.DOCUMENT_HEADER,null);
+    	createFile(CompanyConstant.Code.File.DOCUMENT_BACKGROUND,null);
+    	createFile(CompanyConstant.Code.File.DOCUMENT_BACKGROUND_DRAFT,null);*/
+    	
+    	createFromExcelSheet(File.class);
+    	createFromExcelSheet(ReportTemplate.class);
 	}
 	
 	private void security(){ 

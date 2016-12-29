@@ -43,18 +43,18 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	@Override
 	public Class<?> getReportTemplateFileClass(AbstractIdentifiable identifiable, String reportTemplateCode) {
 		if(identifiable instanceof Employee){
-			if(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT.equals(reportTemplateCode))
+			if(CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CONTRACT.equals(reportTemplateCode))
 				return EmployeeReportTemplateFile.class;
-			if(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CERTIFICATE.equals(reportTemplateCode))
+			if(CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CERTIFICATE.equals(reportTemplateCode))
 				return EmployeeReportTemplateFile.class;
-			if(CompanyConstant.REPORT_EMPLOYEE_WORK_CERTIFICATE.equals(reportTemplateCode))
+			if(CompanyConstant.Code.ReportTemplate.EMPLOYEE_WORK_CERTIFICATE.equals(reportTemplateCode))
 				return EmployeeReportTemplateFile.class;
 		}
 		
 		if(identifiable instanceof Sale){
-			if(CompanyConstant.REPORT_INVOICE.equals(reportTemplateCode))
+			if(CompanyConstant.Code.ReportTemplate.INVOICE.equals(reportTemplateCode))
 				return InvoiceReport.class;
-			if(CompanyConstant.REPORT_INVOICE_AND_PAYMENT_RECEIPT.equals(reportTemplateCode))
+			if(CompanyConstant.Code.ReportTemplate.INVOICE_AND_PAYMENT_RECEIPT.equals(reportTemplateCode))
 				return InvoiceReport.class;
 		}
 		

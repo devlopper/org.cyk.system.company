@@ -92,8 +92,8 @@ public class EmployeeBusinessImpl extends AbstractActorBusinessImpl<Employee, Em
 					private static final long serialVersionUID = 1L;
 
 					public EnterpriseResourcePlanning() {
-						addCascadeToClass(EmploymentAgreement.class).addCascadeToReportTemplateCodes(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT,
-								CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CERTIFICATE,CompanyConstant.REPORT_EMPLOYEE_WORK_CERTIFICATE);
+						addCascadeToClass(EmploymentAgreement.class).addCascadeToReportTemplateCodes(CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CONTRACT,
+								CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CERTIFICATE,CompanyConstant.Code.ReportTemplate.EMPLOYEE_WORK_CERTIFICATE);
 					}
 					
 				}

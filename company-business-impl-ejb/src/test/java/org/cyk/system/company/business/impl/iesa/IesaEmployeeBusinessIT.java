@@ -28,12 +28,12 @@ public class IesaEmployeeBusinessIT extends AbstractIesaBusinessIT {
     	employee.getEmploymentAgreement().setType(inject(EmploymentAgreementTypeDao.class).readOneRandomly());
     	create(employee);
     	Long fileCount = inject(FileDao.class).countAll();
-    	inject(EmployeeBusiness.class).createReportFile(new CreateReportFileArguments.Builder<Employee>(employee).setReportTemplate(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT).build());
+    	inject(EmployeeBusiness.class).createReportFile(new CreateReportFileArguments.Builder<Employee>(employee).setReportTemplate(CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CONTRACT).build());
     	assertEquals(fileCount+1, inject(FileDao.class).countAll());
     	
     	FileIdentifiableGlobalIdentifier.SearchCriteria searchCriteria = new FileIdentifiableGlobalIdentifier.SearchCriteria();
     	searchCriteria.addIdentifiableGlobalIdentifier(employee);
-    	searchCriteria.addRepresentationType(inject(FileRepresentationTypeDao.class).read(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT));
+    	searchCriteria.addRepresentationType(inject(FileRepresentationTypeDao.class).read(CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CONTRACT));
     	Collection<FileIdentifiableGlobalIdentifier> fileIdentifiableGlobalIdentifiers = inject(FileIdentifiableGlobalIdentifierDao.class).readByCriteria(searchCriteria);
     	assertEquals(1, fileIdentifiableGlobalIdentifiers.size());
     	inject(RootBusinessTestHelper.class).write(fileIdentifiableGlobalIdentifiers.iterator().next().getFile());
@@ -44,12 +44,12 @@ public class IesaEmployeeBusinessIT extends AbstractIesaBusinessIT {
     	employee = inject(EmployeeBusiness.class).update(employee);
     	
     	fileCount = inject(FileDao.class).countAll();
-    	inject(EmployeeBusiness.class).createReportFile(new CreateReportFileArguments.Builder<Employee>(employee).setReportTemplate(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT).build());
+    	inject(EmployeeBusiness.class).createReportFile(new CreateReportFileArguments.Builder<Employee>(employee).setReportTemplate(CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CONTRACT).build());
     	assertEquals(fileCount, inject(FileDao.class).countAll());
     	
     	searchCriteria = new FileIdentifiableGlobalIdentifier.SearchCriteria();
     	searchCriteria.addIdentifiableGlobalIdentifier(employee);
-    	searchCriteria.addRepresentationType(inject(FileRepresentationTypeDao.class).read(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT));
+    	searchCriteria.addRepresentationType(inject(FileRepresentationTypeDao.class).read(CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CONTRACT));
     	fileIdentifiableGlobalIdentifiers = inject(FileIdentifiableGlobalIdentifierDao.class).readByCriteria(searchCriteria);
     	assertEquals(1, fileIdentifiableGlobalIdentifiers.size());
     	inject(RootBusinessTestHelper.class).write(fileIdentifiableGlobalIdentifiers.iterator().next().getFile());

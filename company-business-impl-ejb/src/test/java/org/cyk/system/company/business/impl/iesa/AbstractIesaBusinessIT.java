@@ -12,8 +12,8 @@ public abstract class AbstractIesaBusinessIT extends AbstractBusinessIT {
 	public AbstractIesaBusinessIT() {
 		EmployeeBusinessImpl.Listener listener = new EmployeeBusinessImpl.Listener.Adapter.Default();
 		listener.addCascadeToClass(EmploymentAgreement.class)
-			.addCascadeToReportTemplateCodes(CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CONTRACT,
-					CompanyConstant.REPORT_EMPLOYEE_EMPLOYMENT_CERTIFICATE,CompanyConstant.REPORT_EMPLOYEE_WORK_CERTIFICATE);
+			.addCascadeToReportTemplateCodes(CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CONTRACT,
+					CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CERTIFICATE,CompanyConstant.Code.ReportTemplate.EMPLOYEE_WORK_CERTIFICATE);
 		EmployeeBusinessImpl.Listener.COLLECTION.add(listener);
 	}
 }
