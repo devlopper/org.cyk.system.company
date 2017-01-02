@@ -3,7 +3,6 @@ package org.cyk.system.company.business.impl.unit;
 import java.util.Collection;
 import java.util.Date;
 
-import org.cyk.system.root.business.api.message.MessageSendingBusiness;
 import org.cyk.system.root.business.impl.message.MailBusinessImpl;
 import org.cyk.system.root.model.event.Notification;
 import org.cyk.utility.test.unit.AbstractUnitTest;

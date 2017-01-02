@@ -1,15 +1,12 @@
 package org.cyk.system.company.business.impl.integration.enterpriseresourceplanning;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 import javax.inject.Singleton;
 
-import lombok.Getter;
-
-import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
-import org.cyk.system.company.model.sale.Sale;
+
+import lombok.Getter;
 
 @Singleton @Getter
 public class EnterpriseResourcePlanningFakedDataProducer extends AbstractCompanyFakedDataProducer implements Serializable {

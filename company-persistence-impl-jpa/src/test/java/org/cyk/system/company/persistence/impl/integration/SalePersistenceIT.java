@@ -2,7 +2,6 @@ package org.cyk.system.company.persistence.impl.integration;
 
 import javax.inject.Inject;
 
-import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.junit.Test;
@@ -36,7 +35,7 @@ public class SalePersistenceIT extends AbstractPersistenceIT {
 	
 	@Test
 	public void countBySaleSearchCriteria(){
-		Sale.SearchCriteria criteria = new Sale.SearchCriteria();
+		//Sale.SearchCriteria criteria = new Sale.SearchCriteria();
 		//assertEquals("Count all sale by search criteria", 4l, saleDao.countByCriteria(criteria));
 	}
 	

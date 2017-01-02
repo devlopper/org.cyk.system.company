@@ -11,7 +11,6 @@ import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SaleDetails;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.model.SaleQueryFormModel;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
@@ -108,10 +107,10 @@ public class SaleSearchListPage extends AbstractBusinessQueryPage<Sale,SaleQuery
 		Sale.SearchCriteria criteria = searchCriteria();
 		criteria.getReadConfig().setFirstResultIndex(queryFirst);
 		criteria.getReadConfig().setMaximumResultCount(20l);
-		SaleResults results = null;//inject(SaleBusiness.class).computeByCriteria(criteria); 
+		//SaleResults results = null;//inject(SaleBusiness.class).computeByCriteria(criteria); 
 		//table.getColumn(SaleDetails.FIELD_COST).setFooter(numberBusiness.format(results.getCost().getValue()));
 		if(!BalanceType.ZERO.equals(balanceType)){
-			table.getColumn(SaleDetails.FIELD_BALANCE).setFooter(numberBusiness.format(results.getBalance()));
+			//table.getColumn(SaleDetails.FIELD_BALANCE).setFooter(numberBusiness.format(results.getBalance()));
 		}
 		
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterFromDate(),criteria.getFromDateSearchCriteria().getPreparedValue().getTime());

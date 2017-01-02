@@ -47,9 +47,7 @@ import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.impl.AbstractBusinessTestHelper;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementCollection;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
-import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineAlphabetDao;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.ObjectFieldValues;
@@ -71,7 +69,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     @Inject private CashierDao cashierDao;
     @Inject private AccountingPeriodProductDao accountingPeriodProductDao;
     @Inject private FiniteStateMachineStateDao finiteStateMachineStateDao;
-    @Inject private FiniteStateMachineAlphabetDao finiteStateMachineAlphabetDao;
     @Inject private SaleCashRegisterMovementDao saleCashRegisterMovementDao;
     @Inject private StockableTangibleProductDao stockableTangibleProductDao;
     
@@ -451,9 +448,10 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     }
     @Deprecated
     public void updateSale(String identifier,String finiteStateMachineAlphabetCode,String taxable){
-    	Sale sale = null;//saleDao.readByComputedIdentifier(identifier);
+    	/*Sale sale = null;//saleDao.readByComputedIdentifier(identifier);
     	FiniteStateMachineAlphabet finiteStateMachineAlphabet = finiteStateMachineAlphabetDao.read(finiteStateMachineAlphabetCode);
     	sale.getSalableProductCollection().setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
+    	*/
     }
     @Deprecated
     public void deleteSale(String identifier){
@@ -563,7 +561,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	}
     }
     public void assertSaleFiniteStateMachineStateCount(String[] finiteStateMachineStateCodes,String expectedCount){
-    	Sale.SearchCriteria saleSearchCriteria = new Sale.SearchCriteria();
+    	//Sale.SearchCriteria saleSearchCriteria = new Sale.SearchCriteria();
     	/*for(String finiteStateMachineStateCode : finiteStateMachineStateCodes){
     		saleSearchCriteria.getFiniteStateMachineStates().add(finiteStateMachineStateDao.read(finiteStateMachineStateCode));
     	}*/

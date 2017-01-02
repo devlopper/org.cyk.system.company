@@ -22,7 +22,6 @@ import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
-import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
@@ -281,13 +280,13 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     }
 	
 	protected void createSales(Object[][] sales) {
-		for(Object[] infos : sales){
+		/*for(Object[] infos : sales){
 			Sale sale = new Sale();
 			int i = 0;
-			companyBusinessTestHelper.set(sale, (String)infos[i++],(String)infos[i++], (String)infos[i++], (String)infos[i++],(String[][])infos[i++]
-					,(String)infos[i++]);
+			//companyBusinessTestHelper.set(sale, (String)infos[i++],(String)infos[i++], (String)infos[i++], (String)infos[i++],(String[][])infos[i++]
+			//		,(String)infos[i++]);
 			create(sale);
-		}
+		}*/
 	}
 	
 	protected void createStockableTangibleProducts(String[][] stockableTangibleProducts) {

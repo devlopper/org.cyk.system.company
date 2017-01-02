@@ -26,17 +26,17 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     }
     
     protected void createSale(CreateSaleParameters p){
-    	companyBusinessTestHelper.createSale(p.getComputedIdentifier(), p.getDate(), p.getCashierCode(), p.getCustomerRegistrationCode(), p.getProducts(), p.getPaid(),p.getTaxable(),p.getFinalState(),p.getExpectedThrowableMessage());
+    	//companyBusinessTestHelper.createSale(p.getComputedIdentifier(), p.getDate(), p.getCashierCode(), p.getCustomerRegistrationCode(), p.getProducts(), p.getPaid(),p.getTaxable(),p.getFinalState(),p.getExpectedThrowableMessage());
     	if(Boolean.TRUE.equals(p.getWriteReport()))
     		companyBusinessTestHelper.writeSaleReport(p.getComputedIdentifier());
     }
     
     protected void updateSale(UpdateSaleParameters p){
-    	companyBusinessTestHelper.updateSale(p.getComputedIdentifier(), p.getFiniteStateMachineAlphabetCode(),p.getTaxable());
+    	//companyBusinessTestHelper.updateSale(p.getComputedIdentifier(), p.getFiniteStateMachineAlphabetCode(),p.getTaxable());
     }
     
     protected void deleteSale(DeleteSaleParameters p){
-    	companyBusinessTestHelper.deleteSale(p.getComputedIdentifier());
+    	//companyBusinessTestHelper.deleteSale(p.getComputedIdentifier());
     }
     
     protected void createSaleStock(CreateSaleStockInputParameters p){
@@ -50,8 +50,8 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     protected void createSaleCashRegisterMovement(CreateSaleCashRegisterMovementParameters p){
     	companyBusinessTestHelper.createSaleCashRegisterMovement(p.getComputedIdentifier(), p.getSaleCashRegisterMovementComputedIdentifier(), p.getCashierPersonCode()
     			, p.getAmount(),p.getExpectedThrowableMessage());
-    	if(Boolean.TRUE.equals(p.getWriteReport()))
-    		companyBusinessTestHelper.writeSaleCashRegisterMovementReport(p.getSaleCashRegisterMovementComputedIdentifier());
+    	//if(Boolean.TRUE.equals(p.getWriteReport()))
+    	//	companyBusinessTestHelper.writeSaleCashRegisterMovementReport(p.getSaleCashRegisterMovementComputedIdentifier());
     }
       
     /**/

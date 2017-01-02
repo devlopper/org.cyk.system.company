@@ -120,7 +120,7 @@ public class SaleDaoImpl extends AbstractSaleDaoImpl<Sale,Sale.SearchCriteria> i
 	@Override
 	protected void applyPeriodSearchCriteriaParameters(QueryWrapper<?> queryWrapper,AbstractPeriodSearchCriteria searchCriteria) {
 		super.applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
-		Sale.SearchCriteria saleSearchCriteria = (Sale.SearchCriteria) searchCriteria;
+		//Sale.SearchCriteria saleSearchCriteria = (Sale.SearchCriteria) searchCriteria;
 		//queryWrapper.parameterLike(Sale.FIELD_COMPUTED_IDENTIFIER,saleSearchCriteria.getIdentifierStringSearchCriteria().getPreparedValue());
 		//queryWrapper.parameterIdentifiers(PARAM_FINITE_STATE_MACHINE_STATE_IDENTIFIERS, saleSearchCriteria.getFiniteStateMachineStates());
 		//queryWrapper.parameterIdentifiers(saleSearchCriteria.getCustomers());
