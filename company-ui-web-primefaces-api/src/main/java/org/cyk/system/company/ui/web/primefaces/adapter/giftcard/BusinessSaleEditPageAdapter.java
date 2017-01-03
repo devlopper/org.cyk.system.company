@@ -16,7 +16,6 @@ import org.cyk.system.company.business.api.payment.CashRegisterMovementModeBusin
 import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductInstanceCashRegisterBusiness;
 import org.cyk.system.company.model.CompanyConstant;
-import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
@@ -88,14 +87,14 @@ public class BusinessSaleEditPageAdapter extends AbstractBusinessEntityFormOnePa
 	public void afterInitialisationEnded(AbstractBean bean) {
 		final SaleEditPage saleEditPage = (SaleEditPage) bean;
 		super.afterInitialisationEnded(bean);
-		saleEditPage.setFieldValue(SaleEditPage.FormOneSaleProduct.FIELD_CASH_REGISTER_MOVEMENT_MODE, inject(CashRegisterMovementModeBusiness.class).find(CashRegisterMovementMode.GIFT_CARD));
+		saleEditPage.setFieldValue(SaleEditPage.FormOneSaleProduct.FIELD_CASH_REGISTER_MOVEMENT_MODE, inject(CashRegisterMovementModeBusiness.class).find(CompanyConstant.Code.CashRegisterMovementMode.GIFT_CARD));
 		
 		if(GiftCardSystemMenuBuilder.ACTION_SELL_GIFT_CARD.equals(saleEditPage.getActionIdentifier())){
 			saleEditPage.setContentTitle("Création d'une vente de carte cadeau");
 		}else if(GiftCardSystemMenuBuilder.ACTION_USE_GIFT_CARD.equals(saleEditPage.getActionIdentifier())){
 			saleEditPage.setContentTitle("Utilisation d'une carte cadeau");
 			//saleEditPage.getForm().findInputByClassByFieldName(WebInput.class, FormOneSaleProduct.FIELD_CASHIER).getAjaxListener().setEnabled(Boolean.FALSE);
-			((FormOneSaleProduct)saleEditPage.getForm().getData()).setCashRegisterMovementMode(inject(CashRegisterMovementModeBusiness.class).find(CashRegisterMovementMode.GIFT_CARD));
+			((FormOneSaleProduct)saleEditPage.getForm().getData()).setCashRegisterMovementMode(inject(CashRegisterMovementModeBusiness.class).find(CompanyConstant.Code.CashRegisterMovementMode.GIFT_CARD));
 			saleEditPage.addInputListener(SaleEditPage.FormOneSaleProduct.FIELD_SUPPORTING_DOCUMENT_IDENTIFIER, new WebInput.Listener.Adapter.Default(){
 				private static final long serialVersionUID = 1L;
 				@Override

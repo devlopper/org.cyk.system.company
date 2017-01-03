@@ -13,6 +13,7 @@ import lombok.Setter;
 
 import org.cyk.system.company.business.api.payment.CashRegisterMovementModeBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
@@ -47,7 +48,7 @@ public class SaleCashRegisterMovementController extends AbstractBean implements 
 			showDocumentIdentifier = Boolean.FALSE;
 		}else{
 			showDocumentIdentifier = Boolean.TRUE.equals(cashRegisterMovementMode.getSupportDocumentIdentifier());
-			showSalableProductInstances = CashRegisterMovementMode.GIFT_CARD.equals(cashRegisterMovementMode.getCode());
+			showSalableProductInstances = CompanyConstant.Code.CashRegisterMovementMode.GIFT_CARD.equals(cashRegisterMovementMode.getCode());
 		}
 	}
 	

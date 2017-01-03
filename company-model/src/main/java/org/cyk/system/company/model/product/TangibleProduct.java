@@ -19,7 +19,7 @@ public class TangibleProduct extends Product implements Serializable  {
 
 	private static final long serialVersionUID = -6128937819261060725L;
 	
-	public static final String STOCKING = TangibleProduct.class.getSimpleName()+Constant.CHARACTER_UNDESCORE+CompanyConstant.STOCKING;
+	public static final String STOCKING = TangibleProduct.class.getSimpleName()+Constant.CHARACTER_UNDESCORE+CompanyConstant.Code.Product.STOCKING;
 		
 	public TangibleProduct(String code, String name,ProductCategory category) {
 		super(code, name, category);

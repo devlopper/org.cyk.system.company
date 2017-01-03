@@ -27,7 +27,7 @@
 		<module>../company-application-resources</module>
 		
 		<module>../company-ui-web-primefaces-app</module>
-		<module>../company-application</module>
+		<!--module>../company-application</module-->
 	</modules>
 
 	<properties>

@@ -62,8 +62,6 @@ import org.cyk.system.root.model.generator.StringGenerator;
 import org.cyk.system.root.model.geography.ContactCollection;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.BusinessServiceCollection;
 import org.cyk.system.root.model.security.Installation;
@@ -210,23 +208,19 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		structure();
 		company();
 		
-		if(Boolean.TRUE.equals(PRODUCT_STOCKING_ENABLED)){
+		/*if(Boolean.TRUE.equals(PRODUCT_STOCKING_ENABLED)){
 			create(new IntangibleProduct(IntangibleProduct.STOCKING, IntangibleProduct.STOCKING, null));
 	    	create(new TangibleProduct(TangibleProduct.STOCKING, TangibleProduct.STOCKING, null));
 	    	
 	    	create(new SalableProduct(getEnumeration(IntangibleProduct.class, IntangibleProduct.STOCKING), null));
 	    	create(new StockableTangibleProduct(getEnumeration(TangibleProduct.class, TangibleProduct.STOCKING)
 	    			, rootDataProducerHelper.createMovementCollection(TangibleProduct.STOCKING, "Input", "Output")));	
-		}
+		}*/
 		
-		createEnumeration(CashRegisterMovementMode.class, CashRegisterMovementMode.CASH);
-		CashRegisterMovementMode cashRegisterMovementMode = new CashRegisterMovementMode(CashRegisterMovementMode.CHEQUE, CashRegisterMovementMode.CHEQUE, null);
-		cashRegisterMovementMode.setSupportDocumentIdentifier(Boolean.TRUE);
-		create(cashRegisterMovementMode);
-		
-		cashRegisterMovementMode = new CashRegisterMovementMode(CashRegisterMovementMode.GIFT_CARD, CashRegisterMovementMode.GIFT_CARD, null);
-		cashRegisterMovementMode.setSupportDocumentIdentifier(Boolean.TRUE);
-		create(cashRegisterMovementMode);
+		createFromExcelSheet(IntangibleProduct.class);
+		createFromExcelSheet(TangibleProduct.class);
+		createFromExcelSheet(SalableProduct.class);
+		createFromExcelSheet(CashRegisterMovementMode.class);
 	}
 	
 	@Override
@@ -289,6 +283,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
     			,{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD}
     			,{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED}
     	});
+		/*
 		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SEND, "Transférer");
 		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_RECEIVE, "Réceptionner");
 		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL, "Vendre");
@@ -299,6 +294,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED, "Réceptionné");
 		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD, "Vendu");
 		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED, "Utilisé");
+		*/
 		/*
 		createReportTemplate(CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CONTRACT,"contrat de travail",Boolean.TRUE, "report/employee/employment_contract.jrxml", null, null, null);
 		createReportTemplate(CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CERTIFICATE,"certificat d'emploi",Boolean.TRUE, "report/employee/employment_certificate.jrxml", null, null, null);
@@ -325,8 +321,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			listener.handleAccountingPeriodToInstall(accountingPeriod);
 		installObject(ACCOUNTING_PERIOD,inject(AccountingPeriodBusiness.class),accountingPeriod);
 		
-		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDD);
-		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDI);	
+		createFromExcelSheet(EmploymentAgreementType.class);
 		
 	}
 	
@@ -335,16 +330,12 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
     	createFromExcelSheet(ReportTemplate.class);
 	}
 	
-	private void security(){ 
-		for(String code : new String[]{CompanyConstant.BUSINESS_SERVICE_COLLECTION_ACCOUNTING,CompanyConstant.BUSINESS_SERVICE_COLLECTION_COMPANY
-				,CompanyConstant.BUSINESS_SERVICE_COLLECTION_PAYMENT,CompanyConstant.BUSINESS_SERVICE_COLLECTION_PRODUCT,CompanyConstant.BUSINESS_SERVICE_COLLECTION_PRODUCTION
-				,CompanyConstant.BUSINESS_SERVICE_COLLECTION_SALE,CompanyConstant.BUSINESS_SERVICE_COLLECTION_STOCK})
-        	createEnumeration(BusinessServiceCollection.class,code);
+	private void security(){
+		createFromExcelSheet(BusinessServiceCollection.class);
 	}
 		
 	private void structure(){
-		DivisionType department = new DivisionType(null, DivisionType.DEPARTMENT, "Department");
-        create(department);
+		createFromExcelSheet(DivisionType.class);
     }
 	
 	/**/
@@ -353,7 +344,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	protected void setConstants(){}
 	
 	public IntangibleProduct getIntangibleProductStocking(){
-		return getEnumeration(IntangibleProduct.class,IntangibleProduct.STOCKING);
+		return getEnumeration(IntangibleProduct.class,CompanyConstant.Code.IntangibleProduct.STOCKING);
 	}
 	public TangibleProduct getTangibleProductStocking(){
 		return getEnumeration(TangibleProduct.class,TangibleProduct.STOCKING);

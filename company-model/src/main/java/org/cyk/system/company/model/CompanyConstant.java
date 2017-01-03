@@ -33,21 +33,63 @@ public interface CompanyConstant {
 			public static String EMPLOYEE_WORK_CERTIFICATE = "EMPLOYEEWORKCERTIFICATE";
 			public static String EMPLOYEE_EMPLOYMENT_CERTIFICATE = "EMPLOYEEEMPLOYMENTCERTIFICATE";
 		}
+	
+		public static class BusinessServiceCollection implements Serializable {
+			private static final long serialVersionUID = 1L;
+		
+			public static String PRODUCT = "PRODUCT";
+			public static String PAYMENT = "PAYMENT";
+			public static String COMPANY = "COMPANY";
+			public static String SALE = "SALE";
+			public static String STOCK = "STOCK";
+			public static String PRODUCTION = "PRODUCTION";
+			public static String ACCOUNTING = "ACCOUNTING";
+			
+		}
+		
+		public static class Product implements Serializable {
+			private static final long serialVersionUID = 1L;
+			
+			public static String STOCKING = "STOCKING";
+		}
+		
+		public static class IntangibleProduct implements Serializable {
+			private static final long serialVersionUID = 1L;
+			
+			public static String STOCKING = "STOCKING";
+		}
+		
+		public static class FiniteStateMachineAlphabet implements Serializable {
+			private static final long serialVersionUID = 1L;
+			
+			public static String SEND = "SEND";
+			public static String RECEIVE = "RECEIVE";
+			public static String SELL = "SELL";
+			public static String USE = "USE";
+		}
+		
+		public static class FiniteStateMachineState implements Serializable {
+			private static final long serialVersionUID = 1L;
+			
+			public static String ASSIGNED = "ASSIGNED";
+			public static String SENT = "SENT";
+			public static String RECEIVED = "RECEIVED";
+			public static String SOLD = "SOLD";
+			public static String USED = "USED";
+		}
+		
+		public static class CashRegisterMovementMode implements Serializable {
+			private static final long serialVersionUID = 1L;
+			
+			public static String CASH = "CASH";
+			public static String CHEQUE = "CHEQUE";
+			public static String GIFT_CARD = "GIFTCARD";
+		}
 	}
-	
-	/* Business Service */
-	
-	String BUSINESS_SERVICE_COLLECTION_PRODUCT = "PRODUCT";
-	String BUSINESS_SERVICE_COLLECTION_PAYMENT = "PAYMENT";
-	String BUSINESS_SERVICE_COLLECTION_COMPANY = "COMPANY";
-	String BUSINESS_SERVICE_COLLECTION_SALE = "SALE";
-	String BUSINESS_SERVICE_COLLECTION_STOCK = "STOCK";
-	String BUSINESS_SERVICE_COLLECTION_PRODUCTION = "PRODUCTION";
-	String BUSINESS_SERVICE_COLLECTION_ACCOUNTING = "ACCOUNTING";
-	
+		
 	/* Product */
 	
-	String STOCKING= "STOCKING";
+	
 	
 	/* Gift card management */
 	

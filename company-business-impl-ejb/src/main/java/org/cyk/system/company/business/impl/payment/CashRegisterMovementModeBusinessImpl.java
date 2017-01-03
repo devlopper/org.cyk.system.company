@@ -18,5 +18,10 @@ public class CashRegisterMovementModeBusinessImpl extends AbstractEnumerationBus
 		super(dao);
 	}
 	
-	
+	@Override
+	protected CashRegisterMovementMode __instanciateOne__(String[] values,org.cyk.system.root.business.api.TypedBusiness.InstanciateOneListener<CashRegisterMovementMode> listener) {
+		CashRegisterMovementMode cashRegisterMovementMode = super.__instanciateOne__(values, listener);
+		set(listener.getSetListener().setIndex(10),CashRegisterMovementMode.FIELD_SUPPORT_DOCUMENT_IDENTIFIER);
+		return cashRegisterMovementMode;
+	}
 }

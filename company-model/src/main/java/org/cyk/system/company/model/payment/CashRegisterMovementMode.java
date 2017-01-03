@@ -16,10 +16,6 @@ import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 public class CashRegisterMovementMode extends AbstractEnumeration implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
-
-	public static final String CASH = "CASH";
-	public static final String CHEQUE = "CHEQUE";
-	public static final String GIFT_CARD = "GIFT_CARD";
 	
 	private Boolean supportDocumentIdentifier = Boolean.FALSE;
 	

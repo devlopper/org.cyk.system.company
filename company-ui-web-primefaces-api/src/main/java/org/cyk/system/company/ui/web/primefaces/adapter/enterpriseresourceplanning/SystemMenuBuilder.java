@@ -64,7 +64,7 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 	
 	public Commandable getCompanyCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = createModuleCommandable(Company.class, null);
-		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_COMPANY).getName());
+		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.Code.BusinessServiceCollection.COMPANY).getName());
 		
 		return module;
 	}
@@ -79,14 +79,14 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 	
 	public Commandable getProductCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = createModuleCommandable(Product.class, null);
-		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_PRODUCT).getName());
+		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.Code.BusinessServiceCollection.PRODUCT).getName());
 		
 		return module;
 	}
 	
 	public Commandable getPaymentCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = createModuleCommandable("payment", null);
-		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_PAYMENT).getName());
+		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.Code.BusinessServiceCollection.PAYMENT).getName());
 		module.addChild(createListCommandable(CashRegisterMovement.class, null));
 		module.addChild(createListCommandable(CashRegisterMovementTermCollection.class, null));
 		
@@ -95,7 +95,7 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 	
 	public Commandable getSaleCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = createModuleCommandable(Sale.class, null);
-		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.BUSINESS_SERVICE_COLLECTION_SALE).getName());
+		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.Code.BusinessServiceCollection.SALE).getName());
 		module.addChild(createListCommandable(Sale.class, null));
 		module.addChild(createListCommandable(ProFormaInvoice.class, null));
 		module.addChild(createListCommandable(Customer.class, null));

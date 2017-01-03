@@ -14,9 +14,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
@@ -103,7 +103,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	public SaleCashRegisterMovement instanciateOne(Sale sale,CashRegister cashRegister,Boolean input) {
 		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement(cashRegister,new Movement());
 		//cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashRegister.getMovementCollection(),input));
-		cashRegisterMovement.setMode(inject(CashRegisterMovementModeDao.class).read(CashRegisterMovementMode.CASH));
+		cashRegisterMovement.setMode(inject(CashRegisterMovementModeDao.class).read(CompanyConstant.Code.CashRegisterMovementMode.CASH));
 		SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement(sale,cashRegisterMovement);
 		logInstanceCreated(saleCashRegisterMovement);
 		return saleCashRegisterMovement;
