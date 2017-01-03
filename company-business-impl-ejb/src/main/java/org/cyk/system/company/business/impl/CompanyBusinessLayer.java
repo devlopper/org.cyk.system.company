@@ -41,7 +41,6 @@ import org.cyk.system.company.model.structure.EmploymentAgreementType;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
-import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.time.TimeBusiness;
@@ -205,8 +204,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	}*/
 	
 	@Override
-	protected void persistData() {
-		security();
+	protected void persistStructureData() {
+		super.persistStructureData();
+		file();
 		structure();
 		company();
 		
@@ -227,11 +227,16 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		cashRegisterMovementMode = new CashRegisterMovementMode(CashRegisterMovementMode.GIFT_CARD, CashRegisterMovementMode.GIFT_CARD, null);
 		cashRegisterMovementMode.setSupportDocumentIdentifier(Boolean.TRUE);
 		create(cashRegisterMovementMode);
-
 	}
 	
+	@Override
+	protected void persistSecurityData() {
+		super.persistSecurityData();
+		security();
+	}
+		
 	private void company(){ 
-		byte[] bytes = null;
+		//byte[] bytes = null;
 		
 		Company company = new Company();
 		company.setCode("C01");
@@ -242,29 +247,29 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 				companyName = value;
 		}
 		company.setName(companyName==null?"MyCompany":companyName);
-		bytes = null;
+		/*bytes = null;
 		for(Listener listener : Listener.COLLECTION){
 			byte[] value = listener.getCompanyLogoBytes();
 			if(value!=null)
 				bytes = value;
-		}
-		company.setImage(inject(FileBusiness.class).process(bytes==null?getResourceAsBytes("image/logo.png"):bytes,"companylogo.png"));
-		//fileBusiness.create(company.getImage());
+		}*/
+		company.setImage(read(File.class, CompanyConstant.Code.File.COMPANYLOGO));
+		/*
 		for(Listener listener : Listener.COLLECTION)
 			listener.handleCompanyLogoToInstall(company.getImage());
 		installObject(FILE_COMPANY_LOGO,inject(FileBusiness.class),company.getImage());
+		*/
 		company.setContactCollection(new ContactCollection());
-		//company.getContactCollection().setPhoneNumbers(new ArrayList<PhoneNumber>());
-		//RootRandomDataProvider.getInstance().phoneNumber(company.getContactCollection());
-		
+		/*
 		for(Listener listener : Listener.COLLECTION)
 			listener.handleCompanyToInstall(company);
+			*/
 		installObject(STRUCTURE_COMPANY,inject(CompanyBusiness.class),company);
 		
 		OwnedCompany ownedCompany = new OwnedCompany();
 		ownedCompany.setCompany(company);
 		ownedCompany.setSelected(Boolean.TRUE);
-		//ownedCompanyBusiness.create(ownedCompany);
+		
 		installObject(-1,inject(OwnedCompanyBusiness.class),ownedCompany);
 		
 		/*FiniteStateMachine finiteStateMachine = rootDataProducerHelper.createFiniteStateMachine("SALE_FINITE_MACHINE_STATE"
@@ -320,21 +325,13 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			listener.handleAccountingPeriodToInstall(accountingPeriod);
 		installObject(ACCOUNTING_PERIOD,inject(AccountingPeriodBusiness.class),accountingPeriod);
 		
-		//intangibleProductBusiness.create(new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null, null));
-		//installObject(PRODUCT_INTANGIBLE_SALE_STOCK,intangibleProductBusiness,new IntangibleProduct(IntangibleProduct.SALE_STOCK, "Stockage de marchandise", null, null));
-		
-		//tangibleProductBusiness.create(new TangibleProduct(TangibleProduct.SALE_STOCK, "Marchandise", null, null, null));
-		//installObject(PRODUCT_TANGIBLE_SALE_STOCK,tangibleProductBusiness,new TangibleProduct(TangibleProduct.SALE_STOCK, "Marchandise", null, null));
-		
 		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDD);
 		createEnumeration(EmploymentAgreementType.class,EmploymentAgreementType.CDI);	
 		
-		
-		/*createFile(CompanyConstant.Code.File.DOCUMENT_HEADER,null);
-    	createFile(CompanyConstant.Code.File.DOCUMENT_BACKGROUND,null);
-    	createFile(CompanyConstant.Code.File.DOCUMENT_BACKGROUND_DRAFT,null);*/
-    	
-    	createFromExcelSheet(File.class);
+	}
+	
+	private void file(){
+		createFromExcelSheet(File.class);
     	createFromExcelSheet(ReportTemplate.class);
 	}
 	

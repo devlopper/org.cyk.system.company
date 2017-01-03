@@ -10,6 +10,7 @@ public interface CompanyConstant {
 		public static class File implements Serializable {
 			private static final long serialVersionUID = 1L;
 			
+			public static String COMPANYLOGO = "COMPANYLOGO";
 			public static String DOCUMENT_HEADER = "DOCUMENTHEADER";
 			public static String DOCUMENT_FOOTER = "DOCUMENTFOOTER";
 			public static String DOCUMENT_BACKGROUND = "DOCUMENTBACKGROUND";
