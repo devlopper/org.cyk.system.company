@@ -71,7 +71,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		SaleReport saleReport = new SaleReport();
 		set(sale, saleReport);
 		report.setSale(saleReport);
-		
+		/*
 		report.generate();
 		report.addLabelValueCollection("Invoice",new String[][]{
 				{"Identifiant", report.getSale().getGlobalIdentifier().getIdentifier()}
@@ -89,7 +89,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 				,{"Montant Hors Taxe", report.getSale().getSalableProductCollection().getCost().getValue()}
 				,{"TVA", report.getSale().getSalableProductCollection().getCost().getTax()}
 				});
-		
+		*/
 		return report;
 	}
 	
@@ -107,18 +107,18 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		
 		report.generate();
 		//debug(saleCashRegisterMovementReport);
-		report.addLabelValueCollection("MyPayment",new String[][]{
+		report.addLabelValues("MyPayment",new String[][]{
 				{"Identifiant", report.getSaleCashRegisterMovement().getGlobalIdentifier().getIdentifier()}
 				,{"Caisse", report.getSaleCashRegisterMovement().getCashRegisterMovement().getCashRegister().getGlobalIdentifier().getCode()}
 				,{"Date", report.getSaleCashRegisterMovement().getGlobalIdentifier().getExistencePeriod().getFrom()}
 				//,{"Client", report.getSaleCashRegisterMovement().getSale().getCustomer().getGlobalIdentifier().getIdentifier()}
 				});
 		
-		report.addLabelValueCollection("Payment",new String[][]{
+		report.addLabelValues("Payment",new String[][]{
 				{"A payer", report.getSaleCashRegisterMovement().getSale().getSalableProductCollection().getCost().getValue()}
 				});
 		
-		report.addLabelValueCollection("TVA",new String[][]{
+		report.addLabelValues("TVA",new String[][]{
 				{"Taux TVA", report.getSaleCashRegisterMovement().getSale().getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate()}
 				,{"Montant Hors Taxe", report.getSaleCashRegisterMovement().getSale().getSalableProductCollection().getCost().getValue()}
 				,{"TVA", report.getSaleCashRegisterMovement().getSale().getSalableProductCollection().getCost().getTax()}

@@ -25,18 +25,18 @@ public class SampleData implements Serializable {
 		Collection<InvoiceReport> collection = RandomDataProvider.generate(InvoiceReport.class, 1);
 		InvoiceReport report = collection.iterator().next();
 		
-		report.addLabelValueCollection("Invoice",new String[][]{
+		report.addLabelValues("Invoice",new String[][]{
 				{"Identifiant", report.getSale().getGlobalIdentifier().getIdentifier()}
 				,{"Caisse", report.getSale().getSaleCashRegisterMovements().iterator().next().getCashRegisterMovement().getCashRegister().getGlobalIdentifier().getCode()}
 				,{"Date", report.getSale().getGlobalIdentifier().getExistencePeriod().getFrom()}
 				,{"Client", report.getSale().getCustomer().getGlobalIdentifier().getIdentifier()}
 				});
 		
-		report.addLabelValueCollection("Payment",new String[][]{
+		report.addLabelValues("Payment",new String[][]{
 				{"A payer", report.getSale().getSalableProductCollection().getCost().getValue()}
 				});
 		
-		report.addLabelValueCollection("TVA",new String[][]{
+		report.addLabelValues("TVA",new String[][]{
 				{"Taux TVA", report.getSale().getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate()}
 				,{"Montant Hors Taxe", report.getSale().getSalableProductCollection().getCost().getValue()}
 				,{"TVA", report.getSale().getSalableProductCollection().getCost().getTax()}
