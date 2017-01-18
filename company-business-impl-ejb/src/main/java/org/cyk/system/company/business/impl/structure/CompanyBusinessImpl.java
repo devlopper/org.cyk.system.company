@@ -26,4 +26,9 @@ public class CompanyBusinessImpl extends AbstractPartyBusinessImpl<Company, Comp
 		return dao.readByManager(manager);
 	}
 	
+	@Override
+	public Company update(Company company) {
+		return super.update(company);
+	}
+	
 }

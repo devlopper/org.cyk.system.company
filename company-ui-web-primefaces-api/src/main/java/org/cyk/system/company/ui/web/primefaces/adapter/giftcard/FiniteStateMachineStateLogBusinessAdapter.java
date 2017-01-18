@@ -1,23 +1,12 @@
 package org.cyk.system.company.ui.web.primefaces.adapter.giftcard;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
 
-import org.cyk.system.company.model.CompanyConstant;
-import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
-import org.cyk.system.root.business.impl.mathematics.machine.FiniteStateMachineStateLogBusinessImpl;
-import org.cyk.system.root.model.AbstractIdentifiable;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateLog.IdentifiablesSearchCriteria;
-import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
+import org.cyk.system.root.business.impl.mathematics.machine.FiniteStateMachineStateIdentifiableGlobalIdentifierBusinessImpl;
 
-public class FiniteStateMachineStateLogBusinessAdapter extends FiniteStateMachineStateLogBusinessImpl.Listener.Adapter implements Serializable {
+public class FiniteStateMachineStateLogBusinessAdapter extends FiniteStateMachineStateIdentifiableGlobalIdentifierBusinessImpl.Listener.Adapter implements Serializable {
 	private static final long serialVersionUID = -4637937513750895770L;
-	@Override
+	/*@Override
 	public <T extends AbstractIdentifiable> void afterSearchIdentifiablesFind(IdentifiablesSearchCriteria<T> searchCriteria,Collection<T> identifiables) {
 		if(SalableProductInstanceCashRegister.class.equals(searchCriteria.getIdentifiableClass())){
 			Collection<SalableProductInstanceCashRegister> utilise = new ArrayList<>();
@@ -40,5 +29,5 @@ public class FiniteStateMachineStateLogBusinessAdapter extends FiniteStateMachin
 						}				
 			}	
 		}	
-	}
+	}*/
 }

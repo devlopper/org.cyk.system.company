@@ -44,7 +44,7 @@ import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderIdentifi
 import org.cyk.system.root.model.file.report.ReportBasedOnDynamicBuilderParameters;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFileConfiguration;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateLog;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateIdentifiableGlobalIdentifier;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
@@ -308,11 +308,12 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 		/**/
 		
 		addConfiguration(new ReportBasedOnDynamicBuilderIdentifiableConfiguration<AbstractIdentifiable, Object>(
-        		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),FiniteStateMachineStateLog.class,SalableProductInstanceCashRegisterStateLogDetails.class) {
+        		RootBusinessLayer.getInstance().getParameterGenericReportBasedOnDynamicBuilder(),FiniteStateMachineStateIdentifiableGlobalIdentifier.class
+        		,SalableProductInstanceCashRegisterStateLogDetails.class) {
 			private static final long serialVersionUID = -1966207854828857772L;
 			@Override
 			public Object model(AbstractIdentifiable identifiable) {
-				return new SalableProductInstanceCashRegisterStateLogDetails((FiniteStateMachineStateLog) identifiable);
+				return new SalableProductInstanceCashRegisterStateLogDetails((FiniteStateMachineStateIdentifiableGlobalIdentifier) identifiable);
 			}
 			/*@Override
 			public Boolean useCustomIdentifiableCollection() {
@@ -434,7 +435,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	/**/
 	
 	public Collection<SalableProductInstanceCashRegisterStateLogDetails> format(Collection<SalableProductInstanceCashRegisterStateLogDetails> collection,Collection<SalableProductInstanceCashRegister> salableProductInstanceCashRegisters,String timeDivisionTypeCode){
-		NumberBusiness numberBusiness = inject(NumberBusiness.class);
+		//NumberBusiness numberBusiness = inject(NumberBusiness.class);
 		Map<String, SalableProductInstanceCashRegisterStateLogDetails> map = new LinkedHashMap<>();
 		for(SalableProductInstanceCashRegisterStateLogDetails salableProductInstanceCashRegisterStateLogDetails : collection){
 			for(SalableProductInstanceCashRegister salableProductInstanceCashRegister : salableProductInstanceCashRegisters){
@@ -449,7 +450,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 					break;
 				}
 			}
-			
+			/*
 			String key = ""+salableProductInstanceCashRegisterStateLogDetails.getDate()+salableProductInstanceCashRegisterStateLogDetails
 					.getSalableProductInstanceCashRegister().getCashRegister().getCode()+salableProductInstanceCashRegisterStateLogDetails.getMaster().getState().getCode();
 			SalableProductInstanceCashRegisterStateLogDetails spicrsld = map.get(key);
@@ -462,6 +463,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				spicrsld.setTotalPrice(format(numberBusiness.parse(BigDecimal.class,spicrsld.getTotalPrice())
 						.add(numberBusiness.parse(BigDecimal.class, salableProductInstanceCashRegisterStateLogDetails.getTotalPrice())) ));
 			}
+			*/
 		}
 		
 		for(SalableProductInstanceCashRegisterStateLogDetails salableProductInstanceCashRegisterStateLogDetails : map.values()){
@@ -471,7 +473,9 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				identifiers.add(Long.parseLong(value));
 			salableProductInstanceCashRegisterStateLogDetails.setCode(inject(NumberBusiness.class).formatSequences(identifiers, arguments));
 			if(RootConstant.Code.TimeDivisionType.DAY.equals(timeDivisionTypeCode))
-				salableProductInstanceCashRegisterStateLogDetails.setDate(formatDate(salableProductInstanceCashRegisterStateLogDetails.getMaster().getDate()));
+				;
+				//salableProductInstanceCashRegisterStateLogDetails.setDate(formatDate(salableProductInstanceCashRegisterStateLogDetails.getMaster().getGlobalIdentifier()
+				//		.getCreationDate()));
 		}
 		
 		return map.values();

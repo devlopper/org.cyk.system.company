@@ -208,19 +208,11 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		structure();
 		company();
 		
-		/*if(Boolean.TRUE.equals(PRODUCT_STOCKING_ENABLED)){
-			create(new IntangibleProduct(IntangibleProduct.STOCKING, IntangibleProduct.STOCKING, null));
-	    	create(new TangibleProduct(TangibleProduct.STOCKING, TangibleProduct.STOCKING, null));
-	    	
-	    	create(new SalableProduct(getEnumeration(IntangibleProduct.class, IntangibleProduct.STOCKING), null));
-	    	create(new StockableTangibleProduct(getEnumeration(TangibleProduct.class, TangibleProduct.STOCKING)
-	    			, rootDataProducerHelper.createMovementCollection(TangibleProduct.STOCKING, "Input", "Output")));	
-		}*/
-		
 		createFromExcelSheet(IntangibleProduct.class);
 		createFromExcelSheet(TangibleProduct.class);
 		createFromExcelSheet(SalableProduct.class);
 		createFromExcelSheet(CashRegisterMovementMode.class);
+		
 	}
 	
 	@Override

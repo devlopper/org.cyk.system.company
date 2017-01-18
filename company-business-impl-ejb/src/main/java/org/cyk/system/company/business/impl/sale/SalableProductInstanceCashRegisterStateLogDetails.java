@@ -2,17 +2,17 @@ package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
-import org.cyk.system.root.business.impl.mathematics.machine.FiniteStateMachineStateLogDetails;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateLog;
+import org.cyk.system.root.business.impl.mathematics.machine.FiniteStateMachineStateIdentifiableGlobalIdentifierDetails;
+import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineStateIdentifiableGlobalIdentifier;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Getter @Setter
-public class SalableProductInstanceCashRegisterStateLogDetails extends FiniteStateMachineStateLogDetails implements Serializable {
+public class SalableProductInstanceCashRegisterStateLogDetails extends FiniteStateMachineStateIdentifiableGlobalIdentifierDetails implements Serializable {
 
 	private static final long serialVersionUID = 4745377947579721936L;
 	
@@ -21,8 +21,8 @@ public class SalableProductInstanceCashRegisterStateLogDetails extends FiniteSta
 	@Input @InputText
 	private String code,quantity,unitPrice,totalPrice,cashRegister;
 	
-	public SalableProductInstanceCashRegisterStateLogDetails(FiniteStateMachineStateLog finiteStateMachineStateLog) {
-		super(finiteStateMachineStateLog);
+	public SalableProductInstanceCashRegisterStateLogDetails(FiniteStateMachineStateIdentifiableGlobalIdentifier finiteStateMachineStateIdentifiableGlobalIdentifier) {
+		super(finiteStateMachineStateIdentifiableGlobalIdentifier);
 		
 	}
 

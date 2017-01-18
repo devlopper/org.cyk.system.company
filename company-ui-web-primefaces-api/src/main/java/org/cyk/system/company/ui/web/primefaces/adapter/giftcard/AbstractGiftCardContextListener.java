@@ -9,7 +9,6 @@ import org.cyk.system.company.business.impl.sale.SaleProductInstanceBusinessImpl
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.adapter.sale.AbstractSaleOnlyOneInstanceContextListener;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
-import org.cyk.system.root.business.impl.mathematics.machine.FiniteStateMachineStateLogBusinessImpl;
 import org.cyk.system.root.ui.web.primefaces.api.RootWebManager;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessEntityFormOnePage;
 import org.cyk.ui.web.primefaces.page.AbstractProcessManyPage;
@@ -26,7 +25,7 @@ public abstract class AbstractGiftCardContextListener extends AbstractSaleOnlyOn
 		
 		SaleBusinessImpl.Listener.COLLECTION.add(new SaleBusinessAdapter());
 		SaleProductInstanceBusinessImpl.Listener.COLLECTION.add(new SaleProductInstanceBusinessAdapter());
-		FiniteStateMachineStateLogBusinessImpl.Listener.COLLECTION.add(new FiniteStateMachineStateLogBusinessAdapter());
+		//FiniteStateMachineStateLogBusinessImpl.Listener.COLLECTION.add(new FiniteStateMachineStateLogBusinessAdapter());
 		
 		CompanyWebManager.getInstance().getListeners().add(new GiftCardPrimefacesManagerAdapter());
 		AbstractBusinessEntityFormOnePage.BusinessEntityFormOnePageListener.COLLECTION.add(new BusinessSaleEditPageAdapter());
