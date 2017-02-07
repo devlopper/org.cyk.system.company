@@ -178,7 +178,7 @@ public class SalableProductCollectionEditPage extends AbstractSalableProductColl
 		@Override
 		public void write() {
 			super.write();
-			cost.write(identifiable.getCost(),autoComputeValueAddedTax);
+			cost.write(identifiable.getCost(),identifiable.getAccountingPeriod(),autoComputeValueAddedTax);
 		}
 		
 		public static final String FIELD_ACCOUNTINGPERIOD = "accountingPeriod";

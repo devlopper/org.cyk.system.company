@@ -5,9 +5,11 @@ import java.io.Serializable;
 import javax.servlet.ServletContextEvent;
 
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.adapter.enterpriseresourceplanning.AbstractContextListener;
 import org.cyk.system.company.ui.web.primefaces.adapter.enterpriseresourceplanning.PrimefacesManager;
+import org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl;
 
 @javax.servlet.annotation.WebListener
 public class ContextListener extends AbstractContextListener implements Serializable {
@@ -19,6 +21,9 @@ public class ContextListener extends AbstractContextListener implements Serializ
 		super.contextInitialized(event);
 		CompanyWebManager.getInstance().getListeners().add(new PrimefacesManager());
 		CompanyBusinessLayer.getInstance().enableEnterpriseResourcePlanning();
+		
+		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{"code","name"}
+			, SalableProductCollectionItem.class);
 	}
 	
 }

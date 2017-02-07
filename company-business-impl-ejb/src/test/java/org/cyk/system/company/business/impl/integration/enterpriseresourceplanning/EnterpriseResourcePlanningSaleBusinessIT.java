@@ -4,11 +4,12 @@ import java.math.BigDecimal;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
+import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
+import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
@@ -31,9 +32,10 @@ public class EnterpriseResourcePlanningSaleBusinessIT extends AbstractEnterprise
     @Override
     protected void populate() {
     	super.populate();
-    	inject(SalableProductBusiness.class).create(TangibleProduct.class, "TP01", "Omo", new BigDecimal("100"));
-    	inject(SalableProductBusiness.class).create(TangibleProduct.class, "TP02", "Javel", new BigDecimal("150"));
-    	inject(SalableProductBusiness.class).create(TangibleProduct.class, "TP03", "Riz", new BigDecimal("225"));
+    	create(inject(TangibleProductBusiness.class).instanciateMany(new String[][]{{"TP01","Omo"},{"TP02", "Javel"},{"TP03", "Riz"}}));
+    	create(inject(IntangibleProductBusiness.class).instanciateMany(new String[][]{{"IP01","Nettoyage"},{"IP02", "Surveillance"},{"IP03", "Conseil"}}));
+    	create(inject(SalableProductBusiness.class).instanciateMany(new String[][]{{"","","","","","","","","","","TP01","100"}
+    		,{"","","","","","","","","","","TP03", "225"},{"","","","","","","","","","","IP02", "500"}}));
     	
     	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_001));
     	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_002));

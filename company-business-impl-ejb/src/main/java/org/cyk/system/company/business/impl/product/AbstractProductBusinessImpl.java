@@ -88,6 +88,8 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
 		}
 	}
     
+    
+    
     protected abstract Set<PRODUCT> products(Collection<SalableProductCollectionItem> saleProducts);
     
     protected abstract void beforeUpdate(PRODUCT product,BigDecimal usedCount);

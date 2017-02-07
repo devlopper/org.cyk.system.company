@@ -7,6 +7,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
@@ -17,7 +18,9 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
+import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.utility.common.LogMessage;
 
 public class SalableProductCollectionItemBusinessImpl extends AbstractCollectionItemBusinessImpl<SalableProductCollectionItem, SalableProductCollectionItemDao,SalableProductCollection> implements SalableProductCollectionItemBusiness,Serializable {
@@ -30,29 +33,20 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	}
 	
 	@Override
-	public SalableProductCollectionItem create(SalableProductCollectionItem salableProductCollectionItem) {
-		super.create(salableProductCollectionItem);
-		if(Boolean.TRUE.equals(salableProductCollectionItem.getCascadeOperationToMaster()))
-			cascadeUpdateCollectionCost(salableProductCollectionItem);
-		return salableProductCollectionItem;
+	protected Object[] getPropertyValueTokens(SalableProductCollectionItem salableProductCollectionItem, String name) {
+		if(ArrayUtils.contains(new String[]{GlobalIdentifier.FIELD_CODE,GlobalIdentifier.FIELD_NAME}, name))
+			return new Object[]{salableProductCollectionItem.getSalableProduct()};
+		return super.getPropertyValueTokens(salableProductCollectionItem, name);
 	}
 	
 	@Override
-	public SalableProductCollectionItem update(SalableProductCollectionItem salableProductCollectionItem) {
-		super.update(salableProductCollectionItem);
-		if(Boolean.TRUE.equals(salableProductCollectionItem.getCascadeOperationToMaster()))
-			cascadeUpdateCollectionCost(salableProductCollectionItem);
-		return salableProductCollectionItem;
+	protected void afterCrud(SalableProductCollectionItem salableProductCollectionItem, Crud crud) {
+		super.afterCrud(salableProductCollectionItem, crud);
+		if(ArrayUtils.contains(new Crud[]{Crud.CREATE,Crud.UPDATE,Crud.DELETE}, crud))
+			if(Boolean.TRUE.equals(salableProductCollectionItem.getCascadeOperationToMaster()))
+				cascadeUpdateCollectionCost(salableProductCollectionItem);
 	}
-	
-	@Override
-	public SalableProductCollectionItem delete(SalableProductCollectionItem salableProductCollectionItem) {
-		super.delete(salableProductCollectionItem);
-		if(Boolean.TRUE.equals(salableProductCollectionItem.getCascadeOperationToMaster()))
-			cascadeUpdateCollectionCost(salableProductCollectionItem);
-		return salableProductCollectionItem;
-	}
-	
+		
 	private void cascadeUpdateCollectionCost(SalableProductCollectionItem salableProductCollectionItem){
 		inject(SalableProductCollectionBusiness.class).computeCost(salableProductCollectionItem.getCollection());
 		inject(SalableProductCollectionDao.class).update(salableProductCollectionItem.getCollection());
@@ -62,6 +56,7 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	public SalableProductCollectionItem instanciateOne(SalableProductCollection salableProductCollection,
 			SalableProduct salableProduct, BigDecimal quantity, BigDecimal reduction, BigDecimal commission) {
 		SalableProductCollectionItem salableProductCollectionItem = instanciateOne(salableProduct.getCode(),salableProduct.getName());
+		salableProductCollectionItem.setCode(salableProduct.getCode());
 		salableProductCollectionItem.setCollection(salableProductCollection);
 		salableProductCollectionItem.setSalableProduct(salableProduct);
 		salableProductCollectionItem.setQuantity(quantity);
