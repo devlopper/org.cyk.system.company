@@ -13,7 +13,7 @@ import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.CostReport;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.accounting.AccountingPeriodReport;
-import org.cyk.system.company.model.sale.InvoiceReport;
+import org.cyk.system.company.model.sale.SaleReportTemplateFile;
 import org.cyk.system.company.model.sale.PaymentReceiptReport;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
@@ -53,17 +53,17 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		
 		if(identifiable instanceof Sale){
 			if(CompanyConstant.Code.ReportTemplate.INVOICE.equals(reportTemplateCode))
-				return InvoiceReport.class;
+				return SaleReportTemplateFile.class;
 			if(CompanyConstant.Code.ReportTemplate.INVOICE_AND_PAYMENT_RECEIPT.equals(reportTemplateCode))
-				return InvoiceReport.class;
+				return SaleReportTemplateFile.class;
 		}
 		
 		return super.getReportTemplateFileClass(identifiable, reportTemplateCode);
 	}
 	
-	private InvoiceReport produceInvoiceReport(Sale sale) {
+	private SaleReportTemplateFile produceInvoiceReport(Sale sale) {
 		logDebug("Prepare Sale report");
-		InvoiceReport report = new InvoiceReport();
+		SaleReportTemplateFile report = new SaleReportTemplateFile();
 		report.setTitle(languageBusiness.findText("company.report.sale"));
 		report.setFooter(languageBusiness.findText("company.report.pointofsale.welcome"));
 		report.setHeader(languageBusiness.findText("company.report.pointofsale.goodbye"));
@@ -136,7 +136,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	@SuppressWarnings("unchecked")
 	@Override
 	public <REPORT extends AbstractReportTemplateFile<REPORT>> REPORT produce(Class<REPORT> reportClass,CreateReportFileArguments<?> createReportFileArguments) {
-		if(InvoiceReport.class.equals(reportClass)){
+		if(SaleReportTemplateFile.class.equals(reportClass)){
 			if(createReportFileArguments.getIdentifiable() instanceof Sale)
 				return (REPORT) produceInvoiceReport((Sale)createReportFileArguments.getIdentifiable());
 		}else if(PaymentReceiptReport.class.equals(reportClass)){

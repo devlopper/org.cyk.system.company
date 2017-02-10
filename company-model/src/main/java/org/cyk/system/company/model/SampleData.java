@@ -3,8 +3,7 @@ package org.cyk.system.company.model;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.cyk.system.company.model.sale.InvoiceReport;
+import org.cyk.system.company.model.sale.SaleReportTemplateFile;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementReport;
 import org.cyk.system.company.model.structure.EmployeeReportTemplateFile;
 import org.cyk.utility.common.generator.RandomDataProvider;
@@ -21,9 +20,9 @@ public class SampleData implements Serializable {
 		return collection;
 	}
 	
-	public static Collection<InvoiceReport> getPointOfSaleReports(){
-		Collection<InvoiceReport> collection = RandomDataProvider.generate(InvoiceReport.class, 1);
-		InvoiceReport report = collection.iterator().next();
+	public static Collection<SaleReportTemplateFile> getPointOfSaleReports(){
+		Collection<SaleReportTemplateFile> collection = RandomDataProvider.generate(SaleReportTemplateFile.class, 1);
+		SaleReportTemplateFile report = collection.iterator().next();
 		
 		report.addLabelValues("Invoice",new String[][]{
 				{"Identifiant", report.getSale().getGlobalIdentifier().getIdentifier()}
@@ -65,8 +64,5 @@ public class SampleData implements Serializable {
 		return collection;
 	}
 	
-	public static void main(String[] args) {
-		System.out.println(ToStringBuilder.reflectionToString(getPointOfSaleReports()));
-	}
 	
 }

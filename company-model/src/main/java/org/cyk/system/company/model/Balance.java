@@ -18,8 +18,8 @@ public class Balance extends AbstractModelElement implements Serializable {
 
 	private static final long serialVersionUID = 4330380476164276099L;
 
-	@Column(name="balance_value",precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal value = BigDecimal.ZERO;
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal cumul = BigDecimal.ZERO;
+	@Column(name=COLUMN_VALUE,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal value = BigDecimal.ZERO;
+	@Column(name=COLUMN_CUMUL,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal cumul = BigDecimal.ZERO;
 	
 	@Override
 	public String getUiString() {
@@ -42,5 +42,10 @@ public class Balance extends AbstractModelElement implements Serializable {
 	
 	public static final String FIELD_VALUE = "value";
 	public static final String FIELD_CUMUL = "cumul";
+	
+	/* Persistence */
+	public static final String COLUMN_PREFIX = "balance";
+	public static final String COLUMN_VALUE = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_VALUE;
+	public static final String COLUMN_CUMUL = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_CUMUL;
 
 }

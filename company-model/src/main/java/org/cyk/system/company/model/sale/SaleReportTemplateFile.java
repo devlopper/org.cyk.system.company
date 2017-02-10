@@ -9,7 +9,7 @@ import lombok.Setter;
 import org.cyk.system.root.model.file.report.AbstractReportTemplateFile;
 
 @Getter @Setter @NoArgsConstructor
-public class InvoiceReport extends AbstractReportTemplateFile<InvoiceReport> implements Serializable {
+public class SaleReportTemplateFile extends AbstractReportTemplateFile<SaleReportTemplateFile> implements Serializable {
 
 	private static final long serialVersionUID = 7332510774063666925L;
 

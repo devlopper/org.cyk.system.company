@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.root.model.AbstractCollectionItem;
 import org.cyk.utility.common.annotation.ModelBean;
@@ -29,13 +30,15 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne private SalableProduct salableProduct;
+	@ManyToOne @NotNull private SalableProduct salableProduct;
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal quantity;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal reduction=BigDecimal.ZERO;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal commission = BigDecimal.ZERO;
 	
 	@Embedded private Cost cost = new Cost();
+	
+	@Embedded private Balance balance = new Balance();//TODO not needed anymore
 
 	@Transient private Collection<SaleProductInstance> instances;
 	
@@ -57,5 +60,6 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 	public static final String FIELD_REDUCTION = "reduction";
 	public static final String FIELD_COMMISSION = "commission";
 	public static final String FIELD_COST = "cost";
+	public static final String FIELD_BALANCE = "balance";
 	
 }

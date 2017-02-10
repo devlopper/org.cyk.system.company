@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.ui.web.primefaces.BalanceFormModel;
 import org.cyk.system.company.ui.web.primefaces.CostFormModel;
 import org.cyk.ui.web.primefaces.page.AbstractCollectionItemEditPage;
 import org.cyk.utility.common.annotation.FieldOverride;
@@ -46,6 +47,7 @@ public class SalableProductCollectionItemEditPage extends AbstractCollectionItem
 		
 		@IncludeInputs(layout=IncludeInputs.Layout.VERTICAL) private CostFormModel cost = new CostFormModel();
 	
+		@IncludeInputs(layout=IncludeInputs.Layout.VERTICAL) private BalanceFormModel balance = new BalanceFormModel();
 		/**/
 		
 		public static final String FIELD_SALABLE_PRODUCT = "salableProduct";
@@ -54,6 +56,7 @@ public class SalableProductCollectionItemEditPage extends AbstractCollectionItem
 		public static final String FIELD_COMMISSION = "commission";
 		
 		public static final String FIELD_COST = "cost";
+		public static final String FIELD_BALANCE = "balance";
 	}
 
 }

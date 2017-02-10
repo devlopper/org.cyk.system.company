@@ -22,10 +22,10 @@ public class Cost extends AbstractModelElement implements Serializable {
 
 	private static final long serialVersionUID = 4948598720219343584L;
 
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal numberOfProceedElements = BigDecimal.ZERO;
-	@Column(name="cost",precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal value = BigDecimal.ZERO;
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal tax = BigDecimal.ZERO;
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal turnover = BigDecimal.ZERO;
+	@Column(name=COLUMN_NUMBER_OF_PROCEED_ELEMENTS,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal numberOfProceedElements = BigDecimal.ZERO;
+	@Column(name=COLUMN_VALUE,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal value = BigDecimal.ZERO;
+	@Column(name=COLUMN_TAX,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal tax = BigDecimal.ZERO;
+	@Column(name=COLUMN_TURNOVER,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal turnover = BigDecimal.ZERO;
 	
 	@Override
 	public String getUiString() {
@@ -48,4 +48,11 @@ public class Cost extends AbstractModelElement implements Serializable {
 	public static final String FIELD_VALUE = "value";
 	public static final String FIELD_TAX = "tax";
 	public static final String FIELD_TURNOVER = "turnover";
+	
+	/*Persistence*/
+	public static final String COLUMN_PREFIX = "cost";
+	public static final String COLUMN_NUMBER_OF_PROCEED_ELEMENTS = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_NUMBER_OF_PROCEED_ELEMENTS;
+	public static final String COLUMN_VALUE = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_VALUE;
+	public static final String COLUMN_TAX = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_TAX;
+	public static final String COLUMN_TURNOVER = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_TURNOVER;
 }
