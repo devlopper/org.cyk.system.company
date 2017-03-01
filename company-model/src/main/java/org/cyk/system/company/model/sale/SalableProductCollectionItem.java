@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.root.model.AbstractCollectionItem;
+import org.cyk.system.root.model.IdentifiableRuntimeCollection;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
@@ -37,10 +38,19 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal commission = BigDecimal.ZERO;
 	
 	@Embedded private Cost cost = new Cost();
+	@Transient private BigDecimal quantifiedPrice;
 	
-	@Embedded private Balance balance = new Balance();//TODO not needed anymore
+	@Embedded private Balance balance = new Balance();
+	//@Embedded private Period existencePeriod = new Period();
 
 	@Transient private Collection<SaleProductInstance> instances;
+	@Transient private IdentifiableRuntimeCollection<SalableProductCollectionItemSaleCashRegisterMovement> salableProductCollectionItemSaleCashRegisterMovements = new IdentifiableRuntimeCollection<>();
+	
+	public BigDecimal getQuantifiedPrice(){
+		if(quantifiedPrice==null && salableProduct.getPrice()!=null && quantity!=null)
+			quantifiedPrice = salableProduct.getPrice().multiply(quantity);
+		return quantifiedPrice;
+	}
 	
 	public Collection<SaleProductInstance> getInstances(){
 		if(instances==null)

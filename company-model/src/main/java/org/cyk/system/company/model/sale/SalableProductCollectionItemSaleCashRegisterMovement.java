@@ -21,18 +21,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE)
-public class SalableProductCollectionItemBalance extends AbstractIdentifiable implements Serializable {
+public class SalableProductCollectionItemSaleCashRegisterMovement extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne @NotNull private SalableProductCollectionItem salableProductCollectionItem;
+	@ManyToOne @NotNull private SaleCashRegisterMovement saleCashRegisterMovement;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amount = BigDecimal.ZERO;
-	
 	@Embedded private Balance balance = new Balance();
-		
+	
+	public SalableProductCollectionItemSaleCashRegisterMovement(SalableProductCollectionItem salableProductCollectionItem,SaleCashRegisterMovement saleCashRegisterMovement) {
+		super();
+		this.salableProductCollectionItem = salableProductCollectionItem;
+		this.saleCashRegisterMovement = saleCashRegisterMovement;
+	}
+	
 	/**/
 	
+	
 	public static final String FIELD_SALABLE_PRODUCT_COLLECTION_ITEM = "salableProductCollectionItem";
+	public static final String FIELD_SALE_CASH_REGISTER_MOVEMENT = "saleCashRegisterMovement";
 	public static final String FIELD_AMOUNT = "amount";
 	public static final String FIELD_BALANCE = "balance";
 	

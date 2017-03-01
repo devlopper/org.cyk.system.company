@@ -17,6 +17,13 @@ public class SalableProductReport extends AbstractIdentifiableReport<SalableProd
 	private String price;
 
 	@Override
+	public void setSource(Object source) {
+		super.setSource(source);
+		product.setSource(((SalableProduct)source).getProduct());
+		price = format(((SalableProduct)source).getPrice());
+	}
+	
+	@Override
 	public void generate() {
 		super.generate();
 		product.generate();

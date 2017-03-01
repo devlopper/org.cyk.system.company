@@ -44,8 +44,8 @@ public class Balance extends AbstractModelElement implements Serializable {
 	public static final String FIELD_CUMUL = "cumul";
 	
 	/* Persistence */
-	public static final String COLUMN_PREFIX = "balance";
-	public static final String COLUMN_VALUE = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_VALUE;
-	public static final String COLUMN_CUMUL = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_CUMUL;
+	public static final String COLUMN_PREFIX = "balance"+COLUMN_NAME_WORD_SEPARATOR;
+	public static final String COLUMN_VALUE = COLUMN_PREFIX+FIELD_VALUE;
+	public static final String COLUMN_CUMUL = COLUMN_PREFIX+FIELD_CUMUL;
 
 }

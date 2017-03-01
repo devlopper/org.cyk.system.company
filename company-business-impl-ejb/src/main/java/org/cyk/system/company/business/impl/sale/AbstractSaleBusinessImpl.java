@@ -20,6 +20,7 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.sale.AbstractSaleDao;
+import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
@@ -48,6 +49,7 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 	public SALE instanciateOne(String code, String customerCode,Object[][] salableProducts) {
 		SALE sale = instanciateOne();
 		sale.setCode(code);
+		sale.setCustomer(inject(CustomerDao.class).read(customerCode));
 		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne(code, salableProducts));
 		sale.getSalableProductCollection().setAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent());
 		sale.getSalableProductCollection().setAutoComputeValueAddedTax(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().signum()!=0);

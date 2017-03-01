@@ -31,6 +31,8 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.sale.SalableProductCollectionItemSaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
@@ -41,6 +43,7 @@ import org.cyk.system.company.model.structure.EmploymentAgreementType;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
+import org.cyk.system.root.business.api.ClazzBusiness;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.time.TimeBusiness;
@@ -55,6 +58,7 @@ import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
+import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.file.report.ReportTemplate;
@@ -182,6 +186,30 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 				return new Customer.SearchCriteria(dataReadConfiguration.getGlobalFilter());
 			}
         });
+		
+		ClazzBusiness.LISTENERS.add(new ClazzBusiness.ClazzBusinessListener.Adapter(){
+			private static final long serialVersionUID = -6563167908087619179L;
+			@Override
+			public Object getParentOf(Object object) {
+				if(object instanceof AbstractIdentifiable){
+					AbstractIdentifiable identifiable = (AbstractIdentifiable) object;
+					if(identifiable instanceof AccountingPeriod)
+						return null;
+					if(identifiable instanceof Sale)
+						return ((Sale)identifiable).getAccountingPeriod();
+					
+					if(identifiable instanceof SalableProductCollectionItem)
+						return ((SalableProductCollectionItem)identifiable).getSalableProduct();
+					
+					if(identifiable instanceof SaleCashRegisterMovement)
+						return ((SaleCashRegisterMovement)identifiable).getSale();
+					if(identifiable instanceof SalableProductCollectionItemSaleCashRegisterMovement)
+						return ((SalableProductCollectionItemSaleCashRegisterMovement)identifiable).getSaleCashRegisterMovement();
+					
+				}
+				return super.getParentOf(object);
+			}
+		});
 		
 		//TODO I do not know how to handle sale
 		SaleBusinessImpl.Listener.COLLECTION.add(new StockTangibleProductMovementBusinessImpl.SaleBusinessAdapter());

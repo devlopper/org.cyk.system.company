@@ -43,8 +43,8 @@ public class ProductionPlanEditPage extends AbstractCrudOnePage<ProductionPlan> 
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	private ItemCollection<ProductionPlanResourceItem,ProductionPlanResource> productionPlanResourceCollection;
-	private ItemCollection<ProductionPlanMetricItem,ProductionPlanMetric> productionPlanMetricCollection;
+	private ItemCollection<ProductionPlanResourceItem,ProductionPlanResource,ProductionPlan> productionPlanResourceCollection;
+	private ItemCollection<ProductionPlanMetricItem,ProductionPlanMetric,ProductionPlan> productionPlanMetricCollection;
 	private List<SelectItem> resourceProductSelectItems,inputNameSelectItems;
 	
 	@Override

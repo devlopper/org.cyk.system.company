@@ -48,8 +48,8 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     }
     
     protected void createSaleCashRegisterMovement(CreateSaleCashRegisterMovementParameters p){
-    	companyBusinessTestHelper.createSaleCashRegisterMovement(p.getComputedIdentifier(), p.getSaleCashRegisterMovementComputedIdentifier(), p.getCashierPersonCode()
-    			, p.getAmount(),p.getExpectedThrowableMessage());
+    	//companyBusinessTestHelper.createSaleCashRegisterMovement(p.getComputedIdentifier(), p.getSaleCashRegisterMovementComputedIdentifier(), p.getCashierPersonCode()
+    	//		, p.getAmount(),p.getExpectedThrowableMessage());
     	//if(Boolean.TRUE.equals(p.getWriteReport()))
     	//	companyBusinessTestHelper.writeSaleCashRegisterMovementReport(p.getSaleCashRegisterMovementComputedIdentifier());
     }

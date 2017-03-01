@@ -15,12 +15,19 @@ import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.sale.SalableProductCollectionItemDetails;
 import org.cyk.system.company.business.impl.sale.SaleCashRegisterMovementDetails;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
+import org.cyk.system.root.business.api.language.LanguageBusiness;
+import org.cyk.ui.api.IdentifierProvider;
+import org.cyk.ui.api.command.UICommandable;
+import org.cyk.ui.api.command.AbstractCommandable.Builder;
+import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.Table;
+import org.cyk.utility.common.FileExtension;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage<Sale,SalableProductCollectionItem,SalableProductCollectionItemDetails> implements Serializable {
@@ -37,14 +44,37 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 	@Override
 	protected void consultInitialisation() {
 		super.consultInitialisation();
+		itemTable.setTitle(inject(LanguageBusiness.class).findClassLabelText(SalableProductCollectionItem.class));
+		itemTable.getAddRowCommandable().addParameter(identifiable.getSalableProductCollection());
+		
 		saleCashRegisterMovementTable = createDetailsTable(SaleCashRegisterMovementDetails.class,new DetailsConfigurationListener.Table.Adapter<SaleCashRegisterMovement, SaleCashRegisterMovementDetails>(SaleCashRegisterMovement.class, SaleCashRegisterMovementDetails.class){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Collection<SaleCashRegisterMovement> getIdentifiables() {
 				return inject(SaleCashRegisterMovementBusiness.class).findBySale(identifiable);
 			}
+			
+			@Override
+			public Boolean getEnabledInDefaultTab() {
+				return Boolean.TRUE;
+			}
+			
+			@Override
+			public String getTabId() {
+				return IdentifierProvider.Adapter.getTabOf(Sale.class);
+			}
 		});
-		
+		saleCashRegisterMovementTable.setTitle(inject(LanguageBusiness.class).findClassLabelText(SaleCashRegisterMovement.class));
+	}
+	
+	@Override
+	protected Boolean getEnableItemTableInDefaultTab() {
+		return Boolean.TRUE;
+	}
+	
+	@Override
+	protected String getItemTableTabId() {
+		return IdentifierProvider.Adapter.getTabOf(Sale.class);
 	}
 	
 	@Override
@@ -55,6 +85,13 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 	@Override
 	protected Collection<SalableProductCollectionItem> findByCollection(Sale sale) {
 		return inject(SalableProductCollectionItemBusiness.class).findByCollection(sale.getSalableProductCollection());
+	}
+	
+	@Override
+	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
+		super.processIdentifiableContextualCommandable(commandable);
+		commandable.addChild(Builder.create("command.see.invoice", null,WebNavigationManager.getInstance()
+				.getUrlToFileConsultManyPage(CompanyConstant.Code.ReportTemplate.INVOICE,identifiable, FileExtension.PDF)));
 	}
 	
 	/*

@@ -1,6 +1,7 @@
 package org.cyk.system.company.model.sale;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -29,6 +30,9 @@ public class SalableProductCollection extends AbstractCollection<SalableProductC
 	/**/
 	
 	@Transient protected Boolean autoComputeValueAddedTax = Boolean.TRUE;
+	//Use map for this
+	@Transient private BigDecimal totalCostValueWithoutReduction;
+	@Transient private BigDecimal totalReduction;
 	
 	/**/
 	

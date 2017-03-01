@@ -24,7 +24,7 @@ public abstract class AbstractSaleOnlyOneInstanceContextListener extends Abstrac
 	@SuppressWarnings({ })
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		SaleEditPage.FORM_EDIT_CLASS = SaleEditPage.FormOneSaleProduct.class;
+		//SaleEditPage.FORM_EDIT_CLASS = SaleEditPage.FormOneSaleProduct.class;
 		SaleEditPage.SHOW_QUANTITY_COLUMN = Boolean.FALSE;
 		SaleEditPage.SHOW_UNIT_PRICE_COLUMN = Boolean.FALSE;
 		SalableProductEditPage.CREATE_ON_PRODUCT = Boolean.FALSE;

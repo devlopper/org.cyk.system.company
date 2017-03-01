@@ -103,6 +103,22 @@
 		</navigation-case>
 		
 		<navigation-case>
+			<from-outcome>salableProductCollectionItemSaleCashRegisterMovementEditView</from-outcome>
+			<to-view-id>/private/sale/salableproductcollectionitemsalecashregistermovement/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>salableProductCollectionItemSaleCashRegisterMovementListView</from-outcome>
+			<to-view-id>/private/sale/salableproductcollectionitemsalecashregistermovement/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>salableProductCollectionItemSaleCashRegisterMovementConsultView</from-outcome>
+			<to-view-id>/private/sale/salableproductcollectionitemsalecashregistermovement/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
 			<from-outcome>salableProductInstanceEditView</from-outcome>
 			<to-view-id>/private/sale/salableproductinstance/edit.xhtml</to-view-id>
 			<redirect />

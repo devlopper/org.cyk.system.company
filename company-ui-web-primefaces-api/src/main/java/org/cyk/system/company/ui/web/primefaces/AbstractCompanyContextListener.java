@@ -16,6 +16,7 @@ import org.cyk.system.company.business.impl.product.TangibleProductDetails;
 import org.cyk.system.company.business.impl.sale.CustomerSalableProductDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductCollectionDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductCollectionItemDetails;
+import org.cyk.system.company.business.impl.sale.SalableProductCollectionItemSaleCashRegisterMovementDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceCashRegisterDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceDetails;
@@ -37,6 +38,7 @@ import org.cyk.system.company.model.sale.CustomerSalableProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.sale.SalableProductCollectionItemSaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
@@ -57,6 +59,7 @@ import org.cyk.system.company.ui.web.primefaces.product.TangibleProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.CustomerSalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductCollectionEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductCollectionItemEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.SalableProductCollectionItemSaleCashRegisterMovementEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceCashRegisterEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceCashRegisterQueryManyFormModel;
@@ -78,7 +81,7 @@ import org.cyk.ui.web.primefaces.page.AbstractSelectOnePage;
 public abstract class AbstractCompanyContextListener extends AbstractContextListener implements Serializable {
 
 	private static final long serialVersionUID = -6496963238759008827L;
-
+	
 	@Override
 	protected void identifiableConfiguration(ServletContextEvent event) {
 		super.identifiableConfiguration(event);
@@ -160,7 +163,7 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 		AbstractProcessManyPage.Listener.COLLECTION.add(new SalableProductInstanceCashRegisterQueryManyFormModel.ProcessPageAdapter());
 		webNavigationManager.useDynamicSelectView(SalableProductInstanceCashRegister.class);
 		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(Sale.class, SaleEditPage.FORM_EDIT_CLASS, SaleDetails.class,SaleQueryFormModel.class,null,null));
+		uiManager.registerConfiguration(new IdentifiableConfiguration(Sale.class, SaleEditPage.Form.class, SaleDetails.class,SaleQueryFormModel.class,null,null));
 		uiManager.configBusinessIdentifiable(Sale.class, null);
 		AbstractSelectOnePage.Listener.COLLECTION.add(new SaleQueryFormModel.PageAdapter());
 		webNavigationManager.useDynamicSelectView(Sale.class);
@@ -172,6 +175,10 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 		
 		uiManager.registerConfiguration(new IdentifiableConfiguration(SaleCashRegisterMovement.class, SaleCashRegisterMovementEditPage.Form.class, SaleCashRegisterMovementDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(SaleCashRegisterMovement.class, null);
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(SalableProductCollectionItemSaleCashRegisterMovement.class
+				, SalableProductCollectionItemSaleCashRegisterMovementEditPage.Form.class, SalableProductCollectionItemSaleCashRegisterMovementDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(SalableProductCollectionItemSaleCashRegisterMovement.class, null);
 		
 		uiManager.registerConfiguration(new IdentifiableConfiguration(CustomerSalableProduct.class, CustomerSalableProductEditPage.Form.class, CustomerSalableProductDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(CustomerSalableProduct.class, null);

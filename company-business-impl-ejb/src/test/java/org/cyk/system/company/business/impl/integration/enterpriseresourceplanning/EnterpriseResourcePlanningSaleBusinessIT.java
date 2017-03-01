@@ -35,14 +35,14 @@ public class EnterpriseResourcePlanningSaleBusinessIT extends AbstractEnterprise
     	create(inject(TangibleProductBusiness.class).instanciateMany(new String[][]{{"TP01","Omo"},{"TP02", "Javel"},{"TP03", "Riz"}}));
     	create(inject(IntangibleProductBusiness.class).instanciateMany(new String[][]{{"IP01","Nettoyage"},{"IP02", "Surveillance"},{"IP03", "Conseil"}}));
     	create(inject(SalableProductBusiness.class).instanciateMany(new String[][]{{"","","","","","","","","","","TP01","100"}
-    		,{"","","","","","","","","","","TP03", "225"},{"","","","","","","","","","","IP02", "500"}}));
+    	,{"","","","","","","","","","","TP02", "150"},{"","","","","","","","","","","TP03", "225"},{"","","","","","","","","","","IP02", "500"}}));
     	
     	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_001));
     	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_002));
     	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_003));
     }
     
-    //@Test
+    @Test
     public void crudSalableProductCollection(){
     	salableProductCollection = companyBusinessTestHelper.createSalableProductCollection("SPC001", new Object[][]{
     		{"TP01",1},{"TP03",2}	
@@ -51,7 +51,7 @@ public class EnterpriseResourcePlanningSaleBusinessIT extends AbstractEnterprise
     	companyBusinessTestHelper.deleteSalableProductCollection(salableProductCollection);
     }
     
-    //@Test
+    @Test
     public void crudSalableProductCollectionItem(){
     	salableProductCollection = companyBusinessTestHelper.createSalableProductCollection("SPC002", new Object[][]{}, "0");
     	SalableProductCollectionItem salableProductCollectionItemTP01 = companyBusinessTestHelper.createSalableProductCollectionItem("SPC002", new Object[]{"TP01",1}, "100");
@@ -65,20 +65,20 @@ public class EnterpriseResourcePlanningSaleBusinessIT extends AbstractEnterprise
     
     @Test
     public void crudSale(){
-    	sale = companyBusinessTestHelper.createSale(null, new Object[][]{{"TP01",1},{"TP03",2}}, "550", "550");
+    	sale = companyBusinessTestHelper.createSale(null,null, new Object[][]{{"TP01",1},{"TP03",2}}, "550", "550");
     	//sale = companyBusinessTestHelper.createSale(null, new Object[][]{}, "0", "0");
     	String saleCode = sale.getCode();
     	assertThat("Sale "+saleCode+" exists", inject(SaleBusiness.class).find(saleCode)!=null);
     	assertThat("Salable product collection "+saleCode+" exists", inject(SalableProductCollectionBusiness.class).find(saleCode)!=null);
     	assertThat("Sale code start with FACT", StringUtils.startsWith(saleCode, "FACT"));
     	
-    	companyBusinessTestHelper.createSaleCashRegisterMovement(saleCode, CASH_REGISTER_003, "150", "400","150");
-    	companyBusinessTestHelper.createSaleCashRegisterMovement(saleCode, CASH_REGISTER_003, "200", "200","350");
+    	companyBusinessTestHelper.createSaleCashRegisterMovement(saleCode, CASH_REGISTER_003, "150",null, "400","150");
+    	companyBusinessTestHelper.createSaleCashRegisterMovement(saleCode, CASH_REGISTER_003, "200",null, "200","350");
     	
     	companyBusinessTestHelper.deleteSale(sale);
     }
     
-    //@Test
+    @Test
     public void crudSaleCashRegisterMovement(){
     	UserAccount userAccount = inject(UserAccountDao.class).readOneRandomly();
     	
@@ -94,9 +94,9 @@ public class EnterpriseResourcePlanningSaleBusinessIT extends AbstractEnterprise
     	sale = inject(SaleBusiness.class).instanciateOneRandomly(SALE_002);	
     	sale.getSalableProductCollection().getCost().setValue(new BigDecimal("1000"));
     	create(sale);
-    	saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement(SALE_002, CASH_REGISTER_002, "150", "850","150");
-    	saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement(SALE_002, CASH_REGISTER_002, "200", "650", "350");
-    	saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement(SALE_002, CASH_REGISTER_002, "100", "550", "450");
+    	saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement(SALE_002, CASH_REGISTER_002, "150",null, "850","150");
+    	saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement(SALE_002, CASH_REGISTER_002, "200",null, "650", "350");
+    	saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement(SALE_002, CASH_REGISTER_002, "100",null, "550", "450");
     	saleCashRegisterMovement = companyBusinessTestHelper.updateSaleCashRegisterMovement(saleCashRegisterMovement, "200", "450", "550");
     	companyBusinessTestHelper.deleteSaleCashRegisterMovement(saleCashRegisterMovement,"650", "350");
     }

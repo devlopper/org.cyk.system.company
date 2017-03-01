@@ -13,7 +13,18 @@
     <ui:decorate template="#{webPageLayoutManager.decoratedTemplate}">
  		<ui:param name="pageController" value="#{saleCashRegisterMovementConsultPage}" />
  		<ui:define name="body">
- 			<cyk:formOneData value="#{saleCashRegisterMovementConsultPage.details}"/>
+ 			<table>
+ 				<tr style="vertical-align: top;">
+ 					<td>
+ 						<cyk:formOneData value="#{saleCashRegisterMovementConsultPage.details}"/>
+ 					</td>
+ 					<td>
+ 						<cyk:table value="#{saleCashRegisterMovementConsultPage.salableProductCollectionItemSaleCashRegisterMovementTable}"/>
+ 					</td>
+ 				</tr>
+ 			</table>
+ 			
+ 			
  		</ui:define>
  	</ui:decorate>
  

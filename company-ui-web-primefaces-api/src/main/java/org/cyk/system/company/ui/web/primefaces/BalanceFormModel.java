@@ -9,13 +9,15 @@ import lombok.Setter;
 import org.cyk.system.company.model.Balance;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
+import org.cyk.utility.common.annotation.user.interfaces.Text;
+import org.cyk.utility.common.annotation.user.interfaces.Text.ValueType;
 
 @Getter @Setter
 public class BalanceFormModel implements Serializable {
 
 	private static final long serialVersionUID = -465747050467060317L;
  
-	@Input @InputNumber private BigDecimal value;
+	@Input(label=@Text(type=ValueType.ID,value="field.balance")) @InputNumber private BigDecimal value;
 	
 	@Input @InputNumber private BigDecimal cumul;
 	

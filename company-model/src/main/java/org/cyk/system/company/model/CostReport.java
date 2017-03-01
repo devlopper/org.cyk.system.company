@@ -19,6 +19,15 @@ public class CostReport extends AbstractGeneratable<CostReport> implements Seria
 	private String turnover;
 	
 	@Override
+	public void setSource(Object source) {
+		super.setSource(source);
+		numberOfProceedElements = format(((Cost)source).getNumberOfProceedElements());
+		value = format(((Cost)source).getValue());
+		tax = format(((Cost)source).getTax());
+		turnover = format(((Cost)source).getTurnover());
+	}
+	
+	@Override
 	public void generate() {
 		numberOfProceedElements=provider.randomInt(1, 100)+"";
 		value=provider.randomInt(1, 100)+"";

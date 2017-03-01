@@ -133,13 +133,16 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 			
 		}else{
 			//This product has a unit price so we can compute the cost to be paid
-			 
-			BigDecimal cost = salableProductCollectionItem.getSalableProduct().getPrice()
-					.multiply(salableProductCollectionItem.getQuantity())
-					.subtract(salableProductCollectionItem.getReduction())
-					.add(salableProductCollectionItem.getCommission());
+			salableProductCollectionItem.setQuantifiedPrice(salableProductCollectionItem.getSalableProduct().getPrice()
+					.multiply(salableProductCollectionItem.getQuantity())); 
+			BigDecimal cost = salableProductCollectionItem.getQuantifiedPrice()
+				.subtract(salableProductCollectionItem.getReduction())
+				.add(salableProductCollectionItem.getCommission());
 			salableProductCollectionItem.getCost().setValue(cost);
 		}
+		//TODO what if previous balance value has there ???
+		salableProductCollectionItem.getBalance().setValue(salableProductCollectionItem.getCost().getValue());
+		
 		logMessageBuilder.addParameters("salableProductCollectionItem.cost.value",salableProductCollectionItem.getCost().getValue());
 		if(salableProductCollectionItem.getCost().getValue()==null){
 			
@@ -156,6 +159,11 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 		logMessageBuilder.addParameters("salableProductCollectionItem.cost.turnover",salableProductCollectionItem.getCost().getTurnover());
 		logMessageBuilder.addParameters("salableProductCollectionItem.cost.tax",salableProductCollectionItem.getCost().getTax());
 		logTrace(logMessageBuilder);
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void computeDerivationsFromCost(SalableProductCollectionItem salableProductCollectionItem) {
+		salableProductCollectionItem.setQuantifiedPrice(salableProductCollectionItem.getCost().getValue().add(salableProductCollectionItem.getReduction()));
 	}
 	/*
 	private CartesianModel salesCartesianModel(SalesResultsCartesianModelParameters parameters,CartesianModelListener<SaleProduct> cartesianModelListener,String nameId,String yAxisLabelId){

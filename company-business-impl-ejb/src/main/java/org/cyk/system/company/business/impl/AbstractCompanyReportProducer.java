@@ -1,40 +1,32 @@
 package org.cyk.system.company.business.impl;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.cyk.system.company.business.api.CompanyReportProducer;
-import org.cyk.system.company.model.Balance;
-import org.cyk.system.company.model.BalanceReport;
+import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.model.CompanyConstant;
-import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.CostReport;
-import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.accounting.AccountingPeriodReport;
-import org.cyk.system.company.model.sale.SaleReportTemplateFile;
-import org.cyk.system.company.model.sale.PaymentReceiptReport;
-import org.cyk.system.company.model.sale.SalableProduct;
-import org.cyk.system.company.model.sale.SalableProductCollection;
-import org.cyk.system.company.model.sale.SalableProductCollectionReport;
-import org.cyk.system.company.model.sale.SalableProductReport;
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.sale.SalableProductCollectionItemSaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SalableProductCollectionItemSaleCashRegisterMovementReport;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementReport;
-import org.cyk.system.company.model.sale.SaleConfiguration;
-import org.cyk.system.company.model.sale.SaleConfigurationReport;
-import org.cyk.system.company.model.sale.SaleReport;
-import org.cyk.system.company.model.structure.Company;
-import org.cyk.system.company.model.structure.CompanyReport;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementReportFile;
+import org.cyk.system.company.model.sale.SaleReportTemplateFile;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmployeeReportTemplateFile;
+import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemSaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.root.business.api.TypedBusiness.CreateReportFileArguments;
-import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.report.AbstractReportTemplateFile;
+import org.cyk.system.root.model.party.Application;
+import org.cyk.system.root.model.party.person.Person;
+import org.cyk.utility.common.Constant;
 
 public abstract class AbstractCompanyReportProducer extends AbstractRootReportProducer implements CompanyReportProducer,Serializable {
 
@@ -58,19 +50,35 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 				return SaleReportTemplateFile.class;
 		}
 		
+		if(identifiable instanceof SaleCashRegisterMovement){
+			if(CompanyConstant.Code.ReportTemplate.PAYMENT_RECEIPT.equals(reportTemplateCode))
+				return SaleCashRegisterMovementReportFile.class;
+		}
+		
 		return super.getReportTemplateFileClass(identifiable, reportTemplateCode);
 	}
 	
-	private SaleReportTemplateFile produceInvoiceReport(Sale sale) {
-		logDebug("Prepare Sale report");
-		SaleReportTemplateFile report = new SaleReportTemplateFile();
-		report.setTitle(languageBusiness.findText("company.report.sale"));
-		report.setFooter(languageBusiness.findText("company.report.pointofsale.welcome"));
-		report.setHeader(languageBusiness.findText("company.report.pointofsale.goodbye"));
+	private SaleReportTemplateFile produceSaleReportTemplateFile(Sale sale) {
+		inject(SalableProductCollectionBusiness.class).computeDerivationsFromCost(sale.getSalableProductCollection());
+		SaleReportTemplateFile report = new SaleReportTemplateFile(sale);
 		
-		SaleReport saleReport = new SaleReport();
-		set(sale, saleReport);
-		report.setSale(saleReport);
+		report.addLabelValues("Invoice",new String[][]{
+			{"Date",Constant.EMPTY_STRING}
+			,{report.getSale().getBirthDate(),Constant.EMPTY_STRING}
+			,{"Invoice No.",Constant.EMPTY_STRING}
+			,{report.getSale().getCode(),Constant.EMPTY_STRING}
+			,{"Commercial Name",Constant.EMPTY_STRING}
+			,{ sale.getGlobalIdentifier().getOwner() instanceof Application ? sale.getGlobalIdentifier().getOwner().getName() 
+					: ((Person)sale.getGlobalIdentifier().getOwner()).getNames(),Constant.EMPTY_STRING}
+			,{"Parent",Constant.EMPTY_STRING}
+			,{sale.getCustomer().getPerson().getNames(),Constant.EMPTY_STRING}			
+		});
+		
+		//for(SalableProductCollectionItem item : inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()))
+		//	report.getSale().getSalableProductCollection().getItems().add(new SalableProductCollectionItemReport(report.getSale().getSalableProductCollection(),item));
+		
+		//set(sale, saleReport);
+		//report.setSale(saleReport);
 		/*
 		report.generate();
 		report.addLabelValueCollection("Invoice",new String[][]{
@@ -93,20 +101,46 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		return report;
 	}
 	
-	private PaymentReceiptReport producePaymentReceiptReport(SaleCashRegisterMovement saleCashRegisterMovement) {
-		PaymentReceiptReport report = new PaymentReceiptReport();
+	private SaleCashRegisterMovementReportFile produceSaleCashRegisterMovementReportFile(SaleCashRegisterMovement saleCashRegisterMovement) {
+		SaleCashRegisterMovementReportFile report = new SaleCashRegisterMovementReportFile(saleCashRegisterMovement);
+		saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getCollection().clear();
+		List<SaleCashRegisterMovement> saleCashRegisterMovements = (List<SaleCashRegisterMovement>) inject(SaleCashRegisterMovementDao.class).readBySale(saleCashRegisterMovement.getSale());
+		if(saleCashRegisterMovements.size()>1){
+			report.getSaleCashRegisterMovement().setPrevious(new SaleCashRegisterMovementReport(report.getSaleCashRegisterMovement().getSale()
+					, saleCashRegisterMovements.get(saleCashRegisterMovements.size()-2)));
+		}
+		
+		/* Previous */
+		for(SalableProductCollectionItemSaleCashRegisterMovementReport index : report.getSaleCashRegisterMovement().getSalableProductCollectionItemSaleCashRegisterMovements()){
+			SalableProductCollectionItem salableProductCollectionItem = (SalableProductCollectionItem) index.getSalableProductCollectionItem().getSource();
+			List<SalableProductCollectionItemSaleCashRegisterMovement> collection = (List<SalableProductCollectionItemSaleCashRegisterMovement>) inject(SalableProductCollectionItemSaleCashRegisterMovementDao.class)
+					.readBySalableProductCollectionItem(salableProductCollectionItem);
+			if(collection.size()>1)
+				index.setPrevious(new SalableProductCollectionItemSaleCashRegisterMovementReport(index.getSalableProductCollectionItem(), index.getSaleCashRegisterMovement()
+						,collection.get(collection.size()-2)));
+		}
+		
 		report.setTitle(languageBusiness.findText("company.report.sale"));
 		report.setFooter(languageBusiness.findText("company.report.pointofsale.welcome"));
 		report.setHeader(languageBusiness.findText("company.report.pointofsale.goodbye"));
 		
-		SaleCashRegisterMovementReport saleCashRegisterMovementReport = report.getSaleCashRegisterMovement();
-		SaleReport saleReport = new SaleReport();
-		saleReport.generate();
-		saleCashRegisterMovementReport.setSale(saleReport);
-		set(saleCashRegisterMovement, saleCashRegisterMovementReport);
+		report.addLabelValues("Payment",new String[][]{
+			{"Date",Constant.EMPTY_STRING}
+			,{report.getSaleCashRegisterMovement().getBirthDate(),Constant.EMPTY_STRING}
+			,{"Receipt No.",Constant.EMPTY_STRING}
+			,{report.getSaleCashRegisterMovement().getCode(),Constant.EMPTY_STRING}
+			,{"Cashier Name",Constant.EMPTY_STRING}
+			,{ saleCashRegisterMovement.getGlobalIdentifier().getOwner() instanceof Application ? saleCashRegisterMovement.getGlobalIdentifier().getOwner().getName() 
+					: ((Person)saleCashRegisterMovement.getGlobalIdentifier().getOwner()).getNames(),Constant.EMPTY_STRING}
+			,{"Parent",Constant.EMPTY_STRING}
+			,{saleCashRegisterMovement.getSale().getCustomer().getPerson().getNames(),Constant.EMPTY_STRING}	
+			,{"Received from",Constant.EMPTY_STRING}
+			,{saleCashRegisterMovement.getCashRegisterMovement().getMovement().getSenderOrReceiverParty()==null
+					? saleCashRegisterMovement.getSale().getCustomer().getPerson().getNames() 
+						: saleCashRegisterMovement.getCashRegisterMovement().getMovement().getSenderOrReceiverParty().getNames(),Constant.EMPTY_STRING}	
+		});
 		
-		report.generate();
-		//debug(saleCashRegisterMovementReport);
+		/*
 		report.addLabelValues("MyPayment",new String[][]{
 				{"Identifiant", report.getSaleCashRegisterMovement().getGlobalIdentifier().getIdentifier()}
 				,{"Caisse", report.getSaleCashRegisterMovement().getCashRegisterMovement().getCashRegister().getGlobalIdentifier().getCode()}
@@ -123,11 +157,12 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 				,{"Montant Hors Taxe", report.getSaleCashRegisterMovement().getSale().getSalableProductCollection().getCost().getValue()}
 				,{"TVA", report.getSaleCashRegisterMovement().getSale().getSalableProductCollection().getCost().getTax()}
 				});
+				*/
 		
 		return report;
 	}
 	
-	private EmployeeReportTemplateFile produceEmployeeReport(Employee employee) {
+	private EmployeeReportTemplateFile produceEmployeeReportTemplateFile(Employee employee) {
 		EmployeeReportTemplateFile report = new EmployeeReportTemplateFile();
 		set(employee, report.getActor());
 		return report;
@@ -135,90 +170,21 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <REPORT extends AbstractReportTemplateFile<REPORT>> REPORT produce(Class<REPORT> reportClass,CreateReportFileArguments<?> createReportFileArguments) {
-		if(SaleReportTemplateFile.class.equals(reportClass)){
+	public <REPORT extends AbstractReportTemplateFile<REPORT>> REPORT produce(Class<REPORT> reportTemplateFileClass,CreateReportFileArguments<?> createReportFileArguments) {
+		if(SaleReportTemplateFile.class.equals(reportTemplateFileClass)){
 			if(createReportFileArguments.getIdentifiable() instanceof Sale)
-				return (REPORT) produceInvoiceReport((Sale)createReportFileArguments.getIdentifiable());
-		}else if(PaymentReceiptReport.class.equals(reportClass)){
+				return (REPORT) produceSaleReportTemplateFile((Sale)createReportFileArguments.getIdentifiable());
+		}else if(SaleCashRegisterMovementReportFile.class.equals(reportTemplateFileClass)){
 			if(createReportFileArguments.getIdentifiable() instanceof SaleCashRegisterMovement)
-				return (REPORT) producePaymentReceiptReport((SaleCashRegisterMovement)createReportFileArguments.getIdentifiable());
-		}else if(EmployeeReportTemplateFile.class.equals(reportClass)){
+				return (REPORT) produceSaleCashRegisterMovementReportFile((SaleCashRegisterMovement)createReportFileArguments.getIdentifiable());
+		}else if(EmployeeReportTemplateFile.class.equals(reportTemplateFileClass)){
 			if(createReportFileArguments.getIdentifiable() instanceof Employee)
-				return (REPORT) produceEmployeeReport((Employee)createReportFileArguments.getIdentifiable());
+				return (REPORT) produceEmployeeReportTemplateFile((Employee)createReportFileArguments.getIdentifiable());
 		}
 		
-		return super.produce(reportClass, createReportFileArguments);
+		return super.produce(reportTemplateFileClass, createReportFileArguments);
 	}
-	
-	@Override
-	public SaleCashRegisterMovementReport produceSaleCashRegisterMovementReport(SaleCashRegisterMovement saleCashRegisterMovement) {
-		logDebug("Prepare Payment report");
-		SaleCashRegisterMovementReport report = new SaleCashRegisterMovementReport();
-		set(saleCashRegisterMovement, report);
-		return report;
-	}
-	
-	protected void set(Balance balance,BalanceReport report){
 		
-	}
-	
-	protected void set(Cost cost,CostReport report){
-		//report.setAmountDueNoTaxes(format(cost.getValue().subtract(cost.getTax()).setScale(2)));
-		report.setTax(format(cost.getTax().setScale(2)));
-	}
-	
-	protected void set(SaleConfiguration saleConfiguration,SaleConfigurationReport report){
-		report.setValueAddedTaxRate(format(saleConfiguration.getValueAddedTaxRate().multiply(new BigDecimal("100")).setScale(2))+"%");
-	}
-	
-	protected void set(Company company,CompanyReport report){
-		report.getGlobalIdentifier().setImage(inject(FileBusiness.class).findInputStream(company.getImage()));
-		contactCollectionBusiness.load(company.getContactCollection());
-		set(company.getContactCollection(),report.getContactCollection());
-	}
-	
-	protected void set(AccountingPeriod accountingPeriod,AccountingPeriodReport report){
-		set(accountingPeriod.getSaleConfiguration(),report.getSaleConfiguration());
-	}
-	
-	protected void set(SalableProduct salableProduct,SalableProductReport report){
-		
-	}
-	
-	protected void set(SalableProductCollection salableProductCollection,SalableProductCollectionReport report){
-		
-	}
-	
-	protected void set(Sale sale,SaleReport report){
-		set(sale.getSalableProductCollection(),report.getSalableProductCollection());
-		set(sale.getBalance(),report.getBalance());
-		
-		
-		
-	}
-	
-	protected void set(SaleCashRegisterMovement saleCashRegisterMovement,SaleCashRegisterMovementReport report) {
-		//set(saleCashRegisterMovement.getSale(), report.getSale());
-		//report.setTitle(languageBusiness.findText("company.report.salecashregistermovement"));
-		//report.setIdentifier(saleCashRegisterMovement.getCashRegisterMovement().getCode());
-		
-		Collection<SaleCashRegisterMovement> saleCashRegisterMovements = inject(SaleCashRegisterMovementDao.class).readBySale(saleCashRegisterMovement.getSale());
-		SaleCashRegisterMovement lastSaleCashRegisterMovement = null;
-		for(SaleCashRegisterMovement s : saleCashRegisterMovements)
-			if(!s.getIdentifier().equals(saleCashRegisterMovement.getIdentifier()) && s.getCashRegisterMovement().getMovement().getBirthDate().before(saleCashRegisterMovement.getCashRegisterMovement().getMovement().getBirthDate()) ){
-				if(lastSaleCashRegisterMovement==null)
-					lastSaleCashRegisterMovement = s;
-				else if(lastSaleCashRegisterMovement.getCashRegisterMovement().getMovement().getBirthDate().before(s.getCashRegisterMovement().getMovement().getBirthDate()))
-					lastSaleCashRegisterMovement = s;
-			}
-			
-		//report.setAmountDue(format(lastSaleCashRegisterMovement==null ? saleCashRegisterMovement.getSale().getCost().getValue() : lastSaleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue()));
-		//report.setAccountingPeriod(report.getSale().getAccountingPeriod());
-		report.setAmountIn(format(saleCashRegisterMovement.getAmountIn()));
-		report.setAmountOut(format(saleCashRegisterMovement.getAmountOut()));
-		report.setBalance(format(saleCashRegisterMovement.getBalance().getValue()));
-	}
-	
 	/**/
 	
 	public static interface Listener extends AbstractRootReportProducer.Listener {

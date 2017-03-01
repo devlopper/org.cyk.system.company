@@ -4,12 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
@@ -22,7 +18,6 @@ import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateBusiness;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
-import org.cyk.ui.api.model.AbstractItemCollection;
 import org.cyk.ui.api.model.AbstractItemCollectionItem;
 import org.cyk.ui.web.primefaces.ItemCollection;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
@@ -30,6 +25,9 @@ import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCrudOnePage<SalableProductInstanceCashRegister> implements Serializable {
@@ -45,7 +43,7 @@ public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCr
 	private FiniteStateMachineState finiteStateMachineState;
 	private List<FiniteStateMachineState> finiteStateMachineStates;
 	
-	private ItemCollection<SalableProductInstanceCashRegisterItem,SalableProductInstanceCashRegister> itemCollection;
+	private ItemCollection<SalableProductInstanceCashRegisterItem,SalableProductInstanceCashRegister,SalableProductInstance> itemCollection;
 	
 	@Override
 	protected void initialisation() {
@@ -81,19 +79,16 @@ public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCr
 			
 		}
 		
-		itemCollection = createItemCollection(SalableProductInstanceCashRegisterItem.class, SalableProductInstanceCashRegister.class,new ItemCollection.Adapter<SalableProductInstanceCashRegisterItem,SalableProductInstanceCashRegister>(){
+		/*itemCollection = createItemCollection(SalableProductInstanceCashRegisterItem.class, SalableProductInstanceCashRegister.class,null,new ItemCollection.Adapter<SalableProductInstanceCashRegisterItem,SalableProductInstanceCashRegister,SalableProductInstance>(){
 			private static final long serialVersionUID = -3872058204105902514L;
-			@Override
-			public Crud getCrud() {
-				return crud;
-			}
+			
 			@Override
 			public Boolean isShowAddButton() {
 				return Boolean.TRUE;
 			}
 			
 			@Override
-			public void instanciated(AbstractItemCollection<SalableProductInstanceCashRegisterItem, SalableProductInstanceCashRegister, SelectItem> itemCollection,
+			public void instanciated(AbstractItemCollection<SalableProductInstanceCashRegisterItem, SalableProductInstanceCashRegister,SalableProductInstance, SelectItem> itemCollection,
 					SalableProductInstanceCashRegisterItem item) {
 				super.instanciated(itemCollection, item);
 				item.setCashRegister(((Form)form.getData()).cashRegister);
@@ -113,7 +108,7 @@ public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCr
 				
 			}
 			
-		});
+		});*/
 		/*
 		((AbstractWebApplicableValueQuestion)markCollection.getApplicableValueQuestion()).setUpdate("markValue");
 		markCollection.getDeleteCommandable().setRendered(Boolean.FALSE);

@@ -36,7 +36,7 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
 		return Listener.COLLECTION;
 	}
-
+	
 	@Override
 	public SalableProductCollection instanciateOne() {
 		SalableProductCollection salableProductCollection = super.instanciateOne();
@@ -57,7 +57,7 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 		for(Object[] salableProduct : salableProducts){
 			inject(SalableProductCollectionItemBusiness.class)
 					.instanciateOne(salableProductCollection, inject(SalableProductDao.class).read((String)salableProduct[0])
-							, commonUtils.getBigDecimal(salableProduct[1].toString()), BigDecimal.ZERO, BigDecimal.ZERO);
+							, commonUtils.getBigDecimal(salableProduct[1].toString()), new BigDecimal(commonUtils.getValueAt(salableProduct, 2, "0").toString()) , BigDecimal.ZERO);
 		}
 		return salableProductCollection;
 	}
@@ -144,6 +144,18 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void computeCost(SalableProductCollection salableProductCollection) {
 		computeCost(salableProductCollection,inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection),null);
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void computeDerivationsFromCost(SalableProductCollection salableProductCollection) {
+		SalableProductCollectionItemBusiness salableProductCollectionItemBusiness = inject(SalableProductCollectionItemBusiness.class);
+		salableProductCollection.setTotalCostValueWithoutReduction(BigDecimal.ZERO);
+		salableProductCollection.setTotalReduction(BigDecimal.ZERO);
+		for(SalableProductCollectionItem salableProductCollectionItem : salableProductCollection.getCollection()){
+			salableProductCollectionItemBusiness.computeDerivationsFromCost(salableProductCollectionItem);
+			salableProductCollection.setTotalCostValueWithoutReduction(salableProductCollection.getTotalCostValueWithoutReduction().add(salableProductCollectionItem.getQuantifiedPrice()));
+			salableProductCollection.setTotalReduction(salableProductCollection.getTotalReduction().add(salableProductCollectionItem.getReduction()));
+		}
 	}
 	
 	@Override

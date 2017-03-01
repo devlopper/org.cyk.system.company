@@ -71,6 +71,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 				((Form)form.getData()).setMovement(identifiable.getCashRegisterMovement().getMovement());
 			}
 		}).build();
+		
 	}
 	
 	@Override
@@ -80,7 +81,8 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 	
 	@Override
 	protected SaleCashRegisterMovement instanciateIdentifiable() {
-		return inject(SaleCashRegisterMovementBusiness.class).instanciateOne(userSession.getUserAccount(), null
+		return inject(SaleCashRegisterMovementBusiness.class).instanciateOne(userSession.getUserAccount()
+				, webManager.getIdentifiableFromRequestParameter(Sale.class,Boolean.TRUE)
 				, webManager.getIdentifiableFromRequestParameter(CashRegister.class,Boolean.TRUE));
 	}
 	
@@ -120,7 +122,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 	protected BigDecimal getNextTotal(BigDecimal increment) {
 		if(identifiable.getSale()==null)
 			return null;
-		return inject(SaleCashRegisterMovementBusiness.class).computeBalance(identifiable,(MovementAction) form.findInputByFieldName(Form.FIELD_ACTION).getValue()
+		return inject(SaleCashRegisterMovementBusiness.class).computeBalance(identifiable,(MovementAction) form.getInputByFieldName(Form.FIELD_ACTION).getValue()
 				,increment == null ? BigDecimal.ZERO : increment);
 	}
 		

@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductCollectionItemSaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.model.CompanyConstant;
@@ -85,6 +86,10 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		setSale(saleCashRegisterMovement, sale);
 		saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement());
 		setCashRegister(userAccount, saleCashRegisterMovement, cashRegister);
+		/*for(SalableProductCollectionItem salableProductCollectionItem : inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()))
+			saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getCollection().add(
+					new SalableProductCollectionItemSaleCashRegisterMovement(salableProductCollectionItem,saleCashRegisterMovement));
+		*/
 		return saleCashRegisterMovement;
 	}
 	
@@ -159,7 +164,12 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 			saleCashRegisterMovement.getBalance().setCumul(customer.getBalance());
 		}
 		*/
-		saleCashRegisterMovement = super.create(saleCashRegisterMovement);
+		/*saleCashRegisterMovement = */super.create(saleCashRegisterMovement);
+		
+		//if(saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().isSynchonizationEnabled()){
+			inject(SalableProductCollectionItemSaleCashRegisterMovementBusiness.class).create(saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getCollection());
+		//}
+		
 		/*
 		logIdentifiable("Created",saleCashRegisterMovement);
 		*/
@@ -275,7 +285,6 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		return null;//rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement.getReport(),
 				//CompanyBusinessLayer.getInstance().getPointOfSalePaymentReportName()+Constant.CHARACTER_UNDESCORE+StringUtils.defaultString(saleCashRegisterMovement.getCashRegisterMovement().getCode(), saleCashRegisterMovement.getIdentifier().toString()));
 	}
-	
 	
 	
 	/**/

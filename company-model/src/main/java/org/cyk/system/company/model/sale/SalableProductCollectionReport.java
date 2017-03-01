@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.cyk.system.company.model.BalanceReport;
 import org.cyk.system.company.model.CostReport;
 import org.cyk.system.company.model.accounting.AccountingPeriodReport;
 import org.cyk.system.root.model.file.report.AbstractIdentifiableReport;
@@ -22,17 +21,29 @@ public class SalableProductCollectionReport extends AbstractIdentifiableReport<S
 	private CostReport cost = new CostReport();
 	private Collection<SalableProductCollectionItemReport> items = new ArrayList<>();
 	
-	private String totalAmountDu,totalAmountPaid;
-	private BalanceReport totalBalance=new BalanceReport();
+	private String totalCostValueWithoutReduction,totalReduction;
+	
+	@Override
+	public void setSource(Object source) {
+		super.setSource(source);
+		accountingPeriod.setSource(((SalableProductCollection)source).getAccountingPeriod());
+		cost.setSource(((SalableProductCollection)source).getCost());
+		totalReduction = format(((SalableProductCollection)source).getTotalReduction());
+		totalCostValueWithoutReduction = format(((SalableProductCollection)source).getTotalCostValueWithoutReduction());
+		if(((SalableProductCollection)source).getCollection()!=null)
+			for(SalableProductCollectionItem item : ((SalableProductCollection)source).getCollection())
+				items.add(new SalableProductCollectionItemReport(this,item));
+		
+	}
 	
 	@Override
 	public void generate() {
 		super.generate();
 		accountingPeriod.generate();
 		cost.generate();
-		totalBalance.generate();
-		totalAmountDu=provider.randomInt(1, 100)+"";
-		totalAmountPaid=provider.randomInt(1, 100)+"";
+		totalReduction=provider.randomInt(1, 100)+"";
+		totalCostValueWithoutReduction=provider.randomInt(1, 100)+"";
+		
 		for(int i=0;i<6;i++){
 			SalableProductCollectionItemReport item = new SalableProductCollectionItemReport();
 			item.generate();

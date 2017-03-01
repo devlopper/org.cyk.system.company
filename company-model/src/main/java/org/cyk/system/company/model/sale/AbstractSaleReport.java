@@ -18,9 +18,19 @@ public class AbstractSaleReport<MODEL> extends AbstractIdentifiableReport<MODEL>
 	protected SalableProductCollectionReport salableProductCollection = new SalableProductCollectionReport();
 	
 	@Override
+	public void setSource(Object source) {
+		super.setSource(source);
+		customer.setSource(((Sale)source).getCustomer());
+		//salableProductCollection.setSale(this);
+		salableProductCollection.setSource(((Sale)source).getSalableProductCollection());
+		
+	}
+	
+	@Override
 	public void generate() {
 		super.generate();
 		customer.generate();
+		//salableProductCollection.setSale(this);
 		salableProductCollection.generate();
 	}
 	

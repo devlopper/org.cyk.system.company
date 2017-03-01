@@ -147,8 +147,8 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 			.method(CashRegister.class,new ListenValueMethod<CashRegister>() {
 				@Override
 				public void execute(CashRegister cashRegister) {			
-					selectSalableProductInstanceCashRegisters(page,cashRegister,page.getForm().findInputByFieldName(FIELD_FINITESTATEMACHINESTATE)==null 
-							? ((SalableProductInstanceCashRegisterQueryManyFormModel)page.getForm().getData()).finiteStateMachineState : (FiniteStateMachineState) page.getForm().findInputByFieldName(FIELD_FINITESTATEMACHINESTATE).getValue());
+					selectSalableProductInstanceCashRegisters(page,cashRegister,page.getForm().getInputByFieldName(FIELD_FINITESTATEMACHINESTATE)==null 
+							? ((SalableProductInstanceCashRegisterQueryManyFormModel)page.getForm().getData()).finiteStateMachineState : (FiniteStateMachineState) page.getForm().getInputByFieldName(FIELD_FINITESTATEMACHINESTATE).getValue());
 				}
 			}).build();
 			
@@ -162,7 +162,7 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 			.method(FiniteStateMachineState.class,new ListenValueMethod<FiniteStateMachineState>() {
 				@Override
 				public void execute(FiniteStateMachineState finiteStateMachineState) {
-					selectSalableProductInstanceCashRegisters(page,(CashRegister)page.getForm().findInputByFieldName(FIELD_CASHREGISTER).getValue(),finiteStateMachineState);
+					selectSalableProductInstanceCashRegisters(page,(CashRegister)page.getForm().getInputByFieldName(FIELD_CASHREGISTER).getValue(),finiteStateMachineState);
 				}
 			}).build();
 			

@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovementReportTemplateFile;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementReportFile;
+import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleReportTemplateFile;
 import org.cyk.system.company.model.structure.EmployeeReportTemplateFile;
 import org.cyk.system.root.model.file.report.AbstractReportTemplateFile;
@@ -26,7 +27,7 @@ public abstract class AbstractSampleData extends org.cyk.system.root.model.Abstr
 		
 		addLabelValues(report,"Invoice",new String[][]{
 				{"Identifiant", report.getSale().getGlobalIdentifier().getIdentifier()}
-				,{"Caisse", report.getSale().getSaleCashRegisterMovements().iterator().next().getCashRegisterMovement().getCashRegister().getGlobalIdentifier().getCode()}
+				,{"Commercial", report.getSale().getGlobalIdentifier().getCreatedBy()}
 				,{"Date", report.getSale().getGlobalIdentifier().getExistencePeriod().getFrom()}
 				,{"Client", report.getSale().getCustomer().getGlobalIdentifier().getIdentifier()}
 				});
@@ -44,10 +45,50 @@ public abstract class AbstractSampleData extends org.cyk.system.root.model.Abstr
 		return collection;
 	}
 	
-	protected Collection<SaleCashRegisterMovementReportTemplateFile> __getSaleCashRegisterMovementReportTemplateFiles__(){
-		Collection<SaleCashRegisterMovementReportTemplateFile> collection = RandomDataProvider.generate(SaleCashRegisterMovementReportTemplateFile.class, 1);
-		SaleCashRegisterMovementReportTemplateFile report = collection.iterator().next();
+	/*protected Collection<SaleReportTemplateFile> __getSaleReportTemplateFiles__(){
+		Collection<SaleReportTemplateFile> collection = RandomDataProvider.generate(SaleReportTemplateFile.class, 1);
+		SaleReportTemplateFile report = collection.iterator().next();
 		
+		addLabelValues(report,"Invoice",new String[][]{
+				{"Identifiant", report.getSale().getGlobalIdentifier().getIdentifier()}
+				,{"Caisse", report.getSale().getSaleCashRegisterMovements().iterator().next().getCashRegisterMovement().getCashRegister().getGlobalIdentifier().getCode()}
+				,{"Date", report.getSale().getGlobalIdentifier().getExistencePeriod().getFrom()}
+				,{"Client", report.getSale().getCustomer().getGlobalIdentifier().getIdentifier()}
+				});
+		
+		addLabelValues(report,"Payment",new String[][]{
+				{"A payer", report.getSale().getSalableProductCollection().getCost().getValue()}
+				});
+		
+		addLabelValues(report,"TVA",new String[][]{
+				{"Taux TVA", report.getSale().getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate()}
+				,{"Montant Hors Taxe", report.getSale().getSalableProductCollection().getCost().getValue()}
+				,{"TVA", report.getSale().getSalableProductCollection().getCost().getTax()}
+				});
+		process(report);
+		return collection;
+	}*/
+	
+	protected Collection<SaleCashRegisterMovementReportFile> __getSaleCashRegisterMovementReportTemplateFiles__(){
+		Collection<SaleCashRegisterMovementReportFile> collection = RandomDataProvider.generate(SaleCashRegisterMovementReportFile.class, 1);
+		SaleCashRegisterMovementReportFile report = collection.iterator().next();
+		report.getSaleCashRegisterMovement().setSale(new SaleReport());
+		report.getSaleCashRegisterMovement().getSale().generate();
+		
+		addLabelValues(report,"Invoice",new String[][]{
+			{"Identifiant", report.getSaleCashRegisterMovement().getSale().getGlobalIdentifier().getIdentifier()}
+			,{"Cashier", report.getSaleCashRegisterMovement().getSale().getGlobalIdentifier().getCreatedBy()}
+			,{"Date", report.getSaleCashRegisterMovement().getSale().getGlobalIdentifier().getExistencePeriod().getFrom()}
+			,{"Client", report.getSaleCashRegisterMovement().getSale().getCustomer().getGlobalIdentifier().getIdentifier()}
+			});
+	
+		addLabelValues(report,"Payment",new String[][]{
+				{"A payer", report.getSaleCashRegisterMovement().getSale().getSalableProductCollection().getCost().getValue()}
+				});
+		
+		
+		process(report);
+		/*
 		addLabelValues(report, "Invoice", new String[][]{
 			{"Identifiant", "I001"}
 			,{"Caisse", "C001"}
@@ -60,7 +101,7 @@ public abstract class AbstractSampleData extends org.cyk.system.root.model.Abstr
 			,{"Especes", "2222222"}
 			,{"A rendre", "8888888"}
 			});
-					
+		*/			
 		return collection;
 	}
 	

@@ -52,6 +52,7 @@ import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachin
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.system.root.persistence.impl.GenericDaoImpl;
 import org.cyk.system.root.persistence.impl.PersistenceIntegrationTestHelper;
+import org.cyk.utility.common.file.ExcelSheetReader;
 import org.cyk.utility.common.test.TestEnvironmentListener;
 import org.cyk.utility.test.ArchiveBuilder;
 import org.cyk.utility.test.Transaction;
@@ -147,18 +148,17 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     
     @Override
     protected void populate() {
-    	/*RootBusinessLayer.getInstance().getBusinessLayerListeners().add(new BusinessLayerListener.Adapter.Default(){
-			private static final long serialVersionUID = -3467108501198426378L;
+    	RootDataProducerHelper.Listener.COLLECTION.add(new RootDataProducerHelper.Listener.Adapter.Default(){
+    		private static final long serialVersionUID = 1L;
+
 			@Override
-    		public void afterInstall(BusinessLayer businessLayer,Installation installation) {
-    			super.afterInstall(businessLayer, installation);
-    			create(new Cashier(RootBusinessLayer.getInstance().getPersonBusiness().one(),cashRegister));
-    	        
-    	        Company company = inject(CompanyBusiness.class).find().one();
-    	        company.setManager(RootBusinessLayer.getInstance().getPersonBusiness().one());
-    	        inject(CompanyBusiness.class).update(company);
+    		public ExcelSheetReader processExcelSheetReader(ExcelSheetReader excelSheetReader) {
+    			if(excelSheetReader.getName().equals("Country"))
+    				excelSheetReader.setRowCount(2);
+    			return super.processExcelSheetReader(excelSheetReader);
     		}
-    	});*/
+    	});
+    	
     	installApplication();
     	AbstractRootReportProducer.DEFAULT = inject(CompanyReportProducer.class);
     }

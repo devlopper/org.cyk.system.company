@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sale Report A4" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="30" isIgnorePagination="true" uuid="f58b9cb0-12e7-4069-bd93-525c039951c5">
-	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.zoom" value="0.75"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="443"/>
+	<property name="ireport.y" value="67"/>
 	<style name="infos" mode="Opaque" fill="Solid" fontName="Tin Birdhouse" fontSize="10">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[$V{REPORT_COUNT} % 2 == 0]]></conditionExpression>
@@ -49,6 +49,7 @@
 		</field>
 	</subDataset>
 	<subDataset name="SalableProductCollectionItemDS" uuid="1457e4c8-e9d8-4d64-b373-329e9cdcab5a">
+		<parameter name="CYK_SALE" class="org.cyk.system.company.model.sale.SaleReport" isForPrompting="false"/>
 		<queryString>
 			<![CDATA[]]>
 		</queryString>
@@ -61,22 +62,19 @@
 		<field name="salableProduct" class="org.cyk.system.company.model.sale.SalableProductReport">
 			<fieldDescription><![CDATA[salableProduct]]></fieldDescription>
 		</field>
-		<field name="name" class="java.lang.String">
-			<fieldDescription><![CDATA[name]]></fieldDescription>
-		</field>
-		<field name="code" class="java.lang.String">
-			<fieldDescription><![CDATA[code]]></fieldDescription>
-		</field>
-		<field name="currentSalableProductCollectionItemBalance" class="org.cyk.system.company.model.sale.SalableProductCollectionItemBalanceReport">
-			<fieldDescription><![CDATA[currentSalableProductCollectionItemBalance]]></fieldDescription>
-		</field>
-		<field name="previousSalableProductCollectionItemBalance" class="org.cyk.system.company.model.sale.SalableProductCollectionItemBalanceReport">
-			<fieldDescription><![CDATA[previousSalableProductCollectionItemBalance]]></fieldDescription>
-		</field>
 		<field name="salableProductCollection" class="org.cyk.system.company.model.sale.SalableProductCollectionReport">
 			<fieldDescription><![CDATA[salableProductCollection]]></fieldDescription>
 		</field>
+		<field name="reduction" class="java.lang.String">
+			<fieldDescription><![CDATA[reduction]]></fieldDescription>
+		</field>
+		<field name="costValueWithoutReduction" class="java.lang.String">
+			<fieldDescription><![CDATA[costValueWithoutReduction]]></fieldDescription>
+		</field>
 	</subDataset>
+	<parameter name="CYK_SALE" class="org.cyk.system.company.model.sale.SaleReport" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$F{sale}]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -139,7 +137,10 @@
 			<componentElement>
 				<reportElement key="table 3" x="0" y="0" width="555" height="80" uuid="f4385461-a4bc-4d30-b77c-21e6f06abde3"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="SalableProductCollectionItemDS" uuid="baf2035f-33c4-442c-a51f-2dc7b39e5843">
+					<datasetRun subDataset="SalableProductCollectionItemDS" uuid="6481ab9a-9a55-437e-bf9b-c215c0efebce">
+						<datasetParameter name="CYK_SALE">
+							<datasetParameterExpression><![CDATA[$P{CYK_SALE}]]></datasetParameterExpression>
+						</datasetParameter>
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{sale}.getSalableProductCollection().getItems())]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="22" uuid="2cb67a78-5788-4a0a-9c32-7e5d4eb03084">
@@ -175,7 +176,7 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="200" uuid="c8b1d5d2-7e42-4be9-b6a4-843c84f2c25e">
+					<jr:column width="180" uuid="c8b1d5d2-7e42-4be9-b6a4-843c84f2c25e">
 						<jr:columnHeader height="45" rowSpan="1">
 							<box>
 								<topPen lineWidth="1.0"/>
@@ -184,7 +185,7 @@
 								<rightPen lineWidth="1.0"/>
 							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="200" height="45" uuid="19004bc3-5cbf-4e96-9340-fa52b661dafc"/>
+								<reportElement x="0" y="0" width="180" height="45" uuid="19004bc3-5cbf-4e96-9340-fa52b661dafc"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tin Birdhouse" size="12" isBold="true"/>
 								</textElement>
@@ -199,12 +200,12 @@
 						</jr:columnFooter>
 						<jr:detailCell height="20" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="200" height="20" uuid="08d4085f-d907-471e-b780-3bd292df2175"/>
+								<reportElement x="0" y="0" width="180" height="20" uuid="08d4085f-d907-471e-b780-3bd292df2175"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="Agency FB" size="14"/>
 									<paragraph leftIndent="10"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{salableProduct}.getName()]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -291,7 +292,7 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="85" uuid="66cab249-07a6-490e-9fe1-e01818fcb709">
+					<jr:column width="75" uuid="66cab249-07a6-490e-9fe1-e01818fcb709">
 						<jr:columnHeader height="45" rowSpan="1">
 							<box>
 								<topPen lineWidth="1.0"/>
@@ -300,11 +301,12 @@
 								<rightPen lineWidth="1.0"/>
 							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="85" height="45" uuid="4e5d13ad-fc77-4f61-8705-9437e9b585a4"/>
+								<reportElement x="0" y="0" width="75" height="45" uuid="4e5d13ad-fc77-4f61-8705-9437e9b585a4"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tin Birdhouse" size="12" isBold="true"/>
 								</textElement>
-								<text><![CDATA[Amount Du FCFA]]></text>
+								<text><![CDATA[Total
+FCFA]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="30" rowSpan="1">
@@ -315,22 +317,22 @@
 								<rightPen lineWidth="1.0"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="85" height="30" uuid="7cab3177-8856-4c16-9d76-d1f6d7654483"/>
+								<reportElement x="0" y="0" width="75" height="30" uuid="7cab3177-8856-4c16-9d76-d1f6d7654483"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Agency FB" size="14"/>
 									<paragraph rightIndent="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{salableProductCollection}.getTotalAmountDu()]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{salableProductCollection}.getTotalCostValueWithoutReduction()]]></textFieldExpression>
 							</textField>
 						</jr:columnFooter>
 						<jr:detailCell height="20" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="85" height="20" uuid="41d22b1c-9f82-412f-9421-99ac982c9817"/>
+								<reportElement x="0" y="0" width="75" height="20" uuid="41d22b1c-9f82-412f-9421-99ac982c9817"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Agency FB" size="14"/>
 									<paragraph rightIndent="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{previousSalableProductCollectionItemBalance}.getBalance().getValue()]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{costValueWithoutReduction}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -347,7 +349,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tin Birdhouse" size="12" isBold="true"/>
 								</textElement>
-								<text><![CDATA[Amount Paid FCFA]]></text>
+								<text><![CDATA[Concession FCFA]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="30" rowSpan="1">
@@ -363,7 +365,7 @@
 									<font fontName="Agency FB" size="14"/>
 									<paragraph rightIndent="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{salableProductCollection}.getTotalAmountPaid()]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{salableProductCollection}.getTotalReduction()]]></textFieldExpression>
 							</textField>
 						</jr:columnFooter>
 						<jr:detailCell height="20" rowSpan="1">
@@ -373,11 +375,11 @@
 									<font fontName="Agency FB" size="14"/>
 									<paragraph rightIndent="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{previousSalableProductCollectionItemBalance}.getAmount()]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{reduction}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="60" uuid="7e63f8cc-8a85-4b02-8e75-e06736ddc4eb">
+					<jr:column width="90" uuid="1b4f3aaf-5b13-4c2b-833f-e22a3b6a4527">
 						<jr:columnHeader height="45" rowSpan="1">
 							<box>
 								<topPen lineWidth="1.0"/>
@@ -386,11 +388,12 @@
 								<rightPen lineWidth="1.0"/>
 							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="60" height="45" uuid="9ded456a-c94f-4f12-9f0e-c89bb2d50de8"/>
+								<reportElement x="0" y="0" width="90" height="45" uuid="5eab9097-7ecd-4070-b4eb-aaaee3d8b810"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tin Birdhouse" size="12" isBold="true"/>
 								</textElement>
-								<text><![CDATA[Balance FCFA]]></text>
+								<text><![CDATA[To Pay
+FCFA]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="30" rowSpan="1">
@@ -401,22 +404,22 @@
 								<rightPen lineWidth="1.0"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="60" height="30" uuid="c6b9ff47-e704-410e-86ac-31d022924de5"/>
+								<reportElement x="0" y="0" width="90" height="30" uuid="401e872d-9396-488e-98f8-e7970495a5a0"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Agency FB" size="14"/>
 									<paragraph rightIndent="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{salableProductCollection}.getTotalBalance().getValue()]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{salableProductCollection}.getCost().getValue()]]></textFieldExpression>
 							</textField>
 						</jr:columnFooter>
 						<jr:detailCell height="20" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="60" height="20" uuid="524f2c10-d3ed-4d2d-a36c-7ca283f931f6"/>
+								<reportElement x="0" y="0" width="90" height="20" uuid="752588c0-99e0-47ec-982a-2f8dce1168a2"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Agency FB" size="14"/>
 									<paragraph rightIndent="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{currentSalableProductCollectionItemBalance}.getBalance().getValue()]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{cost}.getValue()]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -446,24 +449,4 @@
 			</frame>
 		</band>
 	</detail>
-	<pageFooter>
-		<band height="31">
-			<staticText>
-				<reportElement x="0" y="0" width="336" height="31" uuid="7c9c14ba-b331-4add-96e0-682999e9346d"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Tin Birdhouse" size="10"/>
-					<paragraph leftIndent="5"/>
-				</textElement>
-				<text><![CDATA[Received amount will not be refundable.
-Keep this receipt safe for your record]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="415" y="0" width="140" height="20" uuid="a69fd992-c786-495e-8e50-5059ad439aa7"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Tin Birdhouse" size="10"/>
-				</textElement>
-				<text><![CDATA[Thank you for your payment]]></text>
-			</staticText>
-		</band>
-	</pageFooter>
 </jasperReport>

@@ -18,4 +18,5 @@ public interface SalableProductCollectionBusiness extends AbstractCollectionBusi
 	void computeCost(SalableProductCollection salableProductCollection,Collection<SalableProductCollectionItem> salableProductCollectionItems);
 	void computeCost(SalableProductCollection salableProductCollection,LogMessage.Builder logMessageBuilder);
 	void computeCost(SalableProductCollection salableProductCollection);
+	void computeDerivationsFromCost(SalableProductCollection salableProductCollection);
 }

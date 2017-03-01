@@ -3,21 +3,16 @@ package org.cyk.system.company.business.api;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.root.business.api.file.report.RootReportProducer;
+
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovementReport;
-import org.cyk.system.root.business.api.file.report.RootReportProducer;
-
 public interface CompanyReportProducer extends RootReportProducer {
-
-	SaleCashRegisterMovementReport produceSaleCashRegisterMovementReport(SaleCashRegisterMovement saleCashRegisterMovement);
 	
-	/**/
-	
-	@Getter @Setter
+	@Getter @Setter @Deprecated
 	public static abstract class AbstractParameters implements Serializable{
 
 		private static final long serialVersionUID = 6982660096264368704L;
@@ -44,6 +39,7 @@ public interface CompanyReportProducer extends RootReportProducer {
 		
 	}
 	
+	@Deprecated
 	@Getter @Setter
 	public static class InvoiceParameters extends AbstractParameters implements Serializable{
 
@@ -61,6 +57,7 @@ public interface CompanyReportProducer extends RootReportProducer {
 		}
 	}
 	
+	@Deprecated
 	@Getter @Setter
 	public static class ReceiptParameters extends AbstractParameters implements Serializable{
 

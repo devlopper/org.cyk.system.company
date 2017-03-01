@@ -14,7 +14,17 @@ public class SaleReportTemplateFile extends AbstractReportTemplateFile<SaleRepor
 	private static final long serialVersionUID = 7332510774063666925L;
 
 	private SaleReport sale = new SaleReport();
-
+	
+	public SaleReportTemplateFile(Sale sale){
+		setSource(sale);
+	}
+	
+	@Override
+	public void setSource(Object source) {
+		super.setSource(source);
+		this.sale.setSource(source);
+	}
+	
 	@Override
 	public void generate() {
 		super.generate();
