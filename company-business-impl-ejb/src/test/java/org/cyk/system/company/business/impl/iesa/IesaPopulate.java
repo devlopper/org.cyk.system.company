@@ -14,8 +14,6 @@ import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.integration.enterpriseresourceplanning.AbstractEnterpriseResourcePlanningBusinessIT;
 import org.cyk.system.company.model.CompanyConstant;
-import org.cyk.system.company.model.sale.SalableProductCollection;
-import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.root.business.api.TypedBusiness.CreateReportFileArguments;
@@ -28,13 +26,13 @@ public class IesaPopulate extends AbstractEnterpriseResourcePlanningBusinessIT {
     private static final long serialVersionUID = -6691092648665798471L;
     
     private static String CASH_REGISTER_001 = "CR001",CASH_REGISTER_002 = "CR002",CASH_REGISTER_003 = "CR003";
-    private static String SALE_001 = "S001",SALE_002 = "S002";
+    //private static String SALE_001 = "S001",SALE_002 = "S002";
     private static String CUSTOMER_001 = "C001",CUSTOMER_002 = "C002";
     private Sale sale;
-    private SaleCashRegisterMovement saleCashRegisterMovement;
+    /*private SaleCashRegisterMovement saleCashRegisterMovement;
     private SalableProductCollection salableProductCollection;
     private SalableProductCollectionItem salableProductCollectionItem;
-    
+    */
     @Override
     protected void populate() {
     	AbstractGeneratable.Listener.Adapter.Default.LOCALE = Locale.ENGLISH;

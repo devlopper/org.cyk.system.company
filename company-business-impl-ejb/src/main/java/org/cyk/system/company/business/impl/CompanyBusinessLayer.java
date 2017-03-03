@@ -29,7 +29,6 @@ import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.SalableProductCollectionItemSaleCashRegisterMovement;
@@ -50,14 +49,11 @@ import org.cyk.system.root.business.api.time.TimeBusiness;
 import org.cyk.system.root.business.impl.AbstractBusinessLayer;
 import org.cyk.system.root.business.impl.AbstractFormatter;
 import org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl;
-import org.cyk.system.root.business.impl.BusinessServiceProvider;
-import org.cyk.system.root.business.impl.BusinessServiceProvider.Service;
 import org.cyk.system.root.business.impl.PersistDataListener;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
-import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.File;
@@ -74,7 +70,6 @@ import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachin
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
-import org.cyk.utility.common.computation.DataReadConfiguration;
 import org.joda.time.DateTime;
 
 import lombok.Getter;
@@ -178,14 +173,14 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			}
 		});
 		
-		BusinessServiceProvider.Identifiable.COLLECTION.add(new AbstractActorBusinessImpl.BusinessServiceProviderIdentifiable<Customer,Customer.SearchCriteria>(Customer.class){
+		/*BusinessServiceProvider.Identifiable.COLLECTION.add(new AbstractActorBusinessImpl.BusinessServiceProviderIdentifiable<Customer,Customer.SearchCriteria>(Customer.class){
 			private static final long serialVersionUID = 1322416788278558869L;
 			
 			@Override
 			protected Customer.SearchCriteria createSearchCriteria(Service service,DataReadConfiguration dataReadConfiguration) {
 				return new Customer.SearchCriteria(dataReadConfiguration.getGlobalFilter());
 			}
-        });
+        });*/
 		
 		ClazzBusiness.LISTENERS.add(new ClazzBusiness.ClazzBusinessListener.Adapter(){
 			private static final long serialVersionUID = -6563167908087619179L;
