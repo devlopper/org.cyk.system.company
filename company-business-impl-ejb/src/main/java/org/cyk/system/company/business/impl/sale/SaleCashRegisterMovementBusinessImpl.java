@@ -73,7 +73,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		saleCashRegisterMovement.setAmountIn(numberBusiness.parseBigDecimal(amount));
 		saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement());
 		saleCashRegisterMovement.getCashRegisterMovement().setCode(computedIdentifier);
-		saleCashRegisterMovement.getCashRegisterMovement().setCashRegister(cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)).getCashRegister());
+		saleCashRegisterMovement.getCashRegisterMovement().setCashRegister(cashierDao.readByPerson(personDao.read(cashierPersonCode)).getCashRegister());
 		/*saleCashRegisterMovement.getCashRegisterMovement().setMovement(inject(MovementBusiness.class).instanciateOne(
 				saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection(),amount));
 		*/

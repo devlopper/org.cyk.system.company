@@ -11,26 +11,27 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.AbstractCollectionItem;
 import org.cyk.system.root.model.IdentifiableRuntimeCollection;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE)
-public class SaleCashRegisterMovement extends AbstractIdentifiable implements Serializable {
+public class SaleCashRegisterMovement extends AbstractCollectionItem<SaleCashRegisterMovementCollection> implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne @NotNull private Sale sale;
+	
 	@OneToOne @NotNull private CashRegisterMovement cashRegisterMovement;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountIn = BigDecimal.ZERO;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountOut = BigDecimal.ZERO;
@@ -68,6 +69,5 @@ public class SaleCashRegisterMovement extends AbstractIdentifiable implements Se
 	public static final String FIELD_AMOUNT_IN = "amountIn";
 	public static final String FIELD_AMOUNT_OUT = "amountOut";
 	public static final String FIELD_BALANCE = "balance";
-	public static final String FIELD_REPORT = "report";
 
 }

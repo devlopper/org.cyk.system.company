@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.model.search.BigDecimalSearchCriteria;
+import org.cyk.system.root.model.search.StringSearchCriteria;
 
 @Getter @Setter
 public class StockTangibleProductMovementSearchCriteria extends AbstractPeriodSearchCriteria implements Serializable {
@@ -30,5 +31,15 @@ public class StockTangibleProductMovementSearchCriteria extends AbstractPeriodSe
 	/**/
 	
 	public static final String FIELD_MINIMUM_QUANTITY = "minimumQuantity";
+
+	@Override
+	public void set(String arg0) {
+		
+	}
+
+	@Override
+	public void set(StringSearchCriteria arg0) {
+		
+	}
 	
 }

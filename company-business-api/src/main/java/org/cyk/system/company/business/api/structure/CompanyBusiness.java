@@ -4,10 +4,9 @@ import java.util.Collection;
 
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.api.party.AbstractPartyBusiness;
-import org.cyk.system.root.model.party.Party.PartySearchCriteria;
 import org.cyk.system.root.model.party.person.Person;
 
-public interface CompanyBusiness extends AbstractPartyBusiness<Company,PartySearchCriteria> {
+public interface CompanyBusiness extends AbstractPartyBusiness<Company> {
 
 	Collection<Company> findByManager(Person manager);
 	

@@ -58,8 +58,8 @@ public class SalableProductInstanceCashRegister extends AbstractIdentifiable imp
 	public static final String COLUMN_CASH_REGISTER = "cashRegister";
 	/**/
 	
-	@Getter @Setter
-	public static class SearchCriteria extends AbstractFieldValueSearchCriteriaSet implements Serializable {
+	@Getter @Setter 
+	public static class SearchCriteria extends AbstractFieldValueSearchCriteriaSet.AbstractIdentifiableSearchCriteriaSet implements Serializable {
 
 		private static final long serialVersionUID = 6796076474234170332L;
 
