@@ -33,10 +33,10 @@ public class SaleCashRegisterMovementReport extends AbstractIdentifiableReport<S
 	@Override
 	public void setSource(Object source) {
 		super.setSource(source);
-		cashRegisterMovement.setSource(((SaleCashRegisterMovement)source).getCashRegisterMovement());
+		cashRegisterMovement.setSource(((SaleCashRegisterMovement)source).getCollection().getCashRegisterMovement());
 		balance.setSource(((SaleCashRegisterMovement)source).getBalance());
-		amountIn = format(((SaleCashRegisterMovement)source).getAmountIn());
-		amountOut = format(((SaleCashRegisterMovement)source).getAmountOut());
+		amountIn = format(((SaleCashRegisterMovement)source).getCollection().getAmountIn());
+		amountOut = format(((SaleCashRegisterMovement)source).getCollection().getAmountOut());
 		
 		for(SalableProductCollectionItemSaleCashRegisterMovement index : ((SaleCashRegisterMovement)source).getSalableProductCollectionItemSaleCashRegisterMovements().getCollection()){
 			SalableProductCollectionItemSaleCashRegisterMovementReport salableProductCollectionItemSaleCashRegisterMovement

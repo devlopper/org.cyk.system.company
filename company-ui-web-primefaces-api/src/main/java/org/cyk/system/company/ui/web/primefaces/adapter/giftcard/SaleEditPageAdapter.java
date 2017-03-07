@@ -1,7 +1,6 @@
 package org.cyk.system.company.ui.web.primefaces.adapter.giftcard;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Collection;
 
 import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
@@ -9,8 +8,6 @@ import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
-import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
 import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateBusiness;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
@@ -22,7 +19,7 @@ public class SaleEditPageAdapter extends SaleEditPage.Listener.Adapter.Default i
 		FiniteStateMachineState finiteStateMachineState = inject(FiniteStateMachineStateBusiness.class).find(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED);
 		return inject(SalableProductInstanceBusiness.class).findByCollectionByCashRegisterByFiniteStateMachineState(salableProduct,cashRegister, finiteStateMachineState);
 	}
-	
+	/*
 	@Override
 	public BigDecimal getCost(Sale sale) {
 		if(GiftCardSystemMenuBuilder.ACTION_SELL_GIFT_CARD.equals(sale.getProcessing().getIdentifier())){
@@ -40,7 +37,7 @@ public class SaleEditPageAdapter extends SaleEditPage.Listener.Adapter.Default i
 	@Override
 	public void processSaleCashRegisterMovement(SaleCashRegisterMovement saleCashRegisterMovement) {
 		saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().setValue(saleCashRegisterMovement.getAmountIn());
-	}
+	}*/
 	
 	
 	

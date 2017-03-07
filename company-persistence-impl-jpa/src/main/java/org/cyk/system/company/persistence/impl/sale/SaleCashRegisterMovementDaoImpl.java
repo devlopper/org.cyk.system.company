@@ -8,12 +8,13 @@ import javax.persistence.NoResultException;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.system.root.persistence.impl.AbstractTypedDao;
+import org.cyk.system.root.persistence.impl.AbstractCollectionItemDaoImpl;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;
 
-public class SaleCashRegisterMovementDaoImpl extends AbstractTypedDao<SaleCashRegisterMovement> implements SaleCashRegisterMovementDao {
+public class SaleCashRegisterMovementDaoImpl extends AbstractCollectionItemDaoImpl<SaleCashRegisterMovement,SaleCashRegisterMovementCollection> implements SaleCashRegisterMovementDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
@@ -23,10 +24,10 @@ public class SaleCashRegisterMovementDaoImpl extends AbstractTypedDao<SaleCashRe
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
 		registerNamedQuery(readBySale, _select().where(SaleCashRegisterMovement.FIELD_SALE));
-		registerNamedQuery(sumAmount, "SELECT SUM(scrm.cashRegisterMovement.movement.value) FROM SaleCashRegisterMovement scrm WHERE scrm.sale = :sale");
-		registerNamedQuery(readBySupportingDocumentIdentifiers, "SELECT r FROM SaleCashRegisterMovement r WHERE r.cashRegisterMovement.movement.supportingDocumentIdentifier IN :identifiers");
+		registerNamedQuery(sumAmount, "SELECT SUM(scrm.amount) FROM SaleCashRegisterMovement scrm WHERE scrm.sale = :sale");
+		registerNamedQuery(readBySupportingDocumentIdentifiers, "SELECT r FROM SaleCashRegisterMovement r WHERE r.collection.cashRegisterMovement.movement.supportingDocumentIdentifier IN :identifiers");
 		registerNamedQuery(readByCashRegisterMovementCode, _select().where(commonUtils
-				.attributePath(SaleCashRegisterMovement.FIELD_CASH_REGISTER_MOVEMENT, CashRegisterMovement.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE),GlobalIdentifier.FIELD_CODE));
+				.attributePath(SaleCashRegisterMovement.FIELD_COLLECTION,SaleCashRegisterMovementCollection.FIELD_CASH_REGISTER_MOVEMENT, CashRegisterMovement.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE),GlobalIdentifier.FIELD_CODE));
 	}
 	
 	@Override

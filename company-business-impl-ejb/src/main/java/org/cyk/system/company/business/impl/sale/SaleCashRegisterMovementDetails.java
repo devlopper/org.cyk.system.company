@@ -32,7 +32,7 @@ public class SaleCashRegisterMovementDetails extends AbstractCashRegisterMovemen
 	
 	@Override
 	protected CashRegisterMovement getCashRegisterMovement() {
-		return master.getCashRegisterMovement();
+		return master.getCollection().getCashRegisterMovement();
 	}
 
 	public static final String FIELD_SALE = "sale";

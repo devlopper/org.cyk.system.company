@@ -7,9 +7,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
@@ -19,49 +16,24 @@ import org.cyk.system.company.ui.web.primefaces.payment.AbstractCashRegisterMove
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.mathematics.MovementCollection;
-import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
 import org.cyk.utility.common.annotation.FieldOverride;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Named @ViewScoped @Getter @Setter
 public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMovementEditPage<SaleCashRegisterMovement,Sale> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
-	
-	@Override
-	protected void initialisation() {
-		super.initialisation();
 		
-		/*if(identifiable.getSale()==null){
-			identifiable.setSale(saleBusiness.find(requestParameterLong(uiManager.keyFromClass(Sale.class))));
-			//identifiable.setCashRegisterMovement(new CashRegisterMovement(cashierBusiness.findByPerson((Person) getUserSession().getUser()).getCashRegister()));
-		}
-		cashRegisterController.init(identifiable,!StringUtils.equals(CompanyWebManager.getInstance().getRequestParameterPayback(), 
-				requestParameter(CompanyWebManager.getInstance().getRequestParameterPaymentType())));
-		*/
-		
-		//if(identifiable.getSale()==null)
-		//	identifiable.setSale(webManager.getIdentifiableFromRequestParameter(Sale.class, Boolean.TRUE));
-	}
-		
-	/*@Override
-	protected String buildContentTitle() {
-		String string =  super.buildContentTitle();
-		if(Crud.CREATE.equals(crud))
-			if(getCashRegisterMovement().getMovement().getAction().equals(getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction()))
-				string += Constant.CHARACTER_SLASH+text("command.pay");
-			else if(getCashRegisterMovement().getMovement().getAction().equals(getCashRegisterMovement().getCashRegister().getMovementCollection().getDecrementAction()))
-				string += Constant.CHARACTER_SLASH+text("command.payback");
-		return string;
-	}*/
-	
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
-		createAjaxBuilder(Form.FIELD_CASH_REGISTER)
+		/*createAjaxBuilder(Form.FIELD_CASH_REGISTER)
 		.method(CashRegister.class,new ListenValueMethod<CashRegister>() {
 			@Override
 			public void execute(CashRegister cashRegister) {
@@ -71,7 +43,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 				((Form)form.getData()).setMovement(identifiable.getCashRegisterMovement().getMovement());
 			}
 		}).build();
-		
+		*/
 	}
 	
 	@Override
@@ -101,7 +73,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 	
 	@Override
 	protected CashRegisterMovement getCashRegisterMovement() {
-		return identifiable.getCashRegisterMovement();
+		return identifiable.getCollection().getCashRegisterMovement();
 	}
 	
 	@Override
@@ -136,22 +108,22 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 				
 		@Override
 		protected CashRegisterMovement getCashRegisterMovement() {
-			return identifiable.getCashRegisterMovement();
+			return identifiable.getCollection().getCashRegisterMovement();
 		}
 		
 		@Override
 		public void read() {
-			cashRegister = identifiable.getCashRegisterMovement().getCashRegister();
+			cashRegister = identifiable.getCollection().getCashRegisterMovement().getCashRegister();
 			super.read();
 		}
 		
 		@Override
 		public void write() {
-			identifiable.getCashRegisterMovement().setCashRegister(cashRegister);
-			identifiable.getCashRegisterMovement().getMovement().setCollection(cashRegister.getMovementCollection());
+			identifiable.getCollection().getCashRegisterMovement().setCashRegister(cashRegister);
+			identifiable.getCollection().getCashRegisterMovement().getMovement().setCollection(cashRegister.getMovementCollection());
 			super.write();
-			identifiable.setAmountIn(getCashRegisterMovement().getMovement().getValue());
-			identifiable.setAmountOut(BigDecimal.ZERO);
+			identifiable.getCollection().setAmountIn(getCashRegisterMovement().getMovement().getValue());
+			identifiable.getCollection().setAmountOut(BigDecimal.ZERO);
 		}
 		
 		/**/

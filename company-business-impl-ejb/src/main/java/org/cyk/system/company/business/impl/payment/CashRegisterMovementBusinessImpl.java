@@ -37,6 +37,17 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
 		return CashRegisterMovementBusinessImpl.Listener.COLLECTION;
 	}
+	
+	@Override
+	public CashRegisterMovement instanciateOne(String code,String name,String amount,String cashRegisterCode) {
+		CashRegisterMovement cashRegisterMovement = super.instanciateOne();
+		cashRegisterMovement.setCode(code);
+		cashRegisterMovement.setName(name);
+		if(StringUtils.isNotBlank(cashRegisterCode))
+			cashRegisterMovement.setCashRegister(inject(CashRegisterDao.class).read(cashRegisterCode));
+		cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection().getCode(),amount,null,null,null));
+		return cashRegisterMovement;
+	}
 		
 	@Override
 	protected void beforeCreate(CashRegisterMovement cashRegisterMovement) {

@@ -20,6 +20,7 @@ import org.cyk.system.company.business.impl.sale.SalableProductCollectionItemSal
 import org.cyk.system.company.business.impl.sale.SalableProductDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceCashRegisterDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceDetails;
+import org.cyk.system.company.business.impl.sale.SaleCashRegisterMovementCollectionDetails;
 import org.cyk.system.company.business.impl.sale.SaleCashRegisterMovementDetails;
 import org.cyk.system.company.business.impl.sale.SaleDetails;
 import org.cyk.system.company.business.impl.structure.CompanyDetails;
@@ -43,6 +44,7 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.model.sale.SaleProductInstance;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.Employee;
@@ -64,6 +66,7 @@ import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceCashRegisterEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceCashRegisterQueryManyFormModel;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductInstanceEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.SaleCashRegisterMovementCollectionEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleCashRegisterMovementEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleProductInstanceQueryOneFormModel;
@@ -172,6 +175,9 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 		uiManager.configBusinessIdentifiable(SaleProductInstance.class, null);
 		AbstractSelectOnePage.Listener.COLLECTION.add(new SaleProductInstanceQueryOneFormModel.PageAdapter());
 		webNavigationManager.useDynamicSelectView(SaleProductInstance.class);
+		
+		uiManager.registerConfiguration(new IdentifiableConfiguration(SaleCashRegisterMovementCollection.class, SaleCashRegisterMovementCollectionEditPage.Form.class, SaleCashRegisterMovementCollectionDetails.class,null,null,null));
+		uiManager.configBusinessIdentifiable(SaleCashRegisterMovementCollection.class, null);
 		
 		uiManager.registerConfiguration(new IdentifiableConfiguration(SaleCashRegisterMovement.class, SaleCashRegisterMovementEditPage.Form.class, SaleCashRegisterMovementDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(SaleCashRegisterMovement.class, null);

@@ -3,22 +3,14 @@ package org.cyk.system.company.business.impl.iesa;
 import java.util.Locale;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
-import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.integration.enterpriseresourceplanning.AbstractEnterpriseResourcePlanningBusinessIT;
 import org.cyk.system.company.model.CompanyConstant;
-import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.root.business.api.TypedBusiness.CreateReportFileArguments;
 import org.cyk.system.root.business.impl.PersistDataListener;
-import org.cyk.system.root.persistence.api.file.report.ReportTemplateDao;
 import org.cyk.utility.common.generator.AbstractGeneratable;
 
 public class IesaPopulate extends AbstractEnterpriseResourcePlanningBusinessIT {
@@ -28,7 +20,7 @@ public class IesaPopulate extends AbstractEnterpriseResourcePlanningBusinessIT {
     private static String CASH_REGISTER_001 = "CR001",CASH_REGISTER_002 = "CR002",CASH_REGISTER_003 = "CR003";
     //private static String SALE_001 = "S001",SALE_002 = "S002";
     private static String CUSTOMER_001 = "C001",CUSTOMER_002 = "C002";
-    private Sale sale;
+   
     /*private SaleCashRegisterMovement saleCashRegisterMovement;
     private SalableProductCollection salableProductCollection;
     private SalableProductCollectionItem salableProductCollectionItem;
@@ -71,47 +63,17 @@ public class IesaPopulate extends AbstractEnterpriseResourcePlanningBusinessIT {
     @Override
     protected void _execute_() {
     	super._execute_();
-    	sale = companyBusinessTestHelper.createSale(null,CUSTOMER_001, new Object[][]{{"IP01",1},{"IP02",1,100000},{"TP01",1},{"TP02",1},{"TP03",1},{"TP04",1},{"IP03",1},{"TP05",2},{"TP06",1}
-    	,{"IP04",3},{"IP05",3},{"IP06",3},{"IP07",10}}, "2173000", "2173000");
+    	companyBusinessTestHelper.createSale("SCHOOLFEES001",CUSTOMER_001, new Object[][]{{"TP05",2},{"TP06",1},{"IP04",3},{"IP05",3},{"IP06",3},{"IP07",10}});    	
+    	companyBusinessTestHelper.createSale("SCHOOLFEES002",CUSTOMER_001, new Object[][]{{"IP01",1},{"IP02",1,100000},{"TP01",1},{"TP02",1},{"TP03",1},{"TP04",1},{"IP03",1}});
     	
-    	CreateReportFileArguments<Sale> createSaleReportFileArguments = new CreateReportFileArguments<Sale>(sale);
-    	createSaleReportFileArguments.setLocale(Locale.ENGLISH);
-    	createSaleReportFileArguments.setReportTemplate(inject(ReportTemplateDao.class).read(CompanyConstant.Code.ReportTemplate.INVOICE));	
-    	inject(SaleBusiness.class).createReportFile(createSaleReportFileArguments);
+    	companyBusinessTestHelper.createSaleCashRegisterMovementCollection("PCrudSaleCashRegisterMovementCollection001", CASH_REGISTER_001
+    			, new String[][]{{"SCHOOLFEES001","1000"},{"SCHOOLFEES002","500"}});
     	
+    	companyBusinessTestHelper.createSaleCashRegisterMovementCollection("PCrudSaleCashRegisterMovementCollection002", CASH_REGISTER_001
+    			, new String[][]{{"SCHOOLFEES001","1500"},{"SCHOOLFEES002","800"}});
     	
-    	//sale = companyBusinessTestHelper.createSale(null, new Object[][]{}, "0", "0");
-    	String saleCode = sale.getCode();
-    	assertThat("Sale "+saleCode+" exists", inject(SaleBusiness.class).find(saleCode)!=null);
-    	assertThat("Salable product collection "+saleCode+" exists", inject(SalableProductCollectionBusiness.class).find(saleCode)!=null);
-    	assertThat("Sale code start with FACT", StringUtils.startsWith(saleCode, "FACT"));
-    	
-    	SaleCashRegisterMovement saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement(saleCode, CASH_REGISTER_003, "15000",new String[][]{
-    		{"IP01","15000"}
-    	}, "2158000","15000");
-    	CreateReportFileArguments<SaleCashRegisterMovement> createSaleCashRegisterMovementReportFileArguments = new CreateReportFileArguments<SaleCashRegisterMovement>(saleCashRegisterMovement);
-    	createSaleCashRegisterMovementReportFileArguments.setLocale(Locale.ENGLISH);
-    	createSaleCashRegisterMovementReportFileArguments.setReportTemplate(inject(ReportTemplateDao.class).read(CompanyConstant.Code.ReportTemplate.PAYMENT_RECEIPT));	
-    	inject(SaleCashRegisterMovementBusiness.class).createReportFile(createSaleCashRegisterMovementReportFileArguments);
-    	
-    	
-		saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement(saleCode, CASH_REGISTER_003, "550000",new String[][]{
-    		{"IP01","50000"},{"IP02","500000"}
-    	}, "1608000","565000");
-    	createSaleCashRegisterMovementReportFileArguments = new CreateReportFileArguments<SaleCashRegisterMovement>(saleCashRegisterMovement);
-    	createSaleCashRegisterMovementReportFileArguments.setLocale(Locale.ENGLISH);
-    	createSaleCashRegisterMovementReportFileArguments.setReportTemplate(inject(ReportTemplateDao.class).read(CompanyConstant.Code.ReportTemplate.PAYMENT_RECEIPT));	
-    	inject(SaleCashRegisterMovementBusiness.class).createReportFile(createSaleCashRegisterMovementReportFileArguments);
-    	
-    	
-		saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement(saleCode, CASH_REGISTER_003, "920000",new String[][]{
-    		{"IP02","500000"},{"TP01","60000"},{"IP04","100000"},{"IP05","90000"},{"IP06","90000"},{"IP07","80000"}
-    	}, "688000","1485000");
-    	createSaleCashRegisterMovementReportFileArguments = new CreateReportFileArguments<SaleCashRegisterMovement>(saleCashRegisterMovement);
-    	createSaleCashRegisterMovementReportFileArguments.setLocale(Locale.ENGLISH);
-    	createSaleCashRegisterMovementReportFileArguments.setReportTemplate(inject(ReportTemplateDao.class).read(CompanyConstant.Code.ReportTemplate.PAYMENT_RECEIPT));	
-    	inject(SaleCashRegisterMovementBusiness.class).createReportFile(createSaleCashRegisterMovementReportFileArguments);
-    	
+    	companyBusinessTestHelper.createSaleCashRegisterMovementCollection("PCrudSaleCashRegisterMovementCollection003", CASH_REGISTER_001
+    			, new String[][]{{"SCHOOLFEES001","2100"},{"SCHOOLFEES002","900"}});
     	
 		System.exit(0);
     }

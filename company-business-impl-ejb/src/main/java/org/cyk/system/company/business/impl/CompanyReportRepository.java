@@ -16,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.sale.CustomerReportTableRow;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceCashRegisterStateLogDetails;
@@ -25,7 +24,6 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
@@ -76,7 +74,6 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	
 	@Inject private OwnedCompanyBusiness ownedCompanyBusiness;
 	@Inject private SaleBusiness saleBusiness;
-	@Inject private SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
 	@Inject private CustomerBusiness customerBusiness;
 	@Inject private TangibleProductBusiness tangibleProductBusiness;
 	
@@ -285,7 +282,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				if(saleCashRegisterMovements.size()>1)
 					;
 				else
-					return saleCashRegisterMovementBusiness.findReport((SaleCashRegisterMovement) saleCashRegisterMovements.iterator().next());
+					return null;//saleCashRegisterMovementBusiness.findReport((SaleCashRegisterMovement) saleCashRegisterMovements.iterator().next());
 				return null;
 			}
 		});

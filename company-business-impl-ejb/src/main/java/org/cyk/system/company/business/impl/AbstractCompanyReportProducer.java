@@ -135,9 +135,9 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 			,{"Parent",Constant.EMPTY_STRING}
 			,{saleCashRegisterMovement.getSale().getCustomer().getPerson().getNames(),Constant.EMPTY_STRING}	
 			,{"Received from",Constant.EMPTY_STRING}
-			,{saleCashRegisterMovement.getCashRegisterMovement().getMovement().getSenderOrReceiverParty()==null
+			,{saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getSenderOrReceiverParty()==null
 					? saleCashRegisterMovement.getSale().getCustomer().getPerson().getNames() 
-						: saleCashRegisterMovement.getCashRegisterMovement().getMovement().getSenderOrReceiverParty().getNames(),Constant.EMPTY_STRING}	
+						: saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getSenderOrReceiverParty().getNames(),Constant.EMPTY_STRING}	
 		});
 		
 		/*

@@ -31,7 +31,7 @@ public interface CompanyReportProducer extends RootReportProducer {
 			if(saleCashRegisterMovement==null){
 				
 			}else{
-				amountPaid = saleCashRegisterMovement.getAmountIn();
+				//amountPaid = saleCashRegisterMovement.getAmountIn();
 				amountToOut = amountPaid.subtract(amountToPay);
 			}
 			

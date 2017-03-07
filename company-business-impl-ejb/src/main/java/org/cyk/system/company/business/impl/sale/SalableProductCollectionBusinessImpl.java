@@ -25,8 +25,6 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 
 	private static final long serialVersionUID = -3799482462496328200L;
 	
-	@Inject private SalableProductCollectionItemDao salableProductCollectionItemDao;
-	
 	@Inject
 	public SalableProductCollectionBusinessImpl(SalableProductCollectionDao dao) {
 		super(dao); 
@@ -63,49 +61,14 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	}
 		
 	@Override
-	protected SalableProductCollectionItemDao getItemDao() {
-		return salableProductCollectionItemDao;
-	}
-	
-	@Override
-	protected SalableProductCollectionItemBusiness getItemBusiness() { 
-		return inject(SalableProductCollectionItemBusiness.class);
-	}
-	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public SalableProductCollectionItem add(SalableProductCollection salableProductCollection, SalableProductCollectionItem salableProductCollectionItem) {
-		return addOrRemove(salableProductCollection, salableProductCollectionItem, Boolean.TRUE);
-	}
-	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public SalableProductCollectionItem remove(SalableProductCollection salableProductCollection,SalableProductCollectionItem salableProductCollectionItem) {
-		return addOrRemove(salableProductCollection, salableProductCollectionItem, Boolean.FALSE);
-	}
-	
-	private SalableProductCollectionItem addOrRemove(SalableProductCollection salableProductCollection, SalableProductCollectionItem salableProductCollectionItem,Boolean add) {
+	protected SalableProductCollectionItem addOrRemove(SalableProductCollection salableProductCollection, SalableProductCollectionItem salableProductCollectionItem,Boolean add) {
 		String action = Boolean.TRUE.equals(add) ? "ADD":"REMOVE";
 		LogMessage.Builder logMessageBuilder = new LogMessage.Builder(action,SalableProductCollectionItem.class);
 		inject(SalableProductCollectionItemBusiness.class).computeCost(salableProductCollectionItem);
 		logMessageBuilder.addParameters("salableProductCollection.cost.value",salableProductCollection.getCost().getValue()
 				,"salableProductCollectionItem.cost.value",salableProductCollectionItem.getCost().getValue());
-		BigDecimal factor;
-		if(Boolean.TRUE.equals(add)){
-			Boolean found = Boolean.FALSE;
-			if(salableProductCollection.getCollection()!=null)
-				for(SalableProductCollectionItem index : salableProductCollection.getCollection())
-					if(index == salableProductCollectionItem){
-						found = Boolean.TRUE;
-						break;
-					}
-			if(Boolean.FALSE.equals(found))
-				salableProductCollection.add(salableProductCollectionItem);	
-			factor = BigDecimal.ONE;
-		}else{
-			if(salableProductCollection.getCollection()!=null)
-				salableProductCollection.getCollection().remove(salableProductCollectionItem);
-			salableProductCollection.addToDelete(salableProductCollectionItem);
-			factor = BigDecimal.ONE.negate();
-		}
+		BigDecimal factor = (add == null || Boolean.TRUE.equals(add)) ? BigDecimal.ONE : BigDecimal.ONE.negate();
+		super.addOrRemove(salableProductCollection, salableProductCollectionItem, add);
 		
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_VALUE, salableProductCollectionItem.getCost().getValue().multiply(factor));
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE.multiply(factor));

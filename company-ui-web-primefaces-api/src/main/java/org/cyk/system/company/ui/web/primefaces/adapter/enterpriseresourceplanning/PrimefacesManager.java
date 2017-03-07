@@ -23,6 +23,7 @@ import org.cyk.system.company.business.impl.sale.SalableProductCollectionDetails
 import org.cyk.system.company.business.impl.sale.SalableProductCollectionItemDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductCollectionItemSaleCashRegisterMovementDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductDetails;
+import org.cyk.system.company.business.impl.sale.SaleCashRegisterMovementCollectionDetails;
 import org.cyk.system.company.business.impl.sale.SaleCashRegisterMovementDetails;
 import org.cyk.system.company.business.impl.sale.SaleDetails;
 import org.cyk.system.company.business.impl.structure.EmployeeDetails;
@@ -42,6 +43,7 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.SalableProductCollectionItemSaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.company.ui.web.primefaces.BalanceFormModel;
@@ -59,6 +61,7 @@ import org.cyk.system.company.ui.web.primefaces.sale.SalableProductCollectionEdi
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductCollectionItemEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductCollectionItemSaleCashRegisterMovementEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductEditPage;
+import org.cyk.system.company.ui.web.primefaces.sale.SaleCashRegisterMovementCollectionEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleCashRegisterMovementEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleEditPage;
 import org.cyk.system.company.ui.web.primefaces.structure.EmployeeEditPage;
@@ -384,6 +387,65 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			
 			
 		});
+		
+		/**/
+		
+		getFormConfiguration(SaleCashRegisterMovementCollection.class, Crud.CREATE)
+		.addRequiredFieldNames(SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CASH_REGISTER,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_PAID)
+		.addFieldNames(SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CODE,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_NAME,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_EXISTENCE_PERIOD
+				,PeriodFormModel.FIELD_FROM_DATE
+				)
+			.addControlSetListener(new ControlSetAdapter.Form<Object>(){
+				private static final long serialVersionUID = 1L;
+				@Override
+				public List<String> getExpectedFieldNames() {
+					return Arrays.asList(SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CODE,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_NAME
+							,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CASH_REGISTER,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_PAID
+							,PeriodFormModel.FIELD_FROM_DATE
+							);
+				}
+			});
+		registerDetailsConfiguration(SaleCashRegisterMovementCollectionDetails.class, new DetailsConfiguration(){
+			private static final long serialVersionUID = 1L;
+			@SuppressWarnings("rawtypes")
+			@Override
+			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
+				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
+					private static final long serialVersionUID = 1L;
+					@Override
+					public Boolean build(Object data,Field field) {
+						return isFieldNameIn(field,SaleCashRegisterMovementCollectionDetails.FIELD_CODE,SaleCashRegisterMovementCollectionDetails.FIELD_NAME
+								//,SaleCashRegisterMovementCollectionDetails.FIELD_cas,SaleCashRegisterMovementCollectionDetails.FIELD_MODE
+								,SaleCashRegisterMovementCollectionDetails.FIELD_EXISTENCE_PERIOD,PeriodDetails.FIELD_FROM_DATE);
+					}
+					
+				};
+			}
+			
+			@Override
+			public ColumnAdapter getTableColumnAdapter(@SuppressWarnings("rawtypes") Class clazz,AbstractPrimefacesPage page) {
+				return new DetailsConfiguration.DefaultColumnAdapter(){
+					private static final long serialVersionUID = 1L;
+					@Override
+					public Boolean isColumn(Field field) {
+						return isFieldNameIn(field,SaleCashRegisterMovementCollectionDetails.FIELD_CODE,SaleCashRegisterMovementCollectionDetails.FIELD_NAME
+								,SaleCashRegisterMovementCollectionDetails.FIELD_VALUE,SaleCashRegisterMovementCollectionDetails.FIELD_EXISTENCE_PERIOD,PeriodDetails.FIELD_FROM_DATE);
+					}
+										
+					@Override
+					public void added(Column column) {
+						super.added(column);
+						if(column.getField().getDeclaringClass().equals(PeriodDetails.class))
+							column.setTitle(inject(LanguageBusiness.class).findText("field.date"));
+						else if(column.getField().getName().equals(SaleCashRegisterMovementCollectionDetails.FIELD_VALUE))
+							column.setTitle(inject(LanguageBusiness.class).findText("field.amount"));
+					}
+				};
+			}
+		});
+
+		
+		/**/
 		
 		getFormConfiguration(SaleCashRegisterMovement.class, Crud.CREATE)
 		.addRequiredFieldNames(SaleCashRegisterMovementEditPage.Form.FIELD_COLLECTION,SaleCashRegisterMovementEditPage.Form.FIELD_CASH_REGISTER

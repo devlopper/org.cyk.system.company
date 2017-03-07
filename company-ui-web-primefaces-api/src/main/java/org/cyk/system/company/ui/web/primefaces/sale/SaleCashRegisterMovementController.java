@@ -19,7 +19,7 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.utility.common.cdi.AbstractBean;
 
-@Getter @Setter
+@Getter @Setter @Deprecated
 public class SaleCashRegisterMovementController extends AbstractBean implements Serializable {
 
 	private static final long serialVersionUID = 1448560309988513836L;
@@ -53,14 +53,14 @@ public class SaleCashRegisterMovementController extends AbstractBean implements 
 	}
 	
 	public void amountInChanged(){
-		saleCashRegisterMovementBusiness.in(saleCashRegisterMovement);
-		amountToHand = saleCashRegisterMovement.getAmountIn().subtract(saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue());
+		//saleCashRegisterMovementBusiness.in(saleCashRegisterMovement);
+		//amountToHand = saleCashRegisterMovement.getAmountIn().subtract(saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue());
 		balance = saleCashRegisterMovementBusiness.computeBalance(saleCashRegisterMovement);
 		showOut = BigDecimal.ZERO.compareTo(amountToHand)<0;
 	}
 	
 	public void amountOutChanged(){
-		saleCashRegisterMovementBusiness.out(saleCashRegisterMovement);
+		//saleCashRegisterMovementBusiness.out(saleCashRegisterMovement);
 		balance = saleCashRegisterMovementBusiness.computeBalance(saleCashRegisterMovement);
 	}
 	

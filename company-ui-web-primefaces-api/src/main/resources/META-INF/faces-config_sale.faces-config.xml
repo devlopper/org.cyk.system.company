@@ -39,6 +39,22 @@
 		</navigation-case>
 		
 		<navigation-case>
+			<from-outcome>saleCashRegisterMovementCollectionEditView</from-outcome>
+			<to-view-id>/private/sale/salecashregistermovementcollection/edit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>saleCashRegisterMovementCollectionListView</from-outcome>
+			<to-view-id>/private/sale/salecashregistermovementcollection/list.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>saleCashRegisterMovementCollectionConsultView</from-outcome>
+			<to-view-id>/private/sale/salecashregistermovementcollection/consult.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
+		<navigation-case>
 			<from-outcome>saleCashRegisterMovementEditView</from-outcome>
 			<to-view-id>/private/sale/salecashregistermovement/edit.xhtml</to-view-id>
 			<redirect />

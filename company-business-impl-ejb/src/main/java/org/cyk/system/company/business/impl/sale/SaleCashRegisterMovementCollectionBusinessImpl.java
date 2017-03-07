@@ -1,0 +1,148 @@
+package org.cyk.system.company.business.impl.sale;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollectionBusiness;
+import org.cyk.system.company.model.payment.CashRegister;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
+import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementCollectionDao;
+import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
+import org.cyk.system.root.business.api.mathematics.MovementBusiness;
+import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
+import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
+import org.cyk.system.root.model.mathematics.Movement;
+import org.cyk.system.root.model.security.UserAccount;
+
+public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractCollectionBusinessImpl<SaleCashRegisterMovementCollection,SaleCashRegisterMovement, SaleCashRegisterMovementCollectionDao,SaleCashRegisterMovementDao,SaleCashRegisterMovementBusiness> implements SaleCashRegisterMovementCollectionBusiness,Serializable {
+
+	private static final long serialVersionUID = -3799482462496328200L;
+	
+	@Inject
+	public SaleCashRegisterMovementCollectionBusinessImpl(SaleCashRegisterMovementCollectionDao dao) {
+		super(dao); 
+	}
+	
+	@Override
+	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
+		return Listener.COLLECTION;
+	}
+	
+	@Override
+	protected Object[] getPropertyValueTokens(SaleCashRegisterMovementCollection saleCashRegisterMovementCollection, String name) {
+		if(ArrayUtils.contains(new String[]{GlobalIdentifier.FIELD_CODE}, name))
+			return new Object[]{saleCashRegisterMovementCollection.getCashRegisterMovement()};
+		return super.getPropertyValueTokens(saleCashRegisterMovementCollection, name);
+	}
+	
+	@Override
+	public SaleCashRegisterMovementCollection instanciateOne(String code, String name) {
+		SaleCashRegisterMovementCollection saleCashRegisterMovementCollection =  super.instanciateOne(code, name);
+		saleCashRegisterMovementCollection.setAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent());
+		return saleCashRegisterMovementCollection;
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public SaleCashRegisterMovementCollection instanciateOne(String code, String name, String cashRegisterCode) {
+		SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = instanciateOne(code,name);
+		saleCashRegisterMovementCollection.setCashRegisterMovement(inject(CashRegisterMovementBusiness.class).instanciateOne(code,name,BigDecimal.ZERO.toString(),cashRegisterCode));
+		return saleCashRegisterMovementCollection;
+	}
+	
+	/*@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public SaleCashRegisterMovement instanciateOne(UserAccount userAccount,Sale sale,CashRegister cashRegister) {
+		SaleCashRegisterMovement saleCashRegisterMovement = instanciateOne();
+		setSale(saleCashRegisterMovement, sale);
+		saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement());
+		setCashRegister(userAccount, saleCashRegisterMovement, cashRegister);
+		/*for(SalableProductCollectionItem salableProductCollectionItem : inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()))
+			saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getCollection().add(
+					new SalableProductCollectionItemSaleCashRegisterMovement(salableProductCollectionItem,saleCashRegisterMovement));
+		
+		return saleCashRegisterMovement;
+	}*/
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void setCashRegister(UserAccount userAccount,SaleCashRegisterMovementCollection saleCashRegisterMovementCollection,CashRegister cashRegister) {
+		saleCashRegisterMovementCollection.getCashRegisterMovement().setCashRegister(cashRegister);
+		saleCashRegisterMovementCollection.getCashRegisterMovement().setMovement(cashRegister == null ? null 
+				: inject(MovementBusiness.class).instanciateOne(cashRegister.getMovementCollection()));
+	}
+	/*
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public void in(SaleCashRegisterMovement saleCashRegisterMovement) {
+		saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().setValue(saleCashRegisterMovement.getAmountIn().subtract(saleCashRegisterMovement.getAmountOut()));
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
+	public void out(SaleCashRegisterMovement saleCashRegisterMovement) {
+		saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().setValue(saleCashRegisterMovement.getAmountIn().subtract(saleCashRegisterMovement.getAmountOut()));
+	}
+	*/
+	
+	@Override
+	protected void beforeCreate(SaleCashRegisterMovementCollection saleCashRegisterMovementCollection) {
+		super.beforeCreate(saleCashRegisterMovementCollection);
+		createIfNotIdentified(saleCashRegisterMovementCollection.getCashRegisterMovement());
+	}
+	
+	@Override
+	public SaleCashRegisterMovement add(SaleCashRegisterMovementCollection collection, SaleCashRegisterMovement item) {
+		SaleCashRegisterMovement saleCashRegisterMovement = super.add(collection, item);
+		commonUtils.increment(BigDecimal.class, collection.getCashRegisterMovement().getMovement(), Movement.FIELD_VALUE, item.getAmount());
+		return saleCashRegisterMovement;
+	}
+	
+	@Override
+	public SaleCashRegisterMovement remove(SaleCashRegisterMovementCollection collection,SaleCashRegisterMovement item) {
+		SaleCashRegisterMovement saleCashRegisterMovement = super.remove(collection, item);
+		commonUtils.increment(BigDecimal.class, collection.getCashRegisterMovement().getMovement(), Movement.FIELD_VALUE, item.getAmount().negate());
+		return saleCashRegisterMovement;
+	}
+	
+	/**/
+	
+	public static interface Listener extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<SaleCashRegisterMovementCollection>{
+		
+		Collection<Listener> COLLECTION = new ArrayList<>();
+		
+		/**/
+		
+		public static class Adapter extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener.Adapter<SaleCashRegisterMovementCollection> implements Listener, Serializable {
+			private static final long serialVersionUID = -1625238619828187690L;
+			
+			/**/
+			
+			public static class Default extends Listener.Adapter implements Serializable {
+				private static final long serialVersionUID = -1625238619828187690L;
+				
+				/**/
+				
+				public static class EnterpriseResourcePlanning extends Listener.Adapter.Default implements Serializable {
+					private static final long serialVersionUID = -1625238619828187690L;
+					
+					/**/
+					
+					
+				}
+			}
+		}
+		
+	}
+
+
+
+	
+	
+}

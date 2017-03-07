@@ -15,40 +15,35 @@ import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemSaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollectionBusiness;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.model.sale.SaleReport;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementModeDao;
-import org.cyk.system.company.persistence.api.payment.CashierDao;
+import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementActionBusiness;
-import org.cyk.system.root.business.api.mathematics.MovementBusiness;
-import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
 import org.cyk.system.root.model.CommonBusinessAction;
-import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.security.UserAccount;
-import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.LogMessage;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 
 @Stateless
-public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessService<SaleCashRegisterMovement, SaleCashRegisterMovementDao> implements SaleCashRegisterMovementBusiness,Serializable {
+public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItemBusinessImpl<SaleCashRegisterMovement, SaleCashRegisterMovementDao,SaleCashRegisterMovementCollection> implements SaleCashRegisterMovementBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	@Inject private CashierDao cashierDao;
-	@Inject private PersonDao personDao;
-	
 	@Inject
 	public SaleCashRegisterMovementBusinessImpl(SaleCashRegisterMovementDao dao) {
 		super(dao);
@@ -61,17 +56,25 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	
 	@Override
 	protected Object[] getPropertyValueTokens(SaleCashRegisterMovement saleCashRegisterMovement, String name) {
-		if(ArrayUtils.contains(new String[]{GlobalIdentifier.FIELD_CODE}, name))
-			return new Object[]{saleCashRegisterMovement.getCashRegisterMovement()};
+		if(ArrayUtils.contains(new String[]{GlobalIdentifier.FIELD_CODE,GlobalIdentifier.FIELD_NAME}, name))
+			return new Object[]{saleCashRegisterMovement.getCollection()};
 		return super.getPropertyValueTokens(saleCashRegisterMovement, name);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public SaleCashRegisterMovement instanciateOne(String saleComputedIdentifier,String computedIdentifier,String cashierPersonCode, String amount) {
-		SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement();
-		//saleCashRegisterMovement.setSale(saleDao.readByComputedIdentifier(saleComputedIdentifier));
-		saleCashRegisterMovement.setAmountIn(numberBusiness.parseBigDecimal(amount));
-		saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement());
+	public SaleCashRegisterMovement instanciateOne(String collectionCode,String saleCode, String amount) {		
+		SaleCashRegisterMovement saleCashRegisterMovement = instanciateOne(inject(SaleCashRegisterMovementCollectionDao.class).read(collectionCode),saleCode,amount);
+		
+		return saleCashRegisterMovement;
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public SaleCashRegisterMovement instanciateOne(SaleCashRegisterMovementCollection collection,String saleCode, String amount) {
+		SaleCashRegisterMovement saleCashRegisterMovement = instanciateOne(collection,Boolean.FALSE);
+		saleCashRegisterMovement.setSale(inject(SaleDao.class).read(saleCode));
+		saleCashRegisterMovement.setAmount(numberBusiness.parseBigDecimal(amount));
+		inject(SaleCashRegisterMovementCollectionBusiness.class).add(collection,saleCashRegisterMovement);
+		/*saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement());
 		saleCashRegisterMovement.getCashRegisterMovement().setCode(computedIdentifier);
 		saleCashRegisterMovement.getCashRegisterMovement().setCashRegister(cashierDao.readByPerson(personDao.read(cashierPersonCode)).getCashRegister());
 		/*saleCashRegisterMovement.getCashRegisterMovement().setMovement(inject(MovementBusiness.class).instanciateOne(
@@ -84,8 +87,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	public SaleCashRegisterMovement instanciateOne(UserAccount userAccount,Sale sale,CashRegister cashRegister) {
 		SaleCashRegisterMovement saleCashRegisterMovement = instanciateOne();
 		setSale(saleCashRegisterMovement, sale);
-		saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement());
-		setCashRegister(userAccount, saleCashRegisterMovement, cashRegister);
+		//saleCashRegisterMovement.setCashRegisterMovement(new CashRegisterMovement());
 		/*for(SalableProductCollectionItem salableProductCollectionItem : inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()))
 			saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getCollection().add(
 					new SalableProductCollectionItemSaleCashRegisterMovement(salableProductCollectionItem,saleCashRegisterMovement));
@@ -98,18 +100,12 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		saleCashRegisterMovement.setSale(sale);
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void setCashRegister(UserAccount userAccount,SaleCashRegisterMovement saleCashRegisterMovement,CashRegister cashRegister) {
-		saleCashRegisterMovement.getCashRegisterMovement().setCashRegister(cashRegister);
-		saleCashRegisterMovement.getCashRegisterMovement().setMovement(cashRegister == null ? null : inject(MovementBusiness.class).instanciateOne(cashRegister.getMovementCollection()));
-	}
-
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS) @Deprecated
 	public SaleCashRegisterMovement instanciateOne(Sale sale,CashRegister cashRegister,Boolean input) {
 		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement(cashRegister,new Movement());
 		//cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashRegister.getMovementCollection(),input));
 		cashRegisterMovement.setMode(inject(CashRegisterMovementModeDao.class).read(CompanyConstant.Code.CashRegisterMovementMode.CASH));
-		SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement(sale,cashRegisterMovement);
+		SaleCashRegisterMovement saleCashRegisterMovement = null;//new SaleCashRegisterMovement(sale,cashRegisterMovement);
 		logInstanceCreated(saleCashRegisterMovement);
 		return saleCashRegisterMovement;
 	}
@@ -119,9 +115,6 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		LogMessage.Builder logMessageBuilder = createLogMessageBuilder(CommonBusinessAction.CREATE);
 		if(isNotIdentified(saleCashRegisterMovement.getSale())){
 			inject(SaleBusiness.class).create(saleCashRegisterMovement.getSale());
-		}
-		if(isNotIdentified(saleCashRegisterMovement.getCashRegisterMovement())){
-			inject(CashRegisterMovementBusiness.class).create(saleCashRegisterMovement.getCashRegisterMovement());
 		}
 		
 		/*Customer customer = sale.getCustomer();
@@ -185,20 +178,20 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	}
 	
 	private void updateSale(SaleCashRegisterMovement saleCashRegisterMovement,Crud crud,LogMessage.Builder logMessageBuilder){
-		logMessageBuilder.addParameters("saleCashRegisterMovement.cashRegisterMovement.movement.value",saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue());
+		logMessageBuilder.addParameters("saleCashRegisterMovement.cashRegisterMovement.movement.value",saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getValue());
 		Sale sale = saleCashRegisterMovement.getSale();
 		BigDecimal oldBalance=sale.getBalance().getValue(),increment=null,newBalance=null;
 		logMessageBuilder.addParameters("sale.balance.value",oldBalance);
 		if(Crud.CREATE.equals(crud)){
 			//When cash register increase or decrease then sale cash register respectively decrease or increase
-			increment=saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate();
+			increment=saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getValue().negate();
 		}else if(Crud.UPDATE.equals(crud)) {
-			BigDecimal oldCashRegisterValue = saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getValue();
-			inject(CashRegisterMovementBusiness.class).update(saleCashRegisterMovement.getCashRegisterMovement());
-			BigDecimal newCashRegisterValue = saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getValue();
+			BigDecimal oldCashRegisterValue = saleCashRegisterMovement.getCollection().getCashRegisterMovement().getCashRegister().getMovementCollection().getValue();
+			inject(CashRegisterMovementBusiness.class).update(saleCashRegisterMovement.getCollection().getCashRegisterMovement());
+			BigDecimal newCashRegisterValue = saleCashRegisterMovement.getCollection().getCashRegisterMovement().getCashRegister().getMovementCollection().getValue();
 			increment = oldCashRegisterValue.subtract(newCashRegisterValue);
 		}else if(Crud.DELETE.equals(crud)) {
-			increment=saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue();
+			increment=saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getValue();
 			
 		}else
 			return;
@@ -227,13 +220,12 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		if(saleCashRegisterMovement.getSale().getCustomer()!=null){
 			commonUtils.increment(BigDecimal.class, saleCashRegisterMovement.getSale().getCustomer(), Customer.FIELD_PAYMENT_COUNT, BigDecimal.ONE.negate());
 			commonUtils.increment(BigDecimal.class, saleCashRegisterMovement.getSale().getCustomer(), Customer.FIELD_PAID
-					, saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue().negate());
+					, saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getValue().negate());
 		}
 		updateSale(saleCashRegisterMovement, Crud.DELETE, logMessageBuilder);
-		if(isIdentified(saleCashRegisterMovement.getCashRegisterMovement()))
-			inject(CashRegisterMovementBusiness.class).delete(saleCashRegisterMovement.getCashRegisterMovement());
+		if(isIdentified(saleCashRegisterMovement.getCollection().getCashRegisterMovement()))
+			inject(CashRegisterMovementBusiness.class).delete(saleCashRegisterMovement.getCollection().getCashRegisterMovement());
 		
-		saleCashRegisterMovement.setCashRegisterMovement(null);
 		saleCashRegisterMovement.setSale(null);
 		saleCashRegisterMovement = super.delete(saleCashRegisterMovement);
 		logTrace(logMessageBuilder);
@@ -242,11 +234,11 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public BigDecimal computeBalance(SaleCashRegisterMovement saleCashRegisterMovement) {
-		BigDecimal saleCashRegisterMovementAmount = saleCashRegisterMovement.getCashRegisterMovement().getMovement().getValue();
-		MovementAction action = saleCashRegisterMovement.getCashRegisterMovement().getMovement().getAction();
+		BigDecimal saleCashRegisterMovementAmount = saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getValue();
+		MovementAction action = saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getAction();
 		BigDecimal balance = saleCashRegisterMovement.getSale().getIdentifier()==null?saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue()
 				:saleCashRegisterMovement.getSale().getBalance().getValue();
-		if(action.equals(saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getDecrementAction()))//withdraw
+		if(action.equals(saleCashRegisterMovement.getCollection().getCashRegisterMovement().getCashRegister().getMovementCollection().getDecrementAction()))//withdraw
 			if(balance.signum()==1)
 				return balance.subtract(saleCashRegisterMovementAmount);
 			else
@@ -270,23 +262,8 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractTypedBusinessS
 		return dao.readBySale(sale);
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public void in(SaleCashRegisterMovement saleCashRegisterMovement) {
-		saleCashRegisterMovement.getCashRegisterMovement().getMovement().setValue(saleCashRegisterMovement.getAmountIn().subtract(saleCashRegisterMovement.getAmountOut()));
-	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public void out(SaleCashRegisterMovement saleCashRegisterMovement) {
-		saleCashRegisterMovement.getCashRegisterMovement().getMovement().setValue(saleCashRegisterMovement.getAmountIn().subtract(saleCashRegisterMovement.getAmountOut()));
-	}
 
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public ReportBasedOnTemplateFile<SaleReport> findReport(SaleCashRegisterMovement saleCashRegisterMovement) {
-		return null;//rootBusinessLayer.getReportBusiness().buildBinaryContent(saleCashRegisterMovement.getReport(),
-				//CompanyBusinessLayer.getInstance().getPointOfSalePaymentReportName()+Constant.CHARACTER_UNDESCORE+StringUtils.defaultString(saleCashRegisterMovement.getCashRegisterMovement().getCode(), saleCashRegisterMovement.getIdentifier().toString()));
-	}
-	
-	
 	/**/
 	
 	public static interface Listener extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<SaleCashRegisterMovement>{

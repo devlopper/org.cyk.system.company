@@ -173,15 +173,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			}
 		});
 		
-		/*BusinessServiceProvider.Identifiable.COLLECTION.add(new AbstractActorBusinessImpl.BusinessServiceProviderIdentifiable<Customer,Customer.SearchCriteria>(Customer.class){
-			private static final long serialVersionUID = 1322416788278558869L;
-			
-			@Override
-			protected Customer.SearchCriteria createSearchCriteria(Service service,DataReadConfiguration dataReadConfiguration) {
-				return new Customer.SearchCriteria(dataReadConfiguration.getGlobalFilter());
-			}
-        });*/
-		
 		ClazzBusiness.LISTENERS.add(new ClazzBusiness.ClazzBusinessListener.Adapter(){
 			private static final long serialVersionUID = -6563167908087619179L;
 			@Override
@@ -212,6 +203,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		SaleBusinessImpl.Listener.COLLECTION.add(new AccountingPeriodProductBusinessImpl.SaleBusinessAdapter());
 		SaleBusinessImpl.Listener.COLLECTION.add(new CustomerBusinessImpl.SaleBusinessAdapter());
 	
+		inject(GlobalIdentifierPersistenceMappingConfigurations.class).configure();
+		
+		//AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{GlobalIdentifier.FIELD_CODE,GlobalIdentifier.FIELD_NAME}, SaleCashRegisterMovement.class);
 	}
 		
 	@Override
