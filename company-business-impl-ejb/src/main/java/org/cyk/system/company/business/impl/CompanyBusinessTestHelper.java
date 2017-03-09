@@ -14,11 +14,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollectionBusiness;
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.Balance;
@@ -33,7 +31,6 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
-import org.cyk.system.company.model.sale.SalableProductCollectionItemSaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
@@ -160,56 +157,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		return deleteCashRegisterMovement(cashRegisterMovement, expectedValue,null);
 	}
 	
-	public SalableProductCollection createSalableProductCollection(String code,Object[][] salableProducts,String expectedThrowableMessage){
-		final SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne(code,salableProducts);
-		if(expectedThrowableMessage!=null){
-    		new Try(expectedThrowableMessage){ 
-    			private static final long serialVersionUID = -8176804174113453706L;
-    			@Override protected void code() {create(salableProductCollection);}
-    		}.execute();
-    	}else{
-    		create(salableProductCollection);
-    	}
-    	return salableProductCollection;
-    }
-	public SalableProductCollection createSalableProductCollection(String code,Object[][] salableProducts){
-		return createSalableProductCollection(code,salableProducts,null);
-	}
-	
-	public SalableProductCollection deleteSalableProductCollection(SalableProductCollection pSalableProductCollection,String expectedThrowableMessage){
-		final SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).find(pSalableProductCollection.getIdentifier());
-		if(expectedThrowableMessage!=null){
-    		new Try(expectedThrowableMessage){ 
-    			private static final long serialVersionUID = -8176804174113453706L;
-    			@Override protected void code() {delete(salableProductCollection);}
-    		}.execute();
-    	}else{
-    		delete(salableProductCollection);
-    	}
-    	return salableProductCollection;
-    }
-	public SalableProductCollection deleteSalableProductCollection(final SalableProductCollection salableProductCollection){
-		return deleteSalableProductCollection(salableProductCollection,null);
-	}
-	
-	public SalableProductCollectionItem createSalableProductCollectionItem(String salableProductCollectionCode,Object[] salableProduct,String expectedSalableProductCollectionCost,String expectedThrowableMessage){
-		final SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollectionCode, salableProduct);
-		salableProductCollectionItem.setCascadeOperationToMaster(Boolean.TRUE);
-		if(expectedThrowableMessage!=null){
-    		new Try(expectedThrowableMessage){ 
-    			private static final long serialVersionUID = -8176804174113453706L;
-    			@Override protected void code() {create(salableProductCollectionItem);}
-    		}.execute();
-    	}else{
-    		create(salableProductCollectionItem);
-    		assertSalableProductCollectionItem(salableProductCollectionItem,expectedSalableProductCollectionCost);
-    	}
-    	return salableProductCollectionItem;
-    }
-	public SalableProductCollectionItem createSalableProductCollectionItem(String salableProductCollectionCode,Object[] salableProduct,String expectedSalableProductCollectionCost){
-		return createSalableProductCollectionItem(salableProductCollectionCode,salableProduct,expectedSalableProductCollectionCost,null);
-	}
-	
 	public SalableProductCollectionItem updateSalableProductCollectionItem(SalableProductCollectionItem pSalableProductCollectionItem,String quantity,String expectedSalableProductCollectionCost,String expectedThrowableMessage){
 		final SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).find(pSalableProductCollectionItem.getIdentifier());
 		salableProductCollectionItem.setCascadeOperationToMaster(Boolean.TRUE);
@@ -229,7 +176,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		return updateSalableProductCollectionItem(salableProductCollectionItem,quantity,expectedSalableProductCollectionCost,null);
 	}
 	
-	public SalableProductCollectionItem deleteSalableProductCollectionItem(SalableProductCollectionItem pSalableProductCollectionItem,String expectedSalableProductCollectionCost,String expectedThrowableMessage){
+	public SalableProductCollectionItem deleteSalableProductCollectionItem(SalableProductCollectionItem pSalableProductCollectionItem,String expectedThrowableMessage){
 		final SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).find(pSalableProductCollectionItem.getIdentifier());
 		salableProductCollectionItem.setCascadeOperationToMaster(Boolean.TRUE);
 		if(expectedThrowableMessage!=null){
@@ -239,28 +186,14 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     		}.execute();
     	}else{
     		delete(salableProductCollectionItem);
-    		assertSalableProductCollectionItem(salableProductCollectionItem,expectedSalableProductCollectionCost);
     	}
     	return salableProductCollectionItem;
     }
-	public SalableProductCollectionItem deleteSalableProductCollectionItem(final SalableProductCollectionItem salableProductCollectionItem,String expectedSalableProductCollectionCost){
-		return deleteSalableProductCollectionItem(salableProductCollectionItem, expectedSalableProductCollectionCost,null);
+	public SalableProductCollectionItem deleteSalableProductCollectionItem(final SalableProductCollectionItem salableProductCollectionItem){
+		return deleteSalableProductCollectionItem(salableProductCollectionItem,null);
 	}
-	
-	public Sale createSale(String code,String customerCode,Object[][] salableProducts,String expectedThrowableMessage){
-		final Sale sale = inject(SaleBusiness.class).instanciateOne(code,customerCode,salableProducts);
-    	if(expectedThrowableMessage!=null){
-    		new Try(expectedThrowableMessage){ 
-    			private static final long serialVersionUID = -8176804174113453706L;
-    			@Override protected void code() {create(sale);}
-    		}.execute();
-    	}else{
-    		create(sale);
-    	}
-    	return sale;
-    }
-	public Sale createSale(String code,String customerCode,Object[][] salableProducts){
-		return createSale(code,customerCode,salableProducts,null);
+	public SalableProductCollectionItem deleteSalableProductCollectionItem(String salableProductCollectionItemCode){
+		return deleteSalableProductCollectionItem(inject(SalableProductCollectionItemDao.class).read(salableProductCollectionItemCode),null);
 	}
 	
 	public Sale updateSale(Sale pSale,String expectedCostValue,String expectedBalanceValue,String expectedThrowableMessage){
@@ -295,73 +228,6 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     }
 	public Sale deleteSale(final Sale sale){
 		return deleteSale(sale,null);
-	}
-	
-	public SaleCashRegisterMovementCollection createSaleCashRegisterMovementCollection(String code,String cashRegisterCode,String[][] saleCashRegisterMovements,String expectedThrowableMessage){
-		final SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(code,null, cashRegisterCode);
-		if(saleCashRegisterMovements!=null)
-	    	for(String[] array : saleCashRegisterMovements){
-	    		inject(SaleCashRegisterMovementBusiness.class).instanciateOne(saleCashRegisterMovementCollection, array[0], array[1]);
-	    		/*
-	    		for(SalableProductCollectionItemSaleCashRegisterMovement index : saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getCollection())
-	    			if(index.getSalableProductCollectionItem().getSalableProduct().equals(salableProductCollectionItem.getSalableProduct())){
-	    				index.setAmount(commonUtils.getBigDecimal(salableProductCollectionItemInfo[1]));
-	    				
-	    			}
-	    		*/
-	    		/*
-	    		SalableProductCollectionItemSaleCashRegisterMovement salableProductCollectionItemSaleCashRegisterMovement =
-	    				new SalableProductCollectionItemSaleCashRegisterMovement(salableProductCollectionItem, saleCashRegisterMovement);
-	    		salableProductCollectionItemSaleCashRegisterMovement.setAmount(commonUtils.getBigDecimal(salableProductCollectionItemInfo[1]));
-	    		saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getCollection().add(salableProductCollectionItemSaleCashRegisterMovement);
-	    		*/
-	    	}
-    	if(expectedThrowableMessage!=null){
-    		new Try(expectedThrowableMessage){ 
-    			private static final long serialVersionUID = -8176804174113453706L;
-    			@Override protected void code() {create(saleCashRegisterMovementCollection);}
-    		}.execute();
-    	}else{
-    		create(saleCashRegisterMovementCollection);
-    	}
-    	return saleCashRegisterMovementCollection;
-    }
-	public SaleCashRegisterMovementCollection createSaleCashRegisterMovementCollection(String code,String cashRegisterCode,String[][] saleCashRegisterMovements){
-		return createSaleCashRegisterMovementCollection(code, cashRegisterCode, saleCashRegisterMovements,null);
-	}
-	
-	public SaleCashRegisterMovement createSaleCashRegisterMovement(String collectionCode,String saleCode,String value,String[][] salableProductCollectionItemInfos,String expectedThrowableMessage){
-		final SaleCashRegisterMovement saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne(collectionCode,saleCode,value);
-		Sale sale = saleCashRegisterMovement.getSale();
-    	if(salableProductCollectionItemInfos!=null)
-	    	for(String[] salableProductCollectionItemInfo : salableProductCollectionItemInfos){
-	    		SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemDao.class)
-	    				.readByCollectionBySalableProduct(sale.getSalableProductCollection(), inject(SalableProductDao.class).read(salableProductCollectionItemInfo[0])).iterator().next();
-	    		
-	    		for(SalableProductCollectionItemSaleCashRegisterMovement index : saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getCollection())
-	    			if(index.getSalableProductCollectionItem().getSalableProduct().equals(salableProductCollectionItem.getSalableProduct())){
-	    				index.setAmount(commonUtils.getBigDecimal(salableProductCollectionItemInfo[1]));
-	    				
-	    			}
-	    		/*
-	    		SalableProductCollectionItemSaleCashRegisterMovement salableProductCollectionItemSaleCashRegisterMovement =
-	    				new SalableProductCollectionItemSaleCashRegisterMovement(salableProductCollectionItem, saleCashRegisterMovement);
-	    		salableProductCollectionItemSaleCashRegisterMovement.setAmount(commonUtils.getBigDecimal(salableProductCollectionItemInfo[1]));
-	    		saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getCollection().add(salableProductCollectionItemSaleCashRegisterMovement);
-	    		*/
-	    	}
-    	if(expectedThrowableMessage!=null){
-    		new Try(expectedThrowableMessage){ 
-    			private static final long serialVersionUID = -8176804174113453706L;
-    			@Override protected void code() {create(saleCashRegisterMovement);}
-    		}.execute();
-    	}else{
-    		create(saleCashRegisterMovement);
-    	}
-    	return saleCashRegisterMovement;
-    }
-	public SaleCashRegisterMovement createSaleCashRegisterMovement(String collectionCode,String saleCode,String value,String[][] salableProductCollectionItems){
-		return createSaleCashRegisterMovement(collectionCode,saleCode,value,salableProductCollectionItems,null);
 	}
 	
 	public SaleCashRegisterMovement updateSaleCashRegisterMovement(SaleCashRegisterMovement pSaleCashRegisterMovement,String value,String expectedSaleBalanceValue,String expectedCashRegisterValue,String expectedThrowableMessage){

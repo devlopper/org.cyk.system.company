@@ -7,6 +7,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
@@ -23,7 +24,7 @@ public class SalableProductCollection extends AbstractCollection<SalableProductC
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne private AccountingPeriod accountingPeriod;
+	@ManyToOne @NotNull private AccountingPeriod accountingPeriod;
 	
 	@Embedded private Cost cost = new Cost();
 	

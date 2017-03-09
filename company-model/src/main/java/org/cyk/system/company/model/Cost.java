@@ -11,13 +11,14 @@ import org.cyk.system.root.model.AbstractModelElement;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * An amount that has to be paid or given up in order to get something.
  * @author Christian Yao Komenan
  *
  */
-@Embeddable @Getter @Setter
+@Embeddable @Accessors(chain=true) @Getter @Setter
 public class Cost extends AbstractModelElement implements Serializable {
 
 	private static final long serialVersionUID = 4948598720219343584L;
@@ -26,6 +27,42 @@ public class Cost extends AbstractModelElement implements Serializable {
 	@Column(name=COLUMN_VALUE,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal value = BigDecimal.ZERO;
 	@Column(name=COLUMN_TAX,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal tax = BigDecimal.ZERO;
 	@Column(name=COLUMN_TURNOVER,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal turnover = BigDecimal.ZERO;
+	
+	public void set(Cost cost) {
+		if(cost==null){
+			/*
+			this.numberOfProceedElements = null;
+			this.value = null;
+			this.tax = null;
+			this.turnover = null;
+			*/
+		}else{
+			this.numberOfProceedElements = cost.numberOfProceedElements;
+			this.value = cost.value;
+			this.tax = cost.tax;
+			this.turnover = cost.turnover;
+		}	
+	}
+	
+	public Cost setNumberOfProceedElementsFromString(String numberOfProceedElements){
+		this.numberOfProceedElements = new BigDecimal(numberOfProceedElements);
+		return this;
+	}
+	
+	public Cost setValueFromString(String value){
+		this.value = new BigDecimal(value);
+		return this;
+	}
+	
+	public Cost setTaxFromString(String tax){
+		this.tax = new BigDecimal(tax);
+		return this;
+	}
+	
+	public Cost setTurnoverFromString(String turnover){
+		this.turnover = new BigDecimal(turnover);
+		return this;
+	}
 	
 	@Override
 	public String getUiString() {
@@ -55,4 +92,6 @@ public class Cost extends AbstractModelElement implements Serializable {
 	public static final String COLUMN_VALUE = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_VALUE;
 	public static final String COLUMN_TAX = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_TAX;
 	public static final String COLUMN_TURNOVER = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_TURNOVER;
+
+	
 }

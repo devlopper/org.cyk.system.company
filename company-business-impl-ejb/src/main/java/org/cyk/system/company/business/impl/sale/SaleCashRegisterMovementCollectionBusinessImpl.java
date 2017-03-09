@@ -15,6 +15,7 @@ import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollectionBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
+import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementCollectionDao;
@@ -54,10 +55,18 @@ public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractColl
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public SaleCashRegisterMovementCollection instanciateOne(String code, String name, String cashRegisterCode) {
+	public SaleCashRegisterMovementCollection instanciateOne(String code, String name, String cashRegisterCode,Object[][] saleCashRegisterMovements) {
 		SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = instanciateOne(code,name);
 		saleCashRegisterMovementCollection.setCashRegisterMovement(inject(CashRegisterMovementBusiness.class).instanciateOne(code,name,BigDecimal.ZERO.toString(),cashRegisterCode));
+		if(saleCashRegisterMovements!=null)
+			for(Object[] saleCashRegisterMovement : saleCashRegisterMovements)
+				inject(SaleCashRegisterMovementBusiness.class).instanciateOne(saleCashRegisterMovementCollection, (String)saleCashRegisterMovement[0], (String)saleCashRegisterMovement[1]);
 		return saleCashRegisterMovementCollection;
+	}
+	
+	@Override
+	public SaleCashRegisterMovementCollection instanciateOne(UserAccount userAccount) {
+		return instanciateOne(null, null, null, null);
 	}
 	
 	/*@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -91,6 +100,13 @@ public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractColl
 	}
 	*/
 	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void computeAmount(SaleCashRegisterMovementCollection saleCashRegisterMovementCollection,Collection<SaleCashRegisterMovement> saleCashRegisterMovements) {
+		saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().setValue(BigDecimal.ZERO);
+		for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovements)
+			commonUtils.increment(BigDecimal.class, saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement(), Movement.FIELD_VALUE, saleCashRegisterMovement.getAmount());
+	}
+	
 	@Override
 	protected void beforeCreate(SaleCashRegisterMovementCollection saleCashRegisterMovementCollection) {
 		super.beforeCreate(saleCashRegisterMovementCollection);
@@ -109,6 +125,14 @@ public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractColl
 		SaleCashRegisterMovement saleCashRegisterMovement = super.remove(collection, item);
 		commonUtils.increment(BigDecimal.class, collection.getCashRegisterMovement().getMovement(), Movement.FIELD_VALUE, item.getAmount().negate());
 		return saleCashRegisterMovement;
+	}
+	
+	@Override
+	protected void beforeDelete(SaleCashRegisterMovementCollection saleCashRegisterMovementCollection) {
+		CashRegisterMovement cashRegisterMovement = saleCashRegisterMovementCollection.getCashRegisterMovement();
+		saleCashRegisterMovementCollection.setCashRegisterMovement(null);
+		inject(CashRegisterMovementBusiness.class).delete(cashRegisterMovement);
+		super.beforeDelete(saleCashRegisterMovementCollection);
 	}
 	
 	/**/

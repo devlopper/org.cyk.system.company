@@ -11,15 +11,19 @@ import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollectionBusiness;
 import org.cyk.system.company.business.impl.integration.enterpriseresourceplanning.AbstractEnterpriseResourcePlanningBusinessIT;
 import org.cyk.system.company.model.CompanyConstant;
+import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
+import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.root.business.impl.PersistDataListener;
 import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.persistence.api.security.UserAccountDao;
@@ -35,8 +39,6 @@ public class IesaSaleBusinessIT extends AbstractEnterpriseResourcePlanningBusine
     private static String CUSTOMER_001 = "C001",CUSTOMER_002 = "C002";
     private Sale sale;
     private SaleCashRegisterMovement saleCashRegisterMovement;
-    private SalableProductCollection salableProductCollection;
-    private SalableProductCollectionItem salableProductCollectionItem;
     
     @Override
     protected void populate() {
@@ -73,19 +75,99 @@ public class IesaSaleBusinessIT extends AbstractEnterpriseResourcePlanningBusine
     	create(inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_002));
     }
     
-    //@Test
+    @Test
     public void crudSalableProductCollection(){
-    	salableProductCollection = companyBusinessTestHelper.createSalableProductCollection("SPC001", new Object[][]{
-    		{"TP01",1},{"TP03",2}	
-    	});
-    	companyBusinessTestHelper.assertSalableProductCollection("SPC001", "2", "74000", "0", "0");
-    	
-    	companyBusinessTestHelper.deleteSalableProductCollection(salableProductCollection);
+    	companyBusinessTestHelper.create(inject(SalableProductCollectionBusiness.class).instanciateOne("SPC001", new String[][]{}));
+    	companyBusinessTestHelper.delete(SalableProductCollection.class,"SPC001");
     }
     
-    //@Test
+    @Test
     public void crudSalableProductCollectionItem(){
-    	salableProductCollection = companyBusinessTestHelper.createSalableProductCollection("SPC002", new Object[][]{}, "0");
+    	companyBusinessTestHelper.create(inject(SalableProductCollectionBusiness.class).instanciateOne("SPC001", new String[][]{}));
+    	companyBusinessTestHelper.create(inject(SalableProductCollectionItemBusiness.class).instanciateOne("SPC001", new Object[]{"TP01",1}));
+    	companyBusinessTestHelper.delete(SalableProductCollectionItem.class,"SPC001_TP01");
+    	companyBusinessTestHelper.delete(SalableProductCollection.class,"SPC001");
+    }
+    
+    @Test
+    public void crudSale(){
+    	companyBusinessTestHelper.create(inject(SaleBusiness.class).instanciateOne("Sale001",CUSTOMER_001, new String[][]{}));
+    	companyBusinessTestHelper.delete(Sale.class,"Sale001");
+    }
+    
+    @Test
+    public void crudSaleCashRegisterMovementCollection(){
+    	companyBusinessTestHelper.create(inject(SaleBusiness.class).instanciateOne("Sale001",CUSTOMER_001, new String[][]{}));
+    	companyBusinessTestHelper.create(inject(SaleBusiness.class).instanciateOne("Sale002",CUSTOMER_001, new String[][]{}));
+    	
+    	companyBusinessTestHelper.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, CASH_REGISTER_001, new String[][]{}));
+    	
+    	//Cleaning
+    	companyBusinessTestHelper.delete(SaleCashRegisterMovementCollection.class,"P001");
+    	companyBusinessTestHelper.delete(Sale.class,"Sale001");
+    	companyBusinessTestHelper.delete(Sale.class,"Sale002");
+    }
+    
+    @Test
+    public void crudSaleCashRegisterMovement(){
+    	companyBusinessTestHelper.create(inject(SaleBusiness.class).instanciateOne("Sale001",CUSTOMER_001, new String[][]{}));
+    	companyBusinessTestHelper.create(inject(SaleBusiness.class).instanciateOne("Sale002",CUSTOMER_001, new String[][]{}));
+    	
+    	companyBusinessTestHelper.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, CASH_REGISTER_001, new String[][]{}));
+    	companyBusinessTestHelper.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale001", "0"));
+    	companyBusinessTestHelper.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale002", "0"));
+    	
+    	companyBusinessTestHelper.delete(SaleCashRegisterMovementCollection.class,"P001");
+    	companyBusinessTestHelper.delete(Sale.class,"Sale001");
+    	companyBusinessTestHelper.delete(Sale.class,"Sale002");
+    }
+    
+    @Test
+    public void crudSaleCashRegisterMovementCollectionUserInterface(){
+    	UserAccount userAccount = inject(UserAccountDao.class).readOneRandomly();
+    	companyBusinessTestHelper.create(inject(SaleBusiness.class).instanciateOne("Sale001",CUSTOMER_001, new Object[][]{ {"TP01",1},{"TP02",2} }));
+    	companyBusinessTestHelper.create(inject(SaleBusiness.class).instanciateOne("Sale002",CUSTOMER_001, new Object[][]{ {"IP01",4},{"IP02",3} }));
+    	
+    	SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(userAccount);
+    	saleCashRegisterMovementCollection.setCode("P001");
+    	inject(SaleCashRegisterMovementCollectionBusiness.class).setCashRegister(userAccount, saleCashRegisterMovementCollection, inject(CashRegisterDao.class)
+    			.read(CASH_REGISTER_001));
+    	inject(SaleCashRegisterMovementCollectionBusiness.class).add(saleCashRegisterMovementCollection, inject(SaleCashRegisterMovementBusiness.class)
+    			.instanciateOne(saleCashRegisterMovementCollection, "Sale001", "500"));
+    	inject(SaleCashRegisterMovementCollectionBusiness.class).add(saleCashRegisterMovementCollection, inject(SaleCashRegisterMovementBusiness.class)
+    			.instanciateOne(saleCashRegisterMovementCollection, "Sale002", "800"));
+    	
+    	companyBusinessTestHelper.create(saleCashRegisterMovementCollection);
+    	
+    	companyBusinessTestHelper.delete(SaleCashRegisterMovementCollection.class,"P001");
+    	companyBusinessTestHelper.delete(Sale.class,"Sale001");
+    	companyBusinessTestHelper.delete(Sale.class,"Sale002");
+    }
+    
+    @Test
+    public void regularCase(){
+    	companyBusinessTestHelper.create(inject(SaleBusiness.class).instanciateOne("Sale001",CUSTOMER_001, new Object[][]{ {"TP01",1},{"TP02",2} }));
+    	companyBusinessTestHelper.create(inject(SaleBusiness.class).instanciateOne("Sale002",CUSTOMER_001, new Object[][]{ {"IP01",4},{"IP02",3} }));
+    	
+    	companyBusinessTestHelper.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, CASH_REGISTER_001
+    			, new Object[][]{{"Sale001","500"},{"Sale002","800"}}));
+    	companyBusinessTestHelper.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P002",null, CASH_REGISTER_001
+    			, new Object[][]{{"Sale001","700"},{"Sale002","300"}}));
+    	companyBusinessTestHelper.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P003",null, CASH_REGISTER_001
+    			, new Object[][]{{"Sale002","100"},{"Sale001","250"}}));
+    	
+    	companyBusinessTestHelper.delete(SaleCashRegisterMovementCollection.class,"P001");
+    	companyBusinessTestHelper.delete(SaleCashRegisterMovementCollection.class,"P002");
+    	companyBusinessTestHelper.delete(SaleCashRegisterMovementCollection.class,"P003");
+    	companyBusinessTestHelper.delete(Sale.class,"Sale001");
+    	companyBusinessTestHelper.delete(Sale.class,"Sale002");
+    }
+    
+    /* Complex Crud */
+    
+    //@Test
+    public void crudSalableProductCollectionItem1(){
+    	/*companyBusinessTestHelper.createSalableProductCollection("SPC002","School Fees",new Cost().setValue(new BigDecimal("0")), new Object[][]{}, "0");
     	SalableProductCollectionItem salableProductCollectionItemTP01 = companyBusinessTestHelper.createSalableProductCollectionItem("SPC002", new Object[]{"TP01",1}, "100");
     	SalableProductCollectionItem salableProductCollectionItemTP02 = companyBusinessTestHelper.createSalableProductCollectionItem("SPC002", new Object[]{"TP02",2}, "400");
     	salableProductCollectionItem = companyBusinessTestHelper.deleteSalableProductCollectionItem(salableProductCollectionItemTP01, "300");
@@ -93,22 +175,18 @@ public class IesaSaleBusinessIT extends AbstractEnterpriseResourcePlanningBusine
     	salableProductCollectionItem = companyBusinessTestHelper.deleteSalableProductCollectionItem(salableProductCollectionItemTP02, "675");
     	salableProductCollectionItem = companyBusinessTestHelper.createSalableProductCollectionItem("SPC002", new Object[]{"TP03",1}, "900");
     	salableProductCollectionItem = companyBusinessTestHelper.deleteSalableProductCollectionItem(salableProductCollectionItem, "675");
+    	*/
     }
     
-    @Test
-    public void crudSale(){
-    	sale = companyBusinessTestHelper.createSale(null,CUSTOMER_001, new Object[][]{{"IP01",1},{"IP02",1,100000},{"TP01",1},{"TP02",1},{"TP03",1},{"TP04",1},{"IP03",1},{"TP05",2},{"TP06",1}
-    	,{"IP04",3},{"IP05",3},{"IP06",3},{"IP07",10}});
-    	//companyBusinessTestHelper.assertSale(sale, costValue, balanceValue);, "2173000", "2173000"
-    }
+    
     
     //@Test
     public void crudSaleOld(){
-    	sale = companyBusinessTestHelper.createSale(null,CUSTOMER_001, new Object[][]{{"IP01",1},{"IP02",1,100000},{"TP01",1},{"TP02",1},{"TP03",1},{"TP04",1},{"IP03",1},{"TP05",2},{"TP06",1}
+    	/*sale = companyBusinessTestHelper.createSale(null,CUSTOMER_001, new Object[][]{{"IP01",1},{"IP02",1,100000},{"TP01",1},{"TP02",1},{"TP03",1},{"TP04",1},{"IP03",1},{"TP05",2},{"TP06",1}
     	,{"IP04",3},{"IP05",3},{"IP06",3},{"IP07",10}});
-    	
-    	SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = companyBusinessTestHelper
-    			.createSaleCashRegisterMovementCollection("PCrudSale001", CASH_REGISTER_001, new String[][]{});
+    	*/
+    	//SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = companyBusinessTestHelper
+    	//		.createSaleCashRegisterMovementCollection("PCrudSale001", CASH_REGISTER_001, new String[][]{});
     	
     	//companyBusinessTestHelper.createReportFile(sale, CompanyConstant.Code.ReportTemplate.INVOICE, Locale.ENGLISH, 0);
     	/*
@@ -127,9 +205,9 @@ public class IesaSaleBusinessIT extends AbstractEnterpriseResourcePlanningBusine
     	assertThat("Salable product collection "+saleCode+" exists", inject(SalableProductCollectionBusiness.class).find(saleCode)!=null);
     	assertThat("Sale code start with FACT", StringUtils.startsWith(saleCode, "FACT"));
     	
-    	SaleCashRegisterMovement saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement("PCrudSale001",saleCode, "15000",new String[][]{
+    	/*SaleCashRegisterMovement saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement("PCrudSale001",saleCode, "15000",new String[][]{
     		{"IP01","15000"}
-    	}/*, "2158000","15000"*/);
+    	}/*, "2158000","15000");*/
     	/*CreateReportFileArguments<SaleCashRegisterMovement> createSaleCashRegisterMovementReportFileArguments = new CreateReportFileArguments<SaleCashRegisterMovement>(saleCashRegisterMovement);
     	createSaleCashRegisterMovementReportFileArguments.setLocale(Locale.ENGLISH);
     	createSaleCashRegisterMovementReportFileArguments.setReportTemplate(inject(ReportTemplateDao.class).read(CompanyConstant.Code.ReportTemplate.PAYMENT_RECEIPT));	
@@ -139,9 +217,9 @@ public class IesaSaleBusinessIT extends AbstractEnterpriseResourcePlanningBusine
 		fileRepresentationType = inject(FileRepresentationTypeDao.class).read(fileRepresentationTyeCode);		
 		companyBusinessTestHelper.write(inject(FileBusiness.class).findByRepresentationTypeByIdentifiable(fileRepresentationType, saleCashRegisterMovement).iterator().next());
     	*/
-		saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement("PCrudSale001",saleCode, "550000",new String[][]{
+		/*saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement("PCrudSale001",saleCode, "550000",new String[][]{
     		{"IP01","50000"},{"IP02","500000"}
-    	}/*, "1608000","565000"*/);
+    	}/*, "1608000","565000");*/
     	/*createSaleCashRegisterMovementReportFileArguments = new CreateReportFileArguments<SaleCashRegisterMovement>(saleCashRegisterMovement);
     	createSaleCashRegisterMovementReportFileArguments.setLocale(Locale.ENGLISH);
     	createSaleCashRegisterMovementReportFileArguments.setReportTemplate(inject(ReportTemplateDao.class).read(CompanyConstant.Code.ReportTemplate.PAYMENT_RECEIPT));	
@@ -151,9 +229,9 @@ public class IesaSaleBusinessIT extends AbstractEnterpriseResourcePlanningBusine
 		fileRepresentationType = inject(FileRepresentationTypeDao.class).read(fileRepresentationTyeCode);		
 		companyBusinessTestHelper.write(inject(FileBusiness.class).findByRepresentationTypeByIdentifiable(fileRepresentationType, saleCashRegisterMovement).iterator().next());
 		*/
-		saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement("PCrudSale001",saleCode, "920000",new String[][]{
+		/*saleCashRegisterMovement = companyBusinessTestHelper.createSaleCashRegisterMovement("PCrudSale001",saleCode, "920000",new String[][]{
     		{"IP02","500000"},{"TP01","60000"},{"IP04","100000"},{"IP05","90000"},{"IP06","90000"},{"IP07","80000"}
-    	}/*, "688000","1485000"*/);
+    	}/*, "688000","1485000");*/
     	/*createSaleCashRegisterMovementReportFileArguments = new CreateReportFileArguments<SaleCashRegisterMovement>(saleCashRegisterMovement);
     	createSaleCashRegisterMovementReportFileArguments.setLocale(Locale.ENGLISH);
     	createSaleCashRegisterMovementReportFileArguments.setReportTemplate(inject(ReportTemplateDao.class).read(CompanyConstant.Code.ReportTemplate.PAYMENT_RECEIPT));	
@@ -182,18 +260,19 @@ public class IesaSaleBusinessIT extends AbstractEnterpriseResourcePlanningBusine
     	//companyBusinessTestHelper.deleteSale(sale);
     }
     
-    @Test
-    public void crudSaleCashRegisterMovementCollection(){
-    	Sale sale1 = companyBusinessTestHelper.createSale("FCrudSaleCashRegisterMovementCollection001",CUSTOMER_001, new Object[][]{{"TP01",1},{"TP02",1,100000},{"IP01",1}});
+    //@Test
+    public void crudSaleCashRegisterMovementCollection1(){
+    	/*Sale sale1 = companyBusinessTestHelper.createSale("FCrudSaleCashRegisterMovementCollection001",CUSTOMER_001, new Object[][]{{"TP01",1},{"TP02",1,100000},{"IP01",1}});
     	Sale sale2 = companyBusinessTestHelper.createSale("FCrudSaleCashRegisterMovementCollection002",CUSTOMER_001, new Object[][]{{"TP03",1},{"TP04",2}});
     	companyBusinessTestHelper.createSaleCashRegisterMovementCollection("PCrudSaleCashRegisterMovementCollection001", CASH_REGISTER_001
     			, new String[][]{{sale1.getCode(),"1000"},{sale2.getCode(),"500"}});
     	
     	companyBusinessTestHelper.assertSaleCashRegisterMovementCollection("PCrudSaleCashRegisterMovementCollection001", "1500", "1500", null, null, null, "1500");
+    	*/
     }
     
     //@Test
-    public void crudSaleCashRegisterMovement(){
+    public void crudSaleCashRegisterMovement1(){
     	UserAccount userAccount = inject(UserAccountDao.class).readOneRandomly();
     	
     	sale = inject(SaleBusiness.class).instanciateOneRandomly(SALE_001);

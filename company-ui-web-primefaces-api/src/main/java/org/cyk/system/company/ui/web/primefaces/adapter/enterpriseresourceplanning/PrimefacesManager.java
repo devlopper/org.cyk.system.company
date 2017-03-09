@@ -391,18 +391,15 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 		/**/
 		
 		getFormConfiguration(SaleCashRegisterMovementCollection.class, Crud.CREATE)
-		.addRequiredFieldNames(SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CASH_REGISTER,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_PAID)
-		.addFieldNames(SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CODE,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_NAME,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_EXISTENCE_PERIOD
-				,PeriodFormModel.FIELD_FROM_DATE
-				)
+		.addRequiredFieldNames(SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CASH_REGISTER)
+		.addFieldNames(SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CODE,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_AMOUNT
+				,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_EXISTENCE_PERIOD,PeriodFormModel.FIELD_FROM_DATE)
 			.addControlSetListener(new ControlSetAdapter.Form<Object>(){
 				private static final long serialVersionUID = 1L;
 				@Override
 				public List<String> getExpectedFieldNames() {
-					return Arrays.asList(SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CODE,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_NAME
-							,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CASH_REGISTER,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_PAID
-							,PeriodFormModel.FIELD_FROM_DATE
-							);
+					return Arrays.asList(SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CODE,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CASH_REGISTER
+							,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_AMOUNT,PeriodFormModel.FIELD_FROM_DATE);
 				}
 			});
 		registerDetailsConfiguration(SaleCashRegisterMovementCollectionDetails.class, new DetailsConfiguration(){
@@ -414,8 +411,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean build(Object data,Field field) {
-						return isFieldNameIn(field,SaleCashRegisterMovementCollectionDetails.FIELD_CODE,SaleCashRegisterMovementCollectionDetails.FIELD_NAME
-								//,SaleCashRegisterMovementCollectionDetails.FIELD_cas,SaleCashRegisterMovementCollectionDetails.FIELD_MODE
+						return isFieldNameIn(field,SaleCashRegisterMovementCollectionDetails.FIELD_CODE,SaleCashRegisterMovementCollectionDetails.FIELD_VALUE
 								,SaleCashRegisterMovementCollectionDetails.FIELD_EXISTENCE_PERIOD,PeriodDetails.FIELD_FROM_DATE);
 					}
 					

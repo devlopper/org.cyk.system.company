@@ -12,14 +12,27 @@ import org.cyk.utility.common.Constant;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
-@Embeddable @Getter @Setter
+@Embeddable @Accessors(chain=true) @Getter @Setter
 public class Balance extends AbstractModelElement implements Serializable {
 
 	private static final long serialVersionUID = 4330380476164276099L;
 
 	@Column(name=COLUMN_VALUE,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal value = BigDecimal.ZERO;
 	@Column(name=COLUMN_CUMUL,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal cumul = BigDecimal.ZERO;
+	
+	public void set(Balance balance) {
+		if(balance==null){
+			/*
+			this.value = null;
+			this.cumul = null;
+			*/
+		}else{
+			this.value = balance.value;
+			this.cumul = balance.cumul;
+		}	
+	}
 	
 	@Override
 	public String getUiString() {

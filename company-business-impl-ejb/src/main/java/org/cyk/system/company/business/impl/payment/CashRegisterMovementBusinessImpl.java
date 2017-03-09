@@ -43,9 +43,10 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 		CashRegisterMovement cashRegisterMovement = super.instanciateOne();
 		cashRegisterMovement.setCode(code);
 		cashRegisterMovement.setName(name);
-		if(StringUtils.isNotBlank(cashRegisterCode))
+		if(StringUtils.isNotBlank(cashRegisterCode)){
 			cashRegisterMovement.setCashRegister(inject(CashRegisterDao.class).read(cashRegisterCode));
-		cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection().getCode(),amount,null,null,null));
+			cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection().getCode(),amount,null,null,null));
+		}
 		return cashRegisterMovement;
 	}
 		

@@ -46,14 +46,19 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 	}
 	
 	@Override
-	public SALE instanciateOne(String code, String customerCode,Object[][] salableProducts) {
+	public SALE instanciateOne(String code,String name,Cost cost,String customerCode,Object[][] salableProducts) {
 		SALE sale = instanciateOne();
 		sale.setCode(code);
+		sale.setName(name);
 		sale.setCustomer(inject(CustomerDao.class).read(customerCode));
-		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne(code, salableProducts));
-		sale.getSalableProductCollection().setAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent());
+		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne(code,name,cost, salableProducts));
 		sale.getSalableProductCollection().setAutoComputeValueAddedTax(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().signum()!=0);
 		return sale;
+	}
+	
+	@Override
+	public SALE instanciateOne(String code,String customerCode,Object[][] salableProducts) {
+		return instanciateOne(code,code,null,customerCode,salableProducts);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)

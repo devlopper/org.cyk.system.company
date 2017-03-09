@@ -55,13 +55,13 @@ public class SaleCashRegisterMovementController extends AbstractBean implements 
 	public void amountInChanged(){
 		//saleCashRegisterMovementBusiness.in(saleCashRegisterMovement);
 		//amountToHand = saleCashRegisterMovement.getAmountIn().subtract(saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue());
-		balance = saleCashRegisterMovementBusiness.computeBalance(saleCashRegisterMovement);
+		//balance = saleCashRegisterMovementBusiness.computeBalance(saleCashRegisterMovement);
 		showOut = BigDecimal.ZERO.compareTo(amountToHand)<0;
 	}
 	
 	public void amountOutChanged(){
 		//saleCashRegisterMovementBusiness.out(saleCashRegisterMovement);
-		balance = saleCashRegisterMovementBusiness.computeBalance(saleCashRegisterMovement);
+		//balance = saleCashRegisterMovementBusiness.computeBalance(saleCashRegisterMovement);
 	}
 	
 	

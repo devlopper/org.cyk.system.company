@@ -36,28 +36,28 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	}
 	
 	@Override
-	public SalableProductCollection instanciateOne() {
-		SalableProductCollection salableProductCollection = super.instanciateOne();
+	public SalableProductCollection instanciateOne(String code,String name) {
+		SalableProductCollection salableProductCollection = super.instanciateOne(code,name);
 		salableProductCollection.setAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent());
 		return salableProductCollection;
 	}
 	
 	@Override
-	public SalableProductCollection instanciateOne(String name) {
-		SalableProductCollection salableProductCollection = super.instanciateOne(name);
-		salableProductCollection.setAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent());
+	public SalableProductCollection instanciateOne(String code,String name,Cost cost,Object[][] salableProducts) {
+		SalableProductCollection salableProductCollection = instanciateOne(code,name);
+		salableProductCollection.getCost().set(cost);
+		if(salableProducts!=null)
+			for(Object[] salableProduct : salableProducts){
+				inject(SalableProductCollectionItemBusiness.class)
+					.instanciateOne(salableProductCollection, inject(SalableProductDao.class).read((String)salableProduct[0])
+						, commonUtils.getBigDecimal(salableProduct[1].toString()), new BigDecimal(commonUtils.getValueAt(salableProduct, 2, "0").toString()) , BigDecimal.ZERO);
+			}
 		return salableProductCollection;
 	}
 	
 	@Override
 	public SalableProductCollection instanciateOne(String code,Object[][] salableProducts) {
-		SalableProductCollection salableProductCollection = instanciateOne(code);
-		for(Object[] salableProduct : salableProducts){
-			inject(SalableProductCollectionItemBusiness.class)
-					.instanciateOne(salableProductCollection, inject(SalableProductDao.class).read((String)salableProduct[0])
-							, commonUtils.getBigDecimal(salableProduct[1].toString()), new BigDecimal(commonUtils.getValueAt(salableProduct, 2, "0").toString()) , BigDecimal.ZERO);
-		}
-		return salableProductCollection;
+		return instanciateOne(code,code,null,salableProducts);
 	}
 		
 	@Override

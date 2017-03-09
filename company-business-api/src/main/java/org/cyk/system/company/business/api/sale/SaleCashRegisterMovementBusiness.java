@@ -16,13 +16,15 @@ public interface SaleCashRegisterMovementBusiness extends AbstractCollectionItem
 	SaleCashRegisterMovement instanciateOne(Sale sale,CashRegister cashRegister,Boolean input);
 	SaleCashRegisterMovement instanciateOne(String collectionCode,String saleCode, String amount);
 	SaleCashRegisterMovement instanciateOne(SaleCashRegisterMovementCollection collection,String saleCode, String amount);
+	SaleCashRegisterMovement instanciateOne(SaleCashRegisterMovementCollection collection, Sale sale, BigDecimal amount);
 	SaleCashRegisterMovement instanciateOne(UserAccount userAccount, Sale sale,CashRegister cashRegister);
 	
 	Collection<SaleCashRegisterMovement> findBySale(Sale sale);
 
-	BigDecimal computeBalance(SaleCashRegisterMovement payment);
+	void computeBalance(SaleCashRegisterMovement saleCashRegisterMovement);
 	BigDecimal computeBalance(SaleCashRegisterMovement saleCashRegisterMovement,MovementAction movementAction,BigDecimal increment);
 	
 	void setSale(SaleCashRegisterMovement saleCashRegisterMovement,Sale sale);
+	
 	
 }
