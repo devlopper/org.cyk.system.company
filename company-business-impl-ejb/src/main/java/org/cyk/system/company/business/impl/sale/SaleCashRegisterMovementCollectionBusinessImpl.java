@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -26,6 +27,7 @@ import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.security.UserAccount;
 
+@Stateless
 public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractCollectionBusinessImpl<SaleCashRegisterMovementCollection,SaleCashRegisterMovement, SaleCashRegisterMovementCollectionDao,SaleCashRegisterMovementDao,SaleCashRegisterMovementBusiness> implements SaleCashRegisterMovementCollectionBusiness,Serializable {
 
 	private static final long serialVersionUID = -3799482462496328200L;
@@ -129,10 +131,10 @@ public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractColl
 	
 	@Override
 	protected void beforeDelete(SaleCashRegisterMovementCollection saleCashRegisterMovementCollection) {
+		super.beforeDelete(saleCashRegisterMovementCollection);
 		CashRegisterMovement cashRegisterMovement = saleCashRegisterMovementCollection.getCashRegisterMovement();
 		saleCashRegisterMovementCollection.setCashRegisterMovement(null);
 		inject(CashRegisterMovementBusiness.class).delete(cashRegisterMovement);
-		super.beforeDelete(saleCashRegisterMovementCollection);
 	}
 	
 	/**/

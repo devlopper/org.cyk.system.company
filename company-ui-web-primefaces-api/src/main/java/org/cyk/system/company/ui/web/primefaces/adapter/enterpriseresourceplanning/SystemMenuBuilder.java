@@ -15,7 +15,6 @@ import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
-import org.cyk.system.company.model.sale.ProFormaInvoice;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
@@ -99,7 +98,7 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 		module.setLabel(inject(BusinessServiceCollectionBusiness.class).find(CompanyConstant.Code.BusinessServiceCollection.SALE).getName());
 		module.addChild(createListCommandable(Sale.class, null));
 		module.addChild(createListCommandable(SaleCashRegisterMovementCollection.class, null));
-		module.addChild(createListCommandable(ProFormaInvoice.class, null));
+		//module.addChild(createListCommandable(ProFormaInvoice.class, null));
 		module.addChild(createListCommandable(Customer.class, null));
 		return module;
 	}

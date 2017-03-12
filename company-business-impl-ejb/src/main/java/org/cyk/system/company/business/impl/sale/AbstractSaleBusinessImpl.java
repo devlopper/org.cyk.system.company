@@ -69,10 +69,15 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 	}
 	
 	@Override
-	public SALE create(SALE sale) {
-		if(isNotIdentified(sale.getSalableProductCollection()))
-			inject(SalableProductCollectionBusiness.class).create(sale.getSalableProductCollection());
-		return super.create(sale);
+	protected void beforeCreate(SALE sale) {
+		super.beforeCreate(sale);
+		createIfNotIdentified(sale.getSalableProductCollection());
+	}
+	
+	@Override
+	protected void afterUpdate(SALE sale) {
+		inject(SalableProductCollectionBusiness.class).update(sale.getSalableProductCollection());
+		super.afterUpdate(sale);
 	}
 	
 	@Override

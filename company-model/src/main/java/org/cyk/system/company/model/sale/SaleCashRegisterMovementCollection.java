@@ -28,7 +28,7 @@ public class SaleCashRegisterMovementCollection extends AbstractCollection<SaleC
 	@OneToOne @NotNull private CashRegisterMovement cashRegisterMovement;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountIn = BigDecimal.ZERO;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountOut = BigDecimal.ZERO;
-
+	
 	/**/
 	
 	public static final String FIELD_ACCOUNTING_PERIOD = "accountingPeriod";

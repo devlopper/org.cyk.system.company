@@ -30,10 +30,9 @@ public class SalableProductCollectionReport extends AbstractIdentifiableReport<S
 		cost.setSource(((SalableProductCollection)source).getCost());
 		totalReduction = format(((SalableProductCollection)source).getTotalReduction());
 		totalCostValueWithoutReduction = format(((SalableProductCollection)source).getTotalCostValueWithoutReduction());
-		if(((SalableProductCollection)source).getCollection()!=null)
-			for(SalableProductCollectionItem item : ((SalableProductCollection)source).getCollection())
+		if(((SalableProductCollection)source).getItems().getCollection()!=null)
+			for(SalableProductCollectionItem item : ((SalableProductCollection)source).getItems().getCollection())
 				items.add(new SalableProductCollectionItemReport(this,item));
-		
 	}
 	
 	@Override

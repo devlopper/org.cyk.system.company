@@ -14,8 +14,17 @@ public interface SalableProductCollectionBusiness extends AbstractCollectionBusi
 	SalableProductCollection instanciateOne(String code,Object[][] salableProducts);
 	
 	void computeCost(SalableProductCollection salableProductCollection,Collection<SalableProductCollectionItem> salableProductCollectionItems,LogMessage.Builder logMessageBuilder);
+	/**
+	 * Compute cost based on provided items
+	 * @param salableProductCollection
+	 * @param salableProductCollectionItems
+	 */
 	void computeCost(SalableProductCollection salableProductCollection,Collection<SalableProductCollectionItem> salableProductCollectionItems);
 	void computeCost(SalableProductCollection salableProductCollection,LogMessage.Builder logMessageBuilder);
+	/**
+	 * Compute cost based on existing items
+	 * @param salableProductCollection
+	 */
 	void computeCost(SalableProductCollection salableProductCollection);
 	void computeDerivationsFromCost(SalableProductCollection salableProductCollection);
 }

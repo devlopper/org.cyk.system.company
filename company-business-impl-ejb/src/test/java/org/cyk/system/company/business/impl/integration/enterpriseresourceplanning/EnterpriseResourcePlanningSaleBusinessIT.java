@@ -1,21 +1,9 @@
 package org.cyk.system.company.business.impl.integration.enterpriseresourceplanning;
 
-import java.math.BigDecimal;
-
-import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
-import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.model.sale.SalableProductCollection;
-import org.cyk.system.company.model.sale.SalableProductCollectionItem;
-import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.root.model.security.UserAccount;
-import org.cyk.system.root.persistence.api.security.UserAccountDao;
 import org.junit.Test;
 
 public class EnterpriseResourcePlanningSaleBusinessIT extends AbstractEnterpriseResourcePlanningBusinessIT {
@@ -23,12 +11,12 @@ public class EnterpriseResourcePlanningSaleBusinessIT extends AbstractEnterprise
     private static final long serialVersionUID = -6691092648665798471L;
     
     private String CASH_REGISTER_001 = "CR001",CASH_REGISTER_002 = "CR002",CASH_REGISTER_003 = "CR003";
-    private String SALE_001 = "S001",SALE_002 = "S002";
-    private Sale sale;
+    //private String SALE_001 = "S001",SALE_002 = "S002";
+    /*private Sale sale;
     private SaleCashRegisterMovement saleCashRegisterMovement;
     private SalableProductCollection salableProductCollection;
     private SalableProductCollectionItem salableProductCollectionItem;
-    
+    */
     @Override
     protected void populate() {
     	super.populate();

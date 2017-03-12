@@ -55,7 +55,7 @@ public class SaleCashRegisterMovementCollectionConsultPage extends AbstractConsu
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
 		super.processIdentifiableContextualCommandable(commandable);
 		commandable.addChild(Builder.create("command.see.receipt", null,WebNavigationManager.getInstance()
-				.getUrlToFileConsultManyPage(CompanyConstant.Code.ReportTemplate.PAYMENT_RECEIPT,identifiable, FileExtension.PDF)));
+				.getUrlToFileConsultManyPage(CompanyConstant.Code.ReportTemplate.SALE_CASH_REGISTER_MOVEMENT_COLLECTION_A4,identifiable, FileExtension.PDF)));
 	}
 			
 }

@@ -13,11 +13,14 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItemSaleCashReg
 import org.cyk.system.company.model.sale.SalableProductCollectionItemSaleCashRegisterMovementReport;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollectionReportTemplateFile;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementReport;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementReportFile;
 import org.cyk.system.company.model.sale.SaleReportTemplateFile;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.model.structure.EmployeeReportTemplateFile;
+import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemSaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.root.business.api.TypedBusiness.CreateReportFileArguments;
@@ -50,6 +53,11 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 				return SaleReportTemplateFile.class;
 		}
 		
+		if(identifiable instanceof SaleCashRegisterMovementCollection){
+			if(CompanyConstant.Code.ReportTemplate.SALE_CASH_REGISTER_MOVEMENT_COLLECTION_A4.equals(reportTemplateCode))
+				return SaleCashRegisterMovementCollectionReportTemplateFile.class;
+		}
+		
 		if(identifiable instanceof SaleCashRegisterMovement){
 			if(CompanyConstant.Code.ReportTemplate.PAYMENT_RECEIPT.equals(reportTemplateCode))
 				return SaleCashRegisterMovementReportFile.class;
@@ -59,6 +67,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	}
 	
 	private SaleReportTemplateFile produceSaleReportTemplateFile(Sale sale) {
+		sale.getSalableProductCollection().getItems().setCollection(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
 		inject(SalableProductCollectionBusiness.class).computeDerivationsFromCost(sale.getSalableProductCollection());
 		SaleReportTemplateFile report = new SaleReportTemplateFile(sale);
 		
@@ -71,7 +80,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 			,{ sale.getGlobalIdentifier().getOwner() instanceof Application ? sale.getGlobalIdentifier().getOwner().getName() 
 					: ((Person)sale.getGlobalIdentifier().getOwner()).getNames(),Constant.EMPTY_STRING}
 			,{"Parent",Constant.EMPTY_STRING}
-			,{sale.getCustomer().getPerson().getNames(),Constant.EMPTY_STRING}			
+			,{sale.getCustomer()==null ? "CUST???" : sale.getCustomer().getPerson().getNames(),Constant.EMPTY_STRING}			
 		});
 		
 		//for(SalableProductCollectionItem item : inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()))
@@ -101,14 +110,52 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		return report;
 	}
 	
+	private SaleCashRegisterMovementCollectionReportTemplateFile produceSaleCashRegisterMovementCollectionReportTemplateFile(SaleCashRegisterMovementCollection saleCashRegisterMovementCollection) {
+		saleCashRegisterMovementCollection.getItems().setCollection(inject(SaleCashRegisterMovementDao.class).readByCollection(saleCashRegisterMovementCollection));
+		SaleCashRegisterMovementCollectionReportTemplateFile report = new SaleCashRegisterMovementCollectionReportTemplateFile(saleCashRegisterMovementCollection);
+		
+		//List<SaleCashRegisterMovement> saleCashRegisterMovements = (List<SaleCashRegisterMovement>) inject(SaleCashRegisterMovementDao.class).readByCollection(saleCashRegisterMovementCollection);
+		
+		/* Previous */
+		for(SaleCashRegisterMovementReport index : report.getSaleCashRegisterMovementCollection().getSaleCashRegisterMovements()){
+			List<SaleCashRegisterMovement> collection = (List<SaleCashRegisterMovement>) inject(SaleCashRegisterMovementDao.class)
+					.readBySale( ((SaleCashRegisterMovement) index.getSource()).getSale() );
+			if(collection.size()>1)
+				index.setPrevious(new SaleCashRegisterMovementReport(report.getSaleCashRegisterMovementCollection(),collection.get(collection.size()-2)));
+		}
+		
+		report.setTitle(languageBusiness.findText("company.report.sale"));
+		report.setFooter(languageBusiness.findText("company.report.pointofsale.welcome"));
+		report.setHeader(languageBusiness.findText("company.report.pointofsale.goodbye"));
+		
+		report.addLabelValues("Payment",new String[][]{
+			{"Date",Constant.EMPTY_STRING}
+			,{report.getSaleCashRegisterMovementCollection().getCreationDate(),Constant.EMPTY_STRING}
+			,{"Receipt No.",Constant.EMPTY_STRING}
+			,{report.getSaleCashRegisterMovementCollection().getCode(),Constant.EMPTY_STRING}
+			,{"Cashier Name",Constant.EMPTY_STRING}
+			,{ saleCashRegisterMovementCollection.getGlobalIdentifier().getOwner() instanceof Application ? saleCashRegisterMovementCollection.getGlobalIdentifier().getOwner().getName() 
+					: ((Person)saleCashRegisterMovementCollection.getGlobalIdentifier().getOwner()).getNames(),Constant.EMPTY_STRING}
+			,{"Parent",Constant.EMPTY_STRING}
+			,{"???"/*saleCashRegisterMovementCollection.getSale().getCustomer().getPerson().getNames()*/,Constant.EMPTY_STRING}	
+			,{"Received from",Constant.EMPTY_STRING}
+			,{saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getSenderOrReceiverParty()==null
+					? /*saleCashRegisterMovement.getSale().getCustomer().getPerson().getNames() */"???"
+						: saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getSenderOrReceiverParty().getNames(),Constant.EMPTY_STRING}	
+		});
+		
+		return report;
+	}
+	
 	private SaleCashRegisterMovementReportFile produceSaleCashRegisterMovementReportFile(SaleCashRegisterMovement saleCashRegisterMovement) {
 		SaleCashRegisterMovementReportFile report = new SaleCashRegisterMovementReportFile(saleCashRegisterMovement);
 		saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getCollection().clear();
-		List<SaleCashRegisterMovement> saleCashRegisterMovements = (List<SaleCashRegisterMovement>) inject(SaleCashRegisterMovementDao.class).readBySale(saleCashRegisterMovement.getSale());
-		if(saleCashRegisterMovements.size()>1){
+		//List<SaleCashRegisterMovement> saleCashRegisterMovements = (List<SaleCashRegisterMovement>) inject(SaleCashRegisterMovementDao.class).readBySale(saleCashRegisterMovement.getSale());
+		/*if(saleCashRegisterMovements.size()>1){
 			report.getSaleCashRegisterMovement().setPrevious(new SaleCashRegisterMovementReport(report.getSaleCashRegisterMovement().getSale()
 					, saleCashRegisterMovements.get(saleCashRegisterMovements.size()-2)));
-		}
+			
+		}*/
 		
 		/* Previous */
 		for(SalableProductCollectionItemSaleCashRegisterMovementReport index : report.getSaleCashRegisterMovement().getSalableProductCollectionItemSaleCashRegisterMovements()){
@@ -174,6 +221,9 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		if(SaleReportTemplateFile.class.equals(reportTemplateFileClass)){
 			if(createReportFileArguments.getIdentifiable() instanceof Sale)
 				return (REPORT) produceSaleReportTemplateFile((Sale)createReportFileArguments.getIdentifiable());
+		}else if(SaleCashRegisterMovementCollectionReportTemplateFile.class.equals(reportTemplateFileClass)){
+			if(createReportFileArguments.getIdentifiable() instanceof SaleCashRegisterMovementCollection)
+				return (REPORT) produceSaleCashRegisterMovementCollectionReportTemplateFile((SaleCashRegisterMovementCollection)createReportFileArguments.getIdentifiable());
 		}else if(SaleCashRegisterMovementReportFile.class.equals(reportTemplateFileClass)){
 			if(createReportFileArguments.getIdentifiable() instanceof SaleCashRegisterMovement)
 				return (REPORT) produceSaleCashRegisterMovementReportFile((SaleCashRegisterMovement)createReportFileArguments.getIdentifiable());

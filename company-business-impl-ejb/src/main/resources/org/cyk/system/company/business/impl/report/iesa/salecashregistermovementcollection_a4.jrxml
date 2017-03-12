@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sale Report A4" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="30" isIgnorePagination="true" uuid="f58b9cb0-12e7-4069-bd93-525c039951c5">
-	<property name="ireport.zoom" value="0.75"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sale Cash Register Movement Report A4" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="30" isIgnorePagination="true" uuid="f58b9cb0-12e7-4069-bd93-525c039951c5">
+	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="67"/>
+	<property name="ireport.y" value="357"/>
 	<style name="infos" mode="Opaque" fill="Solid" fontName="Tin Birdhouse" fontSize="10">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[$V{REPORT_COUNT} % 2 == 0]]></conditionExpression>
@@ -14,29 +14,6 @@
 		</conditionalStyle>
 	</style>
 	<style name="header_table_tr_content"/>
-	<subDataset name="SaleProductDS" uuid="07340f48-0cf2-4c93-b2f8-43d0c4a27ecb">
-		<queryString>
-			<![CDATA[]]>
-		</queryString>
-		<field name="identifier" class="java.lang.String">
-			<fieldDescription><![CDATA[identifier]]></fieldDescription>
-		</field>
-		<field name="name" class="java.lang.String">
-			<fieldDescription><![CDATA[name]]></fieldDescription>
-		</field>
-		<field name="price" class="java.lang.String">
-			<fieldDescription><![CDATA[price]]></fieldDescription>
-		</field>
-		<field name="quantity" class="java.lang.String">
-			<fieldDescription><![CDATA[quantity]]></fieldDescription>
-		</field>
-		<field name="saleReport" class="org.cyk.system.company.model.sale.SaleReport">
-			<fieldDescription><![CDATA[saleReport]]></fieldDescription>
-		</field>
-		<field name="totalPrice" class="java.lang.String">
-			<fieldDescription><![CDATA[totalPrice]]></fieldDescription>
-		</field>
-	</subDataset>
 	<subDataset name="HeaderInfos" uuid="a2df75ee-6bad-4bf2-b3d1-b9781b48fe75">
 		<queryString>
 			<![CDATA[]]>
@@ -48,33 +25,23 @@
 			<fieldDescription><![CDATA[value]]></fieldDescription>
 		</field>
 	</subDataset>
-	<subDataset name="SalableProductCollectionItemDS" uuid="1457e4c8-e9d8-4d64-b373-329e9cdcab5a">
-		<parameter name="CYK_SALE" class="org.cyk.system.company.model.sale.SaleReport" isForPrompting="false"/>
+	<subDataset name="SaleCashRegisterMovementDS" uuid="1457e4c8-e9d8-4d64-b373-329e9cdcab5a">
 		<queryString>
 			<![CDATA[]]>
 		</queryString>
-		<field name="cost" class="org.cyk.system.company.model.CostReport">
-			<fieldDescription><![CDATA[cost]]></fieldDescription>
+		<field name="previous" class="org.cyk.system.company.model.sale.SaleCashRegisterMovementReport">
+			<fieldDescription><![CDATA[previous]]></fieldDescription>
 		</field>
-		<field name="quantity" class="java.lang.String">
-			<fieldDescription><![CDATA[quantity]]></fieldDescription>
+		<field name="balance" class="org.cyk.system.company.model.BalanceReport">
+			<fieldDescription><![CDATA[balance]]></fieldDescription>
 		</field>
-		<field name="salableProduct" class="org.cyk.system.company.model.sale.SalableProductReport">
-			<fieldDescription><![CDATA[salableProduct]]></fieldDescription>
+		<field name="amount" class="java.lang.String">
+			<fieldDescription><![CDATA[amount]]></fieldDescription>
 		</field>
-		<field name="salableProductCollection" class="org.cyk.system.company.model.sale.SalableProductCollectionReport">
-			<fieldDescription><![CDATA[salableProductCollection]]></fieldDescription>
-		</field>
-		<field name="reduction" class="java.lang.String">
-			<fieldDescription><![CDATA[reduction]]></fieldDescription>
-		</field>
-		<field name="costValueWithoutReduction" class="java.lang.String">
-			<fieldDescription><![CDATA[costValueWithoutReduction]]></fieldDescription>
+		<field name="saleCashRegisterMovement" class="org.cyk.system.company.model.sale.SaleCashRegisterMovementReport">
+			<fieldDescription><![CDATA[_THIS]]></fieldDescription>
 		</field>
 	</subDataset>
-	<parameter name="CYK_SALE" class="org.cyk.system.company.model.sale.SaleReport" isForPrompting="false">
-		<defaultValueExpression><![CDATA[$F{sale}]]></defaultValueExpression>
-	</parameter>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -90,11 +57,17 @@
 	<field name="backgroundImage" class="java.io.InputStream">
 		<fieldDescription><![CDATA[backgroundImage]]></fieldDescription>
 	</field>
-	<field name="sale" class="org.cyk.system.company.model.sale.SaleReport">
-		<fieldDescription><![CDATA[sale]]></fieldDescription>
+	<field name="saleCashRegisterMovementCollection" class="org.cyk.system.company.model.sale.SaleCashRegisterMovementCollectionReport">
+		<fieldDescription><![CDATA[saleCashRegisterMovementCollection]]></fieldDescription>
 	</field>
 	<field name="signer" class="org.cyk.system.root.model.party.person.PersonReport">
 		<fieldDescription><![CDATA[signer]]></fieldDescription>
+	</field>
+	<field name="creationDate" class="java.lang.String">
+		<fieldDescription><![CDATA[creationDate]]></fieldDescription>
+	</field>
+	<field name="createdBy" class="java.lang.String">
+		<fieldDescription><![CDATA[createdBy]]></fieldDescription>
 	</field>
 	<background>
 		<band/>
@@ -133,15 +106,12 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="91">
+		<band height="82">
 			<componentElement>
 				<reportElement key="table 3" x="0" y="0" width="555" height="80" uuid="f4385461-a4bc-4d30-b77c-21e6f06abde3"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="SalableProductCollectionItemDS" uuid="6481ab9a-9a55-437e-bf9b-c215c0efebce">
-						<datasetParameter name="CYK_SALE">
-							<datasetParameterExpression><![CDATA[$P{CYK_SALE}]]></datasetParameterExpression>
-						</datasetParameter>
-						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{sale}.getSalableProductCollection().getItems())]]></dataSourceExpression>
+					<datasetRun subDataset="SaleCashRegisterMovementDS" uuid="a1ae9ef3-8349-490d-b4d4-fc72a5efcd9b">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{saleCashRegisterMovementCollection}.getSaleCashRegisterMovements())]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="22" uuid="2cb67a78-5788-4a0a-9c32-7e5d4eb03084">
 						<jr:columnHeader height="45" rowSpan="1">
@@ -176,7 +146,7 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="180" uuid="c8b1d5d2-7e42-4be9-b6a4-843c84f2c25e">
+					<jr:column width="292" uuid="c8b1d5d2-7e42-4be9-b6a4-843c84f2c25e">
 						<jr:columnHeader height="45" rowSpan="1">
 							<box>
 								<topPen lineWidth="1.0"/>
@@ -185,7 +155,7 @@
 								<rightPen lineWidth="1.0"/>
 							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="180" height="45" uuid="19004bc3-5cbf-4e96-9340-fa52b661dafc"/>
+								<reportElement x="0" y="0" width="292" height="45" uuid="19004bc3-5cbf-4e96-9340-fa52b661dafc"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tin Birdhouse" size="12" isBold="true"/>
 								</textElement>
@@ -200,16 +170,16 @@
 						</jr:columnFooter>
 						<jr:detailCell height="20" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="180" height="20" uuid="08d4085f-d907-471e-b780-3bd292df2175"/>
+								<reportElement x="0" y="0" width="292" height="20" uuid="08d4085f-d907-471e-b780-3bd292df2175"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="Agency FB" size="14"/>
 									<paragraph leftIndent="10"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{salableProduct}.getName()]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{saleCashRegisterMovement}.getCode()]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="75" uuid="2270fd9c-d6ba-4ef9-9554-2be8f2034e01">
+					<jr:column width="85" uuid="66cab249-07a6-490e-9fe1-e01818fcb709">
 						<jr:columnHeader height="45" rowSpan="1">
 							<box>
 								<topPen lineWidth="1.0"/>
@@ -218,87 +188,11 @@
 								<rightPen lineWidth="1.0"/>
 							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="75" height="45" uuid="48e288b2-4ccf-4d89-9226-8edab12ff4c3"/>
+								<reportElement x="0" y="0" width="85" height="45" uuid="4e5d13ad-fc77-4f61-8705-9437e9b585a4"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tin Birdhouse" size="12" isBold="true"/>
 								</textElement>
-								<text><![CDATA[Unit Price FCFA]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:columnFooter height="30" rowSpan="1">
-							<box>
-								<topPen lineWidth="1.0"/>
-								<bottomPen lineWidth="1.0"/>
-							</box>
-							<staticText>
-								<reportElement x="0" y="0" width="75" height="30" uuid="846f17dc-d405-41fc-94c9-279747578f05"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font fontName="Tin Birdhouse" size="12" isBold="true"/>
-									<paragraph rightIndent="5"/>
-								</textElement>
-								<text><![CDATA[Total]]></text>
-							</staticText>
-						</jr:columnFooter>
-						<jr:detailCell height="20" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="75" height="20" uuid="2f5648df-e8e4-47b5-9460-cec1c43f895a"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Agency FB" size="14"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{salableProduct}.getPrice()]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="30" uuid="557fb466-275e-4186-a847-528b92826dd9">
-						<jr:columnHeader height="45" rowSpan="1">
-							<box>
-								<topPen lineWidth="1.0"/>
-								<leftPen lineWidth="1.0"/>
-								<bottomPen lineWidth="1.0"/>
-								<rightPen lineWidth="1.0"/>
-							</box>
-							<staticText>
-								<reportElement x="0" y="0" width="30" height="45" uuid="29868bb2-35f8-4a86-b87e-c87b3ddadbf0"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Tin Birdhouse" size="12" isBold="true"/>
-								</textElement>
-								<text><![CDATA[Qty]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:columnFooter height="30" rowSpan="1">
-							<box>
-								<topPen lineWidth="1.0"/>
-								<leftPen lineWidth="0.0"/>
-								<bottomPen lineWidth="1.0"/>
-								<rightPen lineWidth="1.0"/>
-							</box>
-						</jr:columnFooter>
-						<jr:detailCell height="20" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="30" height="20" uuid="ddcccc51-5e65-4c5d-bc3a-5b80c606c95c"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font fontName="Agency FB" size="14"/>
-									<paragraph rightIndent="5"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="75" uuid="66cab249-07a6-490e-9fe1-e01818fcb709">
-						<jr:columnHeader height="45" rowSpan="1">
-							<box>
-								<topPen lineWidth="1.0"/>
-								<leftPen lineWidth="1.0"/>
-								<bottomPen lineWidth="1.0"/>
-								<rightPen lineWidth="1.0"/>
-							</box>
-							<staticText>
-								<reportElement x="0" y="0" width="75" height="45" uuid="4e5d13ad-fc77-4f61-8705-9437e9b585a4"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Tin Birdhouse" size="12" isBold="true"/>
-								</textElement>
-								<text><![CDATA[Total
-FCFA]]></text>
+								<text><![CDATA[Amount Du FCFA]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="30" rowSpan="1">
@@ -309,22 +203,22 @@ FCFA]]></text>
 								<rightPen lineWidth="1.0"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="75" height="30" uuid="7cab3177-8856-4c16-9d76-d1f6d7654483"/>
+								<reportElement x="0" y="0" width="85" height="30" uuid="7cab3177-8856-4c16-9d76-d1f6d7654483"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Agency FB" size="14"/>
 									<paragraph rightIndent="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{salableProductCollection}.getTotalCostValueWithoutReduction()]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{saleCashRegisterMovement}.getSaleCashRegisterMovementCollection().getPreviousBalance().getValue()]]></textFieldExpression>
 							</textField>
 						</jr:columnFooter>
 						<jr:detailCell height="20" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="75" height="20" uuid="41d22b1c-9f82-412f-9421-99ac982c9817"/>
+								<reportElement x="0" y="0" width="85" height="20" uuid="41d22b1c-9f82-412f-9421-99ac982c9817"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Agency FB" size="14"/>
 									<paragraph rightIndent="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{costValueWithoutReduction}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{saleCashRegisterMovement}.getPreviousBalance().getValue()]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -341,7 +235,7 @@ FCFA]]></text>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tin Birdhouse" size="12" isBold="true"/>
 								</textElement>
-								<text><![CDATA[Concession FCFA]]></text>
+								<text><![CDATA[Amount Paid FCFA]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="30" rowSpan="1">
@@ -357,7 +251,7 @@ FCFA]]></text>
 									<font fontName="Agency FB" size="14"/>
 									<paragraph rightIndent="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{salableProductCollection}.getTotalReduction()]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{saleCashRegisterMovement}.getSaleCashRegisterMovementCollection().getCashRegisterMovement().getMovement().getValue()]]></textFieldExpression>
 							</textField>
 						</jr:columnFooter>
 						<jr:detailCell height="20" rowSpan="1">
@@ -367,11 +261,11 @@ FCFA]]></text>
 									<font fontName="Agency FB" size="14"/>
 									<paragraph rightIndent="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{reduction}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="90" uuid="1b4f3aaf-5b13-4c2b-833f-e22a3b6a4527">
+					<jr:column width="60" uuid="7e63f8cc-8a85-4b02-8e75-e06736ddc4eb">
 						<jr:columnHeader height="45" rowSpan="1">
 							<box>
 								<topPen lineWidth="1.0"/>
@@ -380,12 +274,11 @@ FCFA]]></text>
 								<rightPen lineWidth="1.0"/>
 							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="90" height="45" uuid="5eab9097-7ecd-4070-b4eb-aaaee3d8b810"/>
+								<reportElement x="0" y="0" width="60" height="45" uuid="9ded456a-c94f-4f12-9f0e-c89bb2d50de8"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tin Birdhouse" size="12" isBold="true"/>
 								</textElement>
-								<text><![CDATA[To Pay
-FCFA]]></text>
+								<text><![CDATA[Balance FCFA]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="30" rowSpan="1">
@@ -396,31 +289,31 @@ FCFA]]></text>
 								<rightPen lineWidth="1.0"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="90" height="30" uuid="401e872d-9396-488e-98f8-e7970495a5a0"/>
+								<reportElement x="0" y="0" width="60" height="30" uuid="c6b9ff47-e704-410e-86ac-31d022924de5"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Agency FB" size="14"/>
 									<paragraph rightIndent="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{salableProductCollection}.getCost().getValue()]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{saleCashRegisterMovement}.getSaleCashRegisterMovementCollection().getBalance().getValue()]]></textFieldExpression>
 							</textField>
 						</jr:columnFooter>
 						<jr:detailCell height="20" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="90" height="20" uuid="752588c0-99e0-47ec-982a-2f8dce1168a2"/>
+								<reportElement x="0" y="0" width="60" height="20" uuid="524f2c10-d3ed-4d2d-a36c-7ca283f931f6"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="Agency FB" size="14"/>
 									<paragraph rightIndent="5"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{cost}.getValue()]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{saleCashRegisterMovement}.getBalance().getValue()]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
 				</jr:table>
 			</componentElement>
 		</band>
-		<band height="152">
+		<band height="151">
 			<frame>
-				<reportElement x="406" y="0" width="143" height="118" uuid="22ff79a0-c1e7-48a7-b317-4ef653de47fd"/>
+				<reportElement x="396" y="30" width="143" height="118" uuid="22ff79a0-c1e7-48a7-b317-4ef653de47fd"/>
 				<image>
 					<reportElement x="0" y="0" width="143" height="98" uuid="e70fc149-65d7-4eb3-a522-971a0b32f2b5"/>
 					<imageExpression><![CDATA[$F{signer}.getSignatureSpecimen()]]></imageExpression>
@@ -439,6 +332,47 @@ FCFA]]></text>
 					<text><![CDATA[Signature & Stamp]]></text>
 				</staticText>
 			</frame>
+			<textField>
+				<reportElement x="95" y="0" width="454" height="20" uuid="1e5ecd56-8e01-4285-98ae-61679efcda5f"/>
+				<textElement>
+					<font fontName="Agency FB" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saleCashRegisterMovementCollection}.getCashRegisterMovement().getMovement().getValueInWords()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="95" height="20" uuid="b14cae04-4753-4986-bca4-09a7995b0d1b"/>
+				<textElement>
+					<font fontName="Tin Birdhouse" size="12"/>
+				</textElement>
+				<text><![CDATA[Amount in words : ]]></text>
+			</staticText>
 		</band>
 	</detail>
+	<pageFooter>
+		<band height="36">
+			<staticText>
+				<reportElement x="0" y="0" width="336" height="31" uuid="7c9c14ba-b331-4add-96e0-682999e9346d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tin Birdhouse" size="10"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Received amount will not be refundable.
+Keep this receipt safe for your record]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="396" y="0" width="143" height="13" uuid="a69fd992-c786-495e-8e50-5059ad439aa7"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tin Birdhouse" size="10"/>
+				</textElement>
+				<text><![CDATA[Thank you for your payment]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="396" y="13" width="153" height="14" uuid="cebec17f-8c9f-44b0-8ee8-90fab3c08c7b"/>
+				<textElement textAlignment="Left">
+					<font fontName="Tin Birdhouse"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{creationDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
 </jasperReport>

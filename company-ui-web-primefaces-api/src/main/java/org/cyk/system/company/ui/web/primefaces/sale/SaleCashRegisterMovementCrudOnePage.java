@@ -6,12 +6,10 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
-import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.ui.web.primefaces.page.crud.AbstractCrudOnePage;
 
 import lombok.Getter;
@@ -25,7 +23,6 @@ public class SaleCashRegisterMovementCrudOnePage extends AbstractCrudOnePage<Sal
 	@Inject private SaleBusiness saleBusiness;
 	@Inject private CashierBusiness cashierBusiness;
 	
-	@Inject private SaleCashRegisterMovementController cashRegisterController;
 	
 	@Override
 	protected void initialisation() {
@@ -38,8 +35,7 @@ public class SaleCashRegisterMovementCrudOnePage extends AbstractCrudOnePage<Sal
 				return;
 			}*/
 		}
-		cashRegisterController.init(identifiable,!StringUtils.equals(CompanyWebManager.getInstance().getRequestParameterPayback(), 
-				requestParameter(CompanyWebManager.getInstance().getRequestParameterPaymentType())));
+		
 	}
 	
 

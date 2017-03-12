@@ -41,6 +41,7 @@ import org.cyk.system.root.business.impl.BusinessIntegrationTestHelper;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.RootBusinessTestHelper;
 import org.cyk.system.root.business.impl.RootDataProducerHelper;
+import org.cyk.system.root.business.impl.AbstractBusinessTestHelper.TestCase;
 import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
 import org.cyk.system.root.business.impl.validation.DefaultValidator;
@@ -124,6 +125,10 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     			return inject(NumberBusiness.class).format(value);
     		}
     	});
+	}
+	
+	protected TestCase instanciateTestCase(){
+		return companyBusinessTestHelper.instanciateTestCase();
 	}
 	
 	protected AbstractFakedDataProducer getFakedDataProducer(){

@@ -471,21 +471,10 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean build(Object data,Field field) {
-						return isFieldNameIn(field,SaleCashRegisterMovementDetails.FIELD_SALE,SaleCashRegisterMovementDetails.FIELD_CODE
-								,SaleCashRegisterMovementDetails.FIELD_VALUE,SaleCashRegisterMovementDetails.FIELD_MODE
-								,SaleCashRegisterMovementDetails.FIELD_EXISTENCE_PERIOD,PeriodDetails.FIELD_FROM_DATE);
+						return isFieldNameIn(field,SaleCashRegisterMovementDetails.FIELD_CODE,SaleCashRegisterMovementDetails.FIELD_AMOUNT
+								,SaleCashRegisterMovementDetails.FIELD_BALANCE);
 					}
 					
-					@Override
-					public String fiedLabel(
-							ControlSet<AbstractOutputDetails<AbstractIdentifiable>, DynaFormModel, DynaFormRow, DynaFormLabel, DynaFormControl, SelectItem> controlSet,
-							Object data, Field field) {
-						if(data instanceof PeriodDetails)
-							return inject(LanguageBusiness.class).findText("field.date");
-						if(field.getName().equals(SaleCashRegisterMovementDetails.FIELD_VALUE))
-							return inject(LanguageBusiness.class).findText("field.amount");
-						return super.fiedLabel(controlSet, data, field);
-					}
 				};
 			}
 			
@@ -495,18 +484,10 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 					private static final long serialVersionUID = 1L;
 					@Override
 					public Boolean isColumn(Field field) {
-						return isFieldNameIn(field,SaleCashRegisterMovementDetails.FIELD_CODE,SaleCashRegisterMovementDetails.FIELD_VALUE
-								,SaleCashRegisterMovementDetails.FIELD_MODE,SaleCashRegisterMovementDetails.FIELD_EXISTENCE_PERIOD,PeriodDetails.FIELD_FROM_DATE);
+						return isFieldNameIn(field,SaleCashRegisterMovementDetails.FIELD_CODE,SaleCashRegisterMovementDetails.FIELD_AMOUNT
+								,SaleCashRegisterMovementDetails.FIELD_BALANCE);
 					}
 										
-					@Override
-					public void added(Column column) {
-						super.added(column);
-						if(column.getField().getDeclaringClass().equals(PeriodDetails.class))
-							column.setTitle(inject(LanguageBusiness.class).findText("field.date"));
-						else if(column.getField().getName().equals(SaleCashRegisterMovementDetails.FIELD_VALUE))
-							column.setTitle(inject(LanguageBusiness.class).findText("field.amount"));
-					}
 				};
 			}
 		});

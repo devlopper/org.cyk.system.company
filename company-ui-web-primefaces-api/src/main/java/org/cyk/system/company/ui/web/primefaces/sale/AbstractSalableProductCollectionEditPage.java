@@ -57,6 +57,7 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 	protected void initialisation() {
 		super.initialisation();
 		salableProducts = webManager.getSelectItems(SalableProduct.class, inject(SalableProductBusiness.class).findAll(),Boolean.FALSE);
+		getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
 	}
 	
 	protected abstract SalableProductCollection getSalableProductCollection();
@@ -67,7 +68,7 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 	}
 	
 	private void itemPropertyChanged(TYPE item){
-		inject(SalableProductCollectionBusiness.class).computeCost(getSalableProductCollection(),getSalableProductCollection().getCollection());
+		inject(SalableProductCollectionBusiness.class).computeCost(getSalableProductCollection(),getSalableProductCollection().getItems().getCollection());
 		itemCollection.read(item);
 		updateFormCost(form,getSalableProductCollection());
 	}
@@ -190,8 +191,8 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 			
 			@Override
 			public Collection<SalableProductCollectionItem> load() {
-				getCollection().setCollection(inject(SalableProductCollectionItemBusiness.class).findByCollection(getCollection()));
-				return getCollection().getCollection();
+				getCollection().getItems().setCollection(inject(SalableProductCollectionItemBusiness.class).findByCollection(getCollection()));
+				return getCollection().getItems().getCollection();
 			}
 			
 			@Override

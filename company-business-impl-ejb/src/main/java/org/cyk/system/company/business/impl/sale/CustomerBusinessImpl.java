@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -17,7 +16,6 @@ import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
 
-@Stateless
 public class CustomerBusinessImpl extends AbstractActorBusinessImpl<Customer, CustomerDao,Customer.SearchCriteria> implements CustomerBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;

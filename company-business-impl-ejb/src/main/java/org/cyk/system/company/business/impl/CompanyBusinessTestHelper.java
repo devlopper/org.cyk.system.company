@@ -46,6 +46,7 @@ import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementCollectionDao;
+import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.impl.AbstractBusinessTestHelper;
 import org.cyk.system.root.model.mathematics.Movement;
@@ -412,9 +413,14 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	//assertSalableProductCollection(salableProductCollectionItem.getCollection(), salableProductCollectionCost);
     }
     
+    public void assertSale(String saleCode,String costValue,String balanceValue){
+    	assertSale(inject(SaleDao.class).read(saleCode), costValue, balanceValue);
+    }
+    
     public void assertSale(Sale sale,String costValue,String balanceValue){
-    	sale = inject(SaleBusiness.class).find(sale.getIdentifier());
+    	//sale = inject(SaleBusiness.class).find(sale.getIdentifier());
     	//assertSalableProductCollection(sale.getSalableProductCollection(), costValue);
+    	assertCost(sale.getSalableProductCollection().getCost(), new ObjectFieldValues(Balance.class).set(Cost.FIELD_VALUE,costValue));
     	assertBalance(sale.getBalance(), new ObjectFieldValues(Balance.class).set(Balance.FIELD_VALUE,balanceValue));
     }
     
@@ -495,6 +501,10 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     
     public void assertBalance(Balance balance,ObjectFieldValues expectedValues){
     	doAssertions(balance, expectedValues);
+    }
+    
+    public void assertBalance(Balance balance,String expectedValue,String expectedCumul){
+    	doAssertions(balance, new ObjectFieldValues(Balance.class).set(Balance.FIELD_VALUE, expectedValue).set(Balance.FIELD_CUMUL, expectedCumul));
     }
     
     public void assertSaleFiniteStateMachineStateCount(Object[][] datas){

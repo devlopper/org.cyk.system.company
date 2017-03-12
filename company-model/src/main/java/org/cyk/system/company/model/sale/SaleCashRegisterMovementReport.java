@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.BalanceReport;
-import org.cyk.system.company.model.payment.CashRegisterMovementReport;
+import org.cyk.system.root.model.AbstractCollectionItem;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.file.report.AbstractIdentifiableReport;
 
 import lombok.Getter;
@@ -17,26 +19,25 @@ public class SaleCashRegisterMovementReport extends AbstractIdentifiableReport<S
 
 	private static final long serialVersionUID = 7332510774063666925L;
 
-	private SaleReport sale;
-	private CashRegisterMovementReport cashRegisterMovement = new CashRegisterMovementReport();
-	
-	private String amountIn,amountToOut,amountOut;
+	private SaleCashRegisterMovementCollectionReport saleCashRegisterMovementCollection;
+	private SaleReport sale = new SaleReport();
+	private String amount;
 	private BalanceReport balance = new BalanceReport();
 	
 	private List<SalableProductCollectionItemSaleCashRegisterMovementReport> salableProductCollectionItemSaleCashRegisterMovements = new ArrayList<>();
 	
-	public SaleCashRegisterMovementReport(SaleReport sale,SaleCashRegisterMovement source) {
-		this.sale = sale;
+	public SaleCashRegisterMovementReport(SaleCashRegisterMovementCollectionReport saleCashRegisterMovementCollection,SaleCashRegisterMovement source) {
+		this.saleCashRegisterMovementCollection = saleCashRegisterMovementCollection;
 		setSource(source);
 	}
-	
+		
 	@Override
 	public void setSource(Object source) {
 		super.setSource(source);
-		cashRegisterMovement.setSource(((SaleCashRegisterMovement)source).getCollection().getCashRegisterMovement());
+		globalIdentifier.setCode(RootConstant.Code.getRelativeCode((AbstractCollectionItem<?>) source));
+		sale.setSource(((SaleCashRegisterMovement)source).getSale());
+		amount = format(((SaleCashRegisterMovement)source).getAmount());
 		balance.setSource(((SaleCashRegisterMovement)source).getBalance());
-		amountIn = format(((SaleCashRegisterMovement)source).getCollection().getAmountIn());
-		amountOut = format(((SaleCashRegisterMovement)source).getCollection().getAmountOut());
 		
 		for(SalableProductCollectionItemSaleCashRegisterMovement index : ((SaleCashRegisterMovement)source).getSalableProductCollectionItemSaleCashRegisterMovements().getCollection()){
 			SalableProductCollectionItemSaleCashRegisterMovementReport salableProductCollectionItemSaleCashRegisterMovement
@@ -48,6 +49,15 @@ public class SaleCashRegisterMovementReport extends AbstractIdentifiableReport<S
 			salableProductCollectionItemSaleCashRegisterMovement.setSource(index);
 			salableProductCollectionItemSaleCashRegisterMovements.add(salableProductCollectionItemSaleCashRegisterMovement);
 		}
+	}
+	
+	public Balance getPreviousBalanceIdentifiable(){
+		if(previous==null){
+			Balance balance = new Balance();
+			balance.setValue(((Sale)sale.getSource()).getSalableProductCollection().getCost().getValue());
+			return balance;
+		}
+		return ((SaleCashRegisterMovement)previous.getSource()).getBalance();
 	}
 	
 	public BalanceReport getPreviousBalance(){
@@ -62,11 +72,9 @@ public class SaleCashRegisterMovementReport extends AbstractIdentifiableReport<S
 	@Override
 	public void generate() {
 		super.generate();
-		amountIn=provider.randomInt(1, 1000000)+"";
-		amountOut=provider.randomInt(1, 1000000)+"";
-		amountToOut=provider.randomInt(1, 1000000)+"";
+		sale.generate();
+		amount=provider.randomInt(1, 1000000)+"";
 		balance.generate();
-		cashRegisterMovement.generate();
 		for(SalableProductCollectionItemReport salableProductCollectionItem : sale.getSalableProductCollection().getItems()){
 			SalableProductCollectionItemSaleCashRegisterMovementReport salableProductCollectionItemSaleCashRegisterMovement
 				= new SalableProductCollectionItemSaleCashRegisterMovementReport();

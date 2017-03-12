@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Locale;
 
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollectionReportTemplateFile;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementReportFile;
 import org.cyk.system.company.model.sale.SaleReportTemplateFile;
 import org.cyk.system.company.model.structure.EmployeeReportTemplateFile;
@@ -34,10 +35,10 @@ public class IesaSampleData extends AbstractSampleData implements Serializable {
 		return collection;
 	}
 	
-	protected void process(AbstractReportTemplateFile<?> report){
-		RandomFile randomFile = RandomDataProvider.getInstance().getFile("/META-INF/generator/image/document/header/iesa/receipt.png");
-		report.setHeaderImage(new ByteArrayInputStream(randomFile.getBytes()));
-		
+	public static Collection<SaleCashRegisterMovementCollectionReportTemplateFile> getSaleCashRegisterMovementCollectionReportTemplateFiles(){
+		Collection<SaleCashRegisterMovementCollectionReportTemplateFile> collection = new IesaSampleData().__getSaleCashRegisterMovementCollectionReportTemplateFiles__();
+		//SaleCashRegisterMovementReportTemplateFile report = collection.iterator().next();
+		return collection;
 	}
 	
 	public static Collection<SaleCashRegisterMovementReportFile> getSaleCashRegisterMovementReportTemplateFiles(){
@@ -46,13 +47,21 @@ public class IesaSampleData extends AbstractSampleData implements Serializable {
 		return collection;
 	}
 	
+	protected void process(AbstractReportTemplateFile<?> report){
+		RandomFile randomFile = RandomDataProvider.getInstance().getFile("/META-INF/generator/image/document/header/iesa/receipt.png");
+		report.setHeaderImage(new ByteArrayInputStream(randomFile.getBytes()));
+		
+	}
+	
+	
+	
 	@Override
 	protected void addLabelValues(AbstractReportTemplateFile<?> reportTemplateFile, String name, String[][] values) {
-		if("Invoice".equals(name)){
+		if("Invoice".equals(name) || "Payment".equals(name)){
 			values = new String[][]{
 				{"Date",""}
 				,{"7/5/2016",""}
-				,{"Invoice No.",""}
+				,{(reportTemplateFile instanceof SaleReportTemplateFile ? "Invoice":"Payment")+" No.",""}
 				,{"F0524318",""}
 				,{(reportTemplateFile instanceof SaleReportTemplateFile ? "Commercial":"Cashier")+" Name",""}
 				,{"Yves Sea",""}
@@ -66,13 +75,13 @@ public class IesaSampleData extends AbstractSampleData implements Serializable {
 	}
 	
 	public static void main(String[] args) {
+		SaleCashRegisterMovementCollectionReportTemplateFile saleCashRegisterMovementCollectionReportTemplateFile = 
+				IesaSampleData.getSaleCashRegisterMovementCollectionReportTemplateFiles().iterator().next();
 		System.out.println("IesaSampleData.main() 1 : "+IesaSampleData.getSaleReportTemplateFiles());
-		System.out.println("IesaSampleData.main() 2 : "+IesaSampleData.getSaleCashRegisterMovementReportTemplateFiles().iterator().next()
-				.getCreationDate());
-		SaleReportTemplateFile saleReportTemplateFile = IesaSampleData.getSaleReportTemplateFiles().iterator().next();
-		System.out.println("Header : "+ ((ByteArrayInputStream)saleReportTemplateFile.getHeaderImage()).available());
-		RandomFile randomFile = RandomDataProvider.getInstance().getFile("/META-INF/generator/image/document/header/1.PNG");
-		System.out.println(randomFile.getExtension());
+		System.out.println("IesaSampleData.main() 2 : "+saleCashRegisterMovementCollectionReportTemplateFile.getSaleCashRegisterMovementCollection()
+			.getCashRegisterMovement().getMovement().getValue());
+		System.out.println(saleCashRegisterMovementCollectionReportTemplateFile.getSaleCashRegisterMovementCollection().getPreviousBalance());
+		System.out.println();
 	}
 	
 }

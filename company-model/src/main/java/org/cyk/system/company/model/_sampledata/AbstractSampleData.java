@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollectionReport;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollectionReportTemplateFile;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementReportFile;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleReportTemplateFile;
@@ -84,6 +86,42 @@ public abstract class AbstractSampleData extends org.cyk.system.root.model.Abstr
 	
 		addLabelValues(report,"Payment",new String[][]{
 				{"A payer", report.getSaleCashRegisterMovement().getSale().getSalableProductCollection().getCost().getValue()}
+				});
+		
+		
+		process(report);
+		/*
+		addLabelValues(report, "Invoice", new String[][]{
+			{"Identifiant", "I001"}
+			,{"Caisse", "C001"}
+			,{"Date", "31/12/9999"}
+			,{"Client", "Nom et prénoms"}
+			});
+		
+		addLabelValues(report, "Payment", new String[][]{
+			{"A payer", "1000000"}
+			,{"Especes", "2222222"}
+			,{"A rendre", "8888888"}
+			});
+		*/			
+		return collection;
+	}
+	
+	protected Collection<SaleCashRegisterMovementCollectionReportTemplateFile> __getSaleCashRegisterMovementCollectionReportTemplateFiles__(){
+		Collection<SaleCashRegisterMovementCollectionReportTemplateFile> collection = RandomDataProvider.generate(SaleCashRegisterMovementCollectionReportTemplateFile.class, 1);
+		SaleCashRegisterMovementCollectionReportTemplateFile report = collection.iterator().next();
+		report.setSaleCashRegisterMovementCollection(new SaleCashRegisterMovementCollectionReport());
+		report.getSaleCashRegisterMovementCollection().generate();
+		
+		addLabelValues(report,"Payment",new String[][]{
+			{"Identifiant", report.getSaleCashRegisterMovementCollection().getGlobalIdentifier().getIdentifier()}
+			,{"Cashier", report.getSaleCashRegisterMovementCollection().getGlobalIdentifier().getCreatedBy()}
+			,{"Date", report.getSaleCashRegisterMovementCollection().getGlobalIdentifier().getExistencePeriod().getFrom()}
+			//,{"Client", report.getSaleCashRegisterMovementCollection().getCustomer().getGlobalIdentifier().getIdentifier()}
+			});
+	
+		addLabelValues(report,"Payment",new String[][]{
+				{"A payer", report.getSaleCashRegisterMovementCollection().getCashRegisterMovement().getMovement().getValue()}
 				});
 		
 		

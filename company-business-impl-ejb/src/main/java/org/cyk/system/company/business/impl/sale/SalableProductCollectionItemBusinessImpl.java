@@ -42,9 +42,10 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	@Override
 	protected void afterCrud(SalableProductCollectionItem salableProductCollectionItem, Crud crud) {
 		super.afterCrud(salableProductCollectionItem, crud);
-		if(ArrayUtils.contains(new Crud[]{Crud.CREATE,Crud.UPDATE,Crud.DELETE}, crud))
+		if(ArrayUtils.contains(new Crud[]{Crud.CREATE,Crud.UPDATE,Crud.DELETE}, crud)){
 			if(Boolean.TRUE.equals(salableProductCollectionItem.getCascadeOperationToMaster()))
 				cascadeUpdateCollectionCost(salableProductCollectionItem);
+		}
 	}
 		
 	private void cascadeUpdateCollectionCost(SalableProductCollectionItem salableProductCollectionItem){
@@ -55,13 +56,14 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	@Override
 	public SalableProductCollectionItem instanciateOne(SalableProductCollection salableProductCollection,
 			SalableProduct salableProduct, BigDecimal quantity, BigDecimal reduction, BigDecimal commission) {
-		SalableProductCollectionItem salableProductCollectionItem = instanciateOne(salableProduct.getCode(),salableProduct.getName());
-		salableProductCollectionItem.setCode(salableProduct.getCode());
-		salableProductCollectionItem.setCollection(salableProductCollection);
+		SalableProductCollectionItem salableProductCollectionItem = instanciateOne(salableProductCollection,salableProduct.getCode(),salableProduct.getName(),Boolean.FALSE);
+		//salableProductCollectionItem.setCode(salableProduct.getCode());
+		//salableProductCollectionItem.setCollection(salableProductCollection);
 		salableProductCollectionItem.setSalableProduct(salableProduct);
 		salableProductCollectionItem.setQuantity(quantity);
 		salableProductCollectionItem.setReduction(reduction);
 		salableProductCollectionItem.setCommission(commission);
+		computeCost(salableProductCollectionItem,salableProductCollection);
 		inject(SalableProductCollectionBusiness.class).add(salableProductCollection, salableProductCollectionItem);
 		return salableProductCollectionItem;
 	}
@@ -125,9 +127,10 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	}*/
 
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void computeCost(SalableProductCollectionItem salableProductCollectionItem) {
+	public void computeCost(SalableProductCollectionItem salableProductCollectionItem,SalableProductCollection salableProductCollection) {
 		LogMessage.Builder logMessageBuilder = new LogMessage.Builder("COMPUTE Cost",SalableProductCollectionItem.class);
 		logMessageBuilder.addParameters("salableProductCollectionItem.salableProduct.price",salableProductCollectionItem.getSalableProduct().getPrice());
+		logMessageBuilder.addParameters("salableProductCollectionItem.cost",salableProductCollectionItem.getCost());
 		if(salableProductCollectionItem.getSalableProduct().getPrice()==null){
 			//This product has no unit price then the price to be paid must be specified by user
 			
@@ -142,23 +145,27 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 		}
 		//TODO what if previous balance value has there ???
 		salableProductCollectionItem.getBalance().setValue(salableProductCollectionItem.getCost().getValue());
+		salableProductCollectionItem.getCost().setNumberOfProceedElements(salableProductCollectionItem.getQuantity());
 		
-		logMessageBuilder.addParameters("salableProductCollectionItem.cost.value",salableProductCollectionItem.getCost().getValue());
 		if(salableProductCollectionItem.getCost().getValue()==null){
 			
 		}else{
 			//This product has a cost so we can compute the taxes to be paid
-			AccountingPeriod accountingPeriod = salableProductCollectionItem.getCollection().getAccountingPeriod();
-			if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getAutoComputeValueAddedTax())){
+			AccountingPeriod accountingPeriod = salableProductCollection.getAccountingPeriod();
+			if(Boolean.TRUE.equals(salableProductCollection.getAutoComputeValueAddedTax())){
 				salableProductCollectionItem.getCost().setTax(inject(AccountingPeriodBusiness.class).computeValueAddedTax(accountingPeriod, salableProductCollectionItem.getCost().getValue()));
 			}else if(salableProductCollectionItem.getCost().getTax()==null)
 				salableProductCollectionItem.getCost().setTax(BigDecimal.ZERO);
 			salableProductCollectionItem.getCost().setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(accountingPeriod
 					, salableProductCollectionItem.getCost().getValue(),salableProductCollectionItem.getCost().getTax()));	
 		}
-		logMessageBuilder.addParameters("salableProductCollectionItem.cost.turnover",salableProductCollectionItem.getCost().getTurnover());
-		logMessageBuilder.addParameters("salableProductCollectionItem.cost.tax",salableProductCollectionItem.getCost().getTax());
+		logMessageBuilder.addParameters("salableProductCollectionItem.newCost",salableProductCollectionItem.getCost());
 		logTrace(logMessageBuilder);
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void computeCost(SalableProductCollectionItem salableProductCollectionItem) {
+		computeCost(salableProductCollectionItem, salableProductCollectionItem.getCollection());
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)

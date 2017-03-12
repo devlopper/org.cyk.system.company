@@ -53,8 +53,8 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 			
 			@Override
 			public Collection<SaleCashRegisterMovement> load() {
-				getCollection().setCollection(inject(SaleCashRegisterMovementBusiness.class).findByCollection(getCollection()));
-				return getCollection().getCollection();
+				getCollection().getItems().setCollection(inject(SaleCashRegisterMovementBusiness.class).findByCollection(getCollection()));
+				return getCollection().getItems().getCollection();
 			}
 			
 			@Override
@@ -97,7 +97,7 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 	public void saleCashRegisterMovementAmountChanged(Item item){
 		item.getIdentifiable().setAmount(item.getAmount());
 		inject(SaleCashRegisterMovementBusiness.class).computeBalance(item.getIdentifiable());
-		inject(SaleCashRegisterMovementCollectionBusiness.class).computeAmount(identifiable,identifiable.getCollection());
+		inject(SaleCashRegisterMovementCollectionBusiness.class).computeAmount(identifiable,identifiable.getItems().getCollection());
 		itemCollection.read(item);
 		updateFormAmount(form,identifiable);
 	}

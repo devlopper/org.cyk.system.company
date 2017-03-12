@@ -20,6 +20,7 @@ import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
+import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.persistence.api.mathematics.MovementDao;
@@ -60,20 +61,22 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 			inject(MovementBusiness.class).create(cashRegisterMovement.getMovement());
 		}
 	}
-		
+			
 	@Override
-	public CashRegisterMovement update(CashRegisterMovement cashRegisterMovement) {
+	protected void beforeUpdate(CashRegisterMovement cashRegisterMovement) {
+		super.beforeUpdate(cashRegisterMovement);
 		if(cashRegisterMovement.getMovement()!=null)
 			inject(MovementBusiness.class).update(cashRegisterMovement.getMovement());
-		return super.update(cashRegisterMovement);
 	}
 	
 	@Override
-	public CashRegisterMovement delete(CashRegisterMovement cashRegisterMovement) {
-		if(cashRegisterMovement.getMovement()!=null)
-			inject(MovementBusiness.class).delete(cashRegisterMovement.getMovement());
-		cashRegisterMovement.setMovement(null);
-		return super.delete(cashRegisterMovement);
+	protected void beforeDelete(CashRegisterMovement cashRegisterMovement) {
+		super.beforeDelete(cashRegisterMovement);
+		if(cashRegisterMovement.getMovement()!=null){
+			Movement movement = cashRegisterMovement.getMovement();
+			cashRegisterMovement.setMovement(null);
+			inject(MovementBusiness.class).delete(movement);
+		}
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
@@ -93,7 +96,7 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 		cashRegisterMovement.setCashRegister(cashRegister);
 		if(cashRegisterMovement.getCashRegister()!=null)
 			cashRegisterMovement.setMovement(inject(MovementBusiness.class)
-				.instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection(),null,null ));
+				.instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection()));
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)

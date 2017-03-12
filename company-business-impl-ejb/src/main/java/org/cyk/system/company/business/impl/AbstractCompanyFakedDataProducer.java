@@ -52,6 +52,10 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 
 	private static final long serialVersionUID = -1832900422621121762L;
 
+	public static final String CASH_REGISTER_001 = "CR001",CASH_REGISTER_002 = "CR002",CASH_REGISTER_003 = "CR003";
+	public static final String SALE_001 = "S001",SALE_002 = "S002";
+	public static final String CUSTOMER_001 = "C001",CUSTOMER_002 = "C002";
+	
 	protected CompanyBusinessLayer companyBusinessLayer = CompanyBusinessLayer.getInstance();
 	@Inject protected OwnedCompanyBusiness ownedCompanyBusiness;
 	@Inject protected ProductBusiness productBusiness;
