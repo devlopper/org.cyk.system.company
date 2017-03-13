@@ -29,9 +29,9 @@ public class SaleConfiguration extends AbstractModelElement implements Serializa
 	
 	@Column(nullable=false) @NotNull private Boolean valueAddedTaxIncludedInCost = Boolean.TRUE;
 	
-	@OneToOne private StringGenerator identifierGenerator;
+	@OneToOne private StringGenerator identifierGenerator;//TODO use a code in constant instead of declaring this here
 
-	@OneToOne private StringGenerator cashRegisterMovementIdentifierGenerator;
+	@OneToOne private StringGenerator cashRegisterMovementIdentifierGenerator;//TODO use a code in constant instead of declaring this here
 	
 	@OneToOne private FiniteStateMachine finiteStateMachine;
 	

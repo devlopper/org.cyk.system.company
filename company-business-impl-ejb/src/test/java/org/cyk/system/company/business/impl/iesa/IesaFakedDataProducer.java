@@ -53,15 +53,7 @@ public class IesaFakedDataProducer extends AbstractEnterpriseResourcePlanningFak
 
 	@Override
 	protected void doBusiness(Listener listener) {
-		/*Collection<Sale> sales = inject(SaleBusiness.class).instanciateMany(new Object[][]{
-				new Object[]{"sale001",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getCode(),"1/1/2000 05:00","false"
-						,new String[][]{ new String[]{"TP2","2"} }}
-				,new Object[]{"sale002",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getCode(),"1/1/2000 05:15","false"
-						,new String[][]{ new String[]{"TP2","1"} }}
-				,new Object[]{"sale003",cashierDao.readOneRandomly().getPerson().getCode(),customerDao.readOneRandomly().getCode(),"1/1/2000 08:00","false"
-						,new String[][]{ new String[]{"TP2","1"},new String[]{"TP5","3"} }}
-		});
-		flush(Sale.class, sales);*/
+		super.doBusiness(listener);
 	}
 
 	

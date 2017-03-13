@@ -35,6 +35,7 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItemSaleCashReg
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.DivisionType;
@@ -393,10 +394,11 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		SalableProductCollectionBusinessImpl.Listener.COLLECTION.add(SALABLE_PRODUCT_COLLECTION_BUSINESS_LISTENER);
 		SaleBusinessImpl.Listener.COLLECTION.add(SALE_BUSINESS_LISTENER);
 		
-		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{GlobalIdentifier.FIELD_CODE}, SaleCashRegisterMovement.class);
+		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{GlobalIdentifier.FIELD_CODE}, SaleCashRegisterMovement.class
+				,SaleCashRegisterMovementCollection.class);
 		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{
 				commonUtils.attributePath(GlobalIdentifier.FIELD_EXISTENCE_PERIOD,Period.FIELD_FROM_DATE)}, CashRegisterMovement.class,Sale.class
-				,SaleCashRegisterMovement.class);
+				,SaleCashRegisterMovementCollection.class,SaleCashRegisterMovement.class);
 		
 		CompanyConstant.Configuration.Sale.AUTOMATICALLY_GENERATE_REPORT_FILE = Boolean.TRUE;
 		CompanyConstant.Configuration.SaleCashRegisterMovementCollection.AUTOMATICALLY_GENERATE_REPORT_FILE = Boolean.TRUE;

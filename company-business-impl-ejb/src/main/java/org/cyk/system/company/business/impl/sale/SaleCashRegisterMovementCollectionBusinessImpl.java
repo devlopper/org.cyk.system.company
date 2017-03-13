@@ -114,8 +114,8 @@ public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractColl
 	
 	@Override
 	protected void beforeCreate(SaleCashRegisterMovementCollection saleCashRegisterMovementCollection) {
-		super.beforeCreate(saleCashRegisterMovementCollection);
 		createIfNotIdentified(saleCashRegisterMovementCollection.getCashRegisterMovement());
+		super.beforeCreate(saleCashRegisterMovementCollection);
 	}
 	
 	@Override
