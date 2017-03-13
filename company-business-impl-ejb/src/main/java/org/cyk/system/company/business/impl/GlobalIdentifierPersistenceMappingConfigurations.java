@@ -3,7 +3,9 @@ package org.cyk.system.company.business.impl;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
+import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.persistence.impl.globalidentification.GlobalIdentifierPersistenceMappingConfiguration;
@@ -32,6 +34,39 @@ public class GlobalIdentifierPersistenceMappingConfigurations extends AbstractBe
         configuration.addProperties(property);
         GlobalIdentifierPersistenceMappingConfiguration.register(Sale.class, configuration);
         
+        property = new GlobalIdentifierPersistenceMappingConfiguration.Property(
+				commonUtils.attributePath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER, GlobalIdentifier.FIELD_CODE),new javax.persistence.Column() {
+			@Override public Class<? extends Annotation> annotationType() {return null;}
+			@Override public boolean updatable() {return false;}	
+			@Override public boolean unique() {return Boolean.TRUE;}
+			@Override public String table() {return null;}
+			@Override public int scale() {return 0;}
+			@Override public int precision() {return 0;}
+			@Override public boolean nullable() {return false;}
+			@Override public String name() {return null;}
+			@Override public int length() {return 0;}
+			@Override public boolean insertable() {return false;}
+			@Override public String columnDefinition() {return null;}
+		});
+        configuration.addProperties(property);
+        GlobalIdentifierPersistenceMappingConfiguration.register(SalableProduct.class, configuration);
+        
+        property = new GlobalIdentifierPersistenceMappingConfiguration.Property(
+				commonUtils.attributePath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER, GlobalIdentifier.FIELD_CODE),new javax.persistence.Column() {
+			@Override public Class<? extends Annotation> annotationType() {return null;}
+			@Override public boolean updatable() {return false;}	
+			@Override public boolean unique() {return Boolean.TRUE;}
+			@Override public String table() {return null;}
+			@Override public int scale() {return 0;}
+			@Override public int precision() {return 0;}
+			@Override public boolean nullable() {return false;}
+			@Override public String name() {return null;}
+			@Override public int length() {return 0;}
+			@Override public boolean insertable() {return false;}
+			@Override public String columnDefinition() {return null;}
+		});
+        configuration.addProperties(property);
+        GlobalIdentifierPersistenceMappingConfiguration.register(SaleCashRegisterMovementCollection.class, configuration);
         
 	}
 	

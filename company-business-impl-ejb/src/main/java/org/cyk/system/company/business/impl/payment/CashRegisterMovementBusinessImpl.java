@@ -8,14 +8,18 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementDao;
+import org.cyk.system.company.persistence.api.payment.CashRegisterMovementModeDao;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
+import org.cyk.system.root.business.api.mathematics.IntervalBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.RootConstant;
@@ -40,14 +44,34 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	}
 	
 	@Override
-	public CashRegisterMovement instanciateOne(String code,String name,String amount,String cashRegisterCode) {
+	public CashRegisterMovement instanciateOne() {
 		CashRegisterMovement cashRegisterMovement = super.instanciateOne();
+		cashRegisterMovement.setMode(inject(CashRegisterMovementModeDao.class).read(CompanyConstant.Code.CashRegisterMovementMode.CASH));
+		return cashRegisterMovement;
+	}
+	
+	@Override
+	public CashRegisterMovement instanciateOne(String code,String name,String amount,String cashRegisterCode,String cashRegisterMovementModeCode) {
+		CashRegisterMovement cashRegisterMovement = instanciateOne();
 		cashRegisterMovement.setCode(code);
 		cashRegisterMovement.setName(name);
+		cashRegisterMovement.setMode(inject(CashRegisterMovementModeDao.class).read(cashRegisterMovementModeCode));
 		if(StringUtils.isNotBlank(cashRegisterCode)){
-			cashRegisterMovement.setCashRegister(inject(CashRegisterDao.class).read(cashRegisterCode));
+			cashRegisterMovement.setCashRegister(inject(CashRegisterDao.class).read(cashRegisterCode));//TODO we should use setCashRegister
 			cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection().getCode(),amount,null,null,null));
 		}
+		return cashRegisterMovement;
+	}
+	
+	@Override
+	public CashRegisterMovement instanciateOne(String code,String name,String amount,String cashRegisterCode) {
+		return instanciateOne(code, name, amount, cashRegisterCode,CompanyConstant.Code.CashRegisterMovementMode.CASH);
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public CashRegisterMovement instanciateOne(UserAccount userAccount,CashRegister cashRegister) {
+		CashRegisterMovement cashRegisterMovement = instanciateOne();
+		setCashRegister(cashRegisterMovement, cashRegister);
 		return cashRegisterMovement;
 	}
 		
@@ -60,6 +84,20 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 			cashRegisterMovement.set(cashRegisterMovement.getMovement(), GlobalIdentifier.FIELD_CODE,GlobalIdentifier.FIELD_NAME,GlobalIdentifier.FIELD_EXISTENCE_PERIOD);
 			inject(MovementBusiness.class).create(cashRegisterMovement.getMovement());
 		}
+		
+		if(cashRegisterMovement.getMode().getCode().equals(CompanyConstant.Code.CashRegisterMovementMode.CASH) && 
+				cashRegisterMovement.getStampDutyInterval()==null){
+			cashRegisterMovement.setStampDutyInterval(inject(IntervalBusiness.class).findByCollectionByValue(CompanyConstant.Code.IntervalCollection.STAMP_DUTY
+					,cashRegisterMovement.getMovement().getValue(), 2));
+		}
+		
+		exceptionUtils().exception(!ArrayUtils.contains(new String[]{CompanyConstant.Code.CashRegisterMovementMode.CASH}, cashRegisterMovement.getMode().getCode())
+				&& StringUtils.isBlank(cashRegisterMovement.getMovement().getSupportingDocumentIdentifier()), "supportingdocumentidentifierrequired");
+		
+		exceptionUtils().exception(ArrayUtils.contains(new String[]{CompanyConstant.Code.CashRegisterMovementMode.CHEQUE}, cashRegisterMovement.getMode().getCode())
+				&& StringUtils.isBlank(cashRegisterMovement.getMovement().getSupportingDocumentProvider()), "supportingdocumentproviderrequired");
+		
+			
 	}
 			
 	@Override
@@ -82,13 +120,6 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<CashRegisterMovement> findByCashRegister(CashRegister cashRegister) {
 		return dao.readByCashRegister(cashRegister);
-	}
-	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public CashRegisterMovement instanciateOne(UserAccount userAccount,CashRegister cashRegister) {
-		CashRegisterMovement cashRegisterMovement = new CashRegisterMovement();
-		setCashRegister(cashRegisterMovement, cashRegister);
-		return cashRegisterMovement;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)

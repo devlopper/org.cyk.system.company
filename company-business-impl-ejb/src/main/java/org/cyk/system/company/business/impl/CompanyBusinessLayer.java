@@ -62,6 +62,8 @@ import org.cyk.system.root.model.file.report.ReportTemplate;
 import org.cyk.system.root.model.generator.StringGenerator;
 import org.cyk.system.root.model.geography.ContactCollection;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
+import org.cyk.system.root.model.mathematics.Interval;
+import org.cyk.system.root.model.mathematics.IntervalCollection;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.BusinessServiceCollection;
@@ -230,6 +232,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		createFromExcelSheet(TangibleProduct.class);
 		createFromExcelSheet(SalableProduct.class);
 		createFromExcelSheet(CashRegisterMovementMode.class);
+		
+		createFromExcelSheet(IntervalCollection.class);
+		createFromExcelSheet(Interval.class);
 		
 	}
 	

@@ -53,8 +53,6 @@ public class IesaSampleData extends AbstractSampleData implements Serializable {
 		
 	}
 	
-	
-	
 	@Override
 	protected void addLabelValues(AbstractReportTemplateFile<?> reportTemplateFile, String name, String[][] values) {
 		if("Invoice".equals(name) || "Payment".equals(name)){

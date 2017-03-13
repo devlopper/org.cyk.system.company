@@ -113,7 +113,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	private SaleCashRegisterMovementCollectionReportTemplateFile produceSaleCashRegisterMovementCollectionReportTemplateFile(SaleCashRegisterMovementCollection saleCashRegisterMovementCollection) {
 		saleCashRegisterMovementCollection.getItems().setCollection(inject(SaleCashRegisterMovementDao.class).readByCollection(saleCashRegisterMovementCollection));
 		SaleCashRegisterMovementCollectionReportTemplateFile report = new SaleCashRegisterMovementCollectionReportTemplateFile(saleCashRegisterMovementCollection);
-		
+		//report.getSaleCashRegisterMovementCollection().getCashRegisterMovement().setText("DETAILS TO COMPUTE");
 		//List<SaleCashRegisterMovement> saleCashRegisterMovements = (List<SaleCashRegisterMovement>) inject(SaleCashRegisterMovementDao.class).readByCollection(saleCashRegisterMovementCollection);
 		
 		/* Previous */
@@ -139,9 +139,9 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 			,{"Parent",Constant.EMPTY_STRING}
 			,{"???"/*saleCashRegisterMovementCollection.getSale().getCustomer().getPerson().getNames()*/,Constant.EMPTY_STRING}	
 			,{"Received from",Constant.EMPTY_STRING}
-			,{saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getSenderOrReceiverParty()==null
+			,{saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getSenderOrReceiverPerson()==null
 					? /*saleCashRegisterMovement.getSale().getCustomer().getPerson().getNames() */"???"
-						: saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getSenderOrReceiverParty().getNames(),Constant.EMPTY_STRING}	
+						: saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getSenderOrReceiverPerson().getNames(),Constant.EMPTY_STRING}	
 		});
 		
 		return report;
@@ -182,9 +182,9 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 			,{"Parent",Constant.EMPTY_STRING}
 			,{saleCashRegisterMovement.getSale().getCustomer().getPerson().getNames(),Constant.EMPTY_STRING}	
 			,{"Received from",Constant.EMPTY_STRING}
-			,{saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getSenderOrReceiverParty()==null
+			,{saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getSenderOrReceiverPerson()==null
 					? saleCashRegisterMovement.getSale().getCustomer().getPerson().getNames() 
-						: saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getSenderOrReceiverParty().getNames(),Constant.EMPTY_STRING}	
+						: saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getSenderOrReceiverPerson().getNames(),Constant.EMPTY_STRING}	
 		});
 		
 		/*

@@ -85,7 +85,16 @@ public interface CompanyConstant {
 			
 			public static String CASH = "CASH";
 			public static String CHEQUE = "CHEQUE";
+			public static String BANK_TRANSFER = "BANKTRANSFER";
+			public static String MOBILE_PAYMENT = "MOBILEPAYMENT";
 			public static String GIFT_CARD = "GIFTCARD";
+		}
+		
+		public static class IntervalCollection implements Serializable {
+			private static final long serialVersionUID = 1L;
+			
+			public static String STAMP_DUTY = "STAMPDUTY";
+			
 		}
 	}
 		

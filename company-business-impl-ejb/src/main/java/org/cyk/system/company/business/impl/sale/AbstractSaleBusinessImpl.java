@@ -26,12 +26,9 @@ import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.business.api.file.FileIdentifiableGlobalIdentifierBusiness;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.RootConstant;
-import org.cyk.system.root.model.file.FileIdentifiableGlobalIdentifier;
-import org.cyk.system.root.persistence.api.file.FileIdentifiableGlobalIdentifierDao;
 
 public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO extends AbstractSaleDao<SALE,SEARCH_CRITERIA>,SEARCH_CRITERIA extends AbstractSale.SearchCriteria> extends AbstractTypedBusinessService<SALE, DAO> implements AbstractSaleBusiness<SALE,SEARCH_CRITERIA>,Serializable {
 
@@ -92,13 +89,6 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 	protected void afterUpdate(SALE sale) {
 		inject(SalableProductCollectionBusiness.class).update(sale.getSalableProductCollection());
 		super.afterUpdate(sale);
-	}
-	
-	@Override
-	protected void beforeDelete(SALE sale) {
-		super.beforeDelete(sale);
-		//Collection<FileIdentifiableGlobalIdentifier> fileIdentifiableGlobalIdentifiers = inject(FileIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(sale);
-		//inject(FileIdentifiableGlobalIdentifierBusiness.class).delete(fileIdentifiableGlobalIdentifiers);
 	}
 	
 	@Override

@@ -14,6 +14,7 @@ import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollectionBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
+import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
@@ -32,6 +33,7 @@ import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
+import org.cyk.utility.common.annotation.user.interfaces.InputText;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -136,12 +138,18 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 		
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private CashRegister cashRegister;
 		@Input(disabled=true,readOnly=true) @InputNumber @NotNull protected BigDecimal amount;
+		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private CashRegisterMovementMode mode;
+		@Input @InputText protected String supportingDocumentProvider;
+		@Input @InputText protected String supportingDocumentIdentifier;
 		
 		@Override
 		public void read() {
 			cashRegister = identifiable.getCashRegisterMovement().getCashRegister();
+			mode = identifiable.getCashRegisterMovement().getMode();
 			if(identifiable.getCashRegisterMovement().getMovement()!=null){
 				amount = identifiable.getCashRegisterMovement().getMovement().getValue();
+				supportingDocumentProvider = identifiable.getCashRegisterMovement().getMovement().getSupportingDocumentProvider();
+				supportingDocumentIdentifier = identifiable.getCashRegisterMovement().getMovement().getSupportingDocumentIdentifier();
 			}
 			super.read();
 		}
@@ -151,12 +159,18 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 			super.write();
 			identifiable.setAmountIn(amount);
 			identifiable.setAmountOut(BigDecimal.ZERO);
+			identifiable.getCashRegisterMovement().setMode(mode);
+			identifiable.getCashRegisterMovement().getMovement().setSupportingDocumentProvider(supportingDocumentProvider);
+			identifiable.getCashRegisterMovement().getMovement().setSupportingDocumentIdentifier(supportingDocumentIdentifier);
 		}
 		
 		/**/
 		
 		public static final String FIELD_CASH_REGISTER = "cashRegister";
 		public static final String FIELD_AMOUNT = "amount";
+		public static final String FIELD_MODE = "mode";
+		public static final String FIELD_SUPPORTING_DOCUMENT_PROVIDER = "supportingDocumentProvider";
+		public static final String FIELD_SUPPORTING_DOCUMENT_IDENTIFIER = "supportingDocumentIdentifier";
 		
 	}
 	

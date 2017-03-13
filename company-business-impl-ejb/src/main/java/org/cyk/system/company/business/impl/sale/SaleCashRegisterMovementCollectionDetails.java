@@ -13,11 +13,14 @@ import lombok.Setter;
 public class SaleCashRegisterMovementCollectionDetails extends AbstractCollectionDetails<SaleCashRegisterMovementCollection> implements Serializable {
 	private static final long serialVersionUID = -6341285110719947720L;
 	
-	private String value;
+	private String cashRegister,value,mode,supportingDocumentProvider,supportingDocumentIdentifier;
 	
 	public SaleCashRegisterMovementCollectionDetails(SaleCashRegisterMovementCollection saleCashRegisterMovementCollection) {
 		super(saleCashRegisterMovementCollection);
 		value = formatNumber(saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getValue());
+		mode = formatUsingBusiness(saleCashRegisterMovementCollection.getCashRegisterMovement().getMode());
+		supportingDocumentProvider = saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getSupportingDocumentProvider();
+		supportingDocumentIdentifier = saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getSupportingDocumentIdentifier();
 	}
 
 	@Override
@@ -25,6 +28,10 @@ public class SaleCashRegisterMovementCollectionDetails extends AbstractCollectio
 		return master;
 	}
 	
+	public static final String FIELD_CASH_REGISTER = "cashRegister";
 	public static final String FIELD_VALUE = "value";
+	public static final String FIELD_MODE = "mode";
+	public static final String FIELD_SUPPORTING_DOCUMENT_PROVIDER = "supportingDocumentProvider";
+	public static final String FIELD_SUPPORTING_DOCUMENT_IDENTIFIER = "supportingDocumentIdentifier";
 
 }

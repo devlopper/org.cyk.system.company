@@ -60,13 +60,18 @@ public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractColl
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public SaleCashRegisterMovementCollection instanciateOne(String code, String name, String cashRegisterCode,Object[][] saleCashRegisterMovements) {
+	public SaleCashRegisterMovementCollection instanciateOne(String code, String name, String cashRegisterCode,String cashRegisterMovementModeCode,Object[][] saleCashRegisterMovements) {
 		SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = instanciateOne(code,name);
-		saleCashRegisterMovementCollection.setCashRegisterMovement(inject(CashRegisterMovementBusiness.class).instanciateOne(code,name,BigDecimal.ZERO.toString(),cashRegisterCode));
+		saleCashRegisterMovementCollection.setCashRegisterMovement(inject(CashRegisterMovementBusiness.class).instanciateOne(code,name,BigDecimal.ZERO.toString(),cashRegisterCode,cashRegisterMovementModeCode));
 		if(saleCashRegisterMovements!=null)
 			for(Object[] saleCashRegisterMovement : saleCashRegisterMovements)
 				inject(SaleCashRegisterMovementBusiness.class).instanciateOne(saleCashRegisterMovementCollection, (String)saleCashRegisterMovement[0], (String)saleCashRegisterMovement[1]);
 		return saleCashRegisterMovementCollection;
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public SaleCashRegisterMovementCollection instanciateOne(String code, String name, String cashRegisterCode,Object[][] saleCashRegisterMovements) {
+		return instanciateOne(code, name, cashRegisterCode, CompanyConstant.Code.CashRegisterMovementMode.CASH, saleCashRegisterMovements);
 	}
 	
 	@Override
@@ -144,8 +149,9 @@ public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractColl
 	protected void afterCrud(SaleCashRegisterMovementCollection saleCashRegisterMovementCollection,Crud crud) {
 		super.afterCrud(saleCashRegisterMovementCollection,crud);
 		if(Crud.isCreateOrUpdate(crud)){
-			if(Boolean.TRUE.equals(CompanyConstant.Configuration.SaleCashRegisterMovementCollection.AUTOMATICALLY_GENERATE_REPORT_FILE))
+			if(Boolean.TRUE.equals(CompanyConstant.Configuration.SaleCashRegisterMovementCollection.AUTOMATICALLY_GENERATE_REPORT_FILE)){
 				createReportFile(saleCashRegisterMovementCollection, CompanyConstant.Code.ReportTemplate.SALE_CASH_REGISTER_MOVEMENT_COLLECTION_A4, RootConstant.Configuration.ReportTemplate.LOCALE);
+			}
 		}
 	}
 	

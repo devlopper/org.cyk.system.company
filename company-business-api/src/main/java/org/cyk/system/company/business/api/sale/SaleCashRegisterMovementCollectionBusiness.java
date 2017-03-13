@@ -10,7 +10,9 @@ import org.cyk.system.root.model.security.UserAccount;
 
 public interface SaleCashRegisterMovementCollectionBusiness extends AbstractCollectionBusiness<SaleCashRegisterMovementCollection,SaleCashRegisterMovement> {
 
+	SaleCashRegisterMovementCollection instanciateOne(String code, String name, String cashRegisterCode,String cashRegisterMovementModeCode,Object[][] saleCashRegisterMovements);
 	SaleCashRegisterMovementCollection instanciateOne(String code, String name, String cashRegisterCode,Object[][] saleCashRegisterMovements);
+	
 	void setCashRegister(UserAccount userAccount,SaleCashRegisterMovementCollection saleCashRegisterMovementCollection,CashRegister cashRegister);
 	
 	void computeAmount(SaleCashRegisterMovementCollection saleCashRegisterMovementCollection,Collection<SaleCashRegisterMovement> saleCashRegisterMovements);
