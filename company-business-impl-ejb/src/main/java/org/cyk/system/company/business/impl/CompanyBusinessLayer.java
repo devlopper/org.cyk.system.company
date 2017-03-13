@@ -205,7 +205,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	
 		inject(GlobalIdentifierPersistenceMappingConfigurations.class).configure();
 		
-		//AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{GlobalIdentifier.FIELD_CODE,GlobalIdentifier.FIELD_NAME}, SaleCashRegisterMovement.class);
+		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{"code","name"}, SalableProductCollectionItem.class);
 	}
 		
 	@Override
@@ -397,6 +397,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{
 				commonUtils.attributePath(GlobalIdentifier.FIELD_EXISTENCE_PERIOD,Period.FIELD_FROM_DATE)}, CashRegisterMovement.class,Sale.class
 				,SaleCashRegisterMovement.class);
+		
+		CompanyConstant.Configuration.Sale.AUTOMATICALLY_GENERATE_REPORT_FILE = Boolean.TRUE;
+		CompanyConstant.Configuration.SaleCashRegisterMovementCollection.AUTOMATICALLY_GENERATE_REPORT_FILE = Boolean.TRUE;
 	}
 	
 	/**/

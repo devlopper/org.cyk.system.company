@@ -13,6 +13,7 @@ import org.cyk.system.company.business.api.sale.AbstractSaleBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.sale.AbstractSale;
 import org.cyk.system.company.model.sale.SalableProductCollection;
@@ -25,8 +26,12 @@ import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
+import org.cyk.system.root.business.api.file.FileIdentifiableGlobalIdentifierBusiness;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.model.RootConstant;
+import org.cyk.system.root.model.file.FileIdentifiableGlobalIdentifier;
+import org.cyk.system.root.persistence.api.file.FileIdentifiableGlobalIdentifierDao;
 
 public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO extends AbstractSaleDao<SALE,SEARCH_CRITERIA>,SEARCH_CRITERIA extends AbstractSale.SearchCriteria> extends AbstractTypedBusinessService<SALE, DAO> implements AbstractSaleBusiness<SALE,SEARCH_CRITERIA>,Serializable {
 
@@ -69,6 +74,15 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 	}
 	
 	@Override
+	protected void afterCrud(SALE sale,Crud crud) {
+		super.afterCrud(sale,crud);
+		if(Crud.isCreateOrUpdate(crud)){
+			if(Boolean.TRUE.equals(CompanyConstant.Configuration.Sale.AUTOMATICALLY_GENERATE_REPORT_FILE))
+				createReportFile(sale, CompanyConstant.Code.ReportTemplate.INVOICE, RootConstant.Configuration.ReportTemplate.LOCALE);
+		}
+	}
+	
+	@Override
 	protected void beforeCreate(SALE sale) {
 		super.beforeCreate(sale);
 		createIfNotIdentified(sale.getSalableProductCollection());
@@ -78,6 +92,13 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 	protected void afterUpdate(SALE sale) {
 		inject(SalableProductCollectionBusiness.class).update(sale.getSalableProductCollection());
 		super.afterUpdate(sale);
+	}
+	
+	@Override
+	protected void beforeDelete(SALE sale) {
+		super.beforeDelete(sale);
+		//Collection<FileIdentifiableGlobalIdentifier> fileIdentifiableGlobalIdentifiers = inject(FileIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(sale);
+		//inject(FileIdentifiableGlobalIdentifierBusiness.class).delete(fileIdentifiableGlobalIdentifiers);
 	}
 	
 	@Override

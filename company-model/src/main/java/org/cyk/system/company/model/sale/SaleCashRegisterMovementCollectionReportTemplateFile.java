@@ -23,6 +23,8 @@ public class SaleCashRegisterMovementCollectionReportTemplateFile extends Abstra
 	@Override
 	public void setSource(Object source) {
 		super.setSource(source);
+		System.out.println("SaleCashRegisterMovementCollectionReportTemplateFile.setSource()");
+		debug(((SaleCashRegisterMovementCollection)source).getGlobalIdentifier());
 		//saleCashRegisterMovementCollection.setAccountingPeriod(new AccountingPeriodReport(((SaleCashRegisterMovementCollection)source).getAccountingPeriod()));
 		saleCashRegisterMovementCollection.setSource(source);
 	}

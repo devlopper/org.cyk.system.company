@@ -197,11 +197,9 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 			
 			@Override
 			public SalableProductCollectionItem instanciate(AbstractItemCollection<TYPE, SalableProductCollectionItem,SalableProductCollection, SelectItem> itemCollection) {
-				SalableProductCollectionItem salableProductCollectionItem = new SalableProductCollectionItem();
+				SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class)
+						.instanciateOne(collection, (SalableProduct) itemCollection.getOneMasterSelected(), BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ZERO);
 				salableProductCollectionItem.setSalableProduct((SalableProduct) itemCollection.getOneMasterSelected());
-				salableProductCollectionItem.setQuantity(BigDecimal.ONE);
-				salableProductCollectionItem.setCollection(collection);
-				inject(SalableProductCollectionBusiness.class).add(collection, salableProductCollectionItem);
 				updateFormCost(itemCollection.getContainerForm(),collection);
 				return salableProductCollectionItem;
 			}

@@ -34,6 +34,7 @@ public class SaleCashRegisterMovementReport extends AbstractIdentifiableReport<S
 	@Override
 	public void setSource(Object source) {
 		super.setSource(source);
+		System.out.println("SaleCashRegisterMovementReport.setSource() : "+((AbstractCollectionItem<?>) source).getCode());
 		globalIdentifier.setCode(RootConstant.Code.getRelativeCode((AbstractCollectionItem<?>) source));
 		sale.setSource(((SaleCashRegisterMovement)source).getSale());
 		amount = format(((SaleCashRegisterMovement)source).getAmount());

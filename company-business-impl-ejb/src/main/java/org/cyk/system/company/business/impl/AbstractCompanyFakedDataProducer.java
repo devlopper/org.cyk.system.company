@@ -8,6 +8,7 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.production.ProductionBusiness;
 import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
@@ -17,6 +18,7 @@ import org.cyk.system.company.business.api.production.ProductionUnitBusiness;
 import org.cyk.system.company.business.api.production.ResellerBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionBusiness;
 import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
+import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
@@ -81,6 +83,20 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	
 	protected Company getCompany(){
 		return ownedCompanyBusiness.findDefaultOwnedCompany().getCompany();
+	}
+	
+	@Override
+	protected void structure() {
+		create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_001));
+    	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_002));
+    	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_003));
+    	
+	}
+
+	@Override
+	protected void doBusiness(Listener listener) {
+		create(inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_001)); //FIXME throw exception when called in structure
+    	create(inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_002));
 	}
 	
 	//TODO those following method should be deleted because they should accessible using business service

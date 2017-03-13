@@ -229,6 +229,11 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 		return saleCashRegisterMovement;
 	}
 	
+	@Override
+	protected void deleteFileIdentifiableGlobalIdentifier(SaleCashRegisterMovement saleCashRegisterMovement) {
+		
+	}
+	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void computeBalance(SaleCashRegisterMovement saleCashRegisterMovement) {
 		BigDecimal saleCashRegisterMovementAmount = saleCashRegisterMovement.getAmount();

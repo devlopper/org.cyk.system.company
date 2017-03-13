@@ -15,14 +15,17 @@ import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollectionBusiness;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.security.UserAccount;
@@ -135,6 +138,15 @@ public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractColl
 		CashRegisterMovement cashRegisterMovement = saleCashRegisterMovementCollection.getCashRegisterMovement();
 		saleCashRegisterMovementCollection.setCashRegisterMovement(null);
 		inject(CashRegisterMovementBusiness.class).delete(cashRegisterMovement);
+	}
+	
+	@Override
+	protected void afterCrud(SaleCashRegisterMovementCollection saleCashRegisterMovementCollection,Crud crud) {
+		super.afterCrud(saleCashRegisterMovementCollection,crud);
+		if(Crud.isCreateOrUpdate(crud)){
+			if(Boolean.TRUE.equals(CompanyConstant.Configuration.SaleCashRegisterMovementCollection.AUTOMATICALLY_GENERATE_REPORT_FILE))
+				createReportFile(saleCashRegisterMovementCollection, CompanyConstant.Code.ReportTemplate.SALE_CASH_REGISTER_MOVEMENT_COLLECTION_A4, RootConstant.Configuration.ReportTemplate.LOCALE);
+		}
 	}
 	
 	/**/

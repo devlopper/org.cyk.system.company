@@ -89,8 +89,25 @@ public interface CompanyConstant {
 		}
 	}
 		
-	/* Product */
-	
+	public static class Configuration {
+		
+		public static class Sale implements Serializable {
+			private static final long serialVersionUID = 1L;
+			
+			public static Boolean AUTOMATICALLY_GENERATE_REPORT_FILE = Boolean.FALSE;
+			
+		}
+		
+		public static class SaleCashRegisterMovementCollection implements Serializable {
+			private static final long serialVersionUID = 1L;
+			
+			public static Boolean AUTOMATICALLY_GENERATE_REPORT_FILE = Boolean.FALSE;
+			
+		}
+		
+		
+		
+	}
 	
 	
 	/* Gift card management */

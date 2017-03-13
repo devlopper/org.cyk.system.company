@@ -90,7 +90,7 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 			}
 							
 		});
-		
+		identifiable.getItems().setSynchonizationEnabled(Boolean.TRUE);
 		sales = webManager.getSelectItems(Sale.class, inject(SaleBusiness.class).findAll(),Boolean.FALSE);
 	}
 	
