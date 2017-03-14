@@ -18,6 +18,7 @@ import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementModeDao;
+import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.mathematics.IntervalBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
@@ -56,9 +57,16 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 		cashRegisterMovement.setCode(code);
 		cashRegisterMovement.setName(name);
 		cashRegisterMovement.setMode(inject(CashRegisterMovementModeDao.class).read(cashRegisterMovementModeCode));
+		if(cashRegisterMovement.getMode()!=null){
+			if(!CompanyConstant.Code.CashRegisterMovementMode.CASH.equals(cashRegisterMovementModeCode)){
+				cashRegisterMovement.setSupportingDocument(inject(FileBusiness.class).instanciateOne());
+			}
+		}
 		if(StringUtils.isNotBlank(cashRegisterCode)){
-			cashRegisterMovement.setCashRegister(inject(CashRegisterDao.class).read(cashRegisterCode));//TODO we should use setCashRegister
-			cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection().getCode(),amount,null,null,null));
+			//cashRegisterMovement.setCashRegister(inject(CashRegisterDao.class).read(cashRegisterCode));//TODO we should use setCashRegister
+			//cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection().getCode(),amount,null,null,null,null));
+			
+			setCashRegister(cashRegisterMovement, inject(CashRegisterDao.class).read(cashRegisterCode));
 		}
 		return cashRegisterMovement;
 	}
@@ -92,10 +100,10 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 		}
 		
 		exceptionUtils().exception(!ArrayUtils.contains(new String[]{CompanyConstant.Code.CashRegisterMovementMode.CASH}, cashRegisterMovement.getMode().getCode())
-				&& StringUtils.isBlank(cashRegisterMovement.getMovement().getSupportingDocumentIdentifier()), "supportingdocumentidentifierrequired");
+				&& StringUtils.isBlank(cashRegisterMovement.getSupportingDocument().getCode()), "supportingdocumentidentifierrequired");
 		
 		exceptionUtils().exception(ArrayUtils.contains(new String[]{CompanyConstant.Code.CashRegisterMovementMode.CHEQUE}, cashRegisterMovement.getMode().getCode())
-				&& StringUtils.isBlank(cashRegisterMovement.getMovement().getSupportingDocumentProvider()), "supportingdocumentproviderrequired");
+				&& StringUtils.isBlank(cashRegisterMovement.getSupportingDocument().getGenerator()), "supportingdocumentgeneratorrequired");
 		
 			
 	}
@@ -115,6 +123,11 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 			cashRegisterMovement.setMovement(null);
 			inject(MovementBusiness.class).delete(movement);
 		}
+	}
+	
+	@Override
+	protected void deleteFileIdentifiableGlobalIdentifier(CashRegisterMovement arg0) {
+		
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)

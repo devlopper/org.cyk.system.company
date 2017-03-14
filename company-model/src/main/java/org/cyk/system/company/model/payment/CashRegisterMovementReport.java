@@ -32,11 +32,13 @@ public class CashRegisterMovementReport extends AbstractIdentifiableReport<CashR
 		if(CompanyConstant.Code.CashRegisterMovementMode.CASH.equals(modeCode)){
 			text = "STAMP DUTY : "+stampDuty.getValue();
 		}else if(CompanyConstant.Code.CashRegisterMovementMode.CHEQUE.equals(modeCode)){
-			text = "BANK : "+movement.getSupportingDocumentProvider()+" - N° : "+movement.getSupportingDocumentIdentifier();
+			text = "BANK : "+((CashRegisterMovement)source).getSupportingDocument().getGenerator()+" - N° : "
+					+((CashRegisterMovement)source).getSupportingDocument().getCode();
 		}else if(CompanyConstant.Code.CashRegisterMovementMode.BANK_TRANSFER.equals(modeCode)){
-			text = "REFERENCE : "+movement.getSupportingDocumentIdentifier();
+			text = "REFERENCE : "+((CashRegisterMovement)source).getSupportingDocument().getCode();
 		}else if(CompanyConstant.Code.CashRegisterMovementMode.MOBILE_PAYMENT.equals(modeCode)){
-			text = "NETWORK : "+"C.FROM.N°"+" CEL N° : "+movement.getSupportingDocumentProvider()+" ID : "+movement.getSupportingDocumentIdentifier();
+			text = "NETWORK : "+((CashRegisterMovement)source).getSupportingDocument().getGenerator()+" CEL N° : "
+					+((CashRegisterMovement)source).getSupportingDocument().getContentWriter()+" ID : "+((CashRegisterMovement)source).getSupportingDocument().getCode();
 		}
 	}
 	

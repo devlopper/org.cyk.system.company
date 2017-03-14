@@ -13,14 +13,12 @@ import lombok.Setter;
 public class SaleCashRegisterMovementCollectionDetails extends AbstractCollectionDetails<SaleCashRegisterMovementCollection> implements Serializable {
 	private static final long serialVersionUID = -6341285110719947720L;
 	
-	private String cashRegister,value,mode,supportingDocumentProvider,supportingDocumentIdentifier;
+	private String cashRegister,value,mode;
 	
 	public SaleCashRegisterMovementCollectionDetails(SaleCashRegisterMovementCollection saleCashRegisterMovementCollection) {
 		super(saleCashRegisterMovementCollection);
 		value = formatNumber(saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getValue());
 		mode = formatUsingBusiness(saleCashRegisterMovementCollection.getCashRegisterMovement().getMode());
-		supportingDocumentProvider = saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getSupportingDocumentProvider();
-		supportingDocumentIdentifier = saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getSupportingDocumentIdentifier();
 	}
 
 	@Override

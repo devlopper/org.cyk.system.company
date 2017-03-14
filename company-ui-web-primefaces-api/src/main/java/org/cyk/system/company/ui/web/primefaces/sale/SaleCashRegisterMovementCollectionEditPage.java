@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollectionBusiness;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.sale.Sale;
@@ -20,6 +21,7 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.FormatterBusiness;
+import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.model.AbstractCollection;
 import org.cyk.ui.api.data.collector.form.FormOneData;
 import org.cyk.ui.api.model.AbstractBusinessIdentifiedEditFormModel;
@@ -123,6 +125,47 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 			}
 		}).build();
 		
+		createAjaxBuilder(Form.FIELD_MODE)
+		.method(CashRegisterMovementMode.class,new ListenValueMethod<CashRegisterMovementMode>() {
+			@Override
+			public void execute(CashRegisterMovementMode cashRegisterMovementMode) {
+				listenCashRegisterMovementModeChange(cashRegisterMovementMode);
+			}
+		}).build();
+		
+		listenCashRegisterMovementModeChange(identifiable.getCashRegisterMovement().getMode());
+		onDocumentLoadJavaScript = javaScriptHelper.add(onDocumentLoadJavaScript, inputRowVisibility(form,Form.FIELD_SUPPORTING_DOCUMENT_CODE,Boolean.FALSE));
+		onDocumentLoadJavaScript = javaScriptHelper.add(onDocumentLoadJavaScript, inputRowVisibility(form,Form.FIELD_SUPPORTING_DOCUMENT_GENRATOR,Boolean.FALSE));
+		onDocumentLoadJavaScript = javaScriptHelper.add(onDocumentLoadJavaScript, inputRowVisibility(form,Form.FIELD_SUPPORTING_DOCUMENT_CONTENT_WRITER,Boolean.FALSE));
+	}
+	
+	private void listenCashRegisterMovementModeChange(CashRegisterMovementMode cashRegisterMovementMode){
+		//((SaleCashRegisterMovementCollection)form.getData()).getCashRegisterMovement().setMode(cashRegisterMovementMode);
+		Boolean showSupportingDocumentCode=null,showSupportingDocumentGenerator=null,showSupportingDocumentContentWriter=null;
+		if(CompanyConstant.Code.CashRegisterMovementMode.CASH.equals(cashRegisterMovementMode.getCode())){
+			showSupportingDocumentCode = Boolean.FALSE;
+			showSupportingDocumentGenerator = Boolean.FALSE;
+			showSupportingDocumentContentWriter = Boolean.FALSE;
+		}else{ 
+			if(identifiable.getCashRegisterMovement().getSupportingDocument()==null)
+				identifiable.getCashRegisterMovement().setSupportingDocument(inject(FileBusiness.class).instanciateOne());
+			if(CompanyConstant.Code.CashRegisterMovementMode.BANK_TRANSFER.equals(cashRegisterMovementMode.getCode())){
+				showSupportingDocumentCode = Boolean.TRUE;
+				showSupportingDocumentGenerator = Boolean.FALSE;
+				showSupportingDocumentContentWriter = Boolean.FALSE;
+			}else if(CompanyConstant.Code.CashRegisterMovementMode.CHEQUE.equals(cashRegisterMovementMode.getCode())){
+				showSupportingDocumentCode = Boolean.TRUE;
+				showSupportingDocumentGenerator = Boolean.TRUE;
+				showSupportingDocumentContentWriter = Boolean.TRUE;
+			}else if(CompanyConstant.Code.CashRegisterMovementMode.MOBILE_PAYMENT.equals(cashRegisterMovementMode.getCode())){
+				showSupportingDocumentCode = Boolean.TRUE;
+				showSupportingDocumentGenerator = Boolean.TRUE;
+				showSupportingDocumentContentWriter = Boolean.TRUE;
+			}
+		}
+		onComplete(inputRowVisibility(form,Form.FIELD_SUPPORTING_DOCUMENT_CODE,showSupportingDocumentCode)
+				,inputRowVisibility(form,Form.FIELD_SUPPORTING_DOCUMENT_GENRATOR,showSupportingDocumentGenerator)
+				,inputRowVisibility(form,Form.FIELD_SUPPORTING_DOCUMENT_CONTENT_WRITER,showSupportingDocumentContentWriter));
 	}
 	
 	@Override
@@ -138,9 +181,12 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 		
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private CashRegister cashRegister;
 		@Input(disabled=true,readOnly=true) @InputNumber @NotNull protected BigDecimal amount;
+		@Input @InputText protected String receivedFrom;
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private CashRegisterMovementMode mode;
-		@Input @InputText protected String supportingDocumentProvider;
-		@Input @InputText protected String supportingDocumentIdentifier;
+		@Input @InputText protected String supportingDocumentCode;
+		@Input @InputText protected String supportingDocumentGenerator;
+		@Input @InputText protected String supportingDocumentContentWriter;
+		
 		
 		@Override
 		public void read() {
@@ -148,8 +194,10 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 			mode = identifiable.getCashRegisterMovement().getMode();
 			if(identifiable.getCashRegisterMovement().getMovement()!=null){
 				amount = identifiable.getCashRegisterMovement().getMovement().getValue();
-				supportingDocumentProvider = identifiable.getCashRegisterMovement().getMovement().getSupportingDocumentProvider();
-				supportingDocumentIdentifier = identifiable.getCashRegisterMovement().getMovement().getSupportingDocumentIdentifier();
+				supportingDocumentCode = identifiable.getCashRegisterMovement().getSupportingDocument().getCode();
+				supportingDocumentGenerator = identifiable.getCashRegisterMovement().getSupportingDocument().getGenerator();
+				supportingDocumentContentWriter = identifiable.getCashRegisterMovement().getSupportingDocument().getContentWriter();
+				receivedFrom = identifiable.getCashRegisterMovement().getMovement().getSenderOrReceiverPersonAsString();
 			}
 			super.read();
 		}
@@ -160,8 +208,10 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 			identifiable.setAmountIn(amount);
 			identifiable.setAmountOut(BigDecimal.ZERO);
 			identifiable.getCashRegisterMovement().setMode(mode);
-			identifiable.getCashRegisterMovement().getMovement().setSupportingDocumentProvider(supportingDocumentProvider);
-			identifiable.getCashRegisterMovement().getMovement().setSupportingDocumentIdentifier(supportingDocumentIdentifier);
+			identifiable.getCashRegisterMovement().getSupportingDocument().setCode(supportingDocumentCode);
+			identifiable.getCashRegisterMovement().getSupportingDocument().setGenerator(supportingDocumentGenerator);
+			identifiable.getCashRegisterMovement().getSupportingDocument().setContentWriter(supportingDocumentContentWriter);
+			identifiable.getCashRegisterMovement().getMovement().setSenderOrReceiverPersonAsString(receivedFrom);
 		}
 		
 		/**/
@@ -169,8 +219,10 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 		public static final String FIELD_CASH_REGISTER = "cashRegister";
 		public static final String FIELD_AMOUNT = "amount";
 		public static final String FIELD_MODE = "mode";
-		public static final String FIELD_SUPPORTING_DOCUMENT_PROVIDER = "supportingDocumentProvider";
-		public static final String FIELD_SUPPORTING_DOCUMENT_IDENTIFIER = "supportingDocumentIdentifier";
+		public static final String FIELD_SUPPORTING_DOCUMENT_CODE = "supportingDocumentCode";
+		public static final String FIELD_SUPPORTING_DOCUMENT_GENRATOR = "supportingDocumentGenerator";
+		public static final String FIELD_SUPPORTING_DOCUMENT_CONTENT_WRITER = "supportingDocumentContentWriter";
+		public static final String FIELD_RECEIVED_FROM = "receivedFrom";
 		
 	}
 	
