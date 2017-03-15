@@ -53,7 +53,7 @@ public class IesaFakedDataProducer extends AbstractEnterpriseResourcePlanningFak
 
 	@Override
 	protected void doBusiness(Listener listener) {
-		super.doBusiness(listener);
+		
 	}
 
 	

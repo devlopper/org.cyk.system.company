@@ -3,11 +3,13 @@ package org.cyk.system.company.business.impl;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.production.ProductionBusiness;
@@ -35,12 +37,15 @@ import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResellerProduction;
 import org.cyk.system.company.model.production.ResellerProductionPlan;
 import org.cyk.system.company.model.production.ResourceProduct;
+import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
+import org.cyk.system.root.business.api.party.person.PersonRelationshipBusiness;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.system.root.model.userinterface.InputName;
@@ -55,8 +60,10 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	private static final long serialVersionUID = -1832900422621121762L;
 
 	public static final String CASH_REGISTER_001 = "CR001",CASH_REGISTER_002 = "CR002",CASH_REGISTER_003 = "CR003";
-	public static final String SALE_001 = "S001",SALE_002 = "S002";
-	public static final String CUSTOMER_001 = "C001",CUSTOMER_002 = "C002";
+	public static final String SALE_001 = RandomStringUtils.randomAlphanumeric(10),SALE_002 = RandomStringUtils.randomAlphanumeric(10);
+	public static final String CUSTOMER_001 = RandomStringUtils.randomAlphanumeric(10),CUSTOMER_002 = RandomStringUtils.randomAlphanumeric(10);
+	public static final String CUSTOMER_001_FATHER = RandomStringUtils.randomAlphanumeric(10),CUSTOMER_002_MOTHER = RandomStringUtils.randomAlphanumeric(10);
+	public static final String CUSTOMER_003_FATHER = RandomStringUtils.randomAlphanumeric(10),CUSTOMER_004_MOTHER = RandomStringUtils.randomAlphanumeric(10);
 	
 	protected CompanyBusinessLayer companyBusinessLayer = CompanyBusinessLayer.getInstance();
 	@Inject protected OwnedCompanyBusiness ownedCompanyBusiness;
@@ -87,16 +94,44 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	
 	@Override
 	protected void structure() {
+		Customer customer = null;
 		create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_001));
     	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_002));
     	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_003));
-    	
-	}
-
-	@Override
-	protected void doBusiness(Listener listener) {
-		create(inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_001)); //FIXME throw exception when called in structure
+    	create(inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_001));
     	create(inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_002));
+    	
+    	customer = inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_001_FATHER);
+    	customer.setName("Komenan");
+    	customer.getPerson().setName("Komenan");
+    	customer.getPerson().setLastnames("Yao Christian");
+    	create(customer);
+    	
+    	customer = inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_002_MOTHER);
+    	customer.setName("Gnangnan");
+    	customer.getPerson().setName("Gnangnan");
+    	customer.getPerson().setLastnames("Sandrine Meliane");
+    	create(customer);
+    	
+    	customer = inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_003_FATHER);
+    	customer.setName("Zadi");
+    	customer.getPerson().setName("Zadi");
+    	customer.getPerson().setLastnames("Yves");
+    	create(customer);
+    	
+    	customer = inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_004_MOTHER);
+    	customer.setName("Koudou");
+    	customer.getPerson().setName("Koudou");
+    	customer.getPerson().setLastnames("zouzou léa");
+    	create(customer);
+    	
+    	create(Arrays.asList(
+    			inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_001_FATHER, RootConstant.Code.PersonRelationshipType.FAMILY_FATHER, CUSTOMER_001)
+    			,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_002_MOTHER, RootConstant.Code.PersonRelationshipType.FAMILY_MOTHER, CUSTOMER_001)
+    			,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_003_FATHER, RootConstant.Code.PersonRelationshipType.FAMILY_FATHER, CUSTOMER_002)
+    			,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_004_MOTHER, RootConstant.Code.PersonRelationshipType.FAMILY_MOTHER, CUSTOMER_002)
+    			));
+    	
 	}
 	
 	//TODO those following method should be deleted because they should accessible using business service

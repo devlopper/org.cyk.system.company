@@ -54,7 +54,7 @@ public class SaleCashRegisterMovementCollectionReportTemplateFile extends Abstra
 		}*/
 	}
 
-
+	public static final String LABEL_VALUES_PAYMENT = "PAYMENT";
 
 	
 	

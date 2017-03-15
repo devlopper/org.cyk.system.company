@@ -154,14 +154,17 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{{"TP01","3"},{"TP02","2"}}));
     	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new String[][]{{"TP03","4"},{"TP04","5"}}));
     	
-    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001
-    			,CompanyConstant.Code.CashRegisterMovementMode.CASH, new String[][]{ {"Sale001", "100"},{"Sale002", "250"} }));
+    	SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001
+    			,CompanyConstant.Code.CashRegisterMovementMode.CASH, new String[][]{ {"Sale001", "100"},{"Sale002", "250"} });
+    	saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().setSenderOrReceiverPersonAsString("Yeo Gérard");
+    	testCase.create(saleCashRegisterMovementCollection);
     	assertThat("Stamp duty",inject(SaleCashRegisterMovementCollectionDao.class).read("P001").getCashRegisterMovement().getStampDutyInterval()!=null);
     	companyBusinessTestHelper.write(inject(FileIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(inject(SaleCashRegisterMovementCollectionDao.class).read("P001"))
     			.iterator().next().getFile());
     	
-    	SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P002",null, IesaFakedDataProducer.CASH_REGISTER_001
+    	saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P002",null, IesaFakedDataProducer.CASH_REGISTER_001
     			,CompanyConstant.Code.CashRegisterMovementMode.CHEQUE, new String[][]{ {"Sale001", "300"},{"Sale002", "500"} });
+    	saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().setSenderOrReceiverPersonAsString("Issia Koné");
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getSupportingDocument().setGenerator("BICICI");
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getSupportingDocument().setCode(RandomStringUtils.randomAlphanumeric(10).toUpperCase());
     	testCase.create(saleCashRegisterMovementCollection);
@@ -170,6 +173,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	
     	saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P003",null, IesaFakedDataProducer.CASH_REGISTER_001
     			,CompanyConstant.Code.CashRegisterMovementMode.BANK_TRANSFER, new String[][]{ {"Sale001", "300"},{"Sale002", "500"} });
+    	saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().setSenderOrReceiverPersonAsString("Koukou mélé");
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getSupportingDocument().setCode(RandomStringUtils.randomAlphanumeric(10).toUpperCase());
     	testCase.create(saleCashRegisterMovementCollection);
     	companyBusinessTestHelper.write(inject(FileIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(inject(SaleCashRegisterMovementCollectionDao.class).read("P003"))
@@ -177,11 +181,22 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	
     	saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P004",null, IesaFakedDataProducer.CASH_REGISTER_001
     			,CompanyConstant.Code.CashRegisterMovementMode.MOBILE_PAYMENT, new String[][]{ {"Sale001", "300"},{"Sale002", "500"} });
+    	saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().setSenderOrReceiverPersonAsString("Léon paul");
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getSupportingDocument().setCode(RandomStringUtils.randomAlphanumeric(10).toUpperCase());
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getSupportingDocument().setGenerator("Orange");
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getSupportingDocument().setContentWriter("22551037");
     	testCase.create(saleCashRegisterMovementCollection);
     	companyBusinessTestHelper.write(inject(FileIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(inject(SaleCashRegisterMovementCollectionDao.class).read("P004"))
+    			.iterator().next().getFile());
+    	
+    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale003",IesaFakedDataProducer.CUSTOMER_002, new String[][]{{"TP01","3"},{"TP02","2"}}));
+    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale004",IesaFakedDataProducer.CUSTOMER_002, new String[][]{{"TP03","4"},{"TP04","5"}}));
+    	
+    	saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("PA01",null, IesaFakedDataProducer.CASH_REGISTER_001
+    			,CompanyConstant.Code.CashRegisterMovementMode.CASH, new String[][]{ {"Sale003", "100"},{"Sale004", "250"} });
+    	saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().setSenderOrReceiverPersonAsString("Yeo Gérard");
+    	testCase.create(saleCashRegisterMovementCollection);
+    	companyBusinessTestHelper.write(inject(FileIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(inject(SaleCashRegisterMovementCollectionDao.class).read("PA01"))
     			.iterator().next().getFile());
     	
     	testCase.clean();
