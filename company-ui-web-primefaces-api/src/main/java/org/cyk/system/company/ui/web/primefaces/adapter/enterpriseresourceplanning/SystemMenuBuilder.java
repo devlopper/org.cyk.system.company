@@ -3,7 +3,6 @@ package org.cyk.system.company.ui.web.primefaces.adapter.enterpriseresourceplann
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.cyk.system.company.business.impl.structure.EmployeeBusinessImpl;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
@@ -73,7 +72,7 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 		Commandable module = createModuleCommandable(UIManager.getInstance().businessEntityInfos(Employee.class).getUserInterface().getLabelId() /*"command.employee.management"*/, null);
 		module.addChild(createListCommandable(Employee.class, null));
 		module.addChild(createListCommandable(EmploymentAgreement.class, null));
-		addReportCommandables(Employee.class,module, EmployeeBusinessImpl.Listener.COLLECTION);
+		//addReportCommandables(Employee.class,module, EmployeeBusinessImpl.Listener.COLLECTION);
 		return module;
 	}
 	

@@ -134,6 +134,9 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
     	
 	}
 	
+	@Override
+	protected void doBusiness(Listener listener) {}
+	
 	//TODO those following method should be deleted because they should accessible using business service
 	protected TangibleProduct createTangibleProduct(String name,String price,Collection<Product> products){
 		TangibleProduct product = null;//new TangibleProduct(StringUtils.remove(name, Constant.CHARACTER_SPACE),name,null,null,price==null?null:new BigDecimal(price));

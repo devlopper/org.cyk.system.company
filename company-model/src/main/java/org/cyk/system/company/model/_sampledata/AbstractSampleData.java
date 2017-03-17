@@ -30,7 +30,7 @@ public abstract class AbstractSampleData extends org.cyk.system.root.model.Abstr
 		addLabelValues(report,"Invoice",new String[][]{
 				{"Identifiant", report.getSale().getGlobalIdentifier().getIdentifier()}
 				,{"Commercial", report.getSale().getGlobalIdentifier().getCreatedBy()}
-				,{"Date", report.getSale().getGlobalIdentifier().getExistencePeriod().getFrom()}
+				,{"Date", report.getSale().getGlobalIdentifier().getExistencePeriod().getFromDate()}
 				,{"Client", report.getSale().getCustomer().getGlobalIdentifier().getIdentifier()}
 				});
 		
@@ -80,7 +80,7 @@ public abstract class AbstractSampleData extends org.cyk.system.root.model.Abstr
 		addLabelValues(report,"Invoice",new String[][]{
 			{"Identifiant", report.getSaleCashRegisterMovement().getSale().getGlobalIdentifier().getIdentifier()}
 			,{"Cashier", report.getSaleCashRegisterMovement().getSale().getGlobalIdentifier().getCreatedBy()}
-			,{"Date", report.getSaleCashRegisterMovement().getSale().getGlobalIdentifier().getExistencePeriod().getFrom()}
+			,{"Date", report.getSaleCashRegisterMovement().getSale().getGlobalIdentifier().getExistencePeriod().getFromDate()}
 			,{"Client", report.getSaleCashRegisterMovement().getSale().getCustomer().getGlobalIdentifier().getIdentifier()}
 			});
 	
@@ -116,7 +116,7 @@ public abstract class AbstractSampleData extends org.cyk.system.root.model.Abstr
 		addLabelValues(report,"Payment",new String[][]{
 			{"Identifiant", report.getSaleCashRegisterMovementCollection().getGlobalIdentifier().getIdentifier()}
 			,{"Cashier", report.getSaleCashRegisterMovementCollection().getGlobalIdentifier().getCreatedBy()}
-			,{"Date", report.getSaleCashRegisterMovementCollection().getGlobalIdentifier().getExistencePeriod().getFrom()}
+			,{"Date", report.getSaleCashRegisterMovementCollection().getGlobalIdentifier().getExistencePeriod().getFromDate()}
 			//,{"Client", report.getSaleCashRegisterMovementCollection().getCustomer().getGlobalIdentifier().getIdentifier()}
 			});
 	

@@ -27,7 +27,7 @@ public class SampleData implements Serializable {
 		report.addLabelValues("Invoice",new String[][]{
 				{"Identifiant", report.getSale().getGlobalIdentifier().getIdentifier()}
 				//,{"Caisse", report.getSale().getSaleCashRegisterMovements().iterator().next().getCashRegisterMovement().getCashRegister().getGlobalIdentifier().getCode()}
-				,{"Date", report.getSale().getGlobalIdentifier().getExistencePeriod().getFrom()}
+				,{"Date", report.getSale().getGlobalIdentifier().getExistencePeriod().getFromDate()}
 				,{"Client", report.getSale().getCustomer().getGlobalIdentifier().getIdentifier()}
 				});
 		
