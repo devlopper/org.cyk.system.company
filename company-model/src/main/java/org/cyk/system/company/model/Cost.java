@@ -87,11 +87,11 @@ public class Cost extends AbstractModelElement implements Serializable {
 	public static final String FIELD_TURNOVER = "turnover";
 	
 	/*Persistence*/
-	public static final String COLUMN_PREFIX = "cost";
-	public static final String COLUMN_NUMBER_OF_PROCEED_ELEMENTS = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_NUMBER_OF_PROCEED_ELEMENTS;
-	public static final String COLUMN_VALUE = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_VALUE;
-	public static final String COLUMN_TAX = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_TAX;
-	public static final String COLUMN_TURNOVER = COLUMN_PREFIX+COLUMN_NAME_WORD_SEPARATOR+FIELD_TURNOVER;
+	public static final String COLUMN_PREFIX = "cost"+COLUMN_NAME_WORD_SEPARATOR;
+	public static final String COLUMN_NUMBER_OF_PROCEED_ELEMENTS = COLUMN_PREFIX+FIELD_NUMBER_OF_PROCEED_ELEMENTS;
+	public static final String COLUMN_VALUE = COLUMN_PREFIX+FIELD_VALUE;
+	public static final String COLUMN_TAX = COLUMN_PREFIX+FIELD_TAX;
+	public static final String COLUMN_TURNOVER = COLUMN_PREFIX+FIELD_TURNOVER;
 
 	
 }

@@ -2,7 +2,6 @@ package org.cyk.system.company.model.accounting;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -31,9 +30,6 @@ public class AccountingPeriod extends AbstractIdentifiablePeriod implements Seri
 	
 	@Embedded private StockConfiguration stockConfiguration = new StockConfiguration();
 	@Embedded private StockResults stockResults = new StockResults();
-	
-	@Deprecated //TODO is it necessary ? if yes then make it global
-	@Column(nullable=false) @NotNull private Boolean closed = Boolean.FALSE;
 	
 	@Override
 	public String getLogMessage() {
