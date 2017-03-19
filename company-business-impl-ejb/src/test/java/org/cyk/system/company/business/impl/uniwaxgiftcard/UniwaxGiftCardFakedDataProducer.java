@@ -40,7 +40,7 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 	}
 	
 	@Override
-	protected void structure() {
+	protected void structure(Listener listener) {
 		Collection<Product> products = new ArrayList<>();
 		Collection<SalableProduct> salableProducts = new ArrayList<>();
 		Collection<CashRegister> cashRegisters = new ArrayList<>();

@@ -20,6 +20,7 @@ import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResourceProduct;
+import org.cyk.system.root.business.impl.AbstractFakedDataProducer.Listener;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.time.TimeDivisionType;
@@ -45,7 +46,7 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 	private Collection<Reseller> resellers;
 		
 	@Override
-	protected void structure(){
+	protected void structure(Listener listener){
 		createEnumerations(ProductionEnergy.class, new Object[]{ProductionEnergy.GAS,ProductionEnergy.FUEL,ProductionEnergy.WOOD});
 		createEnumerations(InputName.class, new Object[]{"Quantité"});
 		

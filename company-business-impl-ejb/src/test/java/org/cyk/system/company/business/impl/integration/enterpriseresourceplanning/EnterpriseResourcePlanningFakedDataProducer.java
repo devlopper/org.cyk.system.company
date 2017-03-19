@@ -12,7 +12,7 @@ public class EnterpriseResourcePlanningFakedDataProducer extends AbstractEnterpr
 	private static final long serialVersionUID = -1832900422621121762L;
 	
 	@Override
-	protected void structure() {
+	protected void structure(Listener listener) {
 		/*Collection<TangibleProduct> tangibleProducts = inject(TangibleProductBusiness.class).instanciateMany(new String[][]{
 				new String[]{"TP1"},new String[]{"TP2"},new String[]{"TP3"},new String[]{"TP4"},new String[]{"TP5"}
 		});

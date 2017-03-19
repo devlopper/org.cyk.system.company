@@ -93,7 +93,7 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	}
 	
 	@Override
-	protected void structure() {
+	protected void structure(Listener listener) {
 		Customer customer = null;
 		create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_001));
     	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_002));
@@ -133,6 +133,9 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
     			));
     	
 	}
+	
+	@Override
+	protected void synchronize(Listener listener) {}
 	
 	@Override
 	protected void doBusiness(Listener listener) {}

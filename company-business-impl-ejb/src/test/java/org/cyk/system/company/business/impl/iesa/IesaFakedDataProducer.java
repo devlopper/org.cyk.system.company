@@ -22,7 +22,7 @@ public class IesaFakedDataProducer extends AbstractEnterpriseResourcePlanningFak
 	private static final long serialVersionUID = -1832900422621121762L;
 	
 	@Override
-	protected void structure() {
+	protected void structure(Listener listener) {
 		AbstractGeneratable.Listener.Adapter.Default.LOCALE = Locale.ENGLISH;
     	PersistDataListener.COLLECTION.add(new PersistDataListener.Adapter.Default(){
 			private static final long serialVersionUID = -950053441831528010L;
@@ -36,7 +36,7 @@ public class IesaFakedDataProducer extends AbstractEnterpriseResourcePlanningFak
 				return super.processPropertyValue(aClass, instanceCode, name, value);
 			}
 		});
-		super.structure();
+		super.structure(listener);
 		create(inject(TangibleProductBusiness.class).instanciateMany(new String[][]{{"TP01","Books Package Primary"},{"TP02", "Polo shirt Primary"}
 		,{"TP03", "Sportswear Primary"},{"TP04","ID Card"},{"TP05","School Uniform (Up and Down) Primary"},{"TP06","Culottes Primary"}}));
 		create(inject(IntangibleProductBusiness.class).instanciateMany(new String[][]{{"IP01","Re-registration"},{"IP02", "Tuition fees"},{"IP03", "Exam (STA)"}
@@ -47,8 +47,7 @@ public class IesaFakedDataProducer extends AbstractEnterpriseResourcePlanningFak
 			,{"","","","","","","","","","","TP05", "14000"},{"","","","","","","","","","","TP06", "7000"},{"","","","","","","","","","","IP01", "65000"}
 			,{"","","","","","","","","","","IP02", "1450000"},{"","","","","","","","","","","IP03", "45000"},{"","","","","","","","","","","IP04", "40000"}
 			,{"","","","","","","","","","","IP05", "30000"},{"","","","","","","","","","","IP06", "30000"},{"","","","","","","","","","","IP07", "30000"}}));
-		
-		
+	
 	}
 	
 }
