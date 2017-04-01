@@ -6,8 +6,6 @@ import java.util.Collection;
 
 import javax.inject.Singleton;
 
-import lombok.Getter;
-
 import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.Product;
@@ -20,11 +18,12 @@ import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionUnit;
 import org.cyk.system.company.model.production.Reseller;
 import org.cyk.system.company.model.production.ResourceProduct;
-import org.cyk.system.root.business.impl.AbstractFakedDataProducer.Listener;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.system.root.model.userinterface.InputName;
+
+import lombok.Getter;
 
 @Singleton @Getter
 public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProducer implements Serializable {

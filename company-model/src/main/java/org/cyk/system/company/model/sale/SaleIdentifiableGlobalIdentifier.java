@@ -41,6 +41,8 @@ public class SaleIdentifiableGlobalIdentifier extends AbstractJoinGlobalIdentifi
 	
 	/**/
 	
+	public static final String FIELD_SALE = "sale";
+	
 	@Getter @Setter
 	public static class SearchCriteria extends AbstractJoinGlobalIdentifier.AbstractSearchCriteria implements Serializable {
 

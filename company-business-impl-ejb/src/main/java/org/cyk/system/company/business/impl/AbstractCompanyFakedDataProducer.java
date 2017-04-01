@@ -94,6 +94,15 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	
 	@Override
 	protected void structure(Listener listener) {
+		
+    	
+	}
+	
+	@Override
+	protected void synchronize(Listener listener) {}
+	
+	@Override
+	protected void doBusiness(Listener listener) {
 		Customer customer = null;
 		create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_001));
     	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_002));
@@ -131,14 +140,7 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
     			,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_003_FATHER, RootConstant.Code.PersonRelationshipType.FAMILY_FATHER, CUSTOMER_002)
     			,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_004_MOTHER, RootConstant.Code.PersonRelationshipType.FAMILY_MOTHER, CUSTOMER_002)
     			));
-    	
 	}
-	
-	@Override
-	protected void synchronize(Listener listener) {}
-	
-	@Override
-	protected void doBusiness(Listener listener) {}
 	
 	//TODO those following method should be deleted because they should accessible using business service
 	protected TangibleProduct createTangibleProduct(String name,String price,Collection<Product> products){

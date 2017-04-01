@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
+import org.cyk.system.company.business.api.sale.SaleIdentifiableGlobalIdentifierBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.sale.Sale;
@@ -24,6 +25,7 @@ import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
+import org.cyk.system.company.persistence.api.sale.SaleIdentifiableGlobalIdentifierDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
@@ -83,9 +85,9 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	@Override
 	protected void beforeDelete(Sale sale) {
 		super.beforeDelete(sale);
-		inject(SaleCashRegisterMovementBusiness.class).delete(inject(SaleCashRegisterMovementDao.class).readBySale(sale));
+		inject(SaleIdentifiableGlobalIdentifierBusiness.class).delete(inject(SaleIdentifiableGlobalIdentifierDao.class).readBySale(sale));
 	}
-
+	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public SaleResults computeByCriteria(Sale.SearchCriteria criteria) {
 		return dao.computeByCriteria(criteria);

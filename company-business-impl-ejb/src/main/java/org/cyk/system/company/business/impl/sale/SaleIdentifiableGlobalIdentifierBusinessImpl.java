@@ -18,4 +18,15 @@ public class SaleIdentifiableGlobalIdentifierBusinessImpl extends AbstractJoinGl
 		super(dao); 
 	}
 	
+	@Override
+	protected void beforeDelete(SaleIdentifiableGlobalIdentifier saleIdentifiableGlobalIdentifier) {
+		super.beforeDelete(saleIdentifiableGlobalIdentifier);
+		saleIdentifiableGlobalIdentifier.setSale(null);
+		saleIdentifiableGlobalIdentifier.setIdentifiableGlobalIdentifier(null);
+		//System.out.println("SaleIdentifiableGlobalIdentifierBusinessImpl.beforeDelete()");
+	}
+	
+	@Override
+	protected void deleteFileIdentifiableGlobalIdentifier(SaleIdentifiableGlobalIdentifier arg0) {}
+	
 }
