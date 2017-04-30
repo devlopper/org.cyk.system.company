@@ -360,7 +360,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 				public Person process(Person person) {
 					String[] personRelationshipTypeCodes = getCustomerPersonRelationshipTypeCodes(person);
 					if(personRelationshipTypeCodes!=null && personRelationshipTypeCodes.length>0){
-						Person related = inject(PersonBusiness.class).findOneByPersonByRelationshipType(person, personRelationshipTypeCodes[0]);
+						Person related = null;//inject(PersonBusiness.class).findOneByPersonByRelationshipType(person, personRelationshipTypeCodes[0]);
 						if(related!=null)
 							person = related;
 					}

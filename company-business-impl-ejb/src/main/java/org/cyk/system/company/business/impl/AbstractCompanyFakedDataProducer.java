@@ -134,12 +134,12 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
     	customer.getPerson().setLastnames("zouzou léa");
     	create(customer);
     	
-    	create(Arrays.asList(
+    	/*create(Arrays.asList(
     			inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_001_FATHER, RootConstant.Code.PersonRelationshipType.FAMILY_FATHER, CUSTOMER_001)
     			,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_002_MOTHER, RootConstant.Code.PersonRelationshipType.FAMILY_MOTHER, CUSTOMER_001)
     			,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_003_FATHER, RootConstant.Code.PersonRelationshipType.FAMILY_FATHER, CUSTOMER_002)
     			,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_004_MOTHER, RootConstant.Code.PersonRelationshipType.FAMILY_MOTHER, CUSTOMER_002)
-    			));
+    			));*/
 	}
 	
 	//TODO those following method should be deleted because they should accessible using business service

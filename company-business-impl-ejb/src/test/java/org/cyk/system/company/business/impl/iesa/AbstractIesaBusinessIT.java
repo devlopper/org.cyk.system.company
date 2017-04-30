@@ -27,10 +27,10 @@ public abstract class AbstractIesaBusinessIT extends AbstractEnterpriseResourceP
 		AbstractCompanyReportProducer.Listener.COLLECTION.add(new AbstractCompanyReportProducer.Listener.Adapter.Default(){
 			private static final long serialVersionUID = 215473098986115952L;
 			
-			@Override
+			/*@Override
 			public String[] getCustomerPersonRelationshipTypeCodes(AbstractIdentifiable identifiable) {
 				return new String[]{RootConstant.Code.PersonRelationshipType.FAMILY_FATHER,RootConstant.Code.PersonRelationshipType.FAMILY_MOTHER};
-			}
+			}*/
 			
 			@Override
 			public String getCustomerLabel(AbstractIdentifiable identifiable) {

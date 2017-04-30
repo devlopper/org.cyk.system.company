@@ -18,11 +18,11 @@ import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineAlphabetBusiness;
 import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateBusiness;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.party.person.Person;
-import org.cyk.system.root.model.security.Role;
 import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.menu.SystemMenu;
@@ -52,7 +52,7 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 	public Commandable getCashierCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = null;
 		module = createModuleCommandable(Cashier.class, null);
-		if(userSession.hasRole(Role.MANAGER)){
+		if(userSession.hasRole(RootConstant.Code.Role.MANAGER)){
 			module.addChild(createListCommandable(Cashier.class, null));
 			module.addChild(createListCommandable(CashRegister.class, null));
 			module.addChild(createListCommandable(Employee.class, null));
@@ -63,7 +63,7 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 	public Commandable getGiftCardCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = null;
 		module = createModuleCommandable(SalableProduct.class, null);
-		if(userSession.hasRole(Role.MANAGER)){
+		if(userSession.hasRole(RootConstant.Code.Role.MANAGER)){
 			addChild(userSession,module,createListCommandable(SalableProduct.class, null));
 			addChild(userSession,module,createListCommandable(SalableProductInstance.class, null));
 			addChild(userSession,module,createListCommandable(SalableProductInstanceCashRegister.class, null));
@@ -93,7 +93,7 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 			addChild(userSession,module,(Commandable) createCreateCommandable(Sale.class, null).setLabel(getText("action.sellgiftcard")).addActionParameter(ACTION_SELL_GIFT_CARD));
 			addChild(userSession,module,(Commandable) createCreateCommandable(Sale.class, null).setLabel(getText("action.usegiftcard")).addActionParameter(ACTION_USE_GIFT_CARD));
 		}
-		if(userSession.hasRole(Role.MANAGER)){
+		if(userSession.hasRole(RootConstant.Code.Role.MANAGER)){
 			//module.addChild(Builder.create("field.transfer", null, CompanyWebManager.getInstance().getOutcomeSalableProductInstanceCashRegisterStateLogList()));
 			//c.addParameter(CompanyReportRepository.getInstance().getParameterCustomerReportType(), CompanyReportRepository.getInstance().getParameterCustomerReportBalance());
 			//c.addParameter(CompanyReportRepository.getInstance().getParameterCustomerBalanceType(), CompanyReportRepository.getInstance().getParameterCustomerBalanceCredence());
@@ -104,7 +104,7 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 	public Commandable getReportCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = null;
 		module = createModuleCommandable("command.report", null);
-		if(userSession.hasRole(Role.MANAGER)){
+		if(userSession.hasRole(RootConstant.Code.Role.MANAGER)){
 			FiniteStateMachine finiteStateMachine = inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
 			for(FiniteStateMachineState finiteStateMachineState : inject(FiniteStateMachineStateBusiness.class).findByMachine(finiteStateMachine))
 				addChild(userSession,module,(Commandable) Builder.create(null, null, CompanyWebManager.getInstance()
