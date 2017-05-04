@@ -9,7 +9,6 @@ import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
 import org.cyk.system.root.model.AbstractIdentifiable;
-import org.cyk.system.root.model.RootConstant;
 
 public abstract class AbstractIesaBusinessIT extends AbstractEnterpriseResourcePlanningBusinessIT {
 

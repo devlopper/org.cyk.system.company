@@ -18,8 +18,8 @@
 	<p:panelGrid id="optionsPanel" columns="3">
     	<p:outputLabel value="#{uiManager.text('model.entity.product')}" for="salableProduct" />
        	<p:selectOneMenu id="salableProduct" value="#{pageController.itemCollection.oneMasterSelected}" var="salableProduct" converter="#{objectConverter}" 
-       		filter="true" filterMatchMode="contains" >
-       		<f:selectItems value="#{pageController.salableProducts}" />
+       		filter="true" filterMatchMode="contains" styleClass="optionsPanelClass">
+       		<f:selectItems value="#{pageController.itemCollection.choices}" />
        		<p:column><h:outputText value="#{salableProduct.product.code}" /></p:column>
 	        <p:column><h:outputText value="#{salableProduct.product.name}" /></p:column>
        	</p:selectOneMenu>
@@ -43,8 +43,9 @@
         	<pe:inputNumber id="quantity" value="#{item.quantity}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}" 
         		minValue="1" decimalPlaces="0" styleClass="quantityClass">
         		<p:ajax event="change" listener="#{pageController.productQuantityChanged(item)}" process="quantity" 
-        			update="quantifiedPrice,total,@(.#{pageController.form.getInputByFieldName('value').getCss().getUniqueClass()})" 
+        			update="quantifiedPrice,total" 
         			oncomplete="refreshFooter();"/>
+        		<!-- ,@(.#{pageController.form.getInputByFieldName('value').getCss().getUniqueClass()}) -->
         	</pe:inputNumber>
         </p:column>
         		
@@ -54,9 +55,9 @@
  				
  		<p:column headerText="#{uiManager.text('field.reduction')}" width="10%">
         	<pe:inputNumber id="reduction" value="#{item.reduction}" maxlength="5"  decimalPlaces="0" styleClass="quantityClass">
-        		<p:ajax event="change" listener="#{pageController.productReductionChanged(item)}" process="reduction" 
-        			update="total,@(.#{pageController.form.getInputByFieldName('value').getCss().getUniqueClass()})" 
+        		<p:ajax event="change" listener="#{pageController.productReductionChanged(item)}" process="reduction" update="total" 
         			oncomplete="refreshFooter();"/>
+        		<!-- ,@(.#{pageController.form.getInputByFieldName('value').getCss().getUniqueClass()}) -->
         	</pe:inputNumber>
         </p:column>
         		

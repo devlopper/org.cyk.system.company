@@ -7,6 +7,9 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
@@ -22,21 +25,18 @@ import org.cyk.system.root.business.api.mathematics.NumberBusiness;
 import org.cyk.system.root.model.AbstractCollection;
 import org.cyk.system.root.model.AbstractCollectionItem;
 import org.cyk.system.root.model.AbstractIdentifiable;
-import org.cyk.ui.api.data.collector.control.InputNumber;
 import org.cyk.ui.api.data.collector.form.FormOneData;
 import org.cyk.ui.api.model.AbstractItemCollection;
 import org.cyk.ui.api.model.AbstractItemCollectionItem;
 import org.cyk.ui.web.api.ItemCollectionWebAdapter;
 import org.cyk.ui.web.primefaces.page.AbstractCollectionEditPage;
+import org.cyk.utility.common.CommonUtils;
 import org.cyk.utility.common.annotation.user.interfaces.IncludeInputs;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputBooleanButton;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter @Setter
 public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extends AbstractIdentifiable,ITEM extends AbstractIdentifiable,TYPE extends AbstractSalableProductCollectionEditPage.AbstractItem<ITEM>> extends AbstractCollectionEditPage<COLLECTION,ITEM,TYPE> implements Serializable {
@@ -60,6 +60,13 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 		getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
 	}
 	
+	@Override
+	protected void afterInitialisation() {
+		super.afterInitialisation();
+		itemCollection.setAutomaticallyDeleteSelectedChoice(Boolean.TRUE);
+		itemCollection.setChoices(salableProducts);
+	}
+	
 	protected abstract SalableProductCollection getSalableProductCollection();
 	
 	@Override
@@ -73,11 +80,9 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 		updateFormCost(form,getSalableProductCollection());
 	}
 	
-	@SuppressWarnings("unchecked")
 	private static void updateFormCost(FormOneData<?, ?, ?, ?, ?, ?> form,SalableProductCollection salableProductCollection){
-		((AbstractDefaultForm<?,?>)form.getData()).getCost().setValue(salableProductCollection.getCost().getValue());
-		form.findInputByClassByFieldName(InputNumber.class, CostFormModel.FIELD_VALUE).setValue(((AbstractDefaultForm<?,?>)form.getData()).getCost().getValue());
-		
+		form.setDataFieldValue(CostFormModel.FIELD_VALUE,CommonUtils.getInstance().attributePath(AbstractDefaultForm.FIELD_COST,CostFormModel.FIELD_VALUE)
+				,AbstractDefaultForm.FIELD_COST, salableProductCollection.getCost());
 	}
 	
 	public void productQuantityChanged(TYPE item){
@@ -157,6 +162,8 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 		protected List<SalableProductInstance> instanceChoices;
 		
 		protected abstract SalableProductCollectionItem getSalableProductCollectionItem();
+		
+		
 	}
 	
 	/**/
@@ -168,6 +175,11 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 
 		public ItemCollection(String identifier, Class<TYPE> itemClass, Class<IDENTIFIABLE> identifiableClass, COLLECTION collection,Crud crud) {
 			super(identifier, itemClass, identifiableClass,collection,crud);
+		}
+		
+		@Override
+		protected AbstractIdentifiable getMasterSelected(IDENTIFIABLE identifiable) {
+			return ((SalableProductCollectionItem)identifiable).getSalableProduct();
 		}
 		
 	}

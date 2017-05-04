@@ -13,7 +13,7 @@ import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.model.mathematics.MovementAction;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.party.person.Person;
 
 public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashRegister, CashRegisterDao> implements CashRegisterBusiness,Serializable {
@@ -32,11 +32,10 @@ public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashR
 		
 		if(cashRegister.getMovementCollection()==null){
 			cashRegister.setMovementCollection((inject(MovementCollectionBusiness.class).instanciateOne(cashRegister.getCode()
-					, cashRegister.getCode()+MovementAction.INCREMENT, cashRegister.getCode()+MovementAction.DECREMENT)));
+					,RootConstant.Code.Interval.MOVEMENT_COLLECTION_VALUE, RootConstant.Code.MovementAction.INCREMENT, RootConstant.Code.MovementAction.DECREMENT)));
 		}
 		
-		if(isNotIdentified(cashRegister.getMovementCollection()))
-			inject(MovementCollectionBusiness.class).create(cashRegister.getMovementCollection());
+		createIfNotIdentified(cashRegister.getMovementCollection());
 		
 		return super.create(cashRegister);
 	}

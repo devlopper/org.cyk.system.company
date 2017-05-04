@@ -14,13 +14,13 @@
     
     <jdbc-resource pool-name="ArquillianHsqlPool" jndi-name="jdbc/arquillian" />
     	
-    <mail-resource host="smtp.gmail.com" jndi-name="mail/cyk_root" from="kycdev@gmail.com" user="kycdev@gmail.com">
+    <!--mail-resource host="smtp.gmail.com" jndi-name="mail/cyk_root" from="kycdev@gmail.com" user="kycdev@gmail.com">
       <property name="mail.smtp.socketFactory.port" value="465"></property>
       <property name="mail.smtp.port" value="465"></property>
       <property name="mail.smtp.socketFactory.fallback" value="false"></property>
       <property name="mail.smtp.auth" value="true"></property>
       <property name="mail.smtp.password" value="p@ssw0rd*"></property>
       <property name="mail.smtp.socketFactory.class" value="javax.net.ssl.SSLSocketFactory"></property>
-    </mail-resource>
+    </mail-resource-->
     
 </resources>
