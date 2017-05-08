@@ -26,7 +26,7 @@ public class SalableProductCollection extends AbstractCollection<SalableProductC
 
 	@ManyToOne @NotNull private AccountingPeriod accountingPeriod;
 	
-	@Embedded private Cost cost = new Cost();
+	@Embedded private Cost cost;
 	
 	/**/
 	
@@ -36,6 +36,12 @@ public class SalableProductCollection extends AbstractCollection<SalableProductC
 	@Transient private BigDecimal totalReduction;
 	
 	/**/
+	
+	public Cost getCost(){
+		if(cost==null)
+			cost = new Cost();
+		return cost;
+	}
 	
 	public static final String FIELD_ACCOUNTING_PERIOD = "accountingPeriod";
 	public static final String FIELD_COST = "cost";

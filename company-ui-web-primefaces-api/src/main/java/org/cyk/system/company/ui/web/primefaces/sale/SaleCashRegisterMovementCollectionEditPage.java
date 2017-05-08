@@ -31,7 +31,7 @@ import org.cyk.ui.api.data.collector.form.FormOneData;
 import org.cyk.ui.api.model.AbstractItemCollection;
 import org.cyk.ui.api.model.AbstractItemCollectionItem;
 import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
-import org.cyk.ui.web.api.ItemCollectionWebAdapter;
+import org.cyk.ui.web.primefaces.ItemCollectionAdapter;
 import org.cyk.ui.web.primefaces.page.AbstractCollectionEditPage;
 import org.cyk.utility.common.annotation.FieldOverride;
 import org.cyk.utility.common.annotation.FieldOverrides;
@@ -52,8 +52,6 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		
-		
 		identifiable.getItems().setSynchonizationEnabled(Boolean.TRUE);
 
 	}
@@ -66,7 +64,6 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 		updateFormAmount(form,identifiable);
 	}
 	
-	@SuppressWarnings("unchecked")
 	private static void updateFormAmount(FormOneData<?, ?, ?, ?, ?, ?> form,SaleCashRegisterMovementCollection saleCashRegisterMovementCollection){
 		((Form)form.getData()).setAmount(saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getValue());
 		//form.findInputByClassByFieldName(org.cyk.ui.api.data.collector.control.InputNumber.class, Form.FIELD_AMOUNT).setValue(((Form)form.getData()).getAmount());
@@ -76,8 +73,8 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 	protected void afterInitialisation() {
 		super.afterInitialisation();
 		
-		itemCollection = createItemCollection(Item.class, SaleCashRegisterMovement.class,identifiable ,new ItemCollectionWebAdapter<Item,SaleCashRegisterMovement
-				,SaleCashRegisterMovementCollection>(identifiable,crud){
+		itemCollection = createItemCollection(Item.class, SaleCashRegisterMovement.class,identifiable ,new ItemCollectionAdapter<Item,SaleCashRegisterMovement
+				,SaleCashRegisterMovementCollection>(identifiable,crud,form){
 
 			private static final long serialVersionUID = 1L;
 			
@@ -113,6 +110,7 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 				item.setSale(item.getIdentifiable().getSale());
 				item.setCode(item.getIdentifiable().getSale().getCode());
 				item.setName(item.getIdentifiable().getSale().getName());
+				debug(item.getIdentifiable().getSale().getSalableProductCollection());
 				item.setCost(inject(FormatterBusiness.class).format(item.getIdentifiable().getSale().getSalableProductCollection().getCost().getValue()));
 				item.setBalance(inject(FormatterBusiness.class).format(item.getIdentifiable().getBalance().getValue()));
 				item.setToPay(item.getBalance());
@@ -125,11 +123,11 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 				return saleCashRegisterMovement.getSale();
 			}
 			
-			@SuppressWarnings("unchecked")
+			/*@SuppressWarnings("unchecked")
 			@Override
 			public org.cyk.ui.api.data.collector.control.InputChoice<AbstractIdentifiable, ?, ?, ?, ?, ?> getInputChoice() {
 				return (org.cyk.ui.api.data.collector.control.InputChoice<AbstractIdentifiable, ?, ?, ?, ?, SelectItem>) form.getInputByFieldName(AbstractForm.FIELD_ONE_ITEM_MASTER_SELECTED);
-			}
+			}*/
 							
 		});
 		
