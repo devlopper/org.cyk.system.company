@@ -40,6 +40,16 @@ public abstract class AbstractSale extends AbstractIdentifiable implements Seria
 		return salableProductCollection==null ? null :salableProductCollection.getAutoComputeValueAddedTax();
 	}
 	
+	@Override
+	public String getUiString() {
+		return getCode();
+	}
+	
+	@Override
+	public String toString() {
+		return getCode();
+	}
+	
 	/**/
 	
 	public static final String FIELD_CUSTOMER = "customer";

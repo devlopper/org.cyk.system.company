@@ -15,7 +15,7 @@
         }
 	</style>
   
-	<p:panelGrid id="optionsPanel" columns="3">
+	<!--p:panelGrid id="optionsPanel" columns="3">
     	<p:outputLabel value="#{uiManager.text('model.entity.product')}" for="salableProduct" />
        	<p:selectOneMenu id="salableProduct" value="#{pageController.itemCollection.oneMasterSelected}" var="salableProduct" converter="#{objectConverter}" 
        		filter="true" filterMatchMode="contains" styleClass="optionsPanelClass">
@@ -24,7 +24,7 @@
 	        <p:column><h:outputText value="#{salableProduct.product.name}" /></p:column>
        	</p:selectOneMenu>
        	<cyk:command value="#{pageController.itemCollection.addCommandable}"/>
-	</p:panelGrid>
+	</p:panelGrid-->
 			
 	<p:remoteCommand name="refreshFooter" update=":form:collection:datatable:grandtotal"/>
 			

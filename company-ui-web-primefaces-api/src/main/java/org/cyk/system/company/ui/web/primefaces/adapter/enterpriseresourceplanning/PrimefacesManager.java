@@ -352,7 +352,7 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 		
 		getFormConfiguration(Sale.class, Crud.CREATE).addFieldNames(SaleEditPage.Form.FIELD_CODE/*,SaleEditPage.Form.FIELD_NAME*/,SaleEditPage.Form.FIELD_CUSTOMER
 				,SaleEditPage.Form.FIELD_ACCOUNTINGPERIOD/*,SaleEditPage.Form.FIELD_COST,CostFormModel.FIELD_VALUE,SaleEditPage.Form.FIELD_BALANCE
-				,BalanceFormModel.FIELD_VALUE*/);
+				,BalanceFormModel.FIELD_VALUE*/,SaleEditPage.Form.FIELD_ONE_ITEM_MASTER_SELECTED);
 		registerDetailsConfiguration(SaleDetails.class, new DetailsConfiguration(){
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
@@ -392,18 +392,20 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 		
 		getFormConfiguration(SaleCashRegisterMovementCollection.class, Crud.CREATE)
 		.addRequiredFieldNames(SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CASH_REGISTER)
-		.addFieldNames(SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CODE,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_AMOUNT
+		.addFieldNames(SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CODE/*,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_AMOUNT*/
 				,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_MODE,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_SUPPORTING_DOCUMENT_CODE
 				,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_SUPPORTING_DOCUMENT_GENRATOR,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_SUPPORTING_DOCUMENT_CONTENT_WRITER
-				,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_RECEIVED_FROM,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_EXISTENCE_PERIOD,PeriodFormModel.FIELD_FROM_DATE)
+				,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_RECEIVED_FROM,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_EXISTENCE_PERIOD,PeriodFormModel.FIELD_FROM_DATE
+				,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_ONE_ITEM_MASTER_SELECTED)
 			.addControlSetListener(new ControlSetAdapter.Form<Object>(){
 				private static final long serialVersionUID = 1L;
 				@Override
 				public List<String> getExpectedFieldNames() {
 					return Arrays.asList(SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CODE,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_CASH_REGISTER
-							,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_AMOUNT,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_RECEIVED_FROM,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_MODE
+							/*,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_AMOUNT*/,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_RECEIVED_FROM,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_MODE
 							,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_SUPPORTING_DOCUMENT_CODE,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_SUPPORTING_DOCUMENT_GENRATOR
-							,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_SUPPORTING_DOCUMENT_CONTENT_WRITER,PeriodFormModel.FIELD_FROM_DATE);
+							,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_SUPPORTING_DOCUMENT_CONTENT_WRITER,PeriodFormModel.FIELD_FROM_DATE
+							,SaleCashRegisterMovementCollectionEditPage.Form.FIELD_ONE_ITEM_MASTER_SELECTED);
 				}
 			});
 		registerDetailsConfiguration(SaleCashRegisterMovementCollectionDetails.class, new DetailsConfiguration(){

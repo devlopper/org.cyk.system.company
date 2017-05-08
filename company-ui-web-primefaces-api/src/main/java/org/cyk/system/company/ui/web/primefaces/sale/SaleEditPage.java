@@ -22,6 +22,9 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.BalanceFormModel;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
+import org.cyk.ui.web.primefaces.page.AbstractCollectionEditPage.AbstractForm;
+import org.cyk.utility.common.annotation.FieldOverride;
+import org.cyk.utility.common.annotation.FieldOverrides;
 import org.cyk.utility.common.annotation.user.interfaces.IncludeInputs;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputCalendar;
@@ -57,6 +60,9 @@ public class SaleEditPage extends AbstractSalableProductCollectionEditPage<Sale,
 	
 	/**/
 	
+	@FieldOverrides(value = {
+			@FieldOverride(name=AbstractForm.FIELD_ONE_ITEM_MASTER_SELECTED,type=SalableProduct.class)
+			})
 	public static class Form extends AbstractDefaultForm<Sale,SalableProductCollectionItem> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		

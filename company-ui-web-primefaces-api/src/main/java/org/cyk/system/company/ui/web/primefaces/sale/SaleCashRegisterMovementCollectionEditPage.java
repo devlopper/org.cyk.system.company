@@ -16,6 +16,7 @@ import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollecti
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
+import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
@@ -30,6 +31,9 @@ import org.cyk.ui.api.model.AbstractItemCollectionItem;
 import org.cyk.ui.web.api.AjaxListener.ListenValueMethod;
 import org.cyk.ui.web.api.ItemCollectionWebAdapter;
 import org.cyk.ui.web.primefaces.page.AbstractCollectionEditPage;
+import org.cyk.ui.web.primefaces.page.AbstractCollectionEditPage.AbstractForm;
+import org.cyk.utility.common.annotation.FieldOverride;
+import org.cyk.utility.common.annotation.FieldOverrides;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
@@ -63,7 +67,7 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 			
 			@Override
 			public SaleCashRegisterMovement instanciate(AbstractItemCollection<Item, SaleCashRegisterMovement,SaleCashRegisterMovementCollection, SelectItem> itemCollection) {
-				Sale sale = (Sale) itemCollection.getOneMasterSelected();
+				Sale sale = (Sale) itemCollection.getInputChoice().getValue();
 				SaleCashRegisterMovement item = inject(SaleCashRegisterMovementBusiness.class).instanciateOne(collection, sale, BigDecimal.ZERO);
 				updateFormAmount(itemCollection.getContainerForm(),collection);
 				return item;
@@ -94,6 +98,7 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 			}
 							
 		});
+		
 		identifiable.getItems().setSynchonizationEnabled(Boolean.TRUE);
 		sales = webManager.getSelectItems(Sale.class, inject(SaleBusiness.class).findAll(),Boolean.FALSE);
 	}
@@ -115,6 +120,8 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
+		itemCollection.getInputChoice().setIsAutomaticallyRemoveSelected(Boolean.TRUE);
+		
 		createAjaxBuilder(Form.FIELD_CASH_REGISTER)
 		.method(CashRegister.class,new ListenValueMethod<CashRegister>() {
 			@Override
@@ -176,7 +183,10 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 	/**/
 	
 	@Getter @Setter
-	public static class Form extends AbstractBusinessIdentifiedEditFormModel<SaleCashRegisterMovementCollection> implements Serializable{
+	@FieldOverrides(value = {
+			@FieldOverride(name=AbstractForm.FIELD_ONE_ITEM_MASTER_SELECTED,type=Sale.class)
+			})
+	public static class Form extends AbstractForm<SaleCashRegisterMovementCollection,SaleCashRegisterMovement> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 		
 		@Input @InputChoice @InputOneChoice @InputOneCombo @NotNull private CashRegister cashRegister;
@@ -223,6 +233,12 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 		public static final String FIELD_SUPPORTING_DOCUMENT_GENRATOR = "supportingDocumentGenerator";
 		public static final String FIELD_SUPPORTING_DOCUMENT_CONTENT_WRITER = "supportingDocumentContentWriter";
 		public static final String FIELD_RECEIVED_FROM = "receivedFrom";
+
+
+		@Override
+		protected AbstractCollection<?> getCollection() {
+			return identifiable;
+		}
 		
 	}
 	

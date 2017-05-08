@@ -15,21 +15,22 @@
         <ui:define name="body">
         	<cyk:formOneData value="#{saleCashRegisterMovementCollectionEditPage.form}"/>
         	
-        	<p:panelGrid id="optionsPanel" columns="3">
+        	<!--p:panelGrid id="optionsPanel" columns="3">
 		    	<p:outputLabel value="#{uiManager.text('model.entity.sale')}" for="sale" />
 		       	<p:selectOneMenu id="sale" value="#{saleCashRegisterMovementCollectionEditPage.itemCollection.oneMasterSelected}" var="sale" converter="#{objectConverter}" 
 		       		filter="true" filterMatchMode="contains" >
 		       		<f:selectItems value="#{saleCashRegisterMovementCollectionEditPage.sales}" />
 		       		<p:column><h:outputText value="#{sale.code}" /></p:column>
-			        <!--p:column><h:outputText value="#{sale.name}" /></p:column-->
+			        
 		       	</p:selectOneMenu>
 		       	<cyk:command value="#{saleCashRegisterMovementCollectionEditPage.itemCollection.addCommandable}"/>
-			</p:panelGrid>
+			</p:panelGrid-->
+			<!--p:column><h:outputText value="#{sale.name}" /></p:column-->
 					
-			<p:remoteCommand name="refreshFooter" update=":form:collection:datatable:grandtotal"/>
+			<!--p:remoteCommand name="refreshFooter" update=":form:collection:datatable:grandtotal"/-->
 					
 			<cyk:itemCollection id="collection" value="#{saleCashRegisterMovementCollectionEditPage.itemCollection}" >
-				<p:column headerText="#{uiManager.text('field.code')}">
+				<!--p:column headerText="#{uiManager.text('field.code')}">
 					<h:outputText value="#{item.code}" />
 				</p:column>
 				<p:column headerText="#{uiManager.text('field.cost')}" width="10%">
@@ -53,7 +54,7 @@
 		        
 		        <p:column headerText="#{uiManager.text('field.balance')}" width="10%">
 					<h:outputText id="balance" value="#{item.balance}" />
-				</p:column>
+				</p:column-->
 		        		
 		     	
 		 	</cyk:itemCollection>   

@@ -7,9 +7,6 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
@@ -31,12 +28,17 @@ import org.cyk.ui.api.model.AbstractItemCollectionItem;
 import org.cyk.ui.web.api.ItemCollectionWebAdapter;
 import org.cyk.ui.web.primefaces.page.AbstractCollectionEditPage;
 import org.cyk.utility.common.CommonUtils;
+import org.cyk.utility.common.annotation.FieldOverride;
+import org.cyk.utility.common.annotation.FieldOverrides;
 import org.cyk.utility.common.annotation.user.interfaces.IncludeInputs;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputBooleanButton;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter
 public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extends AbstractIdentifiable,ITEM extends AbstractIdentifiable,TYPE extends AbstractSalableProductCollectionEditPage.AbstractItem<ITEM>> extends AbstractCollectionEditPage<COLLECTION,ITEM,TYPE> implements Serializable {
@@ -48,7 +50,7 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 	public static Boolean SHOW_INSTANCE_COLUMN = Boolean.TRUE;
 	
 	protected SaleConfiguration saleConfiguration;
-	protected List<SelectItem> salableProducts;
+	//protected List<SelectItem> salableProducts;
 	
 	protected Boolean collectProduct=Boolean.FALSE,collectMoney=Boolean.TRUE,showUnitPriceColumn=SHOW_UNIT_PRICE_COLUMN,showQuantityColumn = SHOW_QUANTITY_COLUMN
 			,showInstanceColumn = SHOW_INSTANCE_COLUMN,showProductTable=Boolean.TRUE;
@@ -56,15 +58,17 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		salableProducts = webManager.getSelectItems(SalableProduct.class, inject(SalableProductBusiness.class).findAll(),Boolean.FALSE);
+		//salableProducts = webManager.getSelectItems(SalableProduct.class, inject(SalableProductBusiness.class).findAll(),Boolean.FALSE);
 		getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
 	}
 	
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
-		itemCollection.setAutomaticallyDeleteSelectedChoice(Boolean.TRUE);
-		itemCollection.setChoices(salableProducts);
+		itemCollection.getInputChoice().setIsAutomaticallyRemoveSelected(Boolean.TRUE);
+		//itemCollection.setChoices(salableProducts);
+		//System.out.println("AbstractSalableProductCollectionEditPage.afterInitialisation() : "+itemCollection.getInputChoice().getUserDeviceType());
+		
 	}
 	
 	protected abstract SalableProductCollection getSalableProductCollection();
@@ -120,12 +124,17 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 	}
 	
 	@Getter @Setter
+	@FieldOverrides(value = {
+			@FieldOverride(name=AbstractForm.FIELD_ONE_ITEM_MASTER_SELECTED,type=SalableProduct.class)
+			})
 	public static abstract class AbstractDefaultForm<COLLECTION extends AbstractIdentifiable,ITEM extends AbstractCollectionItem<?>> extends AbstractForm<COLLECTION,ITEM> implements Serializable{
 		private static final long serialVersionUID = -4741435164709063863L;
 
 		@Input @InputChoice @InputOneChoice @InputOneCombo protected AccountingPeriod accountingPeriod;
 		@IncludeInputs(layout=IncludeInputs.Layout.VERTICAL) protected CostFormModel cost = new CostFormModel();
 		@Input @InputBooleanButton protected Boolean autoComputeValueAddedTax = Boolean.TRUE;
+		
+		//@Input @InputChoice @InputOneChoice @InputOneCombo protected SalableProduct salableProductChoice;
 		
 		protected abstract SalableProductCollection getSalableProductCollection();
 		
@@ -137,18 +146,23 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 		@Override
 		public void read() {
 			super.read();
+			accountingPeriod = getSalableProductCollection().getAccountingPeriod();
 			cost.set(getSalableProductCollection().getCost());
+			autoComputeValueAddedTax = getSalableProductCollection().getAutoComputeValueAddedTax();
 		}
 		
 		@Override
 		public void write() {
 			super.write();
+			getSalableProductCollection().setAccountingPeriod(accountingPeriod);
+			getSalableProductCollection().setAutoComputeValueAddedTax(autoComputeValueAddedTax);
 			cost.write(getSalableProductCollection().getCost(),getSalableProductCollection().getAccountingPeriod(),autoComputeValueAddedTax);
 		}
 		
 		public static final String FIELD_ACCOUNTINGPERIOD = "accountingPeriod";
 		public static final String FIELD_COST = "cost";
 		public static final String FIELD_AUTO_COMPUTE_VALUE_ADDED_TAX = "autoComputeValueAddedTax";
+		//public static final String FIELD_SALABLE_PRODUCT_CHOICE = "salableProductChoice";
 	}
 
 	@Getter @Setter
@@ -210,8 +224,8 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 			@Override
 			public SalableProductCollectionItem instanciate(AbstractItemCollection<TYPE, SalableProductCollectionItem,SalableProductCollection, SelectItem> itemCollection) {
 				SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class)
-						.instanciateOne(collection, (SalableProduct) itemCollection.getOneMasterSelected(), BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ZERO);
-				salableProductCollectionItem.setSalableProduct((SalableProduct) itemCollection.getOneMasterSelected());
+						.instanciateOne(collection, (SalableProduct) itemCollection.getInputChoice().getValue(), BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ZERO);
+				salableProductCollectionItem.setSalableProduct((SalableProduct) itemCollection.getInputChoice().getValue());
 				updateFormCost(itemCollection.getContainerForm(),collection);
 				return salableProductCollectionItem;
 			}
