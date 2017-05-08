@@ -187,9 +187,9 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 			//When cash register increase or decrease then sale cash register respectively decrease or increase
 			increment=saleCashRegisterMovement.getAmount().negate();
 		}else if(Crud.UPDATE.equals(crud)) {
-			BigDecimal oldCashRegisterValue = saleCashRegisterMovement.getCollection().getCashRegisterMovement().getCashRegister().getMovementCollection().getValue();
+			BigDecimal oldCashRegisterValue = commonUtils.getValueIfNotNullElseDefault(saleCashRegisterMovement.getCollection().getCashRegisterMovement().getCashRegister().getMovementCollection().getValue(),BigDecimal.ZERO);
 			inject(CashRegisterMovementBusiness.class).update(saleCashRegisterMovement.getCollection().getCashRegisterMovement());
-			BigDecimal newCashRegisterValue = saleCashRegisterMovement.getCollection().getCashRegisterMovement().getCashRegister().getMovementCollection().getValue();
+			BigDecimal newCashRegisterValue = commonUtils.getValueIfNotNullElseDefault(saleCashRegisterMovement.getCollection().getCashRegisterMovement().getCashRegister().getMovementCollection().getValue(),BigDecimal.ZERO);
 			increment = oldCashRegisterValue.subtract(newCashRegisterValue);
 		}else if(Crud.DELETE.equals(crud)) {
 			increment=saleCashRegisterMovement.getAmount();

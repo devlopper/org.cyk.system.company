@@ -5,11 +5,12 @@ import java.io.Serializable;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
-import org.cyk.system.company.model.sale.SalableProductCollection;
-import org.cyk.system.company.model.sale.SalableProductCollectionItem;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.cyk.system.company.model.sale.SalableProductCollection;
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.ui.web.primefaces.sale.AbstractSalableProductCollectionEditPage.ItemCollectionAdapter.SalableProductCollectionItemAdapter;
 
 @Named @ViewScoped @Getter @Setter
 public class SalableProductCollectionEditPage extends AbstractSalableProductCollectionEditPage<SalableProductCollection,SalableProductCollectionItem,SalableProductCollectionEditPage.Item> implements Serializable {
@@ -19,8 +20,8 @@ public class SalableProductCollectionEditPage extends AbstractSalableProductColl
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		itemCollection = createItemCollection(Item.class, SalableProductCollectionItem.class,identifiable ,new AbstractSalableProductCollectionEditPage
-				.ItemCollectionAdapter.SalableProductCollectionItemAdapter<Item>(identifiable,crud));
+		itemCollection = createItemCollection(Item.class, SalableProductCollectionItem.class,identifiable 
+				,new SalableProductCollectionItemAdapter<Item>(identifiable,crud,form));
 	}
 	
 	@Override

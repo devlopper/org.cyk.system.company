@@ -63,8 +63,6 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 		return instanciateOne(code,code,null,customerCode,salableProducts);
 	}
 	
-	
-	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public SALE instanciateOneRandomly(String code) {
 		SALE sale = super.instanciateOneRandomly(code);

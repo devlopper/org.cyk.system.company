@@ -7,7 +7,9 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
-import org.cyk.system.company.business.api.sale.SalableProductBusiness;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
@@ -25,7 +27,6 @@ import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.ui.api.data.collector.form.FormOneData;
 import org.cyk.ui.api.model.AbstractItemCollection;
 import org.cyk.ui.api.model.AbstractItemCollectionItem;
-import org.cyk.ui.web.api.ItemCollectionWebAdapter;
 import org.cyk.ui.web.primefaces.page.AbstractCollectionEditPage;
 import org.cyk.utility.common.CommonUtils;
 import org.cyk.utility.common.annotation.FieldOverride;
@@ -37,9 +38,6 @@ import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @Getter @Setter
 public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extends AbstractIdentifiable,ITEM extends AbstractIdentifiable,TYPE extends AbstractSalableProductCollectionEditPage.AbstractItem<ITEM>> extends AbstractCollectionEditPage<COLLECTION,ITEM,TYPE> implements Serializable {
 
@@ -50,7 +48,6 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 	public static Boolean SHOW_INSTANCE_COLUMN = Boolean.TRUE;
 	
 	protected SaleConfiguration saleConfiguration;
-	//protected List<SelectItem> salableProducts;
 	
 	protected Boolean collectProduct=Boolean.FALSE,collectMoney=Boolean.TRUE,showUnitPriceColumn=SHOW_UNIT_PRICE_COLUMN,showQuantityColumn = SHOW_QUANTITY_COLUMN
 			,showInstanceColumn = SHOW_INSTANCE_COLUMN,showProductTable=Boolean.TRUE;
@@ -58,19 +55,9 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		//salableProducts = webManager.getSelectItems(SalableProduct.class, inject(SalableProductBusiness.class).findAll(),Boolean.FALSE);
 		getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
 	}
-	
-	@Override
-	protected void afterInitialisation() {
-		super.afterInitialisation();
-		itemCollection.getInputChoice().setIsAutomaticallyRemoveSelected(Boolean.TRUE);
-		//itemCollection.setChoices(salableProducts);
-		//System.out.println("AbstractSalableProductCollectionEditPage.afterInitialisation() : "+itemCollection.getInputChoice().getUserDeviceType());
 		
-	}
-	
 	protected abstract SalableProductCollection getSalableProductCollection();
 	
 	@Override
@@ -200,19 +187,19 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 	
 	/**/
 	
-	public static class ItemCollectionAdapter<TYPE extends AbstractItemCollectionItem<IDENTIFIABLE>,IDENTIFIABLE extends AbstractIdentifiable,COLLECTION extends AbstractIdentifiable> extends ItemCollectionWebAdapter<TYPE,IDENTIFIABLE,COLLECTION> implements Serializable{
+	public static class ItemCollectionAdapter<TYPE extends AbstractItemCollectionItem<IDENTIFIABLE>,IDENTIFIABLE extends AbstractIdentifiable,COLLECTION extends AbstractIdentifiable> extends org.cyk.ui.web.primefaces.ItemCollectionAdapter<TYPE,IDENTIFIABLE,COLLECTION> implements Serializable{
 
 		private static final long serialVersionUID = 1L;
 		
-		public ItemCollectionAdapter(COLLECTION collection, Crud crud) {
-			super(collection,crud);
+		public ItemCollectionAdapter(COLLECTION collection, Crud crud,FormOneData<AbstractIdentifiable, ?, ?, ?, ?, ?> form) {
+			super(collection,crud,form);
 		}
 		
 		public static class SalableProductCollectionItemAdapter<TYPE extends AbstractItem<SalableProductCollectionItem>> extends ItemCollectionAdapter<TYPE,SalableProductCollectionItem,SalableProductCollection> implements Serializable{
 			private static final long serialVersionUID = 1L;
 
-			public SalableProductCollectionItemAdapter(SalableProductCollection salableProductCollection, Crud crud) {
-				super(salableProductCollection, crud);
+			public SalableProductCollectionItemAdapter(SalableProductCollection salableProductCollection, Crud crud,FormOneData form) {
+				super(salableProductCollection, crud,form);
 			}
 			
 			@Override
@@ -254,6 +241,14 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 				item.setTotalPrice(inject(NumberBusiness.class).format(item.getIdentifiable().getCost().getValue()));
 				//item.setInstanceChoices(new ArrayList<>(inject(SalableProductInstanceBusiness.class).findByCollection(item.getIdentifiable().getSalableProduct())));
 			}
+			
+			@Override
+			public AbstractIdentifiable getMasterSelected(AbstractItemCollection<TYPE, SalableProductCollectionItem, SalableProductCollection, SelectItem> itemCollection,
+					SalableProductCollectionItem salableProductCollectionItem) {
+				return salableProductCollectionItem.getSalableProduct();
+			}
+			
+			
 		}
 	}
 }

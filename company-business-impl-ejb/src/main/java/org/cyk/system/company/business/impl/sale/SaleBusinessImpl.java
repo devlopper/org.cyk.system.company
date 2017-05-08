@@ -83,6 +83,13 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	}
 	
 	@Override
+	protected void beforeUpdate(Sale sale) {
+		super.beforeUpdate(sale);
+		sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue());//FIXME think well how to compute new balance
+		//new balance = cost - sum of all cash register movements - hence can be make as function and used in create as well
+	}
+		
+	@Override
 	protected void beforeDelete(Sale sale) {
 		super.beforeDelete(sale);
 		inject(SaleIdentifiableGlobalIdentifierBusiness.class).delete(inject(SaleIdentifiableGlobalIdentifierDao.class).readBySale(sale));

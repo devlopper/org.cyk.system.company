@@ -14,18 +14,7 @@
         	width: 95%;
         }
 	</style>
-  
-	<!--p:panelGrid id="optionsPanel" columns="3">
-    	<p:outputLabel value="#{uiManager.text('model.entity.product')}" for="salableProduct" />
-       	<p:selectOneMenu id="salableProduct" value="#{pageController.itemCollection.oneMasterSelected}" var="salableProduct" converter="#{objectConverter}" 
-       		filter="true" filterMatchMode="contains" styleClass="optionsPanelClass">
-       		<f:selectItems value="#{pageController.itemCollection.choices}" />
-       		<p:column><h:outputText value="#{salableProduct.product.code}" /></p:column>
-	        <p:column><h:outputText value="#{salableProduct.product.name}" /></p:column>
-       	</p:selectOneMenu>
-       	<cyk:command value="#{pageController.itemCollection.addCommandable}"/>
-	</p:panelGrid-->
-			
+  			
 	<p:remoteCommand name="refreshFooter" update=":form:collection:datatable:grandtotal"/>
 			
 	<cyk:itemCollection id="collection" value="#{pageController.itemCollection}" >
@@ -41,12 +30,13 @@
  				
  		<p:column headerText="#{uiManager.text('field.quantity')}" rendered="#{pageController.showQuantityColumn}" width="10%">		
         	<pe:inputNumber id="quantity" value="#{item.quantity}" maxlength="5" required="true" requiredMessage="#{uiManager.text('input.value.required')}" 
-        		minValue="1" decimalPlaces="0" styleClass="quantityClass">
+        		minValue="1" decimalPlaces="0" styleClass="quantityClass" rendered="#{pageController.form.editable}">
         		<p:ajax event="change" listener="#{pageController.productQuantityChanged(item)}" process="quantity" 
         			update="quantifiedPrice,total" 
         			oncomplete="refreshFooter();"/>
         		<!-- ,@(.#{pageController.form.getInputByFieldName('value').getCss().getUniqueClass()}) -->
         	</pe:inputNumber>
+        	<h:outputText value="#{item.quantity}" rendered="#{not pageController.form.editable}" />
         </p:column>
         		
      	<p:column headerText="#{uiManager.text('field.quantified.price')}" width="10%">
@@ -54,33 +44,27 @@
 		</p:column>
  				
  		<p:column headerText="#{uiManager.text('field.reduction')}" width="10%">
-        	<pe:inputNumber id="reduction" value="#{item.reduction}" maxlength="5"  decimalPlaces="0" styleClass="quantityClass">
+        	<pe:inputNumber id="reduction" value="#{item.reduction}" maxlength="5"  decimalPlaces="0" styleClass="quantityClass" 
+        		rendered="#{pageController.form.editable}">
         		<p:ajax event="change" listener="#{pageController.productReductionChanged(item)}" process="reduction" update="total" 
-        			oncomplete="refreshFooter();"/>
+        			oncomplete="refreshFooter();" />
         		<!-- ,@(.#{pageController.form.getInputByFieldName('value').getCss().getUniqueClass()}) -->
         	</pe:inputNumber>
+        	<h:outputText value="#{item.reduction}" rendered="#{not pageController.form.editable}" />
         </p:column>
         		
         <p:column headerText="#{uiManager.text('field.price.total')}" width="12%">
-        	<h:outputText id="total" value="#{item.totalPrice}" rendered="#{item.identifiable.salableProduct.price!=null}" />
+        	<h:outputText id="total" value="#{item.totalPrice}" rendered="#{pageController.form.editable and item.identifiable.salableProduct.price!=null}" />
         	<pe:inputNumber id="totalInput" value="#{item.totalPrice}" required="true" requiredMessage="#{item.name} - #{uiManager.textInputValueRequired('field.value')}" 
-        		minValue="1" decimalPlaces="0" rendered="#{item.identifiable.salableProduct.price==null}">
+        		minValue="1" decimalPlaces="0" rendered="#{pageController.form.editable and item.identifiable.salableProduct.price==null}">
         		<p:ajax event="change" listener="#{pageController.productQuantityChanged(item)}" process="totalInput" update="grandtotal" oncomplete="refreshFooter();"/>
         	</pe:inputNumber>
+        	<h:outputText value="#{item.totalPrice}" rendered="#{not pageController.form.editable}" />
         	<f:facet name="footer">
         		<h:outputText id="grandtotal" value="#{pageController.form.data.cost.value}" />
         	</f:facet>
         </p:column>
-        <!--
-        <p:column headerText="#{uiManager.text('field.instance')}" rendered="#{pageController.showInstanceColumn}" width="30%">
-        	<p:selectOneMenu id="instance" value="#{item.instance}" var="instance" converter="#{objectConverter}" 
-	        	filter="true" filterMatchMode="contains" disabled="#{pageController.collectMoney}" >
-	        	<f:selectItems value="#{item.instanceChoices}" var="spi" itemLabel="#{spi.code}" />
-	        	<p:column><h:outputText value="#{instance.code}" /></p:column>
-	        </p:selectOneMenu>
-        	<h:outputText value="#{instance.code}" rendered="#{pageController.collectMoney}" />
-        </p:column>
-        -->
+        
  	</cyk:itemCollection>   
 	
 </html>

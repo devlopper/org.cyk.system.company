@@ -9,6 +9,9 @@ import java.util.Date;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
@@ -21,8 +24,8 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.BalanceFormModel;
+import org.cyk.system.company.ui.web.primefaces.sale.AbstractSalableProductCollectionEditPage.ItemCollectionAdapter.SalableProductCollectionItemAdapter;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
-import org.cyk.ui.web.primefaces.page.AbstractCollectionEditPage.AbstractForm;
 import org.cyk.utility.common.annotation.FieldOverride;
 import org.cyk.utility.common.annotation.FieldOverrides;
 import org.cyk.utility.common.annotation.user.interfaces.IncludeInputs;
@@ -37,20 +40,17 @@ import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.cyk.utility.common.cdi.BeanAdapter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @Named @ViewScoped @Getter @Setter
 public class SaleEditPage extends AbstractSalableProductCollectionEditPage<Sale,SalableProductCollectionItem,SaleEditPage.Item> implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
-
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	protected void initialisation() {
-		super.initialisation();
-		itemCollection = createItemCollection(Item.class, SalableProductCollectionItem.class,identifiable ,new AbstractSalableProductCollectionEditPage
-			.ItemCollectionAdapter.SalableProductCollectionItemAdapter(identifiable.getSalableProductCollection(),crud));
+	protected void afterInitialisation() {
+		super.afterInitialisation();
+		itemCollection = createItemCollection(Item.class, SalableProductCollectionItem.class,identifiable 
+				,new SalableProductCollectionItemAdapter(identifiable.getSalableProductCollection(),crud,form));
 	}
 	
 	@Override
