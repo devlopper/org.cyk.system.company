@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -31,8 +30,8 @@ import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.party.person.Person;
+import org.cyk.utility.common.computation.ArithmeticOperator;
 
-@Stateless
 public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sale.SearchCriteria> implements SaleBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
@@ -83,12 +82,26 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	}
 	
 	@Override
+	protected void afterCreate(Sale sale) {
+		super.afterCreate(sale);
+		exceptionUtils().comparison(!sale.getSalableProductCollection().getCost().getValue().equals(sale.getBalance().getValue()), "field.cost : "+sale.getSalableProductCollection().getCost().getValue()
+				, ArithmeticOperator.EQ, "field.balance : "+sale.getBalance().getValue());
+	}
+	
+	@Override
 	protected void beforeUpdate(Sale sale) {
 		super.beforeUpdate(sale);
 		sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue());//FIXME think well how to compute new balance
 		//new balance = cost - sum of all cash register movements - hence can be make as function and used in create as well
 	}
-		
+	
+	@Override
+	protected void afterUpdate(Sale sale) {
+		super.afterUpdate(sale);
+		exceptionUtils().comparison(sale.getSalableProductCollection().getCost().getValue().compareTo(sale.getBalance().getValue())<0, "field.cost : "+sale.getSalableProductCollection().getCost().getValue()
+				, ArithmeticOperator.GT, "field.balance : "+sale.getBalance().getValue());
+	}
+	
 	@Override
 	protected void beforeDelete(Sale sale) {
 		super.beforeDelete(sale);

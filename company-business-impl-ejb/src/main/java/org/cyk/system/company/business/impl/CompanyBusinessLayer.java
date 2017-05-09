@@ -236,6 +236,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		createFromExcelSheet(IntervalCollection.class);
 		createFromExcelSheet(Interval.class);
 		
+		createFromExcelSheet(CashRegister.class);
+		
 	}
 	
 	@Override

@@ -60,6 +60,7 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 		item.getIdentifiable().setAmount(item.getAmount());
 		inject(SaleCashRegisterMovementBusiness.class).computeBalance(item.getIdentifiable());
 		inject(SaleCashRegisterMovementCollectionBusiness.class).computeAmount(identifiable,identifiable.getItems().getCollection());
+		identifiable.setAmountIn(identifiable.getCashRegisterMovement().getMovement().getValue());
 		itemCollection.read(item);
 		updateFormAmount(form,identifiable);
 	}
@@ -110,10 +111,10 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 				item.setSale(item.getIdentifiable().getSale());
 				item.setCode(item.getIdentifiable().getSale().getCode());
 				item.setName(item.getIdentifiable().getSale().getName());
-				debug(item.getIdentifiable().getSale().getSalableProductCollection());
 				item.setCost(inject(FormatterBusiness.class).format(item.getIdentifiable().getSale().getSalableProductCollection().getCost().getValue()));
 				item.setBalance(inject(FormatterBusiness.class).format(item.getIdentifiable().getBalance().getValue()));
-				item.setToPay(item.getBalance());
+				item.setToPay(Crud.CREATE.equals(crud) ? item.getBalance() 
+						: inject(FormatterBusiness.class).format(item.getIdentifiable().getBalance().getValue().add( item.getIdentifiable().getAmount()  )) );
 				item.setAmount(item.getIdentifiable().getAmount());
 			}
 			
@@ -253,7 +254,7 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 			cashRegister = identifiable.getCashRegisterMovement().getCashRegister();
 			mode = identifiable.getCashRegisterMovement().getMode();
 			if(identifiable.getCashRegisterMovement().getMovement()!=null){
-				amount = identifiable.getCashRegisterMovement().getMovement().getValue();
+				//amount = identifiable.getCashRegisterMovement().getMovement().getValue();
 				receivedFrom = identifiable.getCashRegisterMovement().getMovement().getSenderOrReceiverPersonAsString();
 				
 				if(identifiable.getCashRegisterMovement().getSupportingDocument()!=null){
@@ -269,7 +270,7 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 		@Override
 		public void write() {
 			super.write();
-			identifiable.setAmountIn(amount);
+			//identifiable.setAmountIn(amount);
 			identifiable.setAmountOut(BigDecimal.ZERO);
 			identifiable.getCashRegisterMovement().setMode(mode);
 			identifiable.getCashRegisterMovement().getMovement().setSenderOrReceiverPersonAsString(receivedFrom);

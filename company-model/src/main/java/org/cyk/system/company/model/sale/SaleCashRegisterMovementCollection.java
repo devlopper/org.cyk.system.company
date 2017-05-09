@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
@@ -24,8 +25,8 @@ public class SaleCashRegisterMovementCollection extends AbstractCollection<SaleC
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @NotNull private AccountingPeriod accountingPeriod;
-	@OneToOne @NotNull private CashRegisterMovement cashRegisterMovement;
+	@ManyToOne @JoinColumn(name=COLUMN_ACCOUNTING_PERIOD) @NotNull private AccountingPeriod accountingPeriod;
+	@OneToOne @JoinColumn(name=COLUMN_CASH_REGISTER_MOVEMENT) @NotNull private CashRegisterMovement cashRegisterMovement;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountIn = BigDecimal.ZERO;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal amountOut = BigDecimal.ZERO;
 	
@@ -35,4 +36,9 @@ public class SaleCashRegisterMovementCollection extends AbstractCollection<SaleC
 	public static final String FIELD_CASH_REGISTER_MOVEMENT = "cashRegisterMovement";
 	public static final String FIELD_AMOUNT_IN = "amountIn";
 	public static final String FIELD_AMOUNT_OUT = "amountOut";
+	
+	/**/
+	
+	public static final String COLUMN_ACCOUNTING_PERIOD = FIELD_ACCOUNTING_PERIOD;
+	public static final String COLUMN_CASH_REGISTER_MOVEMENT = FIELD_CASH_REGISTER_MOVEMENT;
 }

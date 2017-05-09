@@ -96,6 +96,13 @@ public interface CompanyConstant {
 			public static String STAMP_DUTY = "STAMPDUTY";
 			
 		}
+		
+		public static class CashRegister implements Serializable {
+			private static final long serialVersionUID = 1L;
+			
+			public static String DEFAULT = "DEFAULT";
+			
+		}
 	}
 		
 	public static class Configuration {

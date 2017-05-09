@@ -1,6 +1,7 @@
 package org.cyk.system.company.business.impl.payment;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -63,11 +64,12 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 			}
 		}
 		if(StringUtils.isNotBlank(cashRegisterCode)){
-			//cashRegisterMovement.setCashRegister(inject(CashRegisterDao.class).read(cashRegisterCode));//TODO we should use setCashRegister
-			//cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection().getCode(),amount,null,null,null,null));
-			
 			setCashRegister(cashRegisterMovement, inject(CashRegisterDao.class).read(cashRegisterCode));
 		}
+		
+		if(cashRegisterMovement.getMovement()!=null)
+			cashRegisterMovement.getMovement().setValue(new BigDecimal(amount));
+		
 		return cashRegisterMovement;
 	}
 	
@@ -139,8 +141,7 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 	public void setCashRegister(CashRegisterMovement cashRegisterMovement,CashRegister cashRegister) {
 		cashRegisterMovement.setCashRegister(cashRegister);
 		if(cashRegisterMovement.getCashRegister()!=null)
-			cashRegisterMovement.setMovement(inject(MovementBusiness.class)
-				.instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection()));
+			cashRegisterMovement.setMovement(inject(MovementBusiness.class).instanciateOne(cashRegisterMovement.getCashRegister().getMovementCollection()));
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)

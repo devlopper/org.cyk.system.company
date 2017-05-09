@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -37,7 +36,6 @@ import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.utility.common.LogMessage;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 
-@Stateless
 public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItemBusinessImpl<SaleCashRegisterMovement, SaleCashRegisterMovementDao,SaleCashRegisterMovementCollection> implements SaleCashRegisterMovementBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;

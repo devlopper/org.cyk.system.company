@@ -44,7 +44,8 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 	}
 	
 	@Override
-	public SalableProduct create(SalableProduct salableProduct) {
+	protected void beforeCreate(SalableProduct salableProduct) {
+		super.beforeCreate(salableProduct);
 		if(salableProduct.getProduct()==null){	
 			salableProduct.setProduct(inject(ProductDao.class).read(salableProduct.getCode()));
 		}else{
@@ -53,9 +54,8 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 			if(StringUtils.isBlank(salableProduct.getName()))
 				salableProduct.setName(salableProduct.getProduct().getName());	
 		}
-		return super.create(salableProduct);
 	}
-	
+		
 	@Override
 	public void create(Class<? extends Product> aClass,String code, String name, BigDecimal price) {
 		Product product = TangibleProduct.class.equals(aClass) ? new TangibleProduct(code, name, null) : new IntangibleProduct(code, name, null);

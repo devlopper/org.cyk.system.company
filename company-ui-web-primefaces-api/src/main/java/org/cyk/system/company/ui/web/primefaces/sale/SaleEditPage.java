@@ -72,13 +72,13 @@ public class SaleEditPage extends AbstractSalableProductCollectionEditPage<Sale,
 		@Override
 		public void read() {
 			super.read();
-			balance.set(identifiable.getBalance());
+			//balance.set(identifiable.getBalance());
 		}
 		
 		@Override
 		public void write() {
 			super.write();
-			balance.write(identifiable.getBalance());
+			//balance.write(identifiable.getBalance());
 		}
 
 		@Override

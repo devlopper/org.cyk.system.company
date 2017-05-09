@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -23,14 +22,12 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.security.UserAccount;
 
-@Stateless
 public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractCollectionBusinessImpl<SaleCashRegisterMovementCollection,SaleCashRegisterMovement, SaleCashRegisterMovementCollectionDao,SaleCashRegisterMovementDao,SaleCashRegisterMovementBusiness> implements SaleCashRegisterMovementCollectionBusiness,Serializable {
 
 	private static final long serialVersionUID = -3799482462496328200L;
@@ -63,6 +60,7 @@ public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractColl
 	public SaleCashRegisterMovementCollection instanciateOne(String code, String name, String cashRegisterCode,String cashRegisterMovementModeCode,Object[][] saleCashRegisterMovements) {
 		SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = instanciateOne(code,name);
 		saleCashRegisterMovementCollection.setCashRegisterMovement(inject(CashRegisterMovementBusiness.class).instanciateOne(code,name,BigDecimal.ZERO.toString(),cashRegisterCode,cashRegisterMovementModeCode));
+		
 		if(saleCashRegisterMovements!=null)
 			for(Object[] saleCashRegisterMovement : saleCashRegisterMovements)
 				inject(SaleCashRegisterMovementBusiness.class).instanciateOne(saleCashRegisterMovementCollection, (String)saleCashRegisterMovement[0], (String)saleCashRegisterMovement[1]);
@@ -94,9 +92,10 @@ public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractColl
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void setCashRegister(UserAccount userAccount,SaleCashRegisterMovementCollection saleCashRegisterMovementCollection,CashRegister cashRegister) {
-		saleCashRegisterMovementCollection.getCashRegisterMovement().setCashRegister(cashRegister);
+		inject(CashRegisterMovementBusiness.class).setCashRegister(saleCashRegisterMovementCollection.getCashRegisterMovement(), cashRegister);
+		/*saleCashRegisterMovementCollection.getCashRegisterMovement().setCashRegister(cashRegister);
 		saleCashRegisterMovementCollection.getCashRegisterMovement().setMovement(cashRegister == null ? null 
-				: inject(MovementBusiness.class).instanciateOne(cashRegister.getMovementCollection()));
+				: inject(MovementBusiness.class).instanciateOne(cashRegister.getMovementCollection()));*/
 	}
 	/*
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)

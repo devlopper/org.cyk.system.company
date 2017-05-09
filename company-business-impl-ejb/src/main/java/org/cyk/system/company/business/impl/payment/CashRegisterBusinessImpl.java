@@ -13,7 +13,9 @@ import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.RootConstant;
+import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.party.person.Person;
 
 public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashRegister, CashRegisterDao> implements CashRegisterBusiness,Serializable {
@@ -45,11 +47,20 @@ public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashR
 		return dao.readByPerson(person);
 	}
 	
-	@Override
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public CashRegister instanciateOneRandomly(String code) {
 		CashRegister cashRegister = super.instanciateOneRandomly(code);
 		cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaultOwnedCompany());
 		cashRegister.setMovementCollection(inject(MovementCollectionBusiness.class).instanciateOneRandomly(code));
 		return cashRegister;
+	}
+	
+	@Override
+	protected CashRegister __instanciateOne__(String[] values,InstanciateOneListener<CashRegister> listener) {
+		super.__instanciateOne__(values, listener);
+		set(listener.getSetListener(), AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE);
+		set(listener.getSetListener(), AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME);
+		set(listener.getSetListener(), CashRegister.FIELD_MOVEMENT_COLLECTION);
+		return listener.getInstance();
 	}
 }

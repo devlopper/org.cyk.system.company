@@ -389,7 +389,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     		,String expectedSupportingDocumentProvider,String expectedSupportingDocumentIdentifier,String expectedMovementCollectionValue){
     	CashRegisterMovement cashRegisterMovement = inject(CashRegisterMovementDao.class).read(code);
     	assertCashRegister(cashRegisterMovement.getCashRegister(), expectedCashRegisterValue);
-    	assertMovement(cashRegisterMovement.getMovement().getCode(), expectedMovementValue, expectedIncrement, expectedSupportingDocumentProvider, expectedSupportingDocumentIdentifier,expectedMovementCollectionValue);
+    	assertMovement(cashRegisterMovement.getMovement().getCode(), expectedMovementValue,expectedMovementCollectionValue, expectedIncrement, expectedSupportingDocumentProvider, expectedSupportingDocumentIdentifier);
     }
     
     public void assertCashRegisterMovement(CashRegisterMovement cashRegisterMovement,String expectedCashRegisterValue,String expectedValue,Boolean expectedIncrement
