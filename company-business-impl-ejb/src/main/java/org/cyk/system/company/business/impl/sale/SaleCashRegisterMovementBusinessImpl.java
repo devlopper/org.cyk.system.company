@@ -206,6 +206,12 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 	}
 	
 	@Override
+	protected void beforeUpdate(SaleCashRegisterMovement identifiable) {
+		// TODO Auto-generated method stub
+		super.beforeUpdate(identifiable);
+	}
+	
+	@Override
 	public SaleCashRegisterMovement update(SaleCashRegisterMovement saleCashRegisterMovement) {
 		LogMessage.Builder logMessageBuilder = createLogMessageBuilder(CommonBusinessAction.UPDATE);
 		updateSale(saleCashRegisterMovement, Crud.UPDATE, logMessageBuilder);
@@ -229,6 +235,12 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 	
 	@Override
 	protected void deleteFileIdentifiableGlobalIdentifier(SaleCashRegisterMovement saleCashRegisterMovement) {
+		
+	}
+	
+	@Override
+	public void computeBalance(SaleCashRegisterMovement saleCashRegisterMovement,BigDecimal increment) {
+		// TODO Auto-generated method stub
 		
 	}
 	

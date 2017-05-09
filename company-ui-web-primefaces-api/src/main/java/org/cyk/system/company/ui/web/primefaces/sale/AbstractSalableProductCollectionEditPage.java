@@ -134,7 +134,7 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 		public void read() {
 			super.read();
 			accountingPeriod = getSalableProductCollection().getAccountingPeriod();
-			cost.set(getSalableProductCollection().getCost());
+			//cost.set(getSalableProductCollection().getCost());
 			autoComputeValueAddedTax = getSalableProductCollection().getAutoComputeValueAddedTax();
 		}
 		
@@ -143,7 +143,7 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 			super.write();
 			getSalableProductCollection().setAccountingPeriod(accountingPeriod);
 			getSalableProductCollection().setAutoComputeValueAddedTax(autoComputeValueAddedTax);
-			cost.write(getSalableProductCollection().getCost(),getSalableProductCollection().getAccountingPeriod(),autoComputeValueAddedTax);
+			//cost.write(getSalableProductCollection().getCost(),getSalableProductCollection().getAccountingPeriod(),autoComputeValueAddedTax);
 		}
 		
 		public static final String FIELD_ACCOUNTINGPERIOD = "accountingPeriod";
