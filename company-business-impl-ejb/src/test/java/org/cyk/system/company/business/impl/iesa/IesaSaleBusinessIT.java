@@ -107,6 +107,49 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     }
     
     @Test
+    public void assertOrderSaleCashRegisterMovement(){
+    	TestCase testCase = instanciateTestCase();
+    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	
+    	SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{});
+    	saleCashRegisterMovementCollection.setBirthDate(date(2000, 1, 5));
+    	testCase.create(saleCashRegisterMovementCollection);
+    	
+    	SaleCashRegisterMovement saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale001", "0");
+    	saleCashRegisterMovement.setBirthDate(date(2000, 1, 5));
+    	testCase.create(saleCashRegisterMovement);
+    	String code001 = saleCashRegisterMovement.getCode();
+    	
+    	testCase.assertOrderBasedOnExistencePeriodFromDate(SaleCashRegisterMovement.class, code001);
+    	
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P002",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
+    	saleCashRegisterMovementCollection.setBirthDate(date(2000, 1, 2));
+    	saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P002", "Sale001", "0");
+    	saleCashRegisterMovement.setBirthDate(date(2000, 1, 2));
+    	testCase.create(saleCashRegisterMovement);
+    	String code002 = saleCashRegisterMovement.getCode();
+    	
+    	testCase.assertOrderBasedOnExistencePeriodFromDate(SaleCashRegisterMovement.class,code002,code001);
+    	
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P003",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
+    	saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P003", "Sale001", "0");
+    	saleCashRegisterMovement.setBirthDate(date(2000, 1, 3));
+    	testCase.create(saleCashRegisterMovement);
+    	String code003 = saleCashRegisterMovement.getCode();
+    	
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P004",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
+    	saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P004", "Sale001", "0");
+    	saleCashRegisterMovement.setBirthDate(date(2000, 1, 1));
+    	testCase.create(saleCashRegisterMovement);
+    	String code004 = saleCashRegisterMovement.getCode();
+    	
+    	testCase.assertOrderBasedOnExistencePeriodFromDate(SaleCashRegisterMovement.class, code004 ,code002, code003,code001);
+    	
+    	testCase.clean();
+    }
+    
+    @Test
     public void crudSaleCashRegisterMovementCollectionUserInterface(){
     	UserAccount userAccount = inject(UserAccountDao.class).readOneRandomly();
     	String sale1Code = "Sale"+RandomDataProvider.getInstance().randomInt(0, 100000);

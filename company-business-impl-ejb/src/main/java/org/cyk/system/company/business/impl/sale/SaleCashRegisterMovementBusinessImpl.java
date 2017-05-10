@@ -157,6 +157,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 			saleCashRegisterMovement.getBalance().setCumul(customer.getBalance());
 		}
 		*/
+		System.out.println("SaleCashRegisterMovementBusinessImpl.create() : "+saleCashRegisterMovement.getBirthDate());
 		/*saleCashRegisterMovement = */super.create(saleCashRegisterMovement);
 		//if(saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().isSynchonizationEnabled()){
 			//inject(SalableProductCollectionItemSaleCashRegisterMovementBusiness.class).create(saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getCollection());
@@ -206,21 +207,16 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 	}
 	
 	@Override
-	protected void beforeUpdate(SaleCashRegisterMovement identifiable) {
-		// TODO Auto-generated method stub
-		super.beforeUpdate(identifiable);
-	}
-	
-	@Override
-	public SaleCashRegisterMovement update(SaleCashRegisterMovement saleCashRegisterMovement) {
+	protected void beforeUpdate(SaleCashRegisterMovement saleCashRegisterMovement) {
+		super.beforeUpdate(saleCashRegisterMovement);
 		LogMessage.Builder logMessageBuilder = createLogMessageBuilder(CommonBusinessAction.UPDATE);
 		updateSale(saleCashRegisterMovement, Crud.UPDATE, logMessageBuilder);
 		logTrace(logMessageBuilder);
-		return super.update(saleCashRegisterMovement);
 	}
 	
 	@Override
-	public SaleCashRegisterMovement delete(SaleCashRegisterMovement saleCashRegisterMovement) {
+	protected void beforeDelete(SaleCashRegisterMovement saleCashRegisterMovement) {
+		super.beforeDelete(saleCashRegisterMovement);
 		LogMessage.Builder logMessageBuilder = createLogMessageBuilder(CommonBusinessAction.DELETE);
 		if(saleCashRegisterMovement.getSale().getCustomer()!=null){
 			commonUtils.increment(BigDecimal.class, saleCashRegisterMovement.getSale().getCustomer(), Customer.FIELD_PAYMENT_COUNT, BigDecimal.ONE.negate());
@@ -228,26 +224,20 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 		}
 		updateSale(saleCashRegisterMovement, Crud.DELETE, logMessageBuilder);
 		saleCashRegisterMovement.setSale(null);
-		saleCashRegisterMovement = super.delete(saleCashRegisterMovement);
+		
 		logTrace(logMessageBuilder);
-		return saleCashRegisterMovement;
 	}
-	
+			
 	@Override
 	protected void deleteFileIdentifiableGlobalIdentifier(SaleCashRegisterMovement saleCashRegisterMovement) {
 		
 	}
-	
-	@Override
-	public void computeBalance(SaleCashRegisterMovement saleCashRegisterMovement,BigDecimal increment) {
-		// TODO Auto-generated method stub
 		
-	}
-	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void computeBalance(SaleCashRegisterMovement saleCashRegisterMovement) {
 		BigDecimal saleCashRegisterMovementAmount = saleCashRegisterMovement.getAmount();
-		BigDecimal balance = saleCashRegisterMovement.getSale().getIdentifier()==null?saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue()
+		BigDecimal balance = saleCashRegisterMovement.getSale().getIdentifier()==null
+				?saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue()
 				:saleCashRegisterMovement.getSale().getBalance().getValue();
 		
 		MovementAction action = saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getAction();

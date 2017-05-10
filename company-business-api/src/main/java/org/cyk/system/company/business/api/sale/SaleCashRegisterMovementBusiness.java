@@ -22,10 +22,8 @@ public interface SaleCashRegisterMovementBusiness extends AbstractCollectionItem
 	Collection<SaleCashRegisterMovement> findBySale(Sale sale);
 
 	void computeBalance(SaleCashRegisterMovement saleCashRegisterMovement);
-	void computeBalance(SaleCashRegisterMovement saleCashRegisterMovement,BigDecimal increment);
 	BigDecimal computeBalance(SaleCashRegisterMovement saleCashRegisterMovement,MovementAction movementAction,BigDecimal increment);
 	
 	void setSale(SaleCashRegisterMovement saleCashRegisterMovement,Sale sale);
-	
 	
 }

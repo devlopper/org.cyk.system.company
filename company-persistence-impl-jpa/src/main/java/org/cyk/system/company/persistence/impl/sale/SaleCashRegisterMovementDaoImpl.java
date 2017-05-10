@@ -12,6 +12,8 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.persistence.impl.AbstractCollectionItemDaoImpl;
+import org.cyk.system.root.persistence.impl.QueryStringBuilder;
+import org.cyk.system.root.persistence.impl.QueryWrapper;
 
 public class SaleCashRegisterMovementDaoImpl extends AbstractCollectionItemDaoImpl<SaleCashRegisterMovement,SaleCashRegisterMovementCollection> implements SaleCashRegisterMovementDao {
 
@@ -47,5 +49,22 @@ public class SaleCashRegisterMovementDaoImpl extends AbstractCollectionItemDaoIm
 	public SaleCashRegisterMovement readByCashRegisterMovementCode(String code) {
 		return namedQuery(readByCashRegisterMovementCode).parameter(GlobalIdentifier.FIELD_CODE, code).ignoreThrowable(NoResultException.class).resultOne();
 	}	
+	
+	@Override
+	protected void processQueryStringBuilder(QueryStringBuilder queryStringBuilder, String queryName) {
+		super.processQueryStringBuilder(queryStringBuilder, queryName);
+		if(readWhereExistencePeriodFromDateIsLessThan.equals(queryName)){
+			queryStringBuilder.and(SaleCashRegisterMovement.FIELD_COLLECTION);
+		}
+	}
+		
+	@Override
+	protected <T> void processQueryWrapper(Class<T> aClass,QueryWrapper<T> queryWrapper, String queryName,Object[] arguments) {
+		super.processQueryWrapper(aClass, queryWrapper, queryName,arguments);
+		if(readWhereExistencePeriodFromDateIsLessThan.equals(queryName)){
+			SaleCashRegisterMovement saleCashRegisterMovement = (SaleCashRegisterMovement) arguments[0];
+			queryWrapper.parameter(SaleCashRegisterMovement.FIELD_COLLECTION, saleCashRegisterMovement.getCollection());
+		}
+	}
 
 }

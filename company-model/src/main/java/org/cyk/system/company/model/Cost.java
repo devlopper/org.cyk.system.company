@@ -44,6 +44,10 @@ public class Cost extends AbstractModelElement implements Serializable {
 		}	
 	}
 	
+	public void setValue(BigDecimal value){
+		this.value = value;
+	}
+	
 	public Cost setNumberOfProceedElementsFromString(String numberOfProceedElements){
 		this.numberOfProceedElements = new BigDecimal(numberOfProceedElements);
 		return this;
