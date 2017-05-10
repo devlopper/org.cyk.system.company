@@ -117,9 +117,11 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.create(saleCashRegisterMovementCollection);
     	
     	SaleCashRegisterMovement saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale001", "0");
-    	saleCashRegisterMovement.setBirthDate(date(2000, 1, 5));
+    	saleCashRegisterMovement.getGlobalIdentifier().getExistencePeriod().setFromDate(date(2000, 1, 5));
     	testCase.create(saleCashRegisterMovement);
     	String code001 = saleCashRegisterMovement.getCode();
+    	
+    	System.out.println("IesaSaleBusinessIT.assertOrderSaleCashRegisterMovement() : "+inject(SaleCashRegisterMovementDao.class).read(code001).getBirthDate());
     	
     	testCase.assertOrderBasedOnExistencePeriodFromDate(SaleCashRegisterMovement.class, code001);
     	
