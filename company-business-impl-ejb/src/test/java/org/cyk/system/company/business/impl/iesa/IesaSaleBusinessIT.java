@@ -114,6 +114,8 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	
     	SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{});
     	saleCashRegisterMovementCollection.setBirthDate(date(2000, 1, 5));
+    	saleCashRegisterMovementCollection.getCashRegisterMovement().setBirthDate(saleCashRegisterMovementCollection.getBirthDate());
+    	saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().setBirthDate(saleCashRegisterMovementCollection.getBirthDate());
     	testCase.create(saleCashRegisterMovementCollection);
     	
     	SaleCashRegisterMovement saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale001", "0");
