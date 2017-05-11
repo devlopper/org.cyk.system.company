@@ -113,28 +113,23 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
     	
     	SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{});
-    	saleCashRegisterMovementCollection.setBirthDate(date(2000, 1, 5));
-    	saleCashRegisterMovementCollection.getCashRegisterMovement().setBirthDate(saleCashRegisterMovementCollection.getBirthDate());
-    	saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().setBirthDate(saleCashRegisterMovementCollection.getBirthDate());
     	testCase.create(saleCashRegisterMovementCollection);
     	
     	SaleCashRegisterMovement saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale001", "0");
-    	saleCashRegisterMovement.getGlobalIdentifier().getExistencePeriod().setFromDate(date(2000, 1, 5));
+    	saleCashRegisterMovement.getGlobalIdentifier().getExistencePeriod().setFromDate(date(2017, 5, 11));
     	testCase.create(saleCashRegisterMovement);
     	String code001 = saleCashRegisterMovement.getCode();
-    	
-    	System.out.println("IesaSaleBusinessIT.assertOrderSaleCashRegisterMovement() : "+inject(SaleCashRegisterMovementDao.class).read(code001).getBirthDate());
     	
     	testCase.assertOrderBasedOnExistencePeriodFromDate(SaleCashRegisterMovement.class, code001);
     	
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P002",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
-    	saleCashRegisterMovementCollection.setBirthDate(date(2000, 1, 2));
     	saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P002", "Sale001", "0");
-    	saleCashRegisterMovement.setBirthDate(date(2000, 1, 2));
+    	saleCashRegisterMovement.setBirthDate(date(2017, 5, 10));
     	testCase.create(saleCashRegisterMovement);
     	String code002 = saleCashRegisterMovement.getCode();
     	
-    	testCase.assertOrderBasedOnExistencePeriodFromDate(SaleCashRegisterMovement.class,code002,code001);
+    	testCase.assertFirstWhereExistencePeriodFromDateIsLessThan(SaleCashRegisterMovement.class, code001, "P002_Sale001");
+    	testCase.assertOrderBasedOnExistencePeriodFromDate(SaleCashRegisterMovement.class,"P002_Sale001",code001);
     	
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P003",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
     	saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P003", "Sale001", "0");
