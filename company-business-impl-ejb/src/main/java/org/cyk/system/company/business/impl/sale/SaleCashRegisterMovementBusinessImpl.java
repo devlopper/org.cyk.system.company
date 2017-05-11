@@ -157,6 +157,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 			saleCashRegisterMovement.getBalance().setCumul(customer.getBalance());
 		}
 		*/
+		System.out.println("Collection : "+saleCashRegisterMovement.getCollection());
 		/*saleCashRegisterMovement = */super.create(saleCashRegisterMovement);
 		//if(saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().isSynchonizationEnabled()){
 			//inject(SalableProductCollectionItemSaleCashRegisterMovementBusiness.class).create(saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getCollection());

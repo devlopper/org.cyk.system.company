@@ -121,6 +121,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	String code001 = saleCashRegisterMovement.getCode();
     	
     	testCase.assertOrderBasedOnExistencePeriodFromDate(SaleCashRegisterMovement.class, code001);
+    	testCase.assertWhereExistencePeriodFromDateIsLessThanCount(SaleCashRegisterMovement.class,code001, 0);
     	
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P002",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
     	saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P002", "Sale001", "0");
@@ -128,6 +129,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.create(saleCashRegisterMovement);
     	String code002 = saleCashRegisterMovement.getCode();
     	
+    	testCase.assertWhereExistencePeriodFromDateIsLessThanCount(SaleCashRegisterMovement.class,"P001_Sale001", 1);
     	testCase.assertFirstWhereExistencePeriodFromDateIsLessThan(SaleCashRegisterMovement.class, code001, "P002_Sale001");
     	testCase.assertOrderBasedOnExistencePeriodFromDate(SaleCashRegisterMovement.class,"P002_Sale001",code001);
     	

@@ -53,17 +53,17 @@ public class SaleCashRegisterMovementDaoImpl extends AbstractCollectionItemDaoIm
 	@Override
 	protected void processQueryStringBuilder(QueryStringBuilder queryStringBuilder, String queryName) {
 		super.processQueryStringBuilder(queryStringBuilder, queryName);
-		if(readWhereExistencePeriodFromDateIsLessThan.equals(queryName)){
-			queryStringBuilder.and(SaleCashRegisterMovement.FIELD_COLLECTION);
+		if(readWhereExistencePeriodFromDateIsLessThan.equals(queryName) || countWhereExistencePeriodFromDateIsLessThan.equals(queryName)){
+			queryStringBuilder.and(SaleCashRegisterMovement.FIELD_SALE);
 		}
 	}
 		
 	@Override
 	protected <T> void processQueryWrapper(Class<T> aClass,QueryWrapper<T> queryWrapper, String queryName,Object[] arguments) {
 		super.processQueryWrapper(aClass, queryWrapper, queryName,arguments);
-		if(readWhereExistencePeriodFromDateIsLessThan.equals(queryName)){
+		if(readWhereExistencePeriodFromDateIsLessThan.equals(queryName) || countWhereExistencePeriodFromDateIsLessThan.equals(queryName)){
 			SaleCashRegisterMovement saleCashRegisterMovement = (SaleCashRegisterMovement) arguments[0];
-			queryWrapper.parameter(SaleCashRegisterMovement.FIELD_COLLECTION, saleCashRegisterMovement.getCollection());
+			queryWrapper.parameter(SaleCashRegisterMovement.FIELD_SALE, saleCashRegisterMovement.getSale());
 		}
 	}
 
