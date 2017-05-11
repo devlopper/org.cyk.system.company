@@ -58,7 +58,7 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 	
 	public void saleCashRegisterMovementAmountChanged(Item item){
 		item.getIdentifiable().setAmount(item.getAmount());
-		inject(SaleCashRegisterMovementBusiness.class).computeBalance(item.getIdentifiable());
+		inject(SaleCashRegisterMovementBusiness.class).computeBalance(item.getIdentifiable(),item.getPrevious());
 		inject(SaleCashRegisterMovementCollectionBusiness.class).computeAmount(identifiable,identifiable.getItems().getCollection());
 		identifiable.setAmountIn(identifiable.getCashRegisterMovement().getMovement().getValue());
 		itemCollection.read(item);
@@ -108,13 +108,26 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 			@Override
 			public void read(Item item) {
 				super.read(item);
+				if(Crud.UPDATE.equals(crud))
+					item.setPrevious(inject(SaleCashRegisterMovementBusiness.class).findFirstWhereExistencePeriodFromDateIsLessThan(item.getIdentifiable()));
 				item.setSale(item.getIdentifiable().getSale());
 				item.setCode(item.getIdentifiable().getSale().getCode());
 				item.setName(item.getIdentifiable().getSale().getName());
 				item.setCost(inject(FormatterBusiness.class).format(item.getIdentifiable().getSale().getSalableProductCollection().getCost().getValue()));
+				
+				if(Crud.CREATE.equals(crud)){
+					item.setToPay(inject(FormatterBusiness.class).format(item.getIdentifiable().getSale().getBalance().getValue()));
+				}else{
+					SaleCashRegisterMovement previous = inject(SaleCashRegisterMovementBusiness.class).findFirstWhereExistencePeriodFromDateIsLessThan(item.getIdentifiable());
+					if(previous==null){
+						item.setToPay(inject(FormatterBusiness.class).format(item.getIdentifiable().getSale().getSalableProductCollection().getCost().getValue()));
+					}else{
+						item.setToPay(inject(FormatterBusiness.class).format(previous.getBalance().getValue()));
+					}
+				}
+				//item.setToPay(item.getBalance());
+				
 				item.setBalance(inject(FormatterBusiness.class).format(item.getIdentifiable().getBalance().getValue()));
-				item.setToPay(Crud.CREATE.equals(crud) ? item.getBalance() 
-						: inject(FormatterBusiness.class).format(item.getIdentifiable().getBalance().getValue().add( item.getIdentifiable().getAmount()  )) );
 				item.setAmount(item.getIdentifiable().getAmount());
 			}
 			
@@ -310,6 +323,7 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 		protected Sale sale;
 		protected String code,name,cost,toPay,balance;
 		protected BigDecimal amount;
+		protected SaleCashRegisterMovement previous;
 		 		
 	}
 

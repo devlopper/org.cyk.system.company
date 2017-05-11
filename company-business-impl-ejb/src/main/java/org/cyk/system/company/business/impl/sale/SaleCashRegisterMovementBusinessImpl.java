@@ -157,7 +157,6 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 			saleCashRegisterMovement.getBalance().setCumul(customer.getBalance());
 		}
 		*/
-		System.out.println("Collection : "+saleCashRegisterMovement.getCollection());
 		/*saleCashRegisterMovement = */super.create(saleCashRegisterMovement);
 		//if(saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().isSynchonizationEnabled()){
 			//inject(SalableProductCollectionItemSaleCashRegisterMovementBusiness.class).create(saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getCollection());
@@ -234,11 +233,22 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 	}
 		
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void computeBalance(SaleCashRegisterMovement saleCashRegisterMovement) {
+	public void computeBalance(SaleCashRegisterMovement saleCashRegisterMovement,SaleCashRegisterMovement previous) {
 		BigDecimal saleCashRegisterMovementAmount = saleCashRegisterMovement.getAmount();
-		BigDecimal balance = saleCashRegisterMovement.getSale().getIdentifier()==null
+		BigDecimal balance = null;
+		if(isIdentified(saleCashRegisterMovement)){
+			if(previous==null){
+				balance = saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue();
+			}else{
+				balance = previous.getBalance().getValue();
+			}
+		}else{
+			balance = saleCashRegisterMovement.getSale().getIdentifier()==null
 				?saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue()
 				:saleCashRegisterMovement.getSale().getBalance().getValue();
+			
+		}
+		
 		
 		MovementAction action = saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getAction();
 		if(action==null || action.equals(saleCashRegisterMovement.getCollection().getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction())){
@@ -250,6 +260,11 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 				balance =  balance.add(saleCashRegisterMovementAmount.abs());
 		}	
 		saleCashRegisterMovement.getBalance().setValue(balance);
+	}
+	
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void computeBalance(SaleCashRegisterMovement saleCashRegisterMovement) {
+		computeBalance(saleCashRegisterMovement,null);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)

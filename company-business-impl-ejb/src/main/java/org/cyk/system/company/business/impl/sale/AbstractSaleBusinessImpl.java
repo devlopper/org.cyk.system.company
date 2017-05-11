@@ -94,7 +94,7 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 	@Override
 	protected void afterDelete(SALE sale) {
 		super.afterDelete(sale);
-		if(isIdentified(sale.getSalableProductCollection()))
+		if(inject(SalableProductCollectionBusiness.class).isIdentified(sale.getSalableProductCollection()))
 			inject(SalableProductCollectionBusiness.class).delete(sale.getSalableProductCollection());
 	}
 	
