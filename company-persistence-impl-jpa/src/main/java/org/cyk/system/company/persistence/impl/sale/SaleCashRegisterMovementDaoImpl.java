@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import javax.persistence.NoResultException;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
@@ -53,7 +54,8 @@ public class SaleCashRegisterMovementDaoImpl extends AbstractCollectionItemDaoIm
 	@Override
 	protected void processQueryStringBuilder(QueryStringBuilder queryStringBuilder, String queryName) {
 		super.processQueryStringBuilder(queryStringBuilder, queryName);
-		if(readWhereExistencePeriodFromDateIsLessThan.equals(queryName) || countWhereExistencePeriodFromDateIsLessThan.equals(queryName)){
+		if(ArrayUtils.contains(new String[]{readWhereExistencePeriodFromDateIsLessThan,countWhereExistencePeriodFromDateIsLessThan
+				,readWhereExistencePeriodFromDateIsGreaterThan,countWhereExistencePeriodFromDateIsGreaterThan}, queryName)){
 			queryStringBuilder.and(SaleCashRegisterMovement.FIELD_SALE);
 		}
 	}
@@ -61,7 +63,8 @@ public class SaleCashRegisterMovementDaoImpl extends AbstractCollectionItemDaoIm
 	@Override
 	protected <T> void processQueryWrapper(Class<T> aClass,QueryWrapper<T> queryWrapper, String queryName,Object[] arguments) {
 		super.processQueryWrapper(aClass, queryWrapper, queryName,arguments);
-		if(readWhereExistencePeriodFromDateIsLessThan.equals(queryName) || countWhereExistencePeriodFromDateIsLessThan.equals(queryName)){
+		if(ArrayUtils.contains(new String[]{readWhereExistencePeriodFromDateIsLessThan,countWhereExistencePeriodFromDateIsLessThan
+				,readWhereExistencePeriodFromDateIsGreaterThan,countWhereExistencePeriodFromDateIsGreaterThan}, queryName)){
 			SaleCashRegisterMovement saleCashRegisterMovement = (SaleCashRegisterMovement) arguments[0];
 			queryWrapper.parameter(SaleCashRegisterMovement.FIELD_SALE, saleCashRegisterMovement.getSale());
 		}

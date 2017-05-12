@@ -46,6 +46,7 @@ import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementCollectionDao;
+import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.impl.AbstractBusinessTestHelper;
@@ -241,7 +242,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     		}.execute();
     	}else{
     		update(saleCashRegisterMovement);
-    		assertSaleCashRegisterMovement(saleCashRegisterMovement, saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue().toString(), expectedSaleBalanceValue,expectedCashRegisterValue);
+    		assertSaleCashRegisterMovement(saleCashRegisterMovement,null, saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue().toString(), expectedSaleBalanceValue,expectedCashRegisterValue);
     	}
     	return saleCashRegisterMovement;
     }
@@ -333,7 +334,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	/* Sale */
 	@Deprecated
     public Sale createSale(String identifier,String date,String cashierCode,String customerCode,String[][] products,String paid,String taxable,String finalState,String expectedThrowableMessage){
-    	final Sale sale =  inject(SaleBusiness.class).instanciateOne(cashierDao.select().one().getPerson());
+    	final Sale sale =  inject(SaleBusiness.class).instanciateOne();
     	set(sale,identifier,date, cashierCode, customerCode, products, taxable);
     	if(paid==null || !Boolean.TRUE.equals(Boolean.parseBoolean(StringUtils.defaultString(finalState,"true")))){
     		inject(SaleBusiness.class).create(sale);
@@ -433,10 +434,15 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	//assertCashRegisterMovementCollection(saleCashRegisterMovementCollection.getCollection().getCashRegisterMovement(), expectedCashRegisterValue);
     }
     
-    public void assertSaleCashRegisterMovement(SaleCashRegisterMovement saleCashRegisterMovement,String expectedSaleCostValue,String expectedSaleBalanceValue,String expectedCashRegisterValue){
+    public void assertSaleCashRegisterMovement(SaleCashRegisterMovement saleCashRegisterMovement,String expectedBalance,String expectedSaleCostValue,String expectedSaleBalanceValue,String expectedCashRegisterValue){
     	saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).find(saleCashRegisterMovement.getIdentifier());
     	assertSale(saleCashRegisterMovement.getSale(), expectedSaleCostValue, expectedSaleBalanceValue);
+    	assertBigDecimalEquals("Sale cash register movement balance", expectedBalance, saleCashRegisterMovement.getBalance().getValue());
     	//assertCashRegisterMovement(saleCashRegisterMovement.getCollection().getCashRegisterMovement(), expectedCashRegisterValue);
+    }
+    
+    public void assertSaleCashRegisterMovement(String code,String expectedBalance,String expectedSaleCostValue,String expectedSaleBalanceValue,String expectedCashRegisterValue){
+    	assertSaleCashRegisterMovement(inject(SaleCashRegisterMovementDao.class).read(code),expectedBalance, expectedSaleCostValue, expectedSaleBalanceValue, expectedCashRegisterValue);
     }
     
     @Deprecated   

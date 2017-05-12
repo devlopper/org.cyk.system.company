@@ -27,4 +27,5 @@ public interface SaleCashRegisterMovementBusiness extends AbstractCollectionItem
 	
 	void setSale(SaleCashRegisterMovement saleCashRegisterMovement,Sale sale);
 	
+	BigDecimal sumAmout(Collection<SaleCashRegisterMovement> saleCashRegisterMovements);
 }

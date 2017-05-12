@@ -1,6 +1,7 @@
 package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,8 +29,8 @@ import org.cyk.system.company.persistence.api.sale.SaleIdentifiableGlobalIdentif
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
+import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
-import org.cyk.system.root.model.party.person.Person;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 
 public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sale.SearchCriteria> implements SaleBusiness,Serializable {
@@ -46,12 +47,6 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	@Override
 	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
 		return Listener.COLLECTION;
-	}
-	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public Sale instanciateOne(Person person) {
-		Sale sale = instanciateOne();
-		return sale;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -82,6 +77,12 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	}
 	
 	@Override
+	protected void beforeCreate(Sale sale) {
+		super.beforeCreate(sale);
+		computeBalance(sale);
+	}
+	
+	@Override
 	protected void afterCreate(Sale sale) {
 		super.afterCreate(sale);
 		exceptionUtils().comparison(!sale.getSalableProductCollection().getCost().getValue().equals(sale.getBalance().getValue()), "field.cost : "+sale.getSalableProductCollection().getCost().getValue()
@@ -91,8 +92,9 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	@Override
 	protected void beforeUpdate(Sale sale) {
 		super.beforeUpdate(sale);
-		sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue());//FIXME think well how to compute new balance
+		//sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue());//FIXME think well how to compute new balance
 		//new balance = cost - sum of all cash register movements - hence can be make as function and used in create as well
+		computeBalance(sale);
 	}
 	
 	@Override
@@ -106,6 +108,12 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	protected void beforeDelete(Sale sale) {
 		super.beforeDelete(sale);
 		inject(SaleIdentifiableGlobalIdentifierBusiness.class).delete(inject(SaleIdentifiableGlobalIdentifierDao.class).readBySale(sale));
+	}
+	
+	@Override
+	protected void afterDelete(Sale sale) {
+		super.afterDelete(sale);
+		computeBalance(sale);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
@@ -205,6 +213,27 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 			}
 		}
 		
+	}
+
+	
+	@Override
+	public void computeBalance(Sale sale) {
+		computeBalance(sale, inject(SaleCashRegisterMovementDao.class).readBySale(sale));
+	}
+	
+
+	@Override
+	public void computeBalance(Sale sale, Collection<SaleCashRegisterMovement> saleCashRegisterMovements) {
+		BigDecimal paid = BigDecimal.ZERO;
+		if(saleCashRegisterMovements!=null)
+			for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovements)
+				paid = paid.add(saleCashRegisterMovement.getAmount());
+		sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue().subtract(paid));
+		
+		/*
+		exceptionUtils().comparison(!Boolean.TRUE.equals(sale.getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getBalanceCanBeNegative()) 
+				&& newBalance.signum() == -1, inject(LanguageBusiness.class).findText("field.balance"),ArithmeticOperator.GTE,BigDecimal.ZERO);
+		*/
 	}
 	
 }
