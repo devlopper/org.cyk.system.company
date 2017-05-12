@@ -29,7 +29,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
     
-    //@Test
+    @Test
     public void crudSalableProductCollection(){
     	TestCase testCase = instanciateTestCase();
     	testCase.create(inject(SalableProductCollectionBusiness.class).instanciateOne("SPC001", new String[][]{}));
@@ -38,7 +38,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.clean();
     }
     
-   // @Test
+    @Test
     public void crudSalableProductCollectionItem(){
     	TestCase testCase = instanciateTestCase();
     	testCase.create(inject(SalableProductCollectionBusiness.class).instanciateOne("SPC001", new String[][]{}));
@@ -53,7 +53,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.clean();
     }
     
-    //@Test
+    @Test
     public void crudSalableProductCollectionAndItems(){
     	TestCase testCase = instanciateTestCase();
     	testCase.create(inject(SalableProductCollectionBusiness.class).instanciateOne("SPC001", new String[][]{}));
@@ -77,14 +77,14 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.clean();
     }
     
-    //@Test
+    @Test
     public void crudSale(){
     	TestCase testCase = instanciateTestCase();
     	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
     	testCase.clean();
     }
     
-    //@Test
+    @Test
     public void crudSaleCashRegisterMovementCollection(){
     	TestCase testCase = instanciateTestCase();
     	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
@@ -93,7 +93,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.clean();
     }
     
-    //@Test
+    @Test
     public void crudSaleCashRegisterMovement(){
     	TestCase testCase = instanciateTestCase();
     	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
@@ -108,7 +108,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.clean();
     }
     
-    //@Test
+    @Test
     public void assertOrderSaleCashRegisterMovement(){
     	TestCase testCase = instanciateTestCase();
     	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
@@ -150,7 +150,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.clean();
     }
     
-    //@Test
+    @Test
     public void crudSaleCashRegisterMovementCollectionUserInterface(){
     	UserAccount userAccount = inject(UserAccountDao.class).readOneRandomly();
     	String sale1Code = "Sale"+RandomDataProvider.getInstance().randomInt(0, 100000);
@@ -192,7 +192,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.clean();
     }
     
-    //@Test
+    @Test
     public void crudSaleCashRegisterMovementCollectionAndVariousCashRegisterMovementMode(){
     	TestCase testCase = instanciateTestCase();
     	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{{"TP01","3"},{"TP02","2"}}));
@@ -246,7 +246,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.clean();
     }
     
-    //@Test
+    @Test
     public void regularCase(){
     	TestCase testCase = instanciateTestCase();
     	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1},{"TP02",2} }));

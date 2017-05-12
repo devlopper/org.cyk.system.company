@@ -174,22 +174,12 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 		logTrace(logMessageBuilder);
 		return saleCashRegisterMovement;
 	}
-	
-	@Override
-	protected void beforeCrud(SaleCashRegisterMovement saleCashRegisterMovement, Crud crud) {
-		super.beforeCrud(saleCashRegisterMovement, crud);
-		if(Crud.isCreateOrUpdate(crud)){
-			//SaleCashRegisterMovement previous = dao.readFirstWhereExistencePeriodFromDateIsLessThan(saleCashRegisterMovement);
-			//computeBalance(saleCashRegisterMovement,previous);	
-		}
 		
-	}
-	
 	@Override
 	protected void afterCrud(SaleCashRegisterMovement saleCashRegisterMovement, Crud crud) {
 		super.afterCrud(saleCashRegisterMovement, crud);
 		if(Crud.isCreateOrUpdate(crud)){
-			BigDecimal paid  = sumAmout(inject(SaleCashRegisterMovementDao.class).readWhereExistencePeriodFromDateIsLessThan(saleCashRegisterMovement));//TODO should be a request
+			BigDecimal paid  = sumAmount(inject(SaleCashRegisterMovementDao.class).readWhereExistencePeriodFromDateIsLessThan(saleCashRegisterMovement));//TODO should be a request
 			saleCashRegisterMovement.getBalance().setValue(saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue().subtract(paid).subtract(saleCashRegisterMovement.getAmount()));
 			//System.out.println("SaleCashRegisterMovementBusinessImpl.afterCrud() "+crud+" "+saleCashRegisterMovement.getCode()+" "+paid+" "+saleCashRegisterMovement.getAmount()+" "+saleCashRegisterMovement.getBalance().getValue());
 			dao.update(saleCashRegisterMovement);
@@ -240,7 +230,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 	}*/
 	
 	@Override
-	public BigDecimal sumAmout(Collection<SaleCashRegisterMovement> saleCashRegisterMovements) {
+	public BigDecimal sumAmount(Collection<SaleCashRegisterMovement> saleCashRegisterMovements) {
 		BigDecimal sum = BigDecimal.ZERO;
 		if(saleCashRegisterMovements!=null)
 			for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovements)

@@ -29,7 +29,6 @@ import org.cyk.system.company.persistence.api.sale.SaleIdentifiableGlobalIdentif
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
-import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 
