@@ -11,6 +11,7 @@ import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollecti
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
@@ -18,6 +19,7 @@ import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
+import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.impl.AbstractBusinessTestHelper.TestCase;
 import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.persistence.api.file.FileIdentifiableGlobalIdentifierDao;
@@ -33,8 +35,14 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     public void crudSalableProductCollection(){
     	TestCase testCase = instanciateTestCase();
     	testCase.create(inject(SalableProductCollectionBusiness.class).instanciateOne("SPC001", new String[][]{}));
-    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionDao.class).read("SPC001");
+    	SalableProductCollection salableProductCollection = testCase.read(SalableProductCollection.class, "SPC001");
     	companyBusinessTestHelper.assertCost(salableProductCollection.getCost(), "0", "0", "0", "0");
+    	
+    	salableProductCollection.getCost().setValueFromString("100").setTaxFromString("3").setTurnoverFromString("97").setNumberOfProceedElementsFromString("2");
+    	testCase.update(salableProductCollection);
+    	salableProductCollection = testCase.read(SalableProductCollection.class, "SPC001");
+    	companyBusinessTestHelper.assertCost(salableProductCollection.getCost(), "2", "100", "3", "97");
+    	
     	testCase.clean();
     }
     
@@ -48,8 +56,16 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	companyBusinessTestHelper.assertCost(salableProductCollectionItem.getCost(), "1", "60000", "0", "60000");
     	companyBusinessTestHelper.assertCost(salableProductCollectionItem.getCollection().getCost(), "1", "60000", "0", "60000");
     	testCase.create(salableProductCollectionItem);
-    	salableProductCollection = inject(SalableProductCollectionDao.class).read("SPC001");
+    	salableProductCollection = testCase.read(SalableProductCollection.class,"SPC001");
     	companyBusinessTestHelper.assertCost(salableProductCollection.getCost(), "1", "60000", "0", "60000");
+    	
+    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne("SPC001", new Object[]{"TP02",1});
+    	companyBusinessTestHelper.assertCost(salableProductCollectionItem.getCost(), "1", "7000", "0", "7000");
+    	//companyBusinessTestHelper.assertCost(salableProductCollectionItem.getCollection().getCost(), "2", "7000", "0", "7000");
+    	testCase.create(salableProductCollectionItem);
+    	salableProductCollection = testCase.read(SalableProductCollection.class,"SPC001");
+    	companyBusinessTestHelper.assertCost(salableProductCollection.getCost(), "2", "67000", "0", "67000");
+    	
     	testCase.clean();
     }
     
@@ -81,6 +97,11 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     public void crudSale(){
     	TestCase testCase = instanciateTestCase();
     	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	companyBusinessTestHelper.assertCost(inject(SaleDao.class).read("Sale001").getSalableProductCollection().getCost(), "0", "0", "0", "0");
+    	
+    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne("Sale001", new Object[]{"TP01",1});
+    	testCase.create(salableProductCollectionItem);
+    	companyBusinessTestHelper.assertCost(inject(SaleDao.class).read("Sale001").getSalableProductCollection().getCost(), "1", "60000", "0", "60000");
     	testCase.clean();
     }
     
@@ -266,6 +287,8 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     public void updateSaleCashRegisterMovement(){
     	TestCase testCase = instanciateTestCase();
     	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1},{"TP02",2} }));
+    	companyBusinessTestHelper.assertCost(inject(SaleDao.class).read("Sale001").getSalableProductCollection().getCost(), "3", "74000", "0", "74000");
+    	
     	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"IP01",4},{"IP02",3} }));
     	
     	//create 1st payment
@@ -298,6 +321,15 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.update(saleCashRegisterMovement);
     	companyBusinessTestHelper.assertSaleCashRegisterMovement("P001_Sale001", "73200","74000", "72200", "800");
     	companyBusinessTestHelper.assertSaleCashRegisterMovement("P002_Sale001", "72200","74000", "72200", "1000");
+    	
+    	//update 1st sale
+    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne("Sale001", new Object[]{"TP03",3});
+    	salableProductCollectionItem.setCascadeOperationToChildren(Boolean.TRUE);
+    	testCase.create(salableProductCollectionItem);
+    	
+    	companyBusinessTestHelper.assertCost(inject(SaleDao.class).read("Sale001").getSalableProductCollection().getCost(), "6", "95000", "0", "95000");
+    	companyBusinessTestHelper.assertSaleCashRegisterMovement("P001_Sale001", "94200","95000", "93200", "800");
+    	companyBusinessTestHelper.assertSaleCashRegisterMovement("P002_Sale001", "93200","95000", "93200", "1000");
     	
     	//
     	/*

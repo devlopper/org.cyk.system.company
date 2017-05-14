@@ -43,11 +43,7 @@ public class Cost extends AbstractModelElement implements Serializable {
 			this.turnover = cost.turnover;
 		}	
 	}
-	
-	public void setValue(BigDecimal value){
-		this.value = value;
-	}
-	
+		
 	public Cost setNumberOfProceedElementsFromString(String numberOfProceedElements){
 		this.numberOfProceedElements = new BigDecimal(numberOfProceedElements);
 		return this;

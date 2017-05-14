@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleIdentifiableGlobalIdentifierBusiness;
@@ -80,27 +81,11 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		super.beforeCreate(sale);
 		computeBalance(sale);
 	}
-	
-	@Override
-	protected void afterCreate(Sale sale) {
-		super.afterCreate(sale);
-		exceptionUtils().comparison(!sale.getSalableProductCollection().getCost().getValue().equals(sale.getBalance().getValue()), "field.cost : "+sale.getSalableProductCollection().getCost().getValue()
-				, ArithmeticOperator.EQ, "field.balance : "+sale.getBalance().getValue());
-	}
-	
+		
 	@Override
 	protected void beforeUpdate(Sale sale) {
 		super.beforeUpdate(sale);
-		//sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue());//FIXME think well how to compute new balance
-		//new balance = cost - sum of all cash register movements - hence can be make as function and used in create as well
 		computeBalance(sale);
-	}
-	
-	@Override
-	protected void afterUpdate(Sale sale) {
-		super.afterUpdate(sale);
-		exceptionUtils().comparison(sale.getSalableProductCollection().getCost().getValue().compareTo(sale.getBalance().getValue())<0, "field.cost : "+sale.getSalableProductCollection().getCost().getValue()
-				, ArithmeticOperator.GT, "field.balance : "+sale.getBalance().getValue());
 	}
 	
 	@Override
@@ -109,11 +94,11 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		inject(SaleIdentifiableGlobalIdentifierBusiness.class).delete(inject(SaleIdentifiableGlobalIdentifierDao.class).readBySale(sale));
 	}
 	
-	@Override
+	/*@Override
 	protected void afterDelete(Sale sale) {
 		super.afterDelete(sale);
 		computeBalance(sale);
-	}
+	}*/
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public SaleResults computeByCriteria(Sale.SearchCriteria criteria) {
@@ -123,6 +108,36 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public ReportBasedOnTemplateFile<SaleReport> findReport(Sale sale) {
 		return null;
+	}
+	
+	@Override
+	public void computeBalance(Sale sale) {
+		computeBalance(sale, inject(SaleCashRegisterMovementDao.class).sumAmountBySale(sale));
+	}
+
+	@Override
+	public void computeBalance(Sale sale, Collection<SaleCashRegisterMovement> saleCashRegisterMovements) {
+		BigDecimal sumOfSaleCashRegisterMovementAmount = BigDecimal.ZERO;
+		if(saleCashRegisterMovements!=null)
+			for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovements)
+				sumOfSaleCashRegisterMovementAmount = sumOfSaleCashRegisterMovementAmount.add(saleCashRegisterMovement.getAmount());
+		computeBalance(sale, sumOfSaleCashRegisterMovementAmount);
+	}
+	
+	private void computeBalance(Sale sale,BigDecimal sumOfSaleCashRegisterMovementAmount){
+		BigDecimal balanceValue = sale.getSalableProductCollection().getCost().getValue().subtract(sumOfSaleCashRegisterMovementAmount);
+		Integer costValueBalanceValueComparison = sale.getSalableProductCollection().getCost().getValue().compareTo(balanceValue);
+		/*
+		exceptionUtils().comparison(costValueBalanceValueComparison==0 && !sale.getSalableProductCollection().getCost().getValue().equals(balanceValue), "field.cost : "+sale.getSalableProductCollection().getCost().getValue()
+				, ArithmeticOperator.EQ, "field.balance : "+balanceValue);
+		*/
+		exceptionUtils().exception(costValueBalanceValueComparison==-1, "balancecannotbegreaterthancost");
+		
+		sale.getBalance().setValue(balanceValue);
+		/*
+		exceptionUtils().comparison(!Boolean.TRUE.equals(sale.getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getBalanceCanBeNegative()) 
+				&& newBalance.signum() == -1, inject(LanguageBusiness.class).findText("field.balance"),ArithmeticOperator.GTE,BigDecimal.ZERO);
+		*/
 	}
 		
 	/**/
@@ -215,24 +230,6 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	}
 
 	
-	@Override
-	public void computeBalance(Sale sale) {
-		computeBalance(sale, inject(SaleCashRegisterMovementDao.class).readBySale(sale));
-	}
 	
-
-	@Override
-	public void computeBalance(Sale sale, Collection<SaleCashRegisterMovement> saleCashRegisterMovements) {
-		BigDecimal paid = BigDecimal.ZERO;
-		if(saleCashRegisterMovements!=null)
-			for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovements)
-				paid = paid.add(saleCashRegisterMovement.getAmount());
-		sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue().subtract(paid));
-		
-		/*
-		exceptionUtils().comparison(!Boolean.TRUE.equals(sale.getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getBalanceCanBeNegative()) 
-				&& newBalance.signum() == -1, inject(LanguageBusiness.class).findText("field.balance"),ArithmeticOperator.GTE,BigDecimal.ZERO);
-		*/
-	}
 	
 }

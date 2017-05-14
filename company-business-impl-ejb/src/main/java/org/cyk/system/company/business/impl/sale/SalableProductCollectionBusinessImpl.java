@@ -18,6 +18,7 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
 import org.cyk.utility.common.LogMessage;
 
@@ -33,6 +34,14 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	@Override
 	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
 		return Listener.COLLECTION;
+	}
+	
+	@Override
+	protected void afterCrud(SalableProductCollection salableProductCollection, Crud crud) {
+		super.afterCrud(salableProductCollection, crud);
+		if(Crud.isCreateOrUpdate(crud)){
+			computeCost(salableProductCollection);
+		}
 	}
 	
 	@Override

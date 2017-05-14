@@ -11,13 +11,17 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
+import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
+import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
+import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
@@ -45,6 +49,15 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 		if(ArrayUtils.contains(new Crud[]{Crud.CREATE,Crud.UPDATE,Crud.DELETE}, crud)){
 			if(Boolean.TRUE.equals(salableProductCollectionItem.getCascadeOperationToMaster()))
 				cascadeUpdateCollectionCost(salableProductCollectionItem);
+			
+			if(Crud.isCreateOrUpdate(crud) && Boolean.TRUE.equals(salableProductCollectionItem.getCascadeOperationToChildren())){
+				for(SaleCashRegisterMovement saleCashRegisterMovement : inject(SaleCashRegisterMovementDao.class).readBySale(inject(SaleDao.class)
+						.read(salableProductCollectionItem.getCollection().getCode()))){
+					inject(SaleCashRegisterMovementBusiness.class).update(saleCashRegisterMovement);
+					//TODO do it well
+					break;
+				}
+			}
 		}
 	}
 		

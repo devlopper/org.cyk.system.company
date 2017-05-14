@@ -419,8 +419,10 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     }
     
     public void assertSale(Sale sale,String costValue,String balanceValue){
-    	//sale = inject(SaleBusiness.class).find(sale.getIdentifier());
+    	String name = "sale "+sale.getCode();
     	//assertSalableProductCollection(sale.getSalableProductCollection(), costValue);
+    	//assertSalableProductCollection(sale.getSalableProductCollection(), expectedCostNumberOfElements, expectedCostValue, expectedCostTax, expectedCostTurnover);
+    	//assertBigDecimalEquals(name+" balance value", balanceValue, sale.getBalance().getValue());
     	assertCost(sale.getSalableProductCollection().getCost(), new ObjectFieldValues(Balance.class).set(Cost.FIELD_VALUE,costValue));
     	assertBalance(sale.getBalance(), new ObjectFieldValues(Balance.class).set(Balance.FIELD_VALUE,balanceValue));
     }

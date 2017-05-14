@@ -13,7 +13,7 @@ public interface SaleCashRegisterMovementDao extends AbstractCollectionItemDao<S
 	Collection<SaleCashRegisterMovement> readBySale(Sale sale);
 	Long countBySale(Sale sale);
 	
-	BigDecimal sumAmount(Sale sale);
+	BigDecimal sumAmountBySale(Sale sale);
 	SaleCashRegisterMovement readByCashRegisterMovementCode(String code);
 
 }

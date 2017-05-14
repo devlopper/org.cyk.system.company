@@ -42,7 +42,7 @@ public class SaleCashRegisterMovementDaoImpl extends AbstractCollectionItemDaoIm
 	}
 
 	@Override
-	public BigDecimal sumAmount(Sale sale) { 
+	public BigDecimal sumAmountBySale(Sale sale) { 
 		return namedQuery(sumAmount,BigDecimal.class).parameter(SaleCashRegisterMovement.FIELD_SALE, sale).nullValue(BigDecimal.ZERO).resultOne();
 	}
 
