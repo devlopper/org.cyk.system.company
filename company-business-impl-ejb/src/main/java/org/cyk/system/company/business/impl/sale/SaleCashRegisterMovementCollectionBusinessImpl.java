@@ -74,7 +74,7 @@ public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractColl
 	
 	@Override
 	public SaleCashRegisterMovementCollection instanciateOne(UserAccount userAccount) {
-		return instanciateOne(null, null, null, null);
+		return instanciateOne(null, null, CompanyConstant.Code.CashRegister.DEFAULT, null);
 	}
 	
 	/*@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)

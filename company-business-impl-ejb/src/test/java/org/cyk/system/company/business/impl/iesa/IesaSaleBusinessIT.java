@@ -123,10 +123,10 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
     	
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
-    	SaleCashRegisterMovement saleCashRegisterMovement = companyBusinessTestHelper.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale001", "0"));
+    	SaleCashRegisterMovement saleCashRegisterMovement = testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale001", "0"));
     	assertEquals("P001_Sale001", saleCashRegisterMovement.getCode());
     	
-    	companyBusinessTestHelper.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale002", "0"));
+    	testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale002", "0"));
     	
     	testCase.clean();
     }
@@ -281,6 +281,8 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     			, new Object[][]{{"Sale001","700"},{"Sale002","300"}}));
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P003",null, IesaFakedDataProducer.CASH_REGISTER_001
     			, new Object[][]{{"Sale002","100"},{"Sale001","250"}}));
+    	
+    	testCase.deleteByCode(Sale.class, "Sale001");
     	
     	testCase.clean();
     }
