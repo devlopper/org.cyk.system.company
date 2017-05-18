@@ -34,8 +34,10 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     @Test
     public void crudSalableProductCollection(){
     	TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SalableProductCollectionBusiness.class).instanciateOne("SPC001", new String[][]{}));
-    	SalableProductCollection salableProductCollection = testCase.read(SalableProductCollection.class, "SPC001");
+    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne("SPC001", new String[][]{});
+    	salableProductCollection.setItemAggregationApplied(Boolean.FALSE);
+    	testCase.create(salableProductCollection);
+    	salableProductCollection = testCase.read(SalableProductCollection.class, "SPC001");
     	companyBusinessTestHelper.assertCost(salableProductCollection.getCost(), "0", "0", "0", "0");
     	
     	salableProductCollection.getCost().setValueFromString("100").setTaxFromString("3").setTurnoverFromString("97").setNumberOfProceedElementsFromString("2");

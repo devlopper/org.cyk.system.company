@@ -77,29 +77,20 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	}
 	
 	@Override
-	protected void beforeCreate(Sale sale) {
-		super.beforeCreate(sale);
-		computeBalance(sale);
+	protected void afterCrud(Sale sale, Crud crud) {
+		super.afterCrud(sale, crud);
+		if(Crud.isCreateOrUpdate(crud)){
+			computeBalance(sale);
+			dao.update(sale);
+		}
 	}
 		
-	@Override
-	protected void beforeUpdate(Sale sale) {
-		super.beforeUpdate(sale);
-		computeBalance(sale);
-	}
-	
 	@Override
 	protected void beforeDelete(Sale sale) {
 		super.beforeDelete(sale);
 		inject(SaleIdentifiableGlobalIdentifierBusiness.class).delete(inject(SaleIdentifiableGlobalIdentifierDao.class).readBySale(sale));
 	}
-	
-	/*@Override
-	protected void afterDelete(Sale sale) {
-		super.afterDelete(sale);
-		computeBalance(sale);
-	}*/
-	
+		
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public SaleResults computeByCriteria(Sale.SearchCriteria criteria) {
 		return dao.computeByCriteria(criteria);
@@ -112,7 +103,8 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	
 	@Override
 	public void computeBalance(Sale sale) {
-		computeBalance(sale, inject(SaleCashRegisterMovementDao.class).sumAmountBySale(sale));
+		if( sale.getSalableProductCollection().getItemAggregationApplied() == null || Boolean.TRUE.equals(sale.getSalableProductCollection().getItemAggregationApplied()))
+			computeBalance(sale, inject(SaleCashRegisterMovementDao.class).sumAmountBySale(sale));
 	}
 
 	@Override

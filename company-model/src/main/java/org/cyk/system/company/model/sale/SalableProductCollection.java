@@ -31,7 +31,7 @@ public class SalableProductCollection extends AbstractCollection<SalableProductC
 	/**/
 	
 	@Transient protected Boolean autoComputeValueAddedTax = Boolean.TRUE;
-	//Use map for this
+	//TODO Use map for this
 	@Transient private BigDecimal totalCostValueWithoutReduction;
 	@Transient private BigDecimal totalReduction;
 	

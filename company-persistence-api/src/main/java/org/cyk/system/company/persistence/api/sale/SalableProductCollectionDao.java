@@ -5,6 +5,5 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.root.persistence.api.AbstractCollectionDao;
 
 public interface SalableProductCollectionDao extends AbstractCollectionDao<SalableProductCollection,SalableProductCollectionItem> {
-
 	
 }

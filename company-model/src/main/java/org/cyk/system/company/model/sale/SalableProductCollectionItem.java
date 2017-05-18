@@ -41,8 +41,7 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 	@Transient private BigDecimal quantifiedPrice;
 	
 	@Embedded private Balance balance = new Balance();
-	//@Embedded private Period existencePeriod = new Period();
-
+	
 	@Transient private Collection<SaleProductInstance> instances;
 	@Transient private IdentifiableRuntimeCollection<SalableProductCollectionItemSaleCashRegisterMovement> salableProductCollectionItemSaleCashRegisterMovements = new IdentifiableRuntimeCollection<>();
 	
