@@ -30,6 +30,7 @@ import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovem
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
+import org.cyk.utility.common.computation.ArithmeticOperator;
 
 public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sale.SearchCriteria> implements SaleBusiness,Serializable {
 
@@ -122,12 +123,15 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	
 	private void computeBalance(Sale sale,BigDecimal sumOfSaleCashRegisterMovementAmount){
 		BigDecimal balanceValue = sale.getSalableProductCollection().getCost().getValue().subtract(sumOfSaleCashRegisterMovementAmount);
+		exceptionUtils().comparison(balanceValue.signum()==-1, "balance", ArithmeticOperator.GTE, BigDecimal.ZERO);
 		Integer costValueBalanceValueComparison = sale.getSalableProductCollection().getCost().getValue().compareTo(balanceValue);
 		/*
 		exceptionUtils().comparison(costValueBalanceValueComparison==0 && !sale.getSalableProductCollection().getCost().getValue().equals(balanceValue), "field.cost : "+sale.getSalableProductCollection().getCost().getValue()
 				, ArithmeticOperator.EQ, "field.balance : "+balanceValue);
 		*/
-		exceptionUtils().exception(costValueBalanceValueComparison==-1, "balancecannotbegreaterthancost");
+		exceptionUtils().comparison(costValueBalanceValueComparison==-1, "balance", ArithmeticOperator.LTE, sale.getSalableProductCollection().getCost().getValue());
+		//exceptionUtils().exception(costValueBalanceValueComparison==-1, "balancecannotbegreaterthancost");
+		
 		
 		sale.getBalance().setValue(balanceValue);
 		/*

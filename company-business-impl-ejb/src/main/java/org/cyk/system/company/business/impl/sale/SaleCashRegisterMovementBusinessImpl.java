@@ -10,7 +10,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollectionBusiness;
@@ -34,6 +33,7 @@ import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.utility.common.LogMessage;
+import org.cyk.utility.common.computation.ArithmeticOperator;
 
 public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItemBusinessImpl<SaleCashRegisterMovement, SaleCashRegisterMovementDao,SaleCashRegisterMovementCollection> implements SaleCashRegisterMovementBusiness,Serializable {
 
@@ -173,6 +173,12 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 		}*/
 		logTrace(logMessageBuilder);
 		return saleCashRegisterMovement;
+	}
+	
+	@Override
+	protected void beforeCrud(SaleCashRegisterMovement saleCashRegisterMovement, Crud crud) {
+		super.beforeCrud(saleCashRegisterMovement, crud);
+		exceptionUtils().comparison(saleCashRegisterMovement.getAmount().signum()==-1, "amount", ArithmeticOperator.GT, BigDecimal.ZERO);
 	}
 		
 	@Override

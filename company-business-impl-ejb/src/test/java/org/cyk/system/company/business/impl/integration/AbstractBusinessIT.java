@@ -54,6 +54,7 @@ import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachin
 import org.cyk.system.root.persistence.impl.GenericDaoImpl;
 import org.cyk.system.root.persistence.impl.PersistenceIntegrationTestHelper;
 import org.cyk.utility.common.file.ExcelSheetReader;
+import org.cyk.utility.common.helper.ThrowableHelper;
 import org.cyk.utility.common.test.TestEnvironmentListener;
 import org.cyk.utility.test.ArchiveBuilder;
 import org.cyk.utility.test.Transaction;
@@ -114,7 +115,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 			private static final long serialVersionUID = 1983969363248568780L;
 			@Override
 			protected Throwable getThrowable(Throwable throwable) {
-				return commonUtils.getThrowableInstanceOf(throwable, AbstractBusinessException.class);
+				return ThrowableHelper.getInstance().getInstanceOf(throwable, AbstractBusinessException.class);
 			}
     		@Override
     		public void assertEquals(String message, Object expected, Object actual) {

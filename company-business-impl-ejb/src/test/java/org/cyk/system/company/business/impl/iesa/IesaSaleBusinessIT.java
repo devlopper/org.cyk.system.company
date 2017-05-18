@@ -347,6 +347,39 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     
     /* Complex Crud */
     
+    /* Exceptions */
+    
+    @Test
+    public void saleBalanceCannotBeLessThanZero(){
+    	final TestCase testCase = instanciateTestCase();
+    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
+    	testCase.throwMessage(new Runnable() {
+			@Override
+			public void run() {
+				testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale001", "1"));
+			}
+		}, "Balance doit être supérieur ou égal à 0");
+    	
+    	testCase.clean();
+    }
+    
+    @Test
+    public void saleCashRegisterMovementAmountCannotBeLessThanZero(){
+    	final TestCase testCase = instanciateTestCase();
+    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	testCase.create(inject(SalableProductCollectionItemBusiness.class).instanciateOne("Sale001", new Object[]{"TP01",1}));
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
+    	testCase.throwMessage(new Runnable() {
+			@Override
+			public void run() {
+				testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale001", "-1"));
+			}
+		}, "Amount doit être supérieur à 0");
+    	
+    	testCase.clean();
+    }
+    
     //@Test
     public void crudSalableProductCollectionItem1(){
     	/*companyBusinessTestHelper.createSalableProductCollection("SPC002","School Fees",new Cost().setValue(new BigDecimal("0")), new Object[][]{}, "0");

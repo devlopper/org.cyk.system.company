@@ -51,7 +51,10 @@ public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashR
 	public CashRegister instanciateOneRandomly(String code) {
 		CashRegister cashRegister = super.instanciateOneRandomly(code);
 		cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaultOwnedCompany());
-		cashRegister.setMovementCollection(inject(MovementCollectionBusiness.class).instanciateOneRandomly(code));
+		/*cashRegister.setMovementCollection(inject(MovementCollectionBusiness.class).instanciateOneRandomly(code));
+		cashRegister.getMovementCollection().getDecrementAction().getInterval().getLow().setValue(BigDecimal.ZERO);
+		cashRegister.getMovementCollection().getDecrementAction().getInterval().getLow().setValue(BigDecimal.ZERO);
+		*/
 		return cashRegister;
 	}
 	
