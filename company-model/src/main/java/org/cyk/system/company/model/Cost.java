@@ -8,8 +8,11 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 import org.cyk.system.root.model.AbstractModelElement;
+import org.cyk.utility.common.CommonUtils;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -18,7 +21,7 @@ import lombok.experimental.Accessors;
  * @author Christian Yao Komenan
  *
  */
-@Embeddable @Accessors(chain=true) @Getter @Setter
+@Embeddable @Accessors(chain=true) @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class Cost extends AbstractModelElement implements Serializable {
 
 	private static final long serialVersionUID = 4948598720219343584L;
@@ -37,10 +40,10 @@ public class Cost extends AbstractModelElement implements Serializable {
 			this.turnover = null;
 			*/
 		}else{
-			this.numberOfProceedElements = cost.numberOfProceedElements;
-			this.value = cost.value;
-			this.tax = cost.tax;
-			this.turnover = cost.turnover;
+			this.numberOfProceedElements = CommonUtils.getInstance().getValueIfNotNullElseDefault(cost.numberOfProceedElements,BigDecimal.ZERO);
+			this.value = CommonUtils.getInstance().getValueIfNotNullElseDefault(cost.value,BigDecimal.ZERO);;
+			this.tax = CommonUtils.getInstance().getValueIfNotNullElseDefault(cost.tax,BigDecimal.ZERO);;
+			this.turnover = CommonUtils.getInstance().getValueIfNotNullElseDefault(cost.turnover,BigDecimal.ZERO);;
 		}	
 	}
 		

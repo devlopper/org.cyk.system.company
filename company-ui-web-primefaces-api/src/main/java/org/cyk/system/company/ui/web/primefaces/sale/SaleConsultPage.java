@@ -10,6 +10,7 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
@@ -21,11 +22,13 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.ui.api.IdentifierProvider;
-import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.AbstractCommandable.Builder;
+import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.web.api.WebNavigationManager;
+import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.utility.common.FileExtension;
 
@@ -63,8 +66,22 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 			public String getTabId() {
 				return IdentifierProvider.Adapter.getTabOf(Sale.class);
 			}
+			
+			@Override
+			public Boolean getAutomaticallySetTitle() {
+				return Boolean.TRUE;
+			}
+			
+			@Override
+			public Crud[] getCruds() {
+				return new Crud[]{};
+			}
 		});
-		saleCashRegisterMovementTable.setTitle(inject(LanguageBusiness.class).findClassLabelText(SaleCashRegisterMovement.class));
+		
+		saleCashRegisterMovementTable.setShowToolBar(Boolean.FALSE);
+		saleCashRegisterMovementTable.setShowActionsColumn(Boolean.FALSE);
+		itemTable.setShowToolBar(Boolean.FALSE);
+		itemTable.setShowActionsColumn(Boolean.FALSE);
 	}
 	
 	@Override
@@ -83,6 +100,11 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 	}
 	
 	@Override
+	protected Crud[] getItemTableCruds() {
+		return new Crud[]{};
+	}
+	
+	@Override
 	protected Collection<SalableProductCollectionItem> findByCollection(Sale sale) {
 		return inject(SalableProductCollectionItemBusiness.class).findByCollection(sale.getSalableProductCollection());
 	}
@@ -90,8 +112,17 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 	@Override
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
 		super.processIdentifiableContextualCommandable(commandable);
-		commandable.addChild(Builder.create("command.see.invoice", null,WebNavigationManager.getInstance()
-				.getUrlToFileConsultManyPage(CompanyConstant.Code.ReportTemplate.INVOICE,identifiable, FileExtension.PDF)));
+		String url = WebNavigationManager.getInstance().getUrlToFileConsultManyPage(CompanyConstant.Code.ReportTemplate.INVOICE,identifiable, FileExtension.PDF);
+		Commandable seeCommandable = (Commandable) Builder.create("command.see.invoice", null,url);
+		/*System.out.println(javaScriptHelper.openWindow("invoice"+identifiable.getIdentifier(), url, 500, 500));
+		seeCommandable.getButton().setOnclick("http://localhost:8080/company"+javaScriptHelper.openWindow("invoice"+identifiable.getIdentifier(), url, 500, 500));
+		seeCommandable.getButton().setType("button");
+		seeCommandable.setViewId(null);
+		*/
+		/*seeCommandable.setOnClick(javaScriptHelper.openWindow("invoice"+identifiable.getIdentifier(), "http://localhost:8080/company"+StringUtils.replace(url, ".xhtml"
+				, ".jsf"), 500, 500));
+		*/
+		commandable.addChild(seeCommandable);
 	}
 	
 	/*

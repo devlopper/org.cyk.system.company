@@ -9,6 +9,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.cyk.system.company.business.api.CostBusiness;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
@@ -40,10 +41,12 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	protected void afterCrud(SalableProductCollection salableProductCollection, Crud crud) {
 		super.afterCrud(salableProductCollection, crud);
 		if(Crud.isCreateOrUpdate(crud)){
-			if(salableProductCollection.getItemAggregationApplied()==null || Boolean.TRUE.equals(salableProductCollection.getItemAggregationApplied())){
+			if(salableProductCollection.isItemAggregationApplied()){
 				computeCost(salableProductCollection);
-				BigDecimal v1 = salableProductCollection.getCost().getValue(),v2=inject(SalableProductCollectionItemDao.class).sumCostValueBySalableProductCollection(salableProductCollection);
-				exceptionUtils().exception(v1.compareTo(v2)!=0, v1+"costdoesnotmatch"+v2); 	
+				BigDecimal v1 = salableProductCollection.getCost().getValue();
+				Cost cost =inject(SalableProductCollectionItemDao.class).sumCostBySalableProductCollection(salableProductCollection);
+				exceptionUtils().exception(v1.compareTo(commonUtils.getValueIfNotNullElseDefault(cost.getValue(),BigDecimal.ZERO))!=0
+						, v1+"costdoesnotmatch"+commonUtils.getValueIfNotNullElseDefault(cost.getValue(),BigDecimal.ZERO)); 	
 				dao.update(salableProductCollection);
 			}
 		}
@@ -96,42 +99,34 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void computeCost(SalableProductCollection salableProductCollection,Collection<SalableProductCollectionItem> salableProductCollectionItems,LogMessage.Builder logMessageBuilder) {
-		addLogMessageBuilderParameters(logMessageBuilder, "cost of",salableProductCollection.getCode(),"items", salableProductCollectionItems);
-		BigDecimal numberOfProceedElements = BigDecimal.ZERO;
-		BigDecimal value = BigDecimal.ZERO;
-		BigDecimal tax = BigDecimal.ZERO;
-		BigDecimal turnover = BigDecimal.ZERO;
-		for(SalableProductCollectionItem salableProductCollectionItem : salableProductCollectionItems){
-			inject(SalableProductCollectionItemBusiness.class).computeCost(salableProductCollectionItem);
-			numberOfProceedElements = numberOfProceedElements.add(salableProductCollectionItem.getCost().getNumberOfProceedElements());
-			value = value.add(salableProductCollectionItem.getCost().getValue());
-			tax = tax.add(salableProductCollectionItem.getCost().getTax());
-			turnover = turnover.add(salableProductCollectionItem.getCost().getTurnover());
-		}
-		computeCost(salableProductCollection, numberOfProceedElements, value, tax, turnover);
-		addLogMessageBuilderParameters(logMessageBuilder, "salableProductCollection.newCost",salableProductCollection.getCost());
-	}
-	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void computeCost(SalableProductCollection salableProductCollection,Collection<SalableProductCollectionItem> salableProductCollectionItems) {
 		LogMessage.Builder logMessageBuilder = new LogMessage.Builder("Compute", "cost");
-		computeCost(salableProductCollection, salableProductCollectionItems, logMessageBuilder);
+		addLogMessageBuilderParameters(logMessageBuilder,"items", salableProductCollectionItems);
+		Cost cost = new Cost();
+		for(SalableProductCollectionItem salableProductCollectionItem : salableProductCollectionItems){
+			inject(SalableProductCollectionItemBusiness.class).computeCost(salableProductCollectionItem);
+			inject(CostBusiness.class).add(cost, salableProductCollectionItem.getCost());
+		}
+		setCost(salableProductCollection, cost,Boolean.FALSE,logMessageBuilder);
 		logTrace(logMessageBuilder);
-	}
-	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void computeCost(SalableProductCollection salableProductCollection,LogMessage.Builder logMessageBuilder) {
-		computeCost(salableProductCollection,inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection),logMessageBuilder);
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void computeCost(SalableProductCollection salableProductCollection) {
 		LogMessage.Builder logMessageBuilder = new LogMessage.Builder("Compute", "cost");
-		BigDecimal[] values = inject(SalableProductCollectionItemDao.class).sumCostAttributesBySalableProductCollection(salableProductCollection);
-		computeCost(salableProductCollection,commonUtils.getValueAt(values, 0),commonUtils.getValueAt(values, 1),commonUtils.getValueAt(values, 2)
-				,commonUtils.getValueAt(values, 3));
+		Cost cost = inject(SalableProductCollectionItemDao.class).sumCostBySalableProductCollection(salableProductCollection);
+		setCost(salableProductCollection,cost,Boolean.TRUE,logMessageBuilder);
 		logTrace(logMessageBuilder);
+	}
+	
+	private void setCost(SalableProductCollection salableProductCollection,Cost cost,Boolean database,LogMessage.Builder logMessageBuilder){
+		addLogMessageBuilderParameters(logMessageBuilder,"salable product collection",salableProductCollection.getCode(),"database",database,"cost",cost
+				,"Aggregation applied",salableProductCollection.isItemAggregationApplied());
+		if(salableProductCollection.isItemAggregationApplied()){
+			addLogMessageBuilderParameters(logMessageBuilder, "current cost",cost);
+			salableProductCollection.getCost().set(cost);
+		}
+		addLogMessageBuilderParameters(logMessageBuilder, "new cost",salableProductCollection.getCost());
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -153,17 +148,7 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 		return salableProductCollection;
 	}
 	
-	private void computeCost(SalableProductCollection salableProductCollection,BigDecimal sumOfSalableProductCollectionItemCostNumberOfProceedElements
-			,BigDecimal sumOfSalableProductCollectionItemCostValue,BigDecimal sumOfSalableProductCollectionItemCostTax
-			,BigDecimal sumOfSalableProductCollectionItemCostTurnover){
-		if(salableProductCollection.getItemAggregationApplied()==null || Boolean.TRUE.equals(salableProductCollection.getItemAggregationApplied())){
-			salableProductCollection.getCost().setNumberOfProceedElements(sumOfSalableProductCollectionItemCostNumberOfProceedElements);
-			salableProductCollection.getCost().setValue(sumOfSalableProductCollectionItemCostValue);
-			salableProductCollection.getCost().setTax(sumOfSalableProductCollectionItemCostTax);
-			salableProductCollection.getCost().setTurnover(sumOfSalableProductCollectionItemCostTurnover);	
-		}
-		
-	}
+	
 	
 	/**/
 	

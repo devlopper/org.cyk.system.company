@@ -12,7 +12,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
-import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleIdentifiableGlobalIdentifierBusiness;
@@ -31,7 +30,6 @@ import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovem
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
-import org.cyk.utility.common.computation.ArithmeticOperator;
 
 public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sale.SearchCriteria> implements SaleBusiness,Serializable {
 
@@ -80,8 +78,13 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	protected void afterCrud(Sale sale, Crud crud) {
 		super.afterCrud(sale, crud);
 		if(Crud.isCreateOrUpdate(crud)){
-			computeBalance(sale);
-			dao.update(sale);
+			if(sale.getSalableProductCollection().isItemAggregationApplied()){
+				computeBalance(sale);
+				BigDecimal v1 = sale.getBalance().getValue();
+				BigDecimal v2 = sale.getSalableProductCollection().getCost().getValue().subtract(inject(SaleCashRegisterMovementDao.class).sumAmountBySale(sale));
+				exceptionUtils().exception(v1.compareTo(v2)!=0, v1+"balancedoesnotmatch"+v2); 
+				dao.update(sale);	
+			}
 		}
 	}
 		
@@ -103,7 +106,7 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	
 	@Override
 	public void computeBalance(Sale sale) {
-		if( sale.getSalableProductCollection().getItemAggregationApplied() == null || Boolean.TRUE.equals(sale.getSalableProductCollection().getItemAggregationApplied()))
+		if( sale.getSalableProductCollection().isItemAggregationApplied())
 			computeBalance(sale, inject(SaleCashRegisterMovementDao.class).sumAmountBySale(sale));
 	}
 

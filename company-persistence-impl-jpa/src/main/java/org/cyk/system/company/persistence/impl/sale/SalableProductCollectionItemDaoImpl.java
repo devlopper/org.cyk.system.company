@@ -1,9 +1,9 @@
 package org.cyk.system.company.persistence.impl.sale;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Collection;
 
+import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
@@ -14,15 +14,15 @@ public class SalableProductCollectionItemDaoImpl extends AbstractCollectionItemD
 
 	private static final long serialVersionUID = 6306356272165070761L;
 
-	private String readByCollectionBySalableProduct,sumCostValueBySalableProductCollection,sumCostAttributesBySalableProductCollection;
+	private String readByCollectionBySalableProduct,sumCostAttributesBySalableProductCollection;
 	
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
 		registerNamedQuery(readByCollectionBySalableProduct, _select().where(SalableProductCollectionItem.FIELD_COLLECTION)
 				.and(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT));
-		registerNamedQuery(sumCostValueBySalableProductCollection, "SELECT SUM(r.cost.value) FROM SalableProductCollectionItem r WHERE r.collection = :collection");
-		registerNamedQuery(sumCostAttributesBySalableProductCollection, "SELECT SUM(r.cost.numberOfProceedElements),SUM(r.cost.value),SUM(r.cost.tax),SUM(r.cost.turnover)"
+		registerNamedQuery(sumCostAttributesBySalableProductCollection, "SELECT NEW "+
+				Cost.class.getName()+"(SUM(r.cost.numberOfProceedElements),SUM(r.cost.value),SUM(r.cost.tax),SUM(r.cost.turnover))"
 				+ " FROM SalableProductCollectionItem r WHERE r.collection = :collection");
 	}
 		
@@ -33,15 +33,9 @@ public class SalableProductCollectionItemDaoImpl extends AbstractCollectionItemD
 	}
 
 	@Override
-	public BigDecimal sumCostValueBySalableProductCollection(SalableProductCollection salableProductCollection) {
-		return namedQuery(sumCostValueBySalableProductCollection,BigDecimal.class).parameter(SalableProductCollectionItem.FIELD_COLLECTION, salableProductCollection)
-				.nullValue(BigDecimal.ZERO).resultOne();
-	}
-
-	@Override
-	public BigDecimal[] sumCostAttributesBySalableProductCollection(SalableProductCollection salableProductCollection) {
-		return namedQuery(sumCostAttributesBySalableProductCollection,BigDecimal[].class).parameter(SalableProductCollectionItem.FIELD_COLLECTION, salableProductCollection)
-				.nullValue(new BigDecimal[]{}).resultOne();
+	public Cost sumCostBySalableProductCollection(SalableProductCollection salableProductCollection) {
+		return namedQuery(sumCostAttributesBySalableProductCollection,Cost.class).parameter(SalableProductCollectionItem.FIELD_COLLECTION, salableProductCollection)
+				.nullValue(new Cost()).resultOne();
 	}
 	
 	

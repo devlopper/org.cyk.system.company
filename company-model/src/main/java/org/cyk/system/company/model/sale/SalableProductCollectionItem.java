@@ -38,10 +38,10 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal commission = BigDecimal.ZERO;
 	
 	@Embedded private Cost cost = new Cost();
-	@Transient private BigDecimal quantifiedPrice;
 	
 	@Embedded private Balance balance = new Balance();
 	
+	@Transient private BigDecimal quantifiedPrice;
 	@Transient private Collection<SaleProductInstance> instances;
 	@Transient private IdentifiableRuntimeCollection<SalableProductCollectionItemSaleCashRegisterMovement> salableProductCollectionItemSaleCashRegisterMovements = new IdentifiableRuntimeCollection<>();
 	
