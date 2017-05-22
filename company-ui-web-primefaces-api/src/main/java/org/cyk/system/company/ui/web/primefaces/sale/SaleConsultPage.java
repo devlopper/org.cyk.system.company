@@ -1,6 +1,7 @@
 package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 
 import javax.faces.view.ViewScoped;
@@ -10,7 +11,6 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
@@ -23,15 +23,19 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.Crud;
+import org.cyk.system.root.business.api.file.FileBusiness;
+import org.cyk.system.root.business.api.file.FileRepresentationTypeBusiness;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
+import org.cyk.system.root.model.file.File;
+import org.cyk.system.root.model.network.UniformResourceLocatorParameter;
 import org.cyk.ui.api.IdentifierProvider;
 import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
-import org.cyk.ui.web.api.UrlStringBuilderAdapter;
 import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.utility.common.FileExtension;
+import org.cyk.utility.common.builder.NameValueStringBuilder;
 import org.cyk.utility.common.builder.UrlStringBuilder;
 
 @Named @ViewScoped @Getter @Setter
@@ -121,10 +125,18 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 		seeCommandable.getButton().setType("button");
 		seeCommandable.setViewId(null);
 		*/
-		inject(UrlStringBuilder.class).build();
-		/*seeCommandable.setOnClick(javaScriptHelper.openWindow("invoice"+identifiable.getIdentifier(), "http://localhost:8080/company"+StringUtils.replace(url, ".xhtml"
-				, ".jsf"), 500, 500));
-		*/
+		
+		Collection<File> files = inject(FileBusiness.class).findByRepresentationTypesByIdentifiables(Arrays.asList(inject(FileRepresentationTypeBusiness.class)
+				.find(CompanyConstant.Code.ReportTemplate.INVOICE)),Arrays.asList(identifiable));
+		
+		UrlStringBuilder urlStringBuilder = inject(UrlStringBuilder.class).setRelative(Boolean.FALSE).setHost("localhost").setPort(8080);
+		urlStringBuilder.getPathStringBuilder().setIdentifier(WebNavigationManager.getInstance().getOutcomeFileConsultMany());
+		urlStringBuilder.getQueryStringBuilder().getNameValueCollectionStringBuilder()
+			.add(new NameValueStringBuilder(UniformResourceLocatorParameter.IDENTIFIABLE).setEncoded(Boolean.TRUE).addCollection(files)
+					,new NameValueStringBuilder(UniformResourceLocatorParameter.FILE_EXTENSION,FileExtension.PDF));
+		
+		seeCommandable.setOnClick(javaScriptHelper.openWindow("invoice"+identifiable.getIdentifier(), urlStringBuilder.build(), 500, 500));
+		
 		commandable.addChild(seeCommandable);
 	}
 	
