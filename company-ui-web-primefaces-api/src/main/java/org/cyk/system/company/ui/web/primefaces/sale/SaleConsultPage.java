@@ -27,10 +27,12 @@ import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.ui.api.IdentifierProvider;
 import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
+import org.cyk.ui.web.api.UrlStringBuilderAdapter;
 import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.Table;
 import org.cyk.utility.common.FileExtension;
+import org.cyk.utility.common.builder.UrlStringBuilder;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage<Sale,SalableProductCollectionItem,SalableProductCollectionItemDetails> implements Serializable {
@@ -119,6 +121,7 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 		seeCommandable.getButton().setType("button");
 		seeCommandable.setViewId(null);
 		*/
+		inject(UrlStringBuilder.class).build();
 		/*seeCommandable.setOnClick(javaScriptHelper.openWindow("invoice"+identifiable.getIdentifier(), "http://localhost:8080/company"+StringUtils.replace(url, ".xhtml"
 				, ".jsf"), 500, 500));
 		*/
