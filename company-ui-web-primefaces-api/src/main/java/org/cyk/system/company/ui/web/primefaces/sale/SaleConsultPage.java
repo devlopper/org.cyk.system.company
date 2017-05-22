@@ -37,6 +37,7 @@ import org.cyk.ui.web.primefaces.Table;
 import org.cyk.utility.common.FileExtension;
 import org.cyk.utility.common.builder.NameValueStringBuilder;
 import org.cyk.utility.common.builder.UrlStringBuilder;
+import org.cyk.utility.common.builder.javascript.OpenWindowStringBuilder;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage<Sale,SalableProductCollectionItem,SalableProductCollectionItemDetails> implements Serializable {
@@ -119,6 +120,7 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
 		super.processIdentifiableContextualCommandable(commandable);
 		String url = WebNavigationManager.getInstance().getUrlToFileConsultManyPage(CompanyConstant.Code.ReportTemplate.INVOICE,identifiable, FileExtension.PDF);
+		
 		Commandable seeCommandable = (Commandable) Builder.create("command.see.invoice", null,url);
 		/*System.out.println(javaScriptHelper.openWindow("invoice"+identifiable.getIdentifier(), url, 500, 500));
 		seeCommandable.getButton().setOnclick("http://localhost:8080/company"+javaScriptHelper.openWindow("invoice"+identifiable.getIdentifier(), url, 500, 500));
@@ -133,9 +135,12 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 		urlStringBuilder.getPathStringBuilder().setIdentifier(WebNavigationManager.getInstance().getOutcomeFileConsultMany());
 		urlStringBuilder.getQueryStringBuilder().getNameValueCollectionStringBuilder()
 			.add(new NameValueStringBuilder(UniformResourceLocatorParameter.IDENTIFIABLE).setEncoded(Boolean.TRUE).addCollection(files)
-					,new NameValueStringBuilder(UniformResourceLocatorParameter.FILE_EXTENSION,FileExtension.PDF));
+					,new NameValueStringBuilder(UniformResourceLocatorParameter.FILE_EXTENSION,FileExtension.PDF)
+					,new NameValueStringBuilder(UniformResourceLocatorParameter.WINDOW_MODE,UniformResourceLocatorParameter.WINDOW_MODE_DIALOG));
 		
-		seeCommandable.setOnClick(javaScriptHelper.openWindow("invoice"+identifiable.getIdentifier(), urlStringBuilder.build(), 500, 500));
+		
+		seeCommandable.setOnClick(new OpenWindowStringBuilder("invoice"+identifiable.getIdentifier(),urlStringBuilder.build())
+				.setShowToolBar(Boolean.TRUE).setLeftIndex(200).setTopIndex(100).setWidth(800).setHeight(600).build());
 		
 		commandable.addChild(seeCommandable);
 	}
