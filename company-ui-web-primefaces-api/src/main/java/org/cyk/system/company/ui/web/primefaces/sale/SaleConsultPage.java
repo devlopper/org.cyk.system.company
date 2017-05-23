@@ -1,7 +1,6 @@
 package org.cyk.system.company.ui.web.primefaces.sale;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
 
 import javax.faces.view.ViewScoped;
@@ -24,19 +23,13 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.file.FileBusiness;
-import org.cyk.system.root.business.api.file.FileRepresentationTypeBusiness;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.model.file.File;
-import org.cyk.system.root.model.network.UniformResourceLocatorParameter;
 import org.cyk.ui.api.IdentifierProvider;
 import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
-import org.cyk.ui.web.api.WebNavigationManager;
 import org.cyk.ui.web.primefaces.Commandable;
 import org.cyk.ui.web.primefaces.Table;
-import org.cyk.utility.common.FileExtension;
-import org.cyk.utility.common.builder.NameValueStringBuilder;
-import org.cyk.utility.common.builder.UrlStringBuilder;
 import org.cyk.utility.common.builder.javascript.OpenWindowStringBuilder;
 
 @Named @ViewScoped @Getter @Setter
@@ -119,28 +112,13 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 	@Override
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
 		super.processIdentifiableContextualCommandable(commandable);
-		String url = WebNavigationManager.getInstance().getUrlToFileConsultManyPage(CompanyConstant.Code.ReportTemplate.INVOICE,identifiable, FileExtension.PDF);
+		Commandable seeCommandable = (Commandable) Builder.create("command.see.invoice", null,"");
 		
-		Commandable seeCommandable = (Commandable) Builder.create("command.see.invoice", null,url);
-		/*System.out.println(javaScriptHelper.openWindow("invoice"+identifiable.getIdentifier(), url, 500, 500));
-		seeCommandable.getButton().setOnclick("http://localhost:8080/company"+javaScriptHelper.openWindow("invoice"+identifiable.getIdentifier(), url, 500, 500));
-		seeCommandable.getButton().setType("button");
-		seeCommandable.setViewId(null);
-		*/
+		Collection<File> files = inject(FileBusiness.class).findByRepresentationTypeCodeByIdentifiable(CompanyConstant.Code.ReportTemplate.INVOICE,identifiable);
 		
-		Collection<File> files = inject(FileBusiness.class).findByRepresentationTypesByIdentifiables(Arrays.asList(inject(FileRepresentationTypeBusiness.class)
-				.find(CompanyConstant.Code.ReportTemplate.INVOICE)),Arrays.asList(identifiable));
-		
-		UrlStringBuilder urlStringBuilder = inject(UrlStringBuilder.class).setRelative(Boolean.FALSE).setHost("localhost").setPort(8080);
-		urlStringBuilder.getPathStringBuilder().setIdentifier(WebNavigationManager.getInstance().getOutcomeFileConsultMany());
-		urlStringBuilder.getQueryStringBuilder().getNameValueCollectionStringBuilder()
-			.add(new NameValueStringBuilder(UniformResourceLocatorParameter.IDENTIFIABLE).setEncoded(Boolean.TRUE).addCollection(files)
-					,new NameValueStringBuilder(UniformResourceLocatorParameter.FILE_EXTENSION,FileExtension.PDF)
-					,new NameValueStringBuilder(UniformResourceLocatorParameter.WINDOW_MODE,UniformResourceLocatorParameter.WINDOW_MODE_DIALOG));
-		
-		
-		seeCommandable.setOnClick(new OpenWindowStringBuilder("invoice"+identifiable.getIdentifier(),urlStringBuilder.build())
-				.setShowToolBar(Boolean.TRUE).setLeftIndex(200).setTopIndex(100).setWidth(800).setHeight(600).build());
+		OpenWindowStringBuilder openWindowStringBuilder = inject(OpenWindowStringBuilder.class).setName("invoice"+identifiable.getIdentifier());
+		openWindowStringBuilder.getUrlStringBuilder().addFiles(files);
+		seeCommandable.setOnClick(openWindowStringBuilder.build());
 		
 		commandable.addChild(seeCommandable);
 	}
