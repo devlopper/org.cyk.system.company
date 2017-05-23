@@ -7,9 +7,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
@@ -22,15 +19,15 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
-import org.cyk.system.root.model.file.File;
 import org.cyk.ui.api.IdentifierProvider;
-import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.web.primefaces.Commandable;
+import org.cyk.ui.web.primefaces.CommandableBuilder;
 import org.cyk.ui.web.primefaces.Table;
-import org.cyk.utility.common.builder.javascript.OpenWindowStringBuilder;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage<Sale,SalableProductCollectionItem,SalableProductCollectionItemDetails> implements Serializable {
@@ -112,13 +109,14 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 	@Override
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
 		super.processIdentifiableContextualCommandable(commandable);
-		Commandable seeCommandable = (Commandable) Builder.create("command.see.invoice", null,"");
+		//Commandable seeCommandable = (Commandable) Builder.create("command.see.invoice", null,"");
 		
-		Collection<File> files = inject(FileBusiness.class).findByRepresentationTypeCodeByIdentifiable(CompanyConstant.Code.ReportTemplate.INVOICE,identifiable);
+		Commandable seeCommandable = (Commandable) inject(CommandableBuilder.class).setLabelId("command.see.invoice").build()
+				.setOnClickOpenWindowToConsultFiles(CompanyConstant.Code.ReportTemplate.INVOICE, identifiable);
 		
-		OpenWindowStringBuilder openWindowStringBuilder = inject(OpenWindowStringBuilder.class).setName("invoice"+identifiable.getIdentifier());
-		openWindowStringBuilder.getUrlStringBuilder().addFiles(files);
-		seeCommandable.setOnClick(openWindowStringBuilder.build());
+		//seeCommandable.setOnClickOpenWindowToConsultFiles(CompanyConstant.Code.ReportTemplate.INVOICE, identifiable);
+		//Collection<File> files = inject(FileBusiness.class).findByRepresentationTypeCodeByIdentifiable(CompanyConstant.Code.ReportTemplate.INVOICE,identifiable);
+		//seeCommandable.setOnClick(inject(OpenWindowStringBuilder.class).addFiles(identifiable, files).build());
 		
 		commandable.addChild(seeCommandable);
 	}
