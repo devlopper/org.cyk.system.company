@@ -109,11 +109,6 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
 		super.processIdentifiableContextualCommandable(commandable);
 		
-		//CommandableBuilder commandableBuilder = inject(CommandableBuilder.class).setLabelIdentifier("command.see.invoice").setOnClickOpenFiles(CompanyConstant.Code.ReportTemplate.INVOICE,identifiable);
-		/*
-		commandableBuilder.setOnClickStringBuilder(inject(OpenWindowStringBuilder.class).addFiles(identifiable
-				, inject(FileBusiness.class).findByRepresentationTypeCodeByIdentifiable(CompanyConstant.Code.ReportTemplate.INVOICE,identifiable)));
-		*/
 		commandable.addChild(inject(CommandableBuilder.class).setLabelIdentifier("command.see.invoice")
 				.setOnClickOpenFiles(CompanyConstant.Code.ReportTemplate.INVOICE,identifiable));
 	}

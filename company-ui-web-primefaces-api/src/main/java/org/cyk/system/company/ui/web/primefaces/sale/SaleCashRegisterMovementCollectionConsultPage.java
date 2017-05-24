@@ -44,18 +44,6 @@ public class SaleCashRegisterMovementCollectionConsultPage extends AbstractColle
 	@Override
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
 		super.processIdentifiableContextualCommandable(commandable);
-		/*
-		Commandable seeCommandable = (Commandable) Builder.create("command.see.receipt", null,"");
-		
-		Collection<File> files = inject(FileBusiness.class).findByRepresentationTypesByIdentifiables(Arrays.asList(inject(FileRepresentationTypeBusiness.class)
-				.find(CompanyConstant.Code.ReportTemplate.SALE_CASH_REGISTER_MOVEMENT_COLLECTION_A4)),Arrays.asList(identifiable));
-		
-		OpenWindowStringBuilder openWindowStringBuilder = inject(OpenWindowStringBuilder.class).setName("receipt"+identifiable.getIdentifier());
-		openWindowStringBuilder.getUrlStringBuilder().addFiles(files);
-		seeCommandable.setOnClick(openWindowStringBuilder.build());
-		
-		commandable.addChild(seeCommandable);
-		*/
 		commandable.addChild(inject(CommandableBuilder.class).setLabelIdentifier("command.see.receipt")
 				.setOnClickOpenFiles(CompanyConstant.Code.ReportTemplate.SALE_CASH_REGISTER_MOVEMENT_COLLECTION_A4,identifiable));
 	}

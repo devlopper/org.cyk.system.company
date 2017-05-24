@@ -75,6 +75,7 @@ import org.cyk.system.company.ui.web.primefaces.structure.CompanyEditPage;
 import org.cyk.system.company.ui.web.primefaces.structure.EmployeeEditPage;
 import org.cyk.system.company.ui.web.primefaces.structure.EmployeeQueryOneFormModel;
 import org.cyk.system.company.ui.web.primefaces.structure.EmploymentAgreementEditPage;
+import org.cyk.system.root.model.file.FileIdentifiableGlobalIdentifier;
 import org.cyk.ui.api.config.IdentifiableConfiguration;
 import org.cyk.ui.web.primefaces.AbstractContextListener;
 import org.cyk.ui.web.primefaces.page.AbstractProcessManyPage;
@@ -95,6 +96,8 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 		initializeSaleModule();
 		initializeCompanyModule();
 		
+		FileIdentifiableGlobalIdentifier.define(Sale.class);
+		FileIdentifiableGlobalIdentifier.define(SaleCashRegisterMovementCollection.class);
 	}
 	
 	protected void initializeCompanyModule(){
