@@ -218,7 +218,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 			private static final long serialVersionUID = 6148913289155659043L;
 			@Override
     		public void installationStarted(Installation installation) {
-    			installation.getApplication().setUniformResourceLocatorFilteringEnabled(Boolean.FALSE);
+    			installation.getApplication().setUniformResourceLocatorFiltered(Boolean.FALSE);
     			installation.getApplication().setWebContext("company");
     			installation.getApplication().setName("CompanyApp");
     			super.installationStarted(installation);
