@@ -33,17 +33,15 @@ public class Cost extends AbstractModelElement implements Serializable {
 	
 	public void set(Cost cost) {
 		if(cost==null){
-			/*
-			this.numberOfProceedElements = null;
-			this.value = null;
-			this.tax = null;
-			this.turnover = null;
-			*/
+			this.numberOfProceedElements = BigDecimal.ZERO;
+			this.value = BigDecimal.ZERO;
+			this.tax = BigDecimal.ZERO;
+			this.turnover = BigDecimal.ZERO;
 		}else{
 			this.numberOfProceedElements = CommonUtils.getInstance().getValueIfNotNullElseDefault(cost.numberOfProceedElements,BigDecimal.ZERO);
-			this.value = CommonUtils.getInstance().getValueIfNotNullElseDefault(cost.value,BigDecimal.ZERO);;
-			this.tax = CommonUtils.getInstance().getValueIfNotNullElseDefault(cost.tax,BigDecimal.ZERO);;
-			this.turnover = CommonUtils.getInstance().getValueIfNotNullElseDefault(cost.turnover,BigDecimal.ZERO);;
+			this.value = CommonUtils.getInstance().getValueIfNotNullElseDefault(cost.value,BigDecimal.ZERO);
+			this.tax = CommonUtils.getInstance().getValueIfNotNullElseDefault(cost.tax,BigDecimal.ZERO);
+			this.turnover = CommonUtils.getInstance().getValueIfNotNullElseDefault(cost.turnover,BigDecimal.ZERO);
 		}	
 	}
 		
