@@ -9,6 +9,7 @@ import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
 import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.RootConstant;
 
 public abstract class AbstractIesaBusinessIT extends AbstractEnterpriseResourcePlanningBusinessIT {
 
@@ -26,10 +27,10 @@ public abstract class AbstractIesaBusinessIT extends AbstractEnterpriseResourceP
 		AbstractCompanyReportProducer.Listener.COLLECTION.add(new AbstractCompanyReportProducer.Listener.Adapter.Default(){
 			private static final long serialVersionUID = 215473098986115952L;
 			
-			/*@Override
-			public String[] getCustomerPersonRelationshipTypeCodes(AbstractIdentifiable identifiable) {
-				return new String[]{RootConstant.Code.PersonRelationshipType.FAMILY_FATHER,RootConstant.Code.PersonRelationshipType.FAMILY_MOTHER};
-			}*/
+			@Override
+			public String[] getCustomerPersonRelationshipTypeRoleCodes(AbstractIdentifiable identifiable) {
+				return new String[]{RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_FATHER,RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_MOTHER};
+			}
 			
 			@Override
 			public String getCustomerLabel(AbstractIdentifiable identifiable) {

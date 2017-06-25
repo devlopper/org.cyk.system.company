@@ -3,12 +3,11 @@ package org.cyk.system.company.business.impl;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
 import javax.inject.Inject;
-
-import lombok.Getter;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
@@ -44,12 +43,16 @@ import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.payment.CashierDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
+import org.cyk.system.root.business.api.party.person.PersonRelationshipBusiness;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.system.root.model.time.TimeDivisionType;
 import org.cyk.system.root.model.userinterface.InputName;
 import org.cyk.system.root.persistence.api.party.ApplicationDao;
 import org.cyk.utility.common.generator.RandomDataProvider;
+
+import lombok.Getter;
 
 @Getter
 public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedDataProducer implements Serializable {
@@ -92,6 +95,7 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	@Override
 	protected void structure(Listener listener) {
 		createCashRegisters();
+		createCustomers();
 	}
 	
 	public void createCashRegisters(){
@@ -130,12 +134,16 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
     	customer.getPerson().setLastnames("zouzou léa");
     	create(customer);
     	
-    	/*create(Arrays.asList(
-		inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_001_FATHER, RootConstant.Code.PersonRelationshipType.FAMILY_FATHER, CUSTOMER_001)
-		,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_002_MOTHER, RootConstant.Code.PersonRelationshipType.FAMILY_MOTHER, CUSTOMER_001)
-		,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_003_FATHER, RootConstant.Code.PersonRelationshipType.FAMILY_FATHER, CUSTOMER_002)
-		,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_004_MOTHER, RootConstant.Code.PersonRelationshipType.FAMILY_MOTHER, CUSTOMER_002)
-		));*/
+    	create(Arrays.asList(
+		inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_001_FATHER, RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_FATHER, CUSTOMER_001
+				,RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_SON)
+		,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_002_MOTHER, RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_MOTHER, CUSTOMER_001
+				,RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_SON)
+		,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_003_FATHER, RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_FATHER, CUSTOMER_002
+				,RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_DAUGHTER)
+		,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_004_MOTHER, RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_MOTHER, CUSTOMER_002
+				,RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_DAUGHTER)
+		));
 	}
 	
 	@Override

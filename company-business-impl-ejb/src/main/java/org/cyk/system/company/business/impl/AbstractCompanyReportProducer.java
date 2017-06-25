@@ -2,6 +2,7 @@ package org.cyk.system.company.business.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -30,11 +31,14 @@ import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.root.business.api.TypedBusiness.CreateReportFileArguments;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.party.person.PersonBusiness;
+import org.cyk.system.root.business.api.party.person.PersonRelationshipBusiness;
+import org.cyk.system.root.business.api.party.person.PersonRelationshipTypeRoleBusiness;
 import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.report.AbstractReportTemplateFile;
 import org.cyk.system.root.model.party.Application;
 import org.cyk.system.root.model.party.person.Person;
+import org.cyk.system.root.model.party.person.PersonRelationship;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.ListenerUtils;
 
@@ -296,7 +300,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		Collection<Person> getCustomerPersons(AbstractIdentifiable identifiable);
 		Person getCustomerPerson(AbstractIdentifiable identifiable);
 		String getCustomerLabel(AbstractIdentifiable identifiable);
-		String[] getCustomerPersonRelationshipTypeCodes(AbstractIdentifiable identifiable);
+		String[] getCustomerPersonRelationshipTypeRoleCodes(AbstractIdentifiable identifiable);
 		
 		/**/
 		
@@ -321,7 +325,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 			}
 			
 			@Override
-			public String[] getCustomerPersonRelationshipTypeCodes(AbstractIdentifiable identifiable) {
+			public String[] getCustomerPersonRelationshipTypeRoleCodes(AbstractIdentifiable identifiable) {
 				return null;
 			}
 			
@@ -358,9 +362,12 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 				
 				@Override
 				public Person process(Person person) {
-					String[] personRelationshipTypeCodes = getCustomerPersonRelationshipTypeCodes(person);
-					if(personRelationshipTypeCodes!=null && personRelationshipTypeCodes.length>0){
-						Person related = null;//inject(PersonBusiness.class).findOneByPersonByRelationshipType(person, personRelationshipTypeCodes[0]);
+					String[] personRelationshipTypeRoleCodes = getCustomerPersonRelationshipTypeRoleCodes(person);
+					if(personRelationshipTypeRoleCodes!=null && personRelationshipTypeRoleCodes.length>0){
+						Collection<PersonRelationship> personRelationships = inject(PersonRelationshipBusiness.class).findOppositeByPersonByRoles(person, inject(PersonRelationshipTypeRoleBusiness.class)
+								.find(Arrays.asList(personRelationshipTypeRoleCodes)));
+						Collection<Person> relatedPersons = inject(PersonRelationshipBusiness.class).getRelatedPersons(personRelationships, person);
+						Person related = relatedPersons.isEmpty() ? null : relatedPersons.iterator().next();
 						if(related!=null)
 							person = related;
 					}

@@ -1,6 +1,7 @@
 package org.cyk.system.company.business.impl.iesa;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
@@ -99,6 +100,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     public void crudSale(){
     	TestCase testCase = instanciateTestCase();
     	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	
     	companyBusinessTestHelper.assertCost(inject(SaleDao.class).read("Sale001").getSalableProductCollection().getCost(), "0", "0", "0", "0");
     	
     	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne("Sale001", new Object[]{"TP01",1});
@@ -206,11 +208,11 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	assertEquals(2, inject(SaleCashRegisterMovementDao.class).readByCollection(saleCashRegisterMovementCollection).size());
     	companyBusinessTestHelper.assertSaleCashRegisterMovementCollection(pay1Code, "1300", "1300", null, null, null, "1300");
     	
-    	//companyBusinessTestHelper.write(inject(FileIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(saleCashRegisterMovementCollection)
-    	//		.iterator().next().getFile());
+    	companyBusinessTestHelper.write(inject(FileIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(saleCashRegisterMovementCollection)
+    			.iterator().next().getFile());
     	
-    	//companyBusinessTestHelper.createReportFile(saleCashRegisterMovementCollection, CompanyConstant.Code.ReportTemplate.SALE_CASH_REGISTER_MOVEMENT_COLLECTION_A4
-    	//		, Locale.ENGLISH,1);
+    	companyBusinessTestHelper.createReportFile(saleCashRegisterMovementCollection, CompanyConstant.Code.ReportTemplate.SALE_CASH_REGISTER_MOVEMENT_COLLECTION_A4
+    			, Locale.ENGLISH,1);
     	
     	testCase.clean();
     }
