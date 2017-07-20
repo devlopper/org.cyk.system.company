@@ -91,7 +91,7 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 		if(inject(MovementBusiness.class).isNotIdentified(cashRegisterMovement.getMovement())){
 			exceptionUtils().exception(!cashRegisterMovement.getCashRegister().getMovementCollection().equals(cashRegisterMovement.getMovement().getCollection()),
 					"movementcollectiondoesnotmacth");
-			cashRegisterMovement.set(cashRegisterMovement.getMovement(), GlobalIdentifier.FIELD_CODE,GlobalIdentifier.FIELD_NAME,GlobalIdentifier.FIELD_EXISTENCE_PERIOD);
+			cashRegisterMovement._set(cashRegisterMovement.getMovement(), GlobalIdentifier.FIELD_CODE,GlobalIdentifier.FIELD_NAME,GlobalIdentifier.FIELD_EXISTENCE_PERIOD);
 			inject(MovementBusiness.class).create(cashRegisterMovement.getMovement());
 		}
 		
