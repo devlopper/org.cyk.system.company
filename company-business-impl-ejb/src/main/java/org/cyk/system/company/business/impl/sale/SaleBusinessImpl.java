@@ -27,10 +27,12 @@ import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleIdentifiableGlobalIdentifierDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
+import org.cyk.system.root.business.api.BusinessException;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.utility.common.computation.ArithmeticOperator;
+import org.cyk.utility.common.helper.ConditionHelper;
 
 public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sale.SearchCriteria> implements SaleBusiness,Serializable {
 
@@ -123,7 +125,11 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	
 	private void computeBalance(Sale sale,BigDecimal sumOfSaleCashRegisterMovementAmount){
 		BigDecimal balanceValue = sale.getSalableProductCollection().getCost().getValue().subtract(sumOfSaleCashRegisterMovementAmount);
-		exceptionUtils().comparison(balanceValue.signum()==-1, "balance", ArithmeticOperator.GTE, BigDecimal.ZERO);
+		
+		throw__(new ConditionHelper.Condition.Builder.Comparison.Adapter.Default().setValueNameIdentifier("balance").setDomainNameIdentifier("sale")
+			.setNumber1(balanceValue).setNumber2(BigDecimal.ZERO).setGreater(Boolean.FALSE).setEqual(Boolean.FALSE), BusinessException.class);
+		
+		//exceptionUtils().comparison(balanceValue.signum()==-1, "balance", ArithmeticOperator.GTE, BigDecimal.ZERO);
 		Integer costValueBalanceValueComparison = sale.getSalableProductCollection().getCost().getValue().compareTo(balanceValue);
 		/*
 		exceptionUtils().comparison(costValueBalanceValueComparison==0 && !sale.getSalableProductCollection().getCost().getValue().equals(balanceValue), "field.cost : "+sale.getSalableProductCollection().getCost().getValue()

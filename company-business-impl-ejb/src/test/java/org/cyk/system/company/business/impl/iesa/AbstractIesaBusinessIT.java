@@ -1,21 +1,44 @@
 package org.cyk.system.company.business.impl.iesa;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.impl.AbstractCompanyReportProducer;
 import org.cyk.system.company.business.impl.integration.enterpriseresourceplanning.AbstractEnterpriseResourcePlanningBusinessIT;
 import org.cyk.system.company.business.impl.structure.EmployeeBusinessImpl;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
+import org.cyk.system.root.business.impl.PersistDataListener;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.RootConstant;
+import org.cyk.utility.common.generator.AbstractGeneratable;
 
 public abstract class AbstractIesaBusinessIT extends AbstractEnterpriseResourcePlanningBusinessIT {
 
 	private static final long serialVersionUID = -5752455124275831171L;
 	
 	@Inject protected IesaFakedDataProducer dataProducer;
+	
+	@Override
+	protected void populate() {
+		AbstractGeneratable.Listener.Adapter.Default.LOCALE = Locale.ENGLISH;
+    	PersistDataListener.COLLECTION.add(new PersistDataListener.Adapter.Default(){
+			private static final long serialVersionUID = -950053441831528010L;
+			@SuppressWarnings("unchecked")
+			@Override
+			public <T> T processPropertyValue(Class<?> aClass,String instanceCode, String name, T value) {
+				if(ArrayUtils.contains(new String[]{CompanyConstant.Code.File.DOCUMENT_HEADER}, instanceCode)){
+					if(PersistDataListener.RELATIVE_PATH.equals(name))
+						return (T) "/report/iesa/salecashregistermovementlogo.png";
+				}
+				return super.processPropertyValue(aClass, instanceCode, name, value);
+			}
+		});
+		super.populate();
+	}
 	
 	public AbstractIesaBusinessIT() {
 		EmployeeBusinessImpl.Listener listener = new EmployeeBusinessImpl.Listener.Adapter.Default();

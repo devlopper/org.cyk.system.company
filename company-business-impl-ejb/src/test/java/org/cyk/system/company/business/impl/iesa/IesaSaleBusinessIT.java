@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollectionBusiness;
+import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
@@ -31,6 +33,13 @@ import org.junit.Test;
 public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
+    
+    @Override
+    protected void populate() {
+    	super.populate();
+    	create(inject(CustomerBusiness.class).instanciateOneRandomly(AbstractCompanyFakedDataProducer.CUSTOMER_001));
+    	create(inject(CustomerBusiness.class).instanciateOneRandomly(AbstractCompanyFakedDataProducer.CUSTOMER_002));
+    }
     
     @Test
     public void crudSalableProductCollection(){
@@ -112,60 +121,72 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     @Test
     public void crudSaleCashRegisterMovementCollection(){
     	TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
-    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
+    	String sale001 = RandomStringUtils.randomAlphanumeric(20);
+    	String sale002 = RandomStringUtils.randomAlphanumeric(20);
+    	String p001 = RandomStringUtils.randomAlphanumeric(20);
+    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
     	testCase.clean();
     }
     
     @Test
     public void crudSaleCashRegisterMovement(){
+    	String sale001 = RandomStringUtils.randomAlphanumeric(20);
+    	String sale002 = RandomStringUtils.randomAlphanumeric(20);
+    	String p001 = RandomStringUtils.randomAlphanumeric(20);
     	TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1} }));
+    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1} }));
     	
-    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
-    	SaleCashRegisterMovement saleCashRegisterMovement = testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale001", "0"));
-    	assertEquals("P001_Sale001", saleCashRegisterMovement.getCode());
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
+    	SaleCashRegisterMovement saleCashRegisterMovement = testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne(p001, sale001, "1"));
+    	assertEquals(p001+"_"+sale001, saleCashRegisterMovement.getCode());
     	
-    	testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale002", "0"));
+    	testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne(p001, sale002, "1"));
     	
     	testCase.clean();
     }
     
     @Test
     public void assertOrderSaleCashRegisterMovement(){
+    	String sale001 = RandomStringUtils.randomAlphanumeric(20);
+    	String sale002 = RandomStringUtils.randomAlphanumeric(20);
+    	String p001 = RandomStringUtils.randomAlphanumeric(20);
+    	String p002 = RandomStringUtils.randomAlphanumeric(20);
+    	String p003 = RandomStringUtils.randomAlphanumeric(20);
+    	String p004 = RandomStringUtils.randomAlphanumeric(20);
     	TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1} }));
+    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1} }));
     	
-    	SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{});
+    	SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{});
     	testCase.create(saleCashRegisterMovementCollection);
     	
-    	SaleCashRegisterMovement saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale001", "0");
+    	SaleCashRegisterMovement saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne(p001, sale001, "1");
     	saleCashRegisterMovement.getGlobalIdentifier().getExistencePeriod().setFromDate(date(2000, 1, 5));
     	testCase.create(saleCashRegisterMovement);
     	String code001 = saleCashRegisterMovement.getCode();
     	
     	testCase.assertOrderBasedOnExistencePeriodFromDate(SaleCashRegisterMovement.class, code001);
     	
-    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P002",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
-    	saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P002", "Sale001", "0");
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p002,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
+    	saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne(p002, sale001, "1");
     	saleCashRegisterMovement.setBirthDate(date(2000, 1, 3));
     	testCase.create(saleCashRegisterMovement);
     	String code002 = saleCashRegisterMovement.getCode();
     	
     	testCase.assertOrderBasedOnExistencePeriodFromDate(SaleCashRegisterMovement.class,code002,code001);
     	
-    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P003",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
-    	saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P003", "Sale001", "0");
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p003,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
+    	saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne(p003, sale001, "1");
     	saleCashRegisterMovement.setBirthDate(date(2000, 1, 4));
     	testCase.create(saleCashRegisterMovement);
     	String code003 = saleCashRegisterMovement.getCode();
     	testCase.assertOrderBasedOnExistencePeriodFromDate(SaleCashRegisterMovement.class,code002,code003,code001);
     	
-    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P004",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
-    	saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P004", "Sale001", "0");
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p004,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
+    	saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne(p004, sale001, "1");
     	saleCashRegisterMovement.setBirthDate(date(2000, 1, 1));
     	testCase.create(saleCashRegisterMovement);
     	String code004 = saleCashRegisterMovement.getCode();
@@ -220,28 +241,32 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     @Test
     public void crudSaleCashRegisterMovementCollectionAndVariousCashRegisterMovementMode(){
     	TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{{"TP01","3"},{"TP02","2"}}));
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new String[][]{{"TP03","4"},{"TP04","5"}}));
+    	String sale001 = RandomStringUtils.randomAlphanumeric(20);
+    	String sale002 = RandomStringUtils.randomAlphanumeric(20);
+    	String p001 = RandomStringUtils.randomAlphanumeric(20);
+    	String p002 = RandomStringUtils.randomAlphanumeric(20);
+    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new String[][]{{"TP01","3"},{"TP02","2"}}));
+    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new String[][]{{"TP03","4"},{"TP04","5"}}));
     	
-    	SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001
-    			,CompanyConstant.Code.CashRegisterMovementMode.CASH, new String[][]{ {"Sale001", "100"},{"Sale002", "250"} });
+    	SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001
+    			,CompanyConstant.Code.CashRegisterMovementMode.CASH, new String[][]{ {sale001, "100"},{sale002, "250"} });
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().setSenderOrReceiverPersonAsString("Yeo Gérard");
     	testCase.create(saleCashRegisterMovementCollection);
-    	assertThat("Stamp duty",inject(SaleCashRegisterMovementCollectionDao.class).read("P001").getCashRegisterMovement().getStampDutyInterval()!=null);
-    	companyBusinessTestHelper.write(inject(FileIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(inject(SaleCashRegisterMovementCollectionDao.class).read("P001"))
+    	assertThat("Stamp duty",inject(SaleCashRegisterMovementCollectionDao.class).read(p001).getCashRegisterMovement().getStampDutyInterval()!=null);
+    	companyBusinessTestHelper.write(inject(FileIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(inject(SaleCashRegisterMovementCollectionDao.class).read(p001))
     			.iterator().next().getFile());
     	
-    	saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P002",null, IesaFakedDataProducer.CASH_REGISTER_001
-    			,CompanyConstant.Code.CashRegisterMovementMode.CHEQUE, new String[][]{ {"Sale001", "300"},{"Sale002", "500"} });
+    	saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p002,null, IesaFakedDataProducer.CASH_REGISTER_001
+    			,CompanyConstant.Code.CashRegisterMovementMode.CHEQUE, new String[][]{ {sale001, "300"},{sale002, "500"} });
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().setSenderOrReceiverPersonAsString("Issia Koné");
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getSupportingDocument().setGenerator("BICICI");
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getSupportingDocument().setCode(RandomStringUtils.randomAlphanumeric(10).toUpperCase());
     	testCase.create(saleCashRegisterMovementCollection);
-    	companyBusinessTestHelper.write(inject(FileIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(inject(SaleCashRegisterMovementCollectionDao.class).read("P002"))
+    	companyBusinessTestHelper.write(inject(FileIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(inject(SaleCashRegisterMovementCollectionDao.class).read(p002))
     			.iterator().next().getFile());
     	
     	saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P003",null, IesaFakedDataProducer.CASH_REGISTER_001
-    			,CompanyConstant.Code.CashRegisterMovementMode.BANK_TRANSFER, new String[][]{ {"Sale001", "300"},{"Sale002", "500"} });
+    			,CompanyConstant.Code.CashRegisterMovementMode.BANK_TRANSFER, new String[][]{ {sale001, "300"},{sale002, "500"} });
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().setSenderOrReceiverPersonAsString("Koukou mélé");
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getSupportingDocument().setCode(RandomStringUtils.randomAlphanumeric(10).toUpperCase());
     	testCase.create(saleCashRegisterMovementCollection);
@@ -249,7 +274,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     			.iterator().next().getFile());
     	
     	saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P004",null, IesaFakedDataProducer.CASH_REGISTER_001
-    			,CompanyConstant.Code.CashRegisterMovementMode.MOBILE_PAYMENT, new String[][]{ {"Sale001", "300"},{"Sale002", "500"} });
+    			,CompanyConstant.Code.CashRegisterMovementMode.MOBILE_PAYMENT, new String[][]{ {sale001, "300"},{sale002, "500"} });
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().setSenderOrReceiverPersonAsString("Léon paul");
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getSupportingDocument().setCode(RandomStringUtils.randomAlphanumeric(10).toUpperCase());
     	saleCashRegisterMovementCollection.getCashRegisterMovement().getSupportingDocument().setGenerator("Orange");
@@ -292,57 +317,61 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     @Test
     public void updateSaleCashRegisterMovement(){
     	TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1},{"TP02",2} }));
-    	companyBusinessTestHelper.assertCost(inject(SaleDao.class).read("Sale001").getSalableProductCollection().getCost(), "3", "74000", "0", "74000");
+    	String sale001 = RandomStringUtils.randomAlphanumeric(20);
+    	String sale002 = RandomStringUtils.randomAlphanumeric(20);
+    	String p001 = RandomStringUtils.randomAlphanumeric(20);
+    	String p002 = RandomStringUtils.randomAlphanumeric(20);
+    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1},{"TP02",2} }));
+    	companyBusinessTestHelper.assertCost(inject(SaleDao.class).read(sale001).getSalableProductCollection().getCost(), "3", "74000", "0", "74000");
     	
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"IP01",4},{"IP02",3} }));
+    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"IP01",4},{"IP02",3} }));
     	
     	//create 1st payment
     	
-    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001
-    			, new Object[][]{{"Sale001","500"}}));
-    	companyBusinessTestHelper.assertSaleCashRegisterMovement("P001_Sale001", "73500","74000", "73500", "500");
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001
+    			, new Object[][]{{sale001,"500"}}));
+    	companyBusinessTestHelper.assertSaleCashRegisterMovement(p001+"_"+sale001, "73500","74000", "73500", "500");
     	
     	//update 1st payment
-    	SaleCashRegisterMovement saleCashRegisterMovement = testCase.read(SaleCashRegisterMovement.class, "P001_Sale001");
+    	SaleCashRegisterMovement saleCashRegisterMovement = testCase.read(SaleCashRegisterMovement.class, p001+"_"+sale001);
     	saleCashRegisterMovement.setAmount(new BigDecimal("1000"));
     	testCase.update(saleCashRegisterMovement);
-    	companyBusinessTestHelper.assertSaleCashRegisterMovement("P001_Sale001", "73000","74000", "73000", "1000");
+    	companyBusinessTestHelper.assertSaleCashRegisterMovement(p001+"_"+sale001, "73000","74000", "73000", "1000");
     	
     	//create 2nd payment
-    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P002",null, IesaFakedDataProducer.CASH_REGISTER_001
-    			, new Object[][]{{"Sale001","500"}}));
-    	companyBusinessTestHelper.assertSaleCashRegisterMovement("P002_Sale001", "72500","74000", "72500", "500");
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p002,null, IesaFakedDataProducer.CASH_REGISTER_001
+    			, new Object[][]{{sale001,"500"}}));
+    	companyBusinessTestHelper.assertSaleCashRegisterMovement(p002+"_"+sale001, "72500","74000", "72500", "500");
     	
     	//update 2nd payment
-    	saleCashRegisterMovement = testCase.read(SaleCashRegisterMovement.class, "P002_Sale001");
+    	saleCashRegisterMovement = testCase.read(SaleCashRegisterMovement.class, p002+"_"+sale001);
     	saleCashRegisterMovement.setAmount(new BigDecimal("1000"));
 		testCase.update(saleCashRegisterMovement);
-    	companyBusinessTestHelper.assertSaleCashRegisterMovement("P001_Sale001", "73000","74000", "72000", "1000");
-    	companyBusinessTestHelper.assertSaleCashRegisterMovement("P002_Sale001", "72000","74000", "72000", "1000");
+    	companyBusinessTestHelper.assertSaleCashRegisterMovement(p001+"_"+sale001, "73000","74000", "72000", "1000");
+    	companyBusinessTestHelper.assertSaleCashRegisterMovement(p002+"_"+sale001, "72000","74000", "72000", "1000");
     	
     	//update 1st payment
-    	saleCashRegisterMovement = testCase.read(SaleCashRegisterMovement.class, "P001_Sale001");
+    	saleCashRegisterMovement = testCase.read(SaleCashRegisterMovement.class, p001+"_"+sale001);
     	saleCashRegisterMovement.setAmount(new BigDecimal("800"));
     	testCase.update(saleCashRegisterMovement);
-    	companyBusinessTestHelper.assertSaleCashRegisterMovement("P001_Sale001", "73200","74000", "72200", "800");
-    	companyBusinessTestHelper.assertSaleCashRegisterMovement("P002_Sale001", "72200","74000", "72200", "1000");
+    	companyBusinessTestHelper.assertSaleCashRegisterMovement(p001+"_"+sale001, "73200","74000", "72200", "800");
+    	companyBusinessTestHelper.assertSaleCashRegisterMovement(p002+"_"+sale001, "72200","74000", "72200", "1000");
     	
     	//update 1st sale
-    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne("Sale001", new Object[]{"TP03",3});
+    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale001, new Object[]{"TP03",3});
     	salableProductCollectionItem.setCascadeOperationToChildren(Boolean.TRUE);
     	testCase.create(salableProductCollectionItem);
     	
-    	companyBusinessTestHelper.assertCost(inject(SaleDao.class).read("Sale001").getSalableProductCollection().getCost(), "6", "95000", "0", "95000");
-    	companyBusinessTestHelper.assertSaleCashRegisterMovement("P001_Sale001", "94200","95000", "93200", "800");
-    	companyBusinessTestHelper.assertSaleCashRegisterMovement("P002_Sale001", "93200","95000", "93200", "1000");
+    	companyBusinessTestHelper.assertCost(inject(SaleDao.class).read(sale001).getSalableProductCollection().getCost(), "6", "95000", "0", "95000");
+    	companyBusinessTestHelper.assertSaleCashRegisterMovement(p001+"_"+sale001, "94200","95000", "93200", "800");
+    	companyBusinessTestHelper.assertSaleCashRegisterMovement(p002+"_"+sale001, "93200","95000", "93200", "1000");
     	
     	//
     	/*
-    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P002",null, IesaFakedDataProducer.CASH_REGISTER_001
-    			, new Object[][]{{"Sale001","700"},{"Sale002","300"}}));
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p002,null, IesaFakedDataProducer.CASH_REGISTER_001
+    			, new Object[][]{{sale001,"700"},{sale002,"300"}}));
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P003",null, IesaFakedDataProducer.CASH_REGISTER_001
-    			, new Object[][]{{"Sale002","100"},{"Sale001","250"}}));
+    			, new Object[][]{{sale002,"100"},{sale001,"250"}}));
     	*/
     	testCase.clean();
     }
@@ -353,15 +382,17 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     
     @Test
     public void saleBalanceCannotBeLessThanZero(){
+    	final String sale001 = RandomStringUtils.randomAlphanumeric(20);
+    	final String p001 = RandomStringUtils.randomAlphanumeric(20);
     	final TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
-    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
+    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
     	testCase.throwMessage(new Runnable() {
 			@Override
 			public void run() {
-				testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale001", "1"));
+				testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne(p001, sale001, "1"));
 			}
-		}, "Balance doit être supérieur ou égal à 0");
+		}, "La balance(-1) doit être supérieure ou égale à 0.");
     	
     	testCase.clean();
     }
@@ -369,15 +400,17 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     @Test
     public void saleCashRegisterMovementAmountCannotBeLessThanZero(){
     	final TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
-    	testCase.create(inject(SalableProductCollectionItemBusiness.class).instanciateOne("Sale001", new Object[]{"TP01",1}));
-    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
+    	final String sale001 = RandomStringUtils.randomAlphanumeric(20);
+    	final String p001 = RandomStringUtils.randomAlphanumeric(20);
+    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	testCase.create(inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale001, new Object[]{"TP01",1}));
+    	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
     	testCase.throwMessage(new Runnable() {
 			@Override
 			public void run() {
-				testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale001", "-1"));
+				testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne(p001, sale001, "-1"));
 			}
-		}, "Amount doit être supérieur à 0");
+		}, "Le montant(-1) doit être supérieur à 0.");
     	
     	testCase.clean();
     }

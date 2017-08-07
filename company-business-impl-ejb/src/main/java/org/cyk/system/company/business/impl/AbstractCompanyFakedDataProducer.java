@@ -95,7 +95,7 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	@Override
 	protected void structure(Listener listener) {
 		createCashRegisters();
-		createCustomers();
+		//createCustomers();
 	}
 	
 	public void createCashRegisters(){
@@ -153,8 +153,6 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	protected void doBusiness(Listener listener) {
 		//createCashRegisters();
 		//createCustomers();
-    	
-    	
 	}
 	
 	//TODO those following method should be deleted because they should accessible using business service

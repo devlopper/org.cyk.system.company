@@ -22,7 +22,7 @@ public class Balance extends AbstractModelElement implements Serializable {
 	@Column(name=COLUMN_VALUE,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal value = BigDecimal.ZERO;
 	@Column(name=COLUMN_CUMUL,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal cumul = BigDecimal.ZERO;
 	
-	public void set(Balance balance) {
+	public void _set(Balance balance) {
 		if(balance==null){
 			/*
 			this.value = null;

@@ -31,7 +31,7 @@ public class Cost extends AbstractModelElement implements Serializable {
 	@Column(name=COLUMN_TAX,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal tax = BigDecimal.ZERO;
 	@Column(name=COLUMN_TURNOVER,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal turnover = BigDecimal.ZERO;
 	
-	public void set(Cost cost) {
+	public void _set(Cost cost) {
 		if(cost==null){
 			this.numberOfProceedElements = BigDecimal.ZERO;
 			this.value = BigDecimal.ZERO;

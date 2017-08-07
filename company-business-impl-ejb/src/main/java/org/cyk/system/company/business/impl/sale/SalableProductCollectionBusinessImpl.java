@@ -62,7 +62,7 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	@Override
 	public SalableProductCollection instanciateOne(String code,String name,Cost cost,Object[][] salableProducts) {
 		SalableProductCollection salableProductCollection = instanciateOne(code,name);
-		salableProductCollection.getCost().set(cost);
+		salableProductCollection.getCost()._set(cost);
 		if(salableProducts!=null)
 			for(Object[] salableProduct : salableProducts){
 				inject(SalableProductCollectionItemBusiness.class)
@@ -124,7 +124,7 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 				,"Aggregation applied",salableProductCollection.isItemAggregationApplied());
 		if(salableProductCollection.isItemAggregationApplied()){
 			addLogMessageBuilderParameters(logMessageBuilder, "current cost",cost);
-			salableProductCollection.getCost().set(cost);
+			salableProductCollection.getCost()._set(cost);
 		}
 		addLogMessageBuilderParameters(logMessageBuilder, "new cost",salableProductCollection.getCost());
 	}

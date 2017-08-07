@@ -24,6 +24,7 @@ import org.cyk.system.company.persistence.api.payment.CashRegisterMovementModeDa
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
+import org.cyk.system.root.business.api.BusinessException;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.mathematics.MovementActionBusiness;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
@@ -33,7 +34,7 @@ import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.utility.common.LogMessage;
-import org.cyk.utility.common.computation.ArithmeticOperator;
+import org.cyk.utility.common.helper.ConditionHelper;
 
 public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItemBusinessImpl<SaleCashRegisterMovement, SaleCashRegisterMovementDao,SaleCashRegisterMovementCollection> implements SaleCashRegisterMovementBusiness,Serializable {
 
@@ -81,7 +82,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 		/*saleCashRegisterMovement.getCashRegisterMovement().setMovement(inject(MovementBusiness.class).instanciateOne(
 				saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection(),amount));
 		*/
-		saleCashRegisterMovement.getBalance().set(sale.getBalance());
+		saleCashRegisterMovement.getBalance()._set(sale.getBalance());
 		return saleCashRegisterMovement;
 	}
 	
@@ -178,7 +179,10 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 	@Override
 	protected void beforeCrud(SaleCashRegisterMovement saleCashRegisterMovement, Crud crud) {
 		super.beforeCrud(saleCashRegisterMovement, crud);
-		exceptionUtils().comparison(saleCashRegisterMovement.getAmount().signum()==-1, "amount", ArithmeticOperator.GT, BigDecimal.ZERO);
+		//if(saleCashRegisterMovement.getAmount().signum()==-1)
+			throw__(new ConditionHelper.Condition.Builder.Comparison.Adapter.Default().setValueNameIdentifier("amount").setDomainNameIdentifier("sale")
+				.setNumber1(saleCashRegisterMovement.getAmount()).setNumber2(BigDecimal.ZERO).setGreater(Boolean.FALSE).setEqual(Boolean.TRUE), BusinessException.class);
+		//exceptionUtils().comparison(saleCashRegisterMovement.getAmount().signum()==-1, "amount", ArithmeticOperator.GT, BigDecimal.ZERO);
 	}
 		
 	@Override
