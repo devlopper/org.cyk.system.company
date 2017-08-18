@@ -192,7 +192,7 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 		private static final long serialVersionUID = 1L;
 		
 		public ItemCollectionAdapter(COLLECTION collection, Crud crud,FormOneData<AbstractIdentifiable, ?, ?, ?, ?, ?> form) {
-			super(collection,crud,form);
+			super(collection,crud,form,(Class<IDENTIFIABLE>) SalableProductCollectionItem.class);
 		}
 		
 		public static class SalableProductCollectionItemAdapter<TYPE extends AbstractItem<SalableProductCollectionItem>> extends ItemCollectionAdapter<TYPE,SalableProductCollectionItem,SalableProductCollection> implements Serializable{

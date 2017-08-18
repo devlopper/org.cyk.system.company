@@ -75,7 +75,7 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 		super.afterInitialisation();
 		
 		itemCollection = createItemCollection(Item.class, SaleCashRegisterMovement.class,identifiable ,new ItemCollectionAdapter<Item,SaleCashRegisterMovement
-				,SaleCashRegisterMovementCollection>(identifiable,crud,form){
+				,SaleCashRegisterMovementCollection>(identifiable,crud,form,SaleCashRegisterMovement.class){
 
 			private static final long serialVersionUID = 1L;
 			
