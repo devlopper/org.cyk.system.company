@@ -4,20 +4,15 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.production.ProductionBusiness;
-import org.cyk.system.company.business.api.production.ProductionPlanBusiness;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionPlan;
 import org.cyk.system.company.model.production.ProductionPlanMetric;
 import org.cyk.system.company.model.production.ProductionPlanResource;
 import org.cyk.system.company.model.production.ProductionValue;
 import org.cyk.system.company.persistence.api.production.ProductionDao;
-import org.cyk.system.company.persistence.api.production.ProductionPlanMetricDao;
-import org.cyk.system.company.persistence.api.production.ProductionPlanResourceDao;
 import org.cyk.system.company.persistence.api.production.ProductionValueDao;
 import org.cyk.system.root.business.impl.spreadsheet.AbstractSpreadSheetBusinessImpl;
 import org.cyk.system.root.model.spreadsheet.SpreadSheetSearchCriteria;
@@ -27,8 +22,6 @@ public class ProductionBusinessImpl extends AbstractSpreadSheetBusinessImpl<Prod
 	private static final long serialVersionUID = -7830673760640348717L;
 	
 	@Inject private ProductionValueDao productionValueDao;
-	@Inject private ProductionPlanResourceDao productionPlanResourceDao;
-	@Inject private ProductionPlanMetricDao productionPlanMetricDao;
 	
 	@Inject
 	public ProductionBusinessImpl(ProductionDao dao) {
@@ -39,7 +32,6 @@ public class ProductionBusinessImpl extends AbstractSpreadSheetBusinessImpl<Prod
 	public Production instanciateOne(ProductionPlan productionPlan) {
 		Production production = new Production();
 		production.setTemplate(productionPlan);
-		inject(ProductionPlanBusiness.class).load(productionPlan);
 		for(ProductionPlanMetric metric : productionPlan.getColumns())
 			production.getColumns().add(metric);
 		for(ProductionPlanResource resource : productionPlan.getRows()){
@@ -78,20 +70,6 @@ public class ProductionBusinessImpl extends AbstractSpreadSheetBusinessImpl<Prod
 		return super.delete(production);
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void load(Production production) {
-		super.load(production);
-		production.setCells(productionValueDao.readBySpreadSheet(production));
-	}
-	
-	@Override
-	protected void __load__(Production production) {
-		super.__load__(production);
-		production.setRows(productionPlanResourceDao.readByTemplate(production.getTemplate()));
-		production.setColumns(productionPlanMetricDao.readByTemplate(production.getTemplate()));
-		production.setCells(productionValueDao.readBySpreadSheet(production));
-	}
-
 	@Override
 	public Collection<Production> findByProductionPlan(ProductionPlan productionPlan) {
 		return dao.readByProductionPlan(productionPlan);

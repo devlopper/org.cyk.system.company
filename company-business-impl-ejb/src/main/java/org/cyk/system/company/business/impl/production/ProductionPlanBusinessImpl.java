@@ -64,13 +64,6 @@ public class ProductionPlanBusinessImpl extends AbstractSpreadSheetTemplateBusin
 	}
 	
 	@Override
-	public void load(ProductionPlan productionPlanModel) {
-		super.load(productionPlanModel);
-		productionPlanModel.setRows(productionPlanResourceDao.readByTemplate(productionPlanModel));
-		productionPlanModel.setColumns(productionPlanMetricDao.readByTemplate(productionPlanModel));
-	}
-
-	@Override
 	public Collection<ProductionPlan> findByProductionUnit(ProductionUnit productionUnit) {
 		return dao.readByProductionUnit(productionUnit);
 	}
