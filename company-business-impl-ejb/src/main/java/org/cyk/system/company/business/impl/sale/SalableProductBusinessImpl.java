@@ -78,5 +78,16 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 	protected SalableProductInstanceDao getItemDao() {
 		return salableProductInstanceDao;
 	}
+	
+	/**/
+	
+	public static class BuilderOneDimensionArray extends AbstractCollectionBusinessImpl.BuilderOneDimensionArray<SalableProduct> implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		public BuilderOneDimensionArray() {
+			super(SalableProduct.class);
+		}
+		
+	}
 
 }

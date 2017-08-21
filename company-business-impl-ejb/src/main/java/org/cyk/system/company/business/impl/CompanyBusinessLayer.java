@@ -50,6 +50,7 @@ import org.cyk.system.root.business.api.time.TimeBusiness;
 import org.cyk.system.root.business.impl.AbstractBusinessLayer;
 import org.cyk.system.root.business.impl.AbstractFormatter;
 import org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl;
+import org.cyk.system.root.business.impl.DataSet;
 import org.cyk.system.root.business.impl.PersistDataListener;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
@@ -224,29 +225,27 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Override
 	protected void persistStructureData() {
 		super.persistStructureData();
-		file();
-		structure();
-		company();
 		
-		createFromExcelSheet(IntangibleProduct.class);
-		createFromExcelSheet(TangibleProduct.class);
-		createFromExcelSheet(SalableProduct.class);
-		createFromExcelSheet(CashRegisterMovementMode.class);
+		DataSet dataSet = new DataSet(getClass());
+    	
+		file(dataSet);
+		structure(dataSet);
+		company(dataSet);
+		sale(dataSet);
 		
-		createFromExcelSheet(IntervalCollection.class);
-		createFromExcelSheet(Interval.class);
+		security(dataSet);
 		
-		createFromExcelSheet(CashRegister.class);
-		
+        dataSet.instanciate();
+    	dataSet.create();
 	}
 	
-	@Override
+	/*@Override
 	protected void persistSecurityData() {
 		super.persistSecurityData();
-		security();
-	}
+		security(dataSet);
+	}*/
 		
-	private void company(){ 
+	private void company(DataSet dataSet){ 
 		//byte[] bytes = null;
 		
 		Company company = new Company();
@@ -338,21 +337,33 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			listener.handleAccountingPeriodToInstall(accountingPeriod);
 		installObject(ACCOUNTING_PERIOD,inject(AccountingPeriodBusiness.class),accountingPeriod);
 		
-		createFromExcelSheet(EmploymentAgreementType.class);
+		dataSet.addClass(EmploymentAgreementType.class);
 		
 	}
 	
-	private void file(){
-		createFromExcelSheet(File.class);
-    	createFromExcelSheet(ReportTemplate.class);
+	private void file(DataSet dataSet){
+		dataSet.addClass(File.class);
+		dataSet.addClass(ReportTemplate.class);
 	}
 	
-	private void security(){
-		createFromExcelSheet(BusinessServiceCollection.class);
+	private void security(DataSet dataSet){
+		dataSet.addClass(BusinessServiceCollection.class);
 	}
 		
-	private void structure(){
-		createFromExcelSheet(DivisionType.class);
+	private void structure(DataSet dataSet){
+		dataSet.addClass(DivisionType.class);
+    }
+	
+	private void sale(DataSet dataSet){
+		dataSet.addClass(IntangibleProduct.class);
+		dataSet.addClass(TangibleProduct.class);
+		dataSet.addClass(SalableProduct.class);
+		dataSet.addClass(CashRegisterMovementMode.class);
+		
+		dataSet.addClass(IntervalCollection.class);
+		dataSet.addClass(Interval.class);
+		
+		dataSet.addClass(CashRegister.class);
     }
 	
 	/**/

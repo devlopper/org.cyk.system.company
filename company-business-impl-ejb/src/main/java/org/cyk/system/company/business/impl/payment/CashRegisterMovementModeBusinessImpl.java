@@ -24,4 +24,15 @@ public class CashRegisterMovementModeBusinessImpl extends AbstractEnumerationBus
 		set(listener.getSetListener().setIndex(10),CashRegisterMovementMode.FIELD_SUPPORT_DOCUMENT_IDENTIFIER);
 		return cashRegisterMovementMode;
 	}
+	
+	/**/
+	
+	public static class BuilderOneDimensionArray extends AbstractEnumerationBusinessImpl.BuilderOneDimensionArray<CashRegisterMovementMode> implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		public BuilderOneDimensionArray() {
+			super(CashRegisterMovementMode.class);
+		}
+		
+	}	
 }

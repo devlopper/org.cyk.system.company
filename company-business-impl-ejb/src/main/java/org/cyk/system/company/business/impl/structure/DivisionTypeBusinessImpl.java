@@ -1,5 +1,7 @@
 package org.cyk.system.company.business.impl.structure;
 
+import java.io.Serializable;
+
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.structure.DivisionTypeBusiness;
@@ -15,5 +17,14 @@ public class DivisionTypeBusinessImpl extends AbstractDataTreeTypeBusinessImpl<D
     public DivisionTypeBusinessImpl(DivisionTypeDao dao) {
         super(dao);
     } 
+	
+	public static class BuilderOneDimensionArray extends AbstractDataTreeTypeBusinessImpl.BuilderOneDimensionArray<DivisionType> implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		public BuilderOneDimensionArray() {
+			super(DivisionType.class);
+		}
+		
+	}
 
 }

@@ -12,13 +12,13 @@ import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
-import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.business.impl.AbstractEnumerationBusinessImpl;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.party.person.Person;
 
-public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashRegister, CashRegisterDao> implements CashRegisterBusiness,Serializable {
+public class CashRegisterBusinessImpl extends AbstractEnumerationBusinessImpl<CashRegister, CashRegisterDao> implements CashRegisterBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
@@ -66,4 +66,15 @@ public class CashRegisterBusinessImpl extends AbstractTypedBusinessService<CashR
 		set(listener.getSetListener(), CashRegister.FIELD_MOVEMENT_COLLECTION);
 		return listener.getInstance();
 	}
+	
+	public static class BuilderOneDimensionArray extends AbstractEnumerationBusinessImpl.BuilderOneDimensionArray<CashRegister> implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		public BuilderOneDimensionArray() {
+			super(CashRegister.class);
+			addFieldCodeName();
+			addParameterArrayElementString(CashRegister.FIELD_MOVEMENT_COLLECTION);
+		}
+		
+	}	
 }

@@ -96,5 +96,13 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
 
     /**/
     
+    public static class BuilderOneDimensionArray<T extends Product> extends AbstractEnumerationBusinessImpl.BuilderOneDimensionArray<T> implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		public BuilderOneDimensionArray(Class<T> outputClass) {
+			super(outputClass);
+		}
+		
+	}	
     
 }

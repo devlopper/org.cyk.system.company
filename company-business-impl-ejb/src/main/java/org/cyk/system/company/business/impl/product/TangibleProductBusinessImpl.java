@@ -1,5 +1,6 @@
 package org.cyk.system.company.business.impl.product;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Set;
@@ -41,4 +42,15 @@ public class TangibleProductBusinessImpl extends AbstractProductBusinessImpl<Tan
 			ExceptionUtils.getInstance().exception(product.getUseQuantity().compareTo(product.getMinimalStockQuantityBlock())==-1, 
 			"exception.tangibleproduct.quantity.cannotbelowerthantoblock",new Object[]{product.getName()});*/
 	}
+	
+	/**/
+	
+	public static class BuilderOneDimensionArray extends AbstractProductBusinessImpl.BuilderOneDimensionArray<TangibleProduct> implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		public BuilderOneDimensionArray() {
+			super(TangibleProduct.class);
+		}
+		
+	}	
 }

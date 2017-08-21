@@ -1,5 +1,6 @@
 package org.cyk.system.company.business.impl.product;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Set;
@@ -33,5 +34,15 @@ public class IntangibleProductBusinessImpl extends AbstractProductBusinessImpl<I
 			
 	}
 	
+	/**/
+	
+	public static class BuilderOneDimensionArray extends AbstractProductBusinessImpl.BuilderOneDimensionArray<IntangibleProduct> implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		public BuilderOneDimensionArray() {
+			super(IntangibleProduct.class);
+		}
+		
+	}	
 
 }
