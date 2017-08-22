@@ -12,8 +12,7 @@ public abstract class AbstractEnterpriseResourcePlanningBusinessIT extends Abstr
 
     @Inject protected EnterpriseResourcePlanningFakedDataProducer dataProducer;
     
-    protected void installApplication(Boolean fake){
-    	super.installApplication(fake);
+    protected void installApplication(){
     	CompanyBusinessLayer.getInstance().enableEnterpriseResourcePlanning();
     }
     

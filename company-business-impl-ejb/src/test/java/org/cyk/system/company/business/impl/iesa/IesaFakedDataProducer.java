@@ -13,7 +13,7 @@ import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.root.business.impl.PersistDataListener;
 import org.cyk.utility.common.generator.AbstractGeneratable;
 
-@Singleton @Getter
+@Singleton @Getter @Deprecated
 public class IesaFakedDataProducer extends AbstractEnterpriseResourcePlanningFakedDataProducer implements Serializable {
 
 	private static final long serialVersionUID = -1832900422621121762L;

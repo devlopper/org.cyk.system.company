@@ -54,7 +54,7 @@ import org.cyk.utility.common.generator.RandomDataProvider;
 
 import lombok.Getter;
 
-@Getter
+@Getter @Deprecated
 public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedDataProducer implements Serializable {
 
 	private static final long serialVersionUID = -1832900422621121762L;

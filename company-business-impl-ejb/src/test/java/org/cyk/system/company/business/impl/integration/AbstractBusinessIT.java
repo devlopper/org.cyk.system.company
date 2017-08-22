@@ -35,13 +35,13 @@ import org.cyk.system.root.business.api.AbstractBusinessException;
 import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.api.mathematics.NumberBusiness;
 import org.cyk.system.root.business.api.party.ApplicationBusiness;
+import org.cyk.system.root.business.impl.AbstractBusinessTestHelper.TestCase;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer.Listener.Adapter;
 import org.cyk.system.root.business.impl.BusinessIntegrationTestHelper;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.RootBusinessTestHelper;
 import org.cyk.system.root.business.impl.RootDataProducerHelper;
-import org.cyk.system.root.business.impl.AbstractBusinessTestHelper.TestCase;
 import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
 import org.cyk.system.root.business.impl.validation.DefaultValidator;
@@ -204,11 +204,6 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
         return genericBusiness.update(object);
     }
     
-    protected void installApplication(Boolean fake){
-    	listeners();
-    	companyBusinessLayer.installApplication(fake);
-    }
-    
     protected void listeners(){
     	
     }
@@ -224,7 +219,8 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     			super.installationStarted(installation);
     		}
     	});
-    	installApplication(Boolean.TRUE);
+    	listeners();
+    	companyBusinessLayer.installApplication();
     	produce(getFakedDataProducer());
     }
     

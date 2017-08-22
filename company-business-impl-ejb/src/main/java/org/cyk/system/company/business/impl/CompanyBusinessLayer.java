@@ -387,25 +387,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	public static CompanyBusinessLayer getInstance() {
 		return INSTANCE;
 	}
-	
-	@Override
-	public Installation buildInstallation() {
-		Installation installation = super.buildInstallation();
-		installation.setFaked(Boolean.FALSE);
-		return installation;
-	}
-	
-	@Override
-	public void installApplication() {
-		super.installApplication();
-	}
 		
-	/**/
-	
-	protected void fakeTransactions(){}
-	
-	/**/
-	
 	public void enableEnterpriseResourcePlanning(){
 		EmployeeBusinessImpl.Listener.COLLECTION.add(EMPLOYEE_BUSINESS_LISTENER); 
 		CashRegisterMovementBusinessImpl.Listener.COLLECTION.add(CASH_REGISTER_MOVEMENT_BUSINESS_LISTENER);

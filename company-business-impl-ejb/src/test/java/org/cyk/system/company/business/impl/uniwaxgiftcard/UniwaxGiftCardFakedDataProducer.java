@@ -22,7 +22,7 @@ import org.cyk.system.company.model.structure.Employee;
 
 import lombok.Getter;
 
-@Singleton @Getter
+@Singleton @Getter @Deprecated
 public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataProducer implements Serializable {
 
 	private static final long serialVersionUID = -1832900422621121762L;

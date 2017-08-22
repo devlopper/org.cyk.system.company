@@ -10,11 +10,6 @@ public abstract class AibsBakeryAbstractIesaBusinessIT extends AbstractBusinessI
 	private static final long serialVersionUID = -5752455124275831171L;
 
     @Inject protected AibsBakeryFakedDataProducer dataProducer;
-     
-    protected void installApplication(Boolean fake){
-    	super.installApplication(fake);
-    	
-    }
     
     @Override
     protected AbstractFakedDataProducer getFakedDataProducer() {

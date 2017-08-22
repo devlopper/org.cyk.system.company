@@ -25,7 +25,7 @@ import org.cyk.system.root.model.userinterface.InputName;
 
 import lombok.Getter;
 
-@Singleton @Getter
+@Singleton @Getter @Deprecated
 public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProducer implements Serializable {
 
 	private static final long serialVersionUID = -1832900422621121762L;
