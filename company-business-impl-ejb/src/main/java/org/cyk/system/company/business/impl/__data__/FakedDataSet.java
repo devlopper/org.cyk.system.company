@@ -27,9 +27,6 @@ public class FakedDataSet extends DataSet implements Serializable {
 	
 	public FakedDataSet() {
 		super(CompanyBusinessLayer.class);
-	}
-	
-	public void instanciate() {
 		addInstances(CashRegister.class, inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_001));
 		addInstances(CashRegister.class, inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_002));
 		addInstances(CashRegister.class, inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_003));
