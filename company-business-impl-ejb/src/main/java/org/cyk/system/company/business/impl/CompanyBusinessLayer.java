@@ -236,7 +236,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		security(dataSet);
 		
         dataSet.instanciate();
-    	dataSet.create();
+    	dataSet.save();
 	}
 	
 	/*@Override
