@@ -1,7 +1,6 @@
 package org.cyk.system.company.business.impl.__data__;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
@@ -39,7 +38,7 @@ public class FakedDataSet extends DataSet implements Serializable {
 		addInstances(Customer.class, inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_003_FATHER));
 		addInstances(Customer.class, inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_004_MOTHER));
 		
-		addInstances(PersonRelationship.class, Arrays.asList(
+		addInstances(PersonRelationship.class,
 				inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_001_FATHER, RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_FATHER, CUSTOMER_001
 						,RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_SON)
 				,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_002_MOTHER, RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_MOTHER, CUSTOMER_001
@@ -48,7 +47,7 @@ public class FakedDataSet extends DataSet implements Serializable {
 						,RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_DAUGHTER)
 				,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_004_MOTHER, RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_MOTHER, CUSTOMER_002
 						,RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_DAUGHTER)
-				));
+				);
 	}
 	
 	protected void createCustomers(){

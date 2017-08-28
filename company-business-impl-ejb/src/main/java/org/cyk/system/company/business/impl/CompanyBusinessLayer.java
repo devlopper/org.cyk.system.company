@@ -74,6 +74,7 @@ import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachin
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
+import org.cyk.utility.common.helper.ClassHelper;
 import org.joda.time.DateTime;
 
 import lombok.Getter;
@@ -84,6 +85,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	public static final int DEPLOYMENT_ORDER = RootBusinessLayer.DEPLOYMENT_ORDER+1;
 	private static final long serialVersionUID = -462780912429013933L;
 
+	public static Class<? extends DataSet> DATA_SET_CLASS = RealDataSet.class;
 	private static CompanyBusinessLayer INSTANCE;
 	
 	public static Boolean PRODUCT_STOCKING_ENABLED = Boolean.FALSE;
@@ -225,7 +227,14 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Override
 	protected void persistStructureData() {
 		super.persistStructureData();
-		
+		/*
+		if(DATA_SET_CLASS==null)
+    		;
+    	else{
+    		DataSet dataSet = ClassHelper.getInstance().instanciateOne(DATA_SET_CLASS);
+        	dataSet.instanciate().save();	
+    	}
+		*/
 		DataSet dataSet = new DataSet(getClass());
     	
 		file(dataSet);
@@ -278,7 +287,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 		OwnedCompany ownedCompany = new OwnedCompany();
 		ownedCompany.setCompany(company);
-		ownedCompany.setSelected(Boolean.TRUE);
+		ownedCompany.setDefaulted(Boolean.TRUE);
 		
 		installObject(-1,inject(OwnedCompanyBusiness.class),ownedCompany);
 		

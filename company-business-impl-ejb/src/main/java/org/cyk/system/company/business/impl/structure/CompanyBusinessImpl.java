@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.persistence.api.structure.CompanyDao;
+import org.cyk.system.root.business.api.geography.ContactCollectionBusiness;
 import org.cyk.system.root.business.impl.party.AbstractPartyBusinessImpl;
 import org.cyk.system.root.model.party.person.Person;
 
@@ -19,15 +20,27 @@ public class CompanyBusinessImpl extends AbstractPartyBusinessImpl<Company, Comp
 	public CompanyBusinessImpl(CompanyDao dao) {
 		super(dao);
 	}
+	
+	@Override
+	public Company instanciateOne() {
+		Company company = super.instanciateOne();
+		company.setContactCollection(inject(ContactCollectionBusiness.class).instanciateOne());
+		return company;
+	}
 
 	@Override
 	public Collection<Company> findByManager(Person manager) {
 		return dao.readByManager(manager);
 	}
 	
-	@Override
-	public Company update(Company company) {
-		return super.update(company);
+	public static class BuilderOneDimensionArray extends org.cyk.system.root.business.impl.helper.InstanceHelper.BuilderOneDimensionArray<Company> implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		public BuilderOneDimensionArray() {
+			super(Company.class);
+			//addFieldCodeName().addParameterArrayElementString(Credentials.FIELD_SOFTWARE,Credentials.FIELD_USERNAME,Credentials.FIELD_PASSWORD);
+		}
+		
 	}
 	
 }
