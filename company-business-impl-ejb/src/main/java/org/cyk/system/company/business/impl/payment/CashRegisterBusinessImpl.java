@@ -30,7 +30,7 @@ public class CashRegisterBusinessImpl extends AbstractEnumerationBusinessImpl<Ca
 	@Override
 	public CashRegister create(CashRegister cashRegister) {
 		if(cashRegister.getOwnedCompany()==null)
-			cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaultOwnedCompany());
+			cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaulted());
 		
 		if(cashRegister.getMovementCollection()==null){
 			cashRegister.setMovementCollection((inject(MovementCollectionBusiness.class).instanciateOne(cashRegister.getCode()
@@ -50,7 +50,7 @@ public class CashRegisterBusinessImpl extends AbstractEnumerationBusinessImpl<Ca
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public CashRegister instanciateOneRandomly(String code) {
 		CashRegister cashRegister = super.instanciateOneRandomly(code);
-		cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaultOwnedCompany());
+		cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaulted());
 		/*cashRegister.setMovementCollection(inject(MovementCollectionBusiness.class).instanciateOneRandomly(code));
 		cashRegister.getMovementCollection().getDecrementAction().getInterval().getLow().setValue(BigDecimal.ZERO);
 		cashRegister.getMovementCollection().getDecrementAction().getInterval().getLow().setValue(BigDecimal.ZERO);

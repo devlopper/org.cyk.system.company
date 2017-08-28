@@ -33,7 +33,7 @@ public class ProductCategoryBusinessImpl extends AbstractDataTreeTypeBusinessImp
 	
 	@Override
 	public ProductCategory create(ProductCategory productCategory) {
-		return __create__(productCategory,ownedCompanyBusiness.findDefaultOwnedCompany());
+		return __create__(productCategory,ownedCompanyBusiness.findDefaulted());
 	}
 	
 	private ProductCategory __create__(ProductCategory productCategory,OwnedCompany ownedCompany) {

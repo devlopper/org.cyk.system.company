@@ -5,6 +5,4 @@ import org.cyk.system.root.business.api.TypedBusiness;
 
 public interface OwnedCompanyBusiness extends TypedBusiness<OwnedCompany> {
 
-	OwnedCompany findDefaultOwnedCompany();
-	
 }

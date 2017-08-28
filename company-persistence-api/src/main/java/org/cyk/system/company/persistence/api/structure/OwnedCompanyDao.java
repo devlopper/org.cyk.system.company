@@ -5,6 +5,4 @@ import org.cyk.system.root.persistence.api.TypedDao;
 
 public interface OwnedCompanyDao extends TypedDao<OwnedCompany> {
 
-	OwnedCompany readBySelected(Boolean selected);
-   
 }

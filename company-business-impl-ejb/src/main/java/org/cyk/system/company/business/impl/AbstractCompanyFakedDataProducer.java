@@ -89,7 +89,7 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	}
 	
 	protected Company getCompany(){
-		return ownedCompanyBusiness.findDefaultOwnedCompany().getCompany();
+		return ownedCompanyBusiness.findDefaulted().getCompany();
 	}
 	
 	@Override

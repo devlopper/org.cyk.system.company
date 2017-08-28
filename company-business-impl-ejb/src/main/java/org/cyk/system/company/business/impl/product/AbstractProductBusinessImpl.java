@@ -51,7 +51,7 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
     
     @Override
     public PRODUCT create(PRODUCT product) {
-    	return __create__(product,ownedCompanyBusiness.findDefaultOwnedCompany());
+    	return __create__(product,ownedCompanyBusiness.findDefaulted());
     }
     
     private PRODUCT __create__(PRODUCT product,OwnedCompany ownedCompany) {

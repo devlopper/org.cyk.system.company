@@ -58,7 +58,7 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 	}
 	@Override
 	public AccountingPeriod findCurrent() {
-		return findCurrent(ownedCompanyBusiness.findDefaultOwnedCompany());
+		return findCurrent(ownedCompanyBusiness.findDefaulted());
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -69,7 +69,7 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public AccountingPeriod findPrevious() {
-		return findPrevious(ownedCompanyBusiness.findDefaultOwnedCompany());
+		return findPrevious(ownedCompanyBusiness.findDefaulted());
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)

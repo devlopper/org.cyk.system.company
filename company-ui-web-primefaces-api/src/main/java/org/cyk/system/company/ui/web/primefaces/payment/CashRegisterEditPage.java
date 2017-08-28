@@ -31,7 +31,7 @@ public class CashRegisterEditPage extends AbstractMovementCollectionEditPage<Cas
 	@Override
 	protected CashRegister instanciateIdentifiable() {
 		CashRegister cashRegister = super.instanciateIdentifiable();
-		cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaultOwnedCompany());
+		cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaulted());
 		return cashRegister;
 	}
 	

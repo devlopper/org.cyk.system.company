@@ -88,7 +88,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 		addListener(new ReportBasedOnDynamicBuilderAdapter(){
         	@Override
         	public void report(ReportBasedOnDynamicBuilder<?> report,ReportBasedOnDynamicBuilderParameters<?> parameters) {
-        		parameters.setOwner(ownedCompanyBusiness.findDefaultOwnedCompany().getCompany());
+        		parameters.setOwner(ownedCompanyBusiness.findDefaulted().getCompany());
         	}
         });
 		

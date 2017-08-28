@@ -101,7 +101,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	
 	public void set(CashRegister cashRegister,String code){
 		setEnumeration(cashRegister, code);
-		cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaultOwnedCompany());
+		cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaulted());
 		cashRegister.setMovementCollection(new MovementCollection());
 	}
 		

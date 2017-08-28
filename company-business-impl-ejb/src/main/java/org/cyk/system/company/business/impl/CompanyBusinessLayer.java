@@ -168,7 +168,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			@Override
 			public void installationEnded(Installation installation) {
 				super.installationEnded(installation);
-				OwnedCompany ownedCompany = inject(OwnedCompanyBusiness.class).findDefaultOwnedCompany();
+				OwnedCompany ownedCompany = inject(OwnedCompanyBusiness.class).findDefaulted();
 				Collection<Person> persons = inject(PersonDao.class).select().all();
 				ownedCompany.getCompany().setManager(persons.isEmpty() ? null : persons.iterator().next());
 				inject(CompanyBusiness.class).update(ownedCompany.getCompany());
