@@ -20,7 +20,7 @@ public class CostFormModel extends AbstractBean implements Serializable {
 
 	private static final long serialVersionUID = -465747050467060317L;
  
-	@Input(label=@Text(type=ValueType.ID,value="field.cost")) @InputNumber private BigDecimal value;
+	@Input(label=@Text(valueType=ValueType.ID,value="field.cost")) @InputNumber private BigDecimal value;
 	
 	@Input @InputNumber private BigDecimal turnover = BigDecimal.ZERO;
 	
