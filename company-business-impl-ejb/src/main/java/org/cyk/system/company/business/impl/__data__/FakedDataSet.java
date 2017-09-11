@@ -37,7 +37,7 @@ public class FakedDataSet extends DataSet implements Serializable {
 		addInstances(Customer.class, inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_002_MOTHER));
 		addInstances(Customer.class, inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_003_FATHER));
 		addInstances(Customer.class, inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_004_MOTHER));
-		
+		/*
 		addInstances(PersonRelationship.class,
 				inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_001_FATHER, RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_FATHER, CUSTOMER_001
 						,RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_SON)
@@ -48,6 +48,7 @@ public class FakedDataSet extends DataSet implements Serializable {
 				,inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_004_MOTHER, RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_MOTHER, CUSTOMER_002
 						,RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_DAUGHTER)
 				);
+		*/
 	}
 	
 	protected void createCustomers(){

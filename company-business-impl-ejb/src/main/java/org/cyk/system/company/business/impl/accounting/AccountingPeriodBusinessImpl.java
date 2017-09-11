@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.TransactionAttribute;
@@ -16,36 +17,66 @@ import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
 import org.cyk.system.company.model.product.Product;
+import org.cyk.system.company.model.sale.SaleConfiguration;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
+import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.impl.time.AbstractIdentifiablePeriodBusinessImpl;
+import org.cyk.system.root.model.time.Period;
+import org.cyk.utility.common.helper.FieldHelper;
+import org.cyk.utility.common.helper.TimeHelper;
 
 public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusinessImpl<AccountingPeriod, AccountingPeriodDao> implements AccountingPeriodBusiness,Serializable {
 
 	private static final long serialVersionUID = 3562957667624866162L;
 
-	@Inject private ProductDao productDao;
-	@Inject private AccountingPeriodProductDao accountingPeriodProductDao;
 	@Inject private OwnedCompanyBusiness ownedCompanyBusiness;
 	
 	@Inject
 	public AccountingPeriodBusinessImpl(AccountingPeriodDao dao) {
 		super(dao);
 	}
-
+	
 	@Override
-	public AccountingPeriod create(AccountingPeriod accountingPeriod) {
-		exceptionUtils().exception(findCurrent(accountingPeriod.getOwnedCompany())!=null, "exception.accountingperiod.oneisrunning");
-		//AccountingPeriod previous = findPrevious(accountingPeriod.getOwnedCompany());
-		//exceptionUtils().exception(previous!=null && Boolean.FALSE.equals(previous.getClosed()), "exception.accountingperiod.previousnotclosed");
-		super.create(accountingPeriod);
-		for(Product product : productDao.readAll())
-			accountingPeriodProductDao.create(new AccountingPeriodProduct(accountingPeriod, product));
+	public AccountingPeriod instanciateOne() {
+		AccountingPeriod accountingPeriod =  super.instanciateOne();
+		Integer year = TimeHelper.getInstance().getYear(new Date());
+		accountingPeriod.setExistencePeriod(new Period( new TimeHelper.Builder.String.Adapter.Default("1/1/"+year+" 0:0").execute()
+				, new TimeHelper.Builder.String.Adapter.Default("31/12/"+year+" 23:59").execute()));
+		accountingPeriod.getSaleConfiguration().setIdentifierGenerator(inject(StringGeneratorBusiness.class).instanciateOne("FACT","0", 8l, null, null,8l));
+		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(inject(StringGeneratorBusiness.class).instanciateOne("PAIE","0", 8l, null, null,8l));
 		return accountingPeriod;
 	}
 	
+	@Override
+	protected void beforeCreate(AccountingPeriod accountingPeriod) {
+		super.beforeCreate(accountingPeriod);
+		exceptionUtils().exception(findCurrent(accountingPeriod.getOwnedCompany())!=null, "exception.accountingperiod.oneisrunning");
+		createIfNotIdentified(accountingPeriod.getSaleConfiguration().getIdentifierGenerator());
+		createIfNotIdentified(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());
+	}
+	
+	@Override
+	protected void beforeDelete(AccountingPeriod accountingPeriod) {
+		super.beforeDelete(accountingPeriod);
+		if(accountingPeriod.getSaleConfiguration().getIdentifierGenerator()!=null)
+			inject(StringGeneratorBusiness.class).delete(accountingPeriod.getSaleConfiguration().getIdentifierGenerator());
+		if(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator()!=null)
+			inject(StringGeneratorBusiness.class).delete(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());
+	}
+	
+	@Override
+	protected void afterCreate(AccountingPeriod accountingPeriod) {
+		super.afterCreate(accountingPeriod);
+		AccountingPeriodProductDao accountingPeriodProductDao = inject(AccountingPeriodProductDao.class);
+		ProductDao productDao = inject(ProductDao.class);
+		for(Product product : productDao.readAll())
+			accountingPeriodProductDao.create(new AccountingPeriodProduct(accountingPeriod, product));
+		
+	}
+
 	@Override
 	public void close(AccountingPeriod accountingPeriod) {
 		//accountingPeriod.setClosed(Boolean.TRUE);
@@ -117,5 +148,16 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 			*/
 		//	inject(AccountingPeriodDao.class).update(sale.getAccountingPeriod());
 		//}
+	}
+	
+	public static class BuilderOneDimensionArray extends org.cyk.system.root.business.impl.helper.InstanceHelper.BuilderOneDimensionArray<AccountingPeriod> implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		public BuilderOneDimensionArray() {
+			super(AccountingPeriod.class);
+			addFieldCodeName().addParameterArrayElementString(AccountingPeriod.FIELD_OWNED_COMPANY,FieldHelper.getInstance()
+					.buildPath(AccountingPeriod.FIELD_SALE_CONFIGURATION,SaleConfiguration.FIELD_VALUE_ADDED_TAX_RATE));
+		}
+		
 	}
 }

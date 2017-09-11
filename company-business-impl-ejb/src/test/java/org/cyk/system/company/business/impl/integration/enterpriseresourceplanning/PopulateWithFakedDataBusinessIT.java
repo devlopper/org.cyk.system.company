@@ -7,7 +7,7 @@ public class PopulateWithFakedDataBusinessIT extends AbstractEnterpriseResourceP
  
     @Override
     protected void populate() {
-    	dataProducer.setDoBusiness(Boolean.TRUE);
+    	//dataProducer.setDoBusiness(Boolean.TRUE);
     	super.populate();
     }
     

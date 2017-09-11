@@ -38,4 +38,10 @@ public class AccountingPeriod extends AbstractIdentifiablePeriod implements Seri
 	
 	private static final String LOG_FORMAT = AccountingPeriod.class.getSimpleName()+"(%s %s)";
 
+	public static final String FIELD_OWNED_COMPANY = "ownedCompany";
+	public static final String FIELD_SALE_CONFIGURATION = "saleConfiguration";
+	public static final String FIELD_SALE_RESULTS = "saleResults";
+	public static final String FIELD_STOCK_CONFIGURATION = "stockConfiguration";
+	public static final String FIELD_STOCK_RESULTS = "stockResults";
+	
 }

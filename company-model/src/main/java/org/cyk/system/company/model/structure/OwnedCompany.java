@@ -24,12 +24,14 @@ public class OwnedCompany extends AbstractIdentifiable implements Serializable {
 	
 	@Override
 	public String toString() {
-		return company.toString();
+		return company == null ? super.toString() : company.toString();
 	}
 	
 	@Override
 	public String getUiString() {
 		return toString();
 	}
+	
+	public static final String FIELD_COMPANY = "company";
 	
 }

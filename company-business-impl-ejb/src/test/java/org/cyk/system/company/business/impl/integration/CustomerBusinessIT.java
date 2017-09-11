@@ -1,6 +1,7 @@
 package org.cyk.system.company.business.impl.integration;
 
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
+import org.cyk.system.company.model.sale.Customer;
 
 public class CustomerBusinessIT extends AbstractBusinessIT {
 
@@ -8,9 +9,10 @@ public class CustomerBusinessIT extends AbstractBusinessIT {
 
     @Override
     protected void businesses() {
-    	
-    	create(inject(CustomerBusiness.class).instanciateOneRandomly("01"));
-    	create(inject(CustomerBusiness.class).instanciateOneRandomly("02"));
+    	Customer customer = inject(CustomerBusiness.class).instanciateOneRandomly("01");
+    	customer.getPerson().setContactCollection(null);
+    	create(customer);
+    	//create(inject(CustomerBusiness.class).instanciateOneRandomly("02"));
     }
     
     /* Exceptions */

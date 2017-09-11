@@ -1,14 +1,12 @@
 package org.cyk.system.company.business.impl;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.inject.Singleton;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
@@ -24,7 +22,6 @@ import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
@@ -38,13 +35,10 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Company;
-import org.cyk.system.company.model.structure.DivisionType;
-import org.cyk.system.company.model.structure.EmploymentAgreementType;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.api.ClazzBusiness;
-import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.time.TimeBusiness;
 import org.cyk.system.root.business.impl.AbstractBusinessLayer;
@@ -59,23 +53,15 @@ import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.File;
-import org.cyk.system.root.model.file.report.ReportTemplate;
 import org.cyk.system.root.model.generator.StringGenerator;
-import org.cyk.system.root.model.geography.ContactCollection;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.system.root.model.mathematics.Interval;
-import org.cyk.system.root.model.mathematics.IntervalCollection;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
 import org.cyk.system.root.model.party.person.Person;
-import org.cyk.system.root.model.security.BusinessServiceCollection;
 import org.cyk.system.root.model.security.Installation;
 import org.cyk.system.root.model.time.Period;
-import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.cyk.utility.common.helper.ClassHelper;
-import org.joda.time.DateTime;
 
 import lombok.Getter;
 
@@ -219,33 +205,15 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		return inject(CompanyReportRepository.class);
 	}
 	
-	/*@Override
-	protected RootReportProducer getReportProducer() {
-		return inject(CompanyReportProducer.class);
-	}*/
-	
 	@Override
 	protected void persistStructureData() {
 		super.persistStructureData();
-		/*
 		if(DATA_SET_CLASS==null)
     		;
     	else{
     		DataSet dataSet = ClassHelper.getInstance().instanciateOne(DATA_SET_CLASS);
         	dataSet.instanciate().save();	
-    	}
-		*/
-		DataSet dataSet = new DataSet(getClass());
-    	
-		file(dataSet);
-		structure(dataSet);
-		company(dataSet);
-		sale(dataSet);
-		
-		security(dataSet);
-		
-        dataSet.instanciate();
-    	dataSet.save();
+    	}		
 	}
 	
 	/*@Override
@@ -254,127 +222,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		security(dataSet);
 	}*/
 		
-	private void company(DataSet dataSet){ 
-		//byte[] bytes = null;
-		
-		Company company = new Company();
-		company.setCode("C01");
-		String companyName = null;
-		for(Listener listener : Listener.COLLECTION){
-			String value = listener.getCompanyName();
-			if(value!=null)
-				companyName = value;
-		}
-		company.setName(companyName==null?"MyCompany":companyName);
-		/*bytes = null;
-		for(Listener listener : Listener.COLLECTION){
-			byte[] value = listener.getCompanyLogoBytes();
-			if(value!=null)
-				bytes = value;
-		}*/
-		company.setImage(read(File.class, CompanyConstant.Code.File.COMPANYLOGO));
-		/*
-		for(Listener listener : Listener.COLLECTION)
-			listener.handleCompanyLogoToInstall(company.getImage());
-		installObject(FILE_COMPANY_LOGO,inject(FileBusiness.class),company.getImage());
-		*/
-		company.setContactCollection(new ContactCollection());
-		/*
-		for(Listener listener : Listener.COLLECTION)
-			listener.handleCompanyToInstall(company);
-			*/
-		installObject(STRUCTURE_COMPANY,inject(CompanyBusiness.class),company);
-		
-		OwnedCompany ownedCompany = new OwnedCompany();
-		ownedCompany.setCompany(company);
-		ownedCompany.setDefaulted(Boolean.TRUE);
-		
-		installObject(-1,inject(OwnedCompanyBusiness.class),ownedCompany);
-		
-		/*FiniteStateMachine finiteStateMachine = rootDataProducerHelper.createFiniteStateMachine("SALE_FINITE_MACHINE_STATE"
-    			, new String[]{"SALE_FINITE_MACHINE_ALPHABET_VALID"}
-    		, new String[]{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}
-    		, Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE, new String[]{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}, new String[][]{
-    			{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE,"SALE_FINITE_MACHINE_ALPHABET_VALID",Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}
-    	});*/
-		
-		FiniteStateMachine salableProductInstanceCashRegisterFiniteStateMachine = rootDataProducerHelper.createFiniteStateMachine(CompanyConstant.GIFT_CARD_WORKFLOW
-    			, new String[]{CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SEND,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_RECEIVE,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE}
-				, new String[]{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_ASSIGNED,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SENT,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD
-				,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED}
-    			,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_ASSIGNED, new String[]{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED}, new String[][]{
-    			{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_ASSIGNED,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SEND,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SENT}
-    			,{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SENT,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_RECEIVE,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED}
-    			,{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD}
-    			,{CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE,CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED}
-    	});
-		/*
-		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SEND, "Transférer");
-		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_RECEIVE, "Réceptionner");
-		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL, "Vendre");
-		updateEnumeration(FiniteStateMachineAlphabet.class, CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE, "Utiliser");
-		
-		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_ASSIGNED, "Assigné");
-		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SENT, "Transféré");
-		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_RECEIVED, "Réceptionné");
-		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD, "Vendu");
-		updateEnumeration(FiniteStateMachineState.class, CompanyConstant.GIFT_CARD_WORKFLOW_STATE_USED, "Utilisé");
-		*/
-		/*
-		createReportTemplate(CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CONTRACT,"contrat de travail",Boolean.TRUE, "report/employee/employment_contract.jrxml", null, null, null);
-		createReportTemplate(CompanyConstant.Code.ReportTemplate.EMPLOYEE_EMPLOYMENT_CERTIFICATE,"certificat d'emploi",Boolean.TRUE, "report/employee/employment_certificate.jrxml", null, null, null);
-		createReportTemplate(CompanyConstant.Code.ReportTemplate.EMPLOYEE_WORK_CERTIFICATE,"certificat de travail",Boolean.TRUE, "report/employee/work_certificate.jrxml", null, null, null);
-		createReportTemplate(CompanyConstant.Code.ReportTemplate.INVOICE,"facture",Boolean.FALSE, "report/sale/invoice_a4.jrxml", null, null, null);
-		createReportTemplate(CompanyConstant.Code.ReportTemplate.PAYMENT_RECEIPT,"reçu de paiement",Boolean.TRUE, "report/sale/payment_receipt_a4.jrxml", null, null, null);
-		*/
-		AccountingPeriod accountingPeriod = new AccountingPeriod();
-		accountingPeriod.setOwnedCompany(ownedCompany);
-		Integer currentYear = new DateTime().getYear();
-		accountingPeriod.setExistencePeriod(new Period(new DateTime(currentYear, 1, 1, 0, 0).toDate(), new DateTime(currentYear, 12, 31, 23, 59).toDate()));
-		
-		accountingPeriod.getSaleConfiguration().setValueAddedTaxRate(BigDecimal.ZERO);
-		accountingPeriod.getSaleConfiguration().setIdentifierGenerator(stringGenerator("FACT","0", 8l, null, null,8l));
-		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(stringGenerator("PAIE","0", 8l, null, null,8l));
-		//accountingPeriod.getSaleConfiguration().setFiniteStateMachine(finiteStateMachine);
-		accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterFiniteStateMachine(salableProductInstanceCashRegisterFiniteStateMachine);
-		accountingPeriod.getSaleConfiguration().setSalableProductInstanceCashRegisterSaleConsumeState(inject(FiniteStateMachineStateDao.class).read(CompanyConstant.GIFT_CARD_WORKFLOW_STATE_SOLD));
-		
-		inject(StringGeneratorBusiness.class).create(accountingPeriod.getSaleConfiguration().getIdentifierGenerator());
-		inject(StringGeneratorBusiness.class).create(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());
-		//accountingPeriodBusiness.create(accountingPeriod);
-		for(Listener listener : Listener.COLLECTION)
-			listener.handleAccountingPeriodToInstall(accountingPeriod);
-		installObject(ACCOUNTING_PERIOD,inject(AccountingPeriodBusiness.class),accountingPeriod);
-		
-		dataSet.addClass(EmploymentAgreementType.class);
-		
-	}
-	
-	private void file(DataSet dataSet){
-		dataSet.addClass(File.class);
-		dataSet.addClass(ReportTemplate.class);
-	}
-	
-	private void security(DataSet dataSet){
-		dataSet.addClass(BusinessServiceCollection.class);
-	}
-		
-	private void structure(DataSet dataSet){
-		dataSet.addClass(DivisionType.class);
-    }
-	
-	private void sale(DataSet dataSet){
-		dataSet.addClass(IntangibleProduct.class);
-		dataSet.addClass(TangibleProduct.class);
-		dataSet.addClass(SalableProduct.class);
-		dataSet.addClass(CashRegisterMovementMode.class);
-		
-		dataSet.addClass(IntervalCollection.class);
-		dataSet.addClass(Interval.class);
-		
-		dataSet.addClass(CashRegister.class);
-    }
-	
 	/**/
 	
 	@Override

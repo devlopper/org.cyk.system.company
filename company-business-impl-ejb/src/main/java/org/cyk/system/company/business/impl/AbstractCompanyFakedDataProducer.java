@@ -48,7 +48,6 @@ import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.system.root.model.time.TimeDivisionType;
-import org.cyk.system.root.model.userinterface.InputName;
 import org.cyk.system.root.persistence.api.party.ApplicationDao;
 import org.cyk.utility.common.generator.RandomDataProvider;
 
@@ -189,8 +188,8 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 		return productionPlanResource;
 	}
 	
-	protected ProductionPlanMetric createProductionPlanMetric(ProductionPlan productionPlan,InputName inputName){
-		ProductionPlanMetric productionPlanMetric = new ProductionPlanMetric(productionPlan,inputName);
+	protected ProductionPlanMetric createProductionPlanMetric(ProductionPlan productionPlan){
+		ProductionPlanMetric productionPlanMetric = new ProductionPlanMetric(productionPlan);
 		productionPlan.getColumns().add(productionPlanMetric);
 		return productionPlanMetric;
 	}

@@ -64,4 +64,5 @@ public class SaleConfiguration extends AbstractModelElement implements Serializa
 	
 	private static final String LOG_FORMAT = SaleConfiguration.class.getSimpleName()+"(VAT_RATE=%s IN_COST=%s)";
 
+	public static final String FIELD_VALUE_ADDED_TAX_RATE = "valueAddedTaxRate";
 }

@@ -2,15 +2,12 @@ package org.cyk.system.company.business.impl.iesa;
 
 import java.util.Locale;
 
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.impl.AbstractCompanyReportProducer;
 import org.cyk.system.company.business.impl.integration.enterpriseresourceplanning.AbstractEnterpriseResourcePlanningBusinessIT;
 import org.cyk.system.company.business.impl.structure.EmployeeBusinessImpl;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.structure.EmploymentAgreement;
-import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
 import org.cyk.system.root.business.impl.PersistDataListener;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.RootConstant;
@@ -19,8 +16,6 @@ import org.cyk.utility.common.generator.AbstractGeneratable;
 public abstract class AbstractIesaBusinessIT extends AbstractEnterpriseResourcePlanningBusinessIT {
 
 	private static final long serialVersionUID = -5752455124275831171L;
-	
-	@Inject protected IesaFakedDataProducer dataProducer;
 	
 	@Override
 	protected void populate() {
@@ -62,8 +57,4 @@ public abstract class AbstractIesaBusinessIT extends AbstractEnterpriseResourceP
 		});
 	}
 	
-	@Override
-    protected AbstractFakedDataProducer getFakedDataProducer() {
-    	return dataProducer;
-    }
 }

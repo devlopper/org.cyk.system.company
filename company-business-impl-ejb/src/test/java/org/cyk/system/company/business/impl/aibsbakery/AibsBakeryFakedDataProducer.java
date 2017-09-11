@@ -79,8 +79,8 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 		productionPlanPain = createProductionPlan("PP1", productionUnit1, manufacturedProductPain, getEnumeration(ProductionEnergy.class, ProductionEnergy.GAS),getEnumeration(TimeDivisionType.class, RootConstant.Code.TimeDivisionType.DAY), productionPlans);
 		for(AbstractIdentifiable identifiable : genericBusiness.use(ResourceProduct.class).find().all())
 			createProductionPlanResource(productionPlanPain,(ResourceProduct) identifiable);
-		for(AbstractIdentifiable identifiable : genericBusiness.use(InputName.class).find().all())
-			createProductionPlanMetric(productionPlanPain,(InputName) identifiable);
+		//for(AbstractIdentifiable identifiable : genericBusiness.use(InputName.class).find().all())
+		//	createProductionPlanMetric(productionPlanPain,(InputName) identifiable);
 		/*
 		productionPlanResourceFarine = createProductionPlanResource(productionPlanPain,resourceProductFarine);
 		productionPlanResourceAmeliorant = createProductionPlanResource(productionPlanPain,resourceProductAmeliorant);

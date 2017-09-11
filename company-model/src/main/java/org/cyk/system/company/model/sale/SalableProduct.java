@@ -17,13 +17,14 @@ import org.cyk.utility.common.annotation.ModelBean.GenderType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
-@Getter @Setter @NoArgsConstructor @Entity @ModelBean(genderType=GenderType.MALE,crudStrategy=CrudStrategy.BUSINESS)
+@Getter @Setter @NoArgsConstructor @Entity @ModelBean(genderType=GenderType.MALE,crudStrategy=CrudStrategy.BUSINESS) @Accessors(chain=true)
 public class SalableProduct extends AbstractCollection<SalableProductInstance> implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @NotNull private Product product;
+	 @ManyToOne @NotNull private Product product;
 	
 	/**
 	 * The unit price of the product. null means the price will be determine at runtime
@@ -35,6 +36,11 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 		this.product = product;
 		this.price = price;
 	}
+	
+	/*public SalableProduct setProduct(Product product){
+		this.product = product;
+		return this;
+	}*/
 	
 	@Override
 	public String getLogMessage() {

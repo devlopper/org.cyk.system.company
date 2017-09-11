@@ -38,7 +38,7 @@ public class CompanyBusinessImpl extends AbstractPartyBusinessImpl<Company, Comp
 
 		public BuilderOneDimensionArray() {
 			super(Company.class);
-			//addFieldCodeName().addParameterArrayElementString(Credentials.FIELD_SOFTWARE,Credentials.FIELD_USERNAME,Credentials.FIELD_PASSWORD);
+			addFieldCodeName();
 		}
 		
 	}
