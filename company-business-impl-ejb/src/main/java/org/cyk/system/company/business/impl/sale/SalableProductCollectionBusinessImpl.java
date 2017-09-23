@@ -134,7 +134,7 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 		SalableProductCollectionItemBusiness salableProductCollectionItemBusiness = inject(SalableProductCollectionItemBusiness.class);
 		salableProductCollection.setTotalCostValueWithoutReduction(BigDecimal.ZERO);
 		salableProductCollection.setTotalReduction(BigDecimal.ZERO);
-		for(SalableProductCollectionItem salableProductCollectionItem : salableProductCollection.getItems().getCollection()){
+		for(SalableProductCollectionItem salableProductCollectionItem : salableProductCollection.getItems().getElements()){
 			salableProductCollectionItemBusiness.computeDerivationsFromCost(salableProductCollectionItem);
 			salableProductCollection.setTotalCostValueWithoutReduction(salableProductCollection.getTotalCostValueWithoutReduction().add(salableProductCollectionItem.getQuantifiedPrice()));
 			salableProductCollection.setTotalReduction(salableProductCollection.getTotalReduction().add(salableProductCollectionItem.getReduction()));

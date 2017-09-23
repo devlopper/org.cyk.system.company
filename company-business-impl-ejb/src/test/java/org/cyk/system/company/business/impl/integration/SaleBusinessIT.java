@@ -74,11 +74,11 @@ public class SaleBusinessIT extends AbstractEnterpriseResourcePlanningBusinessIT
     	salableProductCollection = inject(SalableProductCollectionDao.class).read("SPC001");
     	assertEquals(0, inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection).size());
     	
-    	salableProductCollection.getItems().getCollection().clear();
+    	salableProductCollection.getItems().getElements().clear();
     	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
     	inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection, "TP01","1","0","0");
     	companyBusinessTestHelper.update(salableProductCollection);
-    	salableProductCollection.getItems().getCollection().clear();
+    	salableProductCollection.getItems().getElements().clear();
     	salableProductCollection = inject(SalableProductCollectionDao.class).read("SPC001");
     	assertEquals(1, inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection).size());
     	
@@ -140,7 +140,7 @@ public class SaleBusinessIT extends AbstractEnterpriseResourcePlanningBusinessIT
     	
     	SaleCashRegisterMovement saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).instanciateOne(saleCashRegisterMovementCollection, "Sale002", "800");
     	
-    	assertEquals(2, saleCashRegisterMovementCollection.getItems().getCollection().size());
+    	assertEquals(2, saleCashRegisterMovementCollection.getItems().getElements().size());
     	
     	testCase.create(saleCashRegisterMovementCollection);
     	

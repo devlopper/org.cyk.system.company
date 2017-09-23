@@ -50,7 +50,7 @@ public class SalableProductCollectionItemReport extends AbstractIdentifiableRepo
 		reduction = format(((SalableProductCollectionItem)source).getReduction());
 		commission = format(((SalableProductCollectionItem)source).getCommission());
 		balance.setSource(((SalableProductCollectionItem)source).getBalance());
-		for(SalableProductCollectionItemSaleCashRegisterMovement salableProductCollectionItemSaleCashRegisterMovement : ((SalableProductCollectionItem)source).getSalableProductCollectionItemSaleCashRegisterMovements().getCollection())
+		for(SalableProductCollectionItemSaleCashRegisterMovement salableProductCollectionItemSaleCashRegisterMovement : ((SalableProductCollectionItem)source).getSalableProductCollectionItemSaleCashRegisterMovements().getElements())
 			salableProductCollectionItemSaleCashRegisterMovements.add(new SalableProductCollectionItemSaleCashRegisterMovementReport(this, null, salableProductCollectionItemSaleCashRegisterMovement));
 	}
 	

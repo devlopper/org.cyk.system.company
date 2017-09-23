@@ -39,7 +39,7 @@ public class SaleCashRegisterMovementReport extends AbstractIdentifiableReport<S
 		amount = format(((SaleCashRegisterMovement)source).getAmount());
 		balance.setSource(((SaleCashRegisterMovement)source).getBalance());
 		
-		for(SalableProductCollectionItemSaleCashRegisterMovement index : ((SaleCashRegisterMovement)source).getSalableProductCollectionItemSaleCashRegisterMovements().getCollection()){
+		for(SalableProductCollectionItemSaleCashRegisterMovement index : ((SaleCashRegisterMovement)source).getSalableProductCollectionItemSaleCashRegisterMovements().getElements()){
 			SalableProductCollectionItemSaleCashRegisterMovementReport salableProductCollectionItemSaleCashRegisterMovement
 				= new SalableProductCollectionItemSaleCashRegisterMovementReport();
 			SalableProductCollectionItemReport salableProductCollectionItem = new SalableProductCollectionItemReport();

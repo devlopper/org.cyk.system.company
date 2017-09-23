@@ -78,7 +78,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	}
 	
 	private SaleReportTemplateFile produceSaleReportTemplateFile(Sale sale) {
-		sale.getSalableProductCollection().getItems().setCollection(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
+		sale.getSalableProductCollection().getItems().setElements(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
 		inject(SalableProductCollectionBusiness.class).computeDerivationsFromCost(sale.getSalableProductCollection());
 		SaleReportTemplateFile report = new SaleReportTemplateFile(sale);
 		
@@ -122,7 +122,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	}
 	
 	private SaleCashRegisterMovementCollectionReportTemplateFile produceSaleCashRegisterMovementCollectionReportTemplateFile(final SaleCashRegisterMovementCollection saleCashRegisterMovementCollection) {
-		saleCashRegisterMovementCollection.getItems().setCollection(inject(SaleCashRegisterMovementDao.class).readByCollection(saleCashRegisterMovementCollection));
+		saleCashRegisterMovementCollection.getItems().setElements(inject(SaleCashRegisterMovementDao.class).readByCollection(saleCashRegisterMovementCollection));
 		SaleCashRegisterMovementCollectionReportTemplateFile report = new SaleCashRegisterMovementCollectionReportTemplateFile(saleCashRegisterMovementCollection);
 		//report.getSaleCashRegisterMovementCollection().getCashRegisterMovement().setText("DETAILS TO COMPUTE");
 		//List<SaleCashRegisterMovement> saleCashRegisterMovements = (List<SaleCashRegisterMovement>) inject(SaleCashRegisterMovementDao.class).readByCollection(saleCashRegisterMovementCollection);
@@ -148,7 +148,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 			@Override
 			public Collection<Person> getNullValue() {
 				Collection<Person> persons = new LinkedHashSet<>();
-				for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovementCollection.getItems().getCollection())
+				for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovementCollection.getItems().getElements())
 					if(saleCashRegisterMovement.getSale().getCustomer()!=null)
 						persons.add(saleCashRegisterMovement.getSale().getCustomer().getPerson());
 				return persons;
@@ -156,7 +156,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 		});
 		if(customerPersons==null){
 			customerPersons = new LinkedHashSet<>();
-			for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovementCollection.getItems().getCollection()){
+			for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovementCollection.getItems().getElements()){
 				if(saleCashRegisterMovement.getSale().getCustomer()!=null)
 					customerPersons.add(saleCashRegisterMovement.getSale().getCustomer().getPerson());
 			}
@@ -202,7 +202,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	
 	private SaleCashRegisterMovementReportFile produceSaleCashRegisterMovementReportFile(SaleCashRegisterMovement saleCashRegisterMovement) {
 		SaleCashRegisterMovementReportFile report = new SaleCashRegisterMovementReportFile(saleCashRegisterMovement);
-		saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getCollection().clear();
+		saleCashRegisterMovement.getSalableProductCollectionItemSaleCashRegisterMovements().getElements().clear();
 		//List<SaleCashRegisterMovement> saleCashRegisterMovements = (List<SaleCashRegisterMovement>) inject(SaleCashRegisterMovementDao.class).readBySale(saleCashRegisterMovement.getSale());
 		/*if(saleCashRegisterMovements.size()>1){
 			report.getSaleCashRegisterMovement().setPrevious(new SaleCashRegisterMovementReport(report.getSaleCashRegisterMovement().getSale()
@@ -341,7 +341,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 				public Collection<Person> getCustomerPersons(AbstractIdentifiable identifiable) {
 					Collection<Person> persons = new ArrayList<>();
 					if(identifiable instanceof SaleCashRegisterMovementCollection)
-						for(SaleCashRegisterMovement saleCashRegisterMovement : ((SaleCashRegisterMovementCollection)identifiable).getItems().getCollection()){
+						for(SaleCashRegisterMovement saleCashRegisterMovement : ((SaleCashRegisterMovementCollection)identifiable).getItems().getElements()){
 							Person person = getCustomerPerson(saleCashRegisterMovement.getSale().getCustomer());
 							if(person!=null)
 								person = process(person);

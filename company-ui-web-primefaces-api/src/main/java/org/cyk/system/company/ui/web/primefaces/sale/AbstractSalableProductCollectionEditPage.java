@@ -66,7 +66,7 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 	}
 	
 	private void itemPropertyChanged(TYPE item){
-		inject(SalableProductCollectionBusiness.class).computeCost(getSalableProductCollection(),getSalableProductCollection().getItems().getCollection());
+		inject(SalableProductCollectionBusiness.class).computeCost(getSalableProductCollection(),getSalableProductCollection().getItems().getElements());
 		itemCollection.read(item);
 		updateFormCost(form,getSalableProductCollection());
 	}
@@ -204,8 +204,8 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 			
 			@Override
 			public Collection<SalableProductCollectionItem> load() {
-				getCollection().getItems().setCollection(inject(SalableProductCollectionItemBusiness.class).findByCollection(getCollection()));
-				return getCollection().getItems().getCollection();
+				getCollection().getItems().setElements(inject(SalableProductCollectionItemBusiness.class).findByCollection(getCollection()));
+				return getCollection().getItems().getElements();
 			}
 			
 			@Override

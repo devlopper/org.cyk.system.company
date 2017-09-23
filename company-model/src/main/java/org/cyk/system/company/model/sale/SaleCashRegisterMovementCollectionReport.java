@@ -57,7 +57,7 @@ public class SaleCashRegisterMovementCollectionReport extends AbstractIdentifiab
 		cashRegisterMovement.setSource(((SaleCashRegisterMovementCollection)source).getCashRegisterMovement());
 		amountIn = format(((SaleCashRegisterMovementCollection)source).getAmountIn());
 		amountOut = format(((SaleCashRegisterMovementCollection)source).getAmountOut());
-		for(SaleCashRegisterMovement index : ((SaleCashRegisterMovementCollection)source).getItems().getCollection()){
+		for(SaleCashRegisterMovement index : ((SaleCashRegisterMovementCollection)source).getItems().getElements()){
 			saleCashRegisterMovements.add(new SaleCashRegisterMovementReport(this,index));
 		}
 	}
