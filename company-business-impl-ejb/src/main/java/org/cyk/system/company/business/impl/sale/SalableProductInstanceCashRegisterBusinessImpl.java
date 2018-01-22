@@ -33,7 +33,7 @@ public class SalableProductInstanceCashRegisterBusinessImpl extends AbstractType
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<SalableProductInstanceCashRegister> findByCriteria(SearchCriteria searchCriteria) {
-		prepareFindByCriteria(searchCriteria);
+		//prepareFindByCriteria(searchCriteria);
 		return dao.readByCriteria(searchCriteria);
 	}
 

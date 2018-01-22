@@ -110,7 +110,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<StockTangibleProductMovement> findByCriteria(StockTangibleProductMovementSearchCriteria criteria) {
-		prepareFindByCriteria(criteria);
+		//prepareFindByCriteria(criteria);
 		return dao.readByCriteria(criteria);
 	}
 

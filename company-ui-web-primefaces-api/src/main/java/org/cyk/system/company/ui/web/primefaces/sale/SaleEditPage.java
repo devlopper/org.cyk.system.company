@@ -9,9 +9,6 @@ import java.util.Date;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovementMode;
@@ -38,7 +35,10 @@ import org.cyk.utility.common.annotation.user.interfaces.InputOneAutoComplete;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
-import org.cyk.utility.common.cdi.BeanAdapter;
+import org.cyk.utility.common.cdi.BeanListener;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SaleEditPage extends AbstractSalableProductCollectionEditPage<Sale,SalableProductCollectionItem,SaleEditPage.Item> implements Serializable {
@@ -164,7 +164,7 @@ public class SaleEditPage extends AbstractSalableProductCollectionEditPage<Sale,
 		BigDecimal getAmountIn(Sale sale);
 		void processSaleCashRegisterMovement(SaleCashRegisterMovement saleCashRegisterMovement);
 		
-		public static class Adapter extends BeanAdapter implements Listener {
+		public static class Adapter extends BeanListener.Adapter implements Listener {
 			private static final long serialVersionUID = -2307751181350506061L;
 
 			@Override
@@ -183,7 +183,7 @@ public class SaleEditPage extends AbstractSalableProductCollectionEditPage<Sale,
 			public void processSaleCashRegisterMovement(SaleCashRegisterMovement saleCashRegisterMovement) {}
 			/**/
 			
-			public static class Default extends Adapter implements Serializable {
+			public static class Default extends Listener.Adapter implements Serializable {
 				private static final long serialVersionUID = 8303179056469661724L;
 				
 				@Override

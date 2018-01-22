@@ -14,7 +14,7 @@ import org.cyk.system.company.ui.web.primefaces.sale.SalableProductCollectionIte
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.impl.AbstractOutputDetails;
-import org.cyk.system.root.business.impl.party.person.AbstractPersonDetails;
+import org.cyk.system.root.business.impl.party.person.PersonBusinessImpl;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.ui.api.data.collector.form.ControlSet;
 import org.cyk.ui.api.model.table.Column;
@@ -98,7 +98,7 @@ public class SalableProductCollectionItemDetailsConfiguration extends DetailsCon
 		
 		public DetailsControlSetAdapter(Class<?> identifiableClass) {
 			super(identifiableClass);
-			addFieldNamePairOrder(AbstractPersonDetails.FIELD_NAME, AbstractPersonDetails.FIELD_LASTNAMES);
+			addFieldNamePairOrder(PersonBusinessImpl.Details.FIELD_NAME, PersonBusinessImpl.Details.FIELD_LASTNAMES);
 		}
 			
 		@Override
