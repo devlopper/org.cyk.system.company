@@ -81,16 +81,6 @@
 			<artifactId>jasper-report-font-tindoghouse</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		<dependency>
-			<groupId>org.cyk.ui.web</groupId>
-			<artifactId>ui-web-primefaces-resources</artifactId>
-			<version>0.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cyk.ui.web</groupId>
-			<artifactId>ui-web-api-resources</artifactId>
-			<version>0.0.1</version>
-		</dependency>
 				
 	</dependencies>	
 

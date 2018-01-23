@@ -15,7 +15,12 @@ import org.cyk.system.root.model.file.report.AbstractIdentifiableReport;
 import org.cyk.system.root.model.file.report.LabelValueCollectionReport;
 import org.cyk.system.root.model.party.Application;
 import org.cyk.system.root.model.party.person.Person;
+import org.cyk.ui.web.primefaces.resources.ComponentAdapter;
+import org.cyk.ui.web.primefaces.resources.PrimefacesResourcesManager;
 import org.cyk.utility.common.Constant;
+import org.cyk.utility.common.helper.ClassHelper;
+import org.cyk.utility.common.security.Shiro;
+import org.cyk.utility.common.userinterface.Component;
 
 @javax.servlet.annotation.WebListener
 public class ContextListener extends AbstractContextListener implements Serializable {
@@ -55,6 +60,14 @@ public class ContextListener extends AbstractContextListener implements Serializ
 			
 		});
 		
+		/* TO BE FACTORED */
+		inject(PrimefacesResourcesManager.class).initializeContext(event);
+		ClassHelper.getInstance().map(Component.Listener.class,ComponentAdapter.class);
+		
+		Shiro.Ini ini = Shiro.Ini.getInstance().clean();
+		ini.addUsers("admin", "123","user1","123","user2","123");
+		ini.addFoldersForUser("private");
+		ini.addLoginUrl("/public/security/login.jsf");
 	}
 	
 }
