@@ -20,8 +20,8 @@ public abstract class AbstractGiftCardContextListener extends AbstractSaleOnlyOn
 
 	@SuppressWarnings({ })
 	@Override
-	public void contextInitialized(ServletContextEvent event) {
-		super.contextInitialized(event);
+	public void __contextInitialized__(ServletContextEvent event) {
+		super.__contextInitialized__(event);
 		
 		SaleBusinessImpl.Listener.COLLECTION.add(new SaleBusinessAdapter());
 		SaleProductInstanceBusinessImpl.Listener.COLLECTION.add(new SaleProductInstanceBusinessAdapter());

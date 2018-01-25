@@ -6,19 +6,17 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.model.AbstractEnumeration;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudInheritanceStrategy;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
-import org.cyk.utility.common.annotation.user.interfaces.Input;
-import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
-import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
-import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor @Entity 
 @Inheritance(strategy=InheritanceType.JOINED)
@@ -27,8 +25,9 @@ public class Product extends AbstractEnumeration implements Serializable  {
 
 	private static final long serialVersionUID = -6128937819261060725L;
 	
-	@ManyToOne @Input @InputChoice @InputOneChoice @InputOneCombo
-	protected ProductCategory category;
+	@ManyToOne protected ProductCategory category;
+	
+	@Transient protected OwnedCompany ownedCompany;
 	
 	public Product(String code, String name, ProductCategory category) {
 		super(code, name, null, null);
@@ -36,6 +35,6 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	}
 	
 	public static final String FIELD_CATEGORY = "category";
-
+	public static final String FIELD_OWNED_COMPANY = "ownedCompany";
 
 }

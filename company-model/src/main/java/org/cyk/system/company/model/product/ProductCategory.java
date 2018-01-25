@@ -4,17 +4,19 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import org.cyk.system.root.model.pattern.tree.DataTreeType;
+import org.cyk.system.root.model.pattern.tree.AbstractDataTreeType;
+import org.cyk.utility.common.annotation.FieldOverride;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Getter @Setter @NoArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.FEMALE)
-public class ProductCategory extends DataTreeType implements Serializable  {
+@FieldOverride(name=ProductCategory.FIELD_PARENT,type=ProductCategory.class)
+public class ProductCategory extends AbstractDataTreeType implements Serializable  {
 
 	private static final long serialVersionUID = -6128937819261060725L;
 	

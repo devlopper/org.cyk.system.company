@@ -24,8 +24,8 @@ public class ContextListener extends AbstractContextListener implements Serializ
 	}
 	
 	@Override
-	public void contextInitialized(ServletContextEvent event) {
-		super.contextInitialized(event);
+	public void __contextInitialized__(ServletContextEvent event) {
+		super.__contextInitialized__(event);
 		CompanyWebManager.getInstance().getListeners().add(new PrimefacesManager());
 		
 		CompanyBusinessLayer.getInstance().enableEnterpriseResourcePlanning();

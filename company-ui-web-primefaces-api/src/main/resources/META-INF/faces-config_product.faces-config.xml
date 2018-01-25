@@ -6,7 +6,7 @@
 	<navigation-rule>
 		<from-view-id>*</from-view-id>
 		<!-- ########################################### Private Navigations Cases ############################################### -->
-		<navigation-case>
+		<!--navigation-case>
 			<from-outcome>tangibleProductListView</from-outcome>
 			<to-view-id>/private/product/tangibleproduct/list.xhtml</to-view-id>
 			<redirect />
@@ -52,7 +52,7 @@
 			<from-outcome>productCollectionConsultView</from-outcome>
 			<to-view-id>/private/product/productcollection/consult.xhtml</to-view-id>
 			<redirect />
-		</navigation-case>
+		</navigation-case-->
 		
 		
 	</navigation-rule>

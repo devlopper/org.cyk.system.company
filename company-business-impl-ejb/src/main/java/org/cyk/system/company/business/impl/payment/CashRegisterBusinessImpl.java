@@ -28,6 +28,13 @@ public class CashRegisterBusinessImpl extends AbstractEnumerationBusinessImpl<Ca
 	}
 	
 	@Override
+	public CashRegister instanciateOne() {
+		CashRegister cashRegister =  super.instanciateOne();
+		cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaulted());
+		return cashRegister;
+	}
+	
+	/*@Override
 	public CashRegister create(CashRegister cashRegister) {
 		if(cashRegister.getOwnedCompany()==null)
 			cashRegister.setOwnedCompany(inject(OwnedCompanyBusiness.class).findDefaulted());
@@ -40,7 +47,7 @@ public class CashRegisterBusinessImpl extends AbstractEnumerationBusinessImpl<Ca
 		createIfNotIdentified(cashRegister.getMovementCollection());
 		
 		return super.create(cashRegister);
-	}
+	}*/
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<CashRegister> findByPerson(Person person) {

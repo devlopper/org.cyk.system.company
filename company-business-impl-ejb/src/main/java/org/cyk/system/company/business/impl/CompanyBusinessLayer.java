@@ -159,7 +159,10 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 				ownedCompany.getCompany().setManager(persons.isEmpty() ? null : persons.iterator().next());
 				inject(CompanyBusiness.class).update(ownedCompany.getCompany());
 				if(Boolean.TRUE.equals(AUTO_CREATE_CASHIER)){
-					CashRegister cashRegister = create(new CashRegister("CashRegister01",ownedCompany,createMovementCollection("CashRegisterMovementCollection01", "Entrée", "Sortie")));
+					CashRegister cashRegister = new CashRegister();
+					cashRegister.setCode("CashRegister01");
+					cashRegister.setOwnedCompany(ownedCompany);
+					cashRegister = create(cashRegister);
 					inject(CashierBusiness.class).create(new Cashier(ownedCompany.getCompany().getManager(),cashRegister));
 				}
 			}

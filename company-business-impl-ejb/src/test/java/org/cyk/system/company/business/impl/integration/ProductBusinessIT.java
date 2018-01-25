@@ -1,18 +1,34 @@
 package org.cyk.system.company.business.impl.integration;
 
-public class ProductBusinessIT extends AbstractBusinessIT {
+import org.cyk.system.company.model.product.ProductCategory;
+import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.root.business.impl.AbstractBusinessTestHelper.TestCase;
+import org.junit.Test;
 
+public class ProductBusinessIT extends AbstractBusinessIT {
     private static final long serialVersionUID = -6691092648665798471L;
     
-    @Override
-    protected void populate() {
-    	super.populate();
-    	createProducts(5, 6);
-    }
+    @Override protected void populate() {}
         
-    @Override
-    protected void businesses() {
+    @Test
+    public void crudOneProduct(){
+    	TestCase testCase = instanciateTestCase(); 
+    	TangibleProduct tangibleProduct = new TangibleProduct();
+    	tangibleProduct.setCode("T001");
+    	tangibleProduct.setName("My Pro");
+    	testCase.create(tangibleProduct);
     	
+    	testCase.clean();
     }
     
+    @Test
+    public void crudOneProductCategory(){
+    	TestCase testCase = instanciateTestCase(); 
+    	ProductCategory productCategory = new ProductCategory();
+    	productCategory.setCode("T001");
+    	productCategory.setName("My Pro");
+    	testCase.create(productCategory);
+    	
+    	testCase.clean();
+    }
 }

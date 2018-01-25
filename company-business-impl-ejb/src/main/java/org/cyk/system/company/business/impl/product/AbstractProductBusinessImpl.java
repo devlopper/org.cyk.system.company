@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodProductBusiness;
@@ -18,23 +17,15 @@ import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
-import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.product.AbstractProductDao;
-import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
-import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractEnumerationBusinessImpl;
 
 public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO extends AbstractProductDao<PRODUCT>> extends AbstractEnumerationBusinessImpl<PRODUCT,DAO> implements AbstractProductBusiness<PRODUCT>,Serializable {
 	
 	private static final long serialVersionUID = 2801588592108008404L;
 
-	@Inject protected AccountingPeriodProductDao accountingPeriodProductDao;
-	@Inject protected AccountingPeriodBusiness accountingPeriodBusiness;
-	@Inject protected OwnedCompanyBusiness ownedCompanyBusiness;
-	@Inject protected SalableProductCollectionItemDao saleProductDao;
-	
     public AbstractProductBusinessImpl(DAO dao) {
         super(dao);
     }
@@ -45,31 +36,24 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
     }
     
     @Override
-    public PRODUCT create(PRODUCT product,OwnedCompany ownedCompany) {
-    	return __create__(product,ownedCompany);
-    }
-    
-    @Override
-    public PRODUCT create(PRODUCT product) {
-    	return __create__(product,ownedCompanyBusiness.findDefaulted());
-    }
-    
-    private PRODUCT __create__(PRODUCT product,OwnedCompany ownedCompany) {
-    	dao.create(product);
-    	AccountingPeriod accountingPeriod = accountingPeriodBusiness.findCurrent(ownedCompany);
+	protected void afterCreate(PRODUCT product) {
+		super.afterCreate(product);
+		OwnedCompany ownedCompany = product.getOwnedCompany();
+		if(ownedCompany == null)
+			ownedCompany = inject(OwnedCompanyBusiness.class).findDefaulted();
+		AccountingPeriod accountingPeriod = inject(AccountingPeriodBusiness.class).findCurrent(ownedCompany);
     	if(accountingPeriod!=null)
-    		if(accountingPeriodProductDao.readByAccountingPeriodByEntity(accountingPeriod, product)==null)
-    			accountingPeriodProductDao.create(new AccountingPeriodProduct(accountingPeriod, product));
-    	return product;
-    }
+    		if(inject(AccountingPeriodProductDao.class).readByAccountingPeriodByEntity(accountingPeriod, product)==null)
+    			createIfNotIdentified(new AccountingPeriodProduct(accountingPeriod, product));
+	}
     
     @Override
-    public PRODUCT delete(PRODUCT product){
-    	for(AccountingPeriodProduct accountingPeriodProduct : accountingPeriodProductDao.readByEntity(product))
-    		inject(AccountingPeriodProductBusiness.class).delete(accountingPeriodProduct);
-    	return super.delete(product); 
-    }
-        
+	protected void beforeDelete(PRODUCT product) {
+		super.beforeDelete(product);
+		inject(AccountingPeriodProductBusiness.class).delete(inject(AccountingPeriodProductDao.class).readByEntity(product));
+	}
+    
+    /*
     @SuppressWarnings("null")
 	@Override
 	public void consume(Sale sale, Crud crud, Boolean first) {
@@ -87,8 +71,7 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
 			dao.update(product);
 		}
 	}
-    
-    
+    */
     
     protected abstract Set<PRODUCT> products(Collection<SalableProductCollectionItem> saleProducts);
     

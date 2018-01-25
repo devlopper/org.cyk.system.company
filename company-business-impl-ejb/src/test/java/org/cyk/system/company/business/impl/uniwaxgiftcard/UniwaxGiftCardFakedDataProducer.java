@@ -65,7 +65,7 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 		flush(SalableProduct.class, salableProducts);
 		
 		for(String shop : SHOPS){
-			CashRegister cashRegister = new CashRegister(shop, null, null);
+			CashRegister cashRegister = null;//new CashRegister(shop, null, null);
 			cashRegisters.add(cashRegister);
 			
 			Employee employee = inject(EmployeeBusiness.class).instanciateOne();
