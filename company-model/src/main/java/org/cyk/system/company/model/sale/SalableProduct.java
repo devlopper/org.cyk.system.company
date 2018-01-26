@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
@@ -24,12 +25,12 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	 @ManyToOne @NotNull private Product product;
+	 @ManyToOne @JoinColumn(name=COLUMN_PRODUCT) @NotNull @Accessors(chain=true) private Product product;
 	
 	/**
 	 * The unit price of the product. null means the price will be determine at runtime
 	 */
-	@Column(precision=10,scale=FLOAT_SCALE) private BigDecimal price;
+	@Column(precision=10,scale=FLOAT_SCALE) @Accessors(chain=true) private BigDecimal price;
 	
 	public SalableProduct(Product product, BigDecimal price) {
 		super(product.getCode(),product.getName(),product.getAbbreviation(),product.getDescription());
@@ -37,22 +38,10 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 		this.price = price;
 	}
 	
-	/*public SalableProduct setProduct(Product product){
-		this.product = product;
-		return this;
-	}*/
-	
-	@Override
-	public String getLogMessage() {
-		return String.format(LOG_FORMAT,product.getCode(),price);
-	}
-	
-	/**/
-	
-	private static final String LOG_FORMAT = SalableProduct.class.getSimpleName()+"(Code=%s Price=%s)";
-
 	/**/
 	
 	public static final String FIELD_PRODUCT = "product";
 	public static final String FIELD_PRICE = "price";
+	
+	public static final String COLUMN_PRODUCT = FIELD_PRODUCT;
 }

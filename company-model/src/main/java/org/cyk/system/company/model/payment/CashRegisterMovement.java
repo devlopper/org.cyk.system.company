@@ -17,7 +17,7 @@ import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
 
-@Getter @Setter @NoArgsConstructor @Entity @ModelBean(genderType=GenderType.MALE,crudStrategy=CrudStrategy.BUSINESS)
+@Getter @Setter @NoArgsConstructor @Entity @ModelBean(genderType=GenderType.MALE,crudStrategy=CrudStrategy.BUSINESS) @Deprecated
 public class CashRegisterMovement extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;
@@ -34,13 +34,6 @@ public class CashRegisterMovement extends AbstractIdentifiable implements Serial
 	}
 	
 	/**/
-	
-	@Override
-	public String getLogMessage() {
-		return String.format(LOG_FORMAT, getCode(),cashRegister.getCode(),movement.getValue());
-	}
-	
-	private static final String LOG_FORMAT = CashRegisterMovement.class.getSimpleName()+"(I=%S C=%s M=%s)";
 	
 	/**/
 	

@@ -292,7 +292,8 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 		
 		
 		MovementAction action = saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getAction();
-		if(action==null || action.equals(saleCashRegisterMovement.getCollection().getCashRegisterMovement().getCashRegister().getMovementCollection().getIncrementAction())){
+		if(action==null || action.equals(saleCashRegisterMovement.getCollection().getCashRegisterMovement().getCashRegister().getMovementCollection().getType()
+				.getIncrementAction())){
 			balance = balance.subtract(saleCashRegisterMovementAmount);
 		}else{
 			if(balance.signum()==1)

@@ -11,13 +11,12 @@ import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
-import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
 import org.cyk.system.root.business.impl.AbstractEnumerationBusinessImpl;
 import org.cyk.system.root.model.AbstractIdentifiable;
-import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.party.person.Person;
 
+@Deprecated
 public class CashRegisterBusinessImpl extends AbstractEnumerationBusinessImpl<CashRegister, CashRegisterDao> implements CashRegisterBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;

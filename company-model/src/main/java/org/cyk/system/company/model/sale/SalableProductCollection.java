@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -24,7 +25,7 @@ public class SalableProductCollection extends AbstractCollection<SalableProductC
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @NotNull private AccountingPeriod accountingPeriod;
+	@ManyToOne @JoinColumn(name=COLUMN_ACCOUNTING_PERIOD)  @NotNull private AccountingPeriod accountingPeriod;
 	
 	@Embedded private Cost cost;
 	
@@ -46,4 +47,6 @@ public class SalableProductCollection extends AbstractCollection<SalableProductC
 	public static final String FIELD_ACCOUNTING_PERIOD = "accountingPeriod";
 	public static final String FIELD_COST = "cost";
 	public static final String FIELD_AUTO_COMPUTE_VALUE_ADDED_TAX = "autoComputeValueAddedTax";
+	
+	public static final String COLUMN_ACCOUNTING_PERIOD = FIELD_ACCOUNTING_PERIOD;
 }

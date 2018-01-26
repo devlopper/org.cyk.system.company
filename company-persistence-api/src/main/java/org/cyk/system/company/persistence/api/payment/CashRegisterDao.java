@@ -6,6 +6,7 @@ import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.persistence.api.AbstractEnumerationDao;
 
+@Deprecated
 public interface CashRegisterDao extends AbstractEnumerationDao<CashRegister> {
 
 	Collection<CashRegister> readByPerson(Person person);

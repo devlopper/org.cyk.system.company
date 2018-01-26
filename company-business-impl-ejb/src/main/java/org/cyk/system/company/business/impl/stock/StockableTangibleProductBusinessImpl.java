@@ -32,10 +32,10 @@ public class StockableTangibleProductBusinessImpl extends AbstractTypedBusinessS
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public StockableTangibleProduct instanciateOne(TangibleProduct tangibleProduct) {
-		StockableTangibleProduct stockableTangibleProduct = new StockableTangibleProduct();
+		/*StockableTangibleProduct stockableTangibleProduct = new StockableTangibleProduct();
 		stockableTangibleProduct.setTangibleProduct(tangibleProduct);
-		stockableTangibleProduct.setMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne(tangibleProduct.getCode(), INPUT_LABEL,OUTPUT_LABEL));
-		return stockableTangibleProduct;
+		stockableTangibleProduct.setMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne(tangibleProduct.getCode(), INPUT_LABEL,OUTPUT_LABEL));*/
+		return null;
 	}
 	
 	@Override
@@ -53,10 +53,10 @@ public class StockableTangibleProductBusinessImpl extends AbstractTypedBusinessS
 	
 	@Override
 	public StockableTangibleProduct create(StockableTangibleProduct stockableTangibleProduct) {
-		if(stockableTangibleProduct.getMovementCollection()==null)
+		/*if(stockableTangibleProduct.getMovementCollection()==null)
 			stockableTangibleProduct.setMovementCollection(inject(MovementCollectionBusiness.class)
 					.instanciateOne(stockableTangibleProduct.getTangibleProduct().getCode(), INPUT_LABEL,OUTPUT_LABEL));
-		inject(MovementCollectionBusiness.class).create(stockableTangibleProduct.getMovementCollection());
+		inject(MovementCollectionBusiness.class).create(stockableTangibleProduct.getMovementCollection());*/
 		return super.create(stockableTangibleProduct);
 	}
 

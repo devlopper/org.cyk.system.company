@@ -19,7 +19,7 @@ import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
-@ModelBean(crudStrategy=CrudStrategy.BUSINESS)
+@ModelBean(crudStrategy=CrudStrategy.BUSINESS) @Deprecated
 public class CashRegisterMovementTerm extends AbstractCollectionItem<CashRegisterMovementTermCollection> implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;

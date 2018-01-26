@@ -7,6 +7,7 @@ import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.root.business.api.TypedBusiness;
 import org.cyk.system.root.model.security.UserAccount;
 
+@Deprecated
 public interface CashRegisterMovementBusiness extends TypedBusiness<CashRegisterMovement> {
 
 	CashRegisterMovement instanciateOne(UserAccount userAccount,CashRegister cashRegister);

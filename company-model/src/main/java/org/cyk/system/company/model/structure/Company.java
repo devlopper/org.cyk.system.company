@@ -23,13 +23,5 @@ public class Company extends Party implements Serializable {
 	
 	@ManyToOne private Person signer;
 	
-	@Override
-	public String toString() {
-		return getName();
-	}
-	
-	@Override
-	public String getUiString() {
-		return toString();
-	}
+	//MANAGER , SIGNER == ACTION/BUSINESS ROLE -->>> Person and Identifiable and BusinessRole
 }

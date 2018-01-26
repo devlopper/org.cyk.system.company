@@ -11,7 +11,7 @@ import org.cyk.system.root.model.file.report.AbstractIdentifiableReport;
 import org.cyk.system.root.model.mathematics.IntervalReport;
 import org.cyk.system.root.model.mathematics.MovementReport;
 
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor @Deprecated
 public class CashRegisterMovementReport extends AbstractIdentifiableReport<CashRegisterMovementReport> implements Serializable {
 
 	private static final long serialVersionUID = 7332510774063666925L;

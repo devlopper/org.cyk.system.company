@@ -179,10 +179,10 @@ public class SaleConsultPageOLD extends AbstractConsultPage<Sale> implements Ser
 				MovementCollection movementCollection = cashier==null?null:cashier.getCashRegister().getMovementCollection();
 				MovementAction action;
 				if(balance>0){
-					action = movementCollection.getIncrementAction();
+					action = movementCollection.getType().getIncrementAction();
 					
 				}else{
-					action = movementCollection.getDecrementAction();
+					action = movementCollection.getType().getDecrementAction();
 				}
 				commandable.addChild(c = Builder.createCreate(identifiable,SaleCashRegisterMovement.class, action.getName(), null));
 				c.addParameter(uiManager.businessEntityInfos(MovementAction.class).getIdentifier(), action.getIdentifier());

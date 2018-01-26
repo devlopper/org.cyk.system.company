@@ -80,6 +80,7 @@ public interface CompanyConstant {
 			public static String USED = "USED";
 		}
 		
+		@Deprecated
 		public static class CashRegisterMovementMode implements Serializable {
 			private static final long serialVersionUID = 1L;
 			
@@ -97,6 +98,7 @@ public interface CompanyConstant {
 			
 		}
 		
+		@Deprecated
 		public static class CashRegister implements Serializable {
 			private static final long serialVersionUID = 1L;
 			

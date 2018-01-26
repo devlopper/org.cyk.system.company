@@ -3,6 +3,7 @@ package org.cyk.system.company.model.structure;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import lombok.Getter;
@@ -20,18 +21,11 @@ public class OwnedCompany extends AbstractIdentifiable implements Serializable {
  
 	private static final long serialVersionUID = 2742833783679362737L;
 
-	@ManyToOne @NotNull private Company company;
+	@ManyToOne @JoinColumn(name=COLUMN_COMPANY) @NotNull private Company company;
 	
-	@Override
-	public String toString() {
-		return company == null ? super.toString() : company.toString();
-	}
-	
-	@Override
-	public String getUiString() {
-		return toString();
-	}
+	/**/
 	
 	public static final String FIELD_COMPANY = "company";
 	
+	public static final String COLUMN_COMPANY = FIELD_COMPANY;
 }

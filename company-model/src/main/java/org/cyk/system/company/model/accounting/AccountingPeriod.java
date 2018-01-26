@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
@@ -23,7 +24,7 @@ public class AccountingPeriod extends AbstractIdentifiablePeriod implements Seri
 
 	private static final long serialVersionUID = 3174964099221813640L;
 
-	@ManyToOne @NotNull private OwnedCompany ownedCompany;
+	@ManyToOne @JoinColumn(name=COLUMN_OWNED_COMPANY) @NotNull private OwnedCompany ownedCompany;
 	
 	@Embedded private SaleConfiguration saleConfiguration = new SaleConfiguration();
 	@Embedded private SaleResults saleResults = new SaleResults();
@@ -31,17 +32,11 @@ public class AccountingPeriod extends AbstractIdentifiablePeriod implements Seri
 	@Embedded private StockConfiguration stockConfiguration = new StockConfiguration();
 	@Embedded private StockResults stockResults = new StockResults();
 	
-	@Override
-	public String getLogMessage() {
-		return String.format(LOG_FORMAT,saleConfiguration.getLogMessage(),saleResults.getLogMessage());
-	}
-	
-	private static final String LOG_FORMAT = AccountingPeriod.class.getSimpleName()+"(%s %s)";
-
 	public static final String FIELD_OWNED_COMPANY = "ownedCompany";
 	public static final String FIELD_SALE_CONFIGURATION = "saleConfiguration";
 	public static final String FIELD_SALE_RESULTS = "saleResults";
 	public static final String FIELD_STOCK_CONFIGURATION = "stockConfiguration";
 	public static final String FIELD_STOCK_RESULTS = "stockResults";
 	
+	public static final String COLUMN_OWNED_COMPANY = FIELD_OWNED_COMPANY;
 }

@@ -109,8 +109,8 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		CashRegister cashRegister = inject(CashRegisterBusiness.class).find(cashRegisterCode);
     	final CashRegisterMovement cashRegisterMovement = inject(CashRegisterMovementBusiness.class).instanciateOne(null,cashRegister);
     	cashRegisterMovement.getMovement().setValue(commonUtils.getBigDecimal(value));
-    	cashRegisterMovement.getMovement().setAction(StringUtils.startsWith(value, Constant.CHARACTER_MINUS.toString()) ? cashRegister.getMovementCollection().getDecrementAction()
-    			:cashRegister.getMovementCollection().getIncrementAction());
+    	cashRegisterMovement.getMovement().setAction(StringUtils.startsWith(value, Constant.CHARACTER_MINUS.toString()) ? cashRegister.getMovementCollection().getType().getDecrementAction()
+    			:cashRegister.getMovementCollection().getType().getIncrementAction());
     	if(expectedThrowableMessage!=null){
     		new Try(expectedThrowableMessage){ 
     			private static final long serialVersionUID = -8176804174113453706L;

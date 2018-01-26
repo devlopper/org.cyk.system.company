@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor @Deprecated
 public class CashRegisterMovementModeReport extends AbstractIdentifiableReport<CashRegisterMovementModeReport> implements Serializable {
 
 	private static final long serialVersionUID = 7332510774063666925L;
