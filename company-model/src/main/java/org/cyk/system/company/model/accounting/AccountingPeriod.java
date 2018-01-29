@@ -21,7 +21,6 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor @Entity
 public class AccountingPeriod extends AbstractIdentifiablePeriod implements Serializable {
-
 	private static final long serialVersionUID = 3174964099221813640L;
 
 	@ManyToOne @JoinColumn(name=COLUMN_OWNED_COMPANY) @NotNull private OwnedCompany ownedCompany;

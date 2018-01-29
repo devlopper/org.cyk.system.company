@@ -18,7 +18,6 @@ import com.sun.istack.NotNull;
 
 @Getter @Setter @NoArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS)
 public class OwnedCompany extends AbstractIdentifiable implements Serializable {
- 
 	private static final long serialVersionUID = 2742833783679362737L;
 
 	@ManyToOne @JoinColumn(name=COLUMN_COMPANY) @NotNull private Company company;

@@ -186,11 +186,12 @@ public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessServi
 					@Override
 					public void afterCreate(CashRegisterMovement cashRegisterMovement) {
 						super.afterCreate(cashRegisterMovement);
+						/*
 						if(StringUtils.isBlank(cashRegisterMovement.getCode()))
 							cashRegisterMovement.setCode(inject(StringGeneratorBusiness.class).generateIdentifier(cashRegisterMovement,null
 									,inject(AccountingPeriodBusiness.class).findCurrent()
 								.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator()));
-						
+						*/
 						inject(CashRegisterMovementDao.class).update(cashRegisterMovement);
 						if(cashRegisterMovement.getMovement()!=null){
 							cashRegisterMovement.getMovement().setCode(RootConstant.Code.generate(cashRegisterMovement.getMovement().getCollection(), cashRegisterMovement.getCode()));

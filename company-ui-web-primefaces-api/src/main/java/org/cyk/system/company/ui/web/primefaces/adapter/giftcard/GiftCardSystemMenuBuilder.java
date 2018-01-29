@@ -3,11 +3,7 @@ package org.cyk.system.company.ui.web.primefaces.adapter.giftcard;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessLayer;
-import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.sale.SalableProduct;
@@ -15,15 +11,8 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.structure.Employee;
-import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
-import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineAlphabetBusiness;
-import org.cyk.system.root.business.api.mathematics.machine.FiniteStateMachineStateBusiness;
 import org.cyk.system.root.model.RootConstant;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachine;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineAlphabet;
-import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.model.party.person.Person;
-import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.api.command.menu.SystemMenu;
 import org.cyk.ui.web.primefaces.AbstractSystemMenuBuilder;
@@ -70,7 +59,7 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 			
 			//addChild(userSession,module,createListCommandable(FiniteStateMachineStateLog.class, null));
 		}
-		
+		/*
 		FiniteStateMachine finiteStateMachine = inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
 		for(FiniteStateMachineAlphabet finiteStateMachineAlphabet : inject(FiniteStateMachineAlphabetBusiness.class).findByMachine(finiteStateMachine))
 			if(ArrayUtils.contains(new String[]{CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_SELL,CompanyConstant.GIFT_CARD_WORKFLOW_ALPHABET_USE}
@@ -80,7 +69,7 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 				addChild(userSession,module,(Commandable) createSelectManyCommandable(SalableProductInstanceCashRegister.class
 					, CompanyBusinessLayer.getInstance().getActionUpdateSalableProductInstanceCashRegisterState(),null)
 					.addParameter(finiteStateMachineAlphabet).setLabel(finiteStateMachineAlphabet.getName()));
-		
+		*/
 		return module;
 	}
 	
@@ -104,12 +93,13 @@ public class GiftCardSystemMenuBuilder extends AbstractSystemMenuBuilder impleme
 	public Commandable getReportCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = null;
 		module = createModuleCommandable("command.report", null);
-		if(userSession.hasRole(RootConstant.Code.Role.MANAGER)){
+		/*if(userSession.hasRole(RootConstant.Code.Role.MANAGER)){
 			FiniteStateMachine finiteStateMachine = inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
 			for(FiniteStateMachineState finiteStateMachineState : inject(FiniteStateMachineStateBusiness.class).findByMachine(finiteStateMachine))
 				addChild(userSession,module,(Commandable) Builder.create(null, null, CompanyWebManager.getInstance()
 						.getOutcomeSalableProductInstanceCashRegisterStateLogList()).addParameter(finiteStateMachineState).setLabel(finiteStateMachineState.getName()));
 		}
+		*/
 		return module;
 	}
 

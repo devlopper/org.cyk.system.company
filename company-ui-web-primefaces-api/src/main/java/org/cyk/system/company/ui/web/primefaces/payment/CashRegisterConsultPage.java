@@ -33,13 +33,13 @@ public class CashRegisterConsultPage extends AbstractMovementCollectionConsultPa
 	@Override
 	protected void processIdentifiableContextualCommandable(UICommandable commandable) {
 		super.processIdentifiableContextualCommandable(commandable);
-		
+		/*
 		FiniteStateMachine finiteStateMachine = inject(AccountingPeriodBusiness.class).findCurrent()
 				.getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine();
 		
 		commandable.addChild(Builder.createCreateMany(uiManager.businessEntityInfos(SalableProductInstanceCashRegister.class),null).addParameter(identifiable)
 				.addParameter(finiteStateMachine.getInitialState()));
-		
+		*/
 		/*for(FiniteStateMachineAlphabet finiteStateMachineAlphabet : RootBusinessLayer.getInstance().getFiniteStateMachineAlphabetBusiness().findByMachine(finiteStateMachine)){
 			commandable.addChild(Builder.create(null, null,"salableProductInstanceCashRegisterProcessWorkflowView").setLabel(finiteStateMachineAlphabet.getName()));
 		}*/

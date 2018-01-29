@@ -63,10 +63,10 @@ public class SalableProductInstanceCashRegisterCreateManyPage extends AbstractCr
 		}else{
 			finiteStateMachineState = inject(FiniteStateMachineStateBusiness.class).find(finiteStateMachineStateIdentifier);
 		}
-		finiteStateMachineStates = new ArrayList<>(inject(FiniteStateMachineStateBusiness.class)
+		/*finiteStateMachineStates = new ArrayList<>(inject(FiniteStateMachineStateBusiness.class)
 				.findByMachine(inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration()
 						.getSalableProductInstanceCashRegisterFiniteStateMachine()));
-		
+		*/
 		super.initialisation();
 		
 		if(cashRegister!=null){

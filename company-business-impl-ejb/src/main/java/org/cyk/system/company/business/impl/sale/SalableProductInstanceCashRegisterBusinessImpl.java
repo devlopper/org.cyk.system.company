@@ -88,7 +88,7 @@ public class SalableProductInstanceCashRegisterBusinessImpl extends AbstractType
 
 	@Override
 	public Collection<SalableProductInstanceCashRegister> create(Collection<String> salableInstanceCodes, CashRegister cashRegister) {
-		return create(salableInstanceCodes, cashRegister,inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine().getInitialState());
+		return null;//create(salableInstanceCodes, cashRegister,inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration().getSalableProductInstanceCashRegisterFiniteStateMachine().getInitialState());
 	}
 	
 }

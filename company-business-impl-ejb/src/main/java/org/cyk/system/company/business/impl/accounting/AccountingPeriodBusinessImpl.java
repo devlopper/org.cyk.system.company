@@ -22,7 +22,6 @@ import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
-import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.impl.time.AbstractIdentifiablePeriodBusinessImpl;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.utility.common.helper.FieldHelper;
@@ -45,8 +44,9 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 		Integer year = TimeHelper.getInstance().getYear(new Date());
 		accountingPeriod.setExistencePeriod(new Period( new TimeHelper.Builder.String.Adapter.Default("1/1/"+year+" 0:0").execute()
 				, new TimeHelper.Builder.String.Adapter.Default("31/12/"+year+" 23:59").execute()));
-		accountingPeriod.getSaleConfiguration().setIdentifierGenerator(inject(StringGeneratorBusiness.class).instanciateOne("FACT","0", 8l, null, null,8l));
+		/*accountingPeriod.getSaleConfiguration().setIdentifierGenerator(inject(StringGeneratorBusiness.class).instanciateOne("FACT","0", 8l, null, null,8l));
 		accountingPeriod.getSaleConfiguration().setCashRegisterMovementIdentifierGenerator(inject(StringGeneratorBusiness.class).instanciateOne("PAIE","0", 8l, null, null,8l));
+		*/
 		return accountingPeriod;
 	}
 	
@@ -54,17 +54,17 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 	protected void beforeCreate(AccountingPeriod accountingPeriod) {
 		super.beforeCreate(accountingPeriod);
 		exceptionUtils().exception(findCurrent(accountingPeriod.getOwnedCompany())!=null, "exception.accountingperiod.oneisrunning");
-		createIfNotIdentified(accountingPeriod.getSaleConfiguration().getIdentifierGenerator());
-		createIfNotIdentified(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());
+		//createIfNotIdentified(accountingPeriod.getSaleConfiguration().getIdentifierGenerator());
+		//createIfNotIdentified(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());
 	}
 	
 	@Override
 	protected void beforeDelete(AccountingPeriod accountingPeriod) {
 		super.beforeDelete(accountingPeriod);
-		if(accountingPeriod.getSaleConfiguration().getIdentifierGenerator()!=null)
+		/*if(accountingPeriod.getSaleConfiguration().getIdentifierGenerator()!=null)
 			inject(StringGeneratorBusiness.class).delete(accountingPeriod.getSaleConfiguration().getIdentifierGenerator());
 		if(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator()!=null)
-			inject(StringGeneratorBusiness.class).delete(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());
+			inject(StringGeneratorBusiness.class).delete(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());*/
 	}
 	
 	@Override

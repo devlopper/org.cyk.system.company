@@ -22,7 +22,6 @@ import lombok.experimental.Accessors;
 
 @Getter @Setter @NoArgsConstructor @Entity @ModelBean(genderType=GenderType.MALE,crudStrategy=CrudStrategy.BUSINESS) @Accessors(chain=true)
 public class SalableProduct extends AbstractCollection<SalableProductInstance> implements Serializable {
-	
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	 @ManyToOne @JoinColumn(name=COLUMN_PRODUCT) @NotNull @Accessors(chain=true) private Product product;

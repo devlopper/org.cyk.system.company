@@ -194,8 +194,10 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 						cascade(sale,null,sale.getSaleCashRegisterMovements(), Crud.CREATE);
 						
 						if(sale.getAccountingPeriod()!=null){
+							/*
 							if(StringUtils.isEmpty(sale.getCode()))
 								sale.setCode(inject(StringGeneratorBusiness.class).generateIdentifier(sale,null,sale.getAccountingPeriod().getSaleConfiguration().getIdentifierGenerator()));
+							*/
 							Cost cost = sale.getSalableProductCollection().getCost();
 							if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))
 								cost.setTax(inject(AccountingPeriodBusiness.class).computeValueAddedTax(sale.getAccountingPeriod(), cost.getValue()));

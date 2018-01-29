@@ -11,7 +11,6 @@ import lombok.Setter;
 
 @Getter @Setter @Embeddable
 public class StockResults extends AbstractModelElement implements Serializable {
-
 	private static final long serialVersionUID = 2700928054823690772L;
 
 	@Override

@@ -32,8 +32,8 @@ public abstract class AbstractCompanyDetails<IDENTIFIABLE extends AbstractIdenti
 		//if(company.getManager()!=null)
 		//	manager = company.getManager().getNames();
 		
-		if(company.getSigner()!=null)
-			signer = company.getSigner().getNames();
+		//if(company.getSigner()!=null)
+		//	signer = company.getSigner().getNames();
 	}
 	
 	protected abstract Company getCompany();

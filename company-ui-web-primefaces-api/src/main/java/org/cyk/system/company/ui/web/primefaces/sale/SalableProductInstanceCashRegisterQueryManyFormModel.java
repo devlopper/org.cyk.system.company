@@ -129,8 +129,8 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 		}
 		
 		private Collection<FiniteStateMachineState> getFiniteStateMachineStates(){
-			FiniteStateMachine finiteStateMachine = inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration()
-					.getSalableProductInstanceCashRegisterFiniteStateMachine();
+			FiniteStateMachine finiteStateMachine = null;//inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration()
+					//.getSalableProductInstanceCashRegisterFiniteStateMachine();
 			FiniteStateMachineAlphabet finiteStateMachineAlphabet = getFiniteStateMachineAlphabet();
 			return finiteStateMachineAlphabet == null ? inject(FiniteStateMachineStateBusiness.class)
 					.findByMachine(finiteStateMachine) : inject(FiniteStateMachineStateBusiness.class)
@@ -238,10 +238,11 @@ public class SalableProductInstanceCashRegisterQueryManyFormModel extends Abstra
 		@Override
 		protected void initialiseProcessOnAfterInitialisationEnded(AbstractProcessManyPage<?> page) {
 			super.initialiseProcessOnAfterInitialisationEnded(page);
-			page.setChoices(Form.FIELD_FINITESTATEMACHINESTATE, inject(FiniteStateMachineStateBusiness.class)
+			/*page.setChoices(Form.FIELD_FINITESTATEMACHINESTATE, inject(FiniteStateMachineStateBusiness.class)
 					.findByMachine(inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration()
 							.getSalableProductInstanceCashRegisterFiniteStateMachine())
 							,((Form)page.getForm().getData()).finiteStateMachineState = getFiniteStateMachineState());
+			*/
 		}
 		
 		@Override

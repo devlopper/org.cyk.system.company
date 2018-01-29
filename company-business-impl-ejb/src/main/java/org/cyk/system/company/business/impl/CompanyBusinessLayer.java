@@ -7,9 +7,6 @@ import java.util.Collection;
 import javax.inject.Singleton;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.cyk.system.company.business.api.payment.CashierBusiness;
-import org.cyk.system.company.business.api.structure.CompanyBusiness;
-import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.accounting.AccountingPeriodBusinessImpl;
 import org.cyk.system.company.business.impl.accounting.AccountingPeriodProductBusinessImpl;
 import org.cyk.system.company.business.impl.payment.CashRegisterMovementBusinessImpl;
@@ -20,9 +17,7 @@ import org.cyk.system.company.business.impl.stock.StockTangibleProductMovementBu
 import org.cyk.system.company.business.impl.structure.EmployeeBusinessImpl;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.production.Production;
@@ -35,7 +30,6 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Company;
-import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.api.ClazzBusiness;
@@ -55,10 +49,8 @@ import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.generator.StringGenerator;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.Installation;
 import org.cyk.system.root.model.time.Period;
-import org.cyk.system.root.persistence.api.party.person.PersonDao;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.cyk.utility.common.helper.ClassHelper;
@@ -154,17 +146,18 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			@Override
 			public void installationEnded(Installation installation) {
 				super.installationEnded(installation);
-				OwnedCompany ownedCompany = inject(OwnedCompanyBusiness.class).findDefaulted();
+				/*OwnedCompany ownedCompany = inject(OwnedCompanyBusiness.class).findDefaulted();
 				Collection<Person> persons = inject(PersonDao.class).select().all();
 				ownedCompany.getCompany().setManager(persons.isEmpty() ? null : persons.iterator().next());
 				inject(CompanyBusiness.class).update(ownedCompany.getCompany());
-				if(Boolean.TRUE.equals(AUTO_CREATE_CASHIER)){
+				*/
+				/*if(Boolean.TRUE.equals(AUTO_CREATE_CASHIER)){
 					CashRegister cashRegister = new CashRegister();
 					cashRegister.setCode("CashRegister01");
 					cashRegister.setOwnedCompany(ownedCompany);
 					cashRegister = create(cashRegister);
 					inject(CashierBusiness.class).create(new Cashier(ownedCompany.getCompany().getManager(),cashRegister));
-				}
+				}*/
 			}
 		});
 		

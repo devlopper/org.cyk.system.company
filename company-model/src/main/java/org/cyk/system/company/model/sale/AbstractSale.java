@@ -24,7 +24,6 @@ import lombok.Setter;
  */
 @Getter @Setter @NoArgsConstructor @MappedSuperclass
 public abstract class AbstractSale extends AbstractIdentifiable implements Serializable {
-	
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne protected Customer customer;
@@ -38,16 +37,6 @@ public abstract class AbstractSale extends AbstractIdentifiable implements Seria
 
 	public Boolean getAutoComputeValueAddedTax() {
 		return salableProductCollection==null ? null :salableProductCollection.getAutoComputeValueAddedTax();
-	}
-	
-	@Override
-	public String getUiString() {
-		return getCode();
-	}
-	
-	@Override
-	public String toString() {
-		return getCode();
 	}
 	
 	/**/
