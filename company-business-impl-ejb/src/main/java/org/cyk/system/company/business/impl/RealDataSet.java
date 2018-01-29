@@ -3,8 +3,6 @@ package org.cyk.system.company.business.impl;
 import java.io.Serializable;
 
 import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.payment.CashRegister;
-import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
@@ -32,6 +30,7 @@ public class RealDataSet extends DataSet implements Serializable {
 		sale();
 		
 		security();
+		
 	}
 
 	private void file(){
@@ -58,11 +57,11 @@ public class RealDataSet extends DataSet implements Serializable {
 		addClass(IntangibleProduct.class);
 		addClass(TangibleProduct.class);
 		addClass(SalableProduct.class);
-		addClass(CashRegisterMovementMode.class);
+		//addClass(CashRegisterMovementMode.class);
 		
 		addClass(IntervalCollection.class);
 		addClass(Interval.class);
 		
-		addClass(CashRegister.class);
+		//addClass(CashRegister.class);
     }
 }

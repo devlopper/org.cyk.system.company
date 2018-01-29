@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
@@ -26,8 +27,8 @@ import lombok.Setter;
 public abstract class AbstractSale extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne protected Customer customer;
-	@ManyToOne protected SalableProductCollection salableProductCollection;
+	@ManyToOne @JoinColumn(name=COLUMN_CUSTOMER) protected Customer customer;
+	@ManyToOne @JoinColumn(name=COLUMN_SALABLE_PRODUCT_COLLECTION) protected SalableProductCollection salableProductCollection;
 	
 	/**/
 	
@@ -43,6 +44,9 @@ public abstract class AbstractSale extends AbstractIdentifiable implements Seria
 	
 	public static final String FIELD_CUSTOMER = "customer";
 	public static final String FIELD_SALABLE_PRODUCT_COLLECTION = "salableProductCollection";
+	
+	public static final String COLUMN_CUSTOMER = FIELD_CUSTOMER;
+	public static final String COLUMN_SALABLE_PRODUCT_COLLECTION = FIELD_SALABLE_PRODUCT_COLLECTION;
 	
 	/**/
 	

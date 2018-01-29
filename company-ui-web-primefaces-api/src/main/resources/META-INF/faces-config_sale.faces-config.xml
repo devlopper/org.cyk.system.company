@@ -6,7 +6,7 @@
 	<navigation-rule>
 		<from-view-id>*</from-view-id>
 		<!-- ########################################### Private Navigations Cases ############################################### -->
-		<navigation-case>
+		<!--navigation-case>
 			<from-outcome>proFormaInvoiceEditView</from-outcome>
 			<to-view-id>/private/sale/proformainvoice/edit.xhtml</to-view-id>
 			<redirect />
@@ -200,7 +200,7 @@
 			<from-outcome>customerSalableProductConsultView</from-outcome>
 			<to-view-id>/private/sale/customersalableproduct/consult.xhtml</to-view-id>
 			<redirect />
-		</navigation-case>
+		</navigation-case-->
 		
 		
 	</navigation-rule>

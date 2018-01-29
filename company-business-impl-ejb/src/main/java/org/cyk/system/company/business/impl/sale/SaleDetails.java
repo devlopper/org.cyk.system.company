@@ -21,7 +21,7 @@ public class SaleDetails extends AbstractSaleDetails<Sale> implements Serializab
 	public SaleDetails(Sale sale) {
 		super(sale);
 		balance.set(sale.getBalance());
-		cashRegisterMovementTermCollection = formatUsingBusiness(sale.getCashRegisterMovementTermCollection());
+		//cashRegisterMovementTermCollection = formatUsingBusiness(sale.getCashRegisterMovementTermCollection());
 	}
 	
 	/**/

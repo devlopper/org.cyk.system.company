@@ -26,6 +26,7 @@ import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.utility.common.LogMessage;
+import org.cyk.utility.common.helper.RandomHelper;
 
 public class SalableProductCollectionItemBusinessImpl extends AbstractCollectionItemBusinessImpl<SalableProductCollectionItem, SalableProductCollectionItemDao,SalableProductCollection> implements SalableProductCollectionItemBusiness,Serializable {
 
@@ -185,6 +186,13 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	public void computeDerivationsFromCost(SalableProductCollectionItem salableProductCollectionItem) {
 		salableProductCollectionItem.setQuantifiedPrice(salableProductCollectionItem.getCost().getValue().add(salableProductCollectionItem.getReduction()));
 	}
+	
+	@Override
+	public void computeChanges(SalableProductCollectionItem salableProductCollectionItem) {
+		super.computeChanges(salableProductCollectionItem);
+		salableProductCollectionItem.getCost().setValueFromString(RandomHelper.getInstance().getNumeric(8).longValue()+"");
+	}
+	
 	/*
 	private CartesianModel salesCartesianModel(SalesResultsCartesianModelParameters parameters,CartesianModelListener<SaleProduct> cartesianModelListener,String nameId,String yAxisLabelId){
 		if(parameters.getSaleProducts().isEmpty())

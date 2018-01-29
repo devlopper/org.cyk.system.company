@@ -15,13 +15,9 @@ import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.accounting.AccountingPeriodProduct;
-import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.sale.SaleConfiguration;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
-import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
-import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.root.business.impl.time.AbstractIdentifiablePeriodBusinessImpl;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.utility.common.helper.FieldHelper;
@@ -67,7 +63,7 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 			inject(StringGeneratorBusiness.class).delete(accountingPeriod.getSaleConfiguration().getCashRegisterMovementIdentifierGenerator());*/
 	}
 	
-	@Override
+	/*@Override
 	protected void afterCreate(AccountingPeriod accountingPeriod) {
 		super.afterCreate(accountingPeriod);
 		AccountingPeriodProductDao accountingPeriodProductDao = inject(AccountingPeriodProductDao.class);
@@ -75,7 +71,7 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 		for(Product product : productDao.readAll())
 			accountingPeriodProductDao.create(new AccountingPeriodProduct(accountingPeriod, product));
 		
-	}
+	}*/
 
 	@Override
 	public void close(AccountingPeriod accountingPeriod) {

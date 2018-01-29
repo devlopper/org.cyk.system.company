@@ -23,7 +23,6 @@ import lombok.experimental.Accessors;
  */
 @Embeddable @Accessors(chain=true) @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class Cost extends AbstractModelElement implements Serializable {
-
 	private static final long serialVersionUID = 4948598720219343584L;
 
 	@Column(name=COLUMN_NUMBER_OF_PROCEED_ELEMENTS,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal numberOfProceedElements = BigDecimal.ZERO;

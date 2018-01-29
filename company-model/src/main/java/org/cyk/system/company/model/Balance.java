@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 
 @Embeddable @Accessors(chain=true) @Getter @Setter
 public class Balance extends AbstractModelElement implements Serializable {
-
 	private static final long serialVersionUID = 4330380476164276099L;
 
 	@Column(name=COLUMN_VALUE,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal value = BigDecimal.ZERO;

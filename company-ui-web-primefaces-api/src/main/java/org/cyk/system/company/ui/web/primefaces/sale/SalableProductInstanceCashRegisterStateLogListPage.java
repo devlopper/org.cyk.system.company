@@ -28,15 +28,15 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	public static DetailsConfigurationListener.Table.Adapter<FiniteStateMachineStateIdentifiableGlobalIdentifier,SalableProductInstanceCashRegisterStateLogDetails> TABLE_ADAPTER = new TableAdapter();
+	//public static DetailsConfigurationListener.Table.Adapter<FiniteStateMachineStateIdentifiableGlobalIdentifier,SalableProductInstanceCashRegisterStateLogDetails> TABLE_ADAPTER = new TableAdapter();
 	
 	private Table<SalableProductInstanceCashRegisterStateLogDetails> table;
-	private DetailsConfigurationListener.Table.Adapter<FiniteStateMachineStateIdentifiableGlobalIdentifier,SalableProductInstanceCashRegisterStateLogDetails> tableAdapter = TABLE_ADAPTER;
+	//private DetailsConfigurationListener.Table.Adapter<FiniteStateMachineStateIdentifiableGlobalIdentifier,SalableProductInstanceCashRegisterStateLogDetails> tableAdapter = TABLE_ADAPTER;
 	
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		table = createDetailsTable(SalableProductInstanceCashRegisterStateLogDetails.class, tableAdapter);	
+		//table = createDetailsTable(SalableProductInstanceCashRegisterStateLogDetails.class, tableAdapter);	
 		table.setRendered(Boolean.TRUE);
 		table.setShowHeader(Boolean.FALSE);
 		table.setShowFooter(Boolean.FALSE);
@@ -50,7 +50,7 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 		//FiniteStateMachineStateIdentifiableGlobalIdentifier.SearchCriteria searchCriteria = ((TableAdapter)tableAdapter).getSearchCriteria();
 		//contentTitle = languageBusiness.findListOfText(SalableProductInstance.class)+Constant.CHARACTER_SPACE+StringUtils.join(searchCriteria.getFiniteStateMachineStates(),Constant.CHARACTER_COMA);
 	}
-	
+	/*
 	@Getter @Setter
 	public static class TableAdapter extends DetailsConfigurationListener.Table.Adapter<FiniteStateMachineStateIdentifiableGlobalIdentifier,SalableProductInstanceCashRegisterStateLogDetails> {
 
@@ -69,13 +69,7 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 		
 		public FiniteStateMachineStateIdentifiableGlobalIdentifier.SearchCriteria getSearchCriteria(){
 			FiniteStateMachineStateIdentifiableGlobalIdentifier.SearchCriteria searchCriteria = new FiniteStateMachineStateIdentifiableGlobalIdentifier.SearchCriteria();
-			/*searchCriteria.addFiniteStateMachineStates(WebManager.getInstance().decodeIdentifiablesRequestParameter(FiniteStateMachineState.class));
-			searchCriteria.setTimeDivisionTypeCode(timeDivisionTypeCode);
-			if(searchCriteria.getFiniteStateMachineStates().isEmpty())
-				searchCriteria.addFiniteStateMachineStates(inject(FiniteStateMachineStateBusiness.class)
-						.findByMachine(inject(AccountingPeriodBusiness.class).findCurrent().getSaleConfiguration()
-								.getSalableProductInstanceCashRegisterFiniteStateMachine()));
-			*/
+			
 			return searchCriteria;
 		}
 		
@@ -110,6 +104,6 @@ public class SalableProductInstanceCashRegisterStateLogListPage extends Abstract
 			};
 		}
 		
-	}
+	}*/
 	
 }
