@@ -14,10 +14,12 @@ import org.cyk.utility.common.userinterface.Component;
 import org.cyk.utility.common.userinterface.collection.DataTable;
 import org.cyk.utility.common.userinterface.container.Form;
 import org.cyk.utility.common.userinterface.event.Event;
+import org.cyk.utility.common.userinterface.output.OutputText;
 
 public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.IdentifiableEditPageFormMaster implements Serializable {
 	private static final long serialVersionUID = -6211058744595898478L;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void __prepare__() {
 		super.__prepare__();
@@ -29,6 +31,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 			detail.add(SalableProduct.FIELD_PRODUCT).addBreak();
 			detail.add(SalableProduct.FIELD_PRICE).addBreak();
 		}else if(SalableProductCollection.class.equals(actionOnClass)){
+			((SalableProductCollection)getObject()).setCost(new Cost());
 			detail.setFieldsObjectFromMaster(SalableProductCollection.FIELD_COST);
 			detail.addReadOnly(Cost.FIELD_VALUE);
 			
@@ -44,7 +47,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 					return cell;
 				}
 			}
-			,Boolean.TRUE,new String[]{SalableProductCollectionItem.FIELD_QUANTITY});
+			,Boolean.TRUE);
 			dataTable.addColumnListener(new CollectionHelper.Instance.Listener.Adapter<Component>(){
 				private static final long serialVersionUID = 1L;
 
@@ -53,9 +56,9 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 					super.addOne(instance, element, source, sourceObject);
 					if(element instanceof DataTable.Column){
 						DataTable.Column column = (DataTable.Column)element;
-						if(FieldHelper.getInstance().buildPath(SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE).equals(column.getPropertiesMap().getFieldName()))
+						if(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT,SalableProduct.FIELD_PRICE).equals(column.getPropertiesMap().getFieldName()))
 							column.setCellValueType(DataTable.Cell.ValueType.TEXT);
-						else if(FieldHelper.getInstance().buildPath(SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE).equals(column.getPropertiesMap().getFieldName()))
+						else if(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_VALUE).equals(column.getPropertiesMap().getFieldName()))
 							column.setCellValueType(DataTable.Cell.ValueType.TEXT);
 					}
 				}
@@ -67,7 +70,8 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 			dataTable.prepare();
 			dataTable.build();
 					
-			//((OutputText)dataTable.getColumn("amount").getPropertiesMap().getFooter()).getPropertiesMap().setValue(((Order)detail.getMaster().getObject()).getAmount());
+			((OutputText)dataTable.getColumn(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_VALUE))
+					.getPropertiesMap().getFooter()).getPropertiesMap().setValue(((SalableProductCollection)detail.getMaster().getObject()).getCost().getValue());
 			//((DataTable.Columns)dataTable.getPropertiesMap().getColumns()).getPropertiesMap().setFooterRendered(Boolean.FALSE);
 			if(Constant.Action.isCreateOrUpdate((Constant.Action) getPropertiesMap().getAction())){
 				((CollectionHelper.Instance<Object>)dataTable.getPropertiesMap().getRowsCollectionInstance()).addListener(
@@ -79,7 +83,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 							SalableProductCollectionItem salableProductCollectionItem = (SalableProductCollectionItem) row.getPropertiesMap().getValue();
 							//orderItem.setCode(RandomHelper.getInstance().getAlphabetic(3));
 							//orderItem.setName(RandomHelper.getInstance().getAlphabetic(3));
-							//salableProductCollectionItem.setOrder((Order) getObject());
+							salableProductCollectionItem.setCollection((SalableProductCollection) getObject());
 							salableProductCollectionItem.setCost(new Cost());
 							//salableProductCollectionItem.getCost().setValueFromString("123");
 						}		
@@ -87,7 +91,8 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 					}
 					);
 			}
-			
+			System.out.println("IdentifiableEditPageFormMaster.__prepare__()");
+			debug(dataTable.getPropertiesMap().getMaster());
 		}
 		
 	}

@@ -27,6 +27,7 @@ import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.utility.common.LogMessage;
 import org.cyk.utility.common.helper.RandomHelper;
+import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
 
 public class SalableProductCollectionItemBusinessImpl extends AbstractCollectionItemBusinessImpl<SalableProductCollectionItem, SalableProductCollectionItemDao,SalableProductCollection> implements SalableProductCollectionItemBusiness,Serializable {
 
@@ -188,9 +189,40 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	}
 	
 	@Override
-	public void computeChanges(SalableProductCollectionItem salableProductCollectionItem) {
-		super.computeChanges(salableProductCollectionItem);
-		salableProductCollectionItem.getCost().setValueFromString(RandomHelper.getInstance().getNumeric(8).longValue()+"");
+	protected void computeChanges(SalableProductCollectionItem salableProductCollectionItem, Builder logMessageBuilder) {
+		super.computeChanges(salableProductCollectionItem, logMessageBuilder);
+		if(salableProductCollectionItem.getSalableProduct().getPrice()==null){
+			//This product has no unit price then the price to be paid must be specified by user
+			
+		}else{
+			//This product has a unit price so we can compute the cost to be paid
+			salableProductCollectionItem.setQuantifiedPrice(salableProductCollectionItem.getSalableProduct().getPrice()
+					.multiply(salableProductCollectionItem.getQuantity())); 
+			BigDecimal cost = salableProductCollectionItem.getQuantifiedPrice()
+				.subtract(salableProductCollectionItem.getReduction())
+				.add(salableProductCollectionItem.getCommission());
+			salableProductCollectionItem.getCost().setValue(cost);
+		}
+		//TODO what if previous balance value has there ???
+		salableProductCollectionItem.getBalance().setValue(salableProductCollectionItem.getCost().getValue());
+		salableProductCollectionItem.getCost().setNumberOfProceedElements(salableProductCollectionItem.getQuantity());
+		
+		if(salableProductCollectionItem.getCost().getValue()==null){
+			
+		}else{
+			//This product has a cost so we can compute the taxes to be paid
+			AccountingPeriod accountingPeriod = salableProductCollectionItem.getCollection().getAccountingPeriod();
+			if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getAutoComputeValueAddedTax())){
+				salableProductCollectionItem.getCost().setTax(inject(AccountingPeriodBusiness.class).computeValueAddedTax(accountingPeriod, salableProductCollectionItem.getCost().getValue()));
+			}else if(salableProductCollectionItem.getCost().getTax()==null)
+				salableProductCollectionItem.getCost().setTax(BigDecimal.ZERO);
+			salableProductCollectionItem.getCost().setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(accountingPeriod
+					, salableProductCollectionItem.getCost().getValue(),salableProductCollectionItem.getCost().getTax()));	
+		}
+		
+		System.out.println("SalableProductCollectionItemBusinessImpl.computeChanges()");
+		salableProductCollectionItem.getCollection().getCost().setValue(salableProductCollectionItem.getCost().getValue());
+		debug(salableProductCollectionItem.getCollection());
 	}
 	
 	/*
