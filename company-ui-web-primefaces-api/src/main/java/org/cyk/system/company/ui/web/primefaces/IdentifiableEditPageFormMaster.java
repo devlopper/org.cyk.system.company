@@ -42,7 +42,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 					
 					if(ArrayUtils.contains(new String[]{SalableProductCollectionItem.FIELD_QUANTITY},column.getPropertiesMap().getFieldName())){
 						Event.instanciateOne(cell, new String[]{FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_VALUE)}
-						,new String[]{/*FieldHelper.getInstance().buildPath(SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE)*/});
+						,new String[]{FieldHelper.getInstance().buildPath(SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE)});
 					}
 					return cell;
 				}
@@ -91,8 +91,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 					}
 					);
 			}
-			System.out.println("IdentifiableEditPageFormMaster.__prepare__()");
-			debug(dataTable.getPropertiesMap().getMaster());
+			
 		}
 		
 	}

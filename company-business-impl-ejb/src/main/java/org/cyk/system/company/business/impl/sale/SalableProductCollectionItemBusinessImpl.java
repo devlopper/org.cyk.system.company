@@ -220,9 +220,8 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 					, salableProductCollectionItem.getCost().getValue(),salableProductCollectionItem.getCost().getTax()));	
 		}
 		
-		System.out.println("SalableProductCollectionItemBusinessImpl.computeChanges()");
 		salableProductCollectionItem.getCollection().getCost().setValue(salableProductCollectionItem.getCost().getValue());
-		debug(salableProductCollectionItem.getCollection());
+		
 	}
 	
 	/*
