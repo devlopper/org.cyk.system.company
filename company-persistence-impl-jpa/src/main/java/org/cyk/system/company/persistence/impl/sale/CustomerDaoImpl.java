@@ -18,10 +18,11 @@ public class CustomerDaoImpl extends AbstractActorDaoImpl<Customer,Customer.Sear
 	@Override
 	protected void namedQueriesInitialisation() {
 		super.namedQueriesInitialisation();
-		registerNamedQuery(readByBalance, _select().where("balance"));
+		/*registerNamedQuery(readByBalance, _select().where("balance"));
 		registerNamedQuery(readByBalanceNotEquals, _select().where("balance",ArithmeticOperator.NEQ));
 		registerNamedQuery(readByBalanceGreaterThanOrEquals, _select().where("balance",ArithmeticOperator.GTE));
 		registerNamedQuery(readByBalanceLowerThanOrEquals, _select().where("balance",ArithmeticOperator.LTE));
+		*/
 	}
 	
 	@Override

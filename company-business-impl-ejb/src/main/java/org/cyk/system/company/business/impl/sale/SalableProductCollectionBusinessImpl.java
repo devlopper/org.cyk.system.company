@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.CostBusiness;
@@ -19,9 +17,13 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
+import org.cyk.system.root.business.api.BusinessException;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
-import org.cyk.utility.common.LogMessage;
+import org.cyk.utility.common.helper.CollectionHelper;
+import org.cyk.utility.common.helper.ConditionHelper;
+import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
+import org.cyk.utility.common.helper.MethodHelper;
 
 public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusinessImpl<SalableProductCollection,SalableProductCollectionItem, SalableProductCollectionDao,SalableProductCollectionItemDao,SalableProductCollectionItemBusiness> implements SalableProductCollectionBusiness,Serializable {
 
@@ -41,6 +43,21 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	protected void afterCrud(SalableProductCollection salableProductCollection, Crud crud) {
 		super.afterCrud(salableProductCollection, crud);
 		if(Crud.isCreateOrUpdate(crud)){
+			if(Boolean.TRUE.equals(salableProductCollection.getItems().getSynchonizationEnabled())){
+				Cost cost = new Cost();
+				Collection<Cost> costs = MethodHelper.getInstance().callGet(salableProductCollection.getItems().getElements(), Cost.class, SalableProductCollectionItem.FIELD_COST);
+				inject(CostBusiness.class).add(cost, costs);
+				throw__(new ConditionHelper.Condition.Builder.Comparison.Adapter.Default().setValueNameIdentifier("costvalue")
+				.setDomainNameIdentifier("salableProductCollection").setNumber1(salableProductCollection.getCost().getValue())
+				.setNumber2(cost.getValue()).setEqual(Boolean.FALSE), BusinessException.class);
+			}
+		}
+	}
+	
+	/*@Override
+	protected void afterCrud(SalableProductCollection salableProductCollection, Crud crud) {
+		super.afterCrud(salableProductCollection, crud);
+		if(Crud.isCreateOrUpdate(crud)){
 			if(salableProductCollection.isItemAggregationApplied()){
 				computeCost(salableProductCollection);
 				BigDecimal v1 = salableProductCollection.getCost().getValue();
@@ -50,7 +67,7 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 				dao.update(salableProductCollection);
 			}
 		}
-	}
+	}*/
 	
 	@Override
 	public SalableProductCollection instanciateOne(String code,String name) {
@@ -80,25 +97,16 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	
 	@Override
 	protected SalableProductCollectionItem addOrRemove(SalableProductCollection salableProductCollection, SalableProductCollectionItem salableProductCollectionItem,Boolean add) {
-		String action = Boolean.TRUE.equals(add) ? "ADD":"REMOVE";
-		LogMessage.Builder logMessageBuilder = new LogMessage.Builder(action,SalableProductCollectionItem.class);
-		//inject(SalableProductCollectionItemBusiness.class).computeCost(salableProductCollectionItem);
-		logMessageBuilder.addParameters("salableProductCollection.cost",salableProductCollection.getCost()
-				,"salableProductCollectionItem.cost",salableProductCollectionItem.getCost());
 		BigDecimal factor = (add == null || Boolean.TRUE.equals(add)) ? BigDecimal.ONE : BigDecimal.ONE.negate();
 		super.addOrRemove(salableProductCollection, salableProductCollectionItem, add);
-		
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE.multiply(factor));
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_VALUE, salableProductCollectionItem.getCost().getValue().multiply(factor));
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_TAX, salableProductCollectionItem.getCost().getTax().multiply(factor));
-		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_TURNOVER, salableProductCollectionItem.getCost().getTurnover().multiply(factor));
-		
-		logMessageBuilder.addParameters("salableProductCollection.newCost",salableProductCollection.getCost());
-		logTrace(logMessageBuilder);
+		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_TURNOVER, salableProductCollectionItem.getCost().getTurnover().multiply(factor));		
 		return salableProductCollectionItem;
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	/*@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void computeCost(SalableProductCollection salableProductCollection,Collection<SalableProductCollectionItem> salableProductCollectionItems) {
 		LogMessage.Builder logMessageBuilder = new LogMessage.Builder("Compute", "cost");
 		addLogMessageBuilderParameters(logMessageBuilder,"items", salableProductCollectionItems);
@@ -127,19 +135,7 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 			salableProductCollection.getCost()._set(cost);
 		}
 		addLogMessageBuilderParameters(logMessageBuilder, "new cost",salableProductCollection.getCost());
-	}
-	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void computeDerivationsFromCost(SalableProductCollection salableProductCollection) {
-		SalableProductCollectionItemBusiness salableProductCollectionItemBusiness = inject(SalableProductCollectionItemBusiness.class);
-		salableProductCollection.setTotalCostValueWithoutReduction(BigDecimal.ZERO);
-		salableProductCollection.setTotalReduction(BigDecimal.ZERO);
-		for(SalableProductCollectionItem salableProductCollectionItem : salableProductCollection.getItems().getElements()){
-			salableProductCollectionItemBusiness.computeDerivationsFromCost(salableProductCollectionItem);
-			salableProductCollection.setTotalCostValueWithoutReduction(salableProductCollection.getTotalCostValueWithoutReduction().add(salableProductCollectionItem.getQuantifiedPrice()));
-			salableProductCollection.setTotalReduction(salableProductCollection.getTotalReduction().add(salableProductCollectionItem.getReduction()));
-		}
-	}
+	}*/
 	
 	@Override
 	public SalableProductCollection instanciateOneRandomly(String code) {
@@ -148,7 +144,25 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 		return salableProductCollection;
 	}
 	
-	
+	@Override
+	protected void computeChanges(final SalableProductCollection salableProductCollection, Builder logMessageBuilder) {
+		super.computeChanges(salableProductCollection, logMessageBuilder);
+		logMessageBuilder.addManyParameters("cost");
+		logMessageBuilder.addNamedParameters("before",salableProductCollection.getCost().toString());
+		if(Boolean.TRUE.equals(salableProductCollection.getItems().isSynchonizationEnabled())){
+			salableProductCollection.getCost().setValue(BigDecimal.ZERO);
+			salableProductCollection.getCost().setTax(BigDecimal.ZERO);
+			salableProductCollection.getCost().setTurnover(BigDecimal.ZERO);
+			salableProductCollection.getCost().setNumberOfProceedElements(BigDecimal.ZERO);
+			new CollectionHelper.Iterator.Adapter.Default<SalableProductCollectionItem>(salableProductCollection.getItems().getElements()){
+				private static final long serialVersionUID = 1L;
+				protected void __executeForEach__(SalableProductCollectionItem salableProductCollectionItem) {
+					inject(CostBusiness.class).add(salableProductCollection.getCost(), salableProductCollectionItem.getCost());
+				}
+			}.execute();	
+		}
+		logMessageBuilder.addNamedParameters("after",salableProductCollection.getCost().toString());
+	}
 	
 	/**/
 	

@@ -33,7 +33,7 @@ public class CustomerReportTableRow extends AbstractOutputDetails<Customer> impl
 		super(customer);
 		System.out.println("CustomerReportTableRow.CustomerReportTableRow()");
 		this.registrationCode = customer.getCode();
-		this.names = customer.getPerson().getNames();
+		//this.names = customer.getPerson().getNames();
 		this.saleStockInputCount = formatNumber(customer.getSaleStockInputCount());
 		this.saleStockOutputCount = formatNumber(customer.getSaleStockOutputCount());
 		//this.saleCount = inject(NumberBusiness.class).format(customer.getSaleCount());

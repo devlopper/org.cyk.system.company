@@ -107,7 +107,7 @@ public class ProductionPlanConsultPage extends AbstractConsultPage<ProductionPla
 		@Input @InputText private String reseller,takingUnitPrice,saleUnitPrice,commissionRate;
 		public ResellerProductionPlanDetails(ResellerProductionPlan resellerProduct) {
 			super(resellerProduct);
-			reseller = resellerProduct.getReseller().getPerson().getNames();
+			//reseller = resellerProduct.getReseller().getPerson().getNames();
 			takingUnitPrice = numberBusiness.format(resellerProduct.getTakingUnitPrice());
 			saleUnitPrice = numberBusiness.format(resellerProduct.getSaleUnitPrice());
 			commissionRate = numberBusiness.format(resellerProduct.getCommissionRate());

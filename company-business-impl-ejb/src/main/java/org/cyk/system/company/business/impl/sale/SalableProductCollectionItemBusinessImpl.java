@@ -3,8 +3,6 @@ package org.cyk.system.company.business.impl.sale;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -25,8 +23,6 @@ import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.utility.common.LogMessage;
-import org.cyk.utility.common.helper.RandomHelper;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
 
 public class SalableProductCollectionItemBusinessImpl extends AbstractCollectionItemBusinessImpl<SalableProductCollectionItem, SalableProductCollectionItemDao,SalableProductCollection> implements SalableProductCollectionItemBusiness,Serializable {
@@ -64,8 +60,8 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	}
 		
 	private void cascadeUpdateCollectionCost(SalableProductCollectionItem salableProductCollectionItem){
-		inject(SalableProductCollectionBusiness.class).computeCost(salableProductCollectionItem.getCollection());
-		inject(SalableProductCollectionDao.class).update(salableProductCollectionItem.getCollection());
+		//inject(SalableProductCollectionBusiness.class).computeCost(salableProductCollectionItem.getCollection());
+		//inject(SalableProductCollectionDao.class).update(salableProductCollectionItem.getCollection());
 	}
 	
 	@Override
@@ -78,7 +74,7 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 		salableProductCollectionItem.setQuantity(quantity);
 		salableProductCollectionItem.setReduction(reduction);
 		salableProductCollectionItem.setCommission(commission);
-		computeCost(salableProductCollectionItem,salableProductCollection);
+		computeChanges(salableProductCollectionItem);
 		inject(SalableProductCollectionBusiness.class).add(salableProductCollection, salableProductCollectionItem);
 		return salableProductCollectionItem;
 	}
@@ -141,56 +137,11 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 		return findBySales(Arrays.asList(sale));
 	}*/
 
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void computeCost(SalableProductCollectionItem salableProductCollectionItem,SalableProductCollection salableProductCollection) {
-		LogMessage.Builder logMessageBuilder = new LogMessage.Builder("COMPUTE Cost",SalableProductCollectionItem.class);
-		logMessageBuilder.addParameters("salableProductCollectionItem.salableProduct.price",salableProductCollectionItem.getSalableProduct().getPrice());
-		logMessageBuilder.addParameters("salableProductCollectionItem.cost",salableProductCollectionItem.getCost());
-		if(salableProductCollectionItem.getSalableProduct().getPrice()==null){
-			//This product has no unit price then the price to be paid must be specified by user
-			
-		}else{
-			//This product has a unit price so we can compute the cost to be paid
-			salableProductCollectionItem.setQuantifiedPrice(salableProductCollectionItem.getSalableProduct().getPrice()
-					.multiply(salableProductCollectionItem.getQuantity())); 
-			BigDecimal cost = salableProductCollectionItem.getQuantifiedPrice()
-				.subtract(salableProductCollectionItem.getReduction())
-				.add(salableProductCollectionItem.getCommission());
-			salableProductCollectionItem.getCost().setValue(cost);
-		}
-		//TODO what if previous balance value has there ???
-		salableProductCollectionItem.getBalance().setValue(salableProductCollectionItem.getCost().getValue());
-		salableProductCollectionItem.getCost().setNumberOfProceedElements(salableProductCollectionItem.getQuantity());
-		
-		if(salableProductCollectionItem.getCost().getValue()==null){
-			
-		}else{
-			//This product has a cost so we can compute the taxes to be paid
-			AccountingPeriod accountingPeriod = salableProductCollection.getAccountingPeriod();
-			if(Boolean.TRUE.equals(salableProductCollection.getAutoComputeValueAddedTax())){
-				salableProductCollectionItem.getCost().setTax(inject(AccountingPeriodBusiness.class).computeValueAddedTax(accountingPeriod, salableProductCollectionItem.getCost().getValue()));
-			}else if(salableProductCollectionItem.getCost().getTax()==null)
-				salableProductCollectionItem.getCost().setTax(BigDecimal.ZERO);
-			salableProductCollectionItem.getCost().setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(accountingPeriod
-					, salableProductCollectionItem.getCost().getValue(),salableProductCollectionItem.getCost().getTax()));	
-		}
-		logMessageBuilder.addParameters("salableProductCollectionItem.newCost",salableProductCollectionItem.getCost());
-		logTrace(logMessageBuilder);
-	}
-	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void computeCost(SalableProductCollectionItem salableProductCollectionItem) {
-		computeCost(salableProductCollectionItem, salableProductCollectionItem.getCollection());
-	}
-	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void computeDerivationsFromCost(SalableProductCollectionItem salableProductCollectionItem) {
-		salableProductCollectionItem.setQuantifiedPrice(salableProductCollectionItem.getCost().getValue().add(salableProductCollectionItem.getReduction()));
-	}
-	
 	@Override
 	protected void computeChanges(SalableProductCollectionItem salableProductCollectionItem, Builder logMessageBuilder) {
 		super.computeChanges(salableProductCollectionItem, logMessageBuilder);
+		logMessageBuilder.addManyParameters("cost");
+		logMessageBuilder.addNamedParameters("before",salableProductCollectionItem.getCost().toString());
 		if(salableProductCollectionItem.getSalableProduct().getPrice()==null){
 			//This product has no unit price then the price to be paid must be specified by user
 			
@@ -219,9 +170,8 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 			salableProductCollectionItem.getCost().setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(accountingPeriod
 					, salableProductCollectionItem.getCost().getValue(),salableProductCollectionItem.getCost().getTax()));	
 		}
-		
-		salableProductCollectionItem.getCollection().getCost().setValue(salableProductCollectionItem.getCost().getValue());
-		
+		logMessageBuilder.addNamedParameters("after",salableProductCollectionItem.getCost().toString());
+		inject(SalableProductCollectionBusiness.class).computeChanges(salableProductCollectionItem.getCollection());
 	}
 	
 	/*

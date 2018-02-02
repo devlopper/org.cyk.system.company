@@ -13,7 +13,10 @@
 		</Console>
 	</Appenders>
 	<Loggers>
-		<Logger name="org.cyk.system.company.business.impl.RealDataSet" level="trace">
+		<!--Logger name="org.cyk.system.company.business.impl.sale.SalableProductCollectionBusinessImpl" level="trace">
+			<AppenderRef ref="Console" />
+		</Logger--> 
+		<!--Logger name="org.cyk.system.company.business.impl.RealDataSet" level="trace">
 			<AppenderRef ref="InstallConsole" />
 		</Logger>
 		<Logger name="org.cyk.system.root.business.impl.RealDataSet" level="trace">
@@ -22,7 +25,7 @@
 		
 		<Logger name="org.cyk.system.company.business.impl.__data__.IesaFakedDataSet" level="trace">
 			<AppenderRef ref="InstallConsole" />
-		</Logger>
+		</Logger-->
 		
 		<!--Logger name="org.cyk.utility.common.helper.InstanceHelper$Builder$OneDimensionArray$Adapter$Default"
 			level="trace">

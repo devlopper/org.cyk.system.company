@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.CompanyReportProducer;
-import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
@@ -79,7 +78,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	
 	private SaleReportTemplateFile produceSaleReportTemplateFile(Sale sale) {
 		sale.getSalableProductCollection().getItems().setElements(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
-		inject(SalableProductCollectionBusiness.class).computeDerivationsFromCost(sale.getSalableProductCollection());
+		//inject(SalableProductCollectionBusiness.class).computeDerivationsFromCost(sale.getSalableProductCollection());
 		SaleReportTemplateFile report = new SaleReportTemplateFile(sale);
 		
 		report.addLabelValues("Invoice",new String[][]{
@@ -91,7 +90,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 			,{ sale.getGlobalIdentifier().getOwner() instanceof Application ? sale.getGlobalIdentifier().getOwner().getName() 
 					: ((Person)sale.getGlobalIdentifier().getOwner()).getNames(),Constant.EMPTY_STRING}
 			,{"Parent",Constant.EMPTY_STRING}
-			,{sale.getCustomer()==null ? "CUST???" : sale.getCustomer().getPerson().getNames(),Constant.EMPTY_STRING}			
+			//,{sale.getCustomer()==null ? "CUST???" : sale.getCustomer().getParty().getNames(),Constant.EMPTY_STRING}			
 		});
 		
 		//for(SalableProductCollectionItem item : inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()))
@@ -150,7 +149,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 				Collection<Person> persons = new LinkedHashSet<>();
 				for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovementCollection.getItems().getElements())
 					if(saleCashRegisterMovement.getSale().getCustomer()!=null)
-						persons.add(saleCashRegisterMovement.getSale().getCustomer().getPerson());
+						persons.add((Person) saleCashRegisterMovement.getSale().getCustomer().getPerson());
 				return persons;
 			}
 		});
@@ -158,7 +157,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 			customerPersons = new LinkedHashSet<>();
 			for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovementCollection.getItems().getElements()){
 				if(saleCashRegisterMovement.getSale().getCustomer()!=null)
-					customerPersons.add(saleCashRegisterMovement.getSale().getCustomer().getPerson());
+					customerPersons.add((Person) saleCashRegisterMovement.getSale().getCustomer().getPerson());
 			}
 		}
 		
@@ -233,11 +232,11 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 			,{ saleCashRegisterMovement.getGlobalIdentifier().getOwner() instanceof Application ? saleCashRegisterMovement.getGlobalIdentifier().getOwner().getName() 
 					: ((Person)saleCashRegisterMovement.getGlobalIdentifier().getOwner()).getNames(),Constant.EMPTY_STRING}
 			,{"Parent",Constant.EMPTY_STRING}
-			,{saleCashRegisterMovement.getSale().getCustomer().getPerson().getNames(),Constant.EMPTY_STRING}	
+			//,{saleCashRegisterMovement.getSale().getCustomer().getPerson().getNames(),Constant.EMPTY_STRING}	
 			,{"Received from",Constant.EMPTY_STRING}
-			,{saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getSenderOrReceiverPerson()==null
-					? saleCashRegisterMovement.getSale().getCustomer().getPerson().getNames() 
-						: saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getSenderOrReceiverPerson().getNames(),Constant.EMPTY_STRING}	
+			//,{saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getSenderOrReceiverPerson()==null
+			//		? saleCashRegisterMovement.getSale().getCustomer().getPerson().getNames() 
+			//			: saleCashRegisterMovement.getCollection().getCashRegisterMovement().getMovement().getSenderOrReceiverPerson().getNames(),Constant.EMPTY_STRING}	
 		});
 		
 		/*
@@ -356,7 +355,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 				@Override
 				public Person getCustomerPerson(AbstractIdentifiable identifiable) {
 					if(identifiable instanceof Customer)
-						return((Customer)identifiable).getPerson();
+						return (Person) ((Customer)identifiable).getPerson();
 					return null;
 				}
 				

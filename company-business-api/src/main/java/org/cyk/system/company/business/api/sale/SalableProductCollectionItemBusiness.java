@@ -17,11 +17,6 @@ public interface SalableProductCollectionItemBusiness extends AbstractCollection
 	
 	SalableProductCollectionItem instanciateOne(String salableProductCollectionCode,Object[] salableProduct);
 	
-	void computeCost(SalableProductCollectionItem salableProductCollectionItem,SalableProductCollection salableProductCollection);
-	void computeCost(SalableProductCollectionItem salableProductCollectionItem);
-
-	void computeDerivationsFromCost(SalableProductCollectionItem salableProductCollectionItem);
-
 	//void computeBalance(SalableProductCollectionItem salableProductCollectionItem);
 	
 	/*

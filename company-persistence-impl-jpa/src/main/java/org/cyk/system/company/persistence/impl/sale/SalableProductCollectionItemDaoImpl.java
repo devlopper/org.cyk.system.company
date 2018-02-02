@@ -25,7 +25,7 @@ public class SalableProductCollectionItemDaoImpl extends AbstractCollectionItemD
 				Cost.class.getName()+"(SUM(r.cost.numberOfProceedElements),SUM(r.cost.value),SUM(r.cost.tax),SUM(r.cost.turnover))"
 				+ " FROM SalableProductCollectionItem r WHERE r.collection = :collection");
 	}
-		
+	
 	@Override
 	public Collection<SalableProductCollectionItem> readByCollectionBySalableProduct(SalableProductCollection salableProductCollection, SalableProduct salableProduct) {
 		return namedQuery(readByCollectionBySalableProduct).parameter(SalableProductCollectionItem.FIELD_COLLECTION, salableProductCollection)

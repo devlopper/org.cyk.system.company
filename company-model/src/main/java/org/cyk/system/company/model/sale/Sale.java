@@ -23,16 +23,21 @@ import org.cyk.utility.common.annotation.ModelBean.GenderType;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
 @ModelBean(genderType=GenderType.FEMALE,crudStrategy=CrudStrategy.BUSINESS)
 public class Sale extends AbstractSale implements Serializable {
-	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@Embedded private Balance balance = new Balance();
+	@Embedded private Balance balance;
 	
 	/**/
 	
 	@Transient private Collection<SaleCashRegisterMovement> saleCashRegisterMovements = new ArrayList<>();
 	
 	/**/
+	
+	public Balance getBalance(){
+		if(this.balance == null)
+			this.balance = new Balance();
+		return this.balance;
+	}
 	
 	public static final String FIELD_BALANCE = "balance";
 	public static final String FIELD_CASH_REGISTER_MOVEMENT_TERM_COLLECTION = "cashRegisterMovementTermCollection";

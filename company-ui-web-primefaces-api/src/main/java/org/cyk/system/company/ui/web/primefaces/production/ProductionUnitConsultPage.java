@@ -102,7 +102,7 @@ public class ProductionUnitConsultPage extends AbstractConsultPage<ProductionUni
 		public ResellerDetails(Reseller reseller) {
 			super(reseller);
 			registrationCode = reseller.getCode();
-			names = reseller.getPerson().getNames();
+			//names = reseller.getPerson().getNames();
 			salary = numberBusiness.format(reseller.getSalary());
 			amountGap = numberBusiness.format(reseller.getAmountGap());
 			payable = numberBusiness.format(reseller.getPayable());

@@ -19,6 +19,7 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.structure.Employee;
+import org.cyk.system.root.model.party.person.Person;
 
 import lombok.Getter;
 
@@ -71,7 +72,7 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 			Employee employee = inject(EmployeeBusiness.class).instanciateOne();
 			employees.add(employee);
 			
-			Cashier cashier = new Cashier(employee.getPerson(), cashRegister);
+			Cashier cashier = new Cashier((Person) employee.getPerson(), cashRegister);
 			cashiers.add(cashier);
 		}
 		

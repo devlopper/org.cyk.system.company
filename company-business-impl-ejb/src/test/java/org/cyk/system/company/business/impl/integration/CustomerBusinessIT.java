@@ -10,7 +10,7 @@ public class CustomerBusinessIT extends AbstractBusinessIT {
     @Override
     protected void businesses() {
     	Customer customer = inject(CustomerBusiness.class).instanciateOneRandomly("01");
-    	customer.getPerson().setContactCollection(null);
+    	//customer.getPerson().setContactCollection(null);
     	create(customer);
     	//create(inject(CustomerBusiness.class).instanciateOneRandomly("02"));
     }

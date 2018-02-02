@@ -23,7 +23,7 @@ public class IesaEmployeeBusinessIT extends AbstractIesaBusinessIT {
     	Employee employee = inject(EmployeeBusiness.class).instanciateOne();
     	employee.setCode("EMP001");
     	employee.setName("Zeze");
-    	employee.getPerson().setLastnames("Marius");
+    	//employee.getPerson().setLastnames("Marius");
     	employee.setEmploymentAgreement(new EmploymentAgreement());
     	employee.getEmploymentAgreement().setType(inject(EmploymentAgreementTypeDao.class).readOneRandomly());
     	create(employee);
@@ -40,7 +40,7 @@ public class IesaEmployeeBusinessIT extends AbstractIesaBusinessIT {
     	
     	employee = inject(EmployeeBusiness.class).find("EMP001");
     	employee.setName("Komenan");
-    	employee.getPerson().setLastnames("Yao christian");
+    	//employee.getPerson().setLastnames("Yao christian");
     	employee = inject(EmployeeBusiness.class).update(employee);
     	
     	fileCount = inject(FileDao.class).countAll();

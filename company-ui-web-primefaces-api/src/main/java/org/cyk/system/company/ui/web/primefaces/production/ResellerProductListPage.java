@@ -49,7 +49,7 @@ public class ResellerProductListPage extends AbstractCrudManyPage<ResellerProduc
 		@Input @InputText private String reseller,product,takingUnitPrice,saleUnitPrice,commissionRate;
 		public Details(ResellerProductionPlan resellerProduct) {
 			super(resellerProduct);
-			reseller = resellerProduct.getReseller().getPerson().getNames();
+			//reseller = resellerProduct.getReseller().getPerson().getNames();
 			//product = resellerProduct.getManufacturedProduct().getProduct().getName();
 			takingUnitPrice = numberBusiness.format(resellerProduct.getTakingUnitPrice());
 			saleUnitPrice = numberBusiness.format(resellerProduct.getSaleUnitPrice());

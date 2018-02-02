@@ -23,7 +23,7 @@ public class CredenceReportTableDetails implements Serializable {
 	
 	public CredenceReportTableDetails(Customer customer) {
 		this.registrationCode = customer.getCode();
-		this.names = customer.getPerson().getNames();
+		//this.names = customer.getPerson().getNames();
 		//this.balance = inject(NumberBusiness.class).format(customer.getBalance());
 	}
 }

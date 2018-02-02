@@ -8,6 +8,7 @@ import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -31,19 +32,25 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @NotNull private SalableProduct salableProduct;
+	@ManyToOne @JoinColumn(name=COLUMN_SALABLE_PRODUCT) @NotNull private SalableProduct salableProduct;
 	
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal quantity;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal reduction=BigDecimal.ZERO;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal commission = BigDecimal.ZERO;
 	
-	@Embedded private Cost cost = new Cost();
+	@Embedded private Cost cost;
 	
 	@Embedded private Balance balance = new Balance();
 	
 	@Transient private BigDecimal quantifiedPrice;
 	@Transient private Collection<SaleProductInstance> instances;
 	@Transient private IdentifiableRuntimeCollection<SalableProductCollectionItemSaleCashRegisterMovement> salableProductCollectionItemSaleCashRegisterMovements = new IdentifiableRuntimeCollection<>();
+	
+	public Cost getCost(){
+		if(this.cost == null)
+			this.cost = new Cost();
+		return this.cost;
+	}
 	
 	public BigDecimal getQuantifiedPrice(){
 		if(quantifiedPrice==null && salableProduct.getPrice()!=null && quantity!=null)
@@ -70,5 +77,7 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 	public static final String FIELD_COMMISSION = "commission";
 	public static final String FIELD_COST = "cost";
 	public static final String FIELD_BALANCE = "balance";
+	
+	public static final String COLUMN_SALABLE_PRODUCT = FIELD_SALABLE_PRODUCT;
 	
 }

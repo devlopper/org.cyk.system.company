@@ -108,7 +108,7 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 		
     	create(inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_001));
     	create(inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_002));
-    	
+    	/*
     	customer = inject(CustomerBusiness.class).instanciateOneRandomly(CUSTOMER_001_FATHER);
     	customer.setName("Komenan");
     	customer.getPerson().setName("Komenan");
@@ -132,7 +132,7 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
     	customer.getPerson().setName("Koudou");
     	customer.getPerson().setLastnames("zouzou léa");
     	create(customer);
-    	
+    	*/
     	create(Arrays.asList(
 		inject(PersonRelationshipBusiness.class).instanciateOne(CUSTOMER_001_FATHER, RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_FATHER, CUSTOMER_001
 				,RootConstant.Code.PersonRelationshipTypeRole.FAMILY_PARENT_SON)

@@ -39,9 +39,10 @@ public class SaleQueryResultFormModel extends AbstractFormModel<Sale> implements
 	@Override
 	public void read() {
 		super.read();
-		if(identifiable.getCustomer()!=null)
+		/*if(identifiable.getCustomer()!=null)
 			customer = identifiable.getCustomer().getCode()+"/"+
 				identifiable.getCustomer().getPerson().getNames();
+		*/
 	}
 	
 }

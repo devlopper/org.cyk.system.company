@@ -24,7 +24,7 @@ public class CustomerSaleStockReportTableDetails implements Serializable {
 	
 	public CustomerSaleStockReportTableDetails(Customer customer) {
 		this.registrationCode = customer.getCode();
-		this.names = customer.getPerson().getNames();
+		//this.names = customer.getPerson().getNames();
 		//this.saleStockInputCount = inject(NumberBusiness.class).format(customer.getSaleStockInputCount());
 		//this.saleStockOutputCount = inject(NumberBusiness.class).format(customer.getSaleStockOutputCount());
 	}
