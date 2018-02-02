@@ -1,13 +1,10 @@
 package org.cyk.system.company.persistence.api.sale;
 
-import java.math.BigDecimal;
-import java.util.Collection;
-
 import org.cyk.system.company.model.sale.Customer;
-import org.cyk.system.root.persistence.api.party.person.AbstractActorDao;
+import org.cyk.system.root.persistence.api.TypedDao;
 
-public interface CustomerDao extends AbstractActorDao<Customer,Customer.SearchCriteria> {
-
+public interface CustomerDao extends TypedDao<Customer> {
+	/*
 	Collection<Customer> readByBalance(BigDecimal balance);
 
 	Collection<Customer> readByBalanceGreaterThanOrEquals(BigDecimal balance);
@@ -15,6 +12,6 @@ public interface CustomerDao extends AbstractActorDao<Customer,Customer.SearchCr
 	Collection<Customer> readByBalanceLowerThanOrEquals(BigDecimal balance);
 
 	Collection<Customer> readByBalanceNotEquals(BigDecimal balance);
-
+	*/
    
 }

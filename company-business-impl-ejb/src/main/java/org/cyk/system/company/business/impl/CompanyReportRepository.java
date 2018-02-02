@@ -251,7 +251,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 							private static final long serialVersionUID = -1279948056976719107L;
 							public Boolean ignoreField(Field field) {return CustomerReportTableRow.credenceFieldIgnored(field);};
 				        });
-						collection = customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
+						//collection = customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
 					}
 				}else if(parameterCustomerReportSaleStock.equals(reportType)){
 					parameters.setTitle(inject(LanguageBusiness.class).findText("company.report.customer.salestock.title"));

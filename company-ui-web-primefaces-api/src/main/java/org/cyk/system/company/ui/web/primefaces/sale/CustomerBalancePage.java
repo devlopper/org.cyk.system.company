@@ -38,7 +38,7 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 		final Boolean all = CompanyReportRepository.getInstance().getParameterCustomerBalanceAll().equals(balanceType);
 		contentTitle = all?text("company.command.customer.balance"):text("field.credence");
 		
-		Collection<Customer> customers = all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
+		Collection<Customer> customers = all?customerBusiness.findAll():/*customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO)*/null;
 		for(Customer customer : customers)
 			details.add(new CustomerReportTableRow(customer));
 		
@@ -52,7 +52,7 @@ public class CustomerBalancePage extends AbstractPrimefacesPage implements Seria
 			
 			@Override
 			public Collection<Customer> getIdentifiables() {
-				return all?customerBusiness.findAll():customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO);
+				return all?customerBusiness.findAll():/*customerBusiness.findByBalanceNotEquals(BigDecimal.ZERO)*/null;
 			}
 			
 			@Override

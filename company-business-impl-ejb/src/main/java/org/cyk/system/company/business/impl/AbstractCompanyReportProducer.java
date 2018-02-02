@@ -149,7 +149,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 				Collection<Person> persons = new LinkedHashSet<>();
 				for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovementCollection.getItems().getElements())
 					if(saleCashRegisterMovement.getSale().getCustomer()!=null)
-						persons.add((Person) saleCashRegisterMovement.getSale().getCustomer().getPerson());
+						;//persons.add((Person) saleCashRegisterMovement.getSale().getCustomer().getParty());
 				return persons;
 			}
 		});
@@ -157,7 +157,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 			customerPersons = new LinkedHashSet<>();
 			for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovementCollection.getItems().getElements()){
 				if(saleCashRegisterMovement.getSale().getCustomer()!=null)
-					customerPersons.add((Person) saleCashRegisterMovement.getSale().getCustomer().getPerson());
+					;//customerPersons.add((Person) saleCashRegisterMovement.getSale().getCustomer().getParty());
 			}
 		}
 		
@@ -355,7 +355,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 				@Override
 				public Person getCustomerPerson(AbstractIdentifiable identifiable) {
 					if(identifiable instanceof Customer)
-						return (Person) ((Customer)identifiable).getPerson();
+						;//return (Person) ((Customer)identifiable).getParty();
 					return null;
 				}
 				

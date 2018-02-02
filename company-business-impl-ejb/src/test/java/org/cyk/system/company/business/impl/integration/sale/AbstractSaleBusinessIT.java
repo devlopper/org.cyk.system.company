@@ -18,8 +18,8 @@ public abstract class AbstractSaleBusinessIT extends AbstractBusinessIT {
     @Override
     protected void populate() {
     	super.populate();
-    	inject(CustomerBusiness.class).create(inject(CustomerBusiness.class)
-    			.instanciateMany(new String[]{CUST1,CUST2,CUST3,CUST4,CUST5,"C5np",CUST6,CUST7,CUST8,CUST9,CUST10,CUST11,CUST12,"C13","C14","C15"}));
+    	//inject(CustomerBusiness.class).create(inject(CustomerBusiness.class)
+    	//		.instanciateMany(new String[]{CUST1,CUST2,CUST3,CUST4,CUST5,"C5np",CUST6,CUST7,CUST8,CUST9,CUST10,CUST11,CUST12,"C13","C14","C15"}));
     	createProducts(4, 4);
     	createSalableProducts(new String[][]{ {TP1, "1000"},{TP3, "500"},{TP4, null},{IP2, "700"} });
     	createStockableTangibleProducts(new String[][]{ {TP1, "0","100","100"},{TP3, "5","95","90"},{TP4, null,null,null} });

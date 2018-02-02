@@ -14,19 +14,20 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.Crud;
+import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.party.person.AbstractActorBusinessImpl;
 
-public class CustomerBusinessImpl extends AbstractActorBusinessImpl<Customer, CustomerDao,Customer.SearchCriteria> implements CustomerBusiness,Serializable {
+public class CustomerBusinessImpl extends AbstractTypedBusinessService<Customer, CustomerDao> implements CustomerBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	@Inject private SaleDao saleDao;
+	//@Inject private SaleDao saleDao;
 	
 	@Inject
 	public CustomerBusinessImpl(CustomerDao dao) {
 		super(dao);
 	}
-
+	/*
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public Collection<Customer> findByBalance(BigDecimal balance) {
 		return dao.readByBalance(balance);
@@ -75,7 +76,7 @@ public class CustomerBusinessImpl extends AbstractActorBusinessImpl<Customer, Cu
 		
 		return sale;
 	}
-	
+	*/
 	/**/
 	
 	public static class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter implements Serializable {
