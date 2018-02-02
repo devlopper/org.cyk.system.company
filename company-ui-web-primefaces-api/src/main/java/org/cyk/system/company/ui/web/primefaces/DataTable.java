@@ -8,6 +8,7 @@ import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.Constant.Action;
@@ -38,12 +39,17 @@ public class DataTable {
 				}
 				fieldNames.removeAll(Arrays.asList(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE)
 						,FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME)));
+				//fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT));
 				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT,SalableProduct.FIELD_PRICE));
 				fieldNames.add(SalableProductCollectionItem.FIELD_QUANTITY);
 				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_VALUE));
+			}else if(Sale.class.equals(actionOnClass)){
+				
 			}
 		}
-		
 	}
 	
+	public static void processColumnsFieldNameSalableProductCollection(org.cyk.utility.common.userinterface.collection.DataTable dataTable,Collection<String> fieldNames){
+		
+	}
 }

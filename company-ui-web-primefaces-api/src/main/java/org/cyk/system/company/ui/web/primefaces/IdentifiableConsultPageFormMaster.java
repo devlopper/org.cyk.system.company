@@ -2,10 +2,8 @@ package org.cyk.system.company.ui.web.primefaces;
 
 import java.io.Serializable;
 
-import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.sale.SalableProductCollection;
-import org.cyk.system.company.model.sale.SalableProductCollectionItem;
-import org.cyk.utility.common.userinterface.collection.DataTable;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.utility.common.userinterface.container.Form;
 
 public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces.IdentifiableConsultPageFormMaster implements Serializable {
@@ -22,18 +20,23 @@ public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces
 		detail.setFieldsObjectFromMaster();
 		
 		if(SalableProductCollection.class.equals(getPropertiesMap().getActionOnClass())){
-			detail.setFieldsObjectFromMaster(SalableProductCollection.FIELD_COST);
-			detail.addReadOnly(Cost.FIELD_VALUE);
+			//detail.setFieldsObjectFromMaster(SalableProductCollection.FIELD_COST);
+			//detail.addReadOnly(Cost.FIELD_VALUE);
 			
 			/**/
+			/*
 			DataTable dataTable = instanciateDataTable(SalableProductCollectionItem.class,null,null,Boolean.TRUE);
 			
 			dataTable.prepare();
 			dataTable.build();
 			
 			dataTable.getColumn("cost.value").__setPropertyFooterPropertyValueBasedOnMaster__();
+			*/
+			
+			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,null);
+		}else if(Sale.class.equals(getPropertiesMap().getActionOnClass())){
+			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,null);
 		}
-		
 	}
 	
 }

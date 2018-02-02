@@ -17,16 +17,16 @@ import lombok.Setter;
 public class Customer extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = 1371797411549893368L;
 	
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal turnover = BigDecimal.ZERO;
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal saleCount = BigDecimal.ZERO;
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal balance = BigDecimal.ZERO;
+	@Column(precision=10,scale=FLOAT_SCALE) @NotNull private BigDecimal turnover;
+	@Column(precision=10,scale=FLOAT_SCALE) @NotNull private BigDecimal saleCount;
+	@Column(precision=10,scale=FLOAT_SCALE) @NotNull private BigDecimal balance;
 	
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal paid = BigDecimal.ZERO;
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal paymentCount = BigDecimal.ZERO;
+	@Column(precision=10,scale=FLOAT_SCALE) @NotNull private BigDecimal paid;
+	@Column(precision=10,scale=FLOAT_SCALE) @NotNull private BigDecimal paymentCount;
 	
 	//TODO should stock attributes but not only specific to sale stock concept
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal saleStockInputCount = BigDecimal.ZERO;
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal saleStockOutputCount = BigDecimal.ZERO;
+	@Column(precision=10,scale=FLOAT_SCALE) @NotNull private BigDecimal saleStockInputCount;
+	@Column(precision=10,scale=FLOAT_SCALE) @NotNull private BigDecimal saleStockOutputCount;
 
 	/**/
 	
@@ -35,7 +35,6 @@ public class Customer extends AbstractIdentifiable implements Serializable {
 	public static final String FIELD_BALANCE = "balance";
 	public static final String FIELD_PAID = "paid";
 	public static final String FIELD_PAYMENT_COUNT = "paymentCount";
-	public static final String FIELD_PARTY = "party";
 	
 	/**/
 	
