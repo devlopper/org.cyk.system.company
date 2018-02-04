@@ -1,6 +1,7 @@
 package org.cyk.system.company.ui.web.primefaces;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -35,6 +36,8 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 						
 			prepareSalableProductCollection(detail,null);
 		}else if(Sale.class.equals(actionOnClass)){
+			((Sale)getObject()).getBalance().setValue(BigDecimal.ZERO);
+			((Sale)getObject()).getBalance().setCumul(BigDecimal.ZERO);
 			prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION);
 		}
 	}
@@ -42,10 +45,9 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 	public static void prepareSalableProductCollection(Form.Detail detail,final String fieldName){
 		SalableProductCollection salableProductCollection = (SalableProductCollection) (StringHelper.getInstance().isBlank(fieldName) ? detail.getMaster().getObject() 
 				: FieldHelper.getInstance().read(detail.getMaster().getObject(), fieldName));
-		Boolean isCreateOrUpdate = Constant.Action.isCreateOrUpdate((Constant.Action)detail._getPropertyAction());
+		final Boolean isCreateOrUpdate = Constant.Action.isCreateOrUpdate((Constant.Action)detail._getPropertyAction());
 		salableProductCollection.getItems().setSynchonizationEnabled(isCreateOrUpdate);
 		salableProductCollection.getItems().removeAll(); // will be filled up by the data table load call
-		
 		detail.setFieldsObjectFromMaster(fieldName,SalableProductCollection.FIELD_COST);
 		detail.addReadOnly(Cost.FIELD_VALUE);
 		
@@ -61,27 +63,9 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 					
 					if(ArrayUtils.contains(new String[]{SalableProductCollectionItem.FIELD_QUANTITY},column.getPropertiesMap().getFieldName())){
 						Event.instanciateOne(cell, new String[]{FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_VALUE)}
-						,new String[]{fieldName,FieldHelper.getInstance().buildPath(SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE)});
+						,new String[]{FieldHelper.getInstance().buildPath(fieldName,SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE)});
 					}
 					return cell;
-				}
-			});
-			
-			dataTable.addColumnListener(new CollectionHelper.Instance.Listener.Adapter<Component>(){
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void addOne(CollectionHelper.Instance<Component> instance, Component element, Object source,Object sourceObject) {
-					super.addOne(instance, element, source, sourceObject);
-					if(element instanceof DataTable.Column){
-						DataTable.Column column = (DataTable.Column)element;
-						if(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT,SalableProduct.FIELD_PRICE).equals(column.getPropertiesMap().getFieldName()))
-							column.setCellValueType(DataTable.Cell.ValueType.TEXT);
-						else if(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_VALUE).equals(column.getPropertiesMap().getFieldName())){
-							column.setCellValueType(DataTable.Cell.ValueType.TEXT);
-							column.getPropertiesMap().setIsFooterShowable(Boolean.TRUE);
-						}
-					}
 				}
 			});
 			
@@ -89,10 +73,27 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 					.buildPath(fieldName,SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE)));
 			dataTable.getPropertyRowPropertiesPropertyRemoveCommandProperties().setUpdatedColumnFieldNames(Arrays.asList(FieldHelper.getInstance()
 					.buildPath(SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE)));
-			
-			
-			
 		}
+		
+		dataTable.addColumnListener(new CollectionHelper.Instance.Listener.Adapter<Component>(){
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void addOne(CollectionHelper.Instance<Component> instance, Component element, Object source,Object sourceObject) {
+				super.addOne(instance, element, source, sourceObject);
+				if(element instanceof DataTable.Column){
+					DataTable.Column column = (DataTable.Column)element;
+					if(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT,SalableProduct.FIELD_PRICE).equals(column.getPropertiesMap().getFieldName())){
+						if(isCreateOrUpdate)
+							column.setCellValueType(DataTable.Cell.ValueType.TEXT);
+					}else if(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_VALUE).equals(column.getPropertiesMap().getFieldName())){
+						if(isCreateOrUpdate)
+							column.setCellValueType(DataTable.Cell.ValueType.TEXT);
+						column.getPropertiesMap().setIsFooterShowable(Boolean.TRUE);
+					}
+				}
+			}
+		});
 		
 		dataTable.prepare();
 		dataTable.build();	

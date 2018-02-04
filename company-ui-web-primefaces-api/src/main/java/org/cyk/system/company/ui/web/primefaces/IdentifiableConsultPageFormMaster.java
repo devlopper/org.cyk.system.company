@@ -35,7 +35,7 @@ public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces
 			
 			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,null);
 		}else if(Sale.class.equals(getPropertiesMap().getActionOnClass())){
-			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,null);
+			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION);
 		}
 	}
 	
