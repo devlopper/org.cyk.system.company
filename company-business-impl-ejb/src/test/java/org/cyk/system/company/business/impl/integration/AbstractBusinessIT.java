@@ -19,6 +19,7 @@ import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper;
+import org.cyk.system.company.business.impl.FakedDataSet;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
@@ -154,6 +155,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     
     @Override
     protected void populate() {
+    	CompanyBusinessLayer.DATA_SET_CLASS = FakedDataSet.class;
     	RootDataProducerHelper.Listener.COLLECTION.add(new RootDataProducerHelper.Listener.Adapter.Default(){
     		private static final long serialVersionUID = 1L;
 

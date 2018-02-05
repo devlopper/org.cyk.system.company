@@ -7,6 +7,12 @@
     <container qualifier="glassfish-embedded" default="true">
         <configuration>
             <property name="resourcesXml">src/test/resources-glassfish-embedded/glassfish-resources-memory.xml</property>
+      		<property name="bindHttpPort">9903</property>
         </configuration>
     </container>
+    
+    <engine>
+    	<property name="deploymentExportPath">target/deployment</property>
+  	</engine>
+  
 </arquillian>

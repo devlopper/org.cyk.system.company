@@ -5,16 +5,15 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
-
-import org.cyk.system.root.model.AbstractModelElement;
-import org.cyk.utility.common.CommonUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import org.cyk.system.root.model.AbstractModelElement;
+import org.cyk.utility.common.CommonUtils;
 
 /**
  * An amount that has to be paid or given up in order to get something.
@@ -25,10 +24,11 @@ import lombok.experimental.Accessors;
 public class Cost extends AbstractModelElement implements Serializable {
 	private static final long serialVersionUID = 4948598720219343584L;
 
-	@Column(name=COLUMN_NUMBER_OF_PROCEED_ELEMENTS,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal numberOfProceedElements = BigDecimal.ZERO;
-	@Column(name=COLUMN_VALUE,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal value = BigDecimal.ZERO;
-	@Column(name=COLUMN_TAX,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal tax = BigDecimal.ZERO;
-	@Column(name=COLUMN_TURNOVER,precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal turnover = BigDecimal.ZERO;
+	@Column(name=COLUMN_VALUE,precision=10,scale=FLOAT_SCALE) private BigDecimal value;
+	
+	@Column(name=COLUMN_NUMBER_OF_PROCEED_ELEMENTS,precision=10,scale=FLOAT_SCALE) private BigDecimal numberOfProceedElements;
+	@Column(name=COLUMN_TAX,precision=10,scale=FLOAT_SCALE) private BigDecimal tax;
+	@Column(name=COLUMN_TURNOVER,precision=10,scale=FLOAT_SCALE) private BigDecimal turnover;
 	
 	public void _set(Cost cost) {
 		if(cost==null){

@@ -22,6 +22,7 @@ import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
 import org.cyk.utility.common.helper.CollectionHelper;
 import org.cyk.utility.common.helper.ConditionHelper;
+import org.cyk.utility.common.helper.NumberHelper;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
 import org.cyk.utility.common.helper.MethodHelper;
 
@@ -100,6 +101,7 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 		BigDecimal factor = (add == null || Boolean.TRUE.equals(add)) ? BigDecimal.ONE : BigDecimal.ONE.negate();
 		super.addOrRemove(salableProductCollection, salableProductCollectionItem, add);
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE.multiply(factor));
+		//NumberHelper.getInstance().add(salableProductCollectionItem.getCost().getValue(), number2);
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_VALUE, salableProductCollectionItem.getCost().getValue().multiply(factor));
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_TAX, salableProductCollectionItem.getCost().getTax().multiply(factor));
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_TURNOVER, salableProductCollectionItem.getCost().getTurnover().multiply(factor));		
