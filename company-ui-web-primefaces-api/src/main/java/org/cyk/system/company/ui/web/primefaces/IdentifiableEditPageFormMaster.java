@@ -72,7 +72,8 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 			dataTable.getPropertyRowPropertiesPropertyRemoveCommandProperties().setUpdatedFieldNames(Arrays.asList(FieldHelper.getInstance()
 					.buildPath(fieldName,SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE)));
 			dataTable.getPropertyRowPropertiesPropertyRemoveCommandProperties().setUpdatedColumnFieldNames(Arrays.asList(FieldHelper.getInstance()
-					.buildPath(SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE)));
+					.buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_VALUE)));
+			
 		}
 		
 		dataTable.addColumnListener(new CollectionHelper.Instance.Listener.Adapter<Component>(){
