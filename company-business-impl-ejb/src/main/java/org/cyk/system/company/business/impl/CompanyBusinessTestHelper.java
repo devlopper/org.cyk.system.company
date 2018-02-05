@@ -575,6 +575,8 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     			.setBaseName(StockableTangibleProduct.FIELD_MOVEMENT_COLLECTION).set(MovementCollection.FIELD_VALUE,value));
     }
     
+    
+    
     /**/
     
     public Sale.SearchCriteria getSaleSearchCriteria(String fromDate,String toDate){

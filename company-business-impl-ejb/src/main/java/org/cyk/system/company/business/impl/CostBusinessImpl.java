@@ -16,20 +16,25 @@ public class CostBusinessImpl extends AbstractBusinessServiceImpl implements Cos
 	private static final long serialVersionUID = 1L;
 
 	@Override
+	public void add(Cost cost, BigDecimal value, BigDecimal numberOfProceedElements, BigDecimal tax,BigDecimal turnover) {
+		commonUtils.increment(BigDecimal.class, cost, Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, numberOfProceedElements);
+		commonUtils.increment(BigDecimal.class, cost, Cost.FIELD_VALUE, value);
+		commonUtils.increment(BigDecimal.class, cost, Cost.FIELD_TAX, tax);
+		commonUtils.increment(BigDecimal.class, cost, Cost.FIELD_TURNOVER, turnover);
+	}
+	
+	@Override
 	public void add(Cost cost, Collection<Cost> costs) {
 		if(cost!=null && CollectionHelper.getInstance().isNotEmpty(costs))
-			for(Cost index : costs){
-				commonUtils.increment(BigDecimal.class, cost, Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, index.getNumberOfProceedElements());
-				commonUtils.increment(BigDecimal.class, cost, Cost.FIELD_VALUE, index.getValue());
-				commonUtils.increment(BigDecimal.class, cost, Cost.FIELD_TAX, index.getTax());
-				commonUtils.increment(BigDecimal.class, cost, Cost.FIELD_TURNOVER, index.getTurnover());
-			}
+			for(Cost index : costs)
+				add(cost, index.getValue(), index.getNumberOfProceedElements(), index.getTax(), index.getTurnover());
 	}
 	
 	@Override
 	public void add(Cost cost, Cost... costs) {
 		if(cost!=null && ArrayHelper.getInstance().isNotEmpty(costs))
 			add(cost,Arrays.asList(costs));
-	}	
+	}
+	
 	
 }

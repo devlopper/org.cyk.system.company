@@ -54,7 +54,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	salableProductCollection = testCase.read(SalableProductCollection.class, "SPC001");
     	companyBusinessTestHelper.assertCost(salableProductCollection.getCost(), "0", "0", "0", "0");
     	
-    	salableProductCollection.getCost().setValueFromString("100").setTaxFromString("3").setTurnoverFromString("97").setNumberOfProceedElementsFromString("2");
+    	//salableProductCollection.getCost().setValueFromString("100").setTaxFromString("3").setTurnoverFromString("97").setNumberOfProceedElementsFromString("2");
     	testCase.update(salableProductCollection);
     	salableProductCollection = testCase.read(SalableProductCollection.class, "SPC001");
     	companyBusinessTestHelper.assertCost(salableProductCollection.getCost(), "2", "100", "3", "97");

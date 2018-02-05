@@ -45,12 +45,23 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 		super.afterCrud(salableProductCollection, crud);
 		if(Crud.isCreateOrUpdate(crud)){
 			if(Boolean.TRUE.equals(salableProductCollection.getItems().getSynchonizationEnabled())){
-				Cost cost = new Cost();
+				/*Cost cost = new Cost();
 				Collection<Cost> costs = MethodHelper.getInstance().callGet(salableProductCollection.getItems().getElements(), Cost.class, SalableProductCollectionItem.FIELD_COST);
 				inject(CostBusiness.class).add(cost, costs);
 				throw__(new ConditionHelper.Condition.Builder.Comparison.Adapter.Default().setValueNameIdentifier("costvalue")
 				.setDomainNameIdentifier("salableProductCollection").setNumber1(salableProductCollection.getCost().getValue())
 				.setNumber2(cost.getValue()).setEqual(Boolean.FALSE), BusinessException.class);
+				*/
+				
+				// sum of items cost must be equal to cost
+				Collection<SalableProductCollectionItem> salableProductCollectionItems = inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection);
+				Cost cost = new Cost();
+				Collection<Cost> costs = MethodHelper.getInstance().callGet(salableProductCollectionItems, Cost.class, SalableProductCollectionItem.FIELD_COST);
+				inject(CostBusiness.class).add(cost, costs);
+				
+				throw__(new ConditionHelper.Condition.Builder.Comparison.Adapter.Default().setValueNameIdentifier("costvalue")
+						.setDomainNameIdentifier("salableProductCollection").setNumber1(salableProductCollection.getCost().getValue())
+						.setNumber2(cost.getValue()).setEqual(Boolean.FALSE), BusinessException.class);
 			}
 		}
 	}
@@ -100,11 +111,16 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	protected SalableProductCollectionItem addOrRemove(SalableProductCollection salableProductCollection, SalableProductCollectionItem salableProductCollectionItem,Boolean add) {
 		BigDecimal factor = (add == null || Boolean.TRUE.equals(add)) ? BigDecimal.ONE : BigDecimal.ONE.negate();
 		super.addOrRemove(salableProductCollection, salableProductCollectionItem, add);
-		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE.multiply(factor));
-		//NumberHelper.getInstance().add(salableProductCollectionItem.getCost().getValue(), number2);
+		NumberHelper numberHelper = NumberHelper.getInstance();
+		inject(CostBusiness.class).add(salableProductCollection.getCost()
+				, numberHelper.get(BigDecimal.class, numberHelper.multiply(salableProductCollectionItem.getCost().getValue(),factor))
+				, BigDecimal.ONE.multiply(factor)
+				, numberHelper.get(BigDecimal.class, numberHelper.multiply(salableProductCollectionItem.getCost().getTax(),factor))
+				, numberHelper.get(BigDecimal.class, numberHelper.multiply(salableProductCollectionItem.getCost().getTurnover(),factor)));
+		/*commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, BigDecimal.ONE.multiply(factor));
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_VALUE, salableProductCollectionItem.getCost().getValue().multiply(factor));
 		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_TAX, salableProductCollectionItem.getCost().getTax().multiply(factor));
-		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_TURNOVER, salableProductCollectionItem.getCost().getTurnover().multiply(factor));		
+		commonUtils.increment(BigDecimal.class, salableProductCollection.getCost(), Cost.FIELD_TURNOVER, salableProductCollectionItem.getCost().getTurnover().multiply(factor));*/		
 		return salableProductCollectionItem;
 	}
 	

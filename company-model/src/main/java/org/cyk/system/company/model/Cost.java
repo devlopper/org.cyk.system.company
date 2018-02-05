@@ -6,14 +6,14 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import org.cyk.system.root.model.AbstractModelElement;
+import org.cyk.utility.common.CommonUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import org.cyk.system.root.model.AbstractModelElement;
-import org.cyk.utility.common.CommonUtils;
 
 /**
  * An amount that has to be paid or given up in order to get something.
@@ -44,43 +44,6 @@ public class Cost extends AbstractModelElement implements Serializable {
 		}	
 	}
 		
-	public Cost setNumberOfProceedElementsFromString(String numberOfProceedElements){
-		this.numberOfProceedElements = new BigDecimal(numberOfProceedElements);
-		return this;
-	}
-	
-	public Cost setValueFromString(String value){
-		this.value = new BigDecimal(value);
-		return this;
-	}
-	
-	public Cost setTaxFromString(String tax){
-		this.tax = new BigDecimal(tax);
-		return this;
-	}
-	
-	public Cost setTurnoverFromString(String turnover){
-		this.turnover = new BigDecimal(turnover);
-		return this;
-	}
-	
-	@Override
-	public String getUiString() {
-		return value.toString();
-	}
-	
-	@Override
-	public String getLogMessage() {
-		return String.format(LOG_FORMAT,numberOfProceedElements,value,tax,turnover);
-	}
-	
-	@Override
-	public String toString() {
-		return String.format(LOG_FORMAT,numberOfProceedElements,value,tax,turnover);
-	}
-	
-	private static final String LOG_FORMAT = Cost.class.getSimpleName()+"(#=%s V=%s TAX=%s T=%s)";
-
 	public static final String FIELD_NUMBER_OF_PROCEED_ELEMENTS = "numberOfProceedElements";
 	public static final String FIELD_VALUE = "value";
 	public static final String FIELD_TAX = "tax";

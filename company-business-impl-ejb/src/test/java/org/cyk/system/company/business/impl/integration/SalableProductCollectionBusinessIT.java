@@ -21,8 +21,10 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     public void crudSalableProductCollection(){
     	TestCase testCase = instanciateTestCase();
     	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
-    	salableProductCollection.setCode(RandomHelper.getInstance().getAlphabetic(3));
+    	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
+    	salableProductCollection.setCode(salableProductCollectionCode);
     	testCase.create(salableProductCollection);
+    	companyBusinessTestHelper.assertSalableProductCollection(salableProductCollectionCode,null,null,null,null);
     	testCase.clean();
     }
     
