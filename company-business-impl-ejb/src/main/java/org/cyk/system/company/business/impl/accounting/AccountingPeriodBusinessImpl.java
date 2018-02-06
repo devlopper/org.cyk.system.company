@@ -21,6 +21,7 @@ import org.cyk.system.company.persistence.api.accounting.AccountingPeriodDao;
 import org.cyk.system.root.business.impl.time.AbstractIdentifiablePeriodBusinessImpl;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.utility.common.helper.FieldHelper;
+import org.cyk.utility.common.helper.LoggingHelper;
 import org.cyk.utility.common.helper.TimeHelper;
 
 public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusinessImpl<AccountingPeriod, AccountingPeriodDao> implements AccountingPeriodBusiness,Serializable {
@@ -101,23 +102,33 @@ public class AccountingPeriodBusinessImpl extends AbstractIdentifiablePeriodBusi
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public BigDecimal computeValueAddedTax(AccountingPeriod accountingPeriod,BigDecimal amount) {
+		LoggingHelper.Message.Builder loggingMessageBuilder = new LoggingHelper.Message.Builder.Adapter.Default();
+		loggingMessageBuilder.addManyParameters("compute value added tax");
 		BigDecimal vat;
-		if(Boolean.TRUE.equals(accountingPeriod.getSaleConfiguration().getValueAddedTaxIncludedInCost()))
+		Boolean included = Boolean.TRUE.equals(accountingPeriod.getSaleConfiguration().getValueAddedTaxIncludedInCost());
+		loggingMessageBuilder.addNamedParameters("amount",amount,"included",included,"rate",accountingPeriod.getSaleConfiguration().getValueAddedTaxRate());
+		if(included)
 			vat = amount.subtract(amount.divide(BigDecimal.ONE.add(accountingPeriod.getSaleConfiguration().getValueAddedTaxRate()),RoundingMode.DOWN));
 		else
 			vat = accountingPeriod.getSaleConfiguration().getValueAddedTaxRate().multiply(amount);
-		logDebug("VAT of amount {} is {}", amount,vat);
+		loggingMessageBuilder.addNamedParameters("result",vat);
+		logTrace(loggingMessageBuilder);
 		return vat;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public BigDecimal computeTurnover(AccountingPeriod accountingPeriod,BigDecimal amount,BigDecimal valueAddedTax) {
+		LoggingHelper.Message.Builder loggingMessageBuilder = new LoggingHelper.Message.Builder.Adapter.Default();
+		loggingMessageBuilder.addManyParameters("compute turnover");
 		BigDecimal turnover;
-		if(Boolean.TRUE.equals(accountingPeriod.getSaleConfiguration().getValueAddedTaxIncludedInCost()))
+		Boolean included = Boolean.TRUE.equals(accountingPeriod.getSaleConfiguration().getValueAddedTaxIncludedInCost());
+		loggingMessageBuilder.addNamedParameters("amount",amount,"value added tax",valueAddedTax,"include",included);
+		if(included)
 			turnover = amount.subtract(valueAddedTax);
 		else
 			turnover = amount;
-		logDebug("Turnover of amount {} is {}", amount,turnover);
+		loggingMessageBuilder.addNamedParameters("result",turnover);
+		logTrace(loggingMessageBuilder);
 		return turnover;
 	}
 	

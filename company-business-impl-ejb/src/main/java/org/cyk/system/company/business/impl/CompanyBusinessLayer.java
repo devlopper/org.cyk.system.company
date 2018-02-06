@@ -54,6 +54,7 @@ import org.cyk.system.root.model.time.Period;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.cyk.utility.common.helper.ClassHelper;
+import org.cyk.utility.common.test.TestHelper;
 
 import lombok.Getter;
 
@@ -194,6 +195,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		inject(GlobalIdentifierPersistenceMappingConfigurations.class).configure();
 		
 		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{"code","name"}, SalableProductCollectionItem.class);
+		
+		ClassHelper.getInstance().map(TestHelper.TestCase.class, CompanyBusinessTestHelper.TestCase.class);
 	}
 		
 	@Override

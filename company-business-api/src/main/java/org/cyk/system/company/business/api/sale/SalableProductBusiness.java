@@ -11,7 +11,9 @@ import org.cyk.system.root.business.api.AbstractCollectionBusiness;
 
 public interface SalableProductBusiness extends AbstractCollectionBusiness<SalableProduct,SalableProductInstance> {
 
+	@Deprecated
 	void create(Class<? extends Product> aClass,String code,String name,BigDecimal price);
 
+	@Deprecated
 	Collection<SalableProduct> findByCashRegister(CashRegister cashRegister);
 }

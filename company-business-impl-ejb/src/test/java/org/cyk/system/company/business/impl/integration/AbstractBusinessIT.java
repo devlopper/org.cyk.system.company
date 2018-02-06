@@ -103,7 +103,6 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 	@Inject protected TangibleProductDao tangibleProductDao;
 	@Inject protected IntangibleProductDao intangibleProductDao;
 	
-	@Inject protected CashRegisterDao cashRegisterDao;
 	@Inject protected SaleDao saleDao;
 	@Inject protected AccountingPeriodProductDao accountingPeriodProductDao;
 	@Inject protected SalableProductDao salableProductDao;
@@ -129,7 +128,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     	});
 	}
 	
-	protected TestCase instanciateTestCase(){
+	protected CompanyBusinessTestHelper.TestCase instanciateTestCase(){
 		return companyBusinessTestHelper.instanciateTestCase();
 	}
 	

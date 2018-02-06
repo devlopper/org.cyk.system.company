@@ -32,8 +32,26 @@ public class FakedDataSet extends RealDataSet implements Serializable {
 	}
 	
 	/**/
-	
+	/**
+	 * Price = 200
+	 */
 	public static final String TANGIBLE_PRODUCT_TP1 = RandomHelper.getInstance().getAlphabetic(4);
+	/**
+	 * Price = 100
+	 */
+	public static final String TANGIBLE_PRODUCT_TP2 = RandomHelper.getInstance().getAlphabetic(4);
+	/**
+	 * Price = 150
+	 */
+	public static final String TANGIBLE_PRODUCT_TP3 = RandomHelper.getInstance().getAlphabetic(4);
+	/**
+	 * Price = 500
+	 */
+	public static final String TANGIBLE_PRODUCT_TP4 = RandomHelper.getInstance().getAlphabetic(4);
+	/**
+	 * Price = 1000
+	 */
+	public static final String TANGIBLE_PRODUCT_TP5 = RandomHelper.getInstance().getAlphabetic(4);
 	
 	//public static final BigDecimal SALABLE_PRODUCT_TP1 = RandomHelper.getInstance().getAlphabetic(4);
 }

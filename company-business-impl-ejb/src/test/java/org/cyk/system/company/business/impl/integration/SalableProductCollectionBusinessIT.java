@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.company.business.impl.FakedDataSet;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
-import org.cyk.system.root.business.impl.AbstractBusinessTestHelper.TestCase;
 import org.cyk.utility.common.helper.RandomHelper;
 import org.junit.Test;
 
@@ -24,12 +24,26 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
     	salableProductCollection.setCode(salableProductCollectionCode);
     	testCase.create(salableProductCollection);
-    	companyBusinessTestHelper.assertSalableProductCollection(salableProductCollectionCode,null,null,null,null);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 0l);
+    	testCase.assertSalableProductCollection(salableProductCollectionCode,null,null,null,null);
     	testCase.clean();
     }
     
     @Test
-    public void crudSalableProductCollectionWithItems(){
+    public void crudSalableProductCollectionWithSynchronisation(){
+    	TestCase testCase = instanciateTestCase();
+    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
+    	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
+    	salableProductCollection.setCode(salableProductCollectionCode);
+    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	testCase.create(salableProductCollection);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 0l);
+    	testCase.assertSalableProductCollection(salableProductCollectionCode,"0","0","0","0");
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudSalableProductCollectionWithItem(){
     	TestCase testCase = instanciateTestCase();
     	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
     	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
@@ -40,13 +54,40 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	inject(SalableProductCollectionItemBusiness.class).computeChanges(salableProductCollectionItem);
     	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.create(salableProductCollection);
-    	assertEquals(1, inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection).size());
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
+    	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
     	
     	salableProductCollection = testCase.read(SalableProductCollection.class, salableProductCollectionCode);
     	salableProductCollection.getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
     	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.update(salableProductCollection);
-    	assertEquals(1, inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection).size());
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
+    	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
+    	
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudSalableProductCollectionWithAtLeastTwoItems(){
+    	TestCase testCase = instanciateTestCase();
+    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
+    	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
+    	salableProductCollection.setCode(salableProductCollectionCode);
+    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
+    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP1));
+    	salableProductCollectionItem.setQuantity(new BigDecimal("2"));
+    	inject(SalableProductCollectionItemBusiness.class).computeChanges(salableProductCollectionItem);
+    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	testCase.create(salableProductCollection);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
+    	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
+    	
+    	salableProductCollection = testCase.read(SalableProductCollection.class, salableProductCollectionCode);
+    	salableProductCollection.getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
+    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	testCase.update(salableProductCollection);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
+    	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
     	
     	testCase.clean();
     }

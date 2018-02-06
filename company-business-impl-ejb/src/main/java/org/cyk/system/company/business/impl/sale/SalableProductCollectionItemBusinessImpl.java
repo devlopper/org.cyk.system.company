@@ -40,7 +40,7 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 			return new Object[]{salableProductCollectionItem.getSalableProduct()};
 		return super.getPropertyValueTokens(salableProductCollectionItem, name);
 	}
-	
+	/*
 	@Override
 	protected void afterCrud(SalableProductCollectionItem salableProductCollectionItem, Crud crud) {
 		super.afterCrud(salableProductCollectionItem, crud);
@@ -57,7 +57,7 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 				}
 			}
 		}
-	}
+	}*/
 		
 	private void cascadeUpdateCollectionCost(SalableProductCollectionItem salableProductCollectionItem){
 		//inject(SalableProductCollectionBusiness.class).computeCost(salableProductCollectionItem.getCollection());

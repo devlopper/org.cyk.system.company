@@ -623,7 +623,35 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		//createSaleCashRegisterMovement("sale999_1", "pay999_1_1", null, "-100","Balance doit être inférieur ou égal à");
 	}
 	
+	@Override
+	public TestCase instanciateTestCase(AbstractBusinessTestHelper helper) {
+		return (TestCase) super.instanciateTestCase(helper);
+	}
+	
+	@Override
+	public TestCase instanciateTestCase() {
+		return (TestCase) super.instanciateTestCase();
+	}
+	
 	/**/
 	
-	
+	public static class TestCase extends AbstractBusinessTestHelper.TestCase implements Serializable {
+		private static final long serialVersionUID = 1L;
+		
+		public void assertCost(Cost cost,String expectedNumberOfElements,String expectedValue,String expectedTax,String expectedTurnover){
+	    	helper.doAssertions(cost, new ObjectFieldValues(Cost.class).set(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, expectedNumberOfElements)
+	    			.set(Cost.FIELD_VALUE, expectedValue).set(Cost.FIELD_TAX, expectedTax).set(Cost.FIELD_TURNOVER, expectedTurnover));
+	    }
+		
+		public void assertSalableProductCollection(SalableProductCollection salableProductCollection,String expectedCostNumberOfElements,String expectedCostValue
+	    		,String expectedCostTax,String expectedCostTurnover){
+	    	assertCost(salableProductCollection.getCost(), expectedCostNumberOfElements, expectedCostValue, expectedCostTax, expectedCostTurnover);
+	    }
+	    
+	    public void assertSalableProductCollection(String code,String expectedCostNumberOfElements,String expectedCostValue
+	    		,String expectedCostTax,String expectedCostTurnover){
+	    	assertSalableProductCollection(inject(SalableProductCollectionDao.class).read(code), expectedCostNumberOfElements, expectedCostValue, expectedCostTax, expectedCostTurnover);
+	    }
+		
+	}
 }

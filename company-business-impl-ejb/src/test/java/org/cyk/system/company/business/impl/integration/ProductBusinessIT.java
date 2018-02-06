@@ -1,8 +1,8 @@
 package org.cyk.system.company.business.impl.integration;
 
+import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.root.business.impl.AbstractBusinessTestHelper.TestCase;
 import org.junit.Test;
 
 public class ProductBusinessIT extends AbstractBusinessIT {

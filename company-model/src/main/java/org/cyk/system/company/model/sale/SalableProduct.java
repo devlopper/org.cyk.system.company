@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.product.Product;
@@ -30,6 +31,8 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 	 * The unit price of the product. null means the price will be determine at runtime
 	 */
 	@Column(precision=10,scale=FLOAT_SCALE) @Accessors(chain=true) private BigDecimal price;
+	
+	@Transient @Accessors(chain=true) private Class<? extends Product> productClass;
 	
 	public SalableProduct(Product product, BigDecimal price) {
 		super(product.getCode(),product.getName(),product.getAbbreviation(),product.getDescription());
