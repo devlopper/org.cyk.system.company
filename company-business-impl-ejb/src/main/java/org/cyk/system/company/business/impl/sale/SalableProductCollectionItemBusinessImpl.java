@@ -171,8 +171,6 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 					, salableProductCollectionItem.getCost().getValue(),salableProductCollectionItem.getCost().getTax()));	
 		}
 		logMessageBuilder.addNamedParameters("after",salableProductCollectionItem.getCost().toString());
-		inject(SalableProductCollectionBusiness.class).computeChanges(salableProductCollectionItem.getCollection());
-		
 	}
 	
 	/*

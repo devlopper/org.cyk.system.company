@@ -14,7 +14,6 @@ import org.cyk.utility.common.helper.RandomHelper;
 import org.junit.Test;
 
 public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
-
     private static final long serialVersionUID = -6691092648665798471L;
    
     @Test
@@ -51,7 +50,6 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
     	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP1));
     	salableProductCollectionItem.setQuantity(new BigDecimal("2"));
-    	inject(SalableProductCollectionItemBusiness.class).computeChanges(salableProductCollectionItem);
     	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.create(salableProductCollection);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
@@ -71,23 +69,21 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     public void crudSalableProductCollectionWithAtLeastTwoItems(){
     	TestCase testCase = instanciateTestCase();
     	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
+    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
     	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
     	salableProductCollection.setCode(salableProductCollectionCode);
+    	
     	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
     	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP1));
     	salableProductCollectionItem.setQuantity(new BigDecimal("2"));
-    	inject(SalableProductCollectionItemBusiness.class).computeChanges(salableProductCollectionItem);
-    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
-    	testCase.create(salableProductCollection);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
-    	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
     	
-    	salableProductCollection = testCase.read(SalableProductCollection.class, salableProductCollectionCode);
-    	salableProductCollection.getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
-    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
-    	testCase.update(salableProductCollection);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
-    	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
+    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
+    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP3));
+    	salableProductCollectionItem.setQuantity(new BigDecimal("1"));
+    	
+    	testCase.create(salableProductCollection);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 2l);
+    	testCase.assertSalableProductCollection(salableProductCollectionCode,"3","350","54","296");
     	
     	testCase.clean();
     }

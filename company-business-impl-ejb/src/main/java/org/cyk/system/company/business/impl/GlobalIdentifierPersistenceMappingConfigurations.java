@@ -3,6 +3,7 @@ package org.cyk.system.company.business.impl;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
+import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
@@ -18,6 +19,9 @@ public class GlobalIdentifierPersistenceMappingConfigurations extends AbstractBe
 	private static final long serialVersionUID = -4261213077562876945L;
 
 	public void configure(){
+		FieldHelper.Field.get(TangibleProduct.class, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE
+				)).getConstraints().setIsNullable(Boolean.FALSE).setIsUnique(Boolean.TRUE);
+		
 		FieldHelper.Field.get(SalableProduct.class, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE
 				)).getConstraints().setIsNullable(Boolean.FALSE).setIsUnique(Boolean.TRUE);
 		

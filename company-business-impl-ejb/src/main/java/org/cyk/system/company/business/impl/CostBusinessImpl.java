@@ -10,6 +10,7 @@ import org.cyk.system.company.model.Cost;
 import org.cyk.system.root.business.impl.AbstractBusinessServiceImpl;
 import org.cyk.utility.common.helper.ArrayHelper;
 import org.cyk.utility.common.helper.CollectionHelper;
+import org.cyk.utility.common.helper.NumberHelper;
 
 public class CostBusinessImpl extends AbstractBusinessServiceImpl implements CostBusiness, Serializable {
 
@@ -17,10 +18,10 @@ public class CostBusinessImpl extends AbstractBusinessServiceImpl implements Cos
 
 	@Override
 	public void add(Cost cost, BigDecimal value, BigDecimal numberOfProceedElements, BigDecimal tax,BigDecimal turnover) {
-		commonUtils.increment(BigDecimal.class, cost, Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, numberOfProceedElements);
-		commonUtils.increment(BigDecimal.class, cost, Cost.FIELD_VALUE, value);
-		commonUtils.increment(BigDecimal.class, cost, Cost.FIELD_TAX, tax);
-		commonUtils.increment(BigDecimal.class, cost, Cost.FIELD_TURNOVER, turnover);
+		NumberHelper.getInstance().add(BigDecimal.class, cost, Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, numberOfProceedElements);
+		NumberHelper.getInstance().add(BigDecimal.class, cost, Cost.FIELD_VALUE, value);
+		NumberHelper.getInstance().add(BigDecimal.class, cost, Cost.FIELD_TAX, tax);
+		NumberHelper.getInstance().add(BigDecimal.class, cost, Cost.FIELD_TURNOVER, turnover);
 	}
 	
 	@Override

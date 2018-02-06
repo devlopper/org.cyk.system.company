@@ -16,17 +16,14 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
-import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
 import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
-import org.cyk.system.root.business.impl.BusinessInterfaceLocator;
-import org.cyk.system.root.business.impl.helper.FieldHelper;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.utility.common.helper.StringHelper;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
+import org.cyk.utility.common.helper.StringHelper;
 
 public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<SalableProduct,SalableProductInstance, SalableProductDao,SalableProductInstanceDao,SalableProductInstanceBusiness> implements SalableProductBusiness,Serializable {
 
@@ -45,29 +42,12 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 		if(salableProduct.getProduct()!=null && StringHelper.getInstance().isBlank(salableProduct.getCode()))
 			org.cyk.utility.common.helper.FieldHelper.getInstance().copy(salableProduct.getProduct(), salableProduct
 					,org.cyk.utility.common.helper.FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE));
-	}
-
-	@Override
-	protected void beforeCreate(SalableProduct salableProduct) {
-		if(Boolean.TRUE.equals(salableProduct.getCascadeOperationToMaster())){
-			if(salableProduct.getProduct()==null && salableProduct.getProductClass()!=null){	
-				Product product = inject(BusinessInterfaceLocator.class).injectTyped(salableProduct.getProductClass()).instanciateOne();
-				FieldHelper.getInstance().copy(salableProduct,product);
-				createIfNotIdentified(product);
-				salableProduct.setProduct(product);
-			}	
-		}else{
-			
-		}
 		
-		if(salableProduct.getProduct()==null){	
-			salableProduct.setProduct(inject(ProductDao.class).read(salableProduct.getCode()));
-		}else{
-			//FieldHelper.getInstance().copy(salableProduct.getProduct(),salableProduct);
-		}
-		super.beforeCreate(salableProduct);
+		if(salableProduct.getProduct()!=null && StringHelper.getInstance().isBlank(salableProduct.getName()))
+			org.cyk.utility.common.helper.FieldHelper.getInstance().copy(salableProduct.getProduct(), salableProduct
+					,org.cyk.utility.common.helper.FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME));
 	}
-		
+	
 	@Override @Deprecated
 	public void create(Class<? extends Product> aClass,String code, String name, BigDecimal price) {
 		Product product = TangibleProduct.class.equals(aClass) ? new TangibleProduct(code, name, null) : new IntangibleProduct(code, name, null);

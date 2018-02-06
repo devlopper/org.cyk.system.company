@@ -165,8 +165,6 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	@Override
 	protected void computeChanges(final SalableProductCollection salableProductCollection, Builder logMessageBuilder) {
 		super.computeChanges(salableProductCollection, logMessageBuilder);
-		logMessageBuilder.addNamedParameters("#items",CollectionHelper.getInstance().getSize(salableProductCollection.getItems().getElements())
-				,"items synchronized",salableProductCollection.getItems().isSynchonizationEnabled());
 		logMessageBuilder.addManyParameters("cost");
 		logMessageBuilder.addNamedParameters("before",salableProductCollection.getCost().toString());
 		if(Boolean.TRUE.equals(salableProductCollection.getItems().isSynchonizationEnabled())){

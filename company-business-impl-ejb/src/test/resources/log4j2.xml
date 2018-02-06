@@ -13,6 +13,9 @@
 		</Console>
 	</Appenders>
 	<Loggers>
+		<!--Logger name="org.cyk.system.company.persistence.impl.product.TangibleProductDaoImpl" level="trace">
+			<AppenderRef ref="Console" />
+		</Logger--> 
 		<!--Logger name="org.cyk.system.company.business.impl.accounting.AccountingPeriodBusinessImpl" level="trace">
 			<AppenderRef ref="Console" />
 		</Logger--> 
