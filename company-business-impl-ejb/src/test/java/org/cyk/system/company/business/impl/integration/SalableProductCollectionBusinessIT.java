@@ -88,6 +88,34 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	testCase.clean();
     }
     
+    @Test
+    public void crudSalableProductCollectionWithItemsUpdate(){
+    	TestCase testCase = instanciateTestCase();
+    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
+    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
+    	salableProductCollection.setCode(salableProductCollectionCode);
+    	
+    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
+    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP1));
+    	salableProductCollectionItem.setQuantity(new BigDecimal("2"));
+    	testCase.create(salableProductCollection);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
+    	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
+    	
+    	salableProductCollection = testCase.read(SalableProductCollection.class, salableProductCollectionCode);
+    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	salableProductCollection.getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
+    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
+    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP3));
+    	salableProductCollectionItem.setQuantity(new BigDecimal("1"));
+    	testCase.update(salableProductCollection);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 2l);
+    	testCase.assertSalableProductCollection(salableProductCollectionCode,"3","350","54","296");
+    	
+    	testCase.clean();
+    }
+    
     /*
     @Override
     protected void businesses() {

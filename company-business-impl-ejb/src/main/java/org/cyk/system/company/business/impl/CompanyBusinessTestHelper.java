@@ -643,6 +643,16 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	    			.set(Cost.FIELD_VALUE, expectedValue).set(Cost.FIELD_TAX, expectedTax).set(Cost.FIELD_TURNOVER, expectedTurnover));
 	    }
 		
+		public void assertSalableProductCollectionCost(SalableProductCollection salableProductCollection,String expectedCostNumberOfElements,String expectedCostValue
+	    		,String expectedCostTax,String expectedCostTurnover){
+	    	assertCost(salableProductCollection.getCost(), expectedCostNumberOfElements, expectedCostValue, expectedCostTax, expectedCostTurnover);
+	    }
+	    
+	    public void assertSalableProductCollectionCost(String code,String expectedCostNumberOfElements,String expectedCostValue
+	    		,String expectedCostTax,String expectedCostTurnover){
+	    	assertSalableProductCollectionCost(inject(SalableProductCollectionDao.class).read(code), expectedCostNumberOfElements, expectedCostValue, expectedCostTax, expectedCostTurnover);
+	    }
+		
 		public void assertSalableProductCollection(SalableProductCollection salableProductCollection,String expectedCostNumberOfElements,String expectedCostValue
 	    		,String expectedCostTax,String expectedCostTurnover){
 	    	assertCost(salableProductCollection.getCost(), expectedCostNumberOfElements, expectedCostValue, expectedCostTax, expectedCostTurnover);
@@ -651,6 +661,11 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	    public void assertSalableProductCollection(String code,String expectedCostNumberOfElements,String expectedCostValue
 	    		,String expectedCostTax,String expectedCostTurnover){
 	    	assertSalableProductCollection(inject(SalableProductCollectionDao.class).read(code), expectedCostNumberOfElements, expectedCostValue, expectedCostTax, expectedCostTurnover);
+	    }
+	    
+	    public void assertSaleCost(String code,String expectedCostNumberOfElements,String expectedCostValue
+	    		,String expectedCostTax,String expectedCostTurnover){
+	    	assertSalableProductCollectionCost(inject(SaleDao.class).read(code).getSalableProductCollection(), expectedCostNumberOfElements, expectedCostValue, expectedCostTax, expectedCostTurnover);
 	    }
 		
 	}

@@ -1,19 +1,19 @@
 package org.cyk.system.company.business.impl.integration;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
-import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
+import org.cyk.system.company.business.api.sale.SaleBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.company.business.impl.FakedDataSet;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
-import org.cyk.system.root.business.impl.AbstractBusinessTestHelper.TestCase;
 import org.cyk.utility.common.helper.RandomHelper;
 import org.junit.Test;
-
-
 
 public class SaleBusinessIT extends AbstractBusinessIT {
     private static final long serialVersionUID = -6691092648665798471L;
@@ -21,35 +21,99 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     @Test
     public void crudSale(){
     	TestCase testCase = instanciateTestCase();
-    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
-    	salableProductCollection.setCode(RandomHelper.getInstance().getAlphabetic(3));
-    	salableProductCollection.getCost().setNumberOfProceedElements(new BigDecimal(0));
-    	salableProductCollection.getCost().setTurnover(new BigDecimal(0));
-    	salableProductCollection.getCost().setValue(new BigDecimal(0));
-    	salableProductCollection.getCost().setTax(new BigDecimal(0));
-    	testCase.create(salableProductCollection);
+    	Sale sale = inject(SaleBusiness.class).instanciateOne();
+    	String saleCode = RandomHelper.getInstance().getAlphabetic(3);
+    	sale.setCode(saleCode);
+    	testCase.create(sale);
+    	testCase.assertSaleCost(saleCode,null,null,null,null);
     	testCase.clean();
     }
     
     @Test
-    public void crudSaleWithItems(){
+    public void crudSaleWithSynchronisation(){
     	TestCase testCase = instanciateTestCase();
-    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
-    	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
-    	salableProductCollection.setCode(salableProductCollectionCode);
-    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
+    	Sale sale = inject(SaleBusiness.class).instanciateOne();
+    	String saleCode = RandomHelper.getInstance().getAlphabetic(3);
+    	sale.setCode(saleCode);
+    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	testCase.create(sale);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 0l);
+    	testCase.assertSalableProductCollection(saleCode,"0","0","0","0");
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudSaleWithItem(){
+    	TestCase testCase = instanciateTestCase();
+    	Sale sale = inject(SaleBusiness.class).instanciateOne();
+    	String saleCode = RandomHelper.getInstance().getAlphabetic(3);
+    	sale.setCode(saleCode);
+    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
     	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP1));
     	salableProductCollectionItem.setQuantity(new BigDecimal("2"));
-    	inject(SalableProductCollectionItemBusiness.class).computeChanges(salableProductCollectionItem);
-    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
-    	testCase.create(salableProductCollection);
-    	assertEquals(1, inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection).size());
+    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	testCase.create(sale);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 1l);
+    	testCase.assertSalableProductCollection(saleCode,"2","200","31","169");
     	
-    	salableProductCollection = testCase.read(SalableProductCollection.class, salableProductCollectionCode);
-    	salableProductCollection.getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
-    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
-    	testCase.update(salableProductCollection);
-    	assertEquals(1, inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection).size());
+    	sale = testCase.read(Sale.class, saleCode);
+    	sale.getSalableProductCollection().getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
+    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	testCase.update(sale);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 1l);
+    	testCase.assertSalableProductCollection(saleCode,"2","200","31","169");
+    	
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudSaleWithAtLeastTwoItems(){
+    	TestCase testCase = instanciateTestCase();
+    	Sale sale = inject(SaleBusiness.class).instanciateOne();
+    	String saleCode = RandomHelper.getInstance().getAlphabetic(3);
+    	sale.setCode(saleCode);
+    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	
+    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
+    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP1));
+    	salableProductCollectionItem.setQuantity(new BigDecimal("2"));
+    	
+    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
+    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP3));
+    	salableProductCollectionItem.setQuantity(new BigDecimal("1"));
+    	
+    	testCase.create(sale);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 2l);
+    	testCase.assertSalableProductCollection(saleCode,"3","350","54","296");
+    	
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudSaleWithItemsUpdate(){
+    	TestCase testCase = instanciateTestCase();
+    	Sale sale = inject(SaleBusiness.class).instanciateOne();
+    	String saleCode = RandomHelper.getInstance().getAlphabetic(3);
+    	sale.setCode(saleCode);
+    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	
+    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
+    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP1));
+    	salableProductCollectionItem.setQuantity(new BigDecimal("2"));
+    	testCase.create(sale);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 1l);
+    	testCase.assertSalableProductCollection(saleCode,"2","200","31","169");
+    	
+    	sale = testCase.read(Sale.class, saleCode);
+    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductCollection().getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
+    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
+    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP3));
+    	salableProductCollectionItem.setQuantity(new BigDecimal("1"));
+    	testCase.update(sale);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 2l);
+    	testCase.assertSalableProductCollection(saleCode,"3","350","54","296");
     	
     	testCase.clean();
     }

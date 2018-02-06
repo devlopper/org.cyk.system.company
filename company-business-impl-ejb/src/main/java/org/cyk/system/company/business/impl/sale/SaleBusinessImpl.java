@@ -3,6 +3,7 @@ package org.cyk.system.company.business.impl.sale;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleIdentifiableGlobalIdentifierBusiness;
@@ -33,6 +35,8 @@ import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 import org.cyk.utility.common.helper.ConditionHelper;
+import org.cyk.utility.common.helper.LoggingHelper;
+import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
 
 public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sale.SearchCriteria> implements SaleBusiness,Serializable {
 
@@ -48,6 +52,15 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	@Override
 	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
 		return Listener.COLLECTION;
+	}
+	
+	@Override
+	public Sale instanciateOne() {
+		Sale sale = super.instanciateOne();
+		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne());
+		sale.setCascadeOperationToMaster(Boolean.TRUE);
+    	sale.setCascadeOperationToMasterFieldNames(Arrays.asList(Sale.FIELD_SALABLE_PRODUCT_COLLECTION));
+		return sale;
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -77,7 +90,7 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		return list;
 	}
 	
-	@Override
+	/*@Override
 	protected void afterCrud(Sale sale, Crud crud) {
 		super.afterCrud(sale, crud);
 		if(Crud.isCreateOrUpdate(crud)){
@@ -89,14 +102,14 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 				dao.update(sale);	
 			}
 		}
-	}
+	}*/
 		
-	@Override
+	/*@Override
 	protected void beforeDelete(Sale sale) {
 		super.beforeDelete(sale);
 		inject(SaleCashRegisterMovementBusiness.class).delete(inject(SaleCashRegisterMovementDao.class).readBySale(sale));
 		inject(SaleIdentifiableGlobalIdentifierBusiness.class).delete(inject(SaleIdentifiableGlobalIdentifierDao.class).readBySale(sale));
-	}
+	}*/
 		
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public SaleResults computeByCriteria(Sale.SearchCriteria criteria) {

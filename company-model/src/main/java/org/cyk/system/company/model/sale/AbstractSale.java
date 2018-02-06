@@ -27,6 +27,7 @@ import lombok.Setter;
 public abstract class AbstractSale extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
+	@Deprecated
 	@ManyToOne @JoinColumn(name=COLUMN_CUSTOMER) protected Customer customer;
 	@ManyToOne @JoinColumn(name=COLUMN_SALABLE_PRODUCT_COLLECTION) protected SalableProductCollection salableProductCollection;
 	
@@ -42,9 +43,11 @@ public abstract class AbstractSale extends AbstractIdentifiable implements Seria
 	
 	/**/
 	
+	@Deprecated
 	public static final String FIELD_CUSTOMER = "customer";
 	public static final String FIELD_SALABLE_PRODUCT_COLLECTION = "salableProductCollection";
 	
+	@Deprecated
 	public static final String COLUMN_CUSTOMER = FIELD_CUSTOMER;
 	public static final String COLUMN_SALABLE_PRODUCT_COLLECTION = FIELD_SALABLE_PRODUCT_COLLECTION;
 	

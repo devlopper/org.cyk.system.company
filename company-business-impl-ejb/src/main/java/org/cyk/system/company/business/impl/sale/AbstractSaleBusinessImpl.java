@@ -70,20 +70,20 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 		return sale;
 	}
 	
-	@Override
+	/*@Override
 	protected void afterCrud(SALE sale,Crud crud) {
 		super.afterCrud(sale,crud);
 		if(Crud.isCreateOrUpdate(crud)){
 			if(Boolean.TRUE.equals(CompanyConstant.Configuration.Sale.AUTOMATICALLY_GENERATE_REPORT_FILE))
 				createReportFile(sale, CompanyConstant.Code.ReportTemplate.INVOICE, RootConstant.Configuration.ReportTemplate.LOCALE);
 		}
-	}
+	}*/
 	
-	@Override
+	/*@Override
 	protected void beforeCreate(SALE sale) {
 		super.beforeCreate(sale);
 		createIfNotIdentified(sale.getSalableProductCollection());
-	}
+	}*/
 	
 	@Override
 	protected void afterUpdate(SALE sale) {
