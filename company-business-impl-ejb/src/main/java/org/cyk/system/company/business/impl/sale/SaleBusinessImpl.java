@@ -145,8 +145,8 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	
 	@Override
 	public void computeBalance(Sale sale) {
-		if( sale.getSalableProductCollection().isItemAggregationApplied())
-			computeBalance(sale, inject(SaleCashRegisterMovementDao.class).sumAmountBySale(sale));
+		//if( sale.getSalableProductCollection().isItemAggregationApplied())
+		//	computeBalance(sale, inject(SaleCashRegisterMovementDao.class).sumAmountBySale(sale));
 	}
 
 	@Override

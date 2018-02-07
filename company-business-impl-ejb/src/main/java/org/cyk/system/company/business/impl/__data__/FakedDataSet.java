@@ -7,10 +7,7 @@ import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.Customer;
-import org.cyk.system.root.business.api.party.person.PersonRelationshipBusiness;
-import org.cyk.system.root.business.impl.DataSet;
-import org.cyk.system.root.model.RootConstant;
-import org.cyk.system.root.model.party.person.PersonRelationship;
+import org.cyk.system.root.business.impl__data__.DataSet;
 import org.cyk.utility.common.helper.RandomHelper;
 
 public class FakedDataSet extends DataSet implements Serializable {

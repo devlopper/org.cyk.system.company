@@ -154,7 +154,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     
     @Override
     protected void populate() {
-    	CompanyBusinessLayer.DATA_SET_CLASS = FakedDataSet.class;
+    	//CompanyBusinessLayer.DATA_SET_CLASS = FakedDataSet.class;
     	RootDataProducerHelper.Listener.COLLECTION.add(new RootDataProducerHelper.Listener.Adapter.Default(){
     		private static final long serialVersionUID = 1L;
 
