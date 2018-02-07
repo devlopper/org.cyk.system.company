@@ -32,7 +32,13 @@ import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovem
 import org.cyk.system.root.business.api.BusinessException;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
+import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
+import org.cyk.system.root.business.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierBusiness;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
+import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.system.root.model.mathematics.MovementCollectionIdentifiableGlobalIdentifier;
+import org.cyk.system.root.persistence.api.mathematics.MovementCollectionTypeDao;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 import org.cyk.utility.common.helper.ConditionHelper;
 import org.cyk.utility.common.helper.LoggingHelper;
@@ -57,9 +63,9 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	@Override
 	public Sale instanciateOne() {
 		Sale sale = super.instanciateOne();
-		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne());
 		sale.setCascadeOperationToMaster(Boolean.TRUE);
     	sale.setCascadeOperationToMasterFieldNames(Arrays.asList(Sale.FIELD_SALABLE_PRODUCT_COLLECTION));
+		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne());
 		return sale;
 	}
 	
@@ -88,6 +94,22 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 			list.add(instanciateOne((String)argument[0], (String)argument[1], (String)argument[2], (String)argument[3], (String)argument[4]
 					, (String[][])argument[5]));
 		return list;
+	}
+	
+	@Override
+	protected void afterCreate(Sale sale) {
+		super.afterCreate(sale);
+		MovementCollection movementCollection = inject(MovementCollectionBusiness.class).instanciateOne();
+		movementCollection.setType(inject(MovementCollectionTypeDao.class).read(RootConstant.Code.MovementCollectionType.SALE_BALANCE));
+		movementCollection.setValue(sale.getSalableProductCollection().getCost().getValue());
+		
+		MovementCollectionIdentifiableGlobalIdentifier movementCollectionIdentifiableGlobalIdentifier
+			= inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).instanciateOne();
+		movementCollectionIdentifiableGlobalIdentifier.setCascadeOperationToMaster(Boolean.TRUE);
+		movementCollectionIdentifiableGlobalIdentifier.setCascadeOperationToMasterFieldNames(Arrays.asList(MovementCollectionIdentifiableGlobalIdentifier.FIELD_MOVEMENT_COLLECTION));
+		movementCollectionIdentifiableGlobalIdentifier.setMovementCollection(movementCollection);
+		movementCollectionIdentifiableGlobalIdentifier.setIdentifiableGlobalIdentifier(sale.getGlobalIdentifier());
+		createIfNotIdentified(movementCollectionIdentifiableGlobalIdentifier);
 	}
 	
 	/*@Override

@@ -1,7 +1,6 @@
 package org.cyk.system.company.business.impl.integration;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
@@ -26,7 +25,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	sale.setCode(saleCode);
     	testCase.create(sale);
     	testCase.assertSaleCost(saleCode,null,null,null,null);
-    	testCase.clean();
+    	//testCase.clean();
     }
     
     @Test
@@ -39,7 +38,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	testCase.create(sale);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 0l);
     	testCase.assertSalableProductCollection(saleCode,"0","0","0","0");
-    	testCase.clean();
+    	//testCase.clean();
     }
     
     @Test
@@ -64,7 +63,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 1l);
     	testCase.assertSalableProductCollection(saleCode,"2","200","31","169");
     	
-    	testCase.clean();
+    	//testCase.clean();
     }
     
     @Test
@@ -87,7 +86,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 2l);
     	testCase.assertSalableProductCollection(saleCode,"3","350","54","296");
     	
-    	testCase.clean();
+    	//testCase.clean();
     }
     
     @Test
@@ -115,6 +114,6 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 2l);
     	testCase.assertSalableProductCollection(saleCode,"3","350","54","296");
     	
-    	testCase.clean();
+    	//testCase.clean();
     }
 }
