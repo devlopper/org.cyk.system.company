@@ -23,14 +23,17 @@
 		<!--Logger name="org.cyk.system.company.business.impl.sale.SalableProductCollectionBusinessImpl" level="trace">
 			<AppenderRef ref="Console" />
 		</Logger--> 
-		<!--Logger name="org.cyk.system.company.business.impl.RealDataSet" level="trace">
+		<!--Logger name="org.cyk.system.company.business.impl.__data__.RealDataSet" level="trace">
 			<AppenderRef ref="InstallConsole" />
 		</Logger>
-		<Logger name="org.cyk.system.root.business.impl.RealDataSet" level="trace">
+		<Logger name="org.cyk.system.root.business.impl__data__.RealDataSet" level="trace">
 			<AppenderRef ref="InstallConsole" />
 		</Logger>
+		<Logger name="org.cyk.system.root.business.impl__data__.DataSet" level="trace">
+			<AppenderRef ref="InstallConsole" />
+		</Logger-->
 		
-		<Logger name="org.cyk.system.company.business.impl.__data__.IesaFakedDataSet" level="trace">
+		<!--Logger name="org.cyk.system.company.business.impl.__data__.IesaFakedDataSet" level="trace">
 			<AppenderRef ref="InstallConsole" />
 		</Logger-->
 		
@@ -40,7 +43,7 @@
 		</Logger-->
 		
 		<Root level="trace">
-			<!--AppenderRef ref="Console"/ -->
+			<!--AppenderRef ref="Console"/-->
 		</Root>
 	</Loggers>
 </Configuration>

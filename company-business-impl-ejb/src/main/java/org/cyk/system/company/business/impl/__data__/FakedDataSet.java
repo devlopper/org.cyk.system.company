@@ -13,14 +13,18 @@ import org.cyk.utility.common.helper.RandomHelper;
 public class FakedDataSet extends RealDataSet implements Serializable {
 	private static final long serialVersionUID = -2798230163660365442L;
 
-	
-	
 	public FakedDataSet() {
 		super();
 		addProductInstances();
 	}
 
 	protected void addProductInstances(){
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_SALABLE_TP1,"TP 001"));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_SALABLE_TP2,"TP 002"));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_SALABLE_TP3,"TP 003"));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_SALABLE_TP4,"TP 004"));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_SALABLE_TP5,"TP 005"));
+		
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP1));
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP2));
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP3));
@@ -65,6 +69,12 @@ public class FakedDataSet extends RealDataSet implements Serializable {
 	 * Price = 1000
 	 */
 	public static final String TANGIBLE_PRODUCT_TP5 = RandomHelper.getInstance().getAlphabetic(4);
+	
+	public static final String TANGIBLE_PRODUCT_NO_SALABLE_TP1 = RandomHelper.getInstance().getAlphabetic(4);
+	public static final String TANGIBLE_PRODUCT_NO_SALABLE_TP2 = RandomHelper.getInstance().getAlphabetic(4);
+	public static final String TANGIBLE_PRODUCT_NO_SALABLE_TP3 = RandomHelper.getInstance().getAlphabetic(4);
+	public static final String TANGIBLE_PRODUCT_NO_SALABLE_TP4 = RandomHelper.getInstance().getAlphabetic(4);
+	public static final String TANGIBLE_PRODUCT_NO_SALABLE_TP5 = RandomHelper.getInstance().getAlphabetic(4);
 	
 	//public static final BigDecimal SALABLE_PRODUCT_TP1 = RandomHelper.getInstance().getAlphabetic(4);
 }

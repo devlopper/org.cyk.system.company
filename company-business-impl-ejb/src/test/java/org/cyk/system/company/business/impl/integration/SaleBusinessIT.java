@@ -2,7 +2,6 @@ package org.cyk.system.company.business.impl.integration;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -10,16 +9,13 @@ import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusi
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.company.business.impl.__data__.FakedDataSet;
-import org.cyk.system.company.model.accounting.AccountingPeriod;
+import org.cyk.system.company.business.impl.__data__.RealDataSet;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.structure.Company;
-import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.root.business.impl__data__.DataSet;
-import org.cyk.system.root.business.impl__data__.RealDataSet;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.RandomHelper;
 import org.junit.Test;
@@ -39,7 +35,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	sale.setCode(saleCode);
     	testCase.create(sale);
     	testCase.assertSaleCost(saleCode,null,null,null,null);
-    	//testCase.clean();
+    	testCase.clean();
     }
     
     @Test
@@ -52,7 +48,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	testCase.create(sale);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 0l);
     	testCase.assertSalableProductCollection(saleCode,"0","0","0","0");
-    	//testCase.clean();
+    	testCase.clean();
     }
     
     @Test
@@ -77,7 +73,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 1l);
     	testCase.assertSalableProductCollection(saleCode,"2","200","31","169");
     	
-    	//testCase.clean();
+    	testCase.clean();
     }
     
     @Test
@@ -100,7 +96,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 2l);
     	testCase.assertSalableProductCollection(saleCode,"3","350","54","296");
     	
-    	//testCase.clean();
+    	testCase.clean();
     }
     
     @Test
@@ -128,21 +124,19 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 2l);
     	testCase.assertSalableProductCollection(saleCode,"3","350","54","296");
     	
-    	//testCase.clean();
+    	testCase.clean();
     }
     
     /**/
     
-    public static class Data extends DataSet.Listener.Adapter.Default implements Serializable {
+    @SuppressWarnings("unchecked")
+	public static class Data extends RealDataSet.Adapter implements Serializable {
 		private static final long serialVersionUID = 1L;
     	
-		@SuppressWarnings({ "unchecked", "rawtypes" })
+		@SuppressWarnings({ "rawtypes" })
 		@Override
 		public Collection getClasses() {
-			Collection<Class<?>> classes = new ArrayList<>();
-			classes.addAll(Arrays.asList(Company.class,OwnedCompany.class,AccountingPeriod.class));
-			classes.addAll(RealDataSet.CLASSES_MATHEMATIQUES);
-			return classes;
+			return Arrays.asList(Sale.class);
 		}
 		
     }

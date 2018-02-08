@@ -2,18 +2,17 @@ package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.AbstractSaleBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
-import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.sale.AbstractSale;
 import org.cyk.system.company.model.sale.SalableProductCollection;
@@ -26,9 +25,10 @@ import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
+import org.cyk.system.root.business.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.model.RootConstant;
+import org.cyk.system.root.model.mathematics.MovementCollectionIdentifiableGlobalIdentifier;
+import org.cyk.system.root.persistence.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierDao;
 
 public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO extends AbstractSaleDao<SALE,SEARCH_CRITERIA>,SEARCH_CRITERIA extends AbstractSale.SearchCriteria> extends AbstractTypedBusinessService<SALE, DAO> implements AbstractSaleBusiness<SALE,SEARCH_CRITERIA>,Serializable {
 
@@ -86,17 +86,23 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 	}*/
 	
 	@Override
+	public Collection<String> findRelatedInstanceFieldNames(SALE sale) {
+		return Arrays.asList(AbstractSale.FIELD_SALABLE_PRODUCT_COLLECTION);
+	}
+	/*
+	@Override
 	protected void afterUpdate(SALE sale) {
 		inject(SalableProductCollectionBusiness.class).update(sale.getSalableProductCollection());
 		super.afterUpdate(sale);
 	}
-	
-	@Override
-	protected void afterDelete(SALE sale) {
-		super.afterDelete(sale);
-		if(inject(SalableProductCollectionBusiness.class).isIdentified(sale.getSalableProductCollection()))
-			inject(SalableProductCollectionBusiness.class).delete(sale.getSalableProductCollection());
-	}
+	*/
+	/*@Override
+	protected void beforeDelete(SALE sale) {
+		Collection<MovementCollectionIdentifiableGlobalIdentifier> r = inject(MovementCollectionIdentifiableGlobalIdentifierDao.class)
+				.readByIdentifiableGlobalIdentifier(sale);
+		inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).delete(r);
+		super.beforeDelete(sale);
+	}*/
 	
 	@Override
 	public Collection<SALE> findByCriteria(SEARCH_CRITERIA criteria) {
