@@ -25,10 +25,8 @@ import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.business.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-import org.cyk.system.root.model.mathematics.MovementCollectionIdentifiableGlobalIdentifier;
-import org.cyk.system.root.persistence.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierDao;
+import org.cyk.utility.common.helper.LoggingHelper;
 
 public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO extends AbstractSaleDao<SALE,SEARCH_CRITERIA>,SEARCH_CRITERIA extends AbstractSale.SearchCriteria> extends AbstractTypedBusinessService<SALE, DAO> implements AbstractSaleBusiness<SALE,SEARCH_CRITERIA>,Serializable {
 
@@ -38,6 +36,15 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 		super(dao);
 	}
 	
+	@Override
+	protected void computeChanges(SALE sale, LoggingHelper.Message.Builder logMessageBuilder) {
+		super.computeChanges(sale, logMessageBuilder);
+		if(sale.getSalableProductCollection()!=null)
+			inject(SalableProductCollectionBusiness.class).computeChanges(sale.getSalableProductCollection());
+	}
+
+
+
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public SALE instanciateOne() {
 		SALE sale = super.instanciateOne();
@@ -89,21 +96,7 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 	public Collection<String> findRelatedInstanceFieldNames(SALE sale) {
 		return Arrays.asList(AbstractSale.FIELD_SALABLE_PRODUCT_COLLECTION);
 	}
-	/*
-	@Override
-	protected void afterUpdate(SALE sale) {
-		inject(SalableProductCollectionBusiness.class).update(sale.getSalableProductCollection());
-		super.afterUpdate(sale);
-	}
-	*/
-	/*@Override
-	protected void beforeDelete(SALE sale) {
-		Collection<MovementCollectionIdentifiableGlobalIdentifier> r = inject(MovementCollectionIdentifiableGlobalIdentifierDao.class)
-				.readByIdentifiableGlobalIdentifier(sale);
-		inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).delete(r);
-		super.beforeDelete(sale);
-	}*/
-	
+
 	@Override
 	public Collection<SALE> findByCriteria(SEARCH_CRITERIA criteria) {
 		return null;
