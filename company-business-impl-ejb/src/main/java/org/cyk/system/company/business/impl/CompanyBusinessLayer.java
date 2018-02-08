@@ -6,9 +6,8 @@ import java.util.Collection;
 
 import javax.inject.Singleton;
 
-import lombok.Getter;
-
 import org.apache.commons.lang3.ArrayUtils;
+import org.cyk.system.company.business.impl.__data__.RealDataSet;
 import org.cyk.system.company.business.impl.accounting.AccountingPeriodBusinessImpl;
 import org.cyk.system.company.business.impl.accounting.AccountingPeriodProductBusinessImpl;
 import org.cyk.system.company.business.impl.payment.CashRegisterMovementBusinessImpl;
@@ -44,19 +43,19 @@ import org.cyk.system.root.business.impl.PersistDataListener;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
-import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
 import org.cyk.system.root.business.impl__data__.DataSet;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.generator.StringGenerator;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.system.root.model.security.Installation;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.test.TestHelper;
+
+import lombok.Getter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER) @Getter
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
@@ -141,26 +140,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 		pointOfSaleInvoiceReportName = inject(LanguageBusiness.class).findText("company.report.pointofsale.invoice");
 		pointOfSalePaymentReportName = inject(LanguageBusiness.class).findText("company.report.pointofsale.paymentreceipt");
-		
-		ApplicationBusinessImpl.Listener.COLLECTION.add(new ApplicationBusinessImpl.Listener.Adapter.Default(){
-			private static final long serialVersionUID = 5234235361543643487L;
-			@Override
-			public void installationEnded(Installation installation) {
-				super.installationEnded(installation);
-				/*OwnedCompany ownedCompany = inject(OwnedCompanyBusiness.class).findDefaulted();
-				Collection<Person> persons = inject(PersonDao.class).select().all();
-				ownedCompany.getCompany().setManager(persons.isEmpty() ? null : persons.iterator().next());
-				inject(CompanyBusiness.class).update(ownedCompany.getCompany());
-				*/
-				/*if(Boolean.TRUE.equals(AUTO_CREATE_CASHIER)){
-					CashRegister cashRegister = new CashRegister();
-					cashRegister.setCode("CashRegister01");
-					cashRegister.setOwnedCompany(ownedCompany);
-					cashRegister = create(cashRegister);
-					inject(CashierBusiness.class).create(new Cashier(ownedCompany.getCompany().getManager(),cashRegister));
-				}*/
-			}
-		});
 		
 		ClazzBusiness.LISTENERS.add(new ClazzBusiness.ClazzBusinessListener.Adapter(){
 			private static final long serialVersionUID = -6563167908087619179L;

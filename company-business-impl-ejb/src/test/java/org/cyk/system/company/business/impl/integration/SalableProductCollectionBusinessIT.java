@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
-import org.cyk.system.company.business.impl.FakedDataSet;
+import org.cyk.system.company.business.impl.__data__.FakedDataSet;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;

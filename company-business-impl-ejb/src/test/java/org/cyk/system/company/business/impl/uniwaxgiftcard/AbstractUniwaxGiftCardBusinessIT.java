@@ -25,16 +25,7 @@ public abstract class AbstractUniwaxGiftCardBusinessIT extends AbstractBusinessI
     @Override
     protected void listeners() {
     	super.listeners();
-    	ApplicationBusinessImpl.Listener.COLLECTION.add(new ApplicationBusinessImpl.Listener.Adapter.Default(){
-			private static final long serialVersionUID = 6148913289155659043L;
-			@Override
-    		public void installationStarted(Installation installation) {
-    			installation.getApplication().setUniformResourceLocatorFiltered(Boolean.FALSE);
-    			installation.getApplication().setWebContext("company");
-    			installation.getApplication().setName("Uniwax - Gestion des cartes cadeaux");
-    			super.installationStarted(installation);
-    		}
-    	});
+    	
     	
     	CompanyBusinessLayer.Listener.COLLECTION.add(new CompanyBusinessLayer.Listener.Adapter() {
 			private static final long serialVersionUID = 5179809445850168706L;

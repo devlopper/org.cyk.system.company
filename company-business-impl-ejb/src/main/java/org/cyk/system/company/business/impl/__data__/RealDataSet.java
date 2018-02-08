@@ -1,7 +1,8 @@
-package org.cyk.system.company.business.impl;
+package org.cyk.system.company.business.impl.__data__;
 
 import java.io.Serializable;
 
+import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;

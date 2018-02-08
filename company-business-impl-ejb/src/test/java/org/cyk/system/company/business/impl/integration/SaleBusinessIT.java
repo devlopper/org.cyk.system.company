@@ -3,25 +3,34 @@ package org.cyk.system.company.business.impl.integration;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
-import org.cyk.system.company.business.impl.FakedDataSet;
+import org.cyk.system.company.business.impl.__data__.FakedDataSet;
+import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.structure.Company;
+import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.root.business.impl__data__.DataSet;
 import org.cyk.system.root.business.impl__data__.RealDataSet;
+import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.RandomHelper;
 import org.junit.Test;
 
 public class SaleBusinessIT extends AbstractBusinessIT {
     private static final long serialVersionUID = -6691092648665798471L;
 
+    static {
+    	ClassHelper.getInstance().map(DataSet.Listener.class, Data.class);
+    }
+    
     @Test
     public void crudSale(){
     	TestCase testCase = instanciateTestCase();
@@ -119,7 +128,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 2l);
     	testCase.assertSalableProductCollection(saleCode,"3","350","54","296");
     	
-    	testCase.clean();
+    	//testCase.clean();
     }
     
     /**/
@@ -131,7 +140,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
 		@Override
 		public Collection getClasses() {
 			Collection<Class<?>> classes = new ArrayList<>();
-			classes.addAll(RealDataSet.CLASSES_SECURITY);
+			classes.addAll(Arrays.asList(Company.class,OwnedCompany.class,AccountingPeriod.class));
 			classes.addAll(RealDataSet.CLASSES_MATHEMATIQUES);
 			return classes;
 		}

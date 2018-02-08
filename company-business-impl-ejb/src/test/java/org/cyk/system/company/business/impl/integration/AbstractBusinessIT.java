@@ -1,5 +1,6 @@
 package org.cyk.system.company.business.impl.integration;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 
@@ -19,14 +20,13 @@ import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper;
-import org.cyk.system.company.business.impl.FakedDataSet;
+import org.cyk.system.company.business.impl.__data__.FakedDataSet;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
-import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.product.IntangibleProductDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
@@ -36,7 +36,6 @@ import org.cyk.system.root.business.api.AbstractBusinessException;
 import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.api.mathematics.NumberBusiness;
 import org.cyk.system.root.business.api.party.ApplicationBusiness;
-import org.cyk.system.root.business.impl.AbstractBusinessTestHelper.TestCase;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
 import org.cyk.system.root.business.impl.AbstractFakedDataProducer.Listener.Adapter;
 import org.cyk.system.root.business.impl.BusinessIntegrationTestHelper;
@@ -55,6 +54,7 @@ import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachin
 import org.cyk.system.root.persistence.impl.GenericDaoImpl;
 import org.cyk.system.root.persistence.impl.PersistenceIntegrationTestHelper;
 import org.cyk.utility.common.file.ExcelSheetReader;
+import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.ThrowableHelper;
 import org.cyk.utility.common.test.TestEnvironmentListener;
 import org.cyk.utility.test.ArchiveBuilder;
@@ -126,6 +126,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     			return inject(NumberBusiness.class).format(value);
     		}
     	});
+		ClassHelper.getInstance().map(ApplicationBusinessImpl.Listener.class, ApplicationBusinessAdapter.class,Boolean.FALSE);
 	}
 	
 	protected CompanyBusinessTestHelper.TestCase instanciateTestCase(){
@@ -154,7 +155,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     
     @Override
     protected void populate() {
-    	//CompanyBusinessLayer.DATA_SET_CLASS = FakedDataSet.class;
+    	CompanyBusinessLayer.DATA_SET_CLASS = FakedDataSet.class;
     	RootDataProducerHelper.Listener.COLLECTION.add(new RootDataProducerHelper.Listener.Adapter.Default(){
     		private static final long serialVersionUID = 1L;
 
@@ -210,16 +211,6 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     }
     
     protected void installApplication(){
-    	ApplicationBusinessImpl.Listener.COLLECTION.add(new ApplicationBusinessImpl.Listener.Adapter.Default(){
-			private static final long serialVersionUID = 6148913289155659043L;
-			@Override
-    		public void installationStarted(Installation installation) {
-    			installation.getApplication().setUniformResourceLocatorFiltered(Boolean.FALSE);
-    			installation.getApplication().setWebContext("company");
-    			installation.getApplication().setName("CompanyApp");
-    			super.installationStarted(installation);
-    		}
-    	});
     	listeners();
     	companyBusinessLayer.installApplication();
     	produce(getFakedDataProducer());
@@ -303,5 +294,22 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 			companyBusinessTestHelper.set(stockableTangibleProduct, infos[0], infos[1], infos[2], infos[3]);
 			create(stockableTangibleProduct);
 		}	
+    }
+	
+	/**/
+	
+	public static class ApplicationBusinessAdapter extends ApplicationBusinessImpl.Listener.Adapter.Default implements Serializable {
+		private static final long serialVersionUID = 1L;
+    	
+		@Override
+		public void installationStarted(Installation installation) {
+			super.installationStarted(installation);
+			installation.setIsCreateAccounts(Boolean.FALSE);
+			installation.setIsCreateLicence(Boolean.FALSE);
+			installation.getApplication().setUniformResourceLocatorFiltered(Boolean.FALSE);
+			installation.getApplication().setWebContext("company");
+			installation.getApplication().setName("CompanyApp");
+		}
+		
     }
 }
