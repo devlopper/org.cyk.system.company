@@ -1,7 +1,5 @@
 package org.cyk.system.company.business.impl.integration;
 
-import java.math.BigDecimal;
-
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
@@ -9,19 +7,15 @@ import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollectionBusiness;
 import org.cyk.system.company.business.impl.iesa.IesaFakedDataProducer;
 import org.cyk.system.company.business.impl.integration.enterpriseresourceplanning.AbstractEnterpriseResourcePlanningBusinessIT;
-import org.cyk.system.company.business.impl.integration.enterpriseresourceplanning.EnterpriseResourcePlanningFakedDataProducer;
 import org.cyk.system.company.model.CompanyConstant;
-import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
-import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
-import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
 import org.cyk.system.root.business.impl.AbstractBusinessTestHelper.TestCase;
 import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.persistence.api.security.UserAccountDao;
@@ -31,11 +25,6 @@ import org.junit.Test;
 public class SaleBusinessITOLD extends AbstractEnterpriseResourcePlanningBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
-    
-    @Override
-    protected AbstractFakedDataProducer getFakedDataProducer() {
-    	return super.getFakedDataProducer().setDoBusiness(Boolean.TRUE);
-    }
     
     //@Test
     public void crudSalableProductCollection(){

@@ -39,6 +39,7 @@ import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.mathematics.MovementCollectionIdentifiableGlobalIdentifier;
 import org.cyk.system.root.persistence.api.mathematics.MovementCollectionTypeDao;
+import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 import org.cyk.utility.common.helper.ConditionHelper;
 import org.cyk.utility.common.helper.LoggingHelper;
@@ -102,6 +103,8 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		MovementCollection movementCollection = inject(MovementCollectionBusiness.class).instanciateOne();
 		movementCollection.setType(inject(MovementCollectionTypeDao.class).read(RootConstant.Code.MovementCollectionType.SALE_BALANCE));
 		movementCollection.setValue(sale.getSalableProductCollection().getCost().getValue());
+		movementCollection.setCode(sale.getCode()+Constant.CHARACTER_VERTICAL_BAR+movementCollection.getType().getCode());
+		movementCollection.setName(sale.getName()+Constant.CHARACTER_VERTICAL_BAR+movementCollection.getType().getCode());
 		
 		MovementCollectionIdentifiableGlobalIdentifier movementCollectionIdentifiableGlobalIdentifier
 			= inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).instanciateOne();

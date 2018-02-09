@@ -36,8 +36,6 @@ import org.cyk.system.root.business.api.AbstractBusinessException;
 import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.api.mathematics.NumberBusiness;
 import org.cyk.system.root.business.api.party.ApplicationBusiness;
-import org.cyk.system.root.business.impl.AbstractFakedDataProducer;
-import org.cyk.system.root.business.impl.AbstractFakedDataProducer.Listener.Adapter;
 import org.cyk.system.root.business.impl.BusinessIntegrationTestHelper;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.RootBusinessTestHelper;
@@ -53,12 +51,10 @@ import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachin
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.system.root.persistence.impl.GenericDaoImpl;
 import org.cyk.system.root.persistence.impl.PersistenceIntegrationTestHelper;
-import org.cyk.utility.common.file.ExcelSheetReader;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.ThrowableHelper;
 import org.cyk.utility.common.test.TestEnvironmentListener;
 import org.cyk.utility.test.ArchiveBuilder;
-import org.cyk.utility.test.Transaction;
 import org.cyk.utility.test.integration.AbstractIntegrationTestJpaBased;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
@@ -133,10 +129,6 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 		return companyBusinessTestHelper.instanciateTestCase();
 	}
 	
-	protected AbstractFakedDataProducer getFakedDataProducer(){
-    	return null;
-    }
-	
     @Override
     public EntityManager getEntityManager() {
         return g.getEntityManager();
@@ -156,17 +148,6 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     @Override
     protected void populate() {
     	CompanyBusinessLayer.DATA_SET_CLASS = FakedDataSet.class;
-    	RootDataProducerHelper.Listener.COLLECTION.add(new RootDataProducerHelper.Listener.Adapter.Default(){
-    		private static final long serialVersionUID = 1L;
-
-			@Override
-    		public ExcelSheetReader processExcelSheetReader(ExcelSheetReader excelSheetReader) {
-    			if(excelSheetReader.getName().equals("Country"))
-    				excelSheetReader.setRowCount(2);
-    			return super.processExcelSheetReader(excelSheetReader);
-    		}
-    	});
-    	
     	installApplication();
     	AbstractRootReportProducer.DEFAULT = inject(CompanyReportProducer.class);
     }
@@ -213,30 +194,6 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     protected void installApplication(){
     	listeners();
     	companyBusinessLayer.installApplication();
-    	produce(getFakedDataProducer());
-    }
-    
-    protected void produce(final AbstractFakedDataProducer fakedDataProducer){
-    	if(fakedDataProducer==null)
-    		return ;
-    	new Transaction(this,userTransaction,null){
-			@Override
-			public void _execute_() {
-				fakedDataProducer.produce(fakedDataProducerAdapter());
-			}
-    	}.run();
-    }
-    
-    protected Adapter fakedDataProducerAdapter(){
-    	return new Adapter(){
-			private static final long serialVersionUID = -6856905751394551672L;
-
-			@Override
-    		public void flush() {
-    			super.flush();
-    			getEntityManager().flush();
-    		}
-    	};
     }
         
     public static Archive<?> createRootDeployment() {
@@ -250,51 +207,6 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
                     
                 ;
     } 
-    
-    /**/
-    
-    
-    /**/
-    
-    protected void createProducts(Integer tangibleProductCount,Integer intangibleProductCount) {
-		for(int i=1;i<=tangibleProductCount;i++){
-			TangibleProduct tangibleProduct = new TangibleProduct();
-			companyBusinessTestHelper.set(tangibleProduct, "TP"+i);
-			create(tangibleProduct);
-		}
-		
-		for(int i=1;i<=intangibleProductCount;i++){
-			IntangibleProduct intangibleProduct = new IntangibleProduct();
-			companyBusinessTestHelper.set(intangibleProduct, "IP"+i);
-			create(intangibleProduct);
-		}
-	}
-    
-    protected void createSalableProducts(String[][] salableProducts) {
-    	for(String[] infos : salableProducts){
-			SalableProduct salableProduct = new SalableProduct();
-			companyBusinessTestHelper.set(salableProduct, infos[0], infos[1]);
-			create(salableProduct);
-		}	
-    }
-	
-	protected void createSales(Object[][] sales) {
-		/*for(Object[] infos : sales){
-			Sale sale = new Sale();
-			int i = 0;
-			//companyBusinessTestHelper.set(sale, (String)infos[i++],(String)infos[i++], (String)infos[i++], (String)infos[i++],(String[][])infos[i++]
-			//		,(String)infos[i++]);
-			create(sale);
-		}*/
-	}
-	
-	protected void createStockableTangibleProducts(String[][] stockableTangibleProducts) {
-    	for(String[] infos : stockableTangibleProducts){
-			StockableTangibleProduct stockableTangibleProduct = new StockableTangibleProduct();
-			companyBusinessTestHelper.set(stockableTangibleProduct, infos[0], infos[1], infos[2], infos[3]);
-			create(stockableTangibleProduct);
-		}	
-    }
 	
 	/**/
 	

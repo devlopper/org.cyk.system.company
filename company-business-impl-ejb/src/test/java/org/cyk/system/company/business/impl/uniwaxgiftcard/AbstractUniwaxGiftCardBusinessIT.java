@@ -16,11 +16,6 @@ public abstract class AbstractUniwaxGiftCardBusinessIT extends AbstractBusinessI
 	
     @Inject protected UniwaxGiftCardFakedDataProducer dataProducer;
     @Inject protected FiniteStateMachineStateDao finiteStateMachineStateDao;
-     
-    @Override
-    protected AbstractFakedDataProducer getFakedDataProducer() {
-    	return dataProducer;
-    }
     
     @Override
     protected void listeners() {

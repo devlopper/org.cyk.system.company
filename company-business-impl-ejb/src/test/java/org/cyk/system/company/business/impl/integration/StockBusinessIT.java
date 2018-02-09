@@ -9,8 +9,8 @@ public class StockBusinessIT extends AbstractBusinessIT {
     @Override
     protected void populate() {
     	super.populate();
-    	createProducts(4, 4);
-    	createStockableTangibleProducts(new String[][]{ {"TP1", "0","100"},{"TP3", "5","35"},{"TP4", null,null} });
+    	//createProducts(4, 4);
+    	//createStockableTangibleProducts(new String[][]{ {"TP1", "0","100"},{"TP3", "5","35"},{"TP4", null,null} });
     }
     
     @Override

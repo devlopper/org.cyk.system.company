@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.root.business.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierBusiness;
+import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.utility.common.userinterface.container.Form;
 
 public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces.IdentifiableConsultPageFormMaster implements Serializable {
@@ -36,6 +38,10 @@ public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces
 			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,null);
 		}else if(Sale.class.equals(getPropertiesMap().getActionOnClass())){
 			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION);
+			MovementCollection movementCollection = inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class)
+					.findByIdentifiableGlobalIdentifier((Sale)getObject()).iterator().next().getMovementCollection();
+			addDataTableMovement(movementCollection);
+			
 		}
 	}
 	

@@ -10,6 +10,7 @@ import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
+import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.Constant.Action;
 import org.cyk.utility.common.helper.FieldHelper;
@@ -35,16 +36,20 @@ public class DataTable {
 				
 			}else if(SalableProductCollectionItem.class.equals(actionOnClass)){
 				if(Constant.Action.isCreateOrUpdate((Action) getPropertiesMap().getAction())){
-					
+					fieldNames.removeAll(Arrays.asList(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE)
+							,FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME)));	
 				}
-				fieldNames.removeAll(Arrays.asList(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE)
-						,FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME)));
+				
 				//fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT));
 				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT,SalableProduct.FIELD_PRICE));
 				fieldNames.add(SalableProductCollectionItem.FIELD_QUANTITY);
 				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_VALUE));
 			}else if(Sale.class.equals(actionOnClass)){
 				
+			}else if(Movement.class.equals(actionOnClass)){
+				if(dataTable.getPropertiesMap().getMaster() instanceof SalableProductCollection || dataTable.getPropertiesMap().getMaster() instanceof Sale){
+					fieldNames.remove(Movement.FIELD_COLLECTION);
+				}
 			}
 		}
 	}

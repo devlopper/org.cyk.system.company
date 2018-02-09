@@ -126,6 +126,34 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	testCase.clean();
     }
     
+    @Test
+    public void computeChanges(){
+    	TestCase testCase = instanciateTestCase();
+    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
+    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
+    	salableProductCollection.setCode(salableProductCollectionCode);
+    	
+    	inject(SalableProductCollectionBusiness.class).computeChanges(salableProductCollection);
+    	testCase.assertCost(salableProductCollection.getCost(), "0", "0", "0", "0");
+    	
+    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
+    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP1));
+    	salableProductCollectionItem.setQuantity(new BigDecimal("2"));
+    	
+    	inject(SalableProductCollectionBusiness.class).computeChanges(salableProductCollection);
+    	testCase.assertCost(salableProductCollection.getCost(), "2","200","31","169");
+    	
+    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
+    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP3));
+    	salableProductCollectionItem.setQuantity(new BigDecimal("1"));
+    	
+    	inject(SalableProductCollectionBusiness.class).computeChanges(salableProductCollection);
+    	testCase.assertCost(salableProductCollection.getCost(),"3","350","54","296");
+    	
+    	testCase.clean();
+    }
+    
     /*
     @Override
     protected void businesses() {

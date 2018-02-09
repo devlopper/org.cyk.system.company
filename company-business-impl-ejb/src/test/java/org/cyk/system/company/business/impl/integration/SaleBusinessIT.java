@@ -127,6 +127,34 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	testCase.clean();
     }
     
+    @Test
+    public void computeChanges(){
+    	TestCase testCase = instanciateTestCase();
+    	Sale sale = inject(SaleBusiness.class).instanciateOne();
+    	String saleCode = RandomHelper.getInstance().getAlphabetic(3);
+    	sale.setCode(saleCode);
+    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	
+    	inject(SaleBusiness.class).computeChanges(sale);
+    	testCase.assertCost(sale.getSalableProductCollection().getCost(), "0", "0", "0", "0");
+    	
+    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
+    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP1));
+    	salableProductCollectionItem.setQuantity(new BigDecimal("2"));
+    	
+    	inject(SaleBusiness.class).computeChanges(sale);
+    	testCase.assertCost(sale.getSalableProductCollection().getCost(), "2","200","31","169");
+    	
+    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
+    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP3));
+    	salableProductCollectionItem.setQuantity(new BigDecimal("1"));
+    	
+    	inject(SaleBusiness.class).computeChanges(sale);
+    	testCase.assertCost(sale.getSalableProductCollection().getCost(),"3","350","54","296");
+    	
+    	testCase.clean();
+    }
+    
     /**/
     
     @SuppressWarnings("unchecked")
