@@ -18,8 +18,4 @@ public class ProductCollection extends Product implements Serializable  {
 
 	private static final long serialVersionUID = -6128937819261060725L;
 	
-	public ProductCollection(String code, String name,ProductCategory category) {
-		super(code, name, category);
-	}
-	
 }

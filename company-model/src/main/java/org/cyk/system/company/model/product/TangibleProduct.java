@@ -21,9 +21,5 @@ public class TangibleProduct extends Product implements Serializable  {
 	
 	public static final String STOCKING = TangibleProduct.class.getSimpleName()+Constant.CHARACTER_UNDESCORE+CompanyConstant.Code.Product.STOCKING;
 		
-	public TangibleProduct(String code, String name,ProductCategory category) {
-		super(code, name, category);
-	}
-	
 	
 }

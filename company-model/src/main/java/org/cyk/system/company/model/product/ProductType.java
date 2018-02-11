@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 
+import org.cyk.system.root.model.pattern.tree.AbstractDataTreeType;
+import org.cyk.utility.common.annotation.FieldOverride;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
@@ -13,8 +15,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.FEMALE)
-public class IntangibleProduct extends Product implements Serializable  {
-
+@FieldOverride(name=ProductType.FIELD_PARENT,type=ProductType.class)
+public class ProductType extends AbstractDataTreeType implements Serializable  {
 	private static final long serialVersionUID = -6128937819261060725L;
-
+	
 }

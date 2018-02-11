@@ -11,14 +11,11 @@ import javax.inject.Inject;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
-import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
-import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
@@ -50,10 +47,11 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 	
 	@Override @Deprecated
 	public void create(Class<? extends Product> aClass,String code, String name, BigDecimal price) {
-		Product product = TangibleProduct.class.equals(aClass) ? new TangibleProduct(code, name, null) : new IntangibleProduct(code, name, null);
+		/*Product product = TangibleProduct.class.equals(aClass) ? new TangibleProduct(code, name, null) : new IntangibleProduct(code, name, null);
 		inject(GenericBusiness.class).create(product);
 		SalableProduct salableProduct = new SalableProduct(product, price);
 		create(salableProduct);
+		*/
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER) @Deprecated

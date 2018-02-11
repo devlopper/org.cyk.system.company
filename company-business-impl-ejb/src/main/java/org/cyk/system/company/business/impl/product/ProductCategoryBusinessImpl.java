@@ -8,7 +8,6 @@ import org.cyk.system.company.persistence.api.product.ProductCategoryDao;
 import org.cyk.system.root.business.impl.pattern.tree.AbstractDataTreeTypeBusinessImpl;
 
 public class ProductCategoryBusinessImpl extends AbstractDataTreeTypeBusinessImpl<ProductCategory,ProductCategoryDao> implements ProductCategoryBusiness {
-
 	private static final long serialVersionUID = -5970296090669949506L;
 
 	@Inject

@@ -33,8 +33,13 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne @JoinColumn(name=COLUMN_SALABLE_PRODUCT) @NotNull private SalableProduct salableProduct;
-	
+	/**
+	 * positive is out. negative is back in
+	 */
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal quantity;
+	/*
+	 *we can use metric to track those values 
+	 */
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal reduction=BigDecimal.ZERO;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal commission = BigDecimal.ZERO;
 	

@@ -25,7 +25,7 @@ import lombok.experimental.Accessors;
 public class SalableProduct extends AbstractCollection<SalableProductInstance> implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	 @ManyToOne @JoinColumn(name=COLUMN_PRODUCT) @NotNull @Accessors(chain=true) private Product product;
+	@ManyToOne @JoinColumn(name=COLUMN_PRODUCT) @NotNull @Accessors(chain=true) private Product product;
 	
 	/**
 	 * The unit price of the product. null means the price will be determine at runtime
