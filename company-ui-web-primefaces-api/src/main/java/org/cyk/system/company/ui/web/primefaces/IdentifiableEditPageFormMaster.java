@@ -52,6 +52,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 		detail.addReadOnly(Cost.FIELD_VALUE);
 		
 		DataTable dataTable = detail.getMaster().instanciateDataTable(SalableProductCollectionItem.class,isCreateOrUpdate ? SalableProduct.class : null,new DataTable.Cell.Listener.Adapter.Default(),Boolean.TRUE);
+		dataTable.getPropertiesMap().setChoicesIsSourceDisjoint(Boolean.FALSE);
 		dataTable.getPropertiesMap().setMasterFieldName(SalableProductCollectionItem.FIELD_COLLECTION);
 		dataTable.getPropertiesMap().setMaster(salableProductCollection);
 		

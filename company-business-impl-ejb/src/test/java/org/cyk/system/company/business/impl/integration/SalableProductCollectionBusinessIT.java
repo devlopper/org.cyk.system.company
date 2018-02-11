@@ -151,6 +151,13 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	inject(SalableProductCollectionBusiness.class).computeChanges(salableProductCollection);
     	testCase.assertCost(salableProductCollection.getCost(),"3","350","54","296");
     	
+    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
+    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP3));
+    	salableProductCollectionItem.setQuantity(new BigDecimal("-1"));
+    	
+    	inject(SalableProductCollectionBusiness.class).computeChanges(salableProductCollection);
+    	testCase.assertCost(salableProductCollection.getCost(), "2","200","31","169");
+    	
     	testCase.clean();
     }
     
