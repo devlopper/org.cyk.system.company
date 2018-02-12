@@ -66,6 +66,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	testCase.create(sale);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 1l);
     	testCase.assertSalableProductCollection(saleCode,"2","200","31","169");
+    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "8");
     	
     	sale = testCase.read(Sale.class, saleCode);
     	sale.getSalableProductCollection().getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
@@ -73,8 +74,9 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	testCase.update(sale);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 1l);
     	testCase.assertSalableProductCollection(saleCode,"2","200","31","169");
+    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "8");
     	
-    	testCase.clean();
+    	//testCase.clean();
     }
     
     @Test

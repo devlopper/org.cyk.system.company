@@ -23,7 +23,6 @@ import org.cyk.system.company.persistence.api.product.AbstractProductDao;
 import org.cyk.system.root.business.impl.AbstractEnumerationBusinessImpl;
 
 public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO extends AbstractProductDao<PRODUCT>> extends AbstractEnumerationBusinessImpl<PRODUCT,DAO> implements AbstractProductBusiness<PRODUCT>,Serializable {
-	
 	private static final long serialVersionUID = 2801588592108008404L;
 
     public AbstractProductBusinessImpl(DAO dao) {
@@ -35,7 +34,7 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
     	return dao.readByCategory(category);
     }
     
-    @Override
+    /*@Override
 	protected void afterCreate(PRODUCT product) {
 		super.afterCreate(product);
 		OwnedCompany ownedCompany = product.getOwnedCompany();
@@ -51,7 +50,7 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
 	protected void beforeDelete(PRODUCT product) {
 		super.beforeDelete(product);
 		inject(AccountingPeriodProductBusiness.class).delete(inject(AccountingPeriodProductDao.class).readByEntity(product));
-	}
+	}*/
     
     /*
     @SuppressWarnings("null")
@@ -73,10 +72,6 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
 	}
     */
     
-    protected abstract Set<PRODUCT> products(Collection<SalableProductCollectionItem> saleProducts);
-    
-    protected abstract void beforeUpdate(PRODUCT product,BigDecimal usedCount);
-
     /**/
     
     public static class BuilderOneDimensionArray<T extends Product> extends AbstractEnumerationBusinessImpl.BuilderOneDimensionArray<T> implements Serializable {

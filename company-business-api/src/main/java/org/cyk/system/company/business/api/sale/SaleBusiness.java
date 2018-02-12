@@ -11,7 +11,9 @@ import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 
 public interface SaleBusiness extends AbstractSaleBusiness<Sale,Sale.SearchCriteria> {
 
+	@Deprecated
 	Sale instanciateOne(String computedIdentifier,String cashierPersonCode,String customerRegistrationCode,String date,String taxable,String[][] salableProductInfos);
+	@Deprecated
 	List<Sale> instanciateMany(Object[][] arguments);
 
 	SaleResults computeByCriteria(Sale.SearchCriteria criteria);
@@ -19,7 +21,9 @@ public interface SaleBusiness extends AbstractSaleBusiness<Sale,Sale.SearchCrite
 	@Deprecated
 	ReportBasedOnTemplateFile<SaleReport> findReport(Sale sale);
 	
+	@Deprecated
 	void computeBalance(Sale sale);
+	@Deprecated
 	void computeBalance(Sale sale,Collection<SaleCashRegisterMovement> saleCashRegisterMovements);
 	
 	/**/

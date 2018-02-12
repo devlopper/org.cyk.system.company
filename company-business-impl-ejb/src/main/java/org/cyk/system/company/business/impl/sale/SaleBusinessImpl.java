@@ -13,17 +13,22 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.model.Cost;
+import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
+import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
+import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
@@ -34,7 +39,9 @@ import org.cyk.system.root.business.api.mathematics.MovementCollectionIdentifiab
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.utility.common.computation.ArithmeticOperator;
+import org.cyk.utility.common.helper.CollectionHelper;
 import org.cyk.utility.common.helper.ConditionHelper;
+import org.cyk.utility.common.helper.NumberHelper;
 
 public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sale.SearchCriteria> implements SaleBusiness,Serializable {
 
@@ -61,7 +68,7 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		return sale;
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS) @Deprecated
 	public Sale instanciateOne(String computedIdentifier,String cashierPersonCode, String customerRegistrationCode,String date,String taxable, String[][] salableProductInfos) {
 		Sale sale = instanciateOne();
 		sale.setCode(computedIdentifier);
@@ -79,7 +86,7 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		return sale;
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS) @Deprecated
 	public List<Sale> instanciateMany(Object[][] arguments) {
 		List<Sale> list = new ArrayList<>();
 		for(Object[] argument : arguments)
@@ -133,7 +140,34 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		inject(SaleCashRegisterMovementBusiness.class).delete(inject(SaleCashRegisterMovementDao.class).readBySale(sale));
 		inject(SaleIdentifiableGlobalIdentifierBusiness.class).delete(inject(SaleIdentifiableGlobalIdentifierDao.class).readBySale(sale));
 	}*/
-		
+	
+	@Override
+	protected void afterCrud(Sale sale, final Crud crud) {
+		super.afterCrud(sale, crud);
+		Collection<SalableProductCollectionItem> salableProductCollectionItems = inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection());
+		new CollectionHelper.Iterator.Adapter.Default<SalableProductCollectionItem>(salableProductCollectionItems){
+			private static final long serialVersionUID = 1L;
+			protected void __executeForEach__(SalableProductCollectionItem salableProductCollectionItem) {
+				if(Crud.isCreateOrUpdate(crud)){
+					if(salableProductCollectionItem.getSalableProduct().getProduct() instanceof TangibleProduct){
+						TangibleProduct tangibleProduct = (TangibleProduct) salableProductCollectionItem.getSalableProduct().getProduct();
+						if(Crud.CREATE.equals(crud))
+							NumberHelper.getInstance().add(BigDecimal.class, tangibleProduct, TangibleProduct.FIELD_QUANTITY
+									, NumberHelper.getInstance().negate(salableProductCollectionItem.getQuantity()));
+						else if(Crud.DELETE.equals(crud))
+							NumberHelper.getInstance().add(BigDecimal.class, tangibleProduct, TangibleProduct.FIELD_QUANTITY,salableProductCollectionItem.getQuantity());
+						else{
+							//System.out.println("SaleBusinessImpl.afterCrud() "+tangibleProduct.getQuantity()+" - "+salableProductCollectionItem.getQuantity());
+							//NumberHelper.getInstance().add(BigDecimal.class, tangibleProduct, TangibleProduct.FIELD_QUANTITY
+							//		, (BigDecimal)NumberHelper.getInstance().subtract(tangibleProduct.getQuantity(),salableProductCollectionItem.getQuantity()));
+						}
+						inject(TangibleProductBusiness.class).update(tangibleProduct);
+					}
+				}
+			}
+		}.execute();
+	}
+	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public SaleResults computeByCriteria(Sale.SearchCriteria criteria) {
 		return dao.computeByCriteria(criteria);
@@ -144,13 +178,13 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		return null;
 	}
 	
-	@Override
+	@Override @Deprecated
 	public void computeBalance(Sale sale) {
 		//if( sale.getSalableProductCollection().isItemAggregationApplied())
 		//	computeBalance(sale, inject(SaleCashRegisterMovementDao.class).sumAmountBySale(sale));
 	}
 
-	@Override
+	@Override @Deprecated
 	public void computeBalance(Sale sale, Collection<SaleCashRegisterMovement> saleCashRegisterMovements) {
 		BigDecimal sumOfSaleCashRegisterMovementAmount = BigDecimal.ZERO;
 		if(saleCashRegisterMovements!=null)
@@ -158,7 +192,7 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 				sumOfSaleCashRegisterMovementAmount = sumOfSaleCashRegisterMovementAmount.add(saleCashRegisterMovement.getAmount());
 		computeBalance(sale, sumOfSaleCashRegisterMovementAmount);
 	}
-	
+	@Deprecated
 	private void computeBalance(Sale sale,BigDecimal sumOfSaleCashRegisterMovementAmount){
 		BigDecimal balanceValue = sale.getSalableProductCollection().getCost().getValue().subtract(sumOfSaleCashRegisterMovementAmount);
 		

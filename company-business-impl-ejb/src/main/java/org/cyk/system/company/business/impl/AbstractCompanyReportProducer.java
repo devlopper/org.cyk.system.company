@@ -190,7 +190,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 			,{customerLabel,Constant.EMPTY_STRING}
 			,{StringUtils.join(customerNames,Constant.CHARACTER_COMA.toString()),Constant.EMPTY_STRING}	
 			,{"Received from",Constant.EMPTY_STRING}
-			,{saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getSenderOrReceiverPersonAsString(),Constant.EMPTY_STRING}	
+			//,{saleCashRegisterMovementCollection.getCashRegisterMovement().getMovement().getSenderOrReceiverPersonAsString(),Constant.EMPTY_STRING}	
 		});
 		report.getCurrentLabelValueCollection().setIdentifier(SaleCashRegisterMovementCollectionReportTemplateFile.LABEL_VALUES_PAYMENT);
 		Listener.Adapter.processLabelValueCollection(Listener.COLLECTION, report.getSaleCashRegisterMovementCollection(), report.getCurrentLabelValueCollection());

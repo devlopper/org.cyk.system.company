@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.company.business.impl.__data__.RealDataSet;
+import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.TangibleProduct;
@@ -22,12 +23,23 @@ public class ProductBusinessIT extends AbstractBusinessIT {
     }
         
     @Test
-    public void crudOneProduct(){
+    public void crudOneTangibleProduct(){
     	TestCase testCase = instanciateTestCase(); 
     	TangibleProduct tangibleProduct = new TangibleProduct();
-    	tangibleProduct.setCode("T001");
-    	tangibleProduct.setName("My Pro");
+    	tangibleProduct.setCode("TP001");
+    	tangibleProduct.setName("My tang");
     	testCase.create(tangibleProduct);
+    	
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudOneIntangibleProduct(){
+    	TestCase testCase = instanciateTestCase(); 
+    	IntangibleProduct intangibleProduct = new IntangibleProduct();
+    	intangibleProduct.setCode("IP001");
+    	intangibleProduct.setName("My int");
+    	testCase.create(intangibleProduct);
     	
     	testCase.clean();
     }
@@ -36,12 +48,14 @@ public class ProductBusinessIT extends AbstractBusinessIT {
     public void crudOneProductCategory(){
     	TestCase testCase = instanciateTestCase(); 
     	ProductCategory productCategory = new ProductCategory();
-    	productCategory.setCode("T001");
-    	productCategory.setName("My Pro");
+    	productCategory.setCode("PC001");
+    	productCategory.setName("My categ");
     	testCase.create(productCategory);
     	
     	testCase.clean();
     }
+    
+    
     
     /**/
     

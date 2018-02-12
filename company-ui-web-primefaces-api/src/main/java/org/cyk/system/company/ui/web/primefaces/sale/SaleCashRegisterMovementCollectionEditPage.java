@@ -268,7 +268,7 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 			mode = identifiable.getCashRegisterMovement().getMode();
 			if(identifiable.getCashRegisterMovement().getMovement()!=null){
 				//amount = identifiable.getCashRegisterMovement().getMovement().getValue();
-				receivedFrom = identifiable.getCashRegisterMovement().getMovement().getSenderOrReceiverPersonAsString();
+				//receivedFrom = identifiable.getCashRegisterMovement().getMovement().getSenderOrReceiverPersonAsString();
 				
 				if(identifiable.getCashRegisterMovement().getSupportingDocument()!=null){
 					supportingDocumentCode = identifiable.getCashRegisterMovement().getSupportingDocument().getCode();
@@ -286,7 +286,7 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 			//identifiable.setAmountIn(amount);
 			identifiable.setAmountOut(BigDecimal.ZERO);
 			identifiable.getCashRegisterMovement().setMode(mode);
-			identifiable.getCashRegisterMovement().getMovement().setSenderOrReceiverPersonAsString(receivedFrom);
+			//identifiable.getCashRegisterMovement().getMovement().setSenderOrReceiverPersonAsString(receivedFrom);
 			
 			if(identifiable.getCashRegisterMovement().getSupportingDocument()!=null){
 				identifiable.getCashRegisterMovement().getSupportingDocument().setCode(supportingDocumentCode);

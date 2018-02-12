@@ -1,22 +1,17 @@
 package org.cyk.system.company.business.impl.product;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.Set;
 
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierBusiness;
 import org.cyk.system.root.model.RootConstant;
 
 public class TangibleProductBusinessImpl extends AbstractProductBusinessImpl<TangibleProduct,TangibleProductDao> implements TangibleProductBusiness {
-	
 	private static final long serialVersionUID = 2801588592108008404L;
 
 	@Inject
@@ -32,28 +27,6 @@ public class TangibleProductBusinessImpl extends AbstractProductBusinessImpl<Tan
 				,tangibleProduct.getQuantity(),tangibleProduct));
 			inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).create(tangibleProduct.getQuantityMovementCollection(), tangibleProduct);
 		}
-	}
-	
-	@Override
-	protected Set<TangibleProduct> products(Collection<SalableProductCollectionItem> saleProducts) {
-	
-		return null;
-	}
-
-
-
-	@Override
-	protected void beforeUpdate(TangibleProduct product, BigDecimal usedCount) {
-			
-	}
-	
-	public static void __beforeUpdate__(TangibleProduct product, BigDecimal usedCount) {
-		/*product.setUseQuantity(product.getUseQuantity().subtract(usedCount));
-		product.setUsedQuantity(product.getUsedQuantity().add(usedCount));
-		
-		if(product.getMinimalStockQuantityBlock()!=null)
-			ExceptionUtils.getInstance().exception(product.getUseQuantity().compareTo(product.getMinimalStockQuantityBlock())==-1, 
-			"exception.tangibleproduct.quantity.cannotbelowerthantoblock",new Object[]{product.getName()});*/
 	}
 	
 	/**/

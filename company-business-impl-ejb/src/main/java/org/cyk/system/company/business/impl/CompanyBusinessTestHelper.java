@@ -638,6 +638,14 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	public static class TestCase extends AbstractBusinessTestHelper.TestCase implements Serializable {
 		private static final long serialVersionUID = 1L;
 		
+		public void assertTangibleProduct(TangibleProduct tangibleProduct,String expectedQuantity){
+	    	assertBigDecimalEquals("tangible product quantity is not equal", expectedQuantity, tangibleProduct.getQuantity());
+	    }
+		
+		public void assertTangibleProduct(String code,String expectedQuantity){
+			assertTangibleProduct(read(TangibleProduct.class, code), expectedQuantity);
+		}
+		
 		public void assertCost(Cost cost,String expectedNumberOfElements,String expectedValue,String expectedTax,String expectedTurnover){
 	    	helper.doAssertions(cost, new ObjectFieldValues(Cost.class).set(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, expectedNumberOfElements)
 	    			.set(Cost.FIELD_VALUE, expectedValue).set(Cost.FIELD_TAX, expectedTax).set(Cost.FIELD_TURNOVER, expectedTurnover));

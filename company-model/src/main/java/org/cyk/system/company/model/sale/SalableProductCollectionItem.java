@@ -50,6 +50,7 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 	@Transient private BigDecimal quantifiedPrice;
 	@Transient private Collection<SaleProductInstance> instances;
 	@Transient private IdentifiableRuntimeCollection<SalableProductCollectionItemSaleCashRegisterMovement> salableProductCollectionItemSaleCashRegisterMovements = new IdentifiableRuntimeCollection<>();
+	@Transient private Boolean productQuantity;
 	
 	public Cost getCost(){
 		if(this.cost == null)

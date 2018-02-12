@@ -35,6 +35,7 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 			return new Object[]{salableProductCollectionItem.getSalableProduct()};
 		return super.getPropertyValueTokens(salableProductCollectionItem, name);
 	}
+	
 	/*
 	@Override
 	protected void afterCrud(SalableProductCollectionItem salableProductCollectionItem, Crud crud) {

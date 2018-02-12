@@ -25,11 +25,11 @@ public class FakedDataSet extends RealDataSet implements Serializable {
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_SALABLE_TP4,"TP 004"));
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_SALABLE_TP5,"TP 005"));
 		
-		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP1));
-		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP2));
-		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP3));
-		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP4));
-		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP5));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP1).setQuantity(new BigDecimal("10")));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP2).setQuantity(new BigDecimal("10")));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP3).setQuantity(new BigDecimal("10")));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP4).setQuantity(new BigDecimal("10")));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP5).setQuantity(new BigDecimal("10")));
 		
     	addInstances(SalableProduct.class, inject(SalableProductBusiness.class).instanciateOne().setProduct(InstanceHelper.Pool.getInstance()
     			.get(TangibleProduct.class, TANGIBLE_PRODUCT_TP1)).setPrice(new BigDecimal("100")));
@@ -50,23 +50,23 @@ public class FakedDataSet extends RealDataSet implements Serializable {
 	
 	/**/
 	/**
-	 * Price = 100
+	 * Price = 100 , Quantity = 10
 	 */
 	public static final String TANGIBLE_PRODUCT_TP1 = RandomHelper.getInstance().getAlphabetic(4);
 	/**
-	 * Price = 75
+	 * Price = 75 , Quantity = 10
 	 */
 	public static final String TANGIBLE_PRODUCT_TP2 = RandomHelper.getInstance().getAlphabetic(4);
 	/**
-	 * Price = 150
+	 * Price = 150 , Quantity = 10
 	 */
 	public static final String TANGIBLE_PRODUCT_TP3 = RandomHelper.getInstance().getAlphabetic(4);
 	/**
-	 * Price = 500
+	 * Price = 500 , Quantity = 10
 	 */
 	public static final String TANGIBLE_PRODUCT_TP4 = RandomHelper.getInstance().getAlphabetic(4);
 	/**
-	 * Price = 1000
+	 * Price = 1000 , Quantity = 10
 	 */
 	public static final String TANGIBLE_PRODUCT_TP5 = RandomHelper.getInstance().getAlphabetic(4);
 	
