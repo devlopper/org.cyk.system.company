@@ -7,6 +7,7 @@ import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 
+@Deprecated
 public class StockableTangibleProductDaoImpl extends AbstractTypedDao<StockableTangibleProduct> implements StockableTangibleProductDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;

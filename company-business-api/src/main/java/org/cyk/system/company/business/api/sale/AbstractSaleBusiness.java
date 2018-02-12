@@ -8,7 +8,9 @@ import org.cyk.system.root.business.api.TypedBusiness;
 
 public interface AbstractSaleBusiness<SALE extends AbstractSale,SEARCH_CRITERIA extends AbstractSale.SearchCriteria> extends TypedBusiness<SALE> {
 
+	@Deprecated
 	SALE instanciateOne(String code,String name,Cost cost,String customerCode,Object[][] salableProducts);
+	@Deprecated
 	SALE instanciateOne(String code,String customerCode,Object[][] salableProducts);
 	
 	Collection<SALE> findByCriteria(SEARCH_CRITERIA criteria);

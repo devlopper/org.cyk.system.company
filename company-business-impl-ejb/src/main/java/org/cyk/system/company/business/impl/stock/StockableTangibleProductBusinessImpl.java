@@ -13,15 +13,15 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
-import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
+@Deprecated
 public class StockableTangibleProductBusinessImpl extends AbstractTypedBusinessService<StockableTangibleProduct, StockableTangibleProductDao> implements StockableTangibleProductBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	private static final String INPUT_LABEL = "Input";
-	private static final String OUTPUT_LABEL = "Output";
+	//private static final String INPUT_LABEL = "Input";
+	//private static final String OUTPUT_LABEL = "Output";
 	
 	@Inject private TangibleProductDao tangibleProductDao;
 	

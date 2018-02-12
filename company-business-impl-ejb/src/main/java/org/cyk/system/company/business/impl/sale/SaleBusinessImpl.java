@@ -16,7 +16,6 @@ import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleIdentifiableGlobalIdentifierBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.sale.Sale;
@@ -27,23 +26,15 @@ import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
-import org.cyk.system.company.persistence.api.sale.SaleIdentifiableGlobalIdentifierDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.BusinessException;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierBusiness;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
-import org.cyk.system.root.model.mathematics.MovementCollection;
-import org.cyk.system.root.model.mathematics.MovementCollectionIdentifiableGlobalIdentifier;
-import org.cyk.system.root.persistence.api.mathematics.MovementCollectionTypeDao;
-import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 import org.cyk.utility.common.helper.ConditionHelper;
-import org.cyk.utility.common.helper.LoggingHelper;
-import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
 
 public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sale.SearchCriteria> implements SaleBusiness,Serializable {
 
@@ -100,12 +91,17 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	@Override
 	protected void afterCreate(Sale sale) {
 		super.afterCreate(sale);
-		MovementCollection movementCollection = inject(MovementCollectionBusiness.class).instanciateOne();
+		if(sale.getBalanceMovementCollection() == null){
+			sale.setBalanceMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne(RootConstant.Code.MovementCollectionType.SALE_BALANCE
+				,sale.getSalableProductCollection().getCost().getValue(),sale));
+			inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).create(sale.getBalanceMovementCollection(), sale);
+		}
+		/*
 		movementCollection.setType(inject(MovementCollectionTypeDao.class).read(RootConstant.Code.MovementCollectionType.SALE_BALANCE));
 		movementCollection.setValue(sale.getSalableProductCollection().getCost().getValue());
 		movementCollection.setCode(sale.getCode()+Constant.CHARACTER_VERTICAL_BAR+movementCollection.getType().getCode());
 		movementCollection.setName(sale.getName()+Constant.CHARACTER_VERTICAL_BAR+movementCollection.getType().getCode());
-		
+		/*
 		MovementCollectionIdentifiableGlobalIdentifier movementCollectionIdentifiableGlobalIdentifier
 			= inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).instanciateOne();
 		movementCollectionIdentifiableGlobalIdentifier.setCascadeOperationToMaster(Boolean.TRUE);
@@ -113,6 +109,8 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		movementCollectionIdentifiableGlobalIdentifier.setMovementCollection(movementCollection);
 		movementCollectionIdentifiableGlobalIdentifier.setIdentifiableGlobalIdentifier(sale.getGlobalIdentifier());
 		createIfNotIdentified(movementCollectionIdentifiableGlobalIdentifier);
+		*/
+		
 	}
 	
 	/*@Override

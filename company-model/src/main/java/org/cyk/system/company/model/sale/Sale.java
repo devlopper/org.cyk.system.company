@@ -16,6 +16,7 @@ import lombok.Setter;
 
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.payment.BalanceType;
+import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
@@ -25,6 +26,8 @@ import org.cyk.utility.common.annotation.ModelBean.GenderType;
 public class Sale extends AbstractSale implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
+	@Transient private MovementCollection balanceMovementCollection;
+	
 	@Deprecated
 	@Embedded private Balance balance;
 	
@@ -39,6 +42,9 @@ public class Sale extends AbstractSale implements Serializable {
 			this.balance = new Balance();
 		return this.balance;
 	}
+	
+	public static final String FIELD_BALANCE_MOVEMENT_COLLECTION = "balanceMovementCollection";
+	
 	@Deprecated
 	public static final String FIELD_BALANCE = "balance";
 	@Deprecated

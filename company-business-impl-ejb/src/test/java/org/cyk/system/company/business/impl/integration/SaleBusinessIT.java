@@ -16,6 +16,7 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.root.business.impl__data__.DataSet;
+import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.RandomHelper;
 import org.junit.Test;
@@ -164,7 +165,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
 		@SuppressWarnings({ "rawtypes" })
 		@Override
 		public Collection getClasses() {
-			return Arrays.asList(Sale.class);
+			return Arrays.asList(Sale.class,Movement.class);
 		}
 		
     }

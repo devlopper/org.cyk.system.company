@@ -9,12 +9,13 @@ import org.cyk.system.root.business.api.AbstractCollectionItemBusiness;
 
 public interface SalableProductCollectionItemBusiness extends AbstractCollectionItemBusiness<SalableProductCollectionItem,SalableProductCollection> {
     
+	@Deprecated
 	SalableProductCollectionItem instanciateOne(SalableProductCollection salableProductCollection,SalableProduct salableProduct,BigDecimal quantity
 			,BigDecimal reduction,BigDecimal commission);
-	
+	@Deprecated
 	SalableProductCollectionItem instanciateOne(SalableProductCollection salableProductCollection,String salableProductCode,String quantity
 			,String reduction,String commission);
-	
+	@Deprecated
 	SalableProductCollectionItem instanciateOne(String salableProductCollectionCode,Object[] salableProduct);
 	
 	//void computeBalance(SalableProductCollectionItem salableProductCollectionItem);

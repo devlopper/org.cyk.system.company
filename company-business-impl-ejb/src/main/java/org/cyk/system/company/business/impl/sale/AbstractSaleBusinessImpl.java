@@ -45,7 +45,7 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 
 
 
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS) 
 	public SALE instanciateOne() {
 		SALE sale = super.instanciateOne();
 		sale.setSalableProductCollection(new SalableProductCollection());
@@ -54,7 +54,7 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 		return sale;
 	}
 	
-	@Override
+	@Override @Deprecated
 	public SALE instanciateOne(String code,String name,Cost cost,String customerCode,Object[][] salableProducts) {
 		SALE sale = instanciateOne();
 		sale.setCode(code);
@@ -65,7 +65,7 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 		return sale;
 	}
 	
-	@Override
+	@Override @Deprecated
 	public SALE instanciateOne(String code,String customerCode,Object[][] salableProducts) {
 		return instanciateOne(code,code,null,customerCode,salableProducts);
 	}

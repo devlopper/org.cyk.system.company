@@ -209,7 +209,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		return getEnumeration(IntangibleProduct.class,CompanyConstant.Code.IntangibleProduct.STOCKING);
 	}
 	public TangibleProduct getTangibleProductStocking(){
-		return getEnumeration(TangibleProduct.class,TangibleProduct.STOCKING);
+		return null;//getEnumeration(TangibleProduct.class,TangibleProduct.STOCKING);
 	}
 	public SalableProduct getSalableProductStocking(){
 		return inject(SalableProductDao.class).readByProduct(getIntangibleProductStocking());
