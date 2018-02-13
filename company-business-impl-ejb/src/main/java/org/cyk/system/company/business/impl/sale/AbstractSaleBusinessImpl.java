@@ -43,8 +43,6 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 			inject(SalableProductCollectionBusiness.class).computeChanges(sale.getSalableProductCollection());
 	}
 
-
-
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS) 
 	public SALE instanciateOne() {
 		SALE sale = super.instanciateOne();

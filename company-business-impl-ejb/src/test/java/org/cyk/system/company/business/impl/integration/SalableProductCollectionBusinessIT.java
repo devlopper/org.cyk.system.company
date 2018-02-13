@@ -36,6 +36,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	testCase.create(salableProductCollection);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 0l);
     	testCase.assertSalableProductCollection(salableProductCollectionCode,null,null,null,null);
+    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	testCase.clean();
     }
     
@@ -49,6 +50,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	testCase.create(salableProductCollection);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 0l);
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"0","0","0","0");
+    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	testCase.clean();
     }
     
@@ -65,6 +67,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	testCase.create(salableProductCollection);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
+    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	
     	salableProductCollection = testCase.read(SalableProductCollection.class, salableProductCollectionCode);
     	salableProductCollection.getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
@@ -73,6 +76,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
     	
+    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	testCase.clean();
     }
     
@@ -95,6 +99,8 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	testCase.create(salableProductCollection);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 2l);
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"3","350","54","296");
+    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
+    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP3, "10");
     	
     	testCase.clean();
     }
@@ -113,6 +119,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	testCase.create(salableProductCollection);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
+    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	
     	salableProductCollection = testCase.read(SalableProductCollection.class, salableProductCollectionCode);
     	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
@@ -123,6 +130,8 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	testCase.update(salableProductCollection);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 2l);
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"3","350","54","296");
+    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
+    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP3, "10");
     	
     	testCase.clean();
     }
@@ -217,7 +226,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
 		@SuppressWarnings({ "rawtypes" })
 		@Override
 		public Collection getClasses() {
-			return Arrays.asList(SalableProductCollection.class);
+			return Arrays.asList(SalableProductCollection.class,Movement.class);
 		}
 		
     }

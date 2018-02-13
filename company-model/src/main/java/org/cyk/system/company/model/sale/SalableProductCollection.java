@@ -19,6 +19,7 @@ import org.cyk.utility.common.annotation.ModelBean.GenderType;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Getter @Setter @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE)
 public class SalableProductCollection extends AbstractCollection<SalableProductCollectionItem> implements Serializable {
@@ -27,6 +28,8 @@ public class SalableProductCollection extends AbstractCollection<SalableProductC
 	@ManyToOne @JoinColumn(name=COLUMN_ACCOUNTING_PERIOD)  @NotNull private AccountingPeriod accountingPeriod;
 	
 	@Embedded private Cost cost;
+	
+	@Accessors(chain=true) private Boolean isProductQuantityUpdated;
 	
 	/**/
 	

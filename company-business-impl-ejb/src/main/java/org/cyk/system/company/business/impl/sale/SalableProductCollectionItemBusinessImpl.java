@@ -2,23 +2,29 @@ package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
+import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
+import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
+import org.cyk.utility.common.helper.NumberHelper;
 
 public class SalableProductCollectionItemBusinessImpl extends AbstractCollectionItemBusinessImpl<SalableProductCollectionItem, SalableProductCollectionItemDao,SalableProductCollection> implements SalableProductCollectionItemBusiness,Serializable {
 
@@ -169,6 +175,25 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 		logMessageBuilder.addNamedParameters("after",salableProductCollectionItem.getCost().toString());
 	}
 	
+	@Override
+	protected void beforeCrud(SalableProductCollectionItem salableProductCollectionItem, Crud crud) {
+		super.beforeCrud(salableProductCollectionItem, crud); 
+		if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getIsProductQuantityUpdated())){
+			if(salableProductCollectionItem.getSalableProduct().getProduct() instanceof TangibleProduct){
+				TangibleProduct tangibleProduct = (TangibleProduct) salableProductCollectionItem.getSalableProduct().getProduct();				
+				if(Crud.DELETE.equals(crud))
+					NumberHelper.getInstance().add(BigDecimal.class, tangibleProduct, TangibleProduct.FIELD_QUANTITY,salableProductCollectionItem.getQuantity());
+				else{
+					SalableProductCollectionItem salableProductCollectionItemDB = Crud.CREATE.equals(crud) ? null : inject(SalableProductCollectionItemDao.class).read(salableProductCollectionItem.getIdentifier());
+					NumberHelper.getInstance().add(BigDecimal.class, tangibleProduct, TangibleProduct.FIELD_QUANTITY
+						, (BigDecimal)NumberHelper.getInstance()
+						.subtract((salableProductCollectionItemDB == null ? BigDecimal.ZERO : salableProductCollectionItemDB.getQuantity()),salableProductCollectionItem.getQuantity()));	
+				}
+				inject(TangibleProductBusiness.class).update(tangibleProduct);
+			}
+		}		
+	}
+	
 	/*
 	private CartesianModel salesCartesianModel(SalesResultsCartesianModelParameters parameters,CartesianModelListener<SaleProduct> cartesianModelListener,String nameId,String yAxisLabelId){
 		if(parameters.getSaleProducts().isEmpty())
@@ -226,4 +251,35 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 		},"field.number.of.sales","field.quantity");
 	}
 	*/	
+	
+	public static interface Listener extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<SalableProductCollectionItem>{
+		
+		Collection<Listener> COLLECTION = new ArrayList<>();
+		
+		/**/
+		
+		public static class Adapter extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener.Adapter<SalableProductCollectionItem> implements Listener, Serializable {
+			private static final long serialVersionUID = -1625238619828187690L;
+			
+			/**/
+			
+			public static class Default extends Listener.Adapter implements Serializable {
+				private static final long serialVersionUID = -1625238619828187690L;
+				
+				/**/
+				
+				public static class EnterpriseResourcePlanning extends Listener.Adapter.Default implements Serializable {
+					private static final long serialVersionUID = -1625238619828187690L;
+					
+					/**/
+					
+					@Override
+					public void afterCreate(final SalableProductCollectionItem salableProductCollectionItem) {
+						super.afterCreate(salableProductCollectionItem);
+						
+					}
+				}
+			}
+		}
+	}
 }

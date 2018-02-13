@@ -26,8 +26,8 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
-import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
+import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
@@ -38,9 +38,11 @@ import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierBusiness;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
+import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.computation.ArithmeticOperator;
 import org.cyk.utility.common.helper.CollectionHelper;
 import org.cyk.utility.common.helper.ConditionHelper;
+import org.cyk.utility.common.helper.InstanceHelper;
 import org.cyk.utility.common.helper.NumberHelper;
 
 public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sale.SearchCriteria> implements SaleBusiness,Serializable {
@@ -64,7 +66,7 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		Sale sale = super.instanciateOne();
 		sale.setCascadeOperationToMaster(Boolean.TRUE);
     	sale.setCascadeOperationToMasterFieldNames(Arrays.asList(Sale.FIELD_SALABLE_PRODUCT_COLLECTION));
-		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne());
+		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne().setIsProductQuantityUpdated(Boolean.TRUE));
 		return sale;
 	}
 	
@@ -103,45 +105,46 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 				,sale.getSalableProductCollection().getCost().getValue(),sale));
 			inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).create(sale.getBalanceMovementCollection(), sale);
 		}
-		/*
-		movementCollection.setType(inject(MovementCollectionTypeDao.class).read(RootConstant.Code.MovementCollectionType.SALE_BALANCE));
-		movementCollection.setValue(sale.getSalableProductCollection().getCost().getValue());
-		movementCollection.setCode(sale.getCode()+Constant.CHARACTER_VERTICAL_BAR+movementCollection.getType().getCode());
-		movementCollection.setName(sale.getName()+Constant.CHARACTER_VERTICAL_BAR+movementCollection.getType().getCode());
-		/*
-		MovementCollectionIdentifiableGlobalIdentifier movementCollectionIdentifiableGlobalIdentifier
-			= inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).instanciateOne();
-		movementCollectionIdentifiableGlobalIdentifier.setCascadeOperationToMaster(Boolean.TRUE);
-		movementCollectionIdentifiableGlobalIdentifier.setCascadeOperationToMasterFieldNames(Arrays.asList(MovementCollectionIdentifiableGlobalIdentifier.FIELD_MOVEMENT_COLLECTION));
-		movementCollectionIdentifiableGlobalIdentifier.setMovementCollection(movementCollection);
-		movementCollectionIdentifiableGlobalIdentifier.setIdentifiableGlobalIdentifier(sale.getGlobalIdentifier());
-		createIfNotIdentified(movementCollectionIdentifiableGlobalIdentifier);
-		*/
-		
+	}
+	
+	@Override
+	protected void beforeDelete(Sale sale) {
+		sale.getSalableProductCollection().getItemsDeletable().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
+		super.beforeDelete(sale);
 	}
 	
 	/*@Override
-	protected void afterCrud(Sale sale, Crud crud) {
-		super.afterCrud(sale, crud);
-		if(Crud.isCreateOrUpdate(crud)){
-			if(sale.getSalableProductCollection().isItemAggregationApplied()){
-				computeBalance(sale);
-				BigDecimal v1 = sale.getBalance().getValue();
-				BigDecimal v2 = sale.getSalableProductCollection().getCost().getValue().subtract(inject(SaleCashRegisterMovementDao.class).sumAmountBySale(sale));
-				exceptionUtils().exception(v1.compareTo(v2)!=0, v1+"balancedoesnotmatch"+v2); 
-				dao.update(sale);	
+	protected void setAutoSettedProperties(Sale sale, final Crud crud) {
+		System.out.println("SaleBusinessImpl.setAutoSettedProperties() 000 : "+crud);
+		new CollectionHelper.Iterator.Adapter.Default<SalableProductCollectionItem>(sale.getSalableProductCollection().getItems().getElements()){
+			private static final long serialVersionUID = 1L;
+			protected void __executeForEach__(SalableProductCollectionItem salableProductCollectionItem) {
+				salableProductCollectionItem.setActionListener(new InstanceHelper.ActionListener.Adapter<SalableProductCollectionItem>() {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public void actBefore(SalableProductCollectionItem salableProductCollectionItem, Constant.Action action) {
+						if(salableProductCollectionItem.getSalableProduct().getProduct() instanceof TangibleProduct){
+							System.out.println("SaleBusinessImpl.setAutoSettedProperties() "+action);
+							TangibleProduct tangibleProduct = (TangibleProduct) salableProductCollectionItem.getSalableProduct().getProduct();
+							SalableProductCollectionItem salableProductCollectionItemDB = Constant.Action.CREATE.equals(action) ? null : inject(SalableProductCollectionItemDao.class).read(salableProductCollectionItem.getIdentifier());
+							if(Crud.DELETE.equals(crud))
+								NumberHelper.getInstance().add(BigDecimal.class, tangibleProduct, TangibleProduct.FIELD_QUANTITY,salableProductCollectionItem.getQuantity());
+							else
+								NumberHelper.getInstance().add(BigDecimal.class, tangibleProduct, TangibleProduct.FIELD_QUANTITY
+									, (BigDecimal)NumberHelper.getInstance()
+									.subtract((salableProductCollectionItemDB == null ? BigDecimal.ZERO : salableProductCollectionItemDB.getQuantity()),salableProductCollectionItem.getQuantity()));	
+							inject(TangibleProductBusiness.class).update(tangibleProduct);
+						}
+					}
+					
+				});
 			}
-		}
-	}*/
-		
-	/*@Override
-	protected void beforeDelete(Sale sale) {
-		super.beforeDelete(sale);
-		inject(SaleCashRegisterMovementBusiness.class).delete(inject(SaleCashRegisterMovementDao.class).readBySale(sale));
-		inject(SaleIdentifiableGlobalIdentifierBusiness.class).delete(inject(SaleIdentifiableGlobalIdentifierDao.class).readBySale(sale));
+		}.execute();
+		super.setAutoSettedProperties(sale, crud);
 	}*/
 	
-	@Override
+	/*@Override
 	protected void afterCrud(Sale sale, final Crud crud) {
 		super.afterCrud(sale, crud);
 		Collection<SalableProductCollectionItem> salableProductCollectionItems = inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection());
@@ -166,7 +169,7 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 				}
 			}
 		}.execute();
-	}
+	}*/
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public SaleResults computeByCriteria(Sale.SearchCriteria criteria) {
