@@ -8,6 +8,7 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.root.persistence.api.AbstractCollectionItemDao;
 
+@Deprecated
 public interface SaleCashRegisterMovementDao extends AbstractCollectionItemDao<SaleCashRegisterMovement,SaleCashRegisterMovementCollection> {
 
 	Collection<SaleCashRegisterMovement> readBySale(Sale sale);

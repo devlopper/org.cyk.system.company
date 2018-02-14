@@ -10,7 +10,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollectionBusiness;
 import org.cyk.system.company.model.CompanyConstant;
@@ -36,6 +35,7 @@ import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.utility.common.LogMessage;
 import org.cyk.utility.common.helper.ConditionHelper;
 
+@Deprecated
 public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItemBusinessImpl<SaleCashRegisterMovement, SaleCashRegisterMovementDao,SaleCashRegisterMovementCollection> implements SaleCashRegisterMovementBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
@@ -202,7 +202,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 		
 		//TODO use listener
 		if(!Crud.READ.equals(crud)){
-			inject(SaleBusiness.class).computeBalance(saleCashRegisterMovement.getSale());
+			//inject(SaleBusiness.class).computeBalance(saleCashRegisterMovement.getSale());
 			inject(SaleDao.class).update(saleCashRegisterMovement.getSale());
 		}
 	}

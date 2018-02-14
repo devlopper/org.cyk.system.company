@@ -20,7 +20,7 @@ import org.cyk.utility.common.annotation.ModelBean.GenderType;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE)
+@Getter @Setter @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE) @Deprecated
 public class SaleCashRegisterMovementCollection extends AbstractCollection<SaleCashRegisterMovement> implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;

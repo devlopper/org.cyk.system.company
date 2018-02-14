@@ -25,11 +25,11 @@ public class FakedDataSet extends RealDataSet implements Serializable {
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_SALABLE_TP4,"TP 004"));
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_SALABLE_TP5,"TP 005"));
 		
-		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP1).setQuantity(new BigDecimal("10")));
-		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP2).setQuantity(new BigDecimal("10")));
-		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP3).setQuantity(new BigDecimal("10")));
-		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP4).setQuantity(new BigDecimal("10")));
-		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP5).setQuantity(new BigDecimal("10")));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP1).setQuantityMovementCollectionValue(new BigDecimal("10")));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP2).setQuantityMovementCollectionValue(new BigDecimal("10")));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP3).setQuantityMovementCollectionValue(new BigDecimal("10")));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP4).setQuantityMovementCollectionValue(new BigDecimal("10")));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP5).setQuantityMovementCollectionValue(new BigDecimal("10")));
 		
     	addInstances(SalableProduct.class, inject(SalableProductBusiness.class).instanciateOne().setProduct(InstanceHelper.Pool.getInstance()
     			.get(TangibleProduct.class, TANGIBLE_PRODUCT_TP1)).setPrice(new BigDecimal("100")));

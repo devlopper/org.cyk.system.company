@@ -12,7 +12,6 @@ import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
@@ -139,24 +138,7 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 					movement.setValueAbsolute(movement.getValueAbsolute().abs());
 					inject(MovementBusiness.class).create(movement);
 				}
-			}
-			
-			if(salableProductCollectionItem.getSalableProduct().getProduct() instanceof TangibleProduct){
-				TangibleProduct tangibleProduct = (TangibleProduct) salableProductCollectionItem.getSalableProduct().getProduct();				
-				/*if(Crud.DELETE.equals(crud))
-					NumberHelper.getInstance().add(BigDecimal.class, tangibleProduct, TangibleProduct.FIELD_QUANTITY,salableProductCollectionItem.getQuantity());
-				else{
-					SalableProductCollectionItem salableProductCollectionItemDB = Crud.CREATE.equals(crud) ? null : inject(SalableProductCollectionItemDao.class).read(salableProductCollectionItem.getIdentifier());
-					NumberHelper.getInstance().add(BigDecimal.class, tangibleProduct, TangibleProduct.FIELD_QUANTITY
-						, (BigDecimal)NumberHelper.getInstance()
-						.subtract((salableProductCollectionItemDB == null ? BigDecimal.ZERO : salableProductCollectionItemDB.getQuantity()),salableProductCollectionItem.getQuantity()));	
-				}
-				inject(TangibleProductBusiness.class).update(tangibleProduct);
-				*/
-				
-				
-				
-			}
+			}			
 		}		
 	}
 	

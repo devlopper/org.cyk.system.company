@@ -1,7 +1,6 @@
 package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,37 +12,26 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
-import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
-import org.cyk.system.root.business.api.BusinessException;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierBusiness;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
-import org.cyk.utility.common.Constant;
-import org.cyk.utility.common.computation.ArithmeticOperator;
-import org.cyk.utility.common.helper.CollectionHelper;
-import org.cyk.utility.common.helper.ConditionHelper;
-import org.cyk.utility.common.helper.InstanceHelper;
-import org.cyk.utility.common.helper.NumberHelper;
 
 public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sale.SearchCriteria> implements SaleBusiness,Serializable {
 
@@ -113,64 +101,6 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		super.beforeDelete(sale);
 	}
 	
-	/*@Override
-	protected void setAutoSettedProperties(Sale sale, final Crud crud) {
-		System.out.println("SaleBusinessImpl.setAutoSettedProperties() 000 : "+crud);
-		new CollectionHelper.Iterator.Adapter.Default<SalableProductCollectionItem>(sale.getSalableProductCollection().getItems().getElements()){
-			private static final long serialVersionUID = 1L;
-			protected void __executeForEach__(SalableProductCollectionItem salableProductCollectionItem) {
-				salableProductCollectionItem.setActionListener(new InstanceHelper.ActionListener.Adapter<SalableProductCollectionItem>() {
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public void actBefore(SalableProductCollectionItem salableProductCollectionItem, Constant.Action action) {
-						if(salableProductCollectionItem.getSalableProduct().getProduct() instanceof TangibleProduct){
-							System.out.println("SaleBusinessImpl.setAutoSettedProperties() "+action);
-							TangibleProduct tangibleProduct = (TangibleProduct) salableProductCollectionItem.getSalableProduct().getProduct();
-							SalableProductCollectionItem salableProductCollectionItemDB = Constant.Action.CREATE.equals(action) ? null : inject(SalableProductCollectionItemDao.class).read(salableProductCollectionItem.getIdentifier());
-							if(Crud.DELETE.equals(crud))
-								NumberHelper.getInstance().add(BigDecimal.class, tangibleProduct, TangibleProduct.FIELD_QUANTITY,salableProductCollectionItem.getQuantity());
-							else
-								NumberHelper.getInstance().add(BigDecimal.class, tangibleProduct, TangibleProduct.FIELD_QUANTITY
-									, (BigDecimal)NumberHelper.getInstance()
-									.subtract((salableProductCollectionItemDB == null ? BigDecimal.ZERO : salableProductCollectionItemDB.getQuantity()),salableProductCollectionItem.getQuantity()));	
-							inject(TangibleProductBusiness.class).update(tangibleProduct);
-						}
-					}
-					
-				});
-			}
-		}.execute();
-		super.setAutoSettedProperties(sale, crud);
-	}*/
-	
-	/*@Override
-	protected void afterCrud(Sale sale, final Crud crud) {
-		super.afterCrud(sale, crud);
-		Collection<SalableProductCollectionItem> salableProductCollectionItems = inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection());
-		new CollectionHelper.Iterator.Adapter.Default<SalableProductCollectionItem>(salableProductCollectionItems){
-			private static final long serialVersionUID = 1L;
-			protected void __executeForEach__(SalableProductCollectionItem salableProductCollectionItem) {
-				if(Crud.isCreateOrUpdate(crud)){
-					if(salableProductCollectionItem.getSalableProduct().getProduct() instanceof TangibleProduct){
-						TangibleProduct tangibleProduct = (TangibleProduct) salableProductCollectionItem.getSalableProduct().getProduct();
-						if(Crud.CREATE.equals(crud))
-							NumberHelper.getInstance().add(BigDecimal.class, tangibleProduct, TangibleProduct.FIELD_QUANTITY
-									, NumberHelper.getInstance().negate(salableProductCollectionItem.getQuantity()));
-						else if(Crud.DELETE.equals(crud))
-							NumberHelper.getInstance().add(BigDecimal.class, tangibleProduct, TangibleProduct.FIELD_QUANTITY,salableProductCollectionItem.getQuantity());
-						else{
-							//System.out.println("SaleBusinessImpl.afterCrud() "+tangibleProduct.getQuantity()+" - "+salableProductCollectionItem.getQuantity());
-							//NumberHelper.getInstance().add(BigDecimal.class, tangibleProduct, TangibleProduct.FIELD_QUANTITY
-							//		, (BigDecimal)NumberHelper.getInstance().subtract(tangibleProduct.getQuantity(),salableProductCollectionItem.getQuantity()));
-						}
-						inject(TangibleProductBusiness.class).update(tangibleProduct);
-					}
-				}
-			}
-		}.execute();
-	}*/
-	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public SaleResults computeByCriteria(Sale.SearchCriteria criteria) {
 		return dao.computeByCriteria(criteria);
@@ -179,44 +109,6 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public ReportBasedOnTemplateFile<SaleReport> findReport(Sale sale) {
 		return null;
-	}
-	
-	@Override @Deprecated
-	public void computeBalance(Sale sale) {
-		//if( sale.getSalableProductCollection().isItemAggregationApplied())
-		//	computeBalance(sale, inject(SaleCashRegisterMovementDao.class).sumAmountBySale(sale));
-	}
-
-	@Override @Deprecated
-	public void computeBalance(Sale sale, Collection<SaleCashRegisterMovement> saleCashRegisterMovements) {
-		BigDecimal sumOfSaleCashRegisterMovementAmount = BigDecimal.ZERO;
-		if(saleCashRegisterMovements!=null)
-			for(SaleCashRegisterMovement saleCashRegisterMovement : saleCashRegisterMovements)
-				sumOfSaleCashRegisterMovementAmount = sumOfSaleCashRegisterMovementAmount.add(saleCashRegisterMovement.getAmount());
-		computeBalance(sale, sumOfSaleCashRegisterMovementAmount);
-	}
-	@Deprecated
-	private void computeBalance(Sale sale,BigDecimal sumOfSaleCashRegisterMovementAmount){
-		BigDecimal balanceValue = sale.getSalableProductCollection().getCost().getValue().subtract(sumOfSaleCashRegisterMovementAmount);
-		
-		throw__(new ConditionHelper.Condition.Builder.Comparison.Adapter.Default().setValueNameIdentifier("balance").setDomainNameIdentifier("sale")
-			.setNumber1(balanceValue).setNumber2(BigDecimal.ZERO).setGreater(Boolean.FALSE).setEqual(Boolean.FALSE), BusinessException.class);
-		
-		//exceptionUtils().comparison(balanceValue.signum()==-1, "balance", ArithmeticOperator.GTE, BigDecimal.ZERO);
-		Integer costValueBalanceValueComparison = sale.getSalableProductCollection().getCost().getValue().compareTo(balanceValue);
-		/*
-		exceptionUtils().comparison(costValueBalanceValueComparison==0 && !sale.getSalableProductCollection().getCost().getValue().equals(balanceValue), "field.cost : "+sale.getSalableProductCollection().getCost().getValue()
-				, ArithmeticOperator.EQ, "field.balance : "+balanceValue);
-		*/
-		exceptionUtils().comparison(costValueBalanceValueComparison==-1, "balance", ArithmeticOperator.LTE, sale.getSalableProductCollection().getCost().getValue());
-		//exceptionUtils().exception(costValueBalanceValueComparison==-1, "balancecannotbegreaterthancost");
-		
-		
-		sale.getBalance().setValue(balanceValue);
-		/*
-		exceptionUtils().comparison(!Boolean.TRUE.equals(sale.getSalableProductCollection().getAccountingPeriod().getSaleConfiguration().getBalanceCanBeNegative()) 
-				&& newBalance.signum() == -1, inject(LanguageBusiness.class).findText("field.balance"),ArithmeticOperator.GTE,BigDecimal.ZERO);
-		*/
 	}
 		
 	/**/

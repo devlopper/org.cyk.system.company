@@ -16,6 +16,7 @@ import org.cyk.system.root.persistence.impl.AbstractCollectionItemDaoImpl;
 import org.cyk.system.root.persistence.impl.QueryStringBuilder;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
 
+@Deprecated
 public class SaleCashRegisterMovementDaoImpl extends AbstractCollectionItemDaoImpl<SaleCashRegisterMovement,SaleCashRegisterMovementCollection> implements SaleCashRegisterMovementDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;

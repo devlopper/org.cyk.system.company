@@ -11,6 +11,7 @@ import org.cyk.system.root.business.api.AbstractCollectionItemBusiness;
 import org.cyk.system.root.model.mathematics.MovementAction;
 import org.cyk.system.root.model.security.UserAccount;
 
+@Deprecated
 public interface SaleCashRegisterMovementBusiness extends AbstractCollectionItemBusiness<SaleCashRegisterMovement,SaleCashRegisterMovementCollection> {
 
 	SaleCashRegisterMovement instanciateOne(Sale sale,CashRegister cashRegister,Boolean input);

@@ -22,7 +22,7 @@ public class TangibleProduct extends Product implements Serializable  {
 	
 	@Transient @Accessors(chain=true) protected MovementCollection quantityMovementCollection;
 	
-	public TangibleProduct setQuantity(BigDecimal value){
+	public TangibleProduct setQuantityMovementCollectionValue(BigDecimal value){
 		quantityMovementCollection.setValue(value);
 		return this;
 	}

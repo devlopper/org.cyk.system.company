@@ -1,6 +1,7 @@
 package org.cyk.system.company.model.sale;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -13,9 +14,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.payment.BalanceType;
+import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
@@ -26,7 +29,7 @@ import org.cyk.utility.common.annotation.ModelBean.GenderType;
 public class Sale extends AbstractSale implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@Transient private MovementCollection balanceMovementCollection;
+	@Transient @Accessors(chain=true) private MovementCollection balanceMovementCollection;
 	
 	@Deprecated
 	@Embedded private Balance balance;
@@ -34,6 +37,11 @@ public class Sale extends AbstractSale implements Serializable {
 	/**/
 	@Deprecated
 	@Transient private Collection<SaleCashRegisterMovement> saleCashRegisterMovements = new ArrayList<>();
+	
+	public Sale setBalanceMovementCollectionValue(BigDecimal value){
+		balanceMovementCollection.setValue(value);
+		return this;
+	}
 	
 	/**/
 	@Deprecated
