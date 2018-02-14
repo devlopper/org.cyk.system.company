@@ -95,8 +95,8 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	@Deprecated
 	public void set(StockableTangibleProduct stockableTangibleProduct,String tangibleProductCode,String minimum,String maximum,String value){
 		stockableTangibleProduct.setTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode));
-		stockableTangibleProduct.setMovementCollection(new MovementCollection()); 
-		set(stockableTangibleProduct.getMovementCollection(), tangibleProductCode,"Le stock",value==null?"0":value, minimum, maximum,"Input","Output");
+		//stockableTangibleProduct.setMovementCollection(new MovementCollection()); 
+		//set(stockableTangibleProduct.getMovementCollection(), tangibleProductCode,"Le stock",value==null?"0":value, minimum, maximum,"Input","Output");
 	}
 	
 	@Deprecated
@@ -579,12 +579,12 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     @Deprecated
     public void assertStockableTangibleProduct(String tangibleProductCode,ObjectFieldValues expectedValues){
     	StockableTangibleProduct stockableTangibleProduct = stockableTangibleProductDao.readByTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode));
-    	doAssertions(stockableTangibleProduct.getMovementCollection(), expectedValues);
+    	//doAssertions(stockableTangibleProduct.getMovementCollection(), expectedValues);
     }
     @Deprecated
     public void assertStockableTangibleProduct(String tangibleProductCode,String value){
-    	assertStockableTangibleProduct(tangibleProductCode, new ObjectFieldValues(StockableTangibleProduct.class)
-    			.setBaseName(StockableTangibleProduct.FIELD_MOVEMENT_COLLECTION).set(MovementCollection.FIELD_VALUE,value));
+    	//assertStockableTangibleProduct(tangibleProductCode, new ObjectFieldValues(StockableTangibleProduct.class)
+    	//		.setBaseName(StockableTangibleProduct.FIELD_MOVEMENT_COLLECTION).set(MovementCollection.FIELD_VALUE,value));
     }
     
     

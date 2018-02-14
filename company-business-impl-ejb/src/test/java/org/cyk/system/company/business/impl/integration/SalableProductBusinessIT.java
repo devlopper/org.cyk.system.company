@@ -14,6 +14,7 @@ import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.root.business.impl__data__.DataSet;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
+import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.common.helper.RandomHelper;
@@ -76,7 +77,7 @@ public class SalableProductBusinessIT extends AbstractBusinessIT {
 		@SuppressWarnings({ "rawtypes" })
 		@Override
 		public Collection getClasses() {
-			return Arrays.asList(SalableProduct.class);
+			return Arrays.asList(SalableProduct.class,Movement.class);
 		}
 		
     }

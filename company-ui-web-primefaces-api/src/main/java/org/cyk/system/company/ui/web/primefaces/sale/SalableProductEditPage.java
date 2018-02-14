@@ -57,7 +57,7 @@ public class SalableProductEditPage extends AbstractCrudOnePage<SalableProduct> 
 		if(Boolean.TRUE.equals(CREATE_ON_PRODUCT))
 			super.create();
 		else
-			inject(SalableProductBusiness.class).create(TangibleProduct.class, ((Form)form.getData()).code, ((Form)form.getData()).name, ((Form)form.getData()).price);
+			;//inject(SalableProductBusiness.class).create(TangibleProduct.class, ((Form)form.getData()).code, ((Form)form.getData()).name, ((Form)form.getData()).price);
 	}
 		
 	public static class Form extends AbstractFormModel<SalableProduct> implements Serializable{

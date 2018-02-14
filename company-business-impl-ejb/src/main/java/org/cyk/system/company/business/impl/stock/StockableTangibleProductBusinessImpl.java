@@ -14,20 +14,28 @@ import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
+import org.cyk.system.root.business.impl.helper.FieldHelper;
+import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
+import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
 
-@Deprecated
 public class StockableTangibleProductBusinessImpl extends AbstractTypedBusinessService<StockableTangibleProduct, StockableTangibleProductDao> implements StockableTangibleProductBusiness,Serializable {
-
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	//private static final String INPUT_LABEL = "Input";
-	//private static final String OUTPUT_LABEL = "Output";
-	
 	@Inject private TangibleProductDao tangibleProductDao;
 	
 	@Inject
 	public StockableTangibleProductBusinessImpl(StockableTangibleProductDao dao) {
 		super(dao);
+	}
+	
+	@Override
+	protected void computeChanges(StockableTangibleProduct stockableTangibleProduct, Builder logMessageBuilder) {
+		super.computeChanges(stockableTangibleProduct, logMessageBuilder);
+		FieldHelper.getInstance().copy(stockableTangibleProduct.getTangibleProduct(), stockableTangibleProduct,Boolean.FALSE
+				,org.cyk.utility.common.helper.FieldHelper.getInstance().buildPath(
+						AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE),org.cyk.utility.common.helper.FieldHelper.getInstance().buildPath(
+								AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME));
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)

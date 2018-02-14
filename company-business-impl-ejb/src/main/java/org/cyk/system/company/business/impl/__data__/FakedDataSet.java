@@ -25,6 +25,12 @@ public class FakedDataSet extends RealDataSet implements Serializable {
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_SALABLE_TP4,"TP 004"));
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_SALABLE_TP5,"TP 005"));
 		
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_STOCKABLE_TP1,"TP 001"));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_STOCKABLE_TP2,"TP 002"));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_STOCKABLE_TP3,"TP 003"));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_STOCKABLE_TP4,"TP 004"));
+		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_STOCKABLE_TP5,"TP 005"));
+		
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP1).setQuantityMovementCollectionValue(new BigDecimal("10")));
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP2).setQuantityMovementCollectionValue(new BigDecimal("10")));
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_TP3).setQuantityMovementCollectionValue(new BigDecimal("10")));
@@ -75,6 +81,12 @@ public class FakedDataSet extends RealDataSet implements Serializable {
 	public static final String TANGIBLE_PRODUCT_NO_SALABLE_TP3 = RandomHelper.getInstance().getAlphabetic(4);
 	public static final String TANGIBLE_PRODUCT_NO_SALABLE_TP4 = RandomHelper.getInstance().getAlphabetic(4);
 	public static final String TANGIBLE_PRODUCT_NO_SALABLE_TP5 = RandomHelper.getInstance().getAlphabetic(4);
+	
+	public static final String TANGIBLE_PRODUCT_NO_STOCKABLE_TP1 = RandomHelper.getInstance().getAlphabetic(4);
+	public static final String TANGIBLE_PRODUCT_NO_STOCKABLE_TP2 = RandomHelper.getInstance().getAlphabetic(4);
+	public static final String TANGIBLE_PRODUCT_NO_STOCKABLE_TP3 = RandomHelper.getInstance().getAlphabetic(4);
+	public static final String TANGIBLE_PRODUCT_NO_STOCKABLE_TP4 = RandomHelper.getInstance().getAlphabetic(4);
+	public static final String TANGIBLE_PRODUCT_NO_STOCKABLE_TP5 = RandomHelper.getInstance().getAlphabetic(4);
 	
 	//public static final BigDecimal SALABLE_PRODUCT_TP1 = RandomHelper.getInstance().getAlphabetic(4);
 }

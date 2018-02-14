@@ -6,7 +6,6 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.root.business.api.TypedBusiness;
 
-@Deprecated
 public interface StockableTangibleProductBusiness extends TypedBusiness<StockableTangibleProduct> {
 
 	StockableTangibleProduct instanciateOne(TangibleProduct tangibleProduct);
