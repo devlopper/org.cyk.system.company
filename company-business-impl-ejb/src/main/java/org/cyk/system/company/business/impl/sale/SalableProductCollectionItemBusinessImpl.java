@@ -12,12 +12,15 @@ import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
+import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
+import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
@@ -115,30 +118,34 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	protected void beforeCrud(SalableProductCollectionItem salableProductCollectionItem, Crud crud) {
 		super.beforeCrud(salableProductCollectionItem, crud); 
 		if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getIsProductQuantityUpdated())){
-			Collection<MovementCollectionIdentifiableGlobalIdentifier> movementCollectionIdentifiableGlobalIdentifiers = inject(MovementCollectionIdentifiableGlobalIdentifierDao.class)
-					.readByIdentifiableGlobalIdentifier(salableProductCollectionItem.getSalableProduct().getProduct());
-			for(MovementCollectionIdentifiableGlobalIdentifier index : movementCollectionIdentifiableGlobalIdentifiers){
-				Movement movement = inject(MovementBusiness.class).instanciateOne(index.getMovementCollection());
-				if(index.getMovementCollection().getType().getCode().equals(RootConstant.Code.MovementCollectionType.STOCK_REGISTER)){
-					movement.setValueAbsolute(salableProductCollectionItem.getQuantity());
-				}
-				movement.setValueSettableFromAbsolute(Boolean.TRUE);
-				if(Crud.DELETE.equals(crud)){
-					movement.setAction(index.getMovementCollection().getType().getIncrementAction());
-				}else{
-					SalableProductCollectionItem salableProductCollectionItemDB = Crud.CREATE.equals(crud) ? null : inject(SalableProductCollectionItemDao.class).read(salableProductCollectionItem.getIdentifier());
-					movement.setValueAbsolute( (BigDecimal)NumberHelper.getInstance().subtract(movement.getValueAbsolute()
-							,(salableProductCollectionItemDB == null ? BigDecimal.ZERO : salableProductCollectionItemDB.getQuantity())));
-					if(movement.getValueAbsolute().signum() == 1)
-						movement.setAction(index.getMovementCollection().getType().getDecrementAction());
-					else if(movement.getValueAbsolute().signum() == -1)
+			TangibleProduct tangibleProduct = (TangibleProduct) salableProductCollectionItem.getSalableProduct().getProduct();
+			StockableTangibleProduct stockableTangibleProduct = inject(StockableTangibleProductDao.class).readByTangibleProduct(tangibleProduct);
+			if(stockableTangibleProduct!=null){
+				Collection<MovementCollectionIdentifiableGlobalIdentifier> movementCollectionIdentifiableGlobalIdentifiers = inject(MovementCollectionIdentifiableGlobalIdentifierDao.class)
+						.readByIdentifiableGlobalIdentifier(stockableTangibleProduct);
+				for(MovementCollectionIdentifiableGlobalIdentifier index : movementCollectionIdentifiableGlobalIdentifiers){
+					Movement movement = inject(MovementBusiness.class).instanciateOne(index.getMovementCollection());
+					if(index.getMovementCollection().getType().getCode().equals(RootConstant.Code.MovementCollectionType.STOCK_REGISTER)){
+						movement.setValueAbsolute(salableProductCollectionItem.getQuantity());
+					}
+					movement.setValueSettableFromAbsolute(Boolean.TRUE);
+					if(Crud.DELETE.equals(crud)){
 						movement.setAction(index.getMovementCollection().getType().getIncrementAction());
+					}else{
+						SalableProductCollectionItem salableProductCollectionItemDB = Crud.CREATE.equals(crud) ? null : inject(SalableProductCollectionItemDao.class).read(salableProductCollectionItem.getIdentifier());
+						movement.setValueAbsolute( (BigDecimal)NumberHelper.getInstance().subtract(movement.getValueAbsolute()
+								,(salableProductCollectionItemDB == null ? BigDecimal.ZERO : salableProductCollectionItemDB.getQuantity())));
+						if(movement.getValueAbsolute().signum() == 1)
+							movement.setAction(index.getMovementCollection().getType().getDecrementAction());
+						else if(movement.getValueAbsolute().signum() == -1)
+							movement.setAction(index.getMovementCollection().getType().getIncrementAction());
+					}
+					if(movement.getAction() != null){
+						movement.setValueAbsolute(movement.getValueAbsolute().abs());
+						inject(MovementBusiness.class).create(movement);
+					}
 				}
-				if(movement.getAction() != null){
-					movement.setValueAbsolute(movement.getValueAbsolute().abs());
-					inject(MovementBusiness.class).create(movement);
-				}
-			}			
+			}
 		}		
 	}
 	

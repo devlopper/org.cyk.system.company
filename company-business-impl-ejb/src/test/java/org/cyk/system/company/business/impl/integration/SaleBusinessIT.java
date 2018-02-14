@@ -66,7 +66,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	testCase.create(sale);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 1l);
     	testCase.assertSalableProductCollection(saleCode,"2","200","31","169");
-    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "8");
+    	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "8");
     	
     	sale = testCase.read(Sale.class, saleCode);
     	sale.getSalableProductCollection().getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
@@ -74,7 +74,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	testCase.update(sale);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 1l);
     	testCase.assertSalableProductCollection(saleCode,"2","200","31","169");
-    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "8");
+    	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "8");
     	
     	testCase.clean();
     }
@@ -170,21 +170,21 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	salableProductCollectionItem.setQuantity(new BigDecimal("4"));
     	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.create(sale);
-    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "6");
+    	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "6");
     	
     	sale = testCase.read(Sale.class, saleCode);
     	sale.getSalableProductCollection().getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
     	sale.getSalableProductCollection().getItems().getElements().iterator().next().setQuantity(new BigDecimal("3"));
     	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.update(sale);
-    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "7");
+    	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "7");
     	
     	sale = testCase.read(Sale.class, saleCode);
     	sale.getSalableProductCollection().getItems().removeAll();
     	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.update(sale);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, 0l);
-    	testCase.assertTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
+    	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	
     	testCase.clean();
     }

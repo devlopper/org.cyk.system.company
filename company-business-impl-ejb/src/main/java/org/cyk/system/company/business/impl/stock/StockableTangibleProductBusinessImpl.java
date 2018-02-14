@@ -1,32 +1,40 @@
 package org.cyk.system.company.business.impl.stock;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.stock.StockableTangibleProductBusiness;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
-import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
+import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
+import org.cyk.system.root.business.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.helper.FieldHelper;
 import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
+import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.system.root.persistence.api.mathematics.MovementCollectionDao;
+import org.cyk.system.root.persistence.api.mathematics.MovementCollectionTypeDao;
+import org.cyk.utility.common.helper.CollectionHelper;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
 
 public class StockableTangibleProductBusinessImpl extends AbstractTypedBusinessService<StockableTangibleProduct, StockableTangibleProductDao> implements StockableTangibleProductBusiness,Serializable {
 	private static final long serialVersionUID = -7830673760640348717L;
 
-	@Inject private TangibleProductDao tangibleProductDao;
-	
 	@Inject
 	public StockableTangibleProductBusinessImpl(StockableTangibleProductDao dao) {
 		super(dao);
+	}
+	
+	@Override
+	public StockableTangibleProduct instanciateOne() {
+		StockableTangibleProduct stockableTangibleProduct = super.instanciateOne();
+		stockableTangibleProduct.setQuantityMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne(RootConstant.Code.MovementCollectionType.STOCK_REGISTER
+				,null,stockableTangibleProduct));
+		return stockableTangibleProduct;
 	}
 	
 	@Override
@@ -38,34 +46,18 @@ public class StockableTangibleProductBusinessImpl extends AbstractTypedBusinessS
 								AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME));
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public StockableTangibleProduct instanciateOne(TangibleProduct tangibleProduct) {
-		/*StockableTangibleProduct stockableTangibleProduct = new StockableTangibleProduct();
-		stockableTangibleProduct.setTangibleProduct(tangibleProduct);
-		stockableTangibleProduct.setMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne(tangibleProduct.getCode(), INPUT_LABEL,OUTPUT_LABEL));*/
-		return null;
+	@Override
+	protected void afterCreate(StockableTangibleProduct stockableTangibleProduct) {
+		super.afterCreate(stockableTangibleProduct);
+		if(stockableTangibleProduct.getQuantityMovementCollection() != null){
+			inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).create(stockableTangibleProduct.getQuantityMovementCollection(), stockableTangibleProduct);
+		}
 	}
 	
 	@Override
-	public StockableTangibleProduct instanciateOne(String tangibleProductCode) {
-		return instanciateOne(tangibleProductDao.read(tangibleProductCode));
+	public void setQuantityMovementCollection(StockableTangibleProduct stockableTangibleProduct) {
+		Collection<MovementCollection> movementCollections = inject(MovementCollectionDao.class).readByTypeByJoin(
+				inject(MovementCollectionTypeDao.class).read(RootConstant.Code.MovementCollectionType.STOCK_REGISTER), stockableTangibleProduct);
+		stockableTangibleProduct.setQuantityMovementCollection(CollectionHelper.getInstance().getFirst(movementCollections));
 	}
-	
-	@Override
-	public List<StockableTangibleProduct> instanciateMany(String[][] arguments) {
-		List<StockableTangibleProduct> list = new ArrayList<>();
-		for(String[] info : arguments)
-			list.add(instanciateOne(info[0]));
-		return list;
-	}
-	
-	@Override
-	public StockableTangibleProduct create(StockableTangibleProduct stockableTangibleProduct) {
-		/*if(stockableTangibleProduct.getMovementCollection()==null)
-			stockableTangibleProduct.setMovementCollection(inject(MovementCollectionBusiness.class)
-					.instanciateOne(stockableTangibleProduct.getTangibleProduct().getCode(), INPUT_LABEL,OUTPUT_LABEL));
-		inject(MovementCollectionBusiness.class).create(stockableTangibleProduct.getMovementCollection());*/
-		return super.create(stockableTangibleProduct);
-	}
-
 }

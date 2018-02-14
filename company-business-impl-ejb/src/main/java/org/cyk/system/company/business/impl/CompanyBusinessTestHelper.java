@@ -10,15 +10,18 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
+import org.cyk.system.company.business.api.stock.StockableTangibleProductBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
@@ -57,9 +60,6 @@ import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachin
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.ObjectFieldValues;
 import org.cyk.utility.common.test.TestEnvironmentListener.Try;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Singleton
 public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implements Serializable {
@@ -650,14 +650,14 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	public static class TestCase extends AbstractBusinessTestHelper.TestCase implements Serializable {
 		private static final long serialVersionUID = 1L;
 		
-		public void assertTangibleProduct(TangibleProduct tangibleProduct,String expectedQuantity){
-			assertBigDecimalEquals("tangible product quantity is not equal", expectedQuantity, tangibleProduct.getQuantityMovementCollection().getValue());
+		public void assertStockableTangibleProduct(StockableTangibleProduct stockableTangibleProduct,String expectedQuantity){
+			assertBigDecimalEquals("stockable tangible product quantity is not equal", expectedQuantity, stockableTangibleProduct.getQuantityMovementCollection().getValue());
 	    }
 		
-		public void assertTangibleProduct(String code,String expectedQuantity){
-			TangibleProduct tangibleProduct = read(TangibleProduct.class, code);
-			inject(TangibleProductBusiness.class).setQuantityMovementCollection(tangibleProduct);
-			assertTangibleProduct(tangibleProduct, expectedQuantity);
+		public void assertStockableTangibleProduct(String code,String expectedQuantity){
+			StockableTangibleProduct stockableTangibleProduct = read(StockableTangibleProduct.class, code);
+			inject(StockableTangibleProductBusiness.class).setQuantityMovementCollection(stockableTangibleProduct);
+			assertStockableTangibleProduct(stockableTangibleProduct, expectedQuantity);
 		}
 		
 		public void assertCost(Cost cost,String expectedNumberOfElements,String expectedValue,String expectedTax,String expectedTurnover){

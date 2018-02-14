@@ -13,6 +13,7 @@ import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.root.business.impl__data__.DataSet;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.utility.common.helper.ClassHelper;
@@ -32,7 +33,7 @@ public class ProductBusinessIT extends AbstractBusinessIT {
     	tangibleProduct.setCode("TP001");
     	tangibleProduct.setName("My tang");
     	testCase.create(tangibleProduct);
-    	testCase.assertTangibleProduct("TP001", null);
+    	testCase.assertNull(StockableTangibleProduct.class,"TP001");
     	testCase.clean();
     }
     
