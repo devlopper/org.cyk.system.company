@@ -30,7 +30,6 @@ import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementCollectionIdentifiableGlobalIdentifier;
 import org.cyk.system.root.persistence.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierDao;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
-import org.cyk.utility.common.helper.NumberHelper;
 
 public class SalableProductCollectionItemBusinessImpl extends AbstractCollectionItemBusinessImpl<SalableProductCollectionItem, SalableProductCollectionItemDao,SalableProductCollection> implements SalableProductCollectionItemBusiness,Serializable {
 
@@ -124,26 +123,9 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 				Collection<MovementCollectionIdentifiableGlobalIdentifier> movementCollectionIdentifiableGlobalIdentifiers = inject(MovementCollectionIdentifiableGlobalIdentifierDao.class)
 						.readByIdentifiableGlobalIdentifier(stockableTangibleProduct);
 				for(MovementCollectionIdentifiableGlobalIdentifier index : movementCollectionIdentifiableGlobalIdentifiers){
-					Movement movement = inject(MovementBusiness.class).instanciateOne(index.getMovementCollection());
-					if(index.getMovementCollection().getType().getCode().equals(RootConstant.Code.MovementCollectionType.STOCK_REGISTER)){
-						movement.setValueAbsolute(salableProductCollectionItem.getQuantity());
-					}
-					movement.setValueSettableFromAbsolute(Boolean.TRUE);
-					if(Crud.DELETE.equals(crud)){
-						movement.setAction(index.getMovementCollection().getType().getIncrementAction());
-					}else{
-						SalableProductCollectionItem salableProductCollectionItemDB = Crud.CREATE.equals(crud) ? null : inject(SalableProductCollectionItemDao.class).read(salableProductCollectionItem.getIdentifier());
-						movement.setValueAbsolute( (BigDecimal)NumberHelper.getInstance().subtract(movement.getValueAbsolute()
-								,(salableProductCollectionItemDB == null ? BigDecimal.ZERO : salableProductCollectionItemDB.getQuantity())));
-						if(movement.getValueAbsolute().signum() == 1)
-							movement.setAction(index.getMovementCollection().getType().getDecrementAction());
-						else if(movement.getValueAbsolute().signum() == -1)
-							movement.setAction(index.getMovementCollection().getType().getIncrementAction());
-					}
-					if(movement.getAction() != null){
-						movement.setValueAbsolute(movement.getValueAbsolute().abs());
-						inject(MovementBusiness.class).create(movement);
-					}
+					Movement tangibleProductQuantityMovement = inject(MovementBusiness.class).instanciateOne(index.getMovementCollection(), RootConstant.Code.MovementCollectionType.STOCK_REGISTER
+							, crud, salableProductCollectionItem,SalableProductCollectionItem.FIELD_QUANTITY);
+					inject(MovementBusiness.class).createIfActionIsNotNull(tangibleProductQuantityMovement);
 				}
 			}
 		}		
