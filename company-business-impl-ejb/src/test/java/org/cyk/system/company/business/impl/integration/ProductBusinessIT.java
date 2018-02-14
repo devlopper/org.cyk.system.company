@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
+import org.cyk.system.company.business.api.product.ProductCategoryBusiness;
+import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.company.business.impl.__data__.RealDataSet;
 import org.cyk.system.company.model.product.IntangibleProduct;
@@ -25,18 +28,18 @@ public class ProductBusinessIT extends AbstractBusinessIT {
     @Test
     public void crudOneTangibleProduct(){
     	TestCase testCase = instanciateTestCase(); 
-    	TangibleProduct tangibleProduct = new TangibleProduct();
+    	TangibleProduct tangibleProduct = inject(TangibleProductBusiness.class).instanciateOne();
     	tangibleProduct.setCode("TP001");
     	tangibleProduct.setName("My tang");
     	testCase.create(tangibleProduct);
-    	
+    	testCase.assertTangibleProduct("TP001", null);
     	testCase.clean();
     }
     
     @Test
     public void crudOneIntangibleProduct(){
     	TestCase testCase = instanciateTestCase(); 
-    	IntangibleProduct intangibleProduct = new IntangibleProduct();
+    	IntangibleProduct intangibleProduct = inject(IntangibleProductBusiness.class).instanciateOne();
     	intangibleProduct.setCode("IP001");
     	intangibleProduct.setName("My int");
     	testCase.create(intangibleProduct);
@@ -47,7 +50,7 @@ public class ProductBusinessIT extends AbstractBusinessIT {
     @Test
     public void crudOneProductCategory(){
     	TestCase testCase = instanciateTestCase(); 
-    	ProductCategory productCategory = new ProductCategory();
+    	ProductCategory productCategory = inject(ProductCategoryBusiness.class).instanciateOne();
     	productCategory.setCode("PC001");
     	productCategory.setName("My categ");
     	testCase.create(productCategory);

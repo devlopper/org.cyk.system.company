@@ -4,6 +4,6 @@ import org.cyk.system.company.model.product.TangibleProduct;
 
 public interface TangibleProductBusiness extends AbstractProductBusiness<TangibleProduct> {
 
-	
+	void setQuantityMovementCollection(TangibleProduct tangibleProduct);
 
 }

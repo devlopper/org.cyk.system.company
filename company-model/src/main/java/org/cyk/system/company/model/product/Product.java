@@ -13,7 +13,6 @@ import javax.persistence.Transient;
 
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.model.AbstractEnumeration;
-import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudInheritanceStrategy;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
@@ -34,14 +33,12 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	@Column(precision=10,scale=FLOAT_SCALE) @Accessors(chain=true) private BigDecimal price;
 	
 	@Transient @Accessors(chain=true) protected OwnedCompany ownedCompany;
-	@Transient @Accessors(chain=true) protected MovementCollection quantityMovementCollection;
 	
 	public static final String FIELD_CATEGORY = "category";
 	public static final String FIELD_TYPE = "type";
 	public static final String FIELD_PRICE = "price";
 	
 	public static final String FIELD_OWNED_COMPANY = "ownedCompany";
-	public static final String FIELD_QUANTITY_MOVEMENT_COLLECTION = "quantityMovementCollection";
 	
 	public static final String COLUMN_CATEGORY = FIELD_CATEGORY;
 	public static final String COLUMN_TYPE = FIELD_TYPE;

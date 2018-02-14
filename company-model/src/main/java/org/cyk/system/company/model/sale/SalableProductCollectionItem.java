@@ -29,7 +29,6 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
 @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE)
 public class SalableProductCollectionItem extends AbstractCollectionItem<SalableProductCollection> implements Serializable {
-	
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne @JoinColumn(name=COLUMN_SALABLE_PRODUCT) @NotNull private SalableProduct salableProduct;
