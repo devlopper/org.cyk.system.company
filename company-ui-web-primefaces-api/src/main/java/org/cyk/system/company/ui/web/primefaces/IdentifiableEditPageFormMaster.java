@@ -41,23 +41,24 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 			detail.add(SalableProduct.FIELD_PRICE).addBreak();
 		}else if(SalableProductCollection.class.equals(actionOnClass)){
 						
-			prepareSalableProductCollection(detail,null);
+			prepareSalableProductCollection(detail,null,Boolean.FALSE);
 		}else if(Sale.class.equals(actionOnClass)){
 			//((Sale)getObject()).getBalance().setValue(BigDecimal.ZERO);
 			//((Sale)getObject()).getBalance().setCumul(BigDecimal.ZERO);
-			prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION);
+			prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION,Boolean.FALSE);
 		}
 	}
 	
-	public static void prepareSalableProductCollection(Form.Detail detail,final String fieldName){
+	public static void prepareSalableProductCollection(Form.Detail detail,final String fieldName,Boolean addExistencePeriodFromDate){
 		SalableProductCollection salableProductCollection = (SalableProductCollection) (StringHelper.getInstance().isBlank(fieldName) ? detail.getMaster().getObject() 
 				: FieldHelper.getInstance().read(detail.getMaster().getObject(), fieldName));
 		final Boolean isCreateOrUpdate = Constant.Action.isCreateOrUpdate((Constant.Action)detail._getPropertyAction());
 		salableProductCollection.getItems().setSynchonizationEnabled(isCreateOrUpdate);
 		salableProductCollection.getItems().removeAll(); // will be filled up by the data table load call
+		if(Boolean.TRUE.equals(addExistencePeriodFromDate))
+			addExistencePeriodFromDate(detail);
 		detail.setFieldsObjectFromMaster(fieldName,SalableProductCollection.FIELD_COST);
-		detail.addReadOnly(Cost.FIELD_VALUE);
-		addExistencePeriodFromDate(detail);
+		detail.addReadOnly(Cost.FIELD_VALUE).addBreak();
 		
 		DataTable dataTable = detail.getMaster().instanciateDataTable(SalableProductCollectionItem.class,isCreateOrUpdate ? SalableProduct.class : null,new DataTable.Cell.Listener.Adapter.Default(),Boolean.TRUE);
 		dataTable.getPropertiesMap().setChoicesIsSourceDisjoint(Boolean.FALSE);

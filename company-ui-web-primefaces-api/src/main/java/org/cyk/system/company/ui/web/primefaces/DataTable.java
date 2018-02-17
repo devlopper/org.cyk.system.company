@@ -11,6 +11,7 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.Movement;
+import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.Constant.Action;
 import org.cyk.utility.common.helper.FieldHelper;
@@ -46,6 +47,8 @@ public class DataTable {
 				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_VALUE));
 			}else if(Sale.class.equals(actionOnClass)){
 				fieldNames.remove(FieldHelper.getInstance().buildPath(Sale.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME));
+				fieldNames.add(FieldHelper.getInstance().buildPath(Sale.FIELD_SALABLE_PRODUCT_COLLECTION,SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE));
+				//fieldNames.add(FieldHelper.getInstance().buildPath(Sale.FIELD_BALANCE_MOVEMENT_COLLECTION,MovementCollection.FIELD_VALUE));
 				addExistencePeriodFromDate(dataTable, fieldNames);
 			}else if(Movement.class.equals(actionOnClass)){
 				if(dataTable.getPropertiesMap().getMaster() instanceof SalableProductCollection || dataTable.getPropertiesMap().getMaster() instanceof Sale){

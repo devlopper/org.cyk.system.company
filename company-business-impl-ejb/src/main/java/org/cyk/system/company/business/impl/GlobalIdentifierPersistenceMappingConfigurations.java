@@ -10,7 +10,9 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
+import org.cyk.system.root.model.time.Period;
 import org.cyk.system.root.persistence.impl.globalidentification.GlobalIdentifierPersistenceMappingConfiguration;
+import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.cdi.AbstractBean;
 import org.cyk.utility.common.helper.FieldHelper;
 
@@ -24,6 +26,9 @@ public class GlobalIdentifierPersistenceMappingConfigurations extends AbstractBe
 		
 		FieldHelper.Field.get(SalableProduct.class, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE
 				)).getConstraints().setIsNullable(Boolean.FALSE).setIsUnique(Boolean.TRUE);
+		
+		FieldHelper.Field.get(Sale.class, FieldHelper.getInstance().buildPath(Sale.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_EXISTENCE_PERIOD
+				,Period.FIELD_FROM_DATE)).getConstraints().setDatePart(Constant.Date.Part.DATE_AND_TIME_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND);
 		
 		GlobalIdentifierPersistenceMappingConfiguration configuration = new GlobalIdentifierPersistenceMappingConfiguration();
 		GlobalIdentifierPersistenceMappingConfiguration.Property property = new GlobalIdentifierPersistenceMappingConfiguration.Property(

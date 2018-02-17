@@ -45,9 +45,9 @@ public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces
 			dataTable.getColumn("cost.value").__setPropertyFooterPropertyValueBasedOnMaster__();
 			*/
 			
-			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,null);
+			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,null,Boolean.TRUE);
 		}else if(Sale.class.equals(getPropertiesMap().getActionOnClass())){
-			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION);
+			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION,Boolean.TRUE);
 			
 			MovementCollection movementCollection = inject(MovementCollectionBusiness.class)
 					.findByTypeByJoin(inject(MovementCollectionTypeDao.class).read(RootConstant.Code.MovementCollectionType.SALE_BALANCE), (Sale)getObject())
