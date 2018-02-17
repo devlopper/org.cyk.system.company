@@ -23,7 +23,6 @@ public abstract class AbstractGiftCardContextListener extends AbstractSaleOnlyOn
 	public void __contextInitialized__(ServletContextEvent event) {
 		super.__contextInitialized__(event);
 		
-		SaleBusinessImpl.Listener.COLLECTION.add(new SaleBusinessAdapter());
 		SaleProductInstanceBusinessImpl.Listener.COLLECTION.add(new SaleProductInstanceBusinessAdapter());
 		//FiniteStateMachineStateLogBusinessImpl.Listener.COLLECTION.add(new FiniteStateMachineStateLogBusinessAdapter());
 		

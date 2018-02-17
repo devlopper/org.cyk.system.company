@@ -17,21 +17,33 @@ import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.model.Cost;
+import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
-import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
+import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierBusiness;
+import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
+import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
+import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.system.root.model.mathematics.MovementCollectionType;
+import org.cyk.system.root.persistence.api.mathematics.MovementCollectionDao;
+import org.cyk.system.root.persistence.api.mathematics.MovementCollectionTypeDao;
+import org.cyk.utility.common.Constant;
+import org.cyk.utility.common.helper.FieldHelper;
+import org.cyk.utility.common.helper.InstanceHelper;
+import org.cyk.utility.common.helper.LoggingHelper;
+import org.cyk.utility.common.helper.StringHelper;
 
 public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sale.SearchCriteria> implements SaleBusiness,Serializable {
 
@@ -43,10 +55,24 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	public SaleBusinessImpl(SaleDao dao) {
 		super(dao);
 	}
-	
+	/*
 	@Override
 	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
-		return Listener.COLLECTION;
+		return Listener.COLLECTIONs;
+	}*/
+	
+	@Override
+	protected void computeChanges(Sale sale, LoggingHelper.Message.Builder logMessageBuilder) {
+		super.computeChanges(sale, logMessageBuilder);
+		if(sale.getBalanceMovementCollection()!=null){
+			MovementCollection movementCollection = sale.getBalanceMovementCollection();
+			if(isNotIdentified(sale))
+				movementCollection.setValue(sale.getSalableProductCollection().getCost().getValue());
+			if(StringHelper.getInstance().isBlank(movementCollection.getCode()) &&  StringHelper.getInstance().isNotBlank(sale.getCode()))
+				movementCollection.setCode(RootConstant.Code.generate(sale.getCode(),movementCollection.getType().getCode()));
+			if(StringHelper.getInstance().isBlank(movementCollection.getName()) && StringHelper.getInstance().isNotBlank(sale.getName()))
+				movementCollection.setName(sale.getName()+Constant.CHARACTER_VERTICAL_BAR+movementCollection.getType().getName());
+		}
 	}
 	
 	@Override
@@ -54,7 +80,10 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		Sale sale = super.instanciateOne();
 		sale.setCascadeOperationToMaster(Boolean.TRUE);
     	sale.setCascadeOperationToMasterFieldNames(Arrays.asList(Sale.FIELD_SALABLE_PRODUCT_COLLECTION));
-		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne().setIsProductQuantityUpdated(Boolean.TRUE));
+		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne().setIsStockMovementCollectionUpdatable(Boolean.TRUE)
+				.setIsBalanceMovementCollectionUpdatable(Boolean.TRUE));
+		sale.setBalanceMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne(RootConstant.Code.MovementCollectionType.SALE_BALANCE
+				,sale.getSalableProductCollection().getCost().getValue(),sale));
 		return sale;
 	}
 	
@@ -86,21 +115,26 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	}
 	
 	@Override
-	protected void afterCreate(Sale sale) {
-		super.afterCreate(sale);
-		if(sale.getBalanceMovementCollection() == null){
-			sale.setBalanceMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne(RootConstant.Code.MovementCollectionType.SALE_BALANCE
-				,sale.getSalableProductCollection().getCost().getValue(),sale));
-			inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).create(sale.getBalanceMovementCollection(), sale);
+	protected void beforeCrud(Sale sale, Crud crud) {
+		super.beforeCrud(sale, crud);
+		if(Crud.CREATE.equals(crud)){
+			
+		}else {
+			inject(MovementBusiness.class).create(sale, RootConstant.Code.MovementCollectionType.SALE_BALANCE, crud, sale
+				, FieldHelper.getInstance().buildPath(Sale.FIELD_SALABLE_PRODUCT_COLLECTION,SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE),Boolean.FALSE,null);
 		}
 	}
 	
 	@Override
-	protected void beforeDelete(Sale sale) {
-		sale.getSalableProductCollection().getItemsDeletable().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
-		super.beforeDelete(sale);
+	protected void afterCreate(Sale sale) {
+		super.afterCreate(sale);
+		if(sale.getBalanceMovementCollection() != null){
+			//sale.setBalanceMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne(RootConstant.Code.MovementCollectionType.SALE_BALANCE
+			//	,sale.getSalableProductCollection().getCost().getValue(),sale));
+			inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).create(sale.getBalanceMovementCollection(), sale);
+		}
 	}
-	
+		
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
 	public SaleResults computeByCriteria(Sale.SearchCriteria criteria) {
 		return dao.computeByCriteria(criteria);
@@ -115,7 +149,7 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	
 	public static interface Listener extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<Sale>{
 		
-		Collection<Listener> COLLECTION = new ArrayList<>();
+		Collection<Listener> COLLECTIONs = new ArrayList<>();
 		
 		/**/
 		
@@ -156,7 +190,7 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 					@Override
 					public void afterCreate(final Sale sale) {
 						super.afterCreate(sale);
-						cascade(sale,null,sale.getSaleCashRegisterMovements(), Crud.CREATE);
+						//cascade(sale,null,sale.getSaleCashRegisterMovements(), Crud.CREATE);
 						
 						if(sale.getAccountingPeriod()!=null){
 							/*
@@ -169,7 +203,7 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 							cost.setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(sale.getAccountingPeriod(), cost.getValue(), cost.getTax()));	
 						}
 						sale.getSalableProductCollection().setCode(sale.getCode());
-						sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue());
+						//sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue());
 						/*if(Boolean.TRUE.equals(ListenerUtils.getInstance().getBoolean(Listener.COLLECTION, new ListenerUtils.BooleanMethod<Listener>() {
 							@Override
 							public Boolean execute(Listener listener) {

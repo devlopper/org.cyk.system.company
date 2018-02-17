@@ -18,8 +18,10 @@ import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.persistence.api.mathematics.MovementCollectionDao;
 import org.cyk.system.root.persistence.api.mathematics.MovementCollectionTypeDao;
+import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.helper.CollectionHelper;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
+import org.cyk.utility.common.helper.StringHelper;
 
 public class StockableTangibleProductBusinessImpl extends AbstractTypedBusinessService<StockableTangibleProduct, StockableTangibleProductDao> implements StockableTangibleProductBusiness,Serializable {
 	private static final long serialVersionUID = -7830673760640348717L;
@@ -44,6 +46,13 @@ public class StockableTangibleProductBusinessImpl extends AbstractTypedBusinessS
 				,org.cyk.utility.common.helper.FieldHelper.getInstance().buildPath(
 						AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE),org.cyk.utility.common.helper.FieldHelper.getInstance().buildPath(
 								AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME));
+		if(stockableTangibleProduct.getQuantityMovementCollection()!=null){
+			MovementCollection movementCollection = stockableTangibleProduct.getQuantityMovementCollection();
+			if(StringHelper.getInstance().isBlank(movementCollection.getCode()) &&  StringHelper.getInstance().isNotBlank(stockableTangibleProduct.getCode()))
+				movementCollection.setCode(RootConstant.Code.generate(stockableTangibleProduct.getCode(),movementCollection.getType().getCode()));
+			if(StringHelper.getInstance().isBlank(movementCollection.getName()) && StringHelper.getInstance().isNotBlank(stockableTangibleProduct.getName()))
+				movementCollection.setName(stockableTangibleProduct.getName()+Constant.CHARACTER_VERTICAL_BAR+movementCollection.getType().getName());
+		}
 	}
 	
 	@Override

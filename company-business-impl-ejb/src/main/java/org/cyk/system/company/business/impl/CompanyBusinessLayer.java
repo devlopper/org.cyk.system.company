@@ -3,18 +3,15 @@ package org.cyk.system.company.business.impl;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.inject.Singleton;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.impl.__data__.RealDataSet;
-import org.cyk.system.company.business.impl.accounting.AccountingPeriodBusinessImpl;
-import org.cyk.system.company.business.impl.accounting.AccountingPeriodProductBusinessImpl;
 import org.cyk.system.company.business.impl.payment.CashRegisterMovementBusinessImpl;
-import org.cyk.system.company.business.impl.sale.CustomerBusinessImpl;
 import org.cyk.system.company.business.impl.sale.SalableProductCollectionBusinessImpl;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
-import org.cyk.system.company.business.impl.stock.StockTangibleProductMovementBusinessImpl;
 import org.cyk.system.company.business.impl.structure.EmployeeBusinessImpl;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
@@ -53,6 +50,10 @@ import org.cyk.system.root.model.time.Period;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
 import org.cyk.utility.common.helper.ClassHelper;
+import org.cyk.utility.common.helper.FieldHelper;
+import org.cyk.utility.common.helper.InstanceHelper;
+import org.cyk.utility.common.helper.RandomHelper;
+import org.cyk.utility.common.helper.TimeHelper;
 import org.cyk.utility.common.test.TestHelper;
 
 import lombok.Getter;
@@ -166,12 +167,24 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		});
 		
 		//TODO I do not know how to handle sale
-		SaleBusinessImpl.Listener.COLLECTION.add(new StockTangibleProductMovementBusinessImpl.SaleBusinessAdapter());
-		SaleBusinessImpl.Listener.COLLECTION.add(new AccountingPeriodBusinessImpl.SaleBusinessAdapter());
-		SaleBusinessImpl.Listener.COLLECTION.add(new AccountingPeriodProductBusinessImpl.SaleBusinessAdapter());
-		SaleBusinessImpl.Listener.COLLECTION.add(new CustomerBusinessImpl.SaleBusinessAdapter());
-	
+		
 		inject(GlobalIdentifierPersistenceMappingConfigurations.class).configure();
+		
+		InstanceHelper.getInstance().setFieldValueGenerator(Sale.class, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE), new InstanceHelper.Listener.FieldValueGenerator.Adapter.Default<String>(String.class){
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected String __execute__(Object instance, String fieldName,Class<String> outputClass) {
+				return "SALE"+System.currentTimeMillis()+RandomHelper.getInstance().getAlphabetic(4);
+			}
+		});
+		
+		InstanceHelper.getInstance().setFieldValueGenerator(Sale.class, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_EXISTENCE_PERIOD,Period.FIELD_FROM_DATE), new InstanceHelper.Listener.FieldValueGenerator.Adapter.Default<Date>(Date.class){
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected Date __execute__(Object instance, String fieldName,Class<Date> outputClass) {
+				return TimeHelper.getInstance().getUniversalTimeCoordinated();
+			}
+		});
 		
 		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{"code","name"}, SalableProductCollectionItem.class);
 		
@@ -226,7 +239,6 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		EmployeeBusinessImpl.Listener.COLLECTION.add(EMPLOYEE_BUSINESS_LISTENER); 
 		CashRegisterMovementBusinessImpl.Listener.COLLECTION.add(CASH_REGISTER_MOVEMENT_BUSINESS_LISTENER);
 		SalableProductCollectionBusinessImpl.Listener.COLLECTION.add(SALABLE_PRODUCT_COLLECTION_BUSINESS_LISTENER);
-		SaleBusinessImpl.Listener.COLLECTION.add(SALE_BUSINESS_LISTENER);
 		
 		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{GlobalIdentifier.FIELD_CODE}, SaleCashRegisterMovement.class
 				,SaleCashRegisterMovementCollection.class);

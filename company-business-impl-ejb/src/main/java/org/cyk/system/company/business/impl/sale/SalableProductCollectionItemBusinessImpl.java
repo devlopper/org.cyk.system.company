@@ -26,9 +26,6 @@ import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.system.root.model.mathematics.Movement;
-import org.cyk.system.root.model.mathematics.MovementCollectionIdentifiableGlobalIdentifier;
-import org.cyk.system.root.persistence.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierDao;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
 
 public class SalableProductCollectionItemBusinessImpl extends AbstractCollectionItemBusinessImpl<SalableProductCollectionItem, SalableProductCollectionItemDao,SalableProductCollection> implements SalableProductCollectionItemBusiness,Serializable {
@@ -116,17 +113,15 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	@Override
 	protected void beforeCrud(SalableProductCollectionItem salableProductCollectionItem, Crud crud) {
 		super.beforeCrud(salableProductCollectionItem, crud); 
-		if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getIsProductQuantityUpdated())){
-			TangibleProduct tangibleProduct = (TangibleProduct) salableProductCollectionItem.getSalableProduct().getProduct();
-			StockableTangibleProduct stockableTangibleProduct = inject(StockableTangibleProductDao.class).readByTangibleProduct(tangibleProduct);
+		if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getIsBalanceMovementCollectionUpdatable())){			
+			
+		}		
+		if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getIsStockMovementCollectionUpdatable())){
+			StockableTangibleProduct stockableTangibleProduct = inject(StockableTangibleProductDao.class).readByTangibleProduct(
+					(TangibleProduct) salableProductCollectionItem.getSalableProduct().getProduct());
 			if(stockableTangibleProduct!=null){
-				Collection<MovementCollectionIdentifiableGlobalIdentifier> movementCollectionIdentifiableGlobalIdentifiers = inject(MovementCollectionIdentifiableGlobalIdentifierDao.class)
-						.readByIdentifiableGlobalIdentifier(stockableTangibleProduct);
-				for(MovementCollectionIdentifiableGlobalIdentifier index : movementCollectionIdentifiableGlobalIdentifiers){
-					Movement tangibleProductQuantityMovement = inject(MovementBusiness.class).instanciateOne(index.getMovementCollection(), RootConstant.Code.MovementCollectionType.STOCK_REGISTER
-							, crud, salableProductCollectionItem,SalableProductCollectionItem.FIELD_QUANTITY);
-					inject(MovementBusiness.class).createIfActionIsNotNull(tangibleProductQuantityMovement);
-				}
+				inject(MovementBusiness.class).create(stockableTangibleProduct, RootConstant.Code.MovementCollectionType.STOCK_REGISTER, crud, salableProductCollectionItem
+						, SalableProductCollectionItem.FIELD_QUANTITY,Boolean.TRUE,null);
 			}
 		}		
 	}

@@ -29,7 +29,7 @@ public class SaleReport extends AbstractSaleReport<SaleReport> implements Serial
 	@Override
 	public void setSource(Object source) {
 		super.setSource(source);
-		balance.setSource(((Sale)source).getBalance());
+		//balance.setSource(((Sale)source).getBalance());
 		
 	}
 	

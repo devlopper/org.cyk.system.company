@@ -29,7 +29,8 @@ public class SalableProductCollection extends AbstractCollection<SalableProductC
 	
 	@Embedded private Cost cost;
 	
-	@Accessors(chain=true) private Boolean isProductQuantityUpdated;
+	@Accessors(chain=true) private Boolean isStockMovementCollectionUpdatable;
+	@Accessors(chain=true) private Boolean isBalanceMovementCollectionUpdatable;
 	
 	/**/
 	

@@ -109,7 +109,7 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 	
 	public static interface Listener extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<Sale>{
 		
-		Collection<Listener> COLLECTION = new ArrayList<>();
+		Collection<Listener> COLLECTIONs = new ArrayList<>();
 		
 		/**/
 		
@@ -150,7 +150,7 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 					@Override
 					public void afterCreate(final Sale sale) {
 						super.afterCreate(sale);
-						cascade(sale,null,sale.getSaleCashRegisterMovements(), Crud.CREATE);
+						//cascade(sale,null,sale.getSaleCashRegisterMovements(), Crud.CREATE);
 						
 						if(sale.getAccountingPeriod()!=null){
 							/*
@@ -163,7 +163,7 @@ public abstract class AbstractSaleBusinessImpl<SALE extends AbstractSale,DAO ext
 							cost.setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(sale.getAccountingPeriod(), cost.getValue(), cost.getTax()));	
 						}
 						sale.getSalableProductCollection().setCode(sale.getCode());
-						sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue());
+						//sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue());
 						/*if(Boolean.TRUE.equals(ListenerUtils.getInstance().getBoolean(Listener.COLLECTION, new ListenerUtils.BooleanMethod<Listener>() {
 							@Override
 							public Boolean execute(Listener listener) {

@@ -352,7 +352,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	}else{
     		final SaleCashRegisterMovement saleCashRegisterMovement =  inject(SaleCashRegisterMovementBusiness.class).instanciateOne(sale, null/*sale.getCashier().getPerson()*/,Boolean.TRUE);
         	set(saleCashRegisterMovement, paid);
-        	sale.getSaleCashRegisterMovements().add(saleCashRegisterMovement);
+        	//sale.getSaleCashRegisterMovements().add(saleCashRegisterMovement);
         	if(expectedThrowableMessage!=null){
         		new Try(expectedThrowableMessage){ 
         			private static final long serialVersionUID = -8176804174113453706L;

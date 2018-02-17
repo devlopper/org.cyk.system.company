@@ -82,7 +82,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 		/*saleCashRegisterMovement.getCashRegisterMovement().setMovement(inject(MovementBusiness.class).instanciateOne(
 				saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection(),amount));
 		*/
-		saleCashRegisterMovement.getBalance()._set(sale.getBalance());
+		//saleCashRegisterMovement.getBalance()._set(sale.getBalance());
 		return saleCashRegisterMovement;
 	}
 	
@@ -284,9 +284,9 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 				balance = previous.getBalance().getValue();
 			}
 		}else{
-			balance = saleCashRegisterMovement.getSale().getIdentifier()==null
-				?saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue()
-				:saleCashRegisterMovement.getSale().getBalance().getValue();
+			//balance = saleCashRegisterMovement.getSale().getIdentifier()==null
+			//	?saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue()
+			//	:saleCashRegisterMovement.getSale().getBalance().getValue();
 			
 		}
 		
@@ -317,7 +317,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 		else if(movementAction!=null && saleCashRegisterMovement.getCashRegisterMovement().getCashRegister().getMovementCollection().getDecrementAction().equals(movementAction))
 			;
 		*/
-		return inject(MovementActionBusiness.class).computeValue(movementAction, saleCashRegisterMovement.getSale().getBalance().getValue(), increment.negate());
+		return null;//inject(MovementActionBusiness.class).computeValue(movementAction, saleCashRegisterMovement.getSale().getBalance().getValue(), increment.negate());
 	}
 	
 	@Override @TransactionAttribute(TransactionAttributeType.NEVER)

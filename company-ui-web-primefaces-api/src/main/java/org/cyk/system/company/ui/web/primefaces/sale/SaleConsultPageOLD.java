@@ -174,7 +174,7 @@ public class SaleConsultPageOLD extends AbstractConsultPage<Sale> implements Ser
 			cashier = inject(CashierBusiness.class).findByPerson((Person)userSession.getUser());
 			
 			UICommandable c;
-			Integer balance = identifiable.getBalance().getValue().compareTo(BigDecimal.ZERO);
+			Integer balance = null;//identifiable.getBalance().getValue().compareTo(BigDecimal.ZERO);
 			if(balance!=0){
 				MovementCollection movementCollection = cashier==null?null:cashier.getCashRegister().getMovementCollection();
 				MovementAction action;

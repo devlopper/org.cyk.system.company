@@ -87,7 +87,7 @@ public class SaleCashRegisterMovementEditPage extends AbstractCashRegisterMoveme
 	protected BigDecimal getCurrentTotal() {
 		if(identifiable.getSale()==null)
 			return null;
-		return identifiable.getSale().getBalance().getValue();
+		return null;//identifiable.getSale().getBalance().getValue();
 	}
 	
 	@Override

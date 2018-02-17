@@ -116,7 +116,7 @@ public class SaleCashRegisterMovementCollectionEditPage extends AbstractCollecti
 				item.setCost(inject(FormatterBusiness.class).format(item.getIdentifiable().getSale().getSalableProductCollection().getCost().getValue()));
 				
 				if(Crud.CREATE.equals(crud)){
-					item.setToPay(inject(FormatterBusiness.class).format(item.getIdentifiable().getSale().getBalance().getValue()));
+					//item.setToPay(inject(FormatterBusiness.class).format(item.getIdentifiable().getSale().getBalance().getValue()));
 				}else{
 					SaleCashRegisterMovement previous = inject(SaleCashRegisterMovementBusiness.class).findFirstWhereExistencePeriodFromDateIsLessThan(item.getIdentifiable());
 					if(previous==null){

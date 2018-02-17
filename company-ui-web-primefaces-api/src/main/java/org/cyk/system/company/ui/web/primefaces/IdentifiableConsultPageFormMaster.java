@@ -4,8 +4,10 @@ import java.io.Serializable;
 
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.root.business.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierBusiness;
+import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.system.root.persistence.api.mathematics.MovementCollectionTypeDao;
 import org.cyk.utility.common.userinterface.container.Form;
 
 public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces.IdentifiableConsultPageFormMaster implements Serializable {
@@ -14,6 +16,14 @@ public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces
 	@Override
 	protected void __setFromRequestParameter__() {
 		
+	}
+	
+	@Override
+	protected void ____addName____() {
+		if(Sale.class.equals(getPropertiesMap().getActionOnClass())){
+			
+		}else
+			super.____addName____();
 	}
 	
 	protected void __prepare__() {
@@ -38,8 +48,11 @@ public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces
 			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,null);
 		}else if(Sale.class.equals(getPropertiesMap().getActionOnClass())){
 			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION);
-			MovementCollection movementCollection = inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class)
-					.findByIdentifiableGlobalIdentifier((Sale)getObject()).iterator().next().getMovementCollection();
+			
+			MovementCollection movementCollection = inject(MovementCollectionBusiness.class)
+					.findByTypeByJoin(inject(MovementCollectionTypeDao.class).read(RootConstant.Code.MovementCollectionType.SALE_BALANCE), (Sale)getObject())
+					.iterator().next()
+					;
 			addDataTableMovement(movementCollection);
 			
 		}

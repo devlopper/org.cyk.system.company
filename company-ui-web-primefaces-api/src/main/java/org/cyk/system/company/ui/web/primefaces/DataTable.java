@@ -35,7 +35,7 @@ public class DataTable {
 			}else if(SalableProductCollection.class.equals(actionOnClass)){
 				
 			}else if(SalableProductCollectionItem.class.equals(actionOnClass)){
-				if(Constant.Action.isCreateOrUpdate((Action) getPropertiesMap().getAction())){
+				if(Constant.Action.isCreateOrUpdate((Action) dataTable.getPropertiesMap().getAction())){
 					fieldNames.removeAll(Arrays.asList(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE)
 							,FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME)));	
 				}
@@ -45,7 +45,8 @@ public class DataTable {
 				fieldNames.add(SalableProductCollectionItem.FIELD_QUANTITY);
 				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_VALUE));
 			}else if(Sale.class.equals(actionOnClass)){
-				
+				fieldNames.remove(FieldHelper.getInstance().buildPath(Sale.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME));
+				addExistencePeriodFromDate(dataTable, fieldNames);
 			}else if(Movement.class.equals(actionOnClass)){
 				if(dataTable.getPropertiesMap().getMaster() instanceof SalableProductCollection || dataTable.getPropertiesMap().getMaster() instanceof Sale){
 					fieldNames.remove(Movement.FIELD_COLLECTION);

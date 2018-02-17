@@ -27,7 +27,7 @@ public interface CompanyReportProducer extends RootReportProducer {
 			super();
 			this.sale =  sale;
 			this.saleCashRegisterMovement = saleCashRegisterMovement;
-			amountToPay = sale.getBalance().getValue();
+			//amountToPay = sale.getBalance().getValue();
 			if(saleCashRegisterMovement==null){
 				
 			}else{

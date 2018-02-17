@@ -1,7 +1,6 @@
 package org.cyk.system.company.ui.web.primefaces;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -23,6 +22,14 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 	private static final long serialVersionUID = -6211058744595898478L;
 	
 	@Override
+	protected void ____addName____() {
+		if(Sale.class.equals(getPropertiesMap().getActionOnClass())){
+			
+		}else
+			super.____addName____();
+	}
+	
+	@Override
 	protected void __prepare__() {
 		super.__prepare__();
 		Form.Detail detail = getDetail();
@@ -36,8 +43,8 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 						
 			prepareSalableProductCollection(detail,null);
 		}else if(Sale.class.equals(actionOnClass)){
-			((Sale)getObject()).getBalance().setValue(BigDecimal.ZERO);
-			((Sale)getObject()).getBalance().setCumul(BigDecimal.ZERO);
+			//((Sale)getObject()).getBalance().setValue(BigDecimal.ZERO);
+			//((Sale)getObject()).getBalance().setCumul(BigDecimal.ZERO);
 			prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION);
 		}
 	}
@@ -50,6 +57,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 		salableProductCollection.getItems().removeAll(); // will be filled up by the data table load call
 		detail.setFieldsObjectFromMaster(fieldName,SalableProductCollection.FIELD_COST);
 		detail.addReadOnly(Cost.FIELD_VALUE);
+		addExistencePeriodFromDate(detail);
 		
 		DataTable dataTable = detail.getMaster().instanciateDataTable(SalableProductCollectionItem.class,isCreateOrUpdate ? SalableProduct.class : null,new DataTable.Cell.Listener.Adapter.Default(),Boolean.TRUE);
 		dataTable.getPropertiesMap().setChoicesIsSourceDisjoint(Boolean.FALSE);

@@ -34,7 +34,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
     	salableProductCollection.setCode(salableProductCollectionCode);
     	testCase.create(salableProductCollection);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 0l);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "0");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,null,null,null,null);
     	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	testCase.clean();
@@ -48,7 +48,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	salableProductCollection.setCode(salableProductCollectionCode);
     	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.create(salableProductCollection);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 0l);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "0");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"0","0","0","0");
     	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	testCase.clean();
@@ -65,7 +65,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	salableProductCollectionItem.setQuantity(new BigDecimal("2"));
     	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.create(salableProductCollection);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "1");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
     	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	
@@ -73,7 +73,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	salableProductCollection.getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
     	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.update(salableProductCollection);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "1");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
     	
     	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
@@ -97,7 +97,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	salableProductCollectionItem.setQuantity(new BigDecimal("1"));
     	
     	testCase.create(salableProductCollection);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 2l);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "2");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"3","350","54","296");
     	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP3, "10");
@@ -117,7 +117,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP1));
     	salableProductCollectionItem.setQuantity(new BigDecimal("2"));
     	testCase.create(salableProductCollection);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "1");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
     	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	
@@ -128,7 +128,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP3));
     	salableProductCollectionItem.setQuantity(new BigDecimal("1"));
     	testCase.update(salableProductCollection);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 2l);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "2");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"3","350","54","296");
     	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP3, "10");
@@ -174,7 +174,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     @Test
     public void crudSalableProductCollectionWithItemWithProductQuantityUpdatable(){
     	TestCase testCase = instanciateTestCase();
-    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne().setIsProductQuantityUpdated(Boolean.TRUE);
+    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne().setIsStockMovementCollectionUpdatable(Boolean.TRUE);
     	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
     	salableProductCollection.setCode(salableProductCollectionCode);
     	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
@@ -182,7 +182,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	salableProductCollectionItem.setQuantity(new BigDecimal("2"));
     	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.create(salableProductCollection);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "1");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
     	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "8");
     	
@@ -190,7 +190,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	salableProductCollection.getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
     	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.update(salableProductCollection);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, 1l);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "1");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
     	
     	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "8");
@@ -200,7 +200,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     @Test
     public void crudSalableProductCollectionWithItemWithProductQuantityUpdatableExceedUpperLimit(){
     	TestCase testCase = instanciateTestCase();
-    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne().setIsProductQuantityUpdated(Boolean.TRUE);
+    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne().setIsStockMovementCollectionUpdatable(Boolean.TRUE);
     	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
     	salableProductCollection.setCode(salableProductCollectionCode);
     	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
