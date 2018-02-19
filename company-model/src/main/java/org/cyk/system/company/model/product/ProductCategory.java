@@ -19,7 +19,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Getter @Setter @NoArgsConstructor @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.FEMALE)
-@FieldOverride(name=ProductCategory.FIELD_PARENT,type=ProductCategory.class)
+@FieldOverride(name=ProductCategory.FIELD___PARENT__,type=ProductCategory.class)
 public class ProductCategory extends AbstractDataTreeType implements Serializable  {
 	private static final long serialVersionUID = -6128937819261060725L;
 	
