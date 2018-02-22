@@ -156,27 +156,6 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		public static class Adapter extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener.Adapter<Sale> implements Listener, Serializable {
 			private static final long serialVersionUID = -1625238619828187690L;
 			
-			/**/
-			/*
-			@Override public void processOnConsume(Sale sale, Crud crud, Boolean first) {}
-			
-			@Override public Boolean isReportUpdatable(Sale sale) {
-				return null;
-			}
-			
-			@Override public void processOnReportUpdated(SaleReport saleReport,Boolean invoice) {}
-			*/
-			protected void cascade(Sale sale,Collection<SaleStockTangibleProductMovement> saleStockTangibleProductMovements,Collection<SaleCashRegisterMovement> saleCashRegisterMovements,Crud crud){
-				new CascadeOperationListener.Adapter.Default<SaleStockTangibleProductMovement,SaleStockTangibleProductMovementDao,SaleStockTangibleProductMovementBusiness>(null,
-						inject(SaleStockTangibleProductMovementBusiness.class))
-				.operate(saleStockTangibleProductMovements, crud);
-				new CascadeOperationListener.Adapter.Default<SaleCashRegisterMovement,SaleCashRegisterMovementDao,SaleCashRegisterMovementBusiness>(null,
-						inject(SaleCashRegisterMovementBusiness.class))
-				.operate(saleCashRegisterMovements, crud);
-			}
-			
-			/**/
-			
 			public static class Default extends Listener.Adapter implements Serializable {
 				private static final long serialVersionUID = -1625238619828187690L;
 				

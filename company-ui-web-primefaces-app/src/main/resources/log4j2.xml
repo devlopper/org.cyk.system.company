@@ -6,9 +6,9 @@
 		</Console>
 	</Appenders>
 	<Loggers>
-		<Logger name="org.cyk.system.root.business.impl.mathematics.MovementBusinessImpl" level="trace">
+		<!--Logger name="org.cyk.system.root.business.impl.mathematics.MovementBusinessImpl" level="trace">
 			<AppenderRef ref="Console" />
-		</Logger>
+		</Logger-->
 		<!--Logger name="org.cyk.utility.common.userinterface.collection.DataTable$Columns" level="trace">
 			<AppenderRef ref="Console" />
 		</Logger> 

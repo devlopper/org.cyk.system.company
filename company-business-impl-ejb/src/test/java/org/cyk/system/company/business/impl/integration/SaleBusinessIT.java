@@ -262,7 +262,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	
     }
     
-    @Test
+    //@Test
     public void crudSaleWithItemWithBalanceVariationPayment(){
     	TestCase testCase = instanciateTestCase();
     	String cashRegisterMovementCollectionCode = RandomHelper.getInstance().getAlphabetic(5);
@@ -290,7 +290,6 @@ public class SaleBusinessIT extends AbstractBusinessIT {
     	movement.setAction(movement.getCollection().getType().getDecrementAction());
     	movement.setDestinationMovementCollection(inject(MovementCollectionDao.class).read(cashRegisterMovementCollectionCode));
     	inject(IdentifiableCollectionItemBusiness.class).instanciateOne(identifiableCollection).addIdentifiables(movement);
-    	
     	testCase.create(identifiableCollection);
     	
     	testCase.assertMovementCollection(RootConstant.Code.generate(saleCode,SALE_BALANCE), "800", "1");

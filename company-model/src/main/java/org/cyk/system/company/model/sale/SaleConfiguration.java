@@ -33,6 +33,7 @@ public class SaleConfiguration extends AbstractModelElement implements Serializa
 	@OneToOne private FiniteStateMachine salableProductInstanceCashRegisterFiniteStateMachine;
 	@OneToOne private FiniteStateMachineState salableProductInstanceCashRegisterSaleConsumeState;
 	*/
+	
 	@Column private Boolean balanceMustBeZero = Boolean.FALSE;
 	@Column private Boolean balanceCanBeNegative = Boolean.FALSE;
 	@Column private Boolean balanceCanBeGreaterThanCost = Boolean.FALSE;
@@ -42,10 +43,6 @@ public class SaleConfiguration extends AbstractModelElement implements Serializa
 	private Long minimalNumberOfProductBySale;
 	private Long maximalNumberOfProductBySale;
 	
-	@Override
-	public String getUiString() {
-		return toString();
-	}
-	
 	public static final String FIELD_VALUE_ADDED_TAX_RATE = "valueAddedTaxRate";
+	
 }

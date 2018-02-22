@@ -17,6 +17,7 @@
 		<Logger name="org.cyk.system.root.business.impl.mathematics.MovementBusinessImpl" level="trace">
 			<AppenderRef ref="Console" />
 		</Logger>
+		
 		<Logger name="org.cyk.system.root.business.impl.mathematics.MovementCollectionBusinessImpl" level="trace">
 			<AppenderRef ref="Console" />
 		</Logger>

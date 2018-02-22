@@ -11,6 +11,7 @@ import javax.persistence.Transient;
 
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.system.root.model.time.IdentifiablePeriod;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
@@ -27,6 +28,7 @@ public class Sale extends AbstractSale implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@Transient @Accessors(chain=true) private MovementCollection balanceMovementCollection;
+	@Transient @Accessors(chain=true) private IdentifiablePeriod workIdentifiablePeriod;
 	
 	public Sale setBalanceMovementCollectionValue(BigDecimal value){
 		balanceMovementCollection.setValue(value);
@@ -36,6 +38,7 @@ public class Sale extends AbstractSale implements Serializable {
 	/**/
 	
 	public static final String FIELD_BALANCE_MOVEMENT_COLLECTION = "balanceMovementCollection";
+	public static final String FIELD_WORK_IDENTIFIABLE_PERIOD = "workIdentifiablePeriod";
 	
 	/**/
 	
