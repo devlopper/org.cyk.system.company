@@ -7,7 +7,7 @@ public class EventWebIT extends AbstractWebIT {
 	private static final long serialVersionUID = 1L;
 	
 	public EventWebIT() {
-		runnables.add(new EventWebITRunner());
+		//runnables.add(new EventWebITRunner());
 	}
 	   
 }

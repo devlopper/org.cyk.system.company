@@ -11,7 +11,7 @@ import org.cyk.system.company.business.impl.__data__.RealDataSet;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.persistence.api.product.ProductDao;
-import org.cyk.system.root.business.impl__data__.DataSet;
+import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.Movement;

@@ -7,11 +7,10 @@ import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.Customer;
-import org.cyk.system.root.business.impl__data__.DataSet;
+import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.utility.common.helper.RandomHelper;
 
 public class FakedDataSetOLD extends DataSet implements Serializable {
-
 	private static final long serialVersionUID = 2282674526022995453L;
 	
 	public static final String CASH_REGISTER_001 = RandomHelper.getInstance().get(String.class),CASH_REGISTER_002 = RandomHelper.getInstance().get(String.class)

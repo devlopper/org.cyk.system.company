@@ -38,9 +38,9 @@ import org.cyk.system.root.business.impl.AbstractFormatter;
 import org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl;
 import org.cyk.system.root.business.impl.PersistDataListener;
 import org.cyk.system.root.business.impl.RootBusinessLayer;
+import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
-import org.cyk.system.root.business.impl__data__.DataSet;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.file.File;
@@ -54,7 +54,7 @@ import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.common.helper.InstanceHelper;
 import org.cyk.utility.common.helper.RandomHelper;
 import org.cyk.utility.common.helper.TimeHelper;
-import org.cyk.utility.common.test.TestHelper;
+import org.cyk.utility.common.test.TestCase;
 
 import lombok.Getter;
 
@@ -188,7 +188,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{"code","name"}, SalableProductCollectionItem.class);
 		
-		ClassHelper.getInstance().map(TestHelper.TestCase.class, CompanyBusinessTestHelper.TestCase.class);
+		ClassHelper.getInstance().map(TestCase.class, CompanyBusinessTestHelper.TestCase.class);
 	}
 		
 	@Override

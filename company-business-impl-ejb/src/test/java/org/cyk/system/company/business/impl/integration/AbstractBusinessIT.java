@@ -20,19 +20,14 @@ import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper;
-import org.cyk.system.company.business.impl.__data__.FakedDataSet;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.product.IntangibleProduct;
-import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.sale.SalableProduct;
-import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.product.IntangibleProductDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
-import org.cyk.system.root.business.api.AbstractBusinessException;
+import org.cyk.system.root.business.api.AbstractBusinessThrowable;
 import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.api.mathematics.NumberBusiness;
 import org.cyk.system.root.business.api.party.ApplicationBusiness;
@@ -111,7 +106,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 			private static final long serialVersionUID = 1983969363248568780L;
 			@Override
 			protected Throwable getThrowable(Throwable throwable) {
-				return ThrowableHelper.getInstance().getInstanceOf(throwable, AbstractBusinessException.class);
+				return ThrowableHelper.getInstance().getInstanceOf(throwable, AbstractBusinessThrowable.class);
 			}
     		@Override
     		public void assertEquals(String message, Object expected, Object actual) {
@@ -147,7 +142,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
     
     @Override
     protected void populate() {
-    	CompanyBusinessLayer.DATA_SET_CLASS = FakedDataSet.class;
+    	//CompanyBusinessLayer.DATA_SET_CLASS = FakedDataSet.class;
     	installApplication();
     	AbstractRootReportProducer.DEFAULT = inject(CompanyReportProducer.class);
     }

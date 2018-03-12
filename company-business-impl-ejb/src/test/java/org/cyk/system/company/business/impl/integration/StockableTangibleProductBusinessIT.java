@@ -10,7 +10,7 @@ import org.cyk.system.company.business.impl.__data__.FakedDataSet;
 import org.cyk.system.company.business.impl.__data__.RealDataSet;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
-import org.cyk.system.root.business.impl__data__.DataSet;
+import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.Movement;

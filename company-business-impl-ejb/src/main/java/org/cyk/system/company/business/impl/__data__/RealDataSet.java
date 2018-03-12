@@ -15,7 +15,7 @@ import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.EmploymentAgreementType;
 import org.cyk.system.company.model.structure.OwnedCompany;
-import org.cyk.system.root.business.impl__data__.DataSet;
+import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.file.report.ReportTemplate;
 import org.cyk.system.root.model.mathematics.Interval;

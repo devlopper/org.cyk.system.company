@@ -17,14 +17,13 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
-import org.cyk.system.root.business.api.BusinessException;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
 import org.cyk.utility.common.helper.CollectionHelper;
 import org.cyk.utility.common.helper.ConditionHelper;
-import org.cyk.utility.common.helper.NumberHelper;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
 import org.cyk.utility.common.helper.MethodHelper;
+import org.cyk.utility.common.helper.NumberHelper;
 
 public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusinessImpl<SalableProductCollection,SalableProductCollectionItem, SalableProductCollectionDao,SalableProductCollectionItemDao,SalableProductCollectionItemBusiness> implements SalableProductCollectionBusiness,Serializable {
 
@@ -60,8 +59,8 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 				inject(CostBusiness.class).add(cost, costs);
 				
 				throw__(new ConditionHelper.Condition.Builder.Comparison.Adapter.Default().setValueNameIdentifier("costvalue")
-						.setDomainNameIdentifier("salableProductCollection").setNumber1(salableProductCollection.getCost().getValue())
-						.setNumber2(cost.getValue()).setEqual(Boolean.FALSE), BusinessException.class);
+						.setDomainNameIdentifier("salableProductCollection").setValue1(salableProductCollection.getCost().getValue())
+						.setValue2(cost.getValue()).setEqual(Boolean.FALSE));
 			}
 		}
 	}

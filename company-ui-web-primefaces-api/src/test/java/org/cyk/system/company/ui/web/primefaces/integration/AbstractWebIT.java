@@ -14,7 +14,7 @@ public abstract class AbstractWebIT extends AbstractIntegrationWebTest {
 	private static final long serialVersionUID = 1L;
 
 	protected SeleniumHelper helper;
-	protected Collection<Runnable<?>> runnables = new ArrayList<>();
+	//protected Collection<Runnable<?>> runnables = new ArrayList<>();
 
 	{
 		helper = SeleniumHelper.getInstance();
@@ -51,8 +51,8 @@ public abstract class AbstractWebIT extends AbstractIntegrationWebTest {
     @Override
 	protected void __execute__() {
         getDriver().manage().timeouts().implicitlyWait(helper.getImplicitlyWaitNumberOfMillisecond(), TimeUnit.MILLISECONDS);
-        for(Runnable<?> runnable : runnables)
-        	runnable.run();
+        //for(Runnable<?> runnable : runnables)
+        //	runnable.run();
 	}
     
     /**/

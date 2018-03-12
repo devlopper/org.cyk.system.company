@@ -14,7 +14,7 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
-import org.cyk.system.root.business.impl__data__.DataSet;
+import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.junit.Test;

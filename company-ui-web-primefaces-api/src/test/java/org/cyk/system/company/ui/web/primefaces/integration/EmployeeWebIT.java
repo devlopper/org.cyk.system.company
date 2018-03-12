@@ -7,7 +7,7 @@ public class EmployeeWebIT extends AbstractWebIT {
 	private static final long serialVersionUID = 1L;
 	
 	public EmployeeWebIT() {
-		runnables.add(new EmployeeWebITRunner());
+		//runnables.add(new EmployeeWebITRunner());
 	}
 	   
 }

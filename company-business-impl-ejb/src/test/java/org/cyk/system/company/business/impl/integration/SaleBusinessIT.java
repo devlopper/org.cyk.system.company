@@ -23,7 +23,7 @@ import org.cyk.system.root.business.api.information.IdentifiableCollectionBusine
 import org.cyk.system.root.business.api.information.IdentifiableCollectionItemBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
-import org.cyk.system.root.business.impl__data__.DataSet;
+import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.information.IdentifiableCollection;
 import org.cyk.system.root.model.mathematics.Movement;

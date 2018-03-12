@@ -8,8 +8,8 @@ public class AllWebIT extends AbstractWebIT {
 	private static final long serialVersionUID = 1L;
 	
 	public AllWebIT() {
-		runnables.add(new EventWebITRunner());
-		runnables.add(new PersonWebITRunner());
+		//runnables.add(new EventWebITRunner());
+		//runnables.add(new PersonWebITRunner());
 	}
 	   
 }
