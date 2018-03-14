@@ -32,6 +32,10 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 	 */
 	@Column(precision=10,scale=FLOAT_SCALE) @Accessors(chain=true) private BigDecimal price;
 	
+	@Column(precision=3,scale=FLOAT_SCALE) @Accessors(chain=true) private BigDecimal quantityMultiple;
+	
+	@Column(precision=PERCENT_PRECISION,scale=PERCENT_SCALE) private BigDecimal valueAddedTaxRate;
+	
 	@Transient @Accessors(chain=true) private Class<? extends Product> productClass;
 	
 	public SalableProduct(Product product, BigDecimal price) {

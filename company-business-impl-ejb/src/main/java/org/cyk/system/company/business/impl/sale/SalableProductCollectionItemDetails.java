@@ -26,8 +26,8 @@ public class SalableProductCollectionItemDetails extends AbstractCollectionItemD
 		super(salableProductCollectionItem);
 		this.salableProduct = formatUsingBusiness(salableProductCollectionItem.getSalableProduct());
 		this.quantity = formatNumber(salableProductCollectionItem.getQuantity());
-		this.reduction = formatNumber(salableProductCollectionItem.getReduction());
-		this.commission = formatNumber(salableProductCollectionItem.getCommission());
+		//this.reduction = formatNumber(salableProductCollectionItem.getReduction());
+		//this.commission = formatNumber(salableProductCollectionItem.getCommission());
 		this.cost = new CostDetails(salableProductCollectionItem.getCost());
 	}
 	

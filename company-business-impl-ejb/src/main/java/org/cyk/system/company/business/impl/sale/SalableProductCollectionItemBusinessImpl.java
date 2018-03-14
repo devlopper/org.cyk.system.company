@@ -52,8 +52,8 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 		//salableProductCollectionItem.setCollection(salableProductCollection);
 		salableProductCollectionItem.setSalableProduct(salableProduct);
 		salableProductCollectionItem.setQuantity(quantity);
-		salableProductCollectionItem.setReduction(reduction);
-		salableProductCollectionItem.setCommission(commission);
+		//salableProductCollectionItem.setReduction(reduction);
+		//salableProductCollectionItem.setCommission(commission);
 		computeChanges(salableProductCollectionItem);
 		inject(SalableProductCollectionBusiness.class).add(salableProductCollection, salableProductCollectionItem);
 		return salableProductCollectionItem;
@@ -87,8 +87,9 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 			salableProductCollectionItem.setQuantifiedPrice(salableProductCollectionItem.getSalableProduct().getPrice()
 					.multiply(salableProductCollectionItem.getQuantity())); 
 			BigDecimal cost = salableProductCollectionItem.getQuantifiedPrice()
-				.subtract(salableProductCollectionItem.getReduction())
-				.add(salableProductCollectionItem.getCommission());
+				//.subtract(salableProductCollectionItem.getReduction())
+				//.add(salableProductCollectionItem.getCommission())
+				;
 			salableProductCollectionItem.getCost().setValue(cost);
 		}
 		//TODO what if previous balance value has there ???

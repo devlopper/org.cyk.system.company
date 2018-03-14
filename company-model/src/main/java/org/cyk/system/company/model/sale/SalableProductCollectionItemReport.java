@@ -47,8 +47,8 @@ public class SalableProductCollectionItemReport extends AbstractIdentifiableRepo
 		cost.setSource(((SalableProductCollectionItem)source).getCost());
 		costValueWithoutReduction = format( ((SalableProductCollectionItem)source).getQuantifiedPrice());
 		quantity = format(((SalableProductCollectionItem)source).getQuantity());
-		reduction = format(((SalableProductCollectionItem)source).getReduction());
-		commission = format(((SalableProductCollectionItem)source).getCommission());
+		//reduction = format(((SalableProductCollectionItem)source).getReduction());
+		//commission = format(((SalableProductCollectionItem)source).getCommission());
 		balance.setSource(((SalableProductCollectionItem)source).getBalance());
 		for(SalableProductCollectionItemSaleCashRegisterMovement salableProductCollectionItemSaleCashRegisterMovement : ((SalableProductCollectionItem)source).getSalableProductCollectionItemSaleCashRegisterMovements().getElements())
 			salableProductCollectionItemSaleCashRegisterMovements.add(new SalableProductCollectionItemSaleCashRegisterMovementReport(this, null, salableProductCollectionItemSaleCashRegisterMovement));

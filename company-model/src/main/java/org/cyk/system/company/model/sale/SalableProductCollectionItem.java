@@ -35,13 +35,14 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 	/**
 	 * positive is out. negative is back in
 	 */
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal quantity;
+	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal quantity;//TODO use number of proceed elements of cost to track this value
 	/*
 	 *we can use metric to track those values 
 	 */
+	/*
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal reduction=BigDecimal.ZERO;
 	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal commission = BigDecimal.ZERO;
-	
+	*/
 	@Embedded private Cost cost;
 	
 	@Embedded private Balance balance = new Balance();
@@ -78,8 +79,8 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 	
 	public static final String FIELD_SALABLE_PRODUCT = "salableProduct";
 	public static final String FIELD_QUANTITY = "quantity";
-	public static final String FIELD_REDUCTION = "reduction";
-	public static final String FIELD_COMMISSION = "commission";
+	//public static final String FIELD_REDUCTION = "reduction";
+	//public static final String FIELD_COMMISSION = "commission";
 	public static final String FIELD_COST = "cost";
 	public static final String FIELD_BALANCE = "balance";
 	
