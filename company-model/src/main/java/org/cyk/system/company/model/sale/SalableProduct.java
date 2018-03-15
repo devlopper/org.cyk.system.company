@@ -28,18 +28,18 @@ import lombok.experimental.Accessors;
 public class SalableProduct extends AbstractCollection<SalableProductInstance> implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @JoinColumn(name=COLUMN_PRODUCT) @NotNull @Accessors(chain=true) private Product product;
+	@ManyToOne @JoinColumn(name=COLUMN_PRODUCT) @NotNull private Product product;
+	@ManyToOne @JoinColumn(name=COLUMN_VALUE_ADDED_TAX_RATE) private ValueAddedTaxRate valueAddedTaxRate;
+	private Boolean valueAddedTaxIncludedInPrice = Boolean.TRUE;
 	
 	/**
 	 * The unit price of the product. null means the price will be determine at runtime
 	 */
-	@Column(precision=10,scale=FLOAT_SCALE) @Accessors(chain=true) private BigDecimal price;
+	@Column(precision=10,scale=FLOAT_SCALE) private BigDecimal price;
+	@Column(precision=3,scale=FLOAT_SCALE) private BigDecimal quantityMultiple;
 	
-	@Column(precision=3,scale=FLOAT_SCALE) @Accessors(chain=true) private BigDecimal quantityMultiple;
-	
-	@Column(precision=PERCENT_PRECISION,scale=PERCENT_SCALE) private BigDecimal valueAddedTaxRate;
-	
-	@Transient @Accessors(chain=true) private Class<? extends Product> productClass;
+	@Transient private Class<? extends Product> productClass;
+	@Transient private Boolean isProductStockable;
 	
 	public SalableProduct(Product product, BigDecimal price) {
 		super(product.getCode(),product.getName(),product.getAbbreviation(),product.getDescription());
@@ -70,7 +70,11 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 	/**/
 	
 	public static final String FIELD_PRODUCT = "product";
+	public static final String FIELD_VALUE_ADDED_TAX_RATE = "valueAddedTaxRate";
 	public static final String FIELD_PRICE = "price";
+	public static final String FIELD_QUANTITY_MULTIPLE = "quantityMultiple";
+	public static final String FIELD_IS_PRODUCT_STOCKABLE = "isProductStockable";
 	
 	public static final String COLUMN_PRODUCT = FIELD_PRODUCT;
+	public static final String COLUMN_VALUE_ADDED_TAX_RATE = FIELD_VALUE_ADDED_TAX_RATE;
 }

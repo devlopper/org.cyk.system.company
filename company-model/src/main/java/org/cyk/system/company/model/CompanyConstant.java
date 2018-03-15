@@ -105,6 +105,13 @@ public interface CompanyConstant {
 			public static String DEFAULT = "DEFAULT";
 			
 		}
+		
+		public static class ValueAddedTaxRate implements Serializable {
+			private static final long serialVersionUID = 1L;
+			
+			public static final String _18 = "_18";
+			
+		}
 	}
 		
 	public static class Configuration {

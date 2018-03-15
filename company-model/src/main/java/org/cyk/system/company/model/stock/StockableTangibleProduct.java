@@ -30,7 +30,7 @@ public class StockableTangibleProduct extends AbstractIdentifiable implements Se
 
 	@ManyToOne @JoinColumn(name=COLUMN_TANGIBLE_PRODUCT) @NotNull @Accessors(chain=true) private TangibleProduct tangibleProduct;
 	
-	@Transient @Accessors(chain=true) protected MovementCollection quantityMovementCollection;
+	@Transient @Accessors(chain=true) private MovementCollection quantityMovementCollection;
 	
 	/**/
 	

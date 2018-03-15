@@ -13,6 +13,7 @@ import javax.persistence.Transient;
 
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.model.AbstractEnumeration;
+import org.cyk.system.root.model.party.Party;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudInheritanceStrategy;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
@@ -31,6 +32,8 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	@ManyToOne @JoinColumn(name=COLUMN_CATEGORY) @Accessors(chain=true) protected ProductCategory category;
 	@ManyToOne @JoinColumn(name=COLUMN_TYPE) @Accessors(chain=true) protected ProductType type;
 	@Column(precision=10,scale=FLOAT_SCALE) @Accessors(chain=true) private BigDecimal price;
+	
+	@Transient @Accessors(chain=true) private Party providerParty;
 	
 	@Transient @Accessors(chain=true) protected OwnedCompany ownedCompany;
 	
