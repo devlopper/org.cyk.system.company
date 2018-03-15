@@ -80,7 +80,7 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 		super.computeChanges(salableProductCollectionItem, logMessageBuilder);
 		logMessageBuilder.addManyParameters("cost");
 		logMessageBuilder.addNamedParameters("before",salableProductCollectionItem.getCost().toString());
-		if(salableProductCollectionItem.getSalableProduct().getPrice()==null){
+		if(salableProductCollectionItem.getSalableProduct()!=null && salableProductCollectionItem.getSalableProduct().getPrice()==null){
 			//This product has no unit price then the price to be paid must be specified by user
 			
 		}else{
@@ -112,6 +112,7 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	@Override
 	protected void beforeCrud(SalableProductCollectionItem salableProductCollectionItem, Crud crud) {
 		super.beforeCrud(salableProductCollectionItem, crud); 
+		System.out.println("SalableProductCollectionItemBusinessImpl.beforeCrud() : "+salableProductCollectionItem.getCollection());
 		if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getIsBalanceMovementCollectionUpdatable())){			
 			
 		}		

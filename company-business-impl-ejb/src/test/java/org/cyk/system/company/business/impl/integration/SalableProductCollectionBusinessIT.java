@@ -10,6 +10,8 @@ import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusi
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.company.business.impl.__data__.FakedDataSet;
 import org.cyk.system.company.business.impl.__data__.RealDataSet;
+import org.cyk.system.company.business.impl.__test__.Runnable;
+import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
@@ -17,6 +19,8 @@ import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemD
 import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.utility.common.helper.ClassHelper;
+import org.cyk.utility.common.helper.ConditionHelper;
+import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.common.helper.RandomHelper;
 import org.junit.Test;
 
@@ -30,77 +34,82 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     @Test
     public void crudSalableProductCollection(){
     	TestCase testCase = instanciateTestCase();
-    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
+    	
     	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
-    	salableProductCollection.setCode(salableProductCollectionCode);
-    	testCase.create(salableProductCollection);
+    	testCase.create(testCase.instanciateOne(SalableProductCollection.class, salableProductCollectionCode));
+    	
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "0");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,null,null,null,null);
-    	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
+    	
     	testCase.clean();
     }
     
     @Test
     public void crudSalableProductCollectionWithSynchronisation(){
     	TestCase testCase = instanciateTestCase();
-    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
+    	
     	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
-    	salableProductCollection.setCode(salableProductCollectionCode);
-    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
-    	testCase.create(salableProductCollection);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "0");
+    	testCase.create(testCase.instanciateOne(SalableProductCollection.class, salableProductCollectionCode).setItemsSynchonizationEnabled(Boolean.TRUE));
+    	
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "0");    	
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"0","0","0","0");
-    	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
+    	
     	testCase.clean();
     }
     
     @Test
-    public void crudSalableProductCollectionWithItem(){
+    public void crudSalableProductCollectionWithOneItem(){
     	TestCase testCase = instanciateTestCase();
-    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
+    	String salableProductCode = RandomHelper.getInstance().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode).setCascadeOperationToMaster(Boolean.TRUE)
+    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.setPrice(new BigDecimal("100")));
+    	
     	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
-    	salableProductCollection.setCode(salableProductCollectionCode);
-    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP1));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("2"));
-    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	SalableProductCollection salableProductCollection = testCase.instanciateOne(SalableProductCollection.class, salableProductCollectionCode)
+    			.setItemsSynchonizationEnabled(Boolean.TRUE);
+    	
+    	salableProductCollection.add(testCase.instanciateOne(SalableProductCollectionItem.class).setSalableProductFromCode(salableProductCode)
+    			.setCostNumberOfProceedElements(2));
+    	
     	testCase.create(salableProductCollection);
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "1");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
-    	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	
-    	salableProductCollection = testCase.read(SalableProductCollection.class, salableProductCollectionCode);
-    	salableProductCollection.getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
-    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	salableProductCollection = testCase.read(SalableProductCollection.class, salableProductCollectionCode).setItemsSynchonizationEnabled(Boolean.TRUE)
+    			.add(inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
     	testCase.update(salableProductCollection);
+    	
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "1");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
     	
-    	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	testCase.clean();
     }
     
     @Test
     public void crudSalableProductCollectionWithAtLeastTwoItems(){
     	TestCase testCase = instanciateTestCase();
-    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
-    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	String salableProductCode01 = RandomHelper.getInstance().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
+    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.setPrice(new BigDecimal("100")));
+    	String salableProductCode02 = RandomHelper.getInstance().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode02).setCascadeOperationToMaster(Boolean.TRUE)
+    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.setPrice(new BigDecimal("150")));
+    	
     	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
-    	salableProductCollection.setCode(salableProductCollectionCode);
+    	SalableProductCollection salableProductCollection = testCase.instanciateOne(SalableProductCollection.class, salableProductCollectionCode)
+    			.setItemsSynchonizationEnabled(Boolean.TRUE);
     	
-    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP1));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("2"));
-    	
-    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP3));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("1"));
+    	salableProductCollection.add(testCase.instanciateOne(SalableProductCollectionItem.class).setSalableProductFromCode(salableProductCode01)
+    			.setCostNumberOfProceedElements(2),testCase.instanciateOne(SalableProductCollectionItem.class).setSalableProductFromCode(salableProductCode02)
+    			.setCostNumberOfProceedElements(3));
     	
     	testCase.create(salableProductCollection);
+    	
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "2");
-    	testCase.assertSalableProductCollection(salableProductCollectionCode,"3","350","54","296");
-    	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
-    	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP3, "10");
+    	testCase.assertSalableProductCollection(salableProductCollectionCode,"5","650","100","550");
     	
     	testCase.clean();
     }
@@ -108,30 +117,36 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     @Test
     public void crudSalableProductCollectionWithItemsUpdate(){
     	TestCase testCase = instanciateTestCase();
-    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
-    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
-    	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
-    	salableProductCollection.setCode(salableProductCollectionCode);
+    	String salableProductCode01 = RandomHelper.getInstance().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
+    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.setPrice(new BigDecimal("100")));
+    	String salableProductCode02 = RandomHelper.getInstance().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode02).setCascadeOperationToMaster(Boolean.TRUE)
+    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.setPrice(new BigDecimal("150")));
     	
-    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP1));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("2"));
+    	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
+    	SalableProductCollection salableProductCollection = testCase.instanciateOne(SalableProductCollection.class, salableProductCollectionCode)
+    			.setItemsSynchonizationEnabled(Boolean.TRUE);
+    	
+    	salableProductCollection.add(testCase.instanciateOne(SalableProductCollectionItem.class).setSalableProductFromCode(salableProductCode01)
+    			.setCostNumberOfProceedElements(2));
+    	
     	testCase.create(salableProductCollection);
+    	
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "1");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
-    	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
     	
-    	salableProductCollection = testCase.read(SalableProductCollection.class, salableProductCollectionCode);
-    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
-    	salableProductCollection.getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
-    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP3));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("1"));
+    	salableProductCollection = testCase.read(SalableProductCollection.class, salableProductCollectionCode).setItemsSynchonizationEnabled(Boolean.TRUE)
+    			.add(inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
+    	salableProductCollection.add(testCase.instanciateOne(SalableProductCollectionItem.class).setSalableProductFromCode(salableProductCode02)
+    			.setCostNumberOfProceedElements(1));
+    	
     	testCase.update(salableProductCollection);
+    	
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "2");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"3","350","54","296");
-    	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP1, "10");
-    	testCase.assertStockableTangibleProduct(FakedDataSet.TANGIBLE_PRODUCT_TP3, "10");
     	
     	testCase.clean();
     }
@@ -139,33 +154,36 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     @Test
     public void computeChanges(){
     	TestCase testCase = instanciateTestCase();
-    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
-    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
-    	String salableProductCollectionCode = RandomHelper.getInstance().getAlphabetic(3);
-    	salableProductCollection.setCode(salableProductCollectionCode);
+    	String salableProductCode01 = RandomHelper.getInstance().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
+    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.setPrice(new BigDecimal("100")));
+    	String salableProductCode02 = RandomHelper.getInstance().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode02).setCascadeOperationToMaster(Boolean.TRUE)
+    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.setPrice(new BigDecimal("150")));
     	
-    	inject(SalableProductCollectionBusiness.class).computeChanges(salableProductCollection);
+    	SalableProductCollection salableProductCollection = testCase.instanciateOne(SalableProductCollection.class).setItemsSynchonizationEnabled(Boolean.TRUE);
+    	
+    	testCase.computeChanges(salableProductCollection);
     	testCase.assertCost(salableProductCollection.getCost(), "0", "0", "0", "0");
     	
-    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP1));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("2"));
+    	salableProductCollection.add(testCase.instanciateOne(SalableProductCollectionItem.class).setSalableProductFromCode(salableProductCode01)
+    			.setCostNumberOfProceedElements(2));
     	
-    	inject(SalableProductCollectionBusiness.class).computeChanges(salableProductCollection);
+    	testCase.computeChanges(salableProductCollection);
     	testCase.assertCost(salableProductCollection.getCost(), "2","200","31","169");
     	
-    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP3));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("1"));
+    	salableProductCollection.add(testCase.instanciateOne(SalableProductCollectionItem.class).setSalableProductFromCode(salableProductCode02)
+    			.setCostNumberOfProceedElements(1));
     	
-    	inject(SalableProductCollectionBusiness.class).computeChanges(salableProductCollection);
+    	testCase.computeChanges(salableProductCollection);
     	testCase.assertCost(salableProductCollection.getCost(),"3","350","54","296");
     	
-    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,FakedDataSet.TANGIBLE_PRODUCT_TP3));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("-1"));
+    	salableProductCollection.add(testCase.instanciateOne(SalableProductCollectionItem.class).setSalableProductFromCode(salableProductCode02)
+    			.setCostNumberOfProceedElements(-1));
     	
-    	inject(SalableProductCollectionBusiness.class).computeChanges(salableProductCollection);
+    	testCase.computeChanges(salableProductCollection);
     	testCase.assertCost(salableProductCollection.getCost(), "2","200","31","169");
     	
     	testCase.clean();
@@ -213,6 +231,17 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     }
     
     /* Exceptions */
+    
+    @Test
+    public void throwCollectionIsNull(){
+		TestCase testCase = instanciateTestCase();
+		testCase.assertThrowable(new Runnable(testCase) {
+			private static final long serialVersionUID = 1L;
+			@Override protected void __run__() throws Throwable {create(instanciateOne(SalableProductCollectionItem.class));}
+    	}, FieldHelper.Field.get(SalableProductCollectionItem.class,SalableProductCollectionItem.FIELD_COLLECTION).getIdentifier(ConditionHelper.Condition.Builder.Null.class)
+				, "La valeur de l'attribut <<collection>> de l'entité <<élément de collection de produit vendable>> doit être non nulle.");
+    	testCase.clean();
+	}
     
     /**/
     

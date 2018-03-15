@@ -9,18 +9,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
+import org.cyk.utility.common.helper.ClassHelper;
+import org.cyk.utility.common.helper.InstanceHelper;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity @ModelBean(genderType=GenderType.MALE,crudStrategy=CrudStrategy.BUSINESS)
 public class StockableTangibleProduct extends AbstractIdentifiable implements Serializable {
@@ -37,6 +39,11 @@ public class StockableTangibleProduct extends AbstractIdentifiable implements Se
 			
 		}else
 			quantityMovementCollection.setValue(value);
+		return this;
+	}
+	
+	public StockableTangibleProduct setTangibleProductFromCode(String code){
+		tangibleProduct = InstanceHelper.getInstance().getByIdentifier(TangibleProduct.class, code, ClassHelper.Listener.IdentifierType.BUSINESS);
 		return this;
 	}
 	

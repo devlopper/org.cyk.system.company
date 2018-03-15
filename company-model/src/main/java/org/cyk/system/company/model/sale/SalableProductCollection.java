@@ -2,6 +2,7 @@ package org.cyk.system.company.model.sale;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collection;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -45,6 +46,16 @@ public class SalableProductCollection extends AbstractCollection<SalableProductC
 		if(cost==null)
 			cost = new Cost();
 		return cost;
+	}
+	
+	@Override
+	public SalableProductCollection setItemsSynchonizationEnabled(Boolean synchonizationEnabled) {
+		return (SalableProductCollection) super.setItemsSynchonizationEnabled(synchonizationEnabled);
+	}
+	
+	@Override
+	public SalableProductCollection add(Collection<SalableProductCollectionItem> items) {
+		return (SalableProductCollection) super.add(items);
 	}
 	
 	public static final String FIELD_ACCOUNTING_PERIOD = "accountingPeriod";
