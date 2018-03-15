@@ -71,7 +71,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 				public DataTable.Cell instanciateOne(DataTable.Column column, DataTable.Row row) {
 					final DataTable.Cell cell = super.instanciateOne(column, row);
 					
-					if(ArrayUtils.contains(new String[]{SalableProductCollectionItem.FIELD_QUANTITY},column.getPropertiesMap().getFieldName())){
+					if(ArrayUtils.contains(new String[]{FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS)},column.getPropertiesMap().getFieldName())){
 						Event.instanciateOne(cell, new String[]{FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_VALUE)}
 						,new String[]{FieldHelper.getInstance().buildPath(fieldName,SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE)});
 					}

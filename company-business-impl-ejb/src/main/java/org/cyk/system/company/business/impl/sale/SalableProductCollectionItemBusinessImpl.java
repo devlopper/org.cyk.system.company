@@ -11,6 +11,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
+import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
@@ -26,10 +27,10 @@ import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
+import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
 
 public class SalableProductCollectionItemBusinessImpl extends AbstractCollectionItemBusinessImpl<SalableProductCollectionItem, SalableProductCollectionItemDao,SalableProductCollection> implements SalableProductCollectionItemBusiness,Serializable {
-
 	private static final long serialVersionUID = -3799482462496328200L;
 	
 	@Inject
@@ -51,7 +52,7 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 		//salableProductCollectionItem.setCode(salableProduct.getCode());
 		//salableProductCollectionItem.setCollection(salableProductCollection);
 		salableProductCollectionItem.setSalableProduct(salableProduct);
-		salableProductCollectionItem.setQuantity(quantity);
+		salableProductCollectionItem.getCost().setNumberOfProceedElements(quantity);
 		//salableProductCollectionItem.setReduction(reduction);
 		//salableProductCollectionItem.setCommission(commission);
 		computeChanges(salableProductCollectionItem);
@@ -84,8 +85,6 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 			
 		}else{
 			//This product has a unit price so we can compute the cost to be paid
-			salableProductCollectionItem.setQuantifiedPrice(salableProductCollectionItem.getSalableProduct().getPrice()
-					.multiply(salableProductCollectionItem.getQuantity())); 
 			BigDecimal cost = salableProductCollectionItem.getQuantifiedPrice()
 				//.subtract(salableProductCollectionItem.getReduction())
 				//.add(salableProductCollectionItem.getCommission())
@@ -94,7 +93,6 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 		}
 		//TODO what if previous balance value has there ???
 		salableProductCollectionItem.getBalance().setValue(salableProductCollectionItem.getCost().getValue());
-		salableProductCollectionItem.getCost().setNumberOfProceedElements(salableProductCollectionItem.getQuantity());
 		
 		if(salableProductCollectionItem.getCost().getValue()==null){
 			
@@ -122,7 +120,7 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 					(TangibleProduct) salableProductCollectionItem.getSalableProduct().getProduct());
 			if(stockableTangibleProduct!=null){
 				inject(MovementBusiness.class).create(stockableTangibleProduct, RootConstant.Code.MovementCollectionType.STOCK_REGISTER, crud, salableProductCollectionItem
-						, SalableProductCollectionItem.FIELD_QUANTITY,Boolean.TRUE,null);
+						, FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS),Boolean.TRUE,null);
 			}
 		}		
 	}

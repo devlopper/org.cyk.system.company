@@ -78,7 +78,7 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 	
 	public void productQuantityChanged(TYPE item){
 		SalableProductCollectionItem salableProductCollectionItem = item.getSalableProductCollectionItem();
-		salableProductCollectionItem.setQuantity(item.getQuantity());
+		//salableProductCollectionItem.setQuantity(item.getQuantity());
 		itemPropertyChanged(item);		
 	}
 	
@@ -235,7 +235,7 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 				item.setCode(item.getIdentifiable().getSalableProduct().getProduct().getCode());
 				item.setName(item.getIdentifiable().getSalableProduct().getProduct().getName());
 				item.setUnitPrice(inject(NumberBusiness.class).format(item.getIdentifiable().getSalableProduct().getPrice()));
-				item.setQuantity(item.getIdentifiable().getQuantity());
+				//item.setQuantity(item.getIdentifiable().getQuantity());
 				item.setQuantifiedPrice(inject(NumberBusiness.class).format(item.getIdentifiable().getQuantifiedPrice()));
 				//item.setReduction(item.getIdentifiable().getReduction()==null?null:new BigDecimal(item.getIdentifiable().getReduction().intValue()));
 				item.setTotalPrice(inject(NumberBusiness.class).format(item.getIdentifiable().getCost().getValue()));

@@ -46,7 +46,7 @@ public class SalableProductCollectionItemReport extends AbstractIdentifiableRepo
 		salableProduct.setSource(((SalableProductCollectionItem)source).getSalableProduct());
 		cost.setSource(((SalableProductCollectionItem)source).getCost());
 		costValueWithoutReduction = format( ((SalableProductCollectionItem)source).getQuantifiedPrice());
-		quantity = format(((SalableProductCollectionItem)source).getQuantity());
+		//quantity = format(((SalableProductCollectionItem)source).getQuantity());
 		//reduction = format(((SalableProductCollectionItem)source).getReduction());
 		//commission = format(((SalableProductCollectionItem)source).getCommission());
 		balance.setSource(((SalableProductCollectionItem)source).getBalance());

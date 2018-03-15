@@ -22,7 +22,7 @@ public class SalableProductCollectionItemDaoImpl extends AbstractCollectionItemD
 		registerNamedQuery(readByCollectionBySalableProduct, _select().where(SalableProductCollectionItem.FIELD_COLLECTION)
 				.and(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT));
 		registerNamedQuery(sumCostAttributesBySalableProductCollection, "SELECT NEW "+
-				Cost.class.getName()+"(SUM(r.cost.numberOfProceedElements),SUM(r.cost.value),SUM(r.cost.tax),SUM(r.cost.turnover))"
+				Cost.class.getName()+"(SUM(r.cost.numberOfProceedElements),SUM(r.cost.value),SUM(r.cost.tax),SUM(r.cost.turnover),SUM(r.cost.reduction),SUM(r.cost.commission))"
 				+ " FROM SalableProductCollectionItem r WHERE r.collection = :collection");
 	}
 	

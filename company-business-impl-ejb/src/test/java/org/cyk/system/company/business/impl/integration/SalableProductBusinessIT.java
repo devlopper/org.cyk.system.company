@@ -4,18 +4,17 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
-import org.cyk.system.company.business.impl.__data__.FakedDataSet;
 import org.cyk.system.company.business.impl.__data__.RealDataSet;
+import org.cyk.system.company.business.impl.__test__.Runnable;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
-import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.utility.common.helper.ClassHelper;
+import org.cyk.utility.common.helper.ConditionHelper;
 import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.common.helper.RandomHelper;
 import org.junit.Test;
@@ -30,11 +29,12 @@ public class SalableProductBusinessIT extends AbstractBusinessIT {
     @Test
     public void crudSalableProductBasedOnExistingProductByJoin(){
     	TestCase testCase = instanciateTestCase(); 
-    	SalableProduct salableProduct = inject(SalableProductBusiness.class).instanciateOne();
-    	salableProduct.setProduct(inject(ProductDao.class).readByGlobalIdentifierCode(FakedDataSet.TANGIBLE_PRODUCT_NO_SALABLE_TP1));
+    	String tangibleProductCode = testCase.getRandomHelper().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(TangibleProduct.class,tangibleProductCode).setName("TP 001"));
     	
-    	testCase.create(salableProduct);
-    	testCase.assertFieldValueEquals(SalableProduct.class, FakedDataSet.TANGIBLE_PRODUCT_NO_SALABLE_TP1
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setProductFromCode(tangibleProductCode));
+    	
+    	testCase.assertFieldValueEquals(SalableProduct.class, tangibleProductCode
     			, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME),"TP 001");
     	testCase.clean();
     }
@@ -42,31 +42,41 @@ public class SalableProductBusinessIT extends AbstractBusinessIT {
     @Test
     public void crudSalableProductBasedOnExistingProductByCode(){
     	TestCase testCase = instanciateTestCase(); 
-    	SalableProduct salableProduct = inject(SalableProductBusiness.class).instanciateOne();
-    	salableProduct.setCode(FakedDataSet.TANGIBLE_PRODUCT_NO_SALABLE_TP1);
-    	salableProduct.setCascadeOperationToMaster(Boolean.TRUE);
-    	salableProduct.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT));
-    	salableProduct.setProductClass(TangibleProduct.class);
+    	String tangibleProductCode = testCase.getRandomHelper().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(TangibleProduct.class,tangibleProductCode).setName("TP 001"));
     	
-    	testCase.create(salableProduct);
-    	testCase.read(SalableProduct.class, FakedDataSet.TANGIBLE_PRODUCT_NO_SALABLE_TP1);
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(tangibleProductCode).setCascadeOperationToMaster(Boolean.TRUE)
+    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class));
+    	
+    	testCase.assertFieldValueEquals(SalableProduct.class, tangibleProductCode
+    			, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME),"TP 001");
     	testCase.clean();
     }
     
     @Test
     public void crudSalableProductBasedOnNonExistingProductByCode(){
     	TestCase testCase = instanciateTestCase(); 
-    	SalableProduct salableProduct = inject(SalableProductBusiness.class).instanciateOne();
-    	String code = RandomHelper.getInstance().getAlphabetic(5);
-    	salableProduct.setCode(code);
-    	salableProduct.setCascadeOperationToMaster(Boolean.TRUE);
-    	salableProduct.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT));
-    	salableProduct.setProductClass(TangibleProduct.class);
+    	String salableProductCode = RandomHelper.getInstance().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode).setCascadeOperationToMaster(Boolean.TRUE)
+    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class));
     	
-    	testCase.create(salableProduct);
-    	testCase.read(SalableProduct.class, code);
+    	testCase.assertNotNull(TangibleProduct.class, salableProductCode);
+    	testCase.assertNotNull(SalableProduct.class, salableProductCode);
     	testCase.clean();
     }
+    
+    /* Exceptions */
+    
+	@Test
+    public void throwProductIsNull(){
+		TestCase testCase = instanciateTestCase();
+		testCase.assertThrowable(new Runnable(testCase) {
+			private static final long serialVersionUID = 1L;
+			@Override protected void __run__() throws Throwable {create(instanciateOne(SalableProduct.class).setCode(RandomHelper.getInstance().getAlphabetic(5)));}
+    	}, FieldHelper.Field.get(SalableProduct.class,SalableProduct.FIELD_PRODUCT).getIdentifier(ConditionHelper.Condition.Builder.Null.class)
+				, "La valeur de l'attribut <<produit>> de l'entité <<produit vendable>> doit être non nulle.");
+    	testCase.clean();
+	}
     
     /**/
     

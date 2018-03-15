@@ -2,6 +2,7 @@ package org.cyk.system.company.model.sale;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,8 @@ import org.cyk.system.root.model.AbstractCollection;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
+import org.cyk.utility.common.helper.ClassHelper;
+import org.cyk.utility.common.helper.InstanceHelper;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,6 +45,26 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 		super(product.getCode(),product.getName(),product.getAbbreviation(),product.getDescription());
 		this.product = product;
 		this.price = price;
+	}
+	
+	@Override
+	public SalableProduct setCode(String code) {
+		return (SalableProduct) super.setCode(code);
+	}
+	
+	public SalableProduct setProductFromCode(String code){
+		product = InstanceHelper.getInstance().getByIdentifier(Product.class, code, ClassHelper.Listener.IdentifierType.BUSINESS);
+		return this;
+	}
+	
+	@Override
+	public SalableProduct setCascadeOperationToMaster(Boolean cascadeOperationToMaster) {
+		return (SalableProduct) super.setCascadeOperationToMaster(cascadeOperationToMaster);
+	}
+	
+	@Override
+	public SalableProduct setCascadeOperationToMasterFieldNames(Collection<String> cascadeOperationToMasterFieldNames) {
+		return (SalableProduct) super.setCascadeOperationToMasterFieldNames(cascadeOperationToMasterFieldNames);
 	}
 	
 	/**/

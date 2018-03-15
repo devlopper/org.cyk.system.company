@@ -167,7 +167,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	public SalableProductCollectionItem updateSalableProductCollectionItem(SalableProductCollectionItem pSalableProductCollectionItem,String quantity,String expectedSalableProductCollectionCost,String expectedThrowableMessage){
 		final SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).find(pSalableProductCollectionItem.getIdentifier());
 		salableProductCollectionItem.setCascadeOperationToMaster(Boolean.TRUE);
-		salableProductCollectionItem.setQuantity(commonUtils.getBigDecimal(quantity));
+		//salableProductCollectionItem.setQuantity(commonUtils.getBigDecimal(quantity));
     	if(expectedThrowableMessage!=null){
     		new Try(expectedThrowableMessage){ 
     			private static final long serialVersionUID = -8176804174113453706L;

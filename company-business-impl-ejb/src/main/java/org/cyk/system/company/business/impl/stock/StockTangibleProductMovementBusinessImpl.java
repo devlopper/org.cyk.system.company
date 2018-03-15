@@ -86,7 +86,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 				BigDecimal count = BigDecimal.ZERO;
 				for(SalableProductCollectionItem saleProduct : saleProducts)
 					if(saleProduct.getSalableProduct().getProduct().equals(stockableTangibleProduct.getTangibleProduct()))
-						count = count.add(saleProduct.getQuantity());
+						;//count = count.add(saleProduct.getQuantity());
 				//StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement(stockableTangibleProduct
 				//		,inject(MovementBusiness.class).instanciateOne(stockableTangibleProduct.getMovementCollection(), Boolean.FALSE));
 				//stockTangibleProductMovement.getMovement().setValue(count.negate());

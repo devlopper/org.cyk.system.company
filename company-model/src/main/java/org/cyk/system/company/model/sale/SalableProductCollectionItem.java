@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -35,7 +34,8 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 	/**
 	 * positive is out. negative is back in
 	 */
-	@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal quantity;//TODO use number of proceed elements of cost to track this value
+	//@Deprecated
+	//@Column(precision=10,scale=FLOAT_SCALE,nullable=false) @NotNull private BigDecimal quantityf;//TODO use number of proceed elements of cost to track this value
 	/*
 	 *we can use metric to track those values 
 	 */
@@ -59,8 +59,8 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 	}
 	
 	public BigDecimal getQuantifiedPrice(){
-		if(quantifiedPrice==null && salableProduct.getPrice()!=null && quantity!=null)
-			quantifiedPrice = salableProduct.getPrice().multiply(quantity);
+		if(quantifiedPrice==null && salableProduct.getPrice()!=null && getCost().getNumberOfProceedElements()!=null)
+			quantifiedPrice = salableProduct.getPrice().multiply(getCost().getNumberOfProceedElements());
 		return quantifiedPrice;
 	}
 	
@@ -70,15 +70,8 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 		return instances;
 	}
 	
-	@Override
-	public String getLogMessage() {
-		return String.format(LOG_FORMAT,getCode(),getQuantity(),cost.getLogMessage());
-	}
-	private static final String LOG_FORMAT = SalableProductCollectionItem.class.getSimpleName()+"(C=%s Q=%s %s)";
-	
-	
 	public static final String FIELD_SALABLE_PRODUCT = "salableProduct";
-	public static final String FIELD_QUANTITY = "quantity";
+	//@Deprecated public static final String FIELD_QUANTITY = "quantity";
 	//public static final String FIELD_REDUCTION = "reduction";
 	//public static final String FIELD_COMMISSION = "commission";
 	public static final String FIELD_COST = "cost";
