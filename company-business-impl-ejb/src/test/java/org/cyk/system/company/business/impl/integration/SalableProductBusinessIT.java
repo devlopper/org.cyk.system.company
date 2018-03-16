@@ -9,10 +9,17 @@ import org.cyk.system.company.business.impl.__data__.RealDataSet;
 import org.cyk.system.company.business.impl.__test__.Runnable;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.stock.StockableTangibleProduct;
+import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.Movement;
+import org.cyk.system.root.model.party.Party;
+import org.cyk.system.root.model.party.PartyBusinessRole;
+import org.cyk.system.root.model.party.PartyIdentifiableGlobalIdentifier;
+import org.cyk.system.root.persistence.api.party.PartyIdentifiableGlobalIdentifierDao;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.ConditionHelper;
 import org.cyk.utility.common.helper.FieldHelper;
@@ -65,6 +72,28 @@ public class SalableProductBusinessIT extends AbstractBusinessIT {
     	testCase.clean();
     }
     
+    @Test
+    public void crudSalableProductByCodeAndJoinProviderAndStock(){
+    	TestCase testCase = instanciateTestCase(); 
+    	String productProviderCode = RandomHelper.getInstance().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(Company.class,productProviderCode));
+    	
+    	String salableProductCode = RandomHelper.getInstance().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode).setCascadeOperationToMaster(Boolean.TRUE)
+    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.setIsProductStockable(Boolean.TRUE).setProductProviderPartyFromCode(productProviderCode)
+    			);
+    	
+    	testCase.assertNotNull(TangibleProduct.class, salableProductCode);
+    	testCase.assertNotNull(SalableProduct.class, salableProductCode);
+    	testCase.assertNotNull(StockableTangibleProduct.class, salableProductCode);
+    	assertNotNull(inject(PartyIdentifiableGlobalIdentifierDao.class).readByPartyByIdentifiableGlobalIdentifierByRole(testCase.read(Company.class, productProviderCode)
+    			, testCase.read(TangibleProduct.class, salableProductCode).getGlobalIdentifier(),testCase.read(PartyBusinessRole.class
+    					, RootConstant.Code.PartyBusinessRole.PROVIDER)));
+    	
+    	testCase.clean();
+    }
+    
     /* Exceptions */
     
 	@Test
@@ -87,7 +116,7 @@ public class SalableProductBusinessIT extends AbstractBusinessIT {
 		@SuppressWarnings({ "rawtypes" })
 		@Override
 		public Collection getClasses() {
-			return Arrays.asList(SalableProduct.class,Movement.class);
+			return Arrays.asList(SalableProduct.class,Movement.class,Party.class);
 		}
 		
     }

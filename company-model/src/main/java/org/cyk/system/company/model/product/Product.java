@@ -25,22 +25,27 @@ import lombok.experimental.Accessors;
 
 @Getter @Setter @NoArgsConstructor @Entity 
 @Inheritance(strategy=InheritanceType.JOINED)
-@ModelBean(crudStrategy=CrudStrategy.ENUMERATION,crudInheritanceStrategy=CrudInheritanceStrategy.CHILDREN_ONLY)
+@ModelBean(crudStrategy=CrudStrategy.ENUMERATION,crudInheritanceStrategy=CrudInheritanceStrategy.CHILDREN_ONLY) @Accessors(chain=true)
 public class Product extends AbstractEnumeration implements Serializable  {
 	private static final long serialVersionUID = -6128937819261060725L;
 	
-	@ManyToOne @JoinColumn(name=COLUMN_CATEGORY) @Accessors(chain=true) protected ProductCategory category;
-	@ManyToOne @JoinColumn(name=COLUMN_TYPE) @Accessors(chain=true) protected ProductType type;
-	@Column(precision=10,scale=FLOAT_SCALE) @Accessors(chain=true) private BigDecimal price;
+	@ManyToOne @JoinColumn(name=COLUMN_CATEGORY) protected ProductCategory category;
+	@ManyToOne @JoinColumn(name=COLUMN_TYPE) protected ProductType type;
+	@Column(precision=10,scale=FLOAT_SCALE) private BigDecimal price;
 	
-	@Transient @Accessors(chain=true) private Party providerParty;
+	@Transient private Party providerParty;
 	
-	@Transient @Accessors(chain=true) protected OwnedCompany ownedCompany;
+	@Transient protected OwnedCompany ownedCompany;
+	
+	public Product setProviderPartyFromCode(String code){
+		providerParty = getFromCode(Party.class, code);
+		return this;
+	}
 	
 	public static final String FIELD_CATEGORY = "category";
 	public static final String FIELD_TYPE = "type";
 	public static final String FIELD_PRICE = "price";
-	
+	public static final String FIELD_PROVIDER_PARTY = "providerParty";
 	public static final String FIELD_OWNED_COMPANY = "ownedCompany";
 	
 	public static final String COLUMN_CATEGORY = FIELD_CATEGORY;

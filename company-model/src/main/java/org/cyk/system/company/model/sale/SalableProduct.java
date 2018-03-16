@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.root.model.AbstractCollection;
+import org.cyk.system.root.model.party.Party;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
@@ -40,6 +41,7 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 	
 	@Transient private Class<? extends Product> productClass;
 	@Transient private Boolean isProductStockable;
+	@Transient private Party productProviderParty;
 	
 	public SalableProduct(Product product, BigDecimal price) {
 		super(product.getCode(),product.getName(),product.getAbbreviation(),product.getDescription());
@@ -54,6 +56,11 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 	
 	public SalableProduct setProductFromCode(String code){
 		product = InstanceHelper.getInstance().getByIdentifier(Product.class, code, ClassHelper.Listener.IdentifierType.BUSINESS);
+		return this;
+	}
+	
+	public SalableProduct setProductProviderPartyFromCode(String code){
+		productProviderParty = getFromCode(Party.class, code);
 		return this;
 	}
 	
