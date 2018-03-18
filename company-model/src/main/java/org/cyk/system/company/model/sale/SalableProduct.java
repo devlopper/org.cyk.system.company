@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.root.model.AbstractCollection;
+import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.party.Party;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
@@ -62,6 +63,11 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 	public SalableProduct setProductProviderPartyFromCode(String code){
 		productProviderParty = getFromCode(Party.class, code);
 		return this;
+	}
+	
+	@Override
+	public SalableProduct setImage(File image) {
+		return (SalableProduct) super.setImage(image);
 	}
 	
 	@Override

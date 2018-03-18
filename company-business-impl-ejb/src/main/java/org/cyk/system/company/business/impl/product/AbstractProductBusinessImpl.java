@@ -30,7 +30,7 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
 				if(Crud.CREATE.equals(crud)){
 					product.addIdentifiables(inject(PartyIdentifiableGlobalIdentifierBusiness.class).instanciateOne()
 							.setParty(product.getProviderParty())
-							.setRoleFromCode(RootConstant.Code.PartyBusinessRole.PROVIDER)
+							.setBusinessRoleFromCode(RootConstant.Code.BusinessRole.PROVIDER)
 							.setIdentifiableGlobalIdentifier(product.getGlobalIdentifier())
 							);
 				}else{

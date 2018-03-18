@@ -5,11 +5,14 @@ import java.util.Arrays;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.model.Cost;
+import org.cyk.system.company.model.product.Product;
+import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.utility.common.Constant;
+import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.CollectionHelper;
 import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.common.helper.StringHelper;
@@ -29,6 +32,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 			super.____addName____();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void __prepare__() {
 		super.__prepare__();
@@ -36,17 +40,37 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 		Class<?> actionOnClass = (Class<?>) getPropertiesMap().getActionOnClass();
 		detail.setFieldsObjectFromMaster();
 		
-		if(SalableProduct.class.equals(actionOnClass)){
-			detail.add(SalableProduct.FIELD_PRODUCT).addBreak();
-			detail.add(SalableProduct.FIELD_PRICE).addBreak();
-		}else if(SalableProductCollection.class.equals(actionOnClass)){
-						
+		if(ClassHelper.getInstance().isInstanceOf(Product.class, actionOnClass)){
+			prepareProduct(detail,(Class<? extends Product>) actionOnClass);
+		}else if(SalableProduct.class.equals(actionOnClass)){
+			((SalableProduct)detail.getMaster().getObject()).setCascadeOperationToMaster(Boolean.TRUE)
+			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class);
+			
+			prepareSalableProduct(detail,Boolean.FALSE);
+		}else if(SalableProductCollection.class.equals(actionOnClass)){						
 			prepareSalableProductCollection(detail,null,Boolean.FALSE);
 		}else if(Sale.class.equals(actionOnClass)){
 			//((Sale)getObject()).getBalance().setValue(BigDecimal.ZERO);
 			//((Sale)getObject()).getBalance().setCumul(BigDecimal.ZERO);
 			prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION,Boolean.FALSE);
 		}
+	}
+	
+	public static void prepareProduct(Form.Detail detail,Class<? extends Product> aClass){
+		detail.add(Product.FIELD_CATEGORY).addBreak();
+		detail.add(Product.FIELD_PRICE).addBreak();
+		detail.add(Product.FIELD_PROVIDER_PARTY).addBreak();
+		if(TangibleProduct.class.equals(aClass))
+			detail.add(TangibleProduct.FIELD_IS_STOCKABLE).addBreak();
+		addImage(detail);
+		addDescription(detail);
+	}
+	
+	public static void prepareSalableProduct(Form.Detail detail,Boolean addProduct){
+		if(Boolean.TRUE.equals(addProduct))
+			detail.add(SalableProduct.FIELD_PRODUCT).addBreak();
+		detail.add(SalableProduct.FIELD_PRICE).addBreak();
+		addImage(detail);
 	}
 	
 	public static void prepareSalableProductCollection(Form.Detail detail,final String fieldName,Boolean addExistencePeriodFromDate){

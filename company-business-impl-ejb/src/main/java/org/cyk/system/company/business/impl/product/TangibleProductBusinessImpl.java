@@ -8,6 +8,7 @@ import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.stock.StockableTangibleProductBusiness;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
+import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.api.Crud;
 
 public class TangibleProductBusinessImpl extends AbstractProductBusinessImpl<TangibleProduct,TangibleProductDao> implements TangibleProductBusiness {
@@ -27,6 +28,8 @@ public class TangibleProductBusinessImpl extends AbstractProductBusinessImpl<Tan
 					tangibleProduct.addIdentifiables(inject(StockableTangibleProductBusiness.class).instanciateOne().setTangibleProduct(tangibleProduct));
 				}		
 			}
+		}else if(Crud.DELETE.equals(crud)){
+			inject(StockableTangibleProductBusiness.class).delete(inject(StockableTangibleProductDao.class).readByTangibleProduct(tangibleProduct));
 		}
 		
 	}
