@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
 import org.cyk.system.root.business.api.TypedBusiness;
-
+@Deprecated
 public interface SaleStockTangibleProductMovementBusiness extends TypedBusiness<SaleStockTangibleProductMovement> {
 
 	Collection<SaleStockTangibleProductMovement> findBySale(Sale sale);

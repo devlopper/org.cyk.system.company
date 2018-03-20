@@ -8,7 +8,7 @@ import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.TypedBusiness;
-
+@Deprecated
 public interface StockTangibleProductMovementBusiness extends TypedBusiness<StockTangibleProductMovement> {
 
 	StockTangibleProductMovement instanciateOne(String[] arguments);

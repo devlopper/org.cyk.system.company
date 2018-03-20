@@ -7,7 +7,7 @@ import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCrit
 import org.cyk.system.company.persistence.api.stock.StockTangibleProductMovementDao;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
-
+@Deprecated
 public class StockTangibleProductMovementDaoImpl extends AbstractTypedDao<StockTangibleProductMovement> implements StockTangibleProductMovementDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;

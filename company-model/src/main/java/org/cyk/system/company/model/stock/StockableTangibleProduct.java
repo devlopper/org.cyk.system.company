@@ -15,8 +15,6 @@ import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
-import org.cyk.utility.common.helper.ClassHelper;
-import org.cyk.utility.common.helper.InstanceHelper;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,13 +22,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity @ModelBean(genderType=GenderType.MALE,crudStrategy=CrudStrategy.BUSINESS)
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity @ModelBean(genderType=GenderType.MALE,crudStrategy=CrudStrategy.BUSINESS) @Accessors(chain=true)
 public class StockableTangibleProduct extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @JoinColumn(name=COLUMN_TANGIBLE_PRODUCT) @NotNull @Accessors(chain=true) private TangibleProduct tangibleProduct;
+	@ManyToOne @JoinColumn(name=COLUMN_TANGIBLE_PRODUCT,unique=true) @NotNull private TangibleProduct tangibleProduct;
 	
-	@Transient @Accessors(chain=true) private MovementCollection quantityMovementCollection;
+	@Transient private MovementCollection quantityMovementCollection;
 	
 	/**/
 	
@@ -43,7 +41,7 @@ public class StockableTangibleProduct extends AbstractIdentifiable implements Se
 	}
 	
 	public StockableTangibleProduct setTangibleProductFromCode(String code){
-		tangibleProduct = InstanceHelper.getInstance().getByIdentifier(TangibleProduct.class, code, ClassHelper.Listener.IdentifierType.BUSINESS);
+		tangibleProduct = getFromCode(TangibleProduct.class, code);
 		return this;
 	}
 	
@@ -54,4 +52,11 @@ public class StockableTangibleProduct extends AbstractIdentifiable implements Se
 	
 	public static final String COLUMN_TANGIBLE_PRODUCT = FIELD_TANGIBLE_PRODUCT;
 	
+	/**/
+	
+	@Getter @Setter
+	public static class Filter extends AbstractIdentifiable.Filter<StockableTangibleProduct> implements Serializable {
+		private static final long serialVersionUID = -1498269103849317057L;
+
+	}
 }

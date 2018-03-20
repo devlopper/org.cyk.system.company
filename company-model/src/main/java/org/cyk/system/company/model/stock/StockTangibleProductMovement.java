@@ -2,7 +2,6 @@ package org.cyk.system.company.model.stock;
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
@@ -17,8 +16,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
-@ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE)
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor //@Entity
+@ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE) @Deprecated
 public class StockTangibleProductMovement extends AbstractIdentifiable implements Serializable {
 	
 	private static final long serialVersionUID = -4946585596435850782L;

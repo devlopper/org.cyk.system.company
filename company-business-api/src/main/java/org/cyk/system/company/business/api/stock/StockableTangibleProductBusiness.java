@@ -6,5 +6,5 @@ import org.cyk.system.root.business.api.TypedBusiness;
 public interface StockableTangibleProductBusiness extends TypedBusiness<StockableTangibleProduct> {
 
 	void setQuantityMovementCollection(StockableTangibleProduct stockableTangibleProduct);
-
+	
 }

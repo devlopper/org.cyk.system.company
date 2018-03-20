@@ -8,8 +8,7 @@ import org.cyk.system.root.business.api.AbstractEnumerationBusiness;
 
 public interface AbstractProductBusiness<PRODUCT extends Product> extends AbstractEnumerationBusiness<PRODUCT> {
 
-	//void consume(Sale sale, Crud crud, Boolean first);
-	
+	void setProviderParty(PRODUCT product);
 	Collection<PRODUCT> findByCategory(ProductCategory category);
 	
 }

@@ -14,12 +14,24 @@ import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.party.PartyIdentifiableGlobalIdentifierBusiness;
 import org.cyk.system.root.business.impl.AbstractEnumerationBusinessImpl;
 import org.cyk.system.root.model.RootConstant;
+import org.cyk.system.root.model.party.BusinessRole;
+import org.cyk.system.root.model.party.PartyIdentifiableGlobalIdentifier;
+import org.cyk.system.root.persistence.api.party.PartyIdentifiableGlobalIdentifierDao;
+import org.cyk.utility.common.helper.CollectionHelper;
 
 public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO extends AbstractProductDao<PRODUCT>> extends AbstractEnumerationBusinessImpl<PRODUCT,DAO> implements AbstractProductBusiness<PRODUCT>,Serializable {
 	private static final long serialVersionUID = 2801588592108008404L;
 
     public AbstractProductBusinessImpl(DAO dao) {
         super(dao);
+    }
+    
+    @Override
+    public void setProviderParty(PRODUCT product){
+    	PartyIdentifiableGlobalIdentifier partyIdentifiableGlobalIdentifier = CollectionHelper.getInstance().getFirst(inject(PartyIdentifiableGlobalIdentifierDao.class)
+    			.readByIdentifiableGlobalIdentifierByRole(product.getGlobalIdentifier(), read(BusinessRole.class, RootConstant.Code.BusinessRole.PROVIDER)));
+    	if(partyIdentifiableGlobalIdentifier!=null)
+    		product.setProviderParty(partyIdentifiableGlobalIdentifier.getParty());
     }
     
     @Override

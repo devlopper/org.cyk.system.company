@@ -25,7 +25,7 @@ import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
-
+@Deprecated
 public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusinessService<StockTangibleProductMovement, StockTangibleProductMovementDao> implements StockTangibleProductMovementBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
@@ -83,7 +83,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 			if(stockableTangibleProduct==null)
 				;
 			else{
-				BigDecimal count = BigDecimal.ZERO;
+				//BigDecimal count = BigDecimal.ZERO;
 				for(SalableProductCollectionItem saleProduct : saleProducts)
 					if(saleProduct.getSalableProduct().getProduct().equals(stockableTangibleProduct.getTangibleProduct()))
 						;//count = count.add(saleProduct.getQuantity());

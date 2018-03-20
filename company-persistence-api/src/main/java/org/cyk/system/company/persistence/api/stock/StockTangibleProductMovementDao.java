@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
 import org.cyk.system.root.persistence.api.TypedDao;
-
+@Deprecated
 public interface StockTangibleProductMovementDao extends TypedDao<StockTangibleProductMovement> {
 
 	Collection<StockTangibleProductMovement> readByCriteria(StockTangibleProductMovementSearchCriteria criteria);

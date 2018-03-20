@@ -6,7 +6,7 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
-
+@Deprecated
 public class SaleStockTangibleProductMovementDaoImpl extends AbstractTypedDao<SaleStockTangibleProductMovement> implements SaleStockTangibleProductMovementDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;

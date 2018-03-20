@@ -8,23 +8,6 @@
 	<navigation-rule>
 		<from-view-id>*</from-view-id>
 		
-		<!-- Stock -->
-		<navigation-case>
-			<from-outcome>stockableTangibleProductConsultView</from-outcome>
-			<to-view-id>/private/stock/stockabletangibleproduct/consult.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>stockableTangibleProductListView</from-outcome>
-			<to-view-id>/private/stock/stockabletangibleproduct/list.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>stockableTangibleProductEditView</from-outcome>
-			<to-view-id>/private/stock/stockabletangibleproduct/edit.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-		
 		<!-- Manager -->
 		
 		

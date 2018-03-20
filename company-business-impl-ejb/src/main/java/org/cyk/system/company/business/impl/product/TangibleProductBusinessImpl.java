@@ -34,6 +34,11 @@ public class TangibleProductBusinessImpl extends AbstractProductBusinessImpl<Tan
 		
 	}
 	
+	@Override
+	public void setIsStockable(TangibleProduct tangibleProduct) {
+		tangibleProduct.setIsStockable(inject(StockableTangibleProductDao.class).readByTangibleProduct(tangibleProduct)!=null);
+	}
+	
 	/**/
 	
 	public static class BuilderOneDimensionArray extends AbstractProductBusinessImpl.BuilderOneDimensionArray<TangibleProduct> implements Serializable {
