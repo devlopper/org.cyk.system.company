@@ -29,6 +29,7 @@ public class StockableTangibleProduct extends AbstractIdentifiable implements Se
 	@ManyToOne @JoinColumn(name=COLUMN_TANGIBLE_PRODUCT,unique=true) @NotNull private TangibleProduct tangibleProduct;
 	
 	@Transient private MovementCollection quantityMovementCollection;
+	@Transient private BigDecimal quantityMovementCollectionInitialValue;
 	
 	/**/
 	
@@ -45,10 +46,16 @@ public class StockableTangibleProduct extends AbstractIdentifiable implements Se
 		return this;
 	}
 	
+	public StockableTangibleProduct setQuantityMovementCollectionInitialValueFromObject(Object object){
+		quantityMovementCollectionInitialValue = getNumberFromObject(BigDecimal.class, object);
+		return this;
+	}
+	
 	/**/
 	
 	public static final String FIELD_TANGIBLE_PRODUCT = "tangibleProduct";
 	public static final String FIELD_QUANTITY_MOVEMENT_COLLECTION = "quantityMovementCollection";
+	public static final String FIELD_QUANTITY_MOVEMENT_COLLECTION_INITIAL_VALUE = "quantityMovementCollectionInitialValue";
 	
 	public static final String COLUMN_TANGIBLE_PRODUCT = FIELD_TANGIBLE_PRODUCT;
 	

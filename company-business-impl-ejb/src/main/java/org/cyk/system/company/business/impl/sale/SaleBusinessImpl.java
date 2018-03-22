@@ -14,34 +14,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleReport;
 import org.cyk.system.company.model.sale.SaleResults;
-import org.cyk.system.company.model.sale.SaleStockTangibleProductMovement;
 import org.cyk.system.company.persistence.api.sale.CustomerDao;
-import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
-import org.cyk.system.company.persistence.api.sale.SaleStockTangibleProductMovementDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierBusiness;
-import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
-import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.MovementCollection;
-import org.cyk.system.root.model.mathematics.MovementCollectionType;
-import org.cyk.system.root.persistence.api.mathematics.MovementCollectionDao;
-import org.cyk.system.root.persistence.api.mathematics.MovementCollectionTypeDao;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.helper.FieldHelper;
-import org.cyk.utility.common.helper.InstanceHelper;
 import org.cyk.utility.common.helper.LoggingHelper;
 import org.cyk.utility.common.helper.StringHelper;
 
@@ -82,8 +70,8 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
     	sale.setCascadeOperationToMasterFieldNames(Arrays.asList(Sale.FIELD_SALABLE_PRODUCT_COLLECTION));
 		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne().setIsStockMovementCollectionUpdatable(Boolean.TRUE)
 				.setIsBalanceMovementCollectionUpdatable(Boolean.TRUE));
-		sale.setBalanceMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne(RootConstant.Code.MovementCollectionType.SALE_BALANCE
-				,sale.getSalableProductCollection().getCost().getValue(),sale));
+		sale.setBalanceMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne().setTypeFromCode(RootConstant.Code.MovementCollectionType.SALE_BALANCE)
+				.setValue(sale.getSalableProductCollection().getCost().getValue()));
 		return sale;
 	}
 	

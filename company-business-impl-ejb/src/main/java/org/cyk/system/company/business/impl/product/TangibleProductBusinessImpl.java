@@ -25,7 +25,8 @@ public class TangibleProductBusinessImpl extends AbstractProductBusinessImpl<Tan
 		if(Crud.isCreateOrUpdate(crud)){
 			if(Crud.CREATE.equals(crud)){
 				if(Boolean.TRUE.equals(tangibleProduct.getIsStockable())){
-					tangibleProduct.addIdentifiables(inject(StockableTangibleProductBusiness.class).instanciateOne().setTangibleProduct(tangibleProduct));
+					tangibleProduct.addIdentifiables(inject(StockableTangibleProductBusiness.class).instanciateOne().setTangibleProduct(tangibleProduct)
+							.setQuantityMovementCollectionInitialValue(tangibleProduct.getStockQuantityMovementCollectionInitialValue()));
 				}		
 			}
 		}else if(Crud.DELETE.equals(crud)){

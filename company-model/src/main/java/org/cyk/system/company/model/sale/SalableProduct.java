@@ -43,6 +43,7 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 	@Transient private Class<? extends Product> productClass;
 	@Transient private Boolean isProductStockable;
 	@Transient private Party productProviderParty;
+	@Transient private BigDecimal productStockQuantityMovementCollectionInitialValue;
 	
 	public SalableProduct(Product product, BigDecimal price) {
 		super(product.getCode(),product.getName(),product.getAbbreviation(),product.getDescription());
@@ -62,6 +63,16 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 	
 	public SalableProduct setProductProviderPartyFromCode(String code){
 		productProviderParty = getFromCode(Party.class, code);
+		return this;
+	}
+	
+	public SalableProduct setPriceFromObject(Object value){
+		this.price = getNumberFromObject(BigDecimal.class, value);
+		return this;
+	}
+	
+	public SalableProduct setProductStockQuantityMovementCollectionInitialValueFromObject(Object value){
+		this.productStockQuantityMovementCollectionInitialValue = getNumberFromObject(BigDecimal.class, value);
 		return this;
 	}
 	
@@ -87,6 +98,7 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 	public static final String FIELD_PRICE = "price";
 	public static final String FIELD_QUANTITY_MULTIPLE = "quantityMultiple";
 	public static final String FIELD_IS_PRODUCT_STOCKABLE = "isProductStockable";
+	public static final String FIELD_PRODUCT_STOCK_QUANTITY_MOVEMENT_COLLECTION_INITIAL_VALUE = "productStockQuantityMovementCollectionInitialValue";
 	
 	public static final String COLUMN_PRODUCT = FIELD_PRODUCT;
 	public static final String COLUMN_VALUE_ADDED_TAX_RATE = FIELD_VALUE_ADDED_TAX_RATE;

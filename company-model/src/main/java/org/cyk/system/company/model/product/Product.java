@@ -34,6 +34,7 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	@Column(precision=10,scale=FLOAT_SCALE) private BigDecimal price;
 	
 	@Transient private Party providerParty;
+	@Transient private BigDecimal stockQuantityMovementCollectionInitialValue;
 	
 	@Transient protected OwnedCompany ownedCompany;
 	
@@ -46,6 +47,7 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	public static final String FIELD_TYPE = "type";
 	public static final String FIELD_PRICE = "price";
 	public static final String FIELD_PROVIDER_PARTY = "providerParty";
+	public static final String FIELD_STOCK_QUANTITY_MOVEMENT_COLLECTION_INITIAL_VALUE = "stockQuantityMovementCollectionInitialValue";
 	public static final String FIELD_OWNED_COMPANY = "ownedCompany";
 	
 	public static final String COLUMN_CATEGORY = FIELD_CATEGORY;

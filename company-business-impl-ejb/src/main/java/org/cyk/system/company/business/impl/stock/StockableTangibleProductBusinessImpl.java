@@ -34,8 +34,8 @@ public class StockableTangibleProductBusinessImpl extends AbstractTypedBusinessS
 	@Override
 	public StockableTangibleProduct instanciateOne() {
 		StockableTangibleProduct stockableTangibleProduct = super.instanciateOne();
-		stockableTangibleProduct.setQuantityMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne(RootConstant.Code.MovementCollectionType.STOCK_REGISTER
-				,null,stockableTangibleProduct));
+		stockableTangibleProduct.setQuantityMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne()
+				.setTypeFromCode(RootConstant.Code.MovementCollectionType.STOCK_REGISTER));
 		return stockableTangibleProduct;
 	}
 	
@@ -59,6 +59,7 @@ public class StockableTangibleProductBusinessImpl extends AbstractTypedBusinessS
 	protected void afterCreate(StockableTangibleProduct stockableTangibleProduct) {
 		super.afterCreate(stockableTangibleProduct);
 		if(stockableTangibleProduct.getQuantityMovementCollection() != null){
+			stockableTangibleProduct.getQuantityMovementCollection().setValue(stockableTangibleProduct.getQuantityMovementCollectionInitialValue());
 			inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).create(stockableTangibleProduct.getQuantityMovementCollection(), stockableTangibleProduct);
 		}
 	}

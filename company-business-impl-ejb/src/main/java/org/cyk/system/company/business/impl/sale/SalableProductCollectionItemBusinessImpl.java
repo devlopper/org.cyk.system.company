@@ -112,7 +112,6 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	@Override
 	protected void beforeCrud(SalableProductCollectionItem salableProductCollectionItem, Crud crud) {
 		super.beforeCrud(salableProductCollectionItem, crud); 
-		System.out.println("SalableProductCollectionItemBusinessImpl.beforeCrud() : "+salableProductCollectionItem.getCollection());
 		if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getIsBalanceMovementCollectionUpdatable())){			
 			
 		}		

@@ -29,6 +29,7 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 	protected void createMaster(SalableProduct salableProduct,AbstractIdentifiable master) {
 		if(master instanceof TangibleProduct){
 			((TangibleProduct)master).setIsStockable(salableProduct.getIsProductStockable());
+			((TangibleProduct)master).setStockQuantityMovementCollectionInitialValue(salableProduct.getProductStockQuantityMovementCollectionInitialValue());
 			((TangibleProduct)master).setProviderParty(salableProduct.getProductProviderParty());
 		}
 		super.createMaster(salableProduct,master);
