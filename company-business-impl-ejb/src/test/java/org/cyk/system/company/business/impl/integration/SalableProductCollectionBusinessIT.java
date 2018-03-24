@@ -14,6 +14,7 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.mathematics.Movement;
@@ -110,6 +111,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "2");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"5","650","100","550");
     	
+    	testCase.deleteAll(StockableTangibleProduct.class);
     	testCase.clean();
     }
     
@@ -147,6 +149,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "2");
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"3","350","54","296");
     	
+    	testCase.deleteAll(StockableTangibleProduct.class);
     	testCase.clean();
     }
     
@@ -185,6 +188,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	testCase.computeChanges(salableProductCollection);
     	testCase.assertCost(salableProductCollection.getCost(), "2","200","31","169");
     	
+    	testCase.deleteAll(StockableTangibleProduct.class);
     	testCase.clean();
     }
     
@@ -216,6 +220,8 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
     	
     	testCase.assertStockableTangibleProduct(salableProductCode, "8");
+    	
+    	testCase.deleteAll(StockableTangibleProduct.class);
     	testCase.clean();
     }
     
@@ -236,6 +242,7 @@ public class SalableProductCollectionBusinessIT extends AbstractBusinessIT {
     	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.create(salableProductCollection);
     	
+    	testCase.deleteAll(StockableTangibleProduct.class);
     	testCase.clean();
     }
     

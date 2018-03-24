@@ -46,7 +46,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 			((SalableProduct)detail.getMaster().getObject()).setCascadeOperationToMaster(Boolean.TRUE)
 			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class);
 			
-			prepareSalableProduct(detail,Boolean.FALSE);
+			prepareSalableProduct(detail,Boolean.TRUE);
 		}else if(SalableProductCollection.class.equals(actionOnClass)){						
 			prepareSalableProductCollection(detail,null,Boolean.FALSE);
 		}else if(Sale.class.equals(actionOnClass)){
