@@ -29,7 +29,8 @@ public abstract class AbstractSale extends AbstractIdentifiable implements Seria
 
 	@Deprecated
 	@ManyToOne @JoinColumn(name=COLUMN_CUSTOMER) protected Customer customer;
-	@ManyToOne @JoinColumn(name=COLUMN_SALABLE_PRODUCT_COLLECTION) protected SalableProductCollection salableProductCollection;
+	@Deprecated @ManyToOne @JoinColumn(name=COLUMN_SALABLE_PRODUCT_COLLECTION) protected SalableProductCollection salableProductCollection;
+	@ManyToOne @JoinColumn(name=COLUMN_SALABLE_PRODUCT_STORE_COLLECTION) protected SalableProductStoreCollection salableProductStoreCollection;
 	
 	/**/
 	
@@ -45,11 +46,13 @@ public abstract class AbstractSale extends AbstractIdentifiable implements Seria
 	
 	@Deprecated
 	public static final String FIELD_CUSTOMER = "customer";
-	public static final String FIELD_SALABLE_PRODUCT_COLLECTION = "salableProductCollection";
+	@Deprecated public static final String FIELD_SALABLE_PRODUCT_COLLECTION = "salableProductCollection";
+	public static final String FIELD_SALABLE_PRODUCT_STORE_COLLECTION = "salableProductStoreCollection";
 	
 	@Deprecated
 	public static final String COLUMN_CUSTOMER = FIELD_CUSTOMER;
-	public static final String COLUMN_SALABLE_PRODUCT_COLLECTION = FIELD_SALABLE_PRODUCT_COLLECTION;
+	@Deprecated public static final String COLUMN_SALABLE_PRODUCT_COLLECTION = FIELD_SALABLE_PRODUCT_COLLECTION;
+	public static final String COLUMN_SALABLE_PRODUCT_STORE_COLLECTION = FIELD_SALABLE_PRODUCT_STORE_COLLECTION;
 	
 	/**/
 	

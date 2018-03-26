@@ -26,7 +26,7 @@ import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemD
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
-import org.cyk.system.root.business.impl.AbstractBusinessTestHelper.TestCase;
+import org.cyk.system.root.business.impl.__test__.AbstractBusinessTestHelper.TestCase;
 import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.persistence.api.file.FileIdentifiableGlobalIdentifierDao;
 import org.cyk.system.root.persistence.api.security.UserAccountDao;
@@ -394,12 +394,6 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	final TestCase testCase = instanciateTestCase();
     	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
-    	testCase.throwMessage(new Runnable() {
-			@Override
-			public void run() {
-				testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne(p001, sale001, "1"));
-			}
-		}, "La balance(-1) doit être supérieure ou égale à 0.");
     	
     	testCase.clean();
     }
@@ -412,12 +406,6 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
     	testCase.create(inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale001, new Object[]{"TP01",1}));
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
-    	testCase.throwMessage(new Runnable() {
-			@Override
-			public void run() {
-				testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne(p001, sale001, "-1"));
-			}
-		}, "Le montant(-1) doit être supérieur à 0.");
     	
     	testCase.clean();
     }

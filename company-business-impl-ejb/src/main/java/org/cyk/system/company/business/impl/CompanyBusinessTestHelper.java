@@ -52,7 +52,7 @@ import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementColle
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
-import org.cyk.system.root.business.impl.AbstractBusinessTestHelper;
+import org.cyk.system.root.business.impl.__test__.AbstractBusinessTestHelper;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;

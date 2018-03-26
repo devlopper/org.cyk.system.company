@@ -11,6 +11,7 @@ import org.cyk.system.company.business.impl.__data__.RealDataSet;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
+import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Company;
@@ -19,19 +20,30 @@ import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.party.BusinessRole;
 import org.cyk.system.root.model.party.Party;
+import org.cyk.system.root.model.store.Store;
+import org.cyk.system.root.model.store.StoreType;
 import org.cyk.system.root.persistence.api.party.PartyIdentifiableGlobalIdentifierDao;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.FileHelper;
 import org.cyk.utility.common.helper.RandomHelper;
 import org.junit.Test;
 
-public class ProductBusinessIT extends AbstractBusinessIT {
+public class ProductIT extends AbstractBusinessIT {
     private static final long serialVersionUID = -6691092648665798471L;
     
     static {
     	ClassHelper.getInstance().map(DataSet.Listener.class, Data.class);
     }
-        
+    
+    @Test
+    public void crudOneProductCategory(){
+    	TestCase testCase = instanciateTestCase(); 
+    	String code = testCase.getRandomHelper().getAlphabetic(5);
+    	ProductCategory productCategory = testCase.instanciateOne(ProductCategory.class,code);
+    	testCase.create(productCategory);
+    	testCase.clean();
+    }
+    
     @Test
     public void crudOneTangibleProduct(){
     	TestCase testCase = instanciateTestCase(); 
@@ -65,11 +77,21 @@ public class ProductBusinessIT extends AbstractBusinessIT {
     }
     
     @Test
-    public void crudOneProductCategory(){
+    public void crudOneProductStore(){
     	TestCase testCase = instanciateTestCase(); 
-    	String code = testCase.getRandomHelper().getAlphabetic(5);
-    	ProductCategory productCategory = testCase.instanciateOne(ProductCategory.class,code);
-    	testCase.create(productCategory);
+    	String productCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(TangibleProduct.class,productCode));
+    	
+    	String storeTypeCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(StoreType.class,storeTypeCode));
+    	
+    	String storeCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Store.class,storeCode).setTypeFromCode(storeTypeCode));
+    	
+    	String productStoreCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(ProductStore.class,productStoreCode).setProductFromCode(productCode).setStoreFromCode(storeCode));
+    	testCase.assertNull(ProductStore.class,productStoreCode);
+    	
     	testCase.clean();
     }
     
