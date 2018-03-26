@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.model.AbstractEnumeration;
 import org.cyk.system.root.model.party.Party;
+import org.cyk.system.root.model.store.Store;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudInheritanceStrategy;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
@@ -33,10 +34,16 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	@ManyToOne @JoinColumn(name=COLUMN_TYPE) protected ProductType type;
 	@Column(precision=10,scale=FLOAT_SCALE) private BigDecimal price;
 	
+	@Transient private Store store;
 	@Transient private Party providerParty;
 	@Transient private BigDecimal stockQuantityMovementCollectionInitialValue;
 	
 	@Transient protected OwnedCompany ownedCompany;
+	
+	public Product setStoreFromCode(String code){
+		store = getFromCode(Store.class, code);
+		return this;
+	}
 	
 	public Product setProviderPartyFromCode(String code){
 		providerParty = getFromCode(Party.class, code);
@@ -48,6 +55,7 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	public static final String FIELD_PRICE = "price";
 	public static final String FIELD_PROVIDER_PARTY = "providerParty";
 	public static final String FIELD_STOCK_QUANTITY_MOVEMENT_COLLECTION_INITIAL_VALUE = "stockQuantityMovementCollectionInitialValue";
+	public static final String FIELD_STORE = "store";
 	public static final String FIELD_OWNED_COMPANY = "ownedCompany";
 	
 	public static final String COLUMN_CATEGORY = FIELD_CATEGORY;

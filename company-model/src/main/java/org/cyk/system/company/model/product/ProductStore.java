@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.store.Store;
@@ -15,14 +16,15 @@ import org.cyk.utility.common.annotation.ModelBean.GenderType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Getter @Setter @NoArgsConstructor @Entity 
-@ModelBean(crudStrategy=CrudStrategy.ENUMERATION,genderType=GenderType.FEMALE)
+@ModelBean(crudStrategy=CrudStrategy.ENUMERATION,genderType=GenderType.FEMALE) @Accessors(chain=true)
 public class ProductStore extends AbstractIdentifiable implements Serializable  {
 	private static final long serialVersionUID = -6128937819261060725L;
 	
-	@ManyToOne @JoinColumn(name=COLUMN_PRODUCT) private Product product;
-	@ManyToOne @JoinColumn(name=COLUMN_STORE) private Store store;
+	@ManyToOne @JoinColumn(name=COLUMN_PRODUCT) @NotNull private Product product;
+	@ManyToOne @JoinColumn(name=COLUMN_STORE) @NotNull private Store store;
 	
 	@Override
 	public ProductStore setCode(String code) {

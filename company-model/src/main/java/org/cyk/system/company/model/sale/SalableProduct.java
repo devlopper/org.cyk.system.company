@@ -32,7 +32,7 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 
 	@ManyToOne @JoinColumn(name=COLUMN_PRODUCT) @NotNull private Product product;
 	@ManyToOne @JoinColumn(name=COLUMN_VALUE_ADDED_TAX_RATE) private ValueAddedTaxRate valueAddedTaxRate;
-	private Boolean valueAddedTaxIncludedInPrice = Boolean.TRUE;
+	@Deprecated /* use ValueAddedTaxRate.included */ private Boolean valueAddedTaxIncludedInPrice = Boolean.TRUE;
 	
 	/**
 	 * The unit price of the product. null means the price will be determine at runtime

@@ -21,6 +21,8 @@ public class ValueAddedTaxRate extends AbstractEnumeration implements Serializab
 	private static final long serialVersionUID = -4946585596435850782L;
 	
 	@Column(precision=PERCENT_PRECISION,scale=PERCENT_SCALE) @NotNull private BigDecimal value;
+	private Boolean included = Boolean.TRUE;
 	
 	public static final String FIELD_VALUE = "value";
+	public static final String FIELD_INCLUDED = "included";
 }

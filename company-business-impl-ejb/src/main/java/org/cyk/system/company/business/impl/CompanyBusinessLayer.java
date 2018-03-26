@@ -17,6 +17,7 @@ import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.product.IntangibleProduct;
+import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.sale.SalableProduct;
@@ -186,7 +187,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 			}
 		});
 		
-		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{"code","name"}, SalableProductCollectionItem.class);
+		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{"code","name"}, SalableProductCollectionItem.class,ProductStore.class);
 		
 		ClassHelper.getInstance().map(TestCase.class, CompanyBusinessTestHelper.TestCase.class);
 	}

@@ -17,6 +17,7 @@ import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.impl.__data__.DataSet;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.party.BusinessRole;
 import org.cyk.system.root.model.party.Party;
@@ -38,18 +39,16 @@ public class ProductIT extends AbstractBusinessIT {
     @Test
     public void crudOneProductCategory(){
     	TestCase testCase = instanciateTestCase(); 
-    	String code = testCase.getRandomHelper().getAlphabetic(5);
-    	ProductCategory productCategory = testCase.instanciateOne(ProductCategory.class,code);
-    	testCase.create(productCategory);
+    	String code = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(ProductCategory.class,code));
     	testCase.clean();
     }
     
     @Test
     public void crudOneTangibleProduct(){
     	TestCase testCase = instanciateTestCase(); 
-    	String code = testCase.getRandomHelper().getAlphabetic(5);
-    	TangibleProduct tangibleProduct = testCase.instanciateOne(TangibleProduct.class,code);
-    	testCase.create(tangibleProduct);
+    	String code = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(TangibleProduct.class,code));
     	testCase.assertNull(StockableTangibleProduct.class,code);
     	testCase.clean();
     }
@@ -57,11 +56,9 @@ public class ProductIT extends AbstractBusinessIT {
     @Test
     public void crudOneTangibleProductAndImage(){
     	TestCase testCase = instanciateTestCase(); 
-    	String code = testCase.getRandomHelper().getAlphabetic(5);
-    	TangibleProduct tangibleProduct = testCase.instanciateOne(TangibleProduct.class,code);
+    	String code = testCase.getRandomAlphabetic();
     	FileHelper.File file = RandomHelper.getInstance().getFilePersonHeadOnly(Boolean.TRUE);
-    	tangibleProduct.setImage(inject(FileBusiness.class).process(file.getBytes(), file.getName()));
-    	testCase.create(tangibleProduct);
+    	testCase.create(testCase.instanciateOne(TangibleProduct.class,code).setImage(inject(FileBusiness.class).process(file.getBytes(), file.getName())));
     	testCase.assertNull(StockableTangibleProduct.class,code);
     	testCase.clean();
     }
@@ -69,9 +66,8 @@ public class ProductIT extends AbstractBusinessIT {
     @Test
     public void crudOneIntangibleProduct(){
     	TestCase testCase = instanciateTestCase(); 
-    	String code = testCase.getRandomHelper().getAlphabetic(5);
-    	IntangibleProduct intangibleProduct = testCase.instanciateOne(IntangibleProduct.class,code);
-    	testCase.create(intangibleProduct);
+    	String code = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(IntangibleProduct.class,code));
     	testCase.assertNull(StockableTangibleProduct.class,code);
     	testCase.clean();
     }
@@ -90,8 +86,28 @@ public class ProductIT extends AbstractBusinessIT {
     	
     	String productStoreCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(ProductStore.class,productStoreCode).setProductFromCode(productCode).setStoreFromCode(storeCode));
-    	testCase.assertNull(ProductStore.class,productStoreCode);
     	
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudOneProductStoreBySetStore(){
+    	TestCase testCase = instanciateTestCase(); 
+    	
+    	String storeTypeCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(StoreType.class,storeTypeCode));
+    	
+    	String storeCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Store.class,storeCode).setTypeFromCode(storeTypeCode));
+    	
+    	String productCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(TangibleProduct.class,productCode).setStoreFromCode(storeCode));
+    	
+    	String productStoreCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(ProductStore.class,productStoreCode).setProductFromCode(productCode).setStoreFromCode(storeCode));
+    	testCase.assertNotNull(ProductStore.class, productStoreCode);
+    	
+    	testCase.deleteAll(ProductStore.class);
     	testCase.clean();
     }
     
@@ -120,7 +136,7 @@ public class ProductIT extends AbstractBusinessIT {
 		@SuppressWarnings({ "rawtypes" })
 		@Override
 		public Collection getClasses() {
-			return Arrays.asList(Product.class,Movement.class,Party.class);
+			return Arrays.asList(Product.class,Movement.class,Party.class,Store.class);
 		}
 		
     }

@@ -7,6 +7,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import org.cyk.system.company.business.api.product.AbstractProductBusiness;
+import org.cyk.system.company.business.api.product.ProductStoreBusiness;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.persistence.api.product.AbstractProductDao;
@@ -50,6 +51,17 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
 				}
 				//inject(PartyIdentifiableGlobalIdentifierDao.class).readByPartyByGlobalIdentifier(product.getProviderParty(), product.getGlobalIdentifier());
 				//PartyIdentifiableGlobalIdentifier partyIdentifiableGlobalIdentifier = ;
+			}
+			
+			if(product.getStore()!=null){
+				if(Crud.CREATE.equals(crud)){
+					product.addIdentifiables(inject(ProductStoreBusiness.class).instanciateOne()
+							.setProduct(product)
+							.setStore(product.getStore())
+							);
+				}else{
+					
+				}
 			}
 		}
 	}
