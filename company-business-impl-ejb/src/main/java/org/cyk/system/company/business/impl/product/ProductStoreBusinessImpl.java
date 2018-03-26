@@ -20,6 +20,14 @@ public class ProductStoreBusinessImpl extends AbstractTypedBusinessService<Produ
 		super(dao);
 	}
 	
+	@Override
+	protected Object[] getPropertyValueTokens(ProductStore productStore, String name) {
+		if(ArrayUtils.contains(new String[]{GlobalIdentifier.FIELD_CODE}, name))
+			return new Object[]{productStore.getProduct(),productStore.getStore()};
+		if(ArrayUtils.contains(new String[]{GlobalIdentifier.FIELD_NAME}, name))
+			return new Object[]{productStore.getProduct(),productStore.getStore()};
+		return super.getPropertyValueTokens(productStore, name);
+	}
 	
 	
 }

@@ -103,9 +103,7 @@ public class ProductIT extends AbstractBusinessIT {
     	String productCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(TangibleProduct.class,productCode).setStoreFromCode(storeCode));
     	
-    	String productStoreCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(ProductStore.class,productStoreCode).setProductFromCode(productCode).setStoreFromCode(storeCode));
-    	testCase.assertNotNull(ProductStore.class, productStoreCode);
+    	testCase.assertNotNull(ProductStore.class, RootConstant.Code.generate(productCode,storeCode));
     	
     	testCase.deleteAll(ProductStore.class);
     	testCase.clean();

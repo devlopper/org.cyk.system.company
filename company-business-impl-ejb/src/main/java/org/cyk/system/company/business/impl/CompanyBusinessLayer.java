@@ -171,6 +171,14 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 		inject(GlobalIdentifierPersistenceMappingConfigurations.class).configure();
 		
+		/*InstanceHelper.getInstance().setFieldValueGenerator(ProductStore.class, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE), new InstanceHelper.Listener.FieldValueGenerator.Adapter.Default<String>(String.class){
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected String __execute__(Object instance, String fieldName,Class<String> outputClass) {
+				return "PS"+System.currentTimeMillis()+RandomHelper.getInstance().getAlphabetic(4);
+			}
+		});*/
+		
 		InstanceHelper.getInstance().setFieldValueGenerator(Sale.class, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE), new InstanceHelper.Listener.FieldValueGenerator.Adapter.Default<String>(String.class){
 			private static final long serialVersionUID = 1L;
 			@Override
