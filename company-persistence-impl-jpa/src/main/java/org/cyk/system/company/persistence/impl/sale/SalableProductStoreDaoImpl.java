@@ -1,6 +1,6 @@
 package org.cyk.system.company.persistence.impl.sale;
 
-import org.cyk.system.company.model.product.SalableProductStore;
+import org.cyk.system.company.model.sale.SalableProductStore;
 import org.cyk.system.company.persistence.api.sale.SalableProductStoreDao;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 

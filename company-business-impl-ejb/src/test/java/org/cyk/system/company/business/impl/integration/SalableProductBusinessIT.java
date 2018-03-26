@@ -85,7 +85,7 @@ public class SalableProductBusinessIT extends AbstractBusinessIT {
     	
     	testCase.deleteByCode(SalableProduct.class, salableProductCode);
     	
-    	//testCase.clean();
+    	testCase.clean();
     }
     
     @Test

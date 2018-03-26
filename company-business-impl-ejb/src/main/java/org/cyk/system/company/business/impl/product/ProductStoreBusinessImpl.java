@@ -8,7 +8,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.api.product.ProductStoreBusiness;
 import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.persistence.api.product.ProductStoreDao;
-import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 

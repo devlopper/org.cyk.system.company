@@ -9,10 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.root.model.AbstractCollection;
+import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.party.Party;
 import org.cyk.utility.common.annotation.ModelBean;
@@ -25,15 +24,10 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Getter @Setter @NoArgsConstructor @Entity @ModelBean(genderType=GenderType.MALE,crudStrategy=CrudStrategy.BUSINESS) @Accessors(chain=true)
-public class SalableProduct extends AbstractCollection<SalableProductInstance> implements Serializable {
+public class SalableProductProperties extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @JoinColumn(name=COLUMN_PRODUCT) @NotNull private Product product;
-	@ManyToOne @JoinColumn(name=COLUMN_PROPERTIES) @NotNull private SalableProductProperties properties;
-	
-	//TODO followings must be replaced with SalableProductProperties
 	@ManyToOne @JoinColumn(name=COLUMN_VALUE_ADDED_TAX_RATE) private ValueAddedTaxRate valueAddedTaxRate;
-	@Deprecated /* use ValueAddedTaxRate.included */ private Boolean valueAddedTaxIncludedInPrice = Boolean.TRUE;
 	
 	/**
 	 * The unit price of the product. null means the price will be determine at runtime
@@ -46,63 +40,43 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 	@Transient private Party productProviderParty;
 	@Transient private BigDecimal productStockQuantityMovementCollectionInitialValue;
 	
-	public SalableProduct(Product product, BigDecimal price) {
-		super(product.getCode(),product.getName(),product.getAbbreviation(),product.getDescription());
-		this.product = product;
-		this.price = price;
-	}
-	
-	@Override
-	public SalableProduct setCode(String code) {
-		return (SalableProduct) super.setCode(code);
-	}
-	
-	public SalableProduct setProductFromCode(String code){
-		product = getFromCode(productClass, code);
-		return this;
-	}
-	
-	public SalableProduct setProductProviderPartyFromCode(String code){
+	public SalableProductProperties setProductProviderPartyFromCode(String code){
 		productProviderParty = getFromCode(Party.class, code);
 		return this;
 	}
 	
-	public SalableProduct setPriceFromObject(Object value){
+	public SalableProductProperties setPriceFromObject(Object value){
 		this.price = getNumberFromObject(BigDecimal.class, value);
 		return this;
 	}
 	
-	public SalableProduct setProductStockQuantityMovementCollectionInitialValueFromObject(Object value){
+	public SalableProductProperties setProductStockQuantityMovementCollectionInitialValueFromObject(Object value){
 		this.productStockQuantityMovementCollectionInitialValue = getNumberFromObject(BigDecimal.class, value);
 		return this;
 	}
 	
 	@Override
-	public SalableProduct setImage(File image) {
-		return (SalableProduct) super.setImage(image);
+	public SalableProductProperties setImage(File image) {
+		return (SalableProductProperties) super.setImage(image);
 	}
 	
 	@Override
-	public SalableProduct setCascadeOperationToMaster(Boolean cascadeOperationToMaster) {
-		return (SalableProduct) super.setCascadeOperationToMaster(cascadeOperationToMaster);
+	public SalableProductProperties setCascadeOperationToMaster(Boolean cascadeOperationToMaster) {
+		return (SalableProductProperties) super.setCascadeOperationToMaster(cascadeOperationToMaster);
 	}
 	
 	@Override
-	public SalableProduct setCascadeOperationToMasterFieldNames(Collection<String> cascadeOperationToMasterFieldNames) {
-		return (SalableProduct) super.setCascadeOperationToMasterFieldNames(cascadeOperationToMasterFieldNames);
+	public SalableProductProperties setCascadeOperationToMasterFieldNames(Collection<String> cascadeOperationToMasterFieldNames) {
+		return (SalableProductProperties) super.setCascadeOperationToMasterFieldNames(cascadeOperationToMasterFieldNames);
 	}
 	
 	/**/
 	
-	public static final String FIELD_PRODUCT = "product";
 	public static final String FIELD_VALUE_ADDED_TAX_RATE = "valueAddedTaxRate";
 	public static final String FIELD_PRICE = "price";
 	public static final String FIELD_QUANTITY_MULTIPLE = "quantityMultiple";
 	public static final String FIELD_IS_PRODUCT_STOCKABLE = "isProductStockable";
 	public static final String FIELD_PRODUCT_STOCK_QUANTITY_MOVEMENT_COLLECTION_INITIAL_VALUE = "productStockQuantityMovementCollectionInitialValue";
-	public static final String FIELD_PROPERTIES = "properties";
 	
-	public static final String COLUMN_PRODUCT = FIELD_PRODUCT;
 	public static final String COLUMN_VALUE_ADDED_TAX_RATE = FIELD_VALUE_ADDED_TAX_RATE;
-	public static final String COLUMN_PROPERTIES = FIELD_PROPERTIES;
 }

@@ -1,5 +1,6 @@
 package org.cyk.system.company.business.impl.integration;
 
+import static org.cyk.system.root.model.RootConstant.Code.BusinessRole.PROVIDER;
 import static org.cyk.system.root.model.RootConstant.Code.MovementCollectionType.SALE_BALANCE;
 import static org.cyk.system.root.model.RootConstant.Code.MovementCollectionType.STOCK_REGISTER;
 
@@ -12,34 +13,172 @@ import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusi
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.company.business.impl.__data__.RealDataSet;
+import org.cyk.system.company.business.impl.__test__.Runnable;
+import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.sale.SalableProductProperties;
+import org.cyk.system.company.model.sale.SalableProductStore;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.stock.StockableTangibleProduct;
+import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
+import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.api.information.IdentifiableCollectionBusiness;
 import org.cyk.system.root.business.api.information.IdentifiableCollectionItemBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
 import org.cyk.system.root.business.impl.__data__.DataSet;
+import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.RootConstant;
+import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.information.IdentifiableCollection;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.mathematics.MovementCollectionType;
+import org.cyk.system.root.model.party.BusinessRole;
+import org.cyk.system.root.model.party.Party;
+import org.cyk.system.root.model.store.Store;
+import org.cyk.system.root.model.store.StoreType;
 import org.cyk.system.root.persistence.api.mathematics.MovementCollectionDao;
+import org.cyk.system.root.persistence.api.party.PartyIdentifiableGlobalIdentifierDao;
 import org.cyk.utility.common.helper.ClassHelper;
+import org.cyk.utility.common.helper.ConditionHelper;
+import org.cyk.utility.common.helper.FieldHelper;
+import org.cyk.utility.common.helper.FileHelper;
 import org.cyk.utility.common.helper.RandomHelper;
 import org.junit.Test;
 
-public class SaleBusinessIT extends AbstractBusinessIT {
+public class SaleIT extends AbstractBusinessIT {
     private static final long serialVersionUID = -6691092648665798471L;
 
     static {
     	ClassHelper.getInstance().map(DataSet.Listener.class, Data.class);
     }
+    
+    /**/
+    
+    @Test
+    public void crudSalableProductBasedOnExistingProductByJoin(){
+    	TestCase testCase = instanciateTestCase(); 
+    	String tangibleProductCode = testCase.getRandomHelper().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(TangibleProduct.class,tangibleProductCode).setName("TP 001"));
+    	
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setProductFromCode(tangibleProductCode));
+    	
+    	testCase.assertFieldValueEquals(SalableProduct.class, tangibleProductCode
+    			, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME),"TP 001");
+    	
+    	testCase.assertNotNull(SalableProductProperties.class, tangibleProductCode);
+    	
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudSalableProductBasedOnExistingProductByCode(){
+    	TestCase testCase = instanciateTestCase(); 
+    	String tangibleProductCode = testCase.getRandomHelper().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(TangibleProduct.class,tangibleProductCode).setName("TP 001"));
+    	
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(tangibleProductCode).setCascadeOperationToMaster(Boolean.TRUE)
+    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class));
+    	
+    	testCase.assertFieldValueEquals(SalableProduct.class, tangibleProductCode
+    			, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME),"TP 001");
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudSalableProductBasedOnNonExistingProductByCode(){
+    	TestCase testCase = instanciateTestCase(); 
+    	String salableProductCode = RandomHelper.getInstance().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode).setCascadeOperationToMaster(Boolean.TRUE)
+    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class));
+    	
+    	testCase.assertNotNull(TangibleProduct.class, salableProductCode);
+    	testCase.assertNotNull(SalableProduct.class, salableProductCode);
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudSalableProductBasedOnNonExistingProductByCodeWithImage(){
+    	TestCase testCase = instanciateTestCase(); 
+    	String salableProductCode = RandomHelper.getInstance().getAlphabetic(5);
+    	FileHelper.File file = RandomHelper.getInstance().getFilePersonHeadOnly(Boolean.TRUE);
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode).setCascadeOperationToMaster(Boolean.TRUE)
+    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.setImage(inject(FileBusiness.class).process(file.getBytes(), file.getName())));
+    	
+    	testCase.deleteByCode(SalableProduct.class, salableProductCode);
+    	
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudSalableProductByCodeAndJoinProviderAndStock(){
+    	TestCase testCase = instanciateTestCase(); 
+    	String productProviderCode = RandomHelper.getInstance().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(Company.class,productProviderCode));
+    	
+    	String salableProductCode = RandomHelper.getInstance().getAlphabetic(5);
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode).setCascadeOperationToMaster(Boolean.TRUE)
+    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.setIsProductStockable(Boolean.TRUE).setProductProviderPartyFromCode(productProviderCode)
+    			);
+    	
+    	testCase.assertNotNull(TangibleProduct.class, salableProductCode);
+    	testCase.assertNotNull(SalableProduct.class, salableProductCode);
+    	testCase.assertNotNull(StockableTangibleProduct.class, salableProductCode);
+    	assertNotNull(inject(PartyIdentifiableGlobalIdentifierDao.class).readByPartyByIdentifiableGlobalIdentifierByRole(testCase.read(Company.class, productProviderCode)
+    			, testCase.read(TangibleProduct.class, salableProductCode).getGlobalIdentifier(),testCase.read(BusinessRole.class, PROVIDER)));
+    	
+    	testCase.clean();
+    }
+    
+    /* Store */
+    
+    @Test
+    public void crudSalableProductStoreBasedOnExistingProductByJoin(){
+    	TestCase testCase = instanciateTestCase(); 
+    	String storeTypeCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(StoreType.class,storeTypeCode));
+    	
+    	String storeCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Store.class,storeCode).setTypeFromCode(storeTypeCode));
+    	
+    	String tangibleProductCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(TangibleProduct.class,tangibleProductCode));
+    	
+    	String salableProductCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(SalableProduct.class,salableProductCode).setProductClass(TangibleProduct.class).setProductFromCode(tangibleProductCode));
+    	
+    	String productStoreCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(ProductStore.class,productStoreCode).setProductFromCode(tangibleProductCode).setStoreFromCode(storeCode));
+    	
+    	String salableProductStoreCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(SalableProductStore.class,salableProductStoreCode).setProductStoreFromCode(productStoreCode));
+    	
+    	testCase.assertNotNull(SalableProductProperties.class, salableProductCode);
+    	
+    	testCase.clean();
+    }
+    
+    /* Exceptions */
+    
+	@Test
+    public void throwProductIsNull(){
+		TestCase testCase = instanciateTestCase();
+		testCase.assertThrowable(new Runnable(testCase) {
+			private static final long serialVersionUID = 1L;
+			@Override protected void __run__() throws Throwable {create(instanciateOne(SalableProduct.class).setCode(RandomHelper.getInstance().getAlphabetic(5)));}
+    	}, FieldHelper.Field.get(SalableProduct.class,SalableProduct.FIELD_PRODUCT).getIdentifier(ConditionHelper.Condition.Builder.Null.class)
+				, "La valeur de l'attribut <<produit>> de l'entité <<produit vendable>> doit être non nulle.");
+    	testCase.clean();
+	}
+    
+    /**/
     
     @Test
     public void crudSale(){
@@ -440,7 +579,7 @@ public class SaleBusinessIT extends AbstractBusinessIT {
 		@SuppressWarnings({ "rawtypes" })
 		@Override
 		public Collection getClasses() {
-			return Arrays.asList(Sale.class,Movement.class);
+			return Arrays.asList(Sale.class,Movement.class,Party.class);
 		}
 		
     }

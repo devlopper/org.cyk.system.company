@@ -1,11 +1,13 @@
 package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductPropertiesBusiness;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
@@ -26,6 +28,12 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 	}
 	
 	@Override
+	public SalableProduct instanciateOne() {
+		return super.instanciateOne().setProperties(inject(SalableProductPropertiesBusiness.class).instanciateOne())
+				.setCascadeOperationToMaster(Boolean.TRUE).setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PROPERTIES));
+	}
+	
+	@Override
 	protected void createMaster(SalableProduct salableProduct,AbstractIdentifiable master) {
 		if(master instanceof TangibleProduct){
 			((TangibleProduct)master).setIsStockable(salableProduct.getIsProductStockable());
@@ -42,6 +50,13 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 				,org.cyk.utility.common.helper.FieldHelper.getInstance().buildPath(
 						AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE),org.cyk.utility.common.helper.FieldHelper.getInstance().buildPath(
 								AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME));
+		
+		FieldHelper.getInstance().copy(salableProduct, salableProduct.getProperties(),Boolean.FALSE
+				,org.cyk.utility.common.helper.FieldHelper.getInstance().buildPath(
+						AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE),org.cyk.utility.common.helper.FieldHelper.getInstance().buildPath(
+								AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME));
+		
+		
 	}
 	
 	@Override

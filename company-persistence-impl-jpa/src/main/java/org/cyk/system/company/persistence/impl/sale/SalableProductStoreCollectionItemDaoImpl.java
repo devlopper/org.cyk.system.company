@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.product.SalableProductStore;
+import org.cyk.system.company.model.sale.SalableProductStore;
 import org.cyk.system.company.model.sale.SalableProductStoreCollection;
 import org.cyk.system.company.model.sale.SalableProductStoreCollectionItem;
 import org.cyk.system.company.persistence.api.sale.SalableProductStoreCollectionItemDao;

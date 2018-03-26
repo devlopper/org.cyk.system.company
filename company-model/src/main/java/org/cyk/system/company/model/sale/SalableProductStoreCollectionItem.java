@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.product.SalableProductStore;
 import org.cyk.system.root.model.AbstractCollectionItem;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
@@ -64,8 +63,8 @@ public class SalableProductStoreCollectionItem extends AbstractCollectionItem<Sa
 	}
 	
 	public BigDecimal getQuantifiedPrice(){
-		if(quantifiedPrice==null && salableProductStore!=null && salableProductStore.getSalableProduct().getPrice()!=null && getCost().getNumberOfProceedElements()!=null)
-			quantifiedPrice = salableProductStore.getSalableProduct().getPrice().multiply(getCost().getNumberOfProceedElements());
+		if(quantifiedPrice==null && salableProductStore!=null && salableProductStore.getSalableProductProperties().getPrice()!=null && getCost().getNumberOfProceedElements()!=null)
+			quantifiedPrice = salableProductStore.getSalableProductProperties().getPrice().multiply(getCost().getNumberOfProceedElements());
 		return quantifiedPrice;
 	}
 	

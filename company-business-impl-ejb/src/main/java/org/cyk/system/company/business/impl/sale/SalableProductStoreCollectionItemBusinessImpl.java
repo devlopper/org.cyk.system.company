@@ -6,24 +6,13 @@ import java.math.BigDecimal;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductStoreCollectionItemBusiness;
-import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.product.SalableProductStore;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProductStoreCollection;
 import org.cyk.system.company.model.sale.SalableProductStoreCollectionItem;
-import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.system.company.persistence.api.sale.SalableProductStoreCollectionItemDao;
-import org.cyk.system.company.persistence.api.sale.SalableProductStoreDao;
-import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
-import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
 
 public class SalableProductStoreCollectionItemBusinessImpl extends AbstractCollectionItemBusinessImpl<SalableProductStoreCollectionItem, SalableProductStoreCollectionItemDao,SalableProductStoreCollection> implements SalableProductStoreCollectionItemBusiness,Serializable {
@@ -46,7 +35,7 @@ public class SalableProductStoreCollectionItemBusinessImpl extends AbstractColle
 		super.computeChanges(salableProductStoreCollectionItem, logMessageBuilder);
 		logMessageBuilder.addManyParameters("cost");
 		logMessageBuilder.addNamedParameters("before",salableProductStoreCollectionItem.getCost().toString());
-		if(salableProductStoreCollectionItem.getSalableProductStore()!=null && salableProductStoreCollectionItem.getSalableProductStore().getSalableProduct().getPrice()==null){
+		if(salableProductStoreCollectionItem.getSalableProductStore()!=null && salableProductStoreCollectionItem.getSalableProductStore().getSalableProductProperties().getPrice()==null){
 			//This product has no unit price then the price to be paid must be specified by user
 			
 		}else{
