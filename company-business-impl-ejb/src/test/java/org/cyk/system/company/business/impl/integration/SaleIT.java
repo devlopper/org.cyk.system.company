@@ -71,7 +71,7 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.assertFieldValueEquals(SalableProduct.class, tangibleProductCode
     			, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME),"TP 001");
     	
-    	testCase.assertNotNull(SalableProductProperties.class, tangibleProductCode);
+    	testCase.assertNotNullByBusinessIdentifier(SalableProductProperties.class, tangibleProductCode);
     	
     	testCase.clean();
     }
@@ -83,7 +83,7 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.create(testCase.instanciateOne(TangibleProduct.class,tangibleProductCode).setName("TP 001"));
     	
     	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(tangibleProductCode).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class));
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class));
     	
     	testCase.assertFieldValueEquals(SalableProduct.class, tangibleProductCode
     			, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME),"TP 001");
@@ -95,10 +95,10 @@ public class SaleIT extends AbstractBusinessIT {
     	TestCase testCase = instanciateTestCase(); 
     	String salableProductCode = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class));
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class));
     	
-    	testCase.assertNotNull(TangibleProduct.class, salableProductCode);
-    	testCase.assertNotNull(SalableProduct.class, salableProductCode);
+    	testCase.assertNotNullByBusinessIdentifier(TangibleProduct.class, salableProductCode);
+    	testCase.assertNotNullByBusinessIdentifier(SalableProduct.class, salableProductCode);
     	testCase.clean();
     }
     
@@ -108,8 +108,9 @@ public class SaleIT extends AbstractBusinessIT {
     	String salableProductCode = RandomHelper.getInstance().getAlphabetic(5);
     	FileHelper.File file = RandomHelper.getInstance().getFilePersonHeadOnly(Boolean.TRUE);
     	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
-    			.setImage(inject(FileBusiness.class).process(file.getBytes(), file.getName())));
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class)
+    			.setImage(inject(FileBusiness.class).process(file.getBytes(), file.getName()))
+    			);
     	
     	testCase.deleteByCode(SalableProduct.class, salableProductCode);
     	
@@ -124,13 +125,13 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	String salableProductCode = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class)
     			.setIsProductStockable(Boolean.TRUE).setProductProviderPartyFromCode(productProviderCode)
     			);
     	
-    	testCase.assertNotNull(TangibleProduct.class, salableProductCode);
-    	testCase.assertNotNull(SalableProduct.class, salableProductCode);
-    	testCase.assertNotNull(StockableTangibleProduct.class, salableProductCode);
+    	testCase.assertNotNullByBusinessIdentifier(TangibleProduct.class, salableProductCode);
+    	testCase.assertNotNullByBusinessIdentifier(SalableProduct.class, salableProductCode);
+    	testCase.assertNotNullByBusinessIdentifier(StockableTangibleProduct.class, salableProductCode);
     	assertNotNull(inject(PartyIdentifiableGlobalIdentifierDao.class).readByPartyByIdentifiableGlobalIdentifierByRole(testCase.read(Company.class, productProviderCode)
     			, testCase.read(TangibleProduct.class, salableProductCode).getGlobalIdentifier(),testCase.read(BusinessRole.class, PROVIDER)));
     	
@@ -160,7 +161,7 @@ public class SaleIT extends AbstractBusinessIT {
     	String salableProductStoreCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(SalableProductStore.class,salableProductStoreCode).setProductStoreFromCode(productStoreCode));
     	
-    	testCase.assertNotNull(SalableProductProperties.class, salableProductCode);
+    	testCase.assertNotNullByBusinessIdentifier(SalableProductProperties.class, salableProductCode);
     	
     	testCase.clean();
     }
@@ -186,10 +187,10 @@ public class SaleIT extends AbstractBusinessIT {
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
     	testCase.create(sale);
     	assertNotNull(sale.getCode());
-    	testCase.assertNotNull(MovementCollection.class, RootConstant.Code.generate(sale.getCode(),SALE_BALANCE));
+    	testCase.assertNotNullByBusinessIdentifier(MovementCollection.class, RootConstant.Code.generate(sale.getCode(),SALE_BALANCE));
     	testCase.assertSaleCost(sale.getCode(),null,null,null,null);
     	testCase.clean();
-    	testCase.assertNull(MovementCollection.class, RootConstant.Code.generate(sale.getCode(),SALE_BALANCE));
+    	testCase.assertNullByBusinessIdentifier(MovementCollection.class, RootConstant.Code.generate(sale.getCode(),SALE_BALANCE));
     }
     
     @Test
@@ -213,7 +214,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	String salableProductCode = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class)
     			.setPrice(new BigDecimal("100")).setIsProductStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
     	
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
@@ -248,12 +249,12 @@ public class SaleIT extends AbstractBusinessIT {
     	TestCase testCase = instanciateTestCase();
     	String salableProductCode01 = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class)
     			.setPrice(new BigDecimal("100")).setIsProductStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
     	
     	String salableProductCode03 = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode03).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class)
     			.setPrice(new BigDecimal("150")).setIsProductStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
     	
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
@@ -283,12 +284,12 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	String salableProductCode01 = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class)
     			.setPrice(new BigDecimal("100")).setIsProductStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
     	
     	String salableProductCode03 = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode03).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class)
     			.setPrice(new BigDecimal("150")).setIsProductStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
     	
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
@@ -322,12 +323,12 @@ public class SaleIT extends AbstractBusinessIT {
     	TestCase testCase = instanciateTestCase();
     	String salableProductCode01 = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class)
     			.setPrice(new BigDecimal("100")).setIsProductStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
     	
     	String salableProductCode03 = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode03).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class)
     			.setPrice(new BigDecimal("150")).setIsProductStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
     	
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
@@ -361,7 +362,7 @@ public class SaleIT extends AbstractBusinessIT {
     	TestCase testCase = instanciateTestCase();
     	String salableProductCode01 = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class)
     			.setPrice(new BigDecimal("100")).setIsProductStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
     	
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
@@ -408,7 +409,7 @@ public class SaleIT extends AbstractBusinessIT {
     	TestCase testCase = instanciateTestCase();
     	String salableProductCode01 = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class)
     			.setPrice(new BigDecimal("100")).setIsProductStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
     	
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
@@ -455,7 +456,7 @@ public class SaleIT extends AbstractBusinessIT {
     	TestCase testCase = instanciateTestCase();
     	String salableProductCode01 = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class)
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class)
     			.setPrice(new BigDecimal("100")).setIsProductStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
     	
     	String cashRegisterMovementCollectionCode = RandomHelper.getInstance().getAlphabetic(5);
@@ -551,7 +552,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.deleteByCode(Sale.class, saleCode);
 
-    	testCase.assertNull(MovementCollection.class, RootConstant.Code.generate(saleCode,SALE_BALANCE));
+    	testCase.assertNullByBusinessIdentifier(MovementCollection.class, RootConstant.Code.generate(saleCode,SALE_BALANCE));
     	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductCode01,STOCK_REGISTER), "10", "2");
     	testCase.assertMovements(RootConstant.Code.generate(salableProductCode01,STOCK_REGISTER)
         		, new String[]{"0","-10","0","false"}

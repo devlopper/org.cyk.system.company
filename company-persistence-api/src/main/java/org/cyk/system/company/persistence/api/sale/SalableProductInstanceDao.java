@@ -6,9 +6,10 @@ import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
-import org.cyk.system.root.persistence.api.AbstractCollectionItemDao;
+import org.cyk.system.root.persistence.api.AbstractEnumerationDao;
 
-public interface SalableProductInstanceDao extends AbstractCollectionItemDao<SalableProductInstance,SalableProduct> {
+@Deprecated
+public interface SalableProductInstanceDao extends AbstractEnumerationDao<SalableProductInstance> {
 	
 	Collection<SalableProductInstance> readWhereNotAssociatedToCashRegister();
 

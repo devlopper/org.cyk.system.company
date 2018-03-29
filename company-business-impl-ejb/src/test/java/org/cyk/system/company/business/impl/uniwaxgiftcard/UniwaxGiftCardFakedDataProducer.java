@@ -55,11 +55,7 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 			for(int i = (Integer)values[1]; i <= (Integer)values[2]; i++ )
 				instances.add(i+"");
 			
-			SalableProduct salableProduct = inject(SalableProductBusiness.class).instanciateOne(tangibleProduct.getCode(), tangibleProduct.getName(), instances.toArray(new String[]{}));
-			salableProduct.setItemCodeSeparator(null);
-			salableProduct.setProduct(tangibleProduct);
-			salableProduct.setPrice(new BigDecimal((String)values[0]));
-			salableProducts.add(salableProduct);
+			
 		}
 		
 		flush(Product.class, products);

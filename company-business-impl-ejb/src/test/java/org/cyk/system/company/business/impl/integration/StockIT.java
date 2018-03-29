@@ -83,8 +83,8 @@ public class StockIT extends AbstractBusinessIT {
     	testCase.create(testCase.instanciateOne(StockableTangibleProduct.class).setCode(stockableTangibleProductCode).setCascadeOperationToMaster(Boolean.TRUE)
     			.setCascadeOperationToMasterFieldNames(Arrays.asList(StockableTangibleProduct.FIELD_TANGIBLE_PRODUCT)));
     	
-    	testCase.assertNotNull(TangibleProduct.class, stockableTangibleProductCode);
-    	testCase.assertNotNull(StockableTangibleProduct.class, stockableTangibleProductCode);
+    	testCase.assertNotNullByBusinessIdentifier(TangibleProduct.class, stockableTangibleProductCode);
+    	testCase.assertNotNullByBusinessIdentifier(StockableTangibleProduct.class, stockableTangibleProductCode);
     	testCase.clean();
     }
     

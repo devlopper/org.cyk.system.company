@@ -118,14 +118,14 @@ public class SalableProductInstanceEditPage extends AbstractCrudOnePage<SalableP
 		if(Boolean.TRUE.equals(CREATE_ON_SALABLE_PRODUCT))
 			super.create();
 		else{
-			inject(SalableProductInstanceBusiness.class).create(identifiable.getCollection(),((Form)form.getData()).codes.getCodeSet() );
+			//inject(SalableProductInstanceBusiness.class).create(identifiable.getCollection(),((Form)form.getData()).codes.getCodeSet() );
 		}
 	}
 	
 	@Override
 	protected SalableProductInstance instanciateIdentifiable() {
 		SalableProductInstance salableProductInstance = super.instanciateIdentifiable();
-		salableProductInstance.setCollection(identifiableFromRequestParameter(SalableProduct.class,uiManager.businessEntityInfos(SalableProduct.class).getIdentifier()));
+		//salableProductInstance.setCollection(identifiableFromRequestParameter(SalableProduct.class,uiManager.businessEntityInfos(SalableProduct.class).getIdentifier()));
 		return salableProductInstance;
 	}
 		
@@ -139,13 +139,13 @@ public class SalableProductInstanceEditPage extends AbstractCrudOnePage<SalableP
 		@Override
 		public void read() {
 			super.read();
-			salableProduct = identifiable.getCollection();
+			
 		}
 		
 		@Override
 		public void write() {
 			super.write();
-			identifiable.setCollection(salableProduct);
+			
 		}
 		
 		/**/

@@ -440,9 +440,9 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 					salableProductInstanceCashRegisterStateLogDetails.setSalableProductInstanceCashRegister(salableProductInstanceCashRegister);
 					salableProductInstanceCashRegisterStateLogDetails.setCode(salableProductInstanceCashRegister.getSalableProductInstance().getCode());
 					salableProductInstanceCashRegisterStateLogDetails.setQuantity("1");
-					salableProductInstanceCashRegisterStateLogDetails.setUnitPrice(format(salableProductInstanceCashRegister.getSalableProductInstance().getCollection().getPrice()));
-					salableProductInstanceCashRegisterStateLogDetails.setTotalPrice( 
-							format(new BigDecimal(salableProductInstanceCashRegisterStateLogDetails.getQuantity()).multiply(salableProductInstanceCashRegisterStateLogDetails.getSalableProductInstanceCashRegister().getSalableProductInstance().getCollection().getPrice())) );
+					//salableProductInstanceCashRegisterStateLogDetails.setUnitPrice(format(salableProductInstanceCashRegister.getSalableProductInstance().getCollection().getPrice()));
+					//salableProductInstanceCashRegisterStateLogDetails.setTotalPrice( 
+					//		format(new BigDecimal(salableProductInstanceCashRegisterStateLogDetails.getQuantity()).multiply(salableProductInstanceCashRegisterStateLogDetails.getSalableProductInstanceCashRegister().getSalableProductInstance().getCollection().getPrice())) );
 					salableProductInstanceCashRegisterStateLogDetails.setCashRegister(salableProductInstanceCashRegister.getCashRegister().getCode());
 					break;
 				}

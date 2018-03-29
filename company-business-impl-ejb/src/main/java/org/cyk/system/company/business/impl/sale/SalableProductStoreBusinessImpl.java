@@ -9,7 +9,7 @@ import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductStore;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductStoreDao;
-import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
+import org.cyk.system.root.business.impl.AbstractEnumerationBusinessImpl;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.utility.common.helper.LoggingHelper;
 
@@ -35,7 +35,7 @@ public class SalableProductStoreBusinessImpl extends AbstractTypedBusinessServic
 	
 	/**/
 	
-	public static class BuilderOneDimensionArray extends AbstractCollectionBusinessImpl.BuilderOneDimensionArray<SalableProduct> implements Serializable {
+	public static class BuilderOneDimensionArray extends AbstractEnumerationBusinessImpl.BuilderOneDimensionArray<SalableProduct> implements Serializable {
 		private static final long serialVersionUID = 1L;
 
 		public BuilderOneDimensionArray() {

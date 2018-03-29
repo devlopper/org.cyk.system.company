@@ -49,7 +49,7 @@ public class ProductIT extends AbstractBusinessIT {
     	TestCase testCase = instanciateTestCase(); 
     	String code = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(TangibleProduct.class,code));
-    	testCase.assertNull(StockableTangibleProduct.class,code);
+    	testCase.assertNullByBusinessIdentifier(StockableTangibleProduct.class,code);
     	testCase.clean();
     }
     
@@ -59,7 +59,7 @@ public class ProductIT extends AbstractBusinessIT {
     	String code = testCase.getRandomAlphabetic();
     	FileHelper.File file = RandomHelper.getInstance().getFilePersonHeadOnly(Boolean.TRUE);
     	testCase.create(testCase.instanciateOne(TangibleProduct.class,code).setImage(inject(FileBusiness.class).process(file.getBytes(), file.getName())));
-    	testCase.assertNull(StockableTangibleProduct.class,code);
+    	testCase.assertNullByBusinessIdentifier(StockableTangibleProduct.class,code);
     	testCase.clean();
     }
     
@@ -68,7 +68,7 @@ public class ProductIT extends AbstractBusinessIT {
     	TestCase testCase = instanciateTestCase(); 
     	String code = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(IntangibleProduct.class,code));
-    	testCase.assertNull(StockableTangibleProduct.class,code);
+    	testCase.assertNullByBusinessIdentifier(StockableTangibleProduct.class,code);
     	testCase.clean();
     }
     
@@ -103,7 +103,7 @@ public class ProductIT extends AbstractBusinessIT {
     	String productCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(TangibleProduct.class,productCode).setStoreFromCode(storeCode));
     	
-    	testCase.assertNotNull(ProductStore.class, RootConstant.Code.generate(productCode,storeCode));
+    	testCase.assertNotNullByBusinessIdentifier(ProductStore.class, RootConstant.Code.generate(productCode,storeCode));
     	
     	testCase.deleteAll(ProductStore.class);
     	testCase.clean();
@@ -118,7 +118,7 @@ public class ProductIT extends AbstractBusinessIT {
     	String productCode = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(TangibleProduct.class,productCode).setIsStockable(Boolean.TRUE).setProviderPartyFromCode(productProviderCode));
     	
-    	testCase.assertNotNull(StockableTangibleProduct.class, productCode);
+    	testCase.assertNotNullByBusinessIdentifier(StockableTangibleProduct.class, productCode);
     	assertNotNull(inject(PartyIdentifiableGlobalIdentifierDao.class).readByPartyByIdentifiableGlobalIdentifierByRole(testCase.read(Company.class, productProviderCode)
     			, testCase.read(TangibleProduct.class, productCode).getGlobalIdentifier(),testCase.read(BusinessRole.class, PROVIDER)));
     	

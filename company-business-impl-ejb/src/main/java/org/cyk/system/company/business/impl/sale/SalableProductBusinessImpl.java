@@ -1,25 +1,22 @@
 package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
-import org.cyk.system.company.business.api.sale.SalableProductInstanceBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductPropertiesBusiness;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
-import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
-import org.cyk.system.company.persistence.api.sale.SalableProductInstanceDao;
-import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
+import org.cyk.system.root.business.impl.AbstractEnumerationBusinessImpl;
 import org.cyk.system.root.business.impl.helper.FieldHelper;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
+import org.cyk.utility.common.helper.StringHelper;
 
-public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<SalableProduct,SalableProductInstance, SalableProductDao,SalableProductInstanceDao,SalableProductInstanceBusiness> implements SalableProductBusiness,Serializable {
+public class SalableProductBusinessImpl extends AbstractEnumerationBusinessImpl<SalableProduct, SalableProductDao> implements SalableProductBusiness,Serializable {
 	private static final long serialVersionUID = -7830673760640348717L;
 
 	@Inject
@@ -30,7 +27,7 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 	@Override
 	public SalableProduct instanciateOne() {
 		return super.instanciateOne().setProperties(inject(SalableProductPropertiesBusiness.class).instanciateOne())
-				.setCascadeOperationToMaster(Boolean.TRUE).setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PROPERTIES));
+				.setCascadeOperationToMaster(Boolean.TRUE).addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PROPERTIES);
 	}
 	
 	@Override
@@ -46,6 +43,7 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 	@Override
 	protected void computeChanges(SalableProduct salableProduct, Builder logMessageBuilder) {
 		super.computeChanges(salableProduct, logMessageBuilder);
+		
 		FieldHelper.getInstance().copy(salableProduct.getProduct(), salableProduct,Boolean.FALSE
 				,org.cyk.utility.common.helper.FieldHelper.getInstance().buildPath(
 						AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE),org.cyk.utility.common.helper.FieldHelper.getInstance().buildPath(
@@ -56,22 +54,11 @@ public class SalableProductBusinessImpl extends AbstractCollectionBusinessImpl<S
 						AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE),org.cyk.utility.common.helper.FieldHelper.getInstance().buildPath(
 								AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME));
 		
-		
-	}
-	
-	@Override
-	protected SalableProductInstanceBusiness getItemBusiness() {
-		return inject(SalableProductInstanceBusiness.class);
-	}
-
-	@Override
-	protected SalableProductInstanceDao getItemDao() {
-		return inject(SalableProductInstanceDao.class);
 	}
 	
 	/**/
 	
-	public static class BuilderOneDimensionArray extends AbstractCollectionBusinessImpl.BuilderOneDimensionArray<SalableProduct> implements Serializable {
+	public static class BuilderOneDimensionArray extends AbstractEnumerationBusinessImpl.BuilderOneDimensionArray<SalableProduct> implements Serializable {
 		private static final long serialVersionUID = 1L;
 
 		public BuilderOneDimensionArray() {

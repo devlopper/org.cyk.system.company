@@ -26,7 +26,7 @@ import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemD
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
-import org.cyk.system.root.business.impl.__test__.AbstractBusinessTestHelper.TestCase;
+import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.persistence.api.file.FileIdentifiableGlobalIdentifierDao;
 import org.cyk.system.root.persistence.api.security.UserAccountDao;

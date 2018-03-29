@@ -16,7 +16,7 @@ import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
-import org.cyk.system.root.business.impl.__test__.AbstractBusinessTestHelper.TestCase;
+import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.persistence.api.security.UserAccountDao;
 import org.cyk.utility.common.generator.RandomDataProvider;

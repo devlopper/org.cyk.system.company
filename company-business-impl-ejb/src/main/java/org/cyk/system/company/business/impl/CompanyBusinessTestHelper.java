@@ -10,9 +10,6 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
@@ -59,7 +56,11 @@ import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.ObjectFieldValues;
+import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.common.test.TestEnvironmentListener.Try;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Singleton
 public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implements Serializable {
@@ -647,7 +648,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	
 	/**/
 	
-	public static class TestCase extends AbstractBusinessTestHelper.TestCase implements Serializable {
+	public static class TestCase extends org.cyk.system.root.business.impl.__test__.TestCase implements Serializable {
 		private static final long serialVersionUID = 1L;
 		
 		public void assertStockableTangibleProduct(StockableTangibleProduct stockableTangibleProduct,String expectedQuantity){
@@ -661,8 +662,10 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 		}
 		
 		public void assertCost(Cost cost,String expectedNumberOfElements,String expectedValue,String expectedTax,String expectedTurnover){
-	    	helper.doAssertions(cost, new ObjectFieldValues(Cost.class).set(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS, expectedNumberOfElements)
-	    			.set(Cost.FIELD_VALUE, expectedValue).set(Cost.FIELD_TAX, expectedTax).set(Cost.FIELD_TURNOVER, expectedTurnover));
+	    	assertEqualsFieldValues(cost, new FieldHelper.Field.Value.Collection().addValue(Cost.class, expectedNumberOfElements, Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS)
+	    			.addValue(Cost.class, expectedValue, Cost.FIELD_VALUE)
+	    			.addValue(Cost.class, expectedTax, Cost.FIELD_TAX)
+	    			.addValue(Cost.class, expectedTurnover, Cost.FIELD_TURNOVER));
 	    }
 		
 		public void assertSalableProductCollectionCost(SalableProductCollection salableProductCollection,String expectedCostNumberOfElements,String expectedCostValue

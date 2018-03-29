@@ -12,7 +12,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.root.model.AbstractCollection;
+import org.cyk.system.root.model.AbstractEnumeration;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.party.Party;
 import org.cyk.utility.common.annotation.ModelBean;
@@ -25,7 +25,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Getter @Setter @NoArgsConstructor @Entity @ModelBean(genderType=GenderType.MALE,crudStrategy=CrudStrategy.BUSINESS) @Accessors(chain=true)
-public class SalableProduct extends AbstractCollection<SalableProductInstance> implements Serializable {
+public class SalableProduct extends AbstractEnumeration implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne @JoinColumn(name=COLUMN_PRODUCT) @NotNull private Product product;
@@ -58,7 +58,7 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 	}
 	
 	public SalableProduct setProductFromCode(String code){
-		product = getFromCode(productClass, code);
+		product = getFromCode(productClass == null ? Product.class : productClass, code);
 		return this;
 	}
 	
@@ -90,6 +90,16 @@ public class SalableProduct extends AbstractCollection<SalableProductInstance> i
 	@Override
 	public SalableProduct setCascadeOperationToMasterFieldNames(Collection<String> cascadeOperationToMasterFieldNames) {
 		return (SalableProduct) super.setCascadeOperationToMasterFieldNames(cascadeOperationToMasterFieldNames);
+	}
+	
+	@Override
+	public SalableProduct addCascadeOperationToChildrenFieldNames(String... fieldNames) {
+		return (SalableProduct) super.addCascadeOperationToChildrenFieldNames(fieldNames);
+	}
+	
+	@Override
+	public SalableProduct addCascadeOperationToMasterFieldNames(String... fieldNames) {
+		return (SalableProduct) super.addCascadeOperationToMasterFieldNames(fieldNames);
 	}
 	
 	/**/

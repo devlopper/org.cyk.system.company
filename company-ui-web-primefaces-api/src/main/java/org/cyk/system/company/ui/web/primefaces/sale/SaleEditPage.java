@@ -188,7 +188,7 @@ public class SaleEditPage extends AbstractSalableProductCollectionEditPage<Sale,
 				
 				@Override
 				public Collection<SalableProductInstance> getSalableProductInstances(SalableProduct salableProduct,CashRegister cashRegister) {
-					return inject(SalableProductInstanceBusiness.class).findByCollection(salableProduct);
+					return null;
 				}
 				@Override
 				public BigDecimal getCost(Sale sale) {

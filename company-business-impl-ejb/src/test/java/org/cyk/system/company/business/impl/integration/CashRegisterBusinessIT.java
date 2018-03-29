@@ -3,10 +3,10 @@ package org.cyk.system.company.business.impl.integration;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.OwnedCompany;
-import org.cyk.system.root.business.impl.__test__.AbstractBusinessTestHelper.TestCase;
 import org.junit.Test;
 
 public class CashRegisterBusinessIT extends AbstractBusinessIT {
