@@ -14,6 +14,7 @@ import org.cyk.utility.common.annotation.ModelBean.GenderType;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Getter @Setter @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE)
 public class SalableProductStoreCollection extends AbstractCollection<SalableProductStoreCollectionItem> implements Serializable {
@@ -21,6 +22,9 @@ public class SalableProductStoreCollection extends AbstractCollection<SalablePro
 
 	@Embedded private Cost cost;
 
+	@Accessors(chain=true) private Boolean isStockMovementCollectionUpdatable;
+	@Accessors(chain=true) private Boolean isBalanceMovementCollectionUpdatable;
+	
 	/**/
 	
 	public Cost getCost(){

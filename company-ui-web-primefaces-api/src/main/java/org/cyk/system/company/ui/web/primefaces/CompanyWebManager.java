@@ -29,7 +29,7 @@ import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
-import org.cyk.system.company.model.stock.StockableTangibleProduct;
+import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.company.ui.web.primefaces.model.ProductCollectionFormModel;
 import org.cyk.system.company.ui.web.primefaces.stock.StockableTangibleProductEditPage;
@@ -104,10 +104,10 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Employee.class, ActorConsultFormModel.class);
 		//UIManager.DEFAULT_MANY_FORM_MODEL_MAP.put(Customer.class, ActorConsultFormModel.class);
 		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(StockableTangibleProduct.class, StockableTangibleProductEditPage.Form.class, StockableTangibleProductDetails.class
+		uiManager.registerConfiguration(new IdentifiableConfiguration(StockableProduct.class, StockableTangibleProductEditPage.Form.class, StockableTangibleProductDetails.class
 				,null,null,null));
-		uiManager.configBusinessIdentifiable(StockableTangibleProduct.class, null);
-		//webNavigationManager.useDynamicSelectView(StockableTangibleProduct.class);
+		uiManager.configBusinessIdentifiable(StockableProduct.class, null);
+		//webNavigationManager.useDynamicSelectView(StockableProduct.class);
 	}
 	
 	@Override
@@ -194,7 +194,7 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	public Collection<UICommandable> stockContextCommandables(AbstractUserSession<TreeNode,HierarchyNode> userSession){
 		Collection<UICommandable> commandables = new ArrayList<>();
 		commandables.add(Builder.create("dashboard", null, "stockDashBoardView"));
-		commandables.add(Builder.createList(StockableTangibleProduct.class, null));
+		commandables.add(Builder.createList(StockableProduct.class, null));
 		//commandables.add(Builder.createList(StockTangibleProductMovement.class, null));
 		//commandables.add(Builder.create("command.quantityinuse", null, "tangibleProductQuantityInUseUpdateManyView"));
 		//commandables.add(Builder.createList(TangibleProductInventory.class, null));

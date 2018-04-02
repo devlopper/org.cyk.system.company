@@ -12,12 +12,13 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.product.Product;
+import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.root.model.AbstractEnumeration;
 import org.cyk.system.root.model.file.File;
-import org.cyk.system.root.model.party.Party;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
+import org.cyk.utility.common.helper.ClassHelper;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,7 @@ import lombok.experimental.Accessors;
 public class SalableProduct extends AbstractEnumeration implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @JoinColumn(name=COLUMN_PRODUCT) @NotNull private Product product;
+	@ManyToOne @JoinColumn(name=COLUMN_PRODUCT,unique=true) @NotNull private Product product;
 	@ManyToOne @JoinColumn(name=COLUMN_PROPERTIES) @NotNull private SalableProductProperties properties;
 	
 	//TODO followings must be replaced with SalableProductProperties
@@ -42,9 +43,6 @@ public class SalableProduct extends AbstractEnumeration implements Serializable 
 	@Column(precision=3,scale=FLOAT_SCALE) private BigDecimal quantityMultiple;
 	
 	@Transient private Class<? extends Product> productClass;
-	@Transient private Boolean isProductStockable;
-	@Transient private Party productProviderParty;
-	@Transient private BigDecimal productStockQuantityMovementCollectionInitialValue;
 	
 	public SalableProduct(Product product, BigDecimal price) {
 		super(product.getCode(),product.getName(),product.getAbbreviation(),product.getDescription());
@@ -57,13 +55,23 @@ public class SalableProduct extends AbstractEnumeration implements Serializable 
 		return (SalableProduct) super.setCode(code);
 	}
 	
+	public Product getProduct(Boolean instanciateIfValueIsNull){
+		return readFieldValue(FIELD_PRODUCT,productClass, instanciateIfValueIsNull);
+	}
+	
 	public SalableProduct setProductFromCode(String code){
 		product = getFromCode(productClass == null ? Product.class : productClass, code);
 		return this;
 	}
 	
+	public SalableProduct setProductIsStockable(Boolean isStockable){
+		if(TangibleProduct.class.equals(productClass))
+			((TangibleProduct)getProduct(Boolean.TRUE)).setIsStockable(isStockable);
+		return this;
+	}
+	
 	public SalableProduct setProductProviderPartyFromCode(String code){
-		productProviderParty = getFromCode(Party.class, code);
+		getProduct(Boolean.TRUE).setProviderPartyFromCode(code);
 		return this;
 	}
 	
@@ -72,8 +80,20 @@ public class SalableProduct extends AbstractEnumeration implements Serializable 
 		return this;
 	}
 	
+	public SalableProductProperties getProperties(Boolean createIfNull){
+		if(this.properties == null && Boolean.TRUE.equals(createIfNull))
+			this.properties = ClassHelper.getInstance().instanciateOne(SalableProductProperties.class);
+		return this.properties;
+	}
+	
+	public SalableProduct setPropertiesPriceFromObject(Object value){
+		getProperties(Boolean.TRUE).setPriceFromObject(value);
+		return this;
+	}
+	
 	public SalableProduct setProductStockQuantityMovementCollectionInitialValueFromObject(Object value){
-		this.productStockQuantityMovementCollectionInitialValue = getNumberFromObject(BigDecimal.class, value);
+		if(TangibleProduct.class.equals(productClass))
+			((TangibleProduct)getProduct(Boolean.TRUE)).setStockQuantityMovementCollectionInitialValueFromObject(value);
 		return this;
 	}
 	

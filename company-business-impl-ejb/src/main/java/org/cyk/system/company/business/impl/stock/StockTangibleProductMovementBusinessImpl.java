@@ -18,10 +18,10 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
-import org.cyk.system.company.model.stock.StockableTangibleProduct;
+import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockTangibleProductMovementDao;
-import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
+import org.cyk.system.company.persistence.api.stock.StockableProductDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
@@ -30,7 +30,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 
 	private static final long serialVersionUID = -7830673760640348717L;
 	
-	@Inject private StockableTangibleProductDao stockableTangibleProductDao;
+	@Inject private StockableProductDao stockableProductDao;
 	@Inject private TangibleProductDao tangibleProductDao;
 	
 	@Inject
@@ -41,10 +41,10 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public StockTangibleProductMovement instanciateOne(String[] arguments) {
 		StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement();
-		stockTangibleProductMovement.setStockableTangibleProduct(stockableTangibleProductDao.readByTangibleProduct(tangibleProductDao.read(arguments[0])));
+		stockTangibleProductMovement.setStockableProduct(stockableProductDao.readByProduct(tangibleProductDao.read(arguments[0])));
 		BigDecimal value = numberBusiness.parseBigDecimal(arguments[1]);
 		//stockTangibleProductMovement.setMovement(inject(MovementBusiness.class)
-		//		.instanciateOne(stockTangibleProductMovement.getStockableTangibleProduct().getMovementCollection(), value.compareTo(BigDecimal.ZERO) >= 0));
+		//		.instanciateOne(stockTangibleProductMovement.getStockableProduct().getMovementCollection(), value.compareTo(BigDecimal.ZERO) >= 0));
 		stockTangibleProductMovement.getMovement().setValue(value);
 		return stockTangibleProductMovement;
 	}
@@ -79,19 +79,19 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 				tangibleProducts.add((TangibleProduct) saleProduct.getSalableProduct().getProduct());
 	
 		for(TangibleProduct tangibleProduct : tangibleProducts){
-			StockableTangibleProduct stockableTangibleProduct = inject(StockableTangibleProductDao.class).readByTangibleProduct(tangibleProduct);
-			if(stockableTangibleProduct==null)
+			StockableProduct stockableProduct = inject(StockableProductDao.class).readByProduct(tangibleProduct);
+			if(stockableProduct==null)
 				;
 			else{
 				//BigDecimal count = BigDecimal.ZERO;
 				for(SalableProductCollectionItem saleProduct : saleProducts)
-					if(saleProduct.getSalableProduct().getProduct().equals(stockableTangibleProduct.getTangibleProduct()))
+					if(saleProduct.getSalableProduct().getProduct().equals(stockableProduct.getProduct()))
 						;//count = count.add(saleProduct.getQuantity());
-				//StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement(stockableTangibleProduct
-				//		,inject(MovementBusiness.class).instanciateOne(stockableTangibleProduct.getMovementCollection(), Boolean.FALSE));
+				//StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement(stockableProduct
+				//		,inject(MovementBusiness.class).instanciateOne(stockableProduct.getMovementCollection(), Boolean.FALSE));
 				//stockTangibleProductMovement.getMovement().setValue(count.negate());
 				//inject(StockTangibleProductMovementBusiness.class).create(stockTangibleProductMovement);
-				//logTrace("Updated : {}",stockableTangibleProduct.getLogMessage());
+				//logTrace("Updated : {}",stockableProduct.getLogMessage());
 			}
 		}
 	}

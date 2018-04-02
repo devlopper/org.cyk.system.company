@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.cyk.system.root.model.AbstractIdentifiable;
@@ -26,6 +27,8 @@ public class ProductStore extends AbstractIdentifiable implements Serializable  
 	@ManyToOne @JoinColumn(name=COLUMN_PRODUCT) @NotNull private Product product;
 	@ManyToOne @JoinColumn(name=COLUMN_STORE) @NotNull private Store store;
 	
+	@Transient private Class<? extends Product> productClass;
+	
 	@Override
 	public ProductStore setCode(String code) {
 		return (ProductStore) super.setCode(code);
@@ -36,9 +39,24 @@ public class ProductStore extends AbstractIdentifiable implements Serializable  
 		return this;
 	}
 	
+	public Product getProduct(Boolean instanciateIfValueIsNull){
+		return readFieldValue(FIELD_PRODUCT, instanciateIfValueIsNull);
+	}
+	
+	public ProductStore setProductIsStockable(Boolean isStockable){
+		if(TangibleProduct.class.equals(productClass))
+			((TangibleProduct)getProduct(Boolean.TRUE)).setIsStockable(isStockable);
+		return this;
+	}
+	
 	public ProductStore setStoreFromCode(String code){
 		this.store = getFromCode(Store.class, code);
 		return this;
+	}
+	
+	@Override
+	public ProductStore addCascadeOperationToMasterFieldNames(String... fieldNames) {
+		return (ProductStore) super.addCascadeOperationToMasterFieldNames(fieldNames);
 	}
 	
 	/**/

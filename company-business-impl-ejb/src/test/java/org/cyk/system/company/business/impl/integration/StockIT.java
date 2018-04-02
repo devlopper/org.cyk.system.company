@@ -9,13 +9,12 @@ import org.cyk.system.company.business.impl.__data__.RealDataSet;
 import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.stock.StockableProductStore;
-import org.cyk.system.company.model.stock.StockableTangibleProduct;
+import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.store.Store;
-import org.cyk.system.root.model.store.StoreType;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.FieldHelper;
 import org.junit.Test;
@@ -28,63 +27,61 @@ public class StockIT extends AbstractBusinessIT {
     }
     
     @Test
-    public void crudStockableProductStoreBasedOnExistingProductStoreByJoin(){
-    	TestCase testCase = instanciateTestCase(); 
-    	
-    	String storeTypeCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(StoreType.class,storeTypeCode));
-    	
-    	String storeCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(Store.class,storeCode).setTypeFromCode(storeTypeCode));
-    	
-    	String tangibleProductCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(TangibleProduct.class,tangibleProductCode));
-    	
-    	String productStoreCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(ProductStore.class,productStoreCode).setProductFromCode(tangibleProductCode).setStoreFromCode(storeCode));
-    	
-    	testCase.create(testCase.instanciateOne(StockableProductStore.class).setProductStoreFromCode(productStoreCode));
-    	
-    	testCase.clean();
-    }
-    
-    @Test
     public void crudStockableProductBasedOnExistingProductByJoin(){
     	TestCase testCase = instanciateTestCase(); 
     	String tangibleProductCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(TangibleProduct.class,tangibleProductCode).setName("TP 001"));
     	
-    	testCase.create(testCase.instanciateOne(StockableTangibleProduct.class).setTangibleProductFromCode(tangibleProductCode));
+    	testCase.create(testCase.instanciateOne(StockableProduct.class).setProductFromCode(tangibleProductCode));
     	
-    	testCase.assertFieldValueEquals(StockableTangibleProduct.class, tangibleProductCode
+    	testCase.assertFieldValueEquals(StockableProduct.class, tangibleProductCode
     			, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME),"TP 001");
     	
     	testCase.clean();
     }
     
     @Test
-    public void crudStockableTangibleProductBasedOnExistingProductByCode(){
+    public void crudStockableProductBasedOnExistingProductByCode(){
     	TestCase testCase = instanciateTestCase(); 
     	String tangibleProductCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(TangibleProduct.class,tangibleProductCode).setName("TP 001"));
     	
-    	testCase.create(testCase.instanciateOne(StockableTangibleProduct.class).setCode(tangibleProductCode).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(StockableTangibleProduct.FIELD_TANGIBLE_PRODUCT)));
+    	testCase.create(testCase.instanciateOne(StockableProduct.class).setCode(tangibleProductCode)
+    			.addCascadeOperationToMasterFieldNames(StockableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class));
     	
-    	testCase.assertFieldValueEquals(StockableTangibleProduct.class, tangibleProductCode
+    	testCase.assertFieldValueEquals(StockableProduct.class, tangibleProductCode
     			, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME),"TP 001");
     	testCase.clean();
     }
     
     @Test
-    public void crudStockableTangibleProductBasedOnNonExistingProductByCode(){
+    public void crudStockableProductBasedOnNonExistingProductByCode(){
     	TestCase testCase = instanciateTestCase(); 
-    	String stockableTangibleProductCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(StockableTangibleProduct.class).setCode(stockableTangibleProductCode).setCascadeOperationToMaster(Boolean.TRUE)
-    			.setCascadeOperationToMasterFieldNames(Arrays.asList(StockableTangibleProduct.FIELD_TANGIBLE_PRODUCT)));
+    	String stockableProductCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(StockableProduct.class).setCode(stockableProductCode)
+    			.addCascadeOperationToMasterFieldNames(StockableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class));
     	
-    	testCase.assertNotNullByBusinessIdentifier(TangibleProduct.class, stockableTangibleProductCode);
-    	testCase.assertNotNullByBusinessIdentifier(StockableTangibleProduct.class, stockableTangibleProductCode);
+    	testCase.assertNotNullByBusinessIdentifier(TangibleProduct.class, stockableProductCode);
+    	testCase.assertNotNullByBusinessIdentifier(StockableProduct.class, stockableProductCode);
+    	testCase.clean();
+    }
+    
+    /* Store */
+    
+    @Test
+    public void crudStockableProductStoreBasedOnNoExistingProductStoreByJoin(){
+    	TestCase testCase = instanciateTestCase(); 
+    	
+    	String productStoreCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(ProductStore.class,productStoreCode).addCascadeOperationToMasterFieldNames(ProductStore.FIELD_PRODUCT
+    			,ProductStore.FIELD_STORE).setProductClass(TangibleProduct.class).setProductIsStockable(Boolean.TRUE));
+    	
+    	testCase.assertNotNullByBusinessIdentifier(TangibleProduct.class, productStoreCode);
+    	testCase.assertNotNullByBusinessIdentifier(Store.class, productStoreCode);
+    	testCase.assertNotNullByBusinessIdentifier(StockableProductStore.class, productStoreCode);
+    	
+    	testCase.deleteAll(StockableProductStore.class);
+    	
     	testCase.clean();
     }
     
@@ -97,7 +94,7 @@ public class StockIT extends AbstractBusinessIT {
 		@SuppressWarnings({ "rawtypes" })
 		@Override
 		public Collection getClasses() { 
-			return Arrays.asList(StockableTangibleProduct.class,Movement.class);
+			return Arrays.asList(StockableProduct.class,Movement.class,Store.class);
 		}
 		
     }

@@ -6,8 +6,11 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.api.product.ProductStoreBusiness;
+import org.cyk.system.company.business.api.stock.StockableProductStoreBusiness;
 import org.cyk.system.company.model.product.ProductStore;
+import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.persistence.api.product.ProductStoreDao;
+import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 
@@ -17,6 +20,20 @@ public class ProductStoreBusinessImpl extends AbstractTypedBusinessService<Produ
 	@Inject
 	public ProductStoreBusinessImpl(ProductStoreDao dao) {
 		super(dao);
+	}
+	
+	@Override
+	protected void afterCrud(ProductStore productStore, Crud crud) {
+		super.afterCrud(productStore, crud);
+		if(Crud.isCreateOrUpdate(crud)){
+			if(Crud.CREATE.equals(crud)){
+				if(productStore.getProduct() instanceof TangibleProduct){
+					if(Boolean.TRUE.equals(productStore.getProduct().getIsStockable())){
+						inject(StockableProductStoreBusiness.class).create(inject(StockableProductStoreBusiness.class).instanciateOne().setProductStore(productStore));
+					}
+				}
+			}
+		}
 	}
 	
 	@Override

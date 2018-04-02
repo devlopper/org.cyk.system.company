@@ -8,6 +8,7 @@ import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
 import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.persistence.api.product.IntangibleProductDao;
 
+@Deprecated
 public class IntangibleProductBusinessImpl extends AbstractProductBusinessImpl<IntangibleProduct,IntangibleProductDao> implements IntangibleProductBusiness {
 	
 	private static final long serialVersionUID = 2801588592108008404L;

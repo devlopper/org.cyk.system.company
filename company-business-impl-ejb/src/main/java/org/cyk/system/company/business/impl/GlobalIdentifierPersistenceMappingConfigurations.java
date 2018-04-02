@@ -11,6 +11,7 @@ import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
+import org.cyk.system.company.model.stock.StockableProductStore;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.time.Period;
@@ -37,6 +38,9 @@ public class GlobalIdentifierPersistenceMappingConfigurations extends AbstractBe
 				)).getConstraints().setIsNullable(Boolean.FALSE).setIsUnique(Boolean.TRUE);
 		
 		FieldHelper.Field.get(SalableProductCollectionItem.class, SalableProductCollectionItem.FIELD_COLLECTION).getConstraints().setIsNullable(Boolean.FALSE);
+		
+		FieldHelper.Field.get(StockableProductStore.class, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE
+				)).getConstraints().setIsNullable(Boolean.FALSE).setIsUnique(Boolean.TRUE);
 		
 		FieldHelper.Field.get(Sale.class, FieldHelper.getInstance().buildPath(Sale.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_EXISTENCE_PERIOD
 				,Period.FIELD_FROM_DATE)).getConstraints().setDatePart(Constant.Date.Part.DATE_AND_TIME_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND);

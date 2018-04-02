@@ -27,7 +27,7 @@ public class SaleWithOneFiniteStateMachineStateBusinessIT extends AbstractSaleWi
 		//companyBusinessTestHelper.assertSaleByCriteria(null,null, new String[]{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}
 		//	, new String[]{S1}, "2000", "0", "2000", "2000", "0");
 		
-		//companyBusinessTestHelper.assertStockableTangibleProduct(TP1, "98");
+		//companyBusinessTestHelper.assertStockableProduct(TP1, "98");
 		
 	}
 

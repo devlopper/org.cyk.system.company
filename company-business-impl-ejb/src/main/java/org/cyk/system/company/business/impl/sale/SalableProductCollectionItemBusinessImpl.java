@@ -13,15 +13,14 @@ import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
-import org.cyk.system.company.model.stock.StockableTangibleProduct;
+import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
-import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
+import org.cyk.system.company.persistence.api.stock.StockableProductDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
@@ -116,10 +115,9 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 			
 		}		
 		if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getIsStockMovementCollectionUpdatable())){
-			StockableTangibleProduct stockableTangibleProduct = inject(StockableTangibleProductDao.class).readByTangibleProduct(
-					(TangibleProduct) salableProductCollectionItem.getSalableProduct().getProduct());
-			if(stockableTangibleProduct!=null){
-				inject(MovementBusiness.class).create(stockableTangibleProduct, RootConstant.Code.MovementCollectionType.STOCK_REGISTER, crud, salableProductCollectionItem
+			StockableProduct stockableProduct = inject(StockableProductDao.class).readByProduct(salableProductCollectionItem.getSalableProduct().getProduct());
+			if(stockableProduct!=null){
+				inject(MovementBusiness.class).create(stockableProduct, RootConstant.Code.MovementCollectionType.STOCK_REGISTER, crud, salableProductCollectionItem
 						, FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS),Boolean.TRUE,null);
 			}
 		}		

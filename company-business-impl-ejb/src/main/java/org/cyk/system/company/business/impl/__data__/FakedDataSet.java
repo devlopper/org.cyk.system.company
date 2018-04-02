@@ -5,12 +5,10 @@ import java.math.BigDecimal;
 
 import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
-import org.cyk.system.company.business.api.stock.StockableTangibleProductBusiness;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
-import org.cyk.system.company.model.stock.StockableTangibleProduct;
 import org.cyk.utility.common.helper.RandomHelper;
-
+@Deprecated
 public class FakedDataSet extends RealDataSet implements Serializable {
 	private static final long serialVersionUID = -2798230163660365442L;
 
@@ -37,18 +35,18 @@ public class FakedDataSet extends RealDataSet implements Serializable {
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_STOCKABLE_TP3,"TP 003"));
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_STOCKABLE_TP4,"TP 004"));
 		addInstances(TangibleProduct.class, inject(TangibleProductBusiness.class).instanciateOne(TANGIBLE_PRODUCT_NO_STOCKABLE_TP5,"TP 005"));
-		
-		addInstances(StockableTangibleProduct.class, inject(StockableTangibleProductBusiness.class).instanciateOne()
+		/*
+		addInstances(StockableProduct.class, inject(StockableProductBusiness.class).instanciateOne()
 				.setTangibleProduct(getInstance(TangibleProduct.class, TANGIBLE_PRODUCT_TP1)).setQuantityMovementCollectionValue(new BigDecimal("10")));
-		addInstances(StockableTangibleProduct.class, inject(StockableTangibleProductBusiness.class).instanciateOne()
+		addInstances(StockableProduct.class, inject(StockableProductBusiness.class).instanciateOne()
 				.setTangibleProduct(getInstance(TangibleProduct.class, TANGIBLE_PRODUCT_TP2)).setQuantityMovementCollectionValue(new BigDecimal("10")));
-		addInstances(StockableTangibleProduct.class, inject(StockableTangibleProductBusiness.class).instanciateOne()
+		addInstances(StockableProduct.class, inject(StockableProductBusiness.class).instanciateOne()
 				.setTangibleProduct(getInstance(TangibleProduct.class, TANGIBLE_PRODUCT_TP3)).setQuantityMovementCollectionValue(new BigDecimal("10")));
-		addInstances(StockableTangibleProduct.class, inject(StockableTangibleProductBusiness.class).instanciateOne()
+		addInstances(StockableProduct.class, inject(StockableProductBusiness.class).instanciateOne()
 				.setTangibleProduct(getInstance(TangibleProduct.class, TANGIBLE_PRODUCT_TP4)).setQuantityMovementCollectionValue(new BigDecimal("10")));
-		addInstances(StockableTangibleProduct.class, inject(StockableTangibleProductBusiness.class).instanciateOne()
+		addInstances(StockableProduct.class, inject(StockableProductBusiness.class).instanciateOne()
 				.setTangibleProduct(getInstance(TangibleProduct.class, TANGIBLE_PRODUCT_TP5)).setQuantityMovementCollectionValue(new BigDecimal("10")));
-		
+		*/
     	addInstances(SalableProduct.class, inject(SalableProductBusiness.class).instanciateOne().setProduct(getInstance(TangibleProduct.class, TANGIBLE_PRODUCT_TP1))
     			.setPrice(new BigDecimal("100")));    	
     	addInstances(SalableProduct.class, inject(SalableProductBusiness.class).instanciateOne().setProduct(getInstance(TangibleProduct.class, TANGIBLE_PRODUCT_TP2))

@@ -46,7 +46,27 @@ public class Cost extends AbstractModelElement implements Serializable {
 			this.turnover = CommonUtils.getInstance().getValueIfNotNullElseDefault(cost.turnover,BigDecimal.ZERO);
 		}	
 	}
-		
+	
+	public Cost setNumberOfProceedElementsFromObject(Object value){
+		this.numberOfProceedElements = getNumberFromObject(BigDecimal.class, value);
+		return this;
+	}
+	
+	public Cost setValueFromObject(Object value){
+		this.value = getNumberFromObject(BigDecimal.class, value);
+		return this;
+	}
+	
+	public Cost setTaxFromObject(Object value){
+		this.tax = getNumberFromObject(BigDecimal.class, value);
+		return this;
+	}
+	
+	public Cost setTurnoverFromObject(Object value){
+		this.turnover = getNumberFromObject(BigDecimal.class, value);
+		return this;
+	}
+	
 	public static final String FIELD_NUMBER_OF_PROCEED_ELEMENTS = "numberOfProceedElements";
 	public static final String FIELD_VALUE = "value";
 	public static final String FIELD_TAX = "tax";

@@ -27,10 +27,10 @@ import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
-import org.cyk.system.company.model.stock.StockableTangibleProduct;
+import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
-import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
+import org.cyk.system.company.persistence.api.stock.StockableProductDao;
 import org.cyk.system.root.business.api.ClazzBusiness;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.time.TimeBusiness;
@@ -44,9 +44,11 @@ import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.generator.StringGenerator;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
+import org.cyk.system.root.model.store.StoreType;
 import org.cyk.system.root.model.time.Period;
 import org.cyk.utility.common.annotation.Deployment;
 import org.cyk.utility.common.annotation.Deployment.InitialisationType;
@@ -96,6 +98,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	protected void initialisation() {
 		INSTANCE = this;
 		super.initialisation();
+		RootConstant.Code.setDefault(StoreType.class, RootConstant.Code.StoreType.PRODUCT);
 		PersistDataListener.COLLECTION.add(new PersistDataListener.Adapter.Default(){
 			private static final long serialVersionUID = -950053441831528010L;
 			@SuppressWarnings("unchecked")
@@ -236,8 +239,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	public SalableProduct getSalableProductStocking(){
 		return inject(SalableProductDao.class).readByProduct(getIntangibleProductStocking());
 	}
-	public StockableTangibleProduct getStockableTangibleProductStocking(){
-		return inject(StockableTangibleProductDao.class).readByTangibleProduct(getTangibleProductStocking());
+	public StockableProduct getStockableProductStocking(){
+		return inject(StockableProductDao.class).readByProduct(getTangibleProductStocking());
 	}
 
 	public static CompanyBusinessLayer getInstance() {

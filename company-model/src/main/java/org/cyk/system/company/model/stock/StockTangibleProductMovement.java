@@ -22,21 +22,21 @@ public class StockTangibleProductMovement extends AbstractIdentifiable implement
 	
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @NotNull private StockableTangibleProduct stockableTangibleProduct;
+	@ManyToOne @NotNull private StockableProduct stockableProduct;
 	@ManyToOne @NotNull private Movement movement;
 
 	/**/
 	
 	@Override
 	public String getLogMessage() {
-		return String.format(LOG_FORMAT,movement.getLogMessage(),stockableTangibleProduct.getLogMessage());
+		return String.format(LOG_FORMAT,movement.getLogMessage(),stockableProduct.getLogMessage());
 	}
 	
 	private static final String LOG_FORMAT = StockTangibleProductMovement.class.getSimpleName()+"(%s %s)";
 	
 	/**/
 	
-	public static final String FIELD_STOCKABLE_TANGIBLE_PRODUCT = "stockableTangibleProduct";
+	public static final String FIELD_STOCKABLE_TANGIBLE_PRODUCT = "stockableProduct";
 	public static final String FIELD_MOVEMENT = "movement";
 	
 }

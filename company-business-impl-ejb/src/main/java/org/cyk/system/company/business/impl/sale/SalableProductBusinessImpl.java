@@ -14,7 +14,6 @@ import org.cyk.system.root.business.impl.helper.FieldHelper;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
-import org.cyk.utility.common.helper.StringHelper;
 
 public class SalableProductBusinessImpl extends AbstractEnumerationBusinessImpl<SalableProduct, SalableProductDao> implements SalableProductBusiness,Serializable {
 	private static final long serialVersionUID = -7830673760640348717L;
@@ -27,15 +26,15 @@ public class SalableProductBusinessImpl extends AbstractEnumerationBusinessImpl<
 	@Override
 	public SalableProduct instanciateOne() {
 		return super.instanciateOne().setProperties(inject(SalableProductPropertiesBusiness.class).instanciateOne())
-				.setCascadeOperationToMaster(Boolean.TRUE).addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PROPERTIES);
+				.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PROPERTIES);
 	}
 	
 	@Override
 	protected void createMaster(SalableProduct salableProduct,AbstractIdentifiable master) {
 		if(master instanceof TangibleProduct){
-			((TangibleProduct)master).setIsStockable(salableProduct.getIsProductStockable());
-			((TangibleProduct)master).setStockQuantityMovementCollectionInitialValue(salableProduct.getProductStockQuantityMovementCollectionInitialValue());
-			((TangibleProduct)master).setProviderParty(salableProduct.getProductProviderParty());
+			//((TangibleProduct)master).setIsStockable(salableProduct.getIsProductStockable());
+			//((TangibleProduct)master).setStockQuantityMovementCollectionInitialValue(salableProduct.getProductStockQuantityMovementCollectionInitialValue());
+			//((TangibleProduct)master).setProviderParty(salableProduct.getProductProviderParty());
 		}
 		super.createMaster(salableProduct,master);
 	}

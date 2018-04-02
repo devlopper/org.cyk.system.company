@@ -10,9 +10,11 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.model.AbstractEnumeration;
+import org.cyk.system.root.model.information.Tangibility;
 import org.cyk.system.root.model.party.Party;
 import org.cyk.system.root.model.store.Store;
 import org.cyk.utility.common.annotation.ModelBean;
@@ -30,10 +32,16 @@ import lombok.experimental.Accessors;
 public class Product extends AbstractEnumeration implements Serializable  {
 	private static final long serialVersionUID = -6128937819261060725L;
 	
+	@ManyToOne @JoinColumn(name=COLUMN_TANGIBILITY) private Tangibility tangibility;
+	@ManyToOne @JoinColumn(name=COLUMN_GROUP) protected ProductGroup group;
 	@ManyToOne @JoinColumn(name=COLUMN_CATEGORY) protected ProductCategory category;
 	@ManyToOne @JoinColumn(name=COLUMN_TYPE) protected ProductType type;
 	@Column(precision=10,scale=FLOAT_SCALE) private BigDecimal price;
+	private Boolean stockable;
+	private Boolean storable;
+	private Boolean providerable;
 	
+	@Deprecated @Transient private Boolean isStockable;
 	@Transient private Store store;
 	@Transient private Party providerParty;
 	@Transient private BigDecimal stockQuantityMovementCollectionInitialValue;
@@ -50,6 +58,13 @@ public class Product extends AbstractEnumeration implements Serializable  {
 		return this;
 	}
 	
+	public Product setStockQuantityMovementCollectionInitialValueFromObject(Object value){
+		stockQuantityMovementCollectionInitialValue = getNumberFromObject(BigDecimal.class, value);
+		return this;
+	}
+	
+	public static final String FIELD_GROUP = "group";
+	public static final String FIELD_TANGIBILITY = "tangibility";
 	public static final String FIELD_CATEGORY = "category";
 	public static final String FIELD_TYPE = "type";
 	public static final String FIELD_PRICE = "price";
@@ -58,7 +73,11 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	public static final String FIELD_STORE = "store";
 	public static final String FIELD_OWNED_COMPANY = "ownedCompany";
 	
+	public static final String COLUMN_GROUP = FIELD_GROUP;
+	public static final String COLUMN_TANGIBILITY = FIELD_TANGIBILITY;
 	public static final String COLUMN_CATEGORY = FIELD_CATEGORY;
 	public static final String COLUMN_TYPE = FIELD_TYPE;
+	
+	public static final String FIELD_IS_STOCKABLE = "isStockable";
 	
 }

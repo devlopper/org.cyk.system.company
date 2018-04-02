@@ -14,7 +14,7 @@ public class SaleStockWithOneFiniteStateMachineStateBusinessIT extends AbstractS
 		//companyBusinessTestHelper.assertSaleByCriteria(null,null, new String[]{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE,Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}
 		//	, new String[]{SS1}, "2000", "0", "2000", "2000", "0");
 		
-		//companyBusinessTestHelper.assertStockableTangibleProduct(TangibleProduct.STOCKING, "1");
+		//companyBusinessTestHelper.assertStockableProduct(TangibleProduct.STOCKING, "1");
 	}
 	
 	@Override
@@ -26,7 +26,7 @@ public class SaleStockWithOneFiniteStateMachineStateBusinessIT extends AbstractS
 		//		,Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}
 		//	, new String[]{SS1,SS2}, "5500", "0", "5500", "5500", "0");
 		
-		//companyBusinessTestHelper.assertStockableTangibleProduct(TangibleProduct.STOCKING, "4");
+		//companyBusinessTestHelper.assertStockableProduct(TangibleProduct.STOCKING, "4");
 	}
 	
 	@Override
@@ -37,7 +37,7 @@ public class SaleStockWithOneFiniteStateMachineStateBusinessIT extends AbstractS
 		//companyBusinessTestHelper.assertSaleByCriteria(null,null, new String[]{Sale.FINITE_STATE_MACHINE_FINAL_STATE_CODE}
 		//	, new String[]{SS1,SS2}, "5500", "0", "5500", "5250", "250");
 		
-		//companyBusinessTestHelper.assertStockableTangibleProduct(TangibleProduct.STOCKING, "3");
+		//companyBusinessTestHelper.assertStockableProduct(TangibleProduct.STOCKING, "3");
 	}
                 
 }

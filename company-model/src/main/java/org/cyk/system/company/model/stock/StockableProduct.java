@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.mathematics.MovementCollection;
@@ -23,17 +24,24 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity @ModelBean(genderType=GenderType.MALE,crudStrategy=CrudStrategy.BUSINESS) @Accessors(chain=true)
-public class StockableTangibleProduct extends AbstractIdentifiable implements Serializable {
+public class StockableProduct extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @JoinColumn(name=COLUMN_TANGIBLE_PRODUCT,unique=true) @NotNull private TangibleProduct tangibleProduct;
+	@ManyToOne @JoinColumn(name=COLUMN_PRODUCT,unique=true) @NotNull private Product product;
 	
 	@Transient private MovementCollection quantityMovementCollection;
 	@Transient private BigDecimal quantityMovementCollectionInitialValue;
 	
+	@Transient private Class<? extends Product> productClass;
+	
 	/**/
 	
-	public StockableTangibleProduct setQuantityMovementCollectionValue(BigDecimal value){
+	@Override
+	public StockableProduct setCode(String code) {
+		return (StockableProduct) super.setCode(code);
+	}
+	
+	public StockableProduct setQuantityMovementCollectionValue(BigDecimal value){
 		if(quantityMovementCollection == null){
 			
 		}else
@@ -41,28 +49,33 @@ public class StockableTangibleProduct extends AbstractIdentifiable implements Se
 		return this;
 	}
 	
-	public StockableTangibleProduct setTangibleProductFromCode(String code){
-		tangibleProduct = getFromCode(TangibleProduct.class, code);
+	public StockableProduct setProductFromCode(String code){
+		product = getFromCode(TangibleProduct.class, code);
 		return this;
 	}
 	
-	public StockableTangibleProduct setQuantityMovementCollectionInitialValueFromObject(Object object){
+	public StockableProduct setQuantityMovementCollectionInitialValueFromObject(Object object){
 		quantityMovementCollectionInitialValue = getNumberFromObject(BigDecimal.class, object);
 		return this;
 	}
 	
+	@Override
+	public StockableProduct addCascadeOperationToMasterFieldNames(String... fieldNames) {
+		return (StockableProduct) super.addCascadeOperationToMasterFieldNames(fieldNames);
+	}
+	
 	/**/
 	
-	public static final String FIELD_TANGIBLE_PRODUCT = "tangibleProduct";
+	public static final String FIELD_PRODUCT = "product";
 	public static final String FIELD_QUANTITY_MOVEMENT_COLLECTION = "quantityMovementCollection";
 	public static final String FIELD_QUANTITY_MOVEMENT_COLLECTION_INITIAL_VALUE = "quantityMovementCollectionInitialValue";
 	
-	public static final String COLUMN_TANGIBLE_PRODUCT = FIELD_TANGIBLE_PRODUCT;
+	public static final String COLUMN_PRODUCT = FIELD_PRODUCT;
 	
 	/**/
 	
 	@Getter @Setter
-	public static class Filter extends AbstractIdentifiable.Filter<StockableTangibleProduct> implements Serializable {
+	public static class Filter extends AbstractIdentifiable.Filter<StockableProduct> implements Serializable {
 		private static final long serialVersionUID = -1498269103849317057L;
 
 	}

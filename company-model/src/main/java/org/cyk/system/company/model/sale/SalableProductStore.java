@@ -7,6 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.utility.common.annotation.ModelBean;
@@ -35,8 +36,47 @@ public class SalableProductStore extends AbstractIdentifiable implements Seriali
 		return this;
 	}
 	
+	public ProductStore getProductStore(Boolean instanciateIfValueIsNull){
+		return readFieldValue(FIELD_PRODUCT_STORE, instanciateIfValueIsNull);
+	}
+	
+	public SalableProductProperties getSalableProductProperties(Boolean instanciateIfValueIsNull){
+		return readFieldValue(FIELD_SALABLE_PRODUCT_PROPERTIES, instanciateIfValueIsNull);
+	}
+	
+	@Override
+	public SalableProductStore addCascadeOperationToMasterFieldNames(String... fieldNames) {
+		return (SalableProductStore) super.addCascadeOperationToMasterFieldNames(fieldNames);
+	}
+	
+	public SalableProductStore addProductStoreCascadeOperationToMasterFieldNames(String... fieldNames) {
+		getProductStore(Boolean.TRUE).addCascadeOperationToMasterFieldNames(fieldNames);
+		return this;
+	}
+	
+	public SalableProductStore setProductStoreProductClass(Class<? extends Product> productClass) {
+		getProductStore(Boolean.TRUE).setProductClass(productClass);
+		return this;
+	}
+
+	public SalableProductStore setProductStoreProductIsStockable(Boolean isStockable) {
+		getProductStore(Boolean.TRUE).setProductIsStockable(isStockable);
+		return this;
+	}
+	
+	public SalableProductStore setSalableProductPropertiesPriceFromObject(Object value) {
+		getSalableProductProperties(Boolean.TRUE).setPriceFromObject(value);
+		return this;
+	}
+
+	public SalableProductStore setSalableProductPropertiesProductStockQuantityMovementCollectionInitialValueFromObject(Object value) {
+		getSalableProductProperties(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(value);
+		return this;
+	}
+	
 	/**/
 	
+
 	public static final String FIELD_PRODUCT_STORE = "productStore";
 	public static final String FIELD_SALABLE_PRODUCT_PROPERTIES = "salableProductProperties";
 	

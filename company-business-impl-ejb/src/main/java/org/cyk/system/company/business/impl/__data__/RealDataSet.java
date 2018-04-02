@@ -11,6 +11,7 @@ import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.model.sale.ValueAddedTaxRate;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.DivisionType;
 import org.cyk.system.company.model.structure.EmploymentAgreementType;
@@ -62,6 +63,7 @@ public class RealDataSet extends DataSet implements Serializable {
 		addClass(IntangibleProduct.class);
 		addClass(TangibleProduct.class);
 		addClass(SalableProduct.class);
+		addClass(ValueAddedTaxRate.class);
 		//addClass(CashRegisterMovementMode.class);
 		
 		addClass(IntervalCollection.class);
@@ -81,7 +83,8 @@ public class RealDataSet extends DataSet implements Serializable {
 			if(SalableProductCollection.class.equals(aClass)){
 				classes.addAll(Arrays.asList(IntangibleProduct.class,TangibleProduct.class,SalableProduct.class,OwnedCompany.class,Company.class,AccountingPeriod.class));
 			}else if(Sale.class.equals(aClass)){
-				classes.addAll(Arrays.asList(IntangibleProduct.class,TangibleProduct.class,SalableProduct.class,OwnedCompany.class,Company.class,AccountingPeriod.class));
+				classes.addAll(Arrays.asList(IntangibleProduct.class,TangibleProduct.class,SalableProduct.class,OwnedCompany.class,Company.class,AccountingPeriod.class
+						,ValueAddedTaxRate.class));
 			}else if(AccountingPeriod.class.equals(aClass)){
 				classes.addAll(Arrays.asList(OwnedCompany.class,Company.class));
 			}

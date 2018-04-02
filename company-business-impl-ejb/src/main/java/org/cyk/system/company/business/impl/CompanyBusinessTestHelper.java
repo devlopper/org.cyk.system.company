@@ -18,7 +18,8 @@ import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusi
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
-import org.cyk.system.company.business.api.stock.StockableTangibleProductBusiness;
+import org.cyk.system.company.business.api.stock.StockableProductStoreBusiness;
+import org.cyk.system.company.business.api.stock.StockableProductBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.Balance;
 import org.cyk.system.company.model.Cost;
@@ -32,12 +33,14 @@ import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.sale.SalableProductStoreCollection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
-import org.cyk.system.company.model.stock.StockableTangibleProduct;
+import org.cyk.system.company.model.stock.StockableProductStore;
+import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.payment.CashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
@@ -48,7 +51,7 @@ import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
-import org.cyk.system.company.persistence.api.stock.StockableTangibleProductDao;
+import org.cyk.system.company.persistence.api.stock.StockableProductDao;
 import org.cyk.system.root.business.impl.__test__.AbstractBusinessTestHelper;
 import org.cyk.system.root.model.mathematics.Movement;
 import org.cyk.system.root.model.mathematics.MovementCollection;
@@ -56,6 +59,7 @@ import org.cyk.system.root.model.mathematics.machine.FiniteStateMachineState;
 import org.cyk.system.root.persistence.api.mathematics.machine.FiniteStateMachineStateDao;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.ObjectFieldValues;
+import org.cyk.utility.common.helper.AssertionHelper;
 import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.common.test.TestEnvironmentListener.Try;
 
@@ -74,7 +78,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     @Inject private CustomerDao customerDao;
     @Inject private AccountingPeriodProductDao accountingPeriodProductDao;
     @Inject private FiniteStateMachineStateDao finiteStateMachineStateDao;
-    @Deprecated @Inject private StockableTangibleProductDao stockableTangibleProductDao;
+    @Deprecated @Inject private StockableProductDao stockableProductDao;
     
     @Getter @Setter private Boolean saleAutoCompleted = Boolean.TRUE;
 	
@@ -82,6 +86,8 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	protected void initialisation() {
 		INSTANCE = this; 
 		super.initialisation();
+		AssertionHelper.getInstance().addFieldNamesAsserted(Cost.class, Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,Cost.FIELD_VALUE,Cost.FIELD_TAX,Cost.FIELD_TURNOVER
+				,Cost.FIELD_REDUCTION,Cost.FIELD_COMMISSION);
 	}
 	
 	/* Setters */
@@ -94,10 +100,10 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	}
 	
 	@Deprecated
-	public void set(StockableTangibleProduct stockableTangibleProduct,String tangibleProductCode,String minimum,String maximum,String value){
-		stockableTangibleProduct.setTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode));
-		//stockableTangibleProduct.setMovementCollection(new MovementCollection()); 
-		//set(stockableTangibleProduct.getMovementCollection(), tangibleProductCode,"Le stock",value==null?"0":value, minimum, maximum,"Input","Output");
+	public void set(StockableProduct stockableProduct,String tangibleProductCode,String minimum,String maximum,String value){
+		stockableProduct.setProduct((TangibleProduct) productDao.read(tangibleProductCode));
+		//stockableProduct.setMovementCollection(new MovementCollection()); 
+		//set(stockableProduct.getMovementCollection(), tangibleProductCode,"Le stock",value==null?"0":value, minimum, maximum,"Input","Output");
 	}
 	
 	@Deprecated
@@ -285,9 +291,9 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	@Deprecated
 	public void set(StockTangibleProductMovement stockTangibleProductMovement,String tangibleProductCode,String quantity){
 		if(tangibleProductCode!=null)
-			stockTangibleProductMovement.setStockableTangibleProduct(stockableTangibleProductDao.readByTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode)));
+			stockTangibleProductMovement.setStockableProduct(stockableProductDao.readByProduct((TangibleProduct) productDao.read(tangibleProductCode)));
 		stockTangibleProductMovement.setMovement(new Movement());
-		//set(stockTangibleProductMovement.getMovement(), stockTangibleProductMovement.getStockableTangibleProduct().getMovementCollection().getCode(), quantity);
+		//set(stockTangibleProductMovement.getMovement(), stockTangibleProductMovement.getStockableProduct().getMovementCollection().getCode(), quantity);
 	}
 	@Deprecated
 	public void set(Sale sale,String identifier,String date,String cashierCode,String customerCode,String[][] products,String taxable){
@@ -578,14 +584,14 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	assertAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent(), expectedValues);
     }
     @Deprecated
-    public void assertStockableTangibleProduct(String tangibleProductCode,ObjectFieldValues expectedValues){
-    	StockableTangibleProduct stockableTangibleProduct = stockableTangibleProductDao.readByTangibleProduct((TangibleProduct) productDao.read(tangibleProductCode));
-    	//doAssertions(stockableTangibleProduct.getMovementCollection(), expectedValues);
+    public void assertStockableProduct(String tangibleProductCode,ObjectFieldValues expectedValues){
+    	StockableProduct stockableProduct = stockableProductDao.readByProduct((TangibleProduct) productDao.read(tangibleProductCode));
+    	//doAssertions(stockableProduct.getMovementCollection(), expectedValues);
     }
     @Deprecated
-    public void assertStockableTangibleProduct(String tangibleProductCode,String value){
-    	//assertStockableTangibleProduct(tangibleProductCode, new ObjectFieldValues(StockableTangibleProduct.class)
-    	//		.setBaseName(StockableTangibleProduct.FIELD_MOVEMENT_COLLECTION).set(MovementCollection.FIELD_VALUE,value));
+    public void assertStockableProduct(String tangibleProductCode,String value){
+    	//assertStockableProduct(tangibleProductCode, new ObjectFieldValues(StockableProduct.class)
+    	//		.setBaseName(StockableProduct.FIELD_MOVEMENT_COLLECTION).set(MovementCollection.FIELD_VALUE,value));
     }
     
     
@@ -651,14 +657,37 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
 	public static class TestCase extends org.cyk.system.root.business.impl.__test__.TestCase implements Serializable {
 		private static final long serialVersionUID = 1L;
 		
-		public void assertStockableTangibleProduct(StockableTangibleProduct stockableTangibleProduct,String expectedQuantity){
-			assertBigDecimalEquals("stockable tangible product quantity is not equal", expectedQuantity, stockableTangibleProduct.getQuantityMovementCollection().getValue());
+		public void assertStockableProduct(StockableProduct stockableProduct,String expectedQuantity){
+			assertBigDecimalEquals("stockable tangible product quantity is not equal", expectedQuantity, stockableProduct.getQuantityMovementCollection().getValue());
 	    }
 		
-		public void assertStockableTangibleProduct(String code,String expectedQuantity){
-			StockableTangibleProduct stockableTangibleProduct = read(StockableTangibleProduct.class, code);
-			inject(StockableTangibleProductBusiness.class).setQuantityMovementCollection(stockableTangibleProduct);
-			assertStockableTangibleProduct(stockableTangibleProduct, expectedQuantity);
+		public void assertStockableProductStore(StockableProductStore stockableProductStore,String expectedQuantity){
+			assertBigDecimalEquals("stockable product store quantity is not equal", expectedQuantity, stockableProductStore.getQuantityMovementCollection().getValue());
+	    }
+		
+		public void assertStockableProduct(String code,String expectedQuantity){
+			StockableProduct stockableProduct = read(StockableProduct.class, code);
+			inject(StockableProductBusiness.class).setQuantityMovementCollection(stockableProduct);
+			assertStockableProduct(stockableProduct, expectedQuantity);
+		}
+		
+		public void assertStockableProductStore(String code,String expectedQuantity){
+			StockableProductStore stockableProductStore = read(StockableProductStore.class, code);
+			inject(StockableProductStoreBusiness.class).setQuantityMovementCollection(stockableProductStore);
+			assertStockableProductStore(stockableProductStore, expectedQuantity);
+		}
+		
+		public TestCase assertEqualsCost(Cost expected,Cost actual){
+			assertEqualsByFieldValue(expected, actual, Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS);
+			assertEqualsByFieldValue(expected, actual, Cost.FIELD_VALUE);
+			assertEqualsByFieldValue(expected, actual, Cost.FIELD_TAX);
+			assertEqualsByFieldValue(expected, actual, Cost.FIELD_TURNOVER);
+			return this;
+		}
+		
+		public TestCase assertEqualsSalableProductStoreCollectionCost(Cost expected,String identifier){
+			assertEqualsCost(expected, read(SalableProductStoreCollection.class, identifier).getCost());
+			return this;
 		}
 		
 		public void assertCost(Cost cost,String expectedNumberOfElements,String expectedValue,String expectedTax,String expectedTurnover){

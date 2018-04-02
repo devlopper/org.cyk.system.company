@@ -8,6 +8,7 @@ import org.cyk.system.root.business.api.AbstractEnumerationBusiness;
 
 public interface AbstractProductBusiness<PRODUCT extends Product> extends AbstractEnumerationBusiness<PRODUCT> {
 
+	void setIsStockable(PRODUCT tangibleProduct);
 	void setProviderParty(PRODUCT product);
 	Collection<PRODUCT> findByCategory(ProductCategory category);
 	

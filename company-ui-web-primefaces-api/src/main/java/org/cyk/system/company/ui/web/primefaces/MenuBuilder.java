@@ -7,7 +7,7 @@ import java.util.Collection;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.stock.StockableTangibleProduct;
+import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.model.structure.Company;
 
 public class MenuBuilder extends org.cyk.ui.web.primefaces.MenuBuilder implements Serializable {
@@ -17,7 +17,7 @@ public class MenuBuilder extends org.cyk.ui.web.primefaces.MenuBuilder implement
 	protected void populateNodeIdentifiablesManagePackageFromClass(Collection<Class<?>> packageFromClass) {
 		super.populateNodeIdentifiablesManagePackageFromClass(packageFromClass);
 		packageFromClass.addAll(Arrays.asList(AccountingPeriod.class,Product.class
-				,Sale.class,StockableTangibleProduct.class,Company.class));
+				,Sale.class,StockableProduct.class,Company.class));
 	}
 	
 }

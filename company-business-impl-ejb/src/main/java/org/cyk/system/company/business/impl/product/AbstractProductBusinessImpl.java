@@ -8,9 +8,11 @@ import javax.ejb.TransactionAttributeType;
 
 import org.cyk.system.company.business.api.product.AbstractProductBusiness;
 import org.cyk.system.company.business.api.product.ProductStoreBusiness;
+import org.cyk.system.company.business.api.stock.StockableProductBusiness;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.persistence.api.product.AbstractProductDao;
+import org.cyk.system.company.persistence.api.stock.StockableProductDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.party.PartyIdentifiableGlobalIdentifierBusiness;
 import org.cyk.system.root.business.impl.AbstractEnumerationBusinessImpl;
@@ -28,6 +30,11 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
     }
     
     @Override
+	public void setIsStockable(PRODUCT product) {
+    	product.setIsStockable(inject(StockableProductDao.class).readByProduct(product)!=null);
+	}
+    
+    @Override
     public void setProviderParty(PRODUCT product){
     	PartyIdentifiableGlobalIdentifier partyIdentifiableGlobalIdentifier = CollectionHelper.getInstance().getFirst(inject(PartyIdentifiableGlobalIdentifierDao.class)
     			.readByIdentifiableGlobalIdentifierByRole(product.getGlobalIdentifier(), read(BusinessRole.class, RootConstant.Code.BusinessRole.PROVIDER)));
@@ -39,8 +46,15 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
 	protected void beforeCrud(PRODUCT product, Crud crud) {
 		super.beforeCrud(product, crud);
 		if(Crud.isCreateOrUpdate(crud)){
-			if(product.getProviderParty()!=null){
+			if(Boolean.TRUE.equals(product.getIsStockable())){
 				if(Crud.CREATE.equals(crud)){
+					product.addIdentifiables(inject(StockableProductBusiness.class).instanciateOne().setProduct(product)
+							.setQuantityMovementCollectionInitialValue(product.getStockQuantityMovementCollectionInitialValue()));
+				}
+			}
+			
+			if(product.getProviderParty()!=null){
+				if(Crud.CREATE.equals(crud)){	
 					product.addIdentifiables(inject(PartyIdentifiableGlobalIdentifierBusiness.class).instanciateOne()
 							.setParty(product.getProviderParty())
 							.setBusinessRoleFromCode(RootConstant.Code.BusinessRole.PROVIDER)
@@ -49,8 +63,6 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
 				}else{
 					
 				}
-				//inject(PartyIdentifiableGlobalIdentifierDao.class).readByPartyByGlobalIdentifier(product.getProviderParty(), product.getGlobalIdentifier());
-				//PartyIdentifiableGlobalIdentifier partyIdentifiableGlobalIdentifier = ;
 			}
 			
 			if(product.getStore()!=null){
@@ -63,7 +75,11 @@ public abstract class AbstractProductBusinessImpl<PRODUCT extends Product,DAO ex
 					
 				}
 			}
+		}else if(Crud.DELETE.equals(crud)){
+			inject(StockableProductBusiness.class).delete(inject(StockableProductDao.class).readByProduct(product));
 		}
+		
+		
 	}
     
     @Override @TransactionAttribute(TransactionAttributeType.NEVER)

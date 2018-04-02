@@ -5,7 +5,9 @@ import java.io.Serializable;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.sale.SalableProductPropertiesBusiness;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.sale.SalableProductProperties;
+import org.cyk.system.company.model.sale.ValueAddedTaxRate;
 import org.cyk.system.company.persistence.api.sale.SalableProductPropertiesDao;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 
@@ -19,6 +21,9 @@ public class SalableProductPropertiesBusinessImpl extends AbstractTypedBusinessS
 	
 	/**/
 	
-	
+	@Override
+	public SalableProductProperties instanciateOne() {
+		return super.instanciateOne().setValueAddedTaxRate(read(ValueAddedTaxRate.class, CompanyConstant.Code.ValueAddedTaxRate._18));
+	}
 
 }
