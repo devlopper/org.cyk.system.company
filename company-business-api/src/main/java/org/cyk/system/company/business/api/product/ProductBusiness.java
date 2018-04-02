@@ -3,10 +3,12 @@ package org.cyk.system.company.business.api.product;
 import java.util.Collection;
 
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.ProductCollection;
+import org.cyk.system.company.model.product.ProductCategory;
+import org.cyk.system.root.business.api.AbstractEnumerationBusiness;
 
-public interface ProductBusiness extends AbstractProductBusiness<Product> {
+public interface ProductBusiness extends AbstractEnumerationBusiness<Product> {
 
-	Collection<Product> findByCollection(ProductCollection collection);
+	void setProviderParty(Product product);
+	Collection<Product> findByCategory(ProductCategory category);
 		
 }

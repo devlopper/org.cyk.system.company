@@ -6,10 +6,10 @@ import java.util.Collection;
 
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.company.business.impl.__data__.RealDataSet;
+import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductStore;
-import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.stock.StockableProductStore;
 import org.cyk.system.company.model.stock.StockableProduct;
+import org.cyk.system.company.model.stock.StockableProductStore;
 import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
@@ -29,12 +29,12 @@ public class StockIT extends AbstractBusinessIT {
     @Test
     public void crudStockableProductBasedOnExistingProductByJoin(){
     	TestCase testCase = instanciateTestCase(); 
-    	String tangibleProductCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(TangibleProduct.class,tangibleProductCode).setName("TP 001"));
+    	String productCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Product.class,productCode).setName("TP 001"));
     	
-    	testCase.create(testCase.instanciateOne(StockableProduct.class).setProductFromCode(tangibleProductCode));
+    	testCase.create(testCase.instanciateOne(StockableProduct.class).setProductFromCode(productCode));
     	
-    	testCase.assertFieldValueEquals(StockableProduct.class, tangibleProductCode
+    	testCase.assertFieldValueEquals(StockableProduct.class, productCode
     			, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME),"TP 001");
     	
     	testCase.clean();
@@ -43,13 +43,13 @@ public class StockIT extends AbstractBusinessIT {
     @Test
     public void crudStockableProductBasedOnExistingProductByCode(){
     	TestCase testCase = instanciateTestCase(); 
-    	String tangibleProductCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(TangibleProduct.class,tangibleProductCode).setName("TP 001"));
+    	String productCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Product.class,productCode).setName("TP 001"));
     	
-    	testCase.create(testCase.instanciateOne(StockableProduct.class).setCode(tangibleProductCode)
-    			.addCascadeOperationToMasterFieldNames(StockableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class));
+    	testCase.create(testCase.instanciateOne(StockableProduct.class).setCode(productCode)
+    			.addCascadeOperationToMasterFieldNames(StockableProduct.FIELD_PRODUCT));
     	
-    	testCase.assertFieldValueEquals(StockableProduct.class, tangibleProductCode
+    	testCase.assertFieldValueEquals(StockableProduct.class, productCode
     			, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME),"TP 001");
     	testCase.clean();
     }
@@ -59,9 +59,9 @@ public class StockIT extends AbstractBusinessIT {
     	TestCase testCase = instanciateTestCase(); 
     	String stockableProductCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(StockableProduct.class).setCode(stockableProductCode)
-    			.addCascadeOperationToMasterFieldNames(StockableProduct.FIELD_PRODUCT).setProductClass(TangibleProduct.class));
+    			.addCascadeOperationToMasterFieldNames(StockableProduct.FIELD_PRODUCT));
     	
-    	testCase.assertNotNullByBusinessIdentifier(TangibleProduct.class, stockableProductCode);
+    	testCase.assertNotNullByBusinessIdentifier(Product.class, stockableProductCode);
     	testCase.assertNotNullByBusinessIdentifier(StockableProduct.class, stockableProductCode);
     	testCase.clean();
     }
@@ -74,9 +74,9 @@ public class StockIT extends AbstractBusinessIT {
     	
     	String productStoreCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(ProductStore.class,productStoreCode).addCascadeOperationToMasterFieldNames(ProductStore.FIELD_PRODUCT
-    			,ProductStore.FIELD_STORE).setProductClass(TangibleProduct.class).setProductIsStockable(Boolean.TRUE));
+    			,ProductStore.FIELD_STORE).setProductStockable(Boolean.TRUE));
     	
-    	testCase.assertNotNullByBusinessIdentifier(TangibleProduct.class, productStoreCode);
+    	testCase.assertNotNullByBusinessIdentifier(Product.class, productStoreCode);
     	testCase.assertNotNullByBusinessIdentifier(Store.class, productStoreCode);
     	testCase.assertNotNullByBusinessIdentifier(StockableProductStore.class, productStoreCode);
     	

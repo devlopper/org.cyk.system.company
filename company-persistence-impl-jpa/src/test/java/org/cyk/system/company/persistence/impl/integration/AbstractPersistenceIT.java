@@ -5,11 +5,7 @@ import java.util.Date;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import lombok.Getter;
-
 import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.product.IntangibleProduct;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.impl.accounting.CompanyPersistenceTestHelper;
@@ -24,6 +20,8 @@ import org.cyk.utility.test.TestMethod;
 import org.cyk.utility.test.integration.AbstractIntegrationTestJpaBased;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
+
+import lombok.Getter;
 
 /**
  * Persistence integration test (IT)
@@ -82,17 +80,7 @@ public abstract class AbstractPersistenceIT extends AbstractIntegrationTestJpaBa
 	@Override protected void delete() {}
 	
 	protected void createProducts(Integer tangibleProductCount,Integer intangibleProductCount) {
-		for(int i=1;i<=tangibleProductCount;i++){
-			TangibleProduct tangibleProduct = new TangibleProduct();
-			companyPersistenceTestHelper.set(tangibleProduct, "TP"+i);
-			create(tangibleProduct);
-		}
 		
-		for(int i=1;i<=intangibleProductCount;i++){
-			IntangibleProduct intangibleProduct = new IntangibleProduct();
-			companyPersistenceTestHelper.set(intangibleProduct, "IP"+i);
-			create(intangibleProduct);
-		}
 	}
 	
 	protected void createSales(String[][] salableProducts,String[][] sales) {

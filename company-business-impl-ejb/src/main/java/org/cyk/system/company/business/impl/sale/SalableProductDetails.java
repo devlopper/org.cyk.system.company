@@ -22,7 +22,7 @@ public class SalableProductDetails extends AbstractOutputDetails<SalableProduct>
 	public SalableProductDetails(SalableProduct salableProduct) {
 		super(salableProduct);
 		product = new ProductDetails(salableProduct.getProduct());
-		price = formatNumber(salableProduct.getPrice());
+		price = formatNumber(salableProduct.getProperties().getPrice());
 	}
 	
 	/**/

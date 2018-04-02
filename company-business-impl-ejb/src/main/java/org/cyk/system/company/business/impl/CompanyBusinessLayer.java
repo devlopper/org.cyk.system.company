@@ -16,11 +16,8 @@ import org.cyk.system.company.business.impl.structure.EmployeeBusinessImpl;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
-import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.ProductStore;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.production.Production;
-import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.SalableProductCollectionItemSaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SalableProductInstance;
@@ -29,8 +26,6 @@ import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.model.structure.Company;
-import org.cyk.system.company.persistence.api.sale.SalableProductDao;
-import org.cyk.system.company.persistence.api.stock.StockableProductDao;
 import org.cyk.system.root.business.api.ClazzBusiness;
 import org.cyk.system.root.business.api.language.LanguageBusiness;
 import org.cyk.system.root.business.api.time.TimeBusiness;
@@ -230,17 +225,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	@Override
 	protected void setConstants(){}
 	
-	public IntangibleProduct getIntangibleProductStocking(){
-		return getEnumeration(IntangibleProduct.class,CompanyConstant.Code.IntangibleProduct.STOCKING);
-	}
-	public TangibleProduct getTangibleProductStocking(){
-		return null;//getEnumeration(TangibleProduct.class,TangibleProduct.STOCKING);
-	}
-	public SalableProduct getSalableProductStocking(){
-		return inject(SalableProductDao.class).readByProduct(getIntangibleProductStocking());
-	}
 	public StockableProduct getStockableProductStocking(){
-		return inject(StockableProductDao.class).readByProduct(getTangibleProductStocking());
+		return null;
 	}
 
 	public static CompanyBusinessLayer getInstance() {

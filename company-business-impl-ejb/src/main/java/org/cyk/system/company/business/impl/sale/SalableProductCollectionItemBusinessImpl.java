@@ -79,7 +79,7 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 		super.computeChanges(salableProductCollectionItem, logMessageBuilder);
 		logMessageBuilder.addManyParameters("cost");
 		logMessageBuilder.addNamedParameters("before",salableProductCollectionItem.getCost().toString());
-		if(salableProductCollectionItem.getSalableProduct()!=null && salableProductCollectionItem.getSalableProduct().getPrice()==null){
+		if(salableProductCollectionItem.getSalableProduct()!=null && salableProductCollectionItem.getSalableProduct().getProperties().getPrice()==null){
 			//This product has no unit price then the price to be paid must be specified by user
 			
 		}else{

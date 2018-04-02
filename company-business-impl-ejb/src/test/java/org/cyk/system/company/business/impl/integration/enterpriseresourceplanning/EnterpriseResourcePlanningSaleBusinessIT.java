@@ -1,9 +1,5 @@
 package org.cyk.system.company.business.impl.integration.enterpriseresourceplanning;
 
-import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
-import org.cyk.system.company.business.api.product.IntangibleProductBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductBusiness;
-import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.junit.Test;
 
 public class EnterpriseResourcePlanningSaleBusinessIT extends AbstractEnterpriseResourcePlanningBusinessIT {
@@ -20,14 +16,7 @@ public class EnterpriseResourcePlanningSaleBusinessIT extends AbstractEnterprise
     @Override
     protected void populate() {
     	super.populate();
-    	create(inject(TangibleProductBusiness.class).instanciateMany(new String[][]{{"TP01","Omo"},{"TP02", "Javel"},{"TP03", "Riz"}}));
-    	create(inject(IntangibleProductBusiness.class).instanciateMany(new String[][]{{"IP01","Nettoyage"},{"IP02", "Surveillance"},{"IP03", "Conseil"}}));
-    	create(inject(SalableProductBusiness.class).instanciateMany(new String[][]{{"","","","","","","","","","","TP01","100"}
-    	,{"","","","","","","","","","","TP02", "150"},{"","","","","","","","","","","TP03", "225"},{"","","","","","","","","","","IP02", "500"}}));
     	
-    	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_001));
-    	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_002));
-    	create(inject(CashRegisterBusiness.class).instanciateOneRandomly(CASH_REGISTER_003));
     }
     
     @Test

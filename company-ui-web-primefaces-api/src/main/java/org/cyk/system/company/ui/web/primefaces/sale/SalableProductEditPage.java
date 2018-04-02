@@ -8,13 +8,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang3.ArrayUtils;
-import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.ui.api.data.collector.form.AbstractFormModel;
 import org.cyk.ui.web.primefaces.data.collector.control.ControlSetAdapter;
@@ -25,6 +20,9 @@ import org.cyk.utility.common.annotation.user.interfaces.InputNumber;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class SalableProductEditPage extends AbstractCrudOnePage<SalableProduct> implements Serializable {

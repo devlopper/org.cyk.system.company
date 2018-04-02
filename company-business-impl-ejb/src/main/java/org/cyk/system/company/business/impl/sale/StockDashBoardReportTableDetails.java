@@ -2,7 +2,7 @@ package org.cyk.system.company.business.impl.sale;
 
 import java.io.Serializable;
 
-import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.product.Product;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 import org.cyk.utility.common.annotation.user.interfaces.ReportColumn;
@@ -23,7 +23,7 @@ public class StockDashBoardReportTableDetails implements Serializable {
 	@Input @InputText @ReportColumn(style=@Style(alignment=@Alignment(horizontal=Horizontal.RIGHT))) private String useQuantity;
 	@Input @InputText @ReportColumn(style=@Style(alignment=@Alignment(horizontal=Horizontal.RIGHT))) private String usedQuantity;
 	
-	public StockDashBoardReportTableDetails(TangibleProduct tangibleProduct) {
+	public StockDashBoardReportTableDetails(Product tangibleProduct) {
 		this.code = tangibleProduct.getCode();
 		this.name = tangibleProduct.getName();
 		/*this.stockQuantity = inject(NumberBusiness.class).format(tangibleProduct.getStockQuantity());

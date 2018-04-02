@@ -3,10 +3,11 @@ package org.cyk.system.company.persistence.api.product;
 import java.util.Collection;
 
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.ProductCollection;
+import org.cyk.system.company.model.product.ProductCategory;
+import org.cyk.system.root.persistence.api.AbstractEnumerationDao;
 
-public interface ProductDao extends AbstractProductDao<Product> {
+public interface ProductDao extends AbstractEnumerationDao<Product> {
 
-	Collection<Product> readByCollection(ProductCollection collection);
+	Collection<Product> readByCategory(ProductCategory category);
 	
 }

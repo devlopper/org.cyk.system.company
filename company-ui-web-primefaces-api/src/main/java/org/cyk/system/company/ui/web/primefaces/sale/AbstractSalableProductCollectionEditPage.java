@@ -234,7 +234,7 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 				super.read(item);
 				item.setCode(item.getIdentifiable().getSalableProduct().getProduct().getCode());
 				item.setName(item.getIdentifiable().getSalableProduct().getProduct().getName());
-				item.setUnitPrice(inject(NumberBusiness.class).format(item.getIdentifiable().getSalableProduct().getPrice()));
+				//item.setUnitPrice(inject(NumberBusiness.class).format(item.getIdentifiable().getSalableProduct().getPrice()));
 				//item.setQuantity(item.getIdentifiable().getQuantity());
 				item.setQuantifiedPrice(inject(NumberBusiness.class).format(item.getIdentifiable().getQuantifiedPrice()));
 				//item.setReduction(item.getIdentifiable().getReduction()==null?null:new BigDecimal(item.getIdentifiable().getReduction().intValue()));

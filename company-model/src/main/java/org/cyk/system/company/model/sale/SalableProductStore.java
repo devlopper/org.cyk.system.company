@@ -7,7 +7,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.utility.common.annotation.ModelBean;
@@ -53,14 +52,14 @@ public class SalableProductStore extends AbstractIdentifiable implements Seriali
 		getProductStore(Boolean.TRUE).addCascadeOperationToMasterFieldNames(fieldNames);
 		return this;
 	}
-	
-	public SalableProductStore setProductStoreProductClass(Class<? extends Product> productClass) {
-		getProductStore(Boolean.TRUE).setProductClass(productClass);
+
+	public SalableProductStore setProductStoreProductStockable(Boolean stockable) {
+		getProductStore(Boolean.TRUE).setProductStockable(stockable);
 		return this;
 	}
-
-	public SalableProductStore setProductStoreProductIsStockable(Boolean isStockable) {
-		getProductStore(Boolean.TRUE).setProductIsStockable(isStockable);
+	
+	public SalableProductStore setProductStoreProductStockQuantityMovementCollectionInitialValueFromObject(Object value) {
+		getProductStore(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(value);
 		return this;
 	}
 	

@@ -77,8 +77,8 @@ public class SalableProductCollectionItem extends AbstractCollectionItem<Salable
 	}
 	
 	public BigDecimal getQuantifiedPrice(){
-		if(quantifiedPrice==null && salableProduct!=null && salableProduct.getPrice()!=null && getCost().getNumberOfProceedElements()!=null)
-			quantifiedPrice = salableProduct.getPrice().multiply(getCost().getNumberOfProceedElements());
+		if(quantifiedPrice==null && salableProduct!=null && salableProduct.getProperties().getPrice()!=null && getCost().getNumberOfProceedElements()!=null)
+			quantifiedPrice = salableProduct.getProperties().getPrice().multiply(getCost().getNumberOfProceedElements());
 		return quantifiedPrice;
 	}
 	

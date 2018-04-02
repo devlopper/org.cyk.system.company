@@ -5,13 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.StockDashBoardReportTableDetails;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.ui.api.command.UICommandable;
@@ -26,7 +23,7 @@ public class StockDashBoardPage extends AbstractDashboardPage implements Seriali
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	@Inject private TangibleProductBusiness tangibleProductBusiness;
+	//@Inject private TangibleProductBusiness tangibleProductBusiness;
 	
 	private Table<StockDashBoardReportTableDetails> tangibleProductTable;
 	
@@ -40,8 +37,8 @@ public class StockDashBoardPage extends AbstractDashboardPage implements Seriali
 	protected void afterInitialisation() {
 		super.afterInitialisation();
 		Collection<StockDashBoardReportTableDetails> details = new ArrayList<>();
-		for(TangibleProduct tangibleProduct : tangibleProductBusiness.findAll())
-			details.add(new StockDashBoardReportTableDetails(tangibleProduct));
+		//for(TangibleProduct tangibleProduct : tangibleProductBusiness.findAll())
+		//	details.add(new StockDashBoardReportTableDetails(tangibleProduct));
 		//tangibleProductTable = createDetailsTable(StockDashBoardReportTableDetails.class, details, "model.entity.tangibleProduct");	
 		tangibleProductTable.setTitle(null);
 		tangibleProductTable.setShowHeader(Boolean.FALSE);

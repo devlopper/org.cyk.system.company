@@ -3,28 +3,24 @@ package org.cyk.system.company.persistence.impl.product;
 import java.util.Collection;
 
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.ProductCollection;
+import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.persistence.api.product.ProductDao;
+import org.cyk.system.root.persistence.impl.AbstractEnumerationDaoImpl;
 
-public class ProductDaoImpl extends AbstractProductDaoImpl<Product> implements ProductDao {
-
+public class ProductDaoImpl extends AbstractEnumerationDaoImpl<Product> implements ProductDao {
 	private static final long serialVersionUID = 6920278182318788380L;
 
-	private static final String FIELD_COLLECTION = "collection";
-	
-	private String readByCollection;
+	protected String readByCategory;
 	
     @Override
     protected void namedQueriesInitialisation() {
         super.namedQueriesInitialisation();
-        //registerNamedQuery(readByCollection, "SELECT product FROM Product product WHERE "
-        //		+ "EXISTS(SELECT pCollection FROM ProductCollection pCollection WHERE pCollection = :collection AND product MEMBER OF pCollection.collection)");
-        getConfiguration().setReadByClasses(Boolean.TRUE).setReadByNotClasses(Boolean.TRUE);
+        registerNamedQuery(readByCategory, _select().where(Product.FIELD_CATEGORY));
     }
     
-	@Override
-	public Collection<Product> readByCollection(ProductCollection collection) {
-		return namedQuery(readByCollection).parameter(FIELD_COLLECTION, collection).resultMany();
+    @Override
+	public Collection<Product> readByCategory(ProductCategory category) {
+		return namedQuery(readByCategory).parameter(Product.FIELD_CATEGORY, category).resultMany();
 	}
 	
 }

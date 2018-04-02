@@ -2,7 +2,6 @@ package org.cyk.system.company.business.impl;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -13,14 +12,12 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.sale.CustomerReportTableRow;
 import org.cyk.system.company.business.impl.sale.SalableProductInstanceCashRegisterStateLogDetails;
 import org.cyk.system.company.business.impl.sale.StockDashBoardReportTableDetails;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProductInstanceCashRegister;
 import org.cyk.system.company.model.sale.Sale;
@@ -75,7 +72,6 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 	@Inject private OwnedCompanyBusiness ownedCompanyBusiness;
 	@Inject private SaleBusiness saleBusiness;
 	@Inject private CustomerBusiness customerBusiness;
-	@Inject private TangibleProductBusiness tangibleProductBusiness;
 	
 	@Override
 	protected void initialisation() {
@@ -291,8 +287,8 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 			@Override
 			public ReportBasedOnDynamicBuilder<StockDashBoardReportTableDetails> build(ReportBasedOnDynamicBuilderParameters<StockDashBoardReportTableDetails> parameters) {
 				parameters.setDatas(new ArrayList<StockDashBoardReportTableDetails>());
-				for(TangibleProduct tangibleProduct : tangibleProductBusiness.findAll())
-					parameters.getDatas().add(new StockDashBoardReportTableDetails(tangibleProduct) ) ;
+				//for(TangibleProduct tangibleProduct : tangibleProductBusiness.findAll())
+				//	parameters.getDatas().add(new StockDashBoardReportTableDetails(tangibleProduct) ) ;
 		        
 				parameters.setTitle(inject(LanguageBusiness.class).findText("company.report.dashboard.stock.title"));
 				parameters.setModelClass(StockDashBoardReportTableDetails.class);

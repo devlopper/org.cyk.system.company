@@ -52,6 +52,7 @@ public class StockableProductBusinessImpl extends AbstractTypedBusinessService<S
 				movementCollection.setCode(RootConstant.Code.generate(stockableProduct.getCode(),movementCollection.getType().getCode()));
 			if(StringHelper.getInstance().isBlank(movementCollection.getName()) && StringHelper.getInstance().isNotBlank(stockableProduct.getName()))
 				movementCollection.setName(stockableProduct.getName()+Constant.CHARACTER_VERTICAL_BAR+movementCollection.getType().getName());
+			movementCollection.setInitialValue(stockableProduct.getQuantityMovementCollectionInitialValue());
 		}
 	}
 	

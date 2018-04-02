@@ -1,22 +1,18 @@
 package org.cyk.system.company.business.impl.uniwaxgiftcard;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Singleton;
 
-import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
-import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.Cashier;
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.structure.Employee;
 import org.cyk.system.root.model.party.person.Person;
@@ -49,7 +45,7 @@ public class UniwaxGiftCardFakedDataProducer extends AbstractCompanyFakedDataPro
 		Collection<Cashier> cashiers = new ArrayList<>();
 		
 		for(Object[] values : GIFT_CARDS ){
-			TangibleProduct tangibleProduct = inject(TangibleProductBusiness.class).instanciateOne((String)values[0], (String)values[0]);
+			Product tangibleProduct = null;//inject(TangibleProductBusiness.class).instanciateOne((String)values[0], (String)values[0]);
 			products.add(tangibleProduct);
 			List<String> instances = new ArrayList<>();
 			for(int i = (Integer)values[1]; i <= (Integer)values[2]; i++ )

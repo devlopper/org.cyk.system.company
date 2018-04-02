@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
-import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
@@ -111,7 +111,7 @@ public class TangibleProductStockMovementQueryPage extends AbstractBusinessQuery
 		private static final long serialVersionUID = -3328823824725030136L;
 
 		@Input @InputChoice @InputOneChoice @InputOneCombo
-		private TangibleProduct tangibleProduct;
+		private Product tangibleProduct;
 		
 		@Input @InputCalendar(format=Format.DATETIME_SHORT) private Date date;
 		@Input @InputNumber private BigDecimal quantity;

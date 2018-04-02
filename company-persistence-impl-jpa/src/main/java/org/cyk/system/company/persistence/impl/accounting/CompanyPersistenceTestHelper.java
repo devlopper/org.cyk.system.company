@@ -23,7 +23,7 @@ public class CompanyPersistenceTestHelper extends AbstractBean implements Serial
 	
 	public void set(SalableProduct salableProduct,String code,String price){
 		salableProduct.setProduct(productDao.read(code));
-		salableProduct.setPrice(commonUtils.getBigDecimal(price));
+		salableProduct.getProperties().setPrice(commonUtils.getBigDecimal(price));
 	}
 	
 	public void set(Sale sale,String cost,String tax,String turnover){

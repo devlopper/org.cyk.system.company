@@ -22,9 +22,7 @@ import org.cyk.system.company.business.api.production.ResellerProductionBusiness
 import org.cyk.system.company.business.api.production.ResellerProductionPlanBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
-import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.production.ManufacturedProduct;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionEnergy;
@@ -155,17 +153,7 @@ public abstract class AbstractCompanyFakedDataProducer extends AbstractFakedData
 	}
 	
 	//TODO those following method should be deleted because they should accessible using business service
-	protected TangibleProduct createTangibleProduct(String name,String price,Collection<Product> products){
-		TangibleProduct product = null;//new TangibleProduct(StringUtils.remove(name, Constant.CHARACTER_SPACE),name,null,null,price==null?null:new BigDecimal(price));
-		products.add(product);
-		return product;
-	}
-	protected IntangibleProduct createIntangibleProduct(String name,String price,Collection<Product> products){
-		IntangibleProduct product = null;//new IntangibleProduct(StringUtils.remove(name, Constant.CHARACTER_SPACE),name,null,null,price==null?null:new BigDecimal(price));
-		products.add(product);
-		return product;
-	}
-	
+
 	protected ManufacturedProduct createManufacturedProduct(Product product,Collection<ManufacturedProduct> manufacturedProducts){
 		ManufacturedProduct manufacturedProduct = new ManufacturedProduct(product);
 		manufacturedProducts.add(manufacturedProduct);

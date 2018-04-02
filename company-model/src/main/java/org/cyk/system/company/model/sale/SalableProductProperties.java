@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
-import org.cyk.system.company.model.product.Product;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.file.File;
 import org.cyk.system.root.model.party.Party;
@@ -35,7 +34,6 @@ public class SalableProductProperties extends AbstractIdentifiable implements Se
 	@Column(precision=10,scale=FLOAT_SCALE) private BigDecimal price;
 	@Column(precision=3,scale=FLOAT_SCALE) private BigDecimal quantityMultiple;
 	
-	@Transient private Class<? extends Product> productClass;
 	@Transient private Boolean isProductStockable;
 	@Transient private Party productProviderParty;
 	@Transient private BigDecimal productStockQuantityMovementCollectionInitialValue;

@@ -10,9 +10,7 @@ import org.cyk.system.company.model.payment.CashRegisterMovementMode;
 import org.cyk.system.company.model.payment.CashRegisterMovementTerm;
 import org.cyk.system.company.model.payment.CashRegisterMovementTermCollection;
 import org.cyk.system.company.model.payment.Cashier;
-import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.Customer;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
@@ -126,8 +124,8 @@ public class SystemMenuBuilder extends org.cyk.ui.web.primefaces.adapter.enterpr
 	
 	public Commandable getReferenceProductCommandable(UserSession userSession,Collection<UICommandable> mobileCommandables){
 		Commandable module = createModuleCommandable(UIManager.getInstance().businessEntityInfos(Product.class).getUserInterface().getLabelId(), null);
-		module.addChild(createListCommandable(TangibleProduct.class, null));
-		module.addChild(createListCommandable(IntangibleProduct.class, null));
+		//module.addChild(createListCommandable(TangibleProduct.class, null));
+		//module.addChild(createListCommandable(IntangibleProduct.class, null));
 		/*module.addChild(createListCommandable(ProductCategory.class, null));
 		module.addChild(createListCommandable(ProductCollection.class, null));
 		module.addChild(createListCommandable(ProductCollectionItem.class, null));*/

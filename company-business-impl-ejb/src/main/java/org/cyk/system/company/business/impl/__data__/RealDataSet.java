@@ -6,10 +6,8 @@ import java.util.Collection;
 
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
-import org.cyk.system.company.model.product.IntangibleProduct;
-import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.sale.SalableProduct;
-import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.ValueAddedTaxRate;
 import org.cyk.system.company.model.structure.Company;
@@ -60,8 +58,7 @@ public class RealDataSet extends DataSet implements Serializable {
 	}
 	
 	private void sale(){
-		addClass(IntangibleProduct.class);
-		addClass(TangibleProduct.class);
+		addClass(Product.class);
 		addClass(SalableProduct.class);
 		addClass(ValueAddedTaxRate.class);
 		//addClass(CashRegisterMovementMode.class);
@@ -80,10 +77,10 @@ public class RealDataSet extends DataSet implements Serializable {
 		@Override
 		public void processRelatedClasses(Class<?> aClass,Collection<Class<?>> classes) {
 			super.processRelatedClasses(aClass, classes);
-			if(SalableProductCollection.class.equals(aClass)){
-				classes.addAll(Arrays.asList(IntangibleProduct.class,TangibleProduct.class,SalableProduct.class,OwnedCompany.class,Company.class,AccountingPeriod.class));
+			if(Product.class.equals(aClass)){
+				classes.addAll(Arrays.asList(Product.class,OwnedCompany.class,Company.class,AccountingPeriod.class));
 			}else if(Sale.class.equals(aClass)){
-				classes.addAll(Arrays.asList(IntangibleProduct.class,TangibleProduct.class,SalableProduct.class,OwnedCompany.class,Company.class,AccountingPeriod.class
+				classes.addAll(Arrays.asList(SalableProduct.class,OwnedCompany.class,Company.class,AccountingPeriod.class
 						,ValueAddedTaxRate.class));
 			}else if(AccountingPeriod.class.equals(aClass)){
 				classes.addAll(Arrays.asList(OwnedCompany.class,Company.class));

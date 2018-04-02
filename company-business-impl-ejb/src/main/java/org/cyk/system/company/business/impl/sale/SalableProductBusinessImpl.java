@@ -6,7 +6,6 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductPropertiesBusiness;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.root.business.impl.AbstractEnumerationBusinessImpl;
@@ -31,11 +30,11 @@ public class SalableProductBusinessImpl extends AbstractEnumerationBusinessImpl<
 	
 	@Override
 	protected void createMaster(SalableProduct salableProduct,AbstractIdentifiable master) {
-		if(master instanceof TangibleProduct){
+		//if(master instanceof TangibleProduct){
 			//((TangibleProduct)master).setIsStockable(salableProduct.getIsProductStockable());
 			//((TangibleProduct)master).setStockQuantityMovementCollectionInitialValue(salableProduct.getProductStockQuantityMovementCollectionInitialValue());
 			//((TangibleProduct)master).setProviderParty(salableProduct.getProductProviderParty());
-		}
+		//}
 		super.createMaster(salableProduct,master);
 	}
 	

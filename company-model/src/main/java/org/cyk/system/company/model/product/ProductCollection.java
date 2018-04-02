@@ -12,10 +12,9 @@ import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
 
-@Getter @Setter @NoArgsConstructor @Entity
+@Getter @Setter @NoArgsConstructor @Entity @Deprecated
 @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.FEMALE)
 public class ProductCollection extends Product implements Serializable  {
-
 	private static final long serialVersionUID = -6128937819261060725L;
 	
 }

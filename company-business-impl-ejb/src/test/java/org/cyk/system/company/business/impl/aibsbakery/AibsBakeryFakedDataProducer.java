@@ -9,7 +9,6 @@ import javax.inject.Singleton;
 import org.cyk.system.company.business.impl.AbstractCompanyFakedDataProducer;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.production.ManufacturedProduct;
 import org.cyk.system.company.model.production.ProductionEnergy;
 import org.cyk.system.company.model.production.ProductionPlan;
@@ -51,19 +50,10 @@ public class AibsBakeryFakedDataProducer extends AbstractCompanyFakedDataProduce
 		
 		Collection<Product> candidateResourceProducts = new ArrayList<>();
 		Collection<Product> products = new ArrayList<>();
-		candidateResourceProducts.add(createTangibleProduct("Farine", null, products));
-		candidateResourceProducts.add(createTangibleProduct("Levure", null, products));
-		candidateResourceProducts.add(createTangibleProduct("Ameliorant", null, products));
-		candidateResourceProducts.add(createTangibleProduct("Glace alimentaire", null, products));
-		candidateResourceProducts.add(createTangibleProduct("Energie", null, products));
 		
-		candidateResourceProducts.add(createIntangibleProduct("Main d'oeuvre", null, products));
-		
-		TangibleProduct tangibleProductPain = createTangibleProduct("Pain", null, products);
 		flush(Product.class, productBusiness, products);
 		
 		Collection<ManufacturedProduct> manufacturedProducts = new ArrayList<>();
-		manufacturedProductPain = createManufacturedProduct(tangibleProductPain, manufacturedProducts);
 		flush(ManufacturedProduct.class, manufacturedProducts);
 		
 		Collection<ResourceProduct> resourceProducts = new ArrayList<>();

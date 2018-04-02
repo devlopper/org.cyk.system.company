@@ -5,21 +5,19 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.model.AbstractEnumeration;
 import org.cyk.system.root.model.information.Tangibility;
+import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.party.Party;
 import org.cyk.system.root.model.store.Store;
 import org.cyk.utility.common.annotation.ModelBean;
-import org.cyk.utility.common.annotation.ModelBean.CrudInheritanceStrategy;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
+import org.cyk.utility.common.annotation.ModelBean.GenderType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,23 +25,23 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Getter @Setter @NoArgsConstructor @Entity 
-@Inheritance(strategy=InheritanceType.JOINED)
-@ModelBean(crudStrategy=CrudStrategy.ENUMERATION,crudInheritanceStrategy=CrudInheritanceStrategy.CHILDREN_ONLY) @Accessors(chain=true)
+@ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE) @Accessors(chain=true)
 public class Product extends AbstractEnumeration implements Serializable  {
 	private static final long serialVersionUID = -6128937819261060725L;
 	
 	@ManyToOne @JoinColumn(name=COLUMN_TANGIBILITY) private Tangibility tangibility;
-	@ManyToOne @JoinColumn(name=COLUMN_GROUP) protected ProductGroup group;
-	@ManyToOne @JoinColumn(name=COLUMN_CATEGORY) protected ProductCategory category;
-	@ManyToOne @JoinColumn(name=COLUMN_TYPE) protected ProductType type;
+	@ManyToOne @JoinColumn(name=COLUMN_GROUP) private ProductGroup group;
+	@ManyToOne @JoinColumn(name=COLUMN_CATEGORY) private ProductCategory category;
+	@ManyToOne @JoinColumn(name=COLUMN_TYPE) private ProductType type;
 	@Column(precision=10,scale=FLOAT_SCALE) private BigDecimal price;
 	private Boolean stockable;
 	private Boolean storable;
 	private Boolean providerable;
 	
-	@Deprecated @Transient private Boolean isStockable;
 	@Transient private Store store;
 	@Transient private Party providerParty;
+	@Transient private MovementCollection stockQuantityMovementCollection;
+	
 	@Transient private BigDecimal stockQuantityMovementCollectionInitialValue;
 	
 	@Transient protected OwnedCompany ownedCompany;
@@ -72,12 +70,14 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	public static final String FIELD_STOCK_QUANTITY_MOVEMENT_COLLECTION_INITIAL_VALUE = "stockQuantityMovementCollectionInitialValue";
 	public static final String FIELD_STORE = "store";
 	public static final String FIELD_OWNED_COMPANY = "ownedCompany";
+	public static final String FIELD_STOCKABLE = "stockable";
+	public static final String FIELD_STORABLE = "storable";
+	public static final String FIELD_PROVIDERABLE = "providerable";
 	
-	public static final String COLUMN_GROUP = FIELD_GROUP;
+	
+	public static final String COLUMN_GROUP = COLUMN_NAME_UNKEYWORD+FIELD_GROUP;
 	public static final String COLUMN_TANGIBILITY = FIELD_TANGIBILITY;
 	public static final String COLUMN_CATEGORY = FIELD_CATEGORY;
 	public static final String COLUMN_TYPE = FIELD_TYPE;
-	
-	public static final String FIELD_IS_STOCKABLE = "isStockable";
 	
 }

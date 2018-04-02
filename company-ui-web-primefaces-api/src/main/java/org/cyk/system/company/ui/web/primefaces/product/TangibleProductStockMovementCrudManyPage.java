@@ -8,13 +8,13 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
-import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class TangibleProductStockMovementCrudManyPage extends AbstractTangibleProductStockManyPage<StockTangibleProductMovement> implements Serializable {
@@ -30,12 +30,12 @@ public class TangibleProductStockMovementCrudManyPage extends AbstractTangiblePr
 	}
 	
 	@Override
-	protected StockTangibleProductMovement detail(TangibleProduct tangibleProduct) {
+	protected StockTangibleProductMovement detail(Product tangibleProduct) {
 		return null;//new TangibleProductStockMovement(tangibleProduct, null, BigDecimal.ZERO, null);
 	}
 
 	@Override
-	protected TangibleProduct tangibleProduct(StockTangibleProductMovement detail) {
+	protected Product tangibleProduct(StockTangibleProductMovement detail) {
 		return null;//detail.getTangibleProduct();
 	}
 

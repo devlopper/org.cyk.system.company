@@ -3,9 +3,7 @@ package org.cyk.system.company.ui.web.primefaces;
 import java.io.Serializable;
 
 import org.cyk.system.company.business.api.product.ProductBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
@@ -14,7 +12,6 @@ import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.system.root.model.party.PartyIdentifiableGlobalIdentifier;
 import org.cyk.system.root.persistence.api.mathematics.MovementCollectionTypeDao;
-import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.userinterface.container.Form;
 
 public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces.IdentifiableConsultPageFormMaster implements Serializable {
@@ -39,11 +36,8 @@ public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces
 		Form.Detail detail = getDetail();
 		detail.setFieldsObjectFromMaster();
 		
-		if(ClassHelper.getInstance().isInstanceOf(Product.class, (Class<?>) getPropertiesMap().getActionOnClass())){
+		if(Product.class.equals(getPropertiesMap().getActionOnClass())){
 			inject(ProductBusiness.class).setProviderParty((Product) getObject());
-			if(TangibleProduct.class.equals(getPropertiesMap().getActionOnClass())){
-				inject(TangibleProductBusiness.class).setIsStockable((TangibleProduct)getObject());
-			}
 			IdentifiableEditPageFormMaster.prepareProduct(detail, (Class<? extends Product>) getPropertiesMap().getActionOnClass());
 			addDataTableJoinGlobalIdentifier(PartyIdentifiableGlobalIdentifier.class);			
 		}else if(SalableProductCollection.class.equals(getPropertiesMap().getActionOnClass())){

@@ -2,21 +2,20 @@ package org.cyk.system.company.ui.web.primefaces.product;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.ui.api.command.CommandAdapter;
 import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.command.UICommandable;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Named @ViewScoped @Getter @Setter
 public class TangibleProductUseQuantityEditManyPage extends AbstractTangibleProductStockManyPage<TangibleProductUseQuantityMovement> implements Serializable {
@@ -44,23 +43,18 @@ public class TangibleProductUseQuantityEditManyPage extends AbstractTangibleProd
 	}
 	
 	@Override
-	protected TangibleProductUseQuantityMovement detail(TangibleProduct tangibleProduct) {
-		return new TangibleProductUseQuantityMovement(tangibleProduct);
+	protected TangibleProductUseQuantityMovement detail(Product tangibleProduct) {
+		return null;
 	}
 
 	@Override
-	protected TangibleProduct tangibleProduct(TangibleProductUseQuantityMovement tangibleProductStockMovement) {
-		return tangibleProductStockMovement.getTangibleProduct();
+	protected Product tangibleProduct(TangibleProductUseQuantityMovement tangibleProductStockMovement) {
+		return null;
 	}
 
 	@Override
 	protected void __serve__(List<TangibleProductUseQuantityMovement> details) {
-		Collection<TangibleProduct> collection = new ArrayList<TangibleProduct>();
-		for(TangibleProductUseQuantityMovement d : selectedList){
-			collection.add(d.getTangibleProduct());
-			d.apply();
-		}
-		tangibleProductBusiness.update(collection);
+		
 	}
 
 	@Override

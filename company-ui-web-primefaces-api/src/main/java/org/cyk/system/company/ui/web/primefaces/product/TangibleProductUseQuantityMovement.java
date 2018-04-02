@@ -3,19 +3,19 @@ package org.cyk.system.company.ui.web.primefaces.product;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import org.cyk.system.company.model.product.Product;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import org.cyk.system.company.model.product.TangibleProduct;
 
 @Getter @Setter
 public class TangibleProductUseQuantityMovement implements Serializable {
 
 	private static final long serialVersionUID = -4511323642950758121L;
-	private TangibleProduct tangibleProduct;
+	private Product tangibleProduct;
 	private BigDecimal tempUseQuantity,addUseQuantity=BigDecimal.ZERO;
 	
-	public TangibleProductUseQuantityMovement(TangibleProduct tangibleProduct) {
+	public TangibleProductUseQuantityMovement(Product tangibleProduct) {
 		super();
 		this.tangibleProduct = tangibleProduct;
 		//tempUseQuantity = tangibleProduct.getUseQuantity();

@@ -10,7 +10,6 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.utility.common.annotation.ModelBean;
@@ -32,8 +31,6 @@ public class StockableProduct extends AbstractIdentifiable implements Serializab
 	@Transient private MovementCollection quantityMovementCollection;
 	@Transient private BigDecimal quantityMovementCollectionInitialValue;
 	
-	@Transient private Class<? extends Product> productClass;
-	
 	/**/
 	
 	@Override
@@ -50,7 +47,7 @@ public class StockableProduct extends AbstractIdentifiable implements Serializab
 	}
 	
 	public StockableProduct setProductFromCode(String code){
-		product = getFromCode(TangibleProduct.class, code);
+		product = getFromCode(Product.class, code);
 		return this;
 	}
 	

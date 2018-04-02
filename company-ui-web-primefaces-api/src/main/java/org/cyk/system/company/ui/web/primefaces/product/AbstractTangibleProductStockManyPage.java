@@ -5,13 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import org.cyk.system.company.business.api.product.TangibleProductBusiness;
-import org.cyk.system.company.model.product.TangibleProduct;
+import org.cyk.system.company.model.product.Product;
 import org.cyk.ui.api.Icon;
 import org.cyk.ui.api.command.AbstractCommandable.Builder;
 import org.cyk.ui.api.command.CommandAdapter;
@@ -19,22 +13,24 @@ import org.cyk.ui.api.command.UICommand;
 import org.cyk.ui.api.command.UICommandable;
 import org.cyk.ui.web.primefaces.page.AbstractPrimefacesPage;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Getter @Setter
 public abstract class AbstractTangibleProductStockManyPage<DETAIL> extends AbstractPrimefacesPage implements Serializable {
 
 	private static final long serialVersionUID = 9040359120893077422L;
 
-	@Inject protected TangibleProductBusiness tangibleProductBusiness;
 	
 	protected List<DETAIL> selectedList = new ArrayList<>();
 	protected UICommandable submitCommandable;
-	protected List<TangibleProduct> tangibleProducts;
-	protected TangibleProduct selectedTangibleProduct;
+	protected List<Product> tangibleProducts;
+	protected Product selectedProduct;
 	
 	@Override
 	protected void initialisation() {
 		super.initialisation();
-		tangibleProducts = new ArrayList<TangibleProduct>(tangibleProductBusiness.findAll());
+		//tangibleProducts = new ArrayList<Product>(tangibleProductBusiness.findAll());
 		submitCommandable = Builder.create("command.save", Icon.ACTION_SAVE);
 		submitCommandable.getCommand().getCommandListeners().add(new CommandAdapter(){
 			private static final long serialVersionUID = 4174035599491586029L;
@@ -50,19 +46,19 @@ public abstract class AbstractTangibleProductStockManyPage<DETAIL> extends Abstr
 		});	
 	}
 	
-	protected abstract DETAIL detail(TangibleProduct tangibleProduct);
-	protected abstract TangibleProduct tangibleProduct(DETAIL detail);
+	protected abstract DETAIL detail(Product tangibleProduct);
+	protected abstract Product tangibleProduct(DETAIL detail);
 	protected abstract void __serve__(List<DETAIL> details);
 	public abstract BigDecimal maxValue(DETAIL detail);
 	public abstract BigDecimal minValue(DETAIL detail);
 	protected abstract String __succeedOutcome__();
 	
 	public void add(){
-		if(selectedTangibleProduct==null)
+		if(selectedProduct==null)
 			return;
-		selectedList.add(detail(selectedTangibleProduct));
-		tangibleProducts.remove(selectedTangibleProduct);
-		selectedTangibleProduct = null;
+		selectedList.add(detail(selectedProduct));
+		tangibleProducts.remove(selectedProduct);
+		selectedProduct = null;
 	}
 	
 	public void remove(DETAIL selected){

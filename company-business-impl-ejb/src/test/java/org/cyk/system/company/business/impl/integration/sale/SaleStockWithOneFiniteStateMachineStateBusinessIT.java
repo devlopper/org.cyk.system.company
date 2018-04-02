@@ -1,7 +1,5 @@
 package org.cyk.system.company.business.impl.integration.sale;
 
-import org.cyk.system.company.model.product.TangibleProduct;
-
 public class SaleStockWithOneFiniteStateMachineStateBusinessIT extends AbstractSaleStockWithOneFiniteStateMachineStateBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;

@@ -12,19 +12,14 @@ import org.cyk.system.company.business.api.CompanyReportProducer;
 import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.payment.CashierBusiness;
 import org.cyk.system.company.business.api.product.ProductBusiness;
-import org.cyk.system.company.business.api.product.TangibleProductBusiness;
 import org.cyk.system.company.business.api.sale.CustomerBusiness;
-import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
-import org.cyk.system.company.business.api.sale.SaleStockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
-import org.cyk.system.company.persistence.api.product.IntangibleProductDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
-import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.AbstractBusinessThrowable;
@@ -80,19 +75,14 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 	@Inject protected CompanyBusinessLayer companyBusinessLayer;
 	@Inject protected CompanyBusinessTestHelper companyBusinessTestHelper;
 	
-	@Inject protected SaleStockTangibleProductMovementBusiness saleStockBusiness;
-    @Inject protected SaleCashRegisterMovementBusiness saleCashRegisterMovementBusiness;
-    @Inject protected CustomerBusiness customerBusiness;
+	@Inject protected CustomerBusiness customerBusiness;
     @Inject protected EmployeeBusiness employeeBusiness;
     @Inject protected CashierBusiness cashierBusiness;
     @Inject protected AccountingPeriodBusiness accountingPeriodBusiness;
     @Inject protected OwnedCompanyBusiness ownedCompanyBusiness;
     @Inject protected ProductBusiness productBusiness;
-	@Inject protected TangibleProductBusiness tangibleProductBusiness;
 	
 	@Inject protected ProductDao productDao;
-	@Inject protected TangibleProductDao tangibleProductDao;
-	@Inject protected IntangibleProductDao intangibleProductDao;
 	
 	@Inject protected SaleDao saleDao;
 	@Inject protected AccountingPeriodProductDao accountingPeriodProductDao;

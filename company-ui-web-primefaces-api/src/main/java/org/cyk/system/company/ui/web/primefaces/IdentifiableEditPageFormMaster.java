@@ -6,7 +6,6 @@ import java.util.Arrays;
 import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.product.Product;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
@@ -44,7 +43,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 			prepareProduct(detail,(Class<? extends Product>) actionOnClass);
 		}else if(SalableProduct.class.equals(actionOnClass)){
 			((SalableProduct)detail.getMaster().getObject()).setCascadeOperationToMaster(Boolean.TRUE)
-			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT)).setProductClass(TangibleProduct.class);
+			.setCascadeOperationToMasterFieldNames(Arrays.asList(SalableProduct.FIELD_PRODUCT));
 			
 			prepareSalableProduct(detail,Boolean.TRUE);
 		}else if(SalableProductCollection.class.equals(actionOnClass)){						
@@ -60,8 +59,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 		detail.add(Product.FIELD_CATEGORY).addBreak();
 		detail.add(Product.FIELD_PRICE).addBreak();
 		detail.add(Product.FIELD_PROVIDER_PARTY).addBreak();
-		if(TangibleProduct.class.equals(aClass))
-			detail.add(TangibleProduct.FIELD_IS_STOCKABLE).addBreak();
+		detail.add(Product.FIELD_STOCKABLE).addBreak();
 		addImage(detail);
 		addDescription(detail);
 	}

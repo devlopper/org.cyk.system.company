@@ -14,10 +14,8 @@ import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.company.model.payment.Cashier;
-import org.cyk.system.company.model.product.IntangibleProduct;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCollection;
-import org.cyk.system.company.model.product.TangibleProduct;
 import org.cyk.system.company.model.product.TangibleProductInventory;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.production.ProductionUnit;
@@ -119,8 +117,6 @@ public class CompanyWebManager extends AbstractPrimefacesManager implements Seri
 	public UICommandable getProductCommandable(AbstractUserSession<TreeNode,HierarchyNode> userSession,Collection<UICommandable> mobileCommandables){
 		UICommandable module = null;
 		module = Builder.create(uiManager.businessEntityInfos(Product.class).getUserInterface().getLabelId(), null);
-		module.addChild(Builder.createList(TangibleProduct.class, null));
-		module.addChild(Builder.createList(IntangibleProduct.class, null));
 		module.addChild(Builder.createList(SalableProduct.class, null));
 		return module;
 	}

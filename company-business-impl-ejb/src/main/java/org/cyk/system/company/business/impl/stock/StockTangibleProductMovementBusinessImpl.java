@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.ejb.TransactionAttribute;
@@ -13,13 +12,9 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.stock.StockTangibleProductMovementBusiness;
 import org.cyk.system.company.business.impl.sale.SaleBusinessImpl;
-import org.cyk.system.company.model.product.TangibleProduct;
-import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.stock.StockTangibleProductMovement;
 import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCriteria;
-import org.cyk.system.company.model.stock.StockableProduct;
-import org.cyk.system.company.persistence.api.product.TangibleProductDao;
 import org.cyk.system.company.persistence.api.stock.StockTangibleProductMovementDao;
 import org.cyk.system.company.persistence.api.stock.StockableProductDao;
 import org.cyk.system.root.business.api.Crud;
@@ -31,7 +26,6 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 	private static final long serialVersionUID = -7830673760640348717L;
 	
 	@Inject private StockableProductDao stockableProductDao;
-	@Inject private TangibleProductDao tangibleProductDao;
 	
 	@Inject
 	public StockTangibleProductMovementBusinessImpl(StockTangibleProductMovementDao dao) {
@@ -41,7 +35,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public StockTangibleProductMovement instanciateOne(String[] arguments) {
 		StockTangibleProductMovement stockTangibleProductMovement = new StockTangibleProductMovement();
-		stockTangibleProductMovement.setStockableProduct(stockableProductDao.readByProduct(tangibleProductDao.read(arguments[0])));
+		//stockTangibleProductMovement.setStockableProduct(stockableProductDao.readByProduct(tangibleProductDao.read(arguments[0])));
 		BigDecimal value = numberBusiness.parseBigDecimal(arguments[1]);
 		//stockTangibleProductMovement.setMovement(inject(MovementBusiness.class)
 		//		.instanciateOne(stockTangibleProductMovement.getStockableProduct().getMovementCollection(), value.compareTo(BigDecimal.ZERO) >= 0));
@@ -72,6 +66,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 		/*
 		 * We need to update the stock
 		 */
+		/*
 		Collection<SalableProductCollectionItem> saleProducts = null;//inject(SalableProductCollectionItemDao.class).readBySale(sale);
 		Collection<TangibleProduct> tangibleProducts = new LinkedHashSet<>();
 		for(SalableProductCollectionItem saleProduct : saleProducts)
@@ -93,7 +88,7 @@ public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusin
 				//inject(StockTangibleProductMovementBusiness.class).create(stockTangibleProductMovement);
 				//logTrace("Updated : {}",stockableProduct.getLogMessage());
 			}
-		}
+		}*/
 	}
 	
 	/*
