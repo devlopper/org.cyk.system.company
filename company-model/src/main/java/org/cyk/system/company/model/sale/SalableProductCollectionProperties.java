@@ -24,7 +24,14 @@ public class SalableProductCollectionProperties extends AbstractIdentifiable imp
 	
 	/**/
 	
-	public static final String FIELD_TYPE = "type";
+	public SalableProductCollectionProperties setTypeFromCode(String code) {
+		this.type = getFromCode(SalableProductCollectionPropertiesType.class, code);
+		return this;
+	}
+	
+	/**/
+	
+	public static final String FIELD_TYPE = COLUMN_NAME_UNKEYWORD+"type";
 	
 	public static final String COLUMN_TYPE = FIELD_TYPE;
 }

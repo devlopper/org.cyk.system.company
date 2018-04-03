@@ -76,8 +76,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 		
 		sale.setCascadeOperationToMaster(Boolean.TRUE);
     	sale.setCascadeOperationToMasterFieldNames(Arrays.asList(Sale.FIELD_SALABLE_PRODUCT_COLLECTION));
-		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne().setIsStockMovementCollectionUpdatable(Boolean.TRUE)
-				.setIsBalanceMovementCollectionUpdatable(Boolean.TRUE));
+		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne());
 		sale.setBalanceMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne().setTypeFromCode(RootConstant.Code.MovementCollectionType.SALE_BALANCE)
 				.setValue(sale.getSalableProductCollection().getCost().getValue()));
 		return sale;

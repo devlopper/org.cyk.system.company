@@ -112,6 +112,22 @@ public interface CompanyConstant {
 			public static final String _18 = "_18";
 			
 		}
+		
+		public static class SalableProductCollectionPropertiesType implements Serializable {
+			private static final long serialVersionUID = 1L;
+			
+			public static final String QUOTATION = "QUOTATION";
+			public static final String SALE = "SALE";
+			
+		}
+		
+		public static class SalableProductCollectionProperties implements Serializable {
+			private static final long serialVersionUID = 1L;
+			
+			public static final String QUOTATION = "QUOTATION";
+			public static final String SALE = "SALE";
+			
+		}
 	}
 		
 	public static class Configuration {

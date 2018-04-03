@@ -20,6 +20,7 @@ import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.production.Production;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.SalableProductCollectionItemSaleCashRegisterMovement;
+import org.cyk.system.company.model.sale.SalableProductCollectionPropertiesType;
 import org.cyk.system.company.model.sale.SalableProductInstance;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
@@ -94,6 +95,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		INSTANCE = this;
 		super.initialisation();
 		RootConstant.Code.setDefault(StoreType.class, RootConstant.Code.StoreType.PRODUCT);
+		RootConstant.Code.setDefault(SalableProductCollectionPropertiesType.class, CompanyConstant.Code.SalableProductCollectionPropertiesType.SALE);
+		//RootConstant.Code.setDefault(SalableProductCollectionProperties.class, CompanyConstant.Code.SalableProductCollectionProperties.SALE);
+		
 		PersistDataListener.COLLECTION.add(new PersistDataListener.Adapter.Default(){
 			private static final long serialVersionUID = -950053441831528010L;
 			@SuppressWarnings("unchecked")

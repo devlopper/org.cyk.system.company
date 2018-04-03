@@ -75,7 +75,6 @@ public class ProductIT extends AbstractBusinessIT {
     	StockableProduct stockableProduct = inject(StockableProductDao.class).readByProduct(product);
     	MovementCollection movementCollection = inject(MovementCollectionIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(stockableProduct)
     			.iterator().next().getMovementCollection();
-    	debug(movementCollection);
     	testCase.assertEqualsNumber(10, movementCollection.getInitialValue());
     	testCase.clean();
     }

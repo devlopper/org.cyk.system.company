@@ -17,12 +17,14 @@ import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.company.business.impl.__data__.RealDataSet;
 import org.cyk.system.company.business.impl.__test__.Runnable;
+import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.sale.SalableProductCollectionPropertiesType;
 import org.cyk.system.company.model.sale.SalableProductProperties;
 import org.cyk.system.company.model.sale.SalableProductStore;
 import org.cyk.system.company.model.sale.SalableProductStoreCollection;
@@ -65,6 +67,8 @@ public class SaleIT extends AbstractBusinessIT {
     static {
     	ClassHelper.getInstance().map(DataSet.Listener.class, Data.class);
     }
+    
+    /* SalableProduct Properties */
     
     /* SalableProduct */
     
@@ -364,7 +368,7 @@ public class SaleIT extends AbstractBusinessIT {
     			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT)
     			.setProductIsStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
     	
-    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne().setIsStockMovementCollectionUpdatable(Boolean.TRUE);
+    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
     	String salableProductCollectionCode = testCase.getRandomAlphabetic();
     	salableProductCollection.setCode(salableProductCollectionCode);
     	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
@@ -390,6 +394,39 @@ public class SaleIT extends AbstractBusinessIT {
     }
     
     @Test
+    public void crudSalableProductCollectionWithItemWithProductQuantityNotUpdatable(){
+    	TestCase testCase = instanciateTestCase();
+    	String salableProductCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode).setPropertiesPriceFromObject(100).setCascadeOperationToMaster(Boolean.TRUE)
+    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT)
+    			.setProductIsStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
+    	
+    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne().setPropertiesTypeFromCode(CompanyConstant.Code.SalableProductCollectionPropertiesType.QUOTATION);
+    	String salableProductCollectionCode = testCase.getRandomAlphabetic();
+    	salableProductCollection.setCode(salableProductCollectionCode);
+    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);
+    	salableProductCollectionItem.setSalableProductFromCode(salableProductCode);
+    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("2"));
+    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	testCase.create(salableProductCollection);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "1");
+    	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
+    	testCase.assertStockableProduct(salableProductCode, "10");
+    	
+    	salableProductCollection = testCase.read(SalableProductCollection.class, salableProductCollectionCode);
+    	salableProductCollection.getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(salableProductCollection));
+    	salableProductCollection.getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	testCase.update(salableProductCollection);
+    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, salableProductCollectionCode, "1");
+    	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
+    	
+    	testCase.assertStockableProduct(salableProductCode, "10");
+    	
+    	testCase.deleteAll(StockableProduct.class);
+    	testCase.clean();
+    }
+    
+    @Test
     public void crudSalableProductCollectionWithItemWithProductQuantityUpdatableExceedUpperLimit(){
     	TestCase testCase = instanciateTestCase();
     	String salableProductCode = testCase.getRandomAlphabetic();
@@ -397,7 +434,7 @@ public class SaleIT extends AbstractBusinessIT {
     			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT)
     			.setProductIsStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
     	
-    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne().setIsStockMovementCollectionUpdatable(Boolean.TRUE);
+    	SalableProductCollection salableProductCollection = inject(SalableProductCollectionBusiness.class).instanciateOne();
     	String salableProductCollectionCode = testCase.getRandomAlphabetic();
     	salableProductCollection.setCode(salableProductCollectionCode);
     	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(salableProductCollection);

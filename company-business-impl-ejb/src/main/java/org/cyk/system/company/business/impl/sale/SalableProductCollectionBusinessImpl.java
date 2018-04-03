@@ -8,7 +8,6 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.CostBusiness;
-import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.model.Cost;
@@ -37,6 +36,11 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	@Override
 	protected Collection<? extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<?>> getListeners() {
 		return Listener.COLLECTION;
+	}
+	
+	@Override
+	public SalableProductCollection instanciateOne() {
+		return super.instanciateOne().addCascadeOperationToMasterFieldNames(SalableProductCollection.FIELD_PROPERTIES);
 	}
 	
 	@Override

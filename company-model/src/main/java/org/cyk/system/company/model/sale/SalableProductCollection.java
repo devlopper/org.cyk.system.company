@@ -5,6 +5,9 @@ import java.util.Collection;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.root.model.AbstractCollection;
@@ -16,14 +19,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Getter @Setter @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE)
+@Getter @Setter @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE) @Accessors(chain=true)
 public class SalableProductCollection extends AbstractCollection<SalableProductCollectionItem> implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
+	@ManyToOne @JoinColumn(name=COLUMN_PROPERTIES) @NotNull private SalableProductCollectionProperties properties;
 	@Embedded private Cost cost;
-	
-	@Accessors(chain=true) private Boolean isStockMovementCollectionUpdatable;
-	@Accessors(chain=true) private Boolean isBalanceMovementCollectionUpdatable;
 	
 	/**/
 	
@@ -31,6 +32,11 @@ public class SalableProductCollection extends AbstractCollection<SalableProductC
 		if(cost==null)
 			cost = new Cost();
 		return cost;
+	}
+	
+	@Override
+	public SalableProductCollection addCascadeOperationToMasterFieldNames(String... fieldNames) {
+		return (SalableProductCollection) super.addCascadeOperationToMasterFieldNames(fieldNames);
 	}
 	
 	@Override
@@ -43,9 +49,18 @@ public class SalableProductCollection extends AbstractCollection<SalableProductC
 		return (SalableProductCollection) super.add(items);
 	}
 	
-	public static final String FIELD_ACCOUNTING_PERIOD = "accountingPeriod";
-	public static final String FIELD_COST = "cost";
-	public static final String FIELD_AUTO_COMPUTE_VALUE_ADDED_TAX = "autoComputeValueAddedTax";
+	public SalableProductCollectionProperties getProperties(Boolean instanciateIfValueIsNull){
+		return readFieldValue(FIELD_PROPERTIES, instanciateIfValueIsNull);
+	}
 	
-	public static final String COLUMN_ACCOUNTING_PERIOD = FIELD_ACCOUNTING_PERIOD;
+	public SalableProductCollection setPropertiesTypeFromCode(String code) {
+		getProperties(Boolean.TRUE).setTypeFromCode(code);
+		return this;
+	}
+	
+	public static final String FIELD_PROPERTIES = "properties";
+	public static final String FIELD_COST = "cost";
+	
+	
+	public static final String COLUMN_PROPERTIES = FIELD_PROPERTIES;
 }

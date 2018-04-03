@@ -111,10 +111,10 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 	@Override
 	protected void beforeCrud(SalableProductCollectionItem salableProductCollectionItem, Crud crud) {
 		super.beforeCrud(salableProductCollectionItem, crud); 
-		if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getIsBalanceMovementCollectionUpdatable())){			
+		if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getProperties().getType().getBalanceMovementCollectionUpdatable())){			
 			
 		}		
-		if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getIsStockMovementCollectionUpdatable())){
+		if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getProperties().getType().getStockMovementCollectionUpdatable())){
 			StockableProduct stockableProduct = inject(StockableProductDao.class).readByProduct(salableProductCollectionItem.getSalableProduct().getProduct());
 			if(stockableProduct!=null){
 				inject(MovementBusiness.class).create(stockableProduct, RootConstant.Code.MovementCollectionType.STOCK_REGISTER, crud, salableProductCollectionItem
