@@ -558,9 +558,9 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     public void assertSaleByCriteria(String fromDate,String toDate,String[] saleFiniteStateMachineStateCodes,String[] expectedComputedIdentifiers,String expectedCost,String expectedTax,String expectedTurnover
     		,String expectedBalance,String expectedPaid){
     	Sale.SearchCriteria criteria = new Sale.SearchCriteria(getDate(fromDate, Boolean.FALSE), getDate(toDate, Boolean.FALSE));
-    	Collection<Sale> sales = inject(SaleBusiness.class).findByCriteria(criteria);
+    	Collection<Sale> sales = null;//inject(SaleBusiness.class).findByCriteria(criteria);
     	assertEquals("Find sale by criteria count using collection", expectedComputedIdentifiers.length, sales.size());
-    	assertEquals("Find sale by criteria count using fonction", expectedComputedIdentifiers.length, inject(SaleBusiness.class).countByCriteria(criteria).intValue());
+    	//assertEquals("Find sale by criteria count using fonction", expectedComputedIdentifiers.length, inject(SaleBusiness.class).countByCriteria(criteria).intValue());
     	int i = 0;
     	for(Sale sale : sales)
     		assertEquals("Find sale by criteria computed identifier",expectedComputedIdentifiers[i++],sale.getCode());

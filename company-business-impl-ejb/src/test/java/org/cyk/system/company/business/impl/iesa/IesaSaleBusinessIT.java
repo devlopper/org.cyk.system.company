@@ -131,8 +131,8 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	String sale001 = RandomStringUtils.randomAlphanumeric(20);
     	String sale002 = RandomStringUtils.randomAlphanumeric(20);
     	String p001 = RandomStringUtils.randomAlphanumeric(20);
-    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
-    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
     	testCase.clean();
     }
@@ -143,8 +143,8 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	String sale002 = RandomStringUtils.randomAlphanumeric(20);
     	String p001 = RandomStringUtils.randomAlphanumeric(20);
     	TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1} }));
-    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1} }));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1} }));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1} }));
     	
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
     	SaleCashRegisterMovement saleCashRegisterMovement = testCase.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne(p001, sale001, "1"));
@@ -164,8 +164,8 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	String p003 = RandomStringUtils.randomAlphanumeric(20);
     	String p004 = RandomStringUtils.randomAlphanumeric(20);
     	TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1} }));
-    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1} }));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1} }));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1} }));
     	
     	SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{});
     	testCase.create(saleCashRegisterMovementCollection);
@@ -208,11 +208,11 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	UserAccount userAccount = inject(UserAccountDao.class).readOneRandomly();
     	String sale1Code = "Sale"+RandomDataProvider.getInstance().randomInt(0, 100000);
     	TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale1Code,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1},{"TP02",2} }));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne(sale1Code,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1},{"TP02",2} }));
     	companyBusinessTestHelper.assertSale(sale1Code, "74000", "74000");
     	//companyBusinessTestHelper.assertCost(inject(SaleDao.class).read(saleCode).getSalableProductCollection().getCost(), "3", "74000", "0", "74000");
     	
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"IP01",4},{"IP02",3} }));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"IP01",4},{"IP02",3} }));
     	companyBusinessTestHelper.assertSale("Sale002", "4610000", "4610000");
     	
     	String pay1Code = "Pay"+RandomDataProvider.getInstance().randomInt(0, 100000);
@@ -252,8 +252,8 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	String sale002 = RandomStringUtils.randomAlphanumeric(20);
     	String p001 = RandomStringUtils.randomAlphanumeric(20);
     	String p002 = RandomStringUtils.randomAlphanumeric(20);
-    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new String[][]{{"TP01","3"},{"TP02","2"}}));
-    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new String[][]{{"TP03","4"},{"TP04","5"}}));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new String[][]{{"TP01","3"},{"TP02","2"}}));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new String[][]{{"TP03","4"},{"TP04","5"}}));
     	
     	SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001
     			,CompanyConstant.Code.CashRegisterMovementMode.CASH, new String[][]{ {sale001, "100"},{sale002, "250"} });
@@ -290,8 +290,8 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	companyBusinessTestHelper.write(inject(FileIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(inject(SaleCashRegisterMovementCollectionDao.class).read("P004"))
     			.iterator().next().getFile());
     	
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale003",IesaFakedDataProducer.CUSTOMER_002, new String[][]{{"TP01","3"},{"TP02","2"}}));
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale004",IesaFakedDataProducer.CUSTOMER_002, new String[][]{{"TP03","4"},{"TP04","5"}}));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne("Sale003",IesaFakedDataProducer.CUSTOMER_002, new String[][]{{"TP01","3"},{"TP02","2"}}));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne("Sale004",IesaFakedDataProducer.CUSTOMER_002, new String[][]{{"TP03","4"},{"TP04","5"}}));
     	
     	saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("PA01",null, IesaFakedDataProducer.CASH_REGISTER_001
     			,CompanyConstant.Code.CashRegisterMovementMode.CASH, new String[][]{ {"Sale003", "100"},{"Sale004", "250"} });
@@ -306,8 +306,8 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     @Test
     public void regularCase(){
     	TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1},{"TP02",2} }));
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"IP01",4},{"IP02",3} }));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1},{"TP02",2} }));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"IP01",4},{"IP02",3} }));
     	
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001
     			, new Object[][]{{"Sale001","500"},{"Sale002","800"}}));
@@ -328,10 +328,10 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	String sale002 = RandomStringUtils.randomAlphanumeric(20);
     	String p001 = RandomStringUtils.randomAlphanumeric(20);
     	String p002 = RandomStringUtils.randomAlphanumeric(20);
-    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1},{"TP02",2} }));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1},{"TP02",2} }));
     	companyBusinessTestHelper.assertCost(inject(SaleDao.class).read(sale001).getSalableProductCollection().getCost(), "3", "74000", "0", "74000");
     	
-    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"IP01",4},{"IP02",3} }));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne(sale002,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"IP01",4},{"IP02",3} }));
     	
     	//create 1st payment
     	
@@ -392,7 +392,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	final String sale001 = RandomStringUtils.randomAlphanumeric(20);
     	final String p001 = RandomStringUtils.randomAlphanumeric(20);
     	final TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
     	
     	testCase.clean();
@@ -403,7 +403,7 @@ public class IesaSaleBusinessIT extends AbstractIesaBusinessIT {
     	final TestCase testCase = instanciateTestCase();
     	final String sale001 = RandomStringUtils.randomAlphanumeric(20);
     	final String p001 = RandomStringUtils.randomAlphanumeric(20);
-    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne(sale001,IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
     	testCase.create(inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale001, new Object[]{"TP01",1}));
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne(p001,null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
     	

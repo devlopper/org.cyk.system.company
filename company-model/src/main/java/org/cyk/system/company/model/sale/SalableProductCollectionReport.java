@@ -26,10 +26,10 @@ public class SalableProductCollectionReport extends AbstractIdentifiableReport<S
 	@Override
 	public void setSource(Object source) {
 		super.setSource(source);
-		accountingPeriod.setSource(((SalableProductCollection)source).getAccountingPeriod());
+		//accountingPeriod.setSource(((SalableProductCollection)source).getAccountingPeriod());
 		cost.setSource(((SalableProductCollection)source).getCost());
-		totalReduction = format(((SalableProductCollection)source).getTotalReduction());
-		totalCostValueWithoutReduction = format(((SalableProductCollection)source).getTotalCostValueWithoutReduction());
+		//totalReduction = format(((SalableProductCollection)source).getTotalReduction());
+		//totalCostValueWithoutReduction = format(((SalableProductCollection)source).getTotalCostValueWithoutReduction());
 		if(((SalableProductCollection)source).getItems().getElements()!=null)
 			for(SalableProductCollectionItem item : ((SalableProductCollection)source).getItems().getElements())
 				items.add(new SalableProductCollectionItemReport(this,item));

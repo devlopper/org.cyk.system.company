@@ -322,18 +322,8 @@ public class PrimefacesManager extends org.cyk.ui.web.primefaces.adapter.enterpr
 			public ControlSetAdapter.Details getFormControlSetAdapter(Class clazz) {
 				return new DetailsConfiguration.DefaultControlSetAdapter(){ 
 					private static final long serialVersionUID = 1L;
-					@Override
-					public Boolean build(Object data,Field field) {
-						return isFieldNameIn(field,SaleDetails.FIELD_CUSTOMER,SaleDetails.FIELD_ACCOUNTING_PERIOD,SaleDetails.FIELD_CODE
-								/*,SaleDetails.FIELD_NAME*/,SaleDetails.FIELD_COST,CostDetails.FIELD_VALUE/*,CostDetails.FIELD_TAX,CostDetails.FIELD_TURNOVER*/
-								,SaleDetails.FIELD_BALANCE,BalanceDetails.FIELD_VALUE);
-					}
 					
-					@Override
-					public List<String> getExpectedFieldNames() {
-						return Arrays.asList(SaleDetails.FIELD_CODE/*,SaleDetails.FIELD_NAME*/,SaleDetails.FIELD_CUSTOMER,SaleDetails.FIELD_COST,CostDetails.FIELD_VALUE
-								,SaleDetails.FIELD_BALANCE,BalanceDetails.FIELD_VALUE);
-					}
+					
 					
 					@Override
 					public String fiedLabel(ControlSet<AbstractOutputDetails<AbstractIdentifiable>, DynaFormModel, DynaFormRow, DynaFormLabel, DynaFormControl, SelectItem> controlSet,

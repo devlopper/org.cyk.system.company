@@ -30,7 +30,7 @@ public class SalableProductCollectionDetails extends AbstractSalableProductColle
 		if(salableProductCollection==null){
 			
 		}else{
-			accountingPeriod = formatUsingBusiness(salableProductCollection.getAccountingPeriod());
+			//accountingPeriod = formatUsingBusiness(salableProductCollection.getAccountingPeriod());
 			if(cost == null)
 				cost = new CostDetails(salableProductCollection.getCost());
 			else

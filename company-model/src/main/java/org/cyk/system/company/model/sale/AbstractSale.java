@@ -27,32 +27,17 @@ import lombok.Setter;
 public abstract class AbstractSale extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@Deprecated
-	@ManyToOne @JoinColumn(name=COLUMN_CUSTOMER) protected Customer customer;
-	@Deprecated @ManyToOne @JoinColumn(name=COLUMN_SALABLE_PRODUCT_COLLECTION) protected SalableProductCollection salableProductCollection;
-	@ManyToOne @JoinColumn(name=COLUMN_SALABLE_PRODUCT_STORE_COLLECTION) protected SalableProductStoreCollection salableProductStoreCollection;
+	
 	
 	/**/
 	
-	public AccountingPeriod getAccountingPeriod() {
-		return salableProductCollection==null ? null : salableProductCollection.getAccountingPeriod();
-	}
-
-	public Boolean getAutoComputeValueAddedTax() {
-		return salableProductCollection==null ? null :salableProductCollection.getAutoComputeValueAddedTax();
-	}
+	
 	
 	/**/
 	
-	@Deprecated
-	public static final String FIELD_CUSTOMER = "customer";
-	@Deprecated public static final String FIELD_SALABLE_PRODUCT_COLLECTION = "salableProductCollection";
-	public static final String FIELD_SALABLE_PRODUCT_STORE_COLLECTION = "salableProductStoreCollection";
 	
-	@Deprecated
-	public static final String COLUMN_CUSTOMER = FIELD_CUSTOMER;
-	@Deprecated public static final String COLUMN_SALABLE_PRODUCT_COLLECTION = FIELD_SALABLE_PRODUCT_COLLECTION;
-	public static final String COLUMN_SALABLE_PRODUCT_STORE_COLLECTION = FIELD_SALABLE_PRODUCT_STORE_COLLECTION;
+	
+	
 	
 	/**/
 	

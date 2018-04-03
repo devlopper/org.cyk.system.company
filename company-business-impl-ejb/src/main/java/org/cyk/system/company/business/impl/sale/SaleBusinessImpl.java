@@ -25,6 +25,7 @@ import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.mathematics.MovementBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierBusiness;
+import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.file.report.ReportBasedOnTemplateFile;
 import org.cyk.system.root.model.mathematics.MovementCollection;
@@ -33,7 +34,7 @@ import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.common.helper.LoggingHelper;
 import org.cyk.utility.common.helper.StringHelper;
 
-public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sale.SearchCriteria> implements SaleBusiness,Serializable {
+public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao> implements SaleBusiness,Serializable {
 
 	private static final long serialVersionUID = -7830673760640348717L;
 
@@ -52,6 +53,8 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	@Override
 	protected void computeChanges(Sale sale, LoggingHelper.Message.Builder logMessageBuilder) {
 		super.computeChanges(sale, logMessageBuilder);
+		if(sale.getSalableProductCollection()!=null)
+			inject(SalableProductCollectionBusiness.class).computeChanges(sale.getSalableProductCollection());
 		if(sale.getBalanceMovementCollection()!=null){
 			MovementCollection movementCollection = sale.getBalanceMovementCollection();
 			if(isNotIdentified(sale))
@@ -66,6 +69,11 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 	@Override
 	public Sale instanciateOne() {
 		Sale sale = super.instanciateOne();
+		
+		sale.setSalableProductCollection(new SalableProductCollection());
+		//sale.getSalableProductCollection().setAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent());
+		//sale.getSalableProductCollection().setAutoComputeValueAddedTax(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().signum()!=0);
+		
 		sale.setCascadeOperationToMaster(Boolean.TRUE);
     	sale.setCascadeOperationToMasterFieldNames(Arrays.asList(Sale.FIELD_SALABLE_PRODUCT_COLLECTION));
 		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne().setIsStockMovementCollectionUpdatable(Boolean.TRUE)
@@ -75,31 +83,9 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		return sale;
 	}
 	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS) @Deprecated
-	public Sale instanciateOne(String computedIdentifier,String cashierPersonCode, String customerRegistrationCode,String date,String taxable, String[][] salableProductInfos) {
-		Sale sale = instanciateOne();
-		sale.setCode(computedIdentifier);
-		//sale.setCashier(cashierPersonCode==null?cashierDao.select().one():cashierDao.readByPerson(personDao.readByCode(cashierPersonCode)));
-		sale.setCustomer(customerRegistrationCode==null?null:customerDao.read(customerRegistrationCode));
-		sale.setBirthDate(StringUtils.isBlank(date) ? null : timeBusiness.parse(date));
-		sale.getSalableProductCollection().setAutoComputeValueAddedTax(Boolean.parseBoolean(taxable));
-		/*for(String[] info : salableProductInfos){
-			SalableProductCollectionItem saleProduct =  selectProduct(sale, salableProductDao.readByProduct(productDao.read(info[0])), numberBusiness.parseBigDecimal(info[1]));
-			if(info.length>2){
-				saleProduct.getCost().setValue(numberBusiness.parseBigDecimal(info[2]));
-				applyChange(sale, saleProduct);
-			}
-		}*/
-		return sale;
-	}
-	
-	@Override @TransactionAttribute(TransactionAttributeType.SUPPORTS) @Deprecated
-	public List<Sale> instanciateMany(Object[][] arguments) {
-		List<Sale> list = new ArrayList<>();
-		for(Object[] argument : arguments)
-			list.add(instanciateOne((String)argument[0], (String)argument[1], (String)argument[2], (String)argument[3], (String)argument[4]
-					, (String[][])argument[5]));
-		return list;
+	@Override
+	public Collection<String> findRelatedInstanceFieldNames(Sale sale) {
+		return Arrays.asList(Sale.FIELD_SALABLE_PRODUCT_COLLECTION);
 	}
 	
 	@Override
@@ -128,11 +114,6 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 		return dao.computeByCriteria(criteria);
 	}
 		
-	@Override @TransactionAttribute(TransactionAttributeType.NEVER)
-	public ReportBasedOnTemplateFile<SaleReport> findReport(Sale sale) {
-		return null;
-	}
-		
 	/**/
 	
 	public static interface Listener extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<Sale>{
@@ -159,16 +140,18 @@ public class SaleBusinessImpl extends AbstractSaleBusinessImpl<Sale, SaleDao,Sal
 						super.afterCreate(sale);
 						//cascade(sale,null,sale.getSaleCashRegisterMovements(), Crud.CREATE);
 						
-						if(sale.getAccountingPeriod()!=null){
+						//if(sale.getAccountingPeriod()!=null){
 							/*
 							if(StringUtils.isEmpty(sale.getCode()))
 								sale.setCode(inject(StringGeneratorBusiness.class).generateIdentifier(sale,null,sale.getAccountingPeriod().getSaleConfiguration().getIdentifierGenerator()));
 							*/
+							/*
 							Cost cost = sale.getSalableProductCollection().getCost();
 							if(Boolean.TRUE.equals(sale.getAutoComputeValueAddedTax()))
 								cost.setTax(inject(AccountingPeriodBusiness.class).computeValueAddedTax(sale.getAccountingPeriod(), cost.getValue()));
-							cost.setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(sale.getAccountingPeriod(), cost.getValue(), cost.getTax()));	
-						}
+							cost.setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(sale.getAccountingPeriod(), cost.getValue(), cost.getTax()));
+							*/
+						//}
 						sale.getSalableProductCollection().setCode(sale.getCode());
 						//sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue());
 						/*if(Boolean.TRUE.equals(ListenerUtils.getInstance().getBoolean(Listener.COLLECTION, new ListenerUtils.BooleanMethod<Listener>() {

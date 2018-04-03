@@ -19,12 +19,12 @@ public abstract class AbstractSaleDetails<IDENTIFIABLE extends AbstractSale> ext
 	
 	public AbstractSaleDetails(IDENTIFIABLE identifiable) {
 		super(identifiable);
-		customer = formatUsingBusiness(identifiable.getCustomer());
+		//customer = formatUsingBusiness(identifiable.getCustomer());
 	}
 	
 	@Override
 	protected SalableProductCollection getSalableProductCollection() {
-		return master.getSalableProductCollection();
+		return null;// master.getSalableProductCollection();
 	}
 	
 	/**/

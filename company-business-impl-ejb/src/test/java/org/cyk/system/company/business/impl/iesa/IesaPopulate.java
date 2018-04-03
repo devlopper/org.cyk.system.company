@@ -10,8 +10,8 @@ public class IesaPopulate extends AbstractIesaBusinessIT {
     @Override
     protected void _execute_() {
     	super._execute_();
-    	companyBusinessTestHelper.create(inject(SaleBusiness.class).instanciateOne("SCHOOLFEES001",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{{"TP05",2},{"TP06",1},{"IP04",3},{"IP05",3},{"IP06",3},{"IP07",10}}));    	
-    	companyBusinessTestHelper.create(inject(SaleBusiness.class).instanciateOne("SCHOOLFEES002",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{{"IP01",1},{"IP02",1,100000},{"TP01",1},{"TP02",1},{"TP03",1},{"TP04",1},{"IP03",1}}));
+    	//companyBusinessTestHelper.create(inject(SaleBusiness.class).instanciateOne("SCHOOLFEES001",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{{"TP05",2},{"TP06",1},{"IP04",3},{"IP05",3},{"IP06",3},{"IP07",10}}));    	
+    	//companyBusinessTestHelper.create(inject(SaleBusiness.class).instanciateOne("SCHOOLFEES002",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{{"IP01",1},{"IP02",1,100000},{"TP01",1},{"TP02",1},{"TP03",1},{"TP04",1},{"IP03",1}}));
     	
     	companyBusinessTestHelper.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("p001",null, IesaFakedDataProducer.CASH_REGISTER_001
     			, new String[][]{{"SCHOOLFEES001","1000"},{"SCHOOLFEES002","500"}}));

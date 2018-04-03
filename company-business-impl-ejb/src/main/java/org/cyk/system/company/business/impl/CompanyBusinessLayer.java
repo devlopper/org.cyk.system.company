@@ -150,7 +150,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 					if(identifiable instanceof AccountingPeriod)
 						return null;
 					if(identifiable instanceof Sale)
-						return ((Sale)identifiable).getAccountingPeriod();
+						return null;//((Sale)identifiable).getAccountingPeriod();
 					
 					if(identifiable instanceof SalableProductCollectionItem)
 						return ((SalableProductCollectionItem)identifiable).getSalableProduct();

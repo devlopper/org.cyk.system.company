@@ -8,11 +8,10 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.cyk.system.company.business.api.accounting.AccountingPeriodBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
+import org.cyk.system.company.business.api.sale.ValueAddedTaxRateBusiness;
 import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
@@ -28,6 +27,7 @@ import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
+import org.cyk.utility.common.helper.NumberHelper;
 
 public class SalableProductCollectionItemBusinessImpl extends AbstractCollectionItemBusinessImpl<SalableProductCollectionItem, SalableProductCollectionItemDao,SalableProductCollection> implements SalableProductCollectionItemBusiness,Serializable {
 	private static final long serialVersionUID = -3799482462496328200L;
@@ -97,13 +97,13 @@ public class SalableProductCollectionItemBusinessImpl extends AbstractCollection
 			
 		}else{
 			//This product has a cost so we can compute the taxes to be paid
-			AccountingPeriod accountingPeriod = salableProductCollectionItem.getCollection().getAccountingPeriod();
-			if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getAutoComputeValueAddedTax())){
-				salableProductCollectionItem.getCost().setTax(inject(AccountingPeriodBusiness.class).computeValueAddedTax(accountingPeriod, salableProductCollectionItem.getCost().getValue()));
-			}else if(salableProductCollectionItem.getCost().getTax()==null)
-				salableProductCollectionItem.getCost().setTax(BigDecimal.ZERO);
-			salableProductCollectionItem.getCost().setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(accountingPeriod
-					, salableProductCollectionItem.getCost().getValue(),salableProductCollectionItem.getCost().getTax()));	
+			//if(Boolean.TRUE.equals(salableProductCollectionItem.getCollection().getAutoComputeValueAddedTax())){
+				salableProductCollectionItem.getCost().setTax(inject(ValueAddedTaxRateBusiness.class).computeValueAddedTax(salableProductCollectionItem.getSalableProduct().getProperties().getValueAddedTaxRate()
+						, salableProductCollectionItem.getCost().getValue()));
+			//}else if(salableProductCollectionItem.getCost().getTax()==null)
+				//salableProductCollectionItem.getCost().setTax(BigDecimal.ZERO);
+			salableProductCollectionItem.getCost().setTurnover(NumberHelper.getInstance().get(BigDecimal.class,NumberHelper.getInstance()
+					.subtract(salableProductCollectionItem.getCost().getValue(), salableProductCollectionItem.getCost().getTax())));	
 		}
 		logMessageBuilder.addNamedParameters("after",salableProductCollectionItem.getCost().toString());
 	}

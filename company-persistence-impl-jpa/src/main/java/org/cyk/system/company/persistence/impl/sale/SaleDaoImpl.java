@@ -3,18 +3,24 @@ package org.cyk.system.company.persistence.impl.sale;
 import java.math.BigDecimal;
 import java.util.Collection;
 
+import javax.persistence.NoResultException;
+
+import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
+import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
 
-public class SaleDaoImpl extends AbstractSaleDaoImpl<Sale,Sale.SearchCriteria> implements SaleDao {
+public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 
 	private static final long serialVersionUID = 6920278182318788380L;
 
 	private String readAllSortedByDate/*,readByComputedIdentifier,readByCriteria*/,countByCriteria,readByCriteriaDateAscendingOrder,readByCriteriaDateDescendingOrder,computeByCriteria
 		,computeByCriteriaWhereCashRegisterMovementNotExists,computeByCriteriaWhereCashRegisterMovementExists;
+	
+	private String readBySalableProductCollection;
 	
 	@Override
     protected void namedQueriesInitialisation() {
@@ -57,6 +63,8 @@ public class SaleDaoImpl extends AbstractSaleDaoImpl<Sale,Sale.SearchCriteria> i
 				commonUtils.attributePath(queryStringBuilder.getRootEntityVariableName(), Sale.FIELD_COST,Cost.FIELD_VALUE), ArithmeticOperator.NEQ, Boolean.FALSE);
     	registerNamedQuery(computeByCriteriaWhereCashRegisterMovementExists,queryStringBuilder);
     	*/
+    	
+    	registerNamedQuery(readBySalableProductCollection,_select().where(Sale.FIELD_SALABLE_PRODUCT_COLLECTION));
     }	
 	/*
 	private void whereSearchCriteria(QueryStringBuilder queryStringBuilder){
@@ -71,29 +79,14 @@ public class SaleDaoImpl extends AbstractSaleDaoImpl<Sale,Sale.SearchCriteria> i
 	/**/
 	
 	@Override
+	public Sale readBySalableProductCollection(SalableProductCollection salableProductCollection) {
+		return namedQuery(readBySalableProductCollection).parameter(Sale.FIELD_SALABLE_PRODUCT_COLLECTION, salableProductCollection)
+				.ignoreThrowable(NoResultException.class).resultOne();
+	}
+	
+	@Override
 	public Collection<Sale> readAll() {
 		return namedQuery(readAllSortedByDate).resultMany();
-	}
-		
-	@SuppressWarnings("unchecked")
-	@Override
-	public Collection<Sale> readByCriteria(Sale.SearchCriteria searchCriteria) {
-		String queryName = null;
-		if(searchCriteria.getFromDateSearchCriteria().getAscendingOrdered()!=null){
-			queryName = Boolean.TRUE.equals(searchCriteria.getFromDateSearchCriteria().getAscendingOrdered())?
-					readByCriteriaDateAscendingOrder:readByCriteriaDateDescendingOrder;
-		}else
-			queryName = readByCriteriaDateAscendingOrder;
-		QueryWrapper<?> queryWrapper = namedQuery(queryName);
-		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
-		return (Collection<Sale>) queryWrapper.resultMany();
-	}
-
-	@Override 
-	public Long countByCriteria(Sale.SearchCriteria searchCriteria) {
-		QueryWrapper<?> queryWrapper = countNamedQuery(countByCriteria);
-		applyPeriodSearchCriteriaParameters(queryWrapper, searchCriteria);
-		return (Long) queryWrapper.resultOne();
 	}
 	
 	@Override
@@ -106,7 +99,7 @@ public class SaleDaoImpl extends AbstractSaleDaoImpl<Sale,Sale.SearchCriteria> i
 		
 		Object[] values = (Object[]) queryWrapper.resultOne();
 		SaleResults results = new SaleResults();
-		results.getCost().setNumberOfProceedElements(new BigDecimal(countByCriteria(criteria)));
+		//results.getCost().setNumberOfProceedElements(new BigDecimal(countByCriteria(criteria)));
 		results.getCost().setValue(values[0]==null?BigDecimal.ZERO:(BigDecimal) values[0]);
 		results.getCost().setTurnover(values[1]==null?BigDecimal.ZERO:(BigDecimal) values[1]);
 		results.getCost().setTax(values[2]==null?BigDecimal.ZERO:(BigDecimal) values[2]);

@@ -267,7 +267,7 @@ public class CompanyReportRepository extends AbstractReportRepository implements
 				if(sales.size()>1)
 					;
 				else
-					return saleBusiness.findReport((Sale) sales.iterator().next());
+					return null;//saleBusiness.findReport((Sale) sales.iterator().next());
 				return null;
 			}
 		});

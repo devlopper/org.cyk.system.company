@@ -77,15 +77,15 @@ public class SaleBusinessITOLD extends AbstractEnterpriseResourcePlanningBusines
     //@Test
     public void crudSale(){
     	TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
     	testCase.clean();
     }
     
     @Test
     public void crudSaleCashRegisterMovementCollection(){
     	TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, CompanyConstant.Code.CashRegister.DEFAULT, new String[][]{}));
     	testCase.clean();
     }
@@ -93,8 +93,8 @@ public class SaleBusinessITOLD extends AbstractEnterpriseResourcePlanningBusines
     //@Test
     public void crudSaleCashRegisterMovement(){
     	TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne("Sale001",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new String[][]{}));
     	
     	testCase.create(inject(SaleCashRegisterMovementCollectionBusiness.class).instanciateOne("P001",null, IesaFakedDataProducer.CASH_REGISTER_001, new String[][]{}));
     	SaleCashRegisterMovement saleCashRegisterMovement = companyBusinessTestHelper.create(inject(SaleCashRegisterMovementBusiness.class).instanciateOne("P001", "Sale001", "0"));
@@ -110,11 +110,11 @@ public class SaleBusinessITOLD extends AbstractEnterpriseResourcePlanningBusines
     	UserAccount userAccount = inject(UserAccountDao.class).readOneRandomly();
     	String sale1Code = "Sale"+RandomDataProvider.getInstance().randomInt(0, 100000);
     	TestCase testCase = instanciateTestCase();
-    	testCase.create(inject(SaleBusiness.class).instanciateOne(sale1Code,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1},{"TP02",2} }));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne(sale1Code,IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"TP01",1},{"TP02",2} }));
     	companyBusinessTestHelper.assertSale(sale1Code, "74000", "74000");
     	//companyBusinessTestHelper.assertCost(inject(SaleDao.class).read(saleCode).getSalableProductCollection().getCost(), "3", "74000", "0", "74000");
     	
-    	testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"IP01",4},{"IP02",3} }));
+    	//testCase.create(inject(SaleBusiness.class).instanciateOne("Sale002",IesaFakedDataProducer.CUSTOMER_001, new Object[][]{ {"IP01",4},{"IP02",3} }));
     	companyBusinessTestHelper.assertSale("Sale002", "4610000", "4610000");
     	
     	String pay1Code = "Pay"+RandomDataProvider.getInstance().randomInt(0, 100000);

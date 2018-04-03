@@ -1,18 +1,12 @@
 package org.cyk.system.company.model.sale;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Collection;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.root.model.AbstractCollection;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
@@ -26,19 +20,10 @@ import lombok.experimental.Accessors;
 public class SalableProductCollection extends AbstractCollection<SalableProductCollectionItem> implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @JoinColumn(name=COLUMN_ACCOUNTING_PERIOD)  @NotNull private AccountingPeriod accountingPeriod;
-	
 	@Embedded private Cost cost;
 	
 	@Accessors(chain=true) private Boolean isStockMovementCollectionUpdatable;
 	@Accessors(chain=true) private Boolean isBalanceMovementCollectionUpdatable;
-	
-	/**/
-	
-	@Transient protected Boolean autoComputeValueAddedTax = Boolean.TRUE;
-	//TODO Use map for this
-	@Transient private BigDecimal totalCostValueWithoutReduction;
-	@Transient private BigDecimal totalReduction;
 	
 	/**/
 	

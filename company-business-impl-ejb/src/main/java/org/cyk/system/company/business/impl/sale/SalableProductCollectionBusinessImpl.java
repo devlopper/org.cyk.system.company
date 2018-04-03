@@ -83,7 +83,6 @@ public class SalableProductCollectionBusinessImpl extends AbstractCollectionBusi
 	@Override
 	public SalableProductCollection instanciateOne(String code,String name) {
 		SalableProductCollection salableProductCollection = super.instanciateOne(code,name);
-		salableProductCollection.setAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent());
 		return salableProductCollection;
 	}
 	

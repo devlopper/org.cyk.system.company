@@ -7,9 +7,6 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
@@ -37,6 +34,9 @@ import org.cyk.utility.common.annotation.user.interfaces.InputBooleanButton;
 import org.cyk.utility.common.annotation.user.interfaces.InputChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneChoice;
 import org.cyk.utility.common.annotation.user.interfaces.InputOneCombo;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter
 public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extends AbstractIdentifiable,ITEM extends AbstractIdentifiable,TYPE extends AbstractSalableProductCollectionEditPage.AbstractItem<ITEM>> extends AbstractCollectionEditPage<COLLECTION,ITEM,TYPE> implements Serializable {
@@ -133,16 +133,16 @@ public abstract class AbstractSalableProductCollectionEditPage<COLLECTION extend
 		@Override
 		public void read() {
 			super.read();
-			accountingPeriod = getSalableProductCollection().getAccountingPeriod();
+			//accountingPeriod = getSalableProductCollection().getAccountingPeriod();
 			//cost.set(getSalableProductCollection().getCost());
-			autoComputeValueAddedTax = getSalableProductCollection().getAutoComputeValueAddedTax();
+			//autoComputeValueAddedTax = getSalableProductCollection().getAutoComputeValueAddedTax();
 		}
 		
 		@Override
 		public void write() {
 			super.write();
-			getSalableProductCollection().setAccountingPeriod(accountingPeriod);
-			getSalableProductCollection().setAutoComputeValueAddedTax(autoComputeValueAddedTax);
+			//getSalableProductCollection().setAccountingPeriod(accountingPeriod);
+			//getSalableProductCollection().setAutoComputeValueAddedTax(autoComputeValueAddedTax);
 			//cost.write(getSalableProductCollection().getCost(),getSalableProductCollection().getAccountingPeriod(),autoComputeValueAddedTax);
 		}
 		
