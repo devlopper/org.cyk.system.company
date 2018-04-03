@@ -557,14 +557,14 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     
     public void assertSaleByCriteria(String fromDate,String toDate,String[] saleFiniteStateMachineStateCodes,String[] expectedComputedIdentifiers,String expectedCost,String expectedTax,String expectedTurnover
     		,String expectedBalance,String expectedPaid){
-    	Sale.SearchCriteria criteria = new Sale.SearchCriteria(getDate(fromDate, Boolean.FALSE), getDate(toDate, Boolean.FALSE));
+    	//Sale.SearchCriteria criteria = new Sale.SearchCriteria(getDate(fromDate, Boolean.FALSE), getDate(toDate, Boolean.FALSE));
     	Collection<Sale> sales = null;//inject(SaleBusiness.class).findByCriteria(criteria);
     	assertEquals("Find sale by criteria count using collection", expectedComputedIdentifiers.length, sales.size());
     	//assertEquals("Find sale by criteria count using fonction", expectedComputedIdentifiers.length, inject(SaleBusiness.class).countByCriteria(criteria).intValue());
     	int i = 0;
     	for(Sale sale : sales)
     		assertEquals("Find sale by criteria computed identifier",expectedComputedIdentifiers[i++],sale.getCode());
-    	SaleResults saleResults = inject(SaleBusiness.class).computeByCriteria(criteria);
+    	SaleResults saleResults = null;//inject(SaleBusiness.class).computeByCriteria(criteria);
     	doAssertions(saleResults, new ObjectFieldValues(SaleResults.class).set(SaleResults.FIELD_BALANCE,expectedBalance,SaleResults.FIELD_PAID,expectedPaid)
     		.setBaseName(SaleResults.FIELD_COST).set(Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS,expectedComputedIdentifiers.length+""
     			,Cost.FIELD_VALUE,expectedCost,Cost.FIELD_TAX,expectedTax,Cost.FIELD_TURNOVER,expectedTurnover));
@@ -597,11 +597,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     
     /**/
     
-    public Sale.SearchCriteria getSaleSearchCriteria(String fromDate,String toDate){
-    	Sale.SearchCriteria saleSearchCriteria = new Sale.SearchCriteria(getDate(fromDate,Boolean.FALSE),getDate(toDate,Boolean.FALSE));
-    	
-    	return saleSearchCriteria;
-    }
+    
 	
 	/**/
 	

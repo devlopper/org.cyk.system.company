@@ -16,7 +16,7 @@ public abstract class AbstractSaleStockTangibleProductMovementSearchCriteria ext
 
 	private static final long serialVersionUID = 6796076474234170332L;
 
-	protected Sale.SearchCriteria saleSearchCriteria;
+	//protected Sale.SearchCriteria saleSearchCriteria;
 	protected StringSearchCriteria externalIdentifierStringSearchCriteria = new StringSearchCriteria();
 	protected StockTangibleProductMovementSearchCriteria stockTangibleProductMovementSearchCriteria;
 	
@@ -26,7 +26,7 @@ public abstract class AbstractSaleStockTangibleProductMovementSearchCriteria ext
 	
 	public AbstractSaleStockTangibleProductMovementSearchCriteria(Date fromDate,Date toDate,BigDecimal minimumQuantity,Boolean saleDone) {
 		super(fromDate,toDate);
-		saleSearchCriteria = new Sale.SearchCriteria(fromDate,toDate);
+		//saleSearchCriteria = new Sale.SearchCriteria(fromDate,toDate);
 		stockTangibleProductMovementSearchCriteria = new StockTangibleProductMovementSearchCriteria(fromDate, toDate,minimumQuantity);
 	}
 	

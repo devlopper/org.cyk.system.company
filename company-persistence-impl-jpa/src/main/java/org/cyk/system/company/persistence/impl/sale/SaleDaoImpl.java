@@ -1,13 +1,11 @@
 package org.cyk.system.company.persistence.impl.sale;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 
 import javax.persistence.NoResultException;
 
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.model.sale.SaleResults;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.model.search.AbstractPeriodSearchCriteria;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
@@ -89,7 +87,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 		return namedQuery(readAllSortedByDate).resultMany();
 	}
 	
-	@Override
+	/*@Override
 	public SaleResults computeByCriteria(Sale.SearchCriteria criteria) {
 		QueryWrapper<?> queryWrapper = namedQuery(
 				criteria.getHasAtLeastOneCashRegisterMovement()==null?computeByCriteria
@@ -106,7 +104,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 		results.setBalance(values[3]==null?BigDecimal.ZERO:(BigDecimal) values[3]);
 		results.setPaid(results.getCost().getValue().subtract(results.getBalance()));
 		return results;
-	}
+	}*/
 	
 	/**/
 	

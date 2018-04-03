@@ -24,7 +24,6 @@ import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
-import org.cyk.system.company.model.sale.SalableProductCollectionPropertiesType;
 import org.cyk.system.company.model.sale.SalableProductProperties;
 import org.cyk.system.company.model.sale.SalableProductStore;
 import org.cyk.system.company.model.sale.SalableProductStoreCollection;

@@ -7,13 +7,11 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
-import org.cyk.system.company.business.impl.CompanyReportRepository;
 import org.cyk.system.company.business.impl.sale.SaleDetails;
 import org.cyk.system.company.model.payment.BalanceType;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.ui.web.primefaces.CompanyWebManager;
 import org.cyk.system.company.ui.web.primefaces.model.SaleQueryFormModel;
-import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.ui.web.primefaces.page.AbstractBusinessQueryPage;
 
 import lombok.Getter;
@@ -104,7 +102,7 @@ public class SaleSearchListPage extends AbstractBusinessQueryPage<Sale,SaleQuery
 	
 	@Override
 	protected Collection<Sale> __query__() {
-		Sale.SearchCriteria criteria = searchCriteria();
+		/*Sale.SearchCriteria criteria = searchCriteria();
 		criteria.getReadConfig().setFirstResultIndex(queryFirst);
 		criteria.getReadConfig().setMaximumResultCount(20l);
 		//SaleResults results = null;//inject(SaleBusiness.class).computeByCriteria(criteria); 
@@ -116,7 +114,7 @@ public class SaleSearchListPage extends AbstractBusinessQueryPage<Sale,SaleQuery
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterFromDate(),criteria.getFromDateSearchCriteria().getPreparedValue().getTime());
 		table.getPrintCommandable().setParameter(RootBusinessLayer.getInstance().getParameterToDate(),criteria.getToDateSearchCriteria().getPreparedValue().getTime());
 		if(balanceType!=null)
-			table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterBalanceType(),balanceType.name());
+			table.getPrintCommandable().setParameter(CompanyReportRepository.getInstance().getParameterBalanceType(),balanceType.name());*/
 		return null;//inject(SaleBusiness.class).findByCriteria(criteria);
 	}
 	
@@ -125,7 +123,7 @@ public class SaleSearchListPage extends AbstractBusinessQueryPage<Sale,SaleQuery
 		return null;//inject(SaleBusiness.class).countByCriteria(searchCriteria());
 	}
 
-	protected Sale.SearchCriteria searchCriteria(){
+	/*protected Sale.SearchCriteria searchCriteria(){
 		Sale.SearchCriteria criteria = new Sale.SearchCriteria(form.getData().getFromDate(),form.getData().getToDate());
 		criteria.getBalanceTypes().clear();
 		if(balanceType!=null)
@@ -138,6 +136,6 @@ public class SaleSearchListPage extends AbstractBusinessQueryPage<Sale,SaleQuery
 	
 	protected void processSearchCriteria(Sale.SearchCriteria saleSearchCriteria){
 		
-	}
+	}*/
 		
 }
