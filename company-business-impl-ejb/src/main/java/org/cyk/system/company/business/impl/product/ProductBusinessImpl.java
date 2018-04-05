@@ -9,10 +9,12 @@ import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.ProductStoreBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.stock.StockableProductBusiness;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.persistence.api.product.ProductDao;
+import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableProductDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.api.party.PartyIdentifiableGlobalIdentifierBusiness;
@@ -44,6 +46,13 @@ public class ProductBusinessImpl extends AbstractEnumerationBusinessImpl<Product
 	protected void beforeCrud(Product product, Crud crud) {
 		super.beforeCrud(product, crud);
 		if(Crud.isCreateOrUpdate(crud)){
+			if(Boolean.TRUE.equals(product.getSalable())){
+				if(Crud.CREATE.equals(crud)){
+					product.addIdentifiables(inject(SalableProductBusiness.class).instanciateOne().setProduct(product)
+							.setPropertiesPrice(product.getSalableProductPropertiesPrice()));
+				}
+			}
+			
 			if(Boolean.TRUE.equals(product.getStockable())){
 				if(Crud.CREATE.equals(crud)){
 					product.addIdentifiables(inject(StockableProductBusiness.class).instanciateOne().setProduct(product)
@@ -74,6 +83,7 @@ public class ProductBusinessImpl extends AbstractEnumerationBusinessImpl<Product
 				}
 			}
 		}else if(Crud.DELETE.equals(crud)){
+			inject(SalableProductBusiness.class).delete(inject(SalableProductDao.class).readByProduct(product));
 			inject(StockableProductBusiness.class).delete(inject(StockableProductDao.class).readByProduct(product));
 		}
 		

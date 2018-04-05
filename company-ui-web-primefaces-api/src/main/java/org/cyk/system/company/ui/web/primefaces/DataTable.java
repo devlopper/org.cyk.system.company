@@ -8,6 +8,7 @@ import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
+import org.cyk.system.company.model.sale.SalableProductProperties;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.Movement;
@@ -31,7 +32,8 @@ public class DataTable {
 			super.processColumnsFieldNames(dataTable, fieldNames);
 			Class<?> actionOnClass = (Class<?>) dataTable.getPropertiesMap().getActionOnClass();
 			if(SalableProduct.class.equals(actionOnClass)){
-				fieldNames.add(SalableProduct.FIELD_PRICE);
+				fieldNames.add(SalableProduct.FIELD_PRODUCT);
+				fieldNames.add(SalableProduct.FIELD_PROPERTIES);
 			}else if(SalableProductCollection.class.equals(actionOnClass)){
 				
 			}else if(SalableProductCollectionItem.class.equals(actionOnClass)){
@@ -41,7 +43,7 @@ public class DataTable {
 				}
 				
 				//fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT));
-				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT,SalableProduct.FIELD_PRICE));
+				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT,SalableProduct.FIELD_PROPERTIES,SalableProductProperties.FIELD_PRICE));
 				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS));
 				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_REDUCTION));
 				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_VALUE));

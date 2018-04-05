@@ -9,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
-import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.model.AbstractEnumeration;
 import org.cyk.system.root.model.information.Tangibility;
 import org.cyk.system.root.model.mathematics.MovementCollection;
@@ -18,6 +17,7 @@ import org.cyk.system.root.model.store.Store;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
+import org.cyk.utility.common.annotation.user.interfaces.Text;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +33,10 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	@ManyToOne @JoinColumn(name=COLUMN_GROUP) private ProductGroup group;
 	@ManyToOne @JoinColumn(name=COLUMN_CATEGORY) private ProductCategory category;
 	@ManyToOne @JoinColumn(name=COLUMN_TYPE) private ProductType type;
-	@Column(precision=10,scale=FLOAT_SCALE) private BigDecimal price;
+	@Column(precision=10,scale=FLOAT_SCALE) @Text(value="buying.price") private BigDecimal price;
+	
+	/* Derived */
+	private Boolean salable;
 	private Boolean stockable;
 	private Boolean storable;
 	private Boolean providerable;
@@ -42,9 +45,8 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	@Transient private Party providerParty;
 	@Transient private MovementCollection stockQuantityMovementCollection;
 	
-	@Transient private BigDecimal stockQuantityMovementCollectionInitialValue;
-	
-	@Transient protected OwnedCompany ownedCompany;
+	@Transient @Text(value="selling.price") private BigDecimal salableProductPropertiesPrice;
+	@Transient @Text(value="stock") private BigDecimal stockQuantityMovementCollectionInitialValue;
 	
 	public Product setStoreFromCode(String code){
 		store = getFromCode(Store.class, code);
@@ -61,6 +63,11 @@ public class Product extends AbstractEnumeration implements Serializable  {
 		return this;
 	}
 	
+	public Product setSalableProductPropertiesPriceFromObject(Object value){
+		salableProductPropertiesPrice = getNumberFromObject(BigDecimal.class, value);
+		return this;
+	}
+	
 	public static final String FIELD_GROUP = "group";
 	public static final String FIELD_TANGIBILITY = "tangibility";
 	public static final String FIELD_CATEGORY = "category";
@@ -70,9 +77,11 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	public static final String FIELD_STOCK_QUANTITY_MOVEMENT_COLLECTION_INITIAL_VALUE = "stockQuantityMovementCollectionInitialValue";
 	public static final String FIELD_STORE = "store";
 	public static final String FIELD_OWNED_COMPANY = "ownedCompany";
+	public static final String FIELD_SALABLE = "salable";
 	public static final String FIELD_STOCKABLE = "stockable";
 	public static final String FIELD_STORABLE = "storable";
 	public static final String FIELD_PROVIDERABLE = "providerable";
+	public static final String FIELD_SALABLE_PRODUCT_PROPERTIES_PRICE = "salableProductPropertiesPrice";
 	
 	
 	public static final String COLUMN_GROUP = COLUMN_NAME_UNKEYWORD+FIELD_GROUP;

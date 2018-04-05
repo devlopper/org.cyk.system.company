@@ -4,9 +4,12 @@ import java.io.Serializable;
 
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.model.product.Product;
+import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.ui.web.primefaces.product.ProductIdentifiableEditPageFormMaster;
+import org.cyk.system.company.ui.web.primefaces.sale.SaleIdentifiableEditPageFormMaster;
 import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.mathematics.MovementCollection;
@@ -30,22 +33,24 @@ public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces
 			super.____addName____();
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected void __prepare__() {
 		super.__prepare__();
+		Class<?> actionOnClass = (Class<?>) getPropertiesMap().getActionOnClass();
 		Form.Detail detail = getDetail();
 		detail.setFieldsObjectFromMaster();
 		
-		if(Product.class.equals(getPropertiesMap().getActionOnClass())){
+		if(Product.class.equals(actionOnClass)){
 			inject(ProductBusiness.class).setProviderParty((Product) getObject());
-			IdentifiableEditPageFormMaster.prepareProduct(detail, (Class<? extends Product>) getPropertiesMap().getActionOnClass());
+			ProductIdentifiableEditPageFormMaster.prepareProduct(detail, actionOnClass);
 			addDataTableJoinGlobalIdentifier(PartyIdentifiableGlobalIdentifier.class);			
-		}else if(SalableProductCollection.class.equals(getPropertiesMap().getActionOnClass())){
-			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,null,Boolean.TRUE);
-		}else if(SalableProduct.class.equals(getPropertiesMap().getActionOnClass())){
-			IdentifiableEditPageFormMaster.prepareSalableProduct(detail,Boolean.TRUE);
-		}else if(Sale.class.equals(getPropertiesMap().getActionOnClass())){
-			IdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION,Boolean.TRUE);
+		}else if(ProductStore.class.equals(actionOnClass)){
+			ProductIdentifiableEditPageFormMaster.prepareProductStore(detail,actionOnClass);
+		}else if(SalableProductCollection.class.equals(actionOnClass)){
+			SaleIdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,null,Boolean.TRUE);
+		}else if(SalableProduct.class.equals(actionOnClass)){
+			SaleIdentifiableEditPageFormMaster.prepareSalableProduct(detail);
+		}else if(Sale.class.equals(actionOnClass)){
+			SaleIdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION,Boolean.TRUE);
 			
 			MovementCollection movementCollection = inject(MovementCollectionBusiness.class)
 					.findByTypeByJoin(inject(MovementCollectionTypeDao.class).read(RootConstant.Code.MovementCollectionType.SALE_BALANCE), (Sale)getObject())

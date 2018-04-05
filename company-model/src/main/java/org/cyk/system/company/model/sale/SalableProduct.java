@@ -1,6 +1,7 @@
 package org.cyk.system.company.model.sale;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 
 import javax.persistence.Entity;
@@ -58,6 +59,11 @@ public class SalableProduct extends AbstractEnumeration implements Serializable 
 		return this.properties;
 	}
 	
+	public SalableProduct setPropertiesPrice(BigDecimal value){
+		getProperties(Boolean.TRUE).setPrice(value);
+		return this;
+	}
+	
 	public SalableProduct setPropertiesPriceFromObject(Object value){
 		getProperties(Boolean.TRUE).setPriceFromObject(value);
 		return this;
@@ -96,14 +102,8 @@ public class SalableProduct extends AbstractEnumeration implements Serializable 
 	/**/
 	
 	public static final String FIELD_PRODUCT = "product";
-	public static final String FIELD_VALUE_ADDED_TAX_RATE = "valueAddedTaxRate";
-	public static final String FIELD_PRICE = "price";
-	public static final String FIELD_QUANTITY_MULTIPLE = "quantityMultiple";
-	public static final String FIELD_IS_PRODUCT_STOCKABLE = "isProductStockable";
-	public static final String FIELD_PRODUCT_STOCK_QUANTITY_MOVEMENT_COLLECTION_INITIAL_VALUE = "productStockQuantityMovementCollectionInitialValue";
 	public static final String FIELD_PROPERTIES = "properties";
 	
 	public static final String COLUMN_PRODUCT = FIELD_PRODUCT;
-	public static final String COLUMN_VALUE_ADDED_TAX_RATE = FIELD_VALUE_ADDED_TAX_RATE;
 	public static final String COLUMN_PROPERTIES = FIELD_PROPERTIES;
 }

@@ -11,6 +11,7 @@ import org.cyk.system.company.business.impl.__data__.RealDataSet;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.ProductStore;
+import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.persistence.api.stock.StockableProductDao;
@@ -76,6 +77,25 @@ public class ProductIT extends AbstractBusinessIT {
     	MovementCollection movementCollection = inject(MovementCollectionIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(stockableProduct)
     			.iterator().next().getMovementCollection();
     	testCase.assertEqualsNumber(10, movementCollection.getInitialValue());
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudOneProductWichIsSalableAndStockable(){
+    	TestCase testCase = instanciateTestCase(); 
+    	String code = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Product.class,code).setSalable(Boolean.TRUE).setSalableProductPropertiesPriceFromObject(100)
+    			.setStockable(Boolean.TRUE).setStockQuantityMovementCollectionInitialValueFromObject(10));
+    	SalableProduct salableProduct = testCase.getByIdentifierWhereValueUsageTypeIsBusiness(SalableProduct.class,code,Boolean.TRUE);
+    	testCase.assertEqualsNumber(100, salableProduct.getProperties().getPrice());
+    	testCase.assertNotNullByBusinessIdentifier(StockableProduct.class,code);
+    	Product product = testCase.getByIdentifierWhereValueUsageTypeIsBusiness(Product.class, code);
+    	
+    	StockableProduct stockableProduct = inject(StockableProductDao.class).readByProduct(product);
+    	MovementCollection movementCollection = inject(MovementCollectionIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(stockableProduct)
+    			.iterator().next().getMovementCollection();
+    	testCase.assertEqualsNumber(10, movementCollection.getInitialValue());
+    	
     	testCase.clean();
     }
     
