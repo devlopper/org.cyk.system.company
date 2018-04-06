@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.api.product.ProductStoreBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductStoreBusiness;
 import org.cyk.system.company.business.api.stock.StockableProductStoreBusiness;
 import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.persistence.api.product.ProductStoreDao;
@@ -26,6 +27,9 @@ public class ProductStoreBusinessImpl extends AbstractTypedBusinessService<Produ
 		super.afterCrud(productStore, crud);
 		if(Crud.isCreateOrUpdate(crud)){
 			if(Crud.CREATE.equals(crud)){
+				if(Boolean.TRUE.equals(productStore.getProduct().getSalable())){
+					inject(SalableProductStoreBusiness.class).create(inject(SalableProductStoreBusiness.class).instanciateOne().setProductStore(productStore));
+				}
 				if(Boolean.TRUE.equals(productStore.getProduct().getStockable())){
 					inject(StockableProductStoreBusiness.class).create(inject(StockableProductStoreBusiness.class).instanciateOne().setProductStore(productStore)
 							.setQuantityMovementCollectionInitialValueFromObject(productStore.getProduct().getStockQuantityMovementCollectionInitialValue()));

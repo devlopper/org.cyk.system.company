@@ -29,6 +29,12 @@ public class SalableProductBusinessImpl extends AbstractEnumerationBusinessImpl<
 	}
 	
 	@Override
+	protected void afterDelete(SalableProduct salableProduct) {
+		super.afterDelete(salableProduct);
+		inject(SalableProductPropertiesBusiness.class).delete(salableProduct.getProperties());
+	}
+	
+	@Override
 	protected void createMaster(SalableProduct salableProduct,AbstractIdentifiable master) {
 		//if(master instanceof TangibleProduct){
 			//((TangibleProduct)master).setIsStockable(salableProduct.getIsProductStockable());

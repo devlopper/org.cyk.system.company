@@ -106,4 +106,11 @@ public class SalableProduct extends AbstractEnumeration implements Serializable 
 	
 	public static final String COLUMN_PRODUCT = FIELD_PRODUCT;
 	public static final String COLUMN_PROPERTIES = FIELD_PROPERTIES;
+	
+	/**/
+	
+	public static class Filter extends AbstractEnumeration.Filter<SalableProduct> implements Serializable{
+		private static final long serialVersionUID = 1L;
+    	
+    }
 }

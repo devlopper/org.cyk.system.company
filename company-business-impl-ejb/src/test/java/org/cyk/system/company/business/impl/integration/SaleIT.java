@@ -83,8 +83,8 @@ public class SaleIT extends AbstractBusinessIT {
     			, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME),"TP 001");
     	
     	testCase.assertNotNullByBusinessIdentifier(SalableProductProperties.class, tangibleProductCode);
-    	
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -93,12 +93,12 @@ public class SaleIT extends AbstractBusinessIT {
     	String tangibleProductCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(Product.class,tangibleProductCode).setName("TP 001"));
     	
-    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(tangibleProductCode).setCascadeOperationToMaster(Boolean.TRUE)
-    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT));
+    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(tangibleProductCode).addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT));
     	
     	testCase.assertFieldValueEquals(SalableProduct.class, tangibleProductCode
     			, FieldHelper.getInstance().buildPath(AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME),"TP 001");
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -111,6 +111,7 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.assertNotNullByBusinessIdentifier(Product.class, salableProductCode);
     	testCase.assertNotNullByBusinessIdentifier(SalableProduct.class, salableProductCode);
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -126,6 +127,7 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.deleteByCode(SalableProduct.class, salableProductCode);
     	
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -148,6 +150,7 @@ public class SaleIT extends AbstractBusinessIT {
     			, testCase.read(Product.class, salableProductCode).getGlobalIdentifier(),testCase.read(BusinessRole.class, PROVIDER)));
     	
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     /* SalableProductStore */
@@ -176,6 +179,7 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.assertNotNullByBusinessIdentifier(SalableProductProperties.class, salableProductCode);
     	
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -194,6 +198,7 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.assertNotNullByBusinessIdentifier(StockableProductStore.class, salableProductStoreCode);
     	
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     /* SalableProductCollection */
@@ -209,6 +214,7 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.assertSalableProductCollection(salableProductCollectionCode,null,null,null,null);
     	
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -222,6 +228,7 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"0","0","0","0");
     	
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -251,6 +258,7 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.assertSalableProductCollection(salableProductCollectionCode,"2","200","31","169");
     	
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -280,6 +288,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.deleteAll(StockableProduct.class);
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -318,6 +327,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.deleteAll(StockableProduct.class);
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -357,6 +367,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.deleteAll(StockableProduct.class);
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -390,6 +401,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.deleteAll(StockableProduct.class);
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -423,6 +435,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.deleteAll(StockableProduct.class);
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -444,6 +457,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.deleteAll(StockableProduct.class);
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     /* SalableProductStoreCollection */
@@ -459,6 +473,7 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.assertEqualsSalableProductStoreCollectionCost(new Cost(), salableProductStoreCollectionCode);
     	
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -473,6 +488,7 @@ public class SaleIT extends AbstractBusinessIT {
     			.setTaxFromObject(0).setTurnoverFromObject(0), salableProductStoreCollectionCode);
     	
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -516,6 +532,7 @@ public class SaleIT extends AbstractBusinessIT {
     			.setTaxFromObject(31).setTurnoverFromObject(169), salableProductStoreCollectionCode);
     	
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -565,6 +582,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.deleteAll(StockableProduct.class);
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -625,6 +643,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.deleteAll(StockableProduct.class);
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -682,6 +701,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.deleteAll(StockableProduct.class);
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -720,6 +740,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.deleteAll(StockableProduct.class);
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     /*@Test
@@ -755,6 +776,7 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.assertSaleCost(sale.getCode(),null,null,null,null);
     	testCase.clean();
     	testCase.assertNullByBusinessIdentifier(MovementCollection.class, RootConstant.Code.generate(sale.getCode(),SALE_BALANCE));
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -768,6 +790,7 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, "0");
     	testCase.assertSalableProductCollection(saleCode,"0","0","0","0");
     	testCase.clean();
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -806,6 +829,7 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.clean();
     	testCase.assertCountAll(Movement.class, 2);
     	testCase.deleteAll(Movement.class,StockableProduct.class);
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -840,6 +864,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.clean();
     	testCase.deleteAll(Movement.class,StockableProduct.class);
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -880,6 +905,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.clean();
     	testCase.deleteAll(Movement.class,StockableProduct.class);
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -919,6 +945,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.clean();
     	testCase.deleteAll(StockableProduct.class);
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -966,6 +993,7 @@ public class SaleIT extends AbstractBusinessIT {
     		, new String[]{"2","3","10","true"});
     	
     	testCase.deleteAll(Movement.class,StockableProduct.class);
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -1012,7 +1040,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductCode01,STOCK_REGISTER), "10", "3");  	
     	testCase.deleteAll(Movement.class,StockableProduct.class);
-    	
+    	testCase.assertCountAll(SalableProductProperties.class);
     }
     
     @Test
@@ -1131,7 +1159,7 @@ public class SaleIT extends AbstractBusinessIT {
     	
     	testCase.clean();
     	testCase.deleteAll(Movement.class,StockableProduct.class);
-    	
+    	testCase.assertCountAll(SalableProductProperties.class);
     	
     }
     

@@ -17,7 +17,6 @@ import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
 import org.cyk.utility.common.annotation.user.interfaces.Text;
-import org.cyk.utility.common.annotation.user.interfaces.Text.ValueType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +32,7 @@ public class SalableProductProperties extends AbstractIdentifiable implements Se
 	/**
 	 * The unit price of the product. null means the price will be determine at runtime
 	 */
-	@Column(precision=10,scale=FLOAT_SCALE) @Text(value="selling.price",valueType=ValueType.ID) private BigDecimal price;
+	@Column(precision=10,scale=FLOAT_SCALE) @Text(value="selling.price") private BigDecimal price;
 	@Column(precision=3,scale=FLOAT_SCALE) private BigDecimal quantityMultiple;
 	
 	@Transient private Boolean isProductStockable;

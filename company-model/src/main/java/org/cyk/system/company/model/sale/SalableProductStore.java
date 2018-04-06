@@ -16,9 +16,10 @@ import org.cyk.utility.common.annotation.ModelBean.GenderType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Getter @Setter @NoArgsConstructor @Entity 
-@ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.FEMALE)
+@ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.FEMALE) @Accessors(chain=true)
 public class SalableProductStore extends AbstractIdentifiable implements Serializable  {
 	private static final long serialVersionUID = -6128937819261060725L;
 	
