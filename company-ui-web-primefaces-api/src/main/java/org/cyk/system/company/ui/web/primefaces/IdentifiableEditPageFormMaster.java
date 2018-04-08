@@ -7,6 +7,7 @@ import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductStore;
+import org.cyk.system.company.model.sale.SalableProductStoreCollection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.model.stock.StockableProductStore;
@@ -44,10 +45,11 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 			SaleIdentifiableEditPageFormMaster.prepareSalableProductStore(detail);
 		}else if(SalableProductCollection.class.equals(actionOnClass)){						
 			SaleIdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,null,Boolean.FALSE);
+		}else if(SalableProductStoreCollection.class.equals(actionOnClass)){						
+			SaleIdentifiableEditPageFormMaster.prepareSalableProductStoreCollection(detail,null,Boolean.FALSE);
 		}else if(Sale.class.equals(actionOnClass)){
-			//((Sale)getObject()).getBalance().setValue(BigDecimal.ZERO);
-			//((Sale)getObject()).getBalance().setCumul(BigDecimal.ZERO);
-			SaleIdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION,Boolean.FALSE);
+			//SaleIdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION,Boolean.FALSE);
+			SaleIdentifiableEditPageFormMaster.prepareSalableProductStoreCollection(detail,Sale.FIELD_SALABLE_PRODUCT_STORE_COLLECTION,Boolean.FALSE);
 		}else if(StockableProduct.class.equals(actionOnClass)){
 			StockIdentifiableEditPageFormMaster.prepareStockableProduct(detail);
 		}else if(StockableProductStore.class.equals(actionOnClass)){

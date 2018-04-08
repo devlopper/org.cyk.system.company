@@ -48,7 +48,8 @@ public class SalableProductStoreCollectionItemBusinessImpl extends AbstractColle
 			
 		}else{
 			//This product has a unit price so we can compute the cost to be paid
-			BigDecimal cost = salableProductStoreCollectionItem.getQuantifiedPrice()
+			BigDecimal quantifiedPrice = salableProductStoreCollectionItem.getQuantifiedPrice();
+			BigDecimal cost = quantifiedPrice == null ? null : quantifiedPrice
 				.subtract(InstanceHelper.getInstance().getIfNotNullElseDefault(salableProductStoreCollectionItem.getCost().getReduction(),BigDecimal.ZERO))
 				.add(InstanceHelper.getInstance().getIfNotNullElseDefault(salableProductStoreCollectionItem.getCost().getCommission(),BigDecimal.ZERO))
 				;
@@ -83,7 +84,7 @@ public class SalableProductStoreCollectionItemBusinessImpl extends AbstractColle
 		
 		if(Boolean.TRUE.equals(salableProductStoreCollectionItem.getCollection().getIsBalanceMovementCollectionUpdatable())){			
 			
-		}		
+		}	
 		if(Boolean.TRUE.equals(salableProductStoreCollectionItem.getCollection().getIsStockMovementCollectionUpdatable())){
 			StockableProductStore stockableProductStore = inject(StockableProductStoreDao.class).readByProductStore(
 					salableProductStoreCollectionItem.getSalableProductStore().getProductStore());

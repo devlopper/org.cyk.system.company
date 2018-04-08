@@ -11,8 +11,11 @@ import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.product.ProductStoreBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.stock.StockableProductBusiness;
+import org.cyk.system.company.business.api.stock.StockableProductStoreBusiness;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
+import org.cyk.system.company.model.product.ProductStore;
+import org.cyk.system.company.model.stock.StockableProductStore;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableProductDao;
@@ -22,6 +25,7 @@ import org.cyk.system.root.business.impl.AbstractEnumerationBusinessImpl;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.party.BusinessRole;
 import org.cyk.system.root.model.party.PartyIdentifiableGlobalIdentifier;
+import org.cyk.system.root.model.store.Store;
 import org.cyk.system.root.persistence.api.party.PartyIdentifiableGlobalIdentifierDao;
 import org.cyk.utility.common.helper.CollectionHelper;
 
@@ -43,7 +47,7 @@ public class ProductBusinessImpl extends AbstractEnumerationBusinessImpl<Product
     }
     
     @Override
-	protected void beforeCrud(Product product, Crud crud) {
+	protected void beforeCrud(final Product product, Crud crud) {
 		super.beforeCrud(product, crud);
 		if(Crud.isCreateOrUpdate(crud)){
 			if(Boolean.TRUE.equals(product.getSalable())){
@@ -54,9 +58,23 @@ public class ProductBusinessImpl extends AbstractEnumerationBusinessImpl<Product
 			}
 			
 			if(Boolean.TRUE.equals(product.getStockable())){
+				product.addIdentifiables(inject(StockableProductBusiness.class).instanciateOne().setProduct(product));	
+			}
+			
+			if(Boolean.TRUE.equals(product.getStorable())){
 				if(Crud.CREATE.equals(crud)){
-					product.addIdentifiables(inject(StockableProductBusiness.class).instanciateOne().setProduct(product)
-							.setQuantityMovementCollectionInitialValue(product.getStockQuantityMovementCollectionInitialValue()));
+					new CollectionHelper.Iterator.Adapter.Default<Store>(product.getStores()){
+						private static final long serialVersionUID = 1L;
+
+						protected void __executeForEach__(Store store) {
+							ProductStore productStore = inject(ProductStoreBusiness.class).instanciateOne().setProduct(product).setStore(store);
+							product.addIdentifiables(productStore);
+							if(Boolean.TRUE.equals(product.getStockable())){
+								StockableProductStore stockableProductStore = inject(StockableProductStoreBusiness.class).instanciateOne().setProductStore(productStore);
+								product.addIdentifiables(stockableProductStore);	
+							}
+						};
+					}.execute();		
 				}
 			}
 			
@@ -66,17 +84,6 @@ public class ProductBusinessImpl extends AbstractEnumerationBusinessImpl<Product
 							.setParty(product.getProviderParty())
 							.setBusinessRoleFromCode(RootConstant.Code.BusinessRole.PROVIDER)
 							.setIdentifiableGlobalIdentifier(product.getGlobalIdentifier())
-							);
-				}else{
-					
-				}
-			}
-			
-			if(product.getStore()!=null){
-				if(Crud.CREATE.equals(crud)){
-					product.addIdentifiables(inject(ProductStoreBusiness.class).instanciateOne()
-							.setProduct(product)
-							.setStore(product.getStore())
 							);
 				}else{
 					

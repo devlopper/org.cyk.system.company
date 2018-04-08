@@ -44,7 +44,7 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 	protected void consultInitialisation() {
 		super.consultInitialisation();
 		itemTable.setTitle(inject(LanguageBusiness.class).findClassLabelText(SalableProductCollectionItem.class));
-		itemTable.getAddRowCommandable().addParameter(identifiable.getSalableProductCollection());
+		//itemTable.getAddRowCommandable().addParameter(identifiable.getSalableProductCollection());
 		
 		saleCashRegisterMovementTable = createDetailsTable(SaleCashRegisterMovementDetails.class,new DetailsConfigurationListener.Table.Adapter<SaleCashRegisterMovement, SaleCashRegisterMovementDetails>(SaleCashRegisterMovement.class, SaleCashRegisterMovementDetails.class){
 			private static final long serialVersionUID = 1L;
@@ -92,7 +92,7 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 	
 	@Override
 	protected SalableProductCollection getSalableProductCollection() {
-		return identifiable.getSalableProductCollection();
+		return null;//identifiable.getSalableProductCollection();
 	}
 	
 	@Override
@@ -102,7 +102,7 @@ public class SaleConsultPage extends AbstractSalableProductCollectionConsultPage
 	
 	@Override
 	protected Collection<SalableProductCollectionItem> findByCollection(Sale sale) {
-		return inject(SalableProductCollectionItemBusiness.class).findByCollection(sale.getSalableProductCollection());
+		return null;//inject(SalableProductCollectionItemBusiness.class).findByCollection(sale.getSalableProductCollection());
 	}
 	
 	@Override

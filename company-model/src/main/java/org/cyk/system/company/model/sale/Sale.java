@@ -25,7 +25,6 @@ import lombok.experimental.Accessors;
 public class Sale extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
-	@ManyToOne @JoinColumn(name=COLUMN_SALABLE_PRODUCT_COLLECTION) protected SalableProductCollection salableProductCollection;
 	@ManyToOne @JoinColumn(name=COLUMN_SALABLE_PRODUCT_STORE_COLLECTION) protected SalableProductStoreCollection salableProductStoreCollection;
 	
 	@Transient private Customer customer;
@@ -39,13 +38,11 @@ public class Sale extends AbstractIdentifiable implements Serializable {
 	/**/
 	
 	public static final String FIELD_CUSTOMER = "customer";
-	public static final String FIELD_SALABLE_PRODUCT_COLLECTION = "salableProductCollection";
 	public static final String FIELD_SALABLE_PRODUCT_STORE_COLLECTION = "salableProductStoreCollection";
 	public static final String FIELD_BALANCE_MOVEMENT_COLLECTION = "balanceMovementCollection";
 	
 	/**/
 	
-	public static final String COLUMN_SALABLE_PRODUCT_COLLECTION = FIELD_SALABLE_PRODUCT_COLLECTION;
 	public static final String COLUMN_SALABLE_PRODUCT_STORE_COLLECTION = FIELD_SALABLE_PRODUCT_STORE_COLLECTION;
 	
 	/**/

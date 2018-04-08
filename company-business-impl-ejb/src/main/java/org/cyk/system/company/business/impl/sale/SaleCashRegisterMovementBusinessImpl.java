@@ -188,7 +188,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 		super.afterCrud(saleCashRegisterMovement, crud);
 		if(Crud.isCreateOrUpdate(crud)){
 			BigDecimal paid  = sumAmount(inject(SaleCashRegisterMovementDao.class).readWhereExistencePeriodFromDateIsLessThan(saleCashRegisterMovement));//TODO should be a request
-			saleCashRegisterMovement.getBalance().setValue(saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue().subtract(paid).subtract(saleCashRegisterMovement.getAmount()));
+			//saleCashRegisterMovement.getBalance().setValue(saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue().subtract(paid).subtract(saleCashRegisterMovement.getAmount()));
 			//System.out.println("SaleCashRegisterMovementBusinessImpl.afterCrud() "+crud+" "+saleCashRegisterMovement.getCode()+" "+paid+" "+saleCashRegisterMovement.getAmount()+" "+saleCashRegisterMovement.getBalance().getValue());
 			dao.update(saleCashRegisterMovement);
 			
@@ -277,7 +277,7 @@ public class SaleCashRegisterMovementBusinessImpl extends AbstractCollectionItem
 		BigDecimal balance = null;
 		if(isIdentified(saleCashRegisterMovement)){
 			if(previous==null){
-				balance = saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue();
+				//balance = saleCashRegisterMovement.getSale().getSalableProductCollection().getCost().getValue();
 			}else{
 				balance = previous.getBalance().getValue();
 			}

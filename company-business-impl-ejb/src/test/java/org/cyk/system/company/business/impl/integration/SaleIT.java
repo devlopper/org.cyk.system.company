@@ -785,10 +785,10 @@ public class SaleIT extends AbstractBusinessIT {
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
     	String saleCode = testCase.getRandomAlphabetic();
     	sale.setCode(saleCode);
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.create(sale);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, "0");
-    	testCase.assertSalableProductCollection(saleCode,"0","0","0","0");
+    	testCase.assertCollection(SalableProductStoreCollection.class, SalableProductStoreCollectionItem.class, saleCode, "0");
+    	testCase.assertSalableProductStoreCollectionCost(saleCode,"0","0","0","0");
     	testCase.clean();
     	testCase.assertCountAll(SalableProductProperties.class);
     }
@@ -797,34 +797,36 @@ public class SaleIT extends AbstractBusinessIT {
     public void crudSaleWithItem(){
     	TestCase testCase = instanciateTestCase();
     	testCase.countAll(Movement.class);
-    	testCase.addClasses(SalableProductCollection.class,SalableProductCollectionItem.class);
+    	testCase.addClasses(SalableProductStoreCollection.class,SalableProductStoreCollectionItem.class);
     	
-    	String salableProductCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode).setCascadeOperationToMaster(Boolean.TRUE)
-    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT)
-    			.setPropertiesPriceFromObject(new BigDecimal("100")).setProductIsStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
+    	String salableProductStoreCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(SalableProductStore.class,salableProductStoreCode)
+    		.addCascadeOperationToMasterFieldNames(SalableProductStore.FIELD_PRODUCT_STORE,SalableProductStore.FIELD_SALABLE_PRODUCT_PROPERTIES)
+    		.addProductStoreCascadeOperationToMasterFieldNames(ProductStore.FIELD_PRODUCT,ProductStore.FIELD_STORE)
+    		.setProductStoreProductStockable(Boolean.TRUE).setProductStoreProductStockQuantityMovementCollectionInitialValueFromObject (10)
+    		.setSalableProductPropertiesPriceFromObject(100));
     	
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
     	String saleCode = testCase.getRandomAlphabetic();
     	sale.setCode(saleCode);
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
-    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,salableProductCode));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("2"));
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	SalableProductStoreCollectionItem salableProductStoreCollectionItem = inject(SalableProductStoreCollectionItemBusiness.class).instanciateOne(sale.getSalableProductStoreCollection());
+    	salableProductStoreCollectionItem.setSalableProductStoreFromCode(salableProductStoreCode);
+    	salableProductStoreCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("2"));
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.create(sale);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, "1");
-    	testCase.assertSalableProductCollection(saleCode,"2","200","31","169");
-    	testCase.assertStockableProduct(salableProductCode, "8");
+    	testCase.assertCollection(SalableProductStoreCollection.class, SalableProductStoreCollectionItem.class, saleCode, "1");
+    	testCase.assertSalableProductStoreCollectionCost(saleCode,"2","200","31","169");
+    	testCase.assertStockableProductStore(salableProductStoreCode, "8");
     	//testCase.assertmovem
     	
     	sale = testCase.read(Sale.class, saleCode);
-    	sale.getSalableProductCollection().getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductStoreCollection().getItems().addMany(inject(SalableProductStoreCollectionItemDao.class).readByCollection(sale.getSalableProductStoreCollection()));
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.update(sale);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, "1");
-    	testCase.assertSalableProductCollection(saleCode,"2","200","31","169");
-    	testCase.assertStockableProduct(salableProductCode, "8");
+    	testCase.assertCollection(SalableProductStoreCollection.class, SalableProductStoreCollectionItem.class, saleCode, "1");
+    	testCase.assertSalableProductStoreCollectionCost(saleCode,"2","200","31","169");
+    	testCase.assertStockableProductStore(salableProductStoreCode, "8");
     	
     	testCase.clean();
     	testCase.assertCountAll(Movement.class, 2);
@@ -835,32 +837,37 @@ public class SaleIT extends AbstractBusinessIT {
     @Test
     public void crudSaleWithAtLeastTwoItems(){
     	TestCase testCase = instanciateTestCase();
-    	String salableProductCode01 = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
-    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT)
-    			.setPropertiesPriceFromObject(new BigDecimal("100")).setProductIsStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
     	
-    	String salableProductCode03 = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode03).setCascadeOperationToMaster(Boolean.TRUE)
-    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT)
-    			.setPropertiesPriceFromObject(new BigDecimal("150")).setProductIsStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
+    	String salableProductStoreCode01 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(SalableProductStore.class,salableProductStoreCode01)
+    		.addCascadeOperationToMasterFieldNames(SalableProductStore.FIELD_PRODUCT_STORE,SalableProductStore.FIELD_SALABLE_PRODUCT_PROPERTIES)
+    		.addProductStoreCascadeOperationToMasterFieldNames(ProductStore.FIELD_PRODUCT,ProductStore.FIELD_STORE)
+    		.setProductStoreProductStockable(Boolean.TRUE).setProductStoreProductStockQuantityMovementCollectionInitialValueFromObject (10)
+    		.setSalableProductPropertiesPriceFromObject(100));
+    	
+    	String salableProductStoreCode03 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(SalableProductStore.class,salableProductStoreCode03)
+    		.addCascadeOperationToMasterFieldNames(SalableProductStore.FIELD_PRODUCT_STORE,SalableProductStore.FIELD_SALABLE_PRODUCT_PROPERTIES)
+    		.addProductStoreCascadeOperationToMasterFieldNames(ProductStore.FIELD_PRODUCT,ProductStore.FIELD_STORE)
+    		.setProductStoreProductStockable(Boolean.TRUE).setProductStoreProductStockQuantityMovementCollectionInitialValueFromObject (10)
+    		.setSalableProductPropertiesPriceFromObject(150));
     	
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
     	String saleCode = testCase.getRandomAlphabetic();
     	sale.setCode(saleCode);
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	
-    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,salableProductCode01));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("2"));
+    	SalableProductStoreCollectionItem salableProductStoreCollectionItem = inject(SalableProductStoreCollectionItemBusiness.class).instanciateOne(sale.getSalableProductStoreCollection());
+    	salableProductStoreCollectionItem.setSalableProductStoreFromCode(salableProductStoreCode01);
+    	salableProductStoreCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("2"));
     	
-    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,salableProductCode03));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("1"));
+    	salableProductStoreCollectionItem = inject(SalableProductStoreCollectionItemBusiness.class).instanciateOne(sale.getSalableProductStoreCollection());
+    	salableProductStoreCollectionItem.setSalableProductStoreFromCode(salableProductStoreCode03);
+    	salableProductStoreCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("1"));
     	
     	testCase.create(sale);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, "2");
-    	testCase.assertSalableProductCollection(saleCode,"3","350","54","296");
+    	testCase.assertCollection(SalableProductStoreCollection.class, SalableProductStoreCollectionItem.class, saleCode, "2");
+    	testCase.assertSalableProductStoreCollectionCost(saleCode,"3","350","54","296");
     	
     	testCase.clean();
     	testCase.deleteAll(Movement.class,StockableProduct.class);
@@ -871,37 +878,41 @@ public class SaleIT extends AbstractBusinessIT {
     public void crudSaleWithItemsUpdate(){
     	TestCase testCase = instanciateTestCase();
     	
-    	String salableProductCode01 = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
-    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT)
-    			.setPropertiesPriceFromObject(new BigDecimal("100")).setProductIsStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
+    	String salableProductStoreCode01 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(SalableProductStore.class,salableProductStoreCode01)
+    		.addCascadeOperationToMasterFieldNames(SalableProductStore.FIELD_PRODUCT_STORE,SalableProductStore.FIELD_SALABLE_PRODUCT_PROPERTIES)
+    		.addProductStoreCascadeOperationToMasterFieldNames(ProductStore.FIELD_PRODUCT,ProductStore.FIELD_STORE)
+    		.setProductStoreProductStockable(Boolean.TRUE).setProductStoreProductStockQuantityMovementCollectionInitialValueFromObject (10)
+    		.setSalableProductPropertiesPriceFromObject(100));
     	
-    	String salableProductCode03 = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode03).setCascadeOperationToMaster(Boolean.TRUE)
-    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT)
-    			.setPropertiesPriceFromObject(new BigDecimal("150")).setProductIsStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
+    	String salableProductStoreCode03 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(SalableProductStore.class,salableProductStoreCode03)
+    		.addCascadeOperationToMasterFieldNames(SalableProductStore.FIELD_PRODUCT_STORE,SalableProductStore.FIELD_SALABLE_PRODUCT_PROPERTIES)
+    		.addProductStoreCascadeOperationToMasterFieldNames(ProductStore.FIELD_PRODUCT,ProductStore.FIELD_STORE)
+    		.setProductStoreProductStockable(Boolean.TRUE).setProductStoreProductStockQuantityMovementCollectionInitialValueFromObject (10)
+    		.setSalableProductPropertiesPriceFromObject(150));
     	
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
     	String saleCode = testCase.getRandomAlphabetic();
     	sale.setCode(saleCode);
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	
-    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,salableProductCode01));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("2"));
+    	SalableProductStoreCollectionItem salableProductStoreCollectionItem = inject(SalableProductStoreCollectionItemBusiness.class).instanciateOne(sale.getSalableProductStoreCollection());
+    	salableProductStoreCollectionItem.setSalableProductStoreFromCode(salableProductStoreCode01);
+    	salableProductStoreCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("2"));
     	testCase.create(sale);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, "1");
-    	testCase.assertSalableProductCollection(saleCode,"2","200","31","169");
+    	testCase.assertCollection(SalableProductStoreCollection.class, SalableProductStoreCollectionItem.class, saleCode, "1");
+    	testCase.assertSalableProductStoreCollectionCost(saleCode,"2","200","31","169");
     	
     	sale = testCase.read(Sale.class, saleCode);
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
-    	sale.getSalableProductCollection().getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
-    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,salableProductCode03));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("1"));
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductStoreCollection().getItems().addMany(inject(SalableProductStoreCollectionItemDao.class).readByCollection(sale.getSalableProductStoreCollection()));
+    	salableProductStoreCollectionItem = inject(SalableProductStoreCollectionItemBusiness.class).instanciateOne(sale.getSalableProductStoreCollection());
+    	salableProductStoreCollectionItem.setSalableProductStoreFromCode(salableProductStoreCode03);
+    	salableProductStoreCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("1"));
     	testCase.update(sale);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, "2");
-    	testCase.assertSalableProductCollection(saleCode,"3","350","54","296");
+    	testCase.assertCollection(SalableProductStoreCollection.class, SalableProductStoreCollectionItem.class, saleCode, "2");
+    	testCase.assertSalableProductStoreCollectionCost(saleCode,"3","350","54","296");
     	
     	testCase.clean();
     	testCase.deleteAll(Movement.class,StockableProduct.class);
@@ -911,37 +922,42 @@ public class SaleIT extends AbstractBusinessIT {
     @Test
     public void computeSaleChanges(){
     	TestCase testCase = instanciateTestCase();
-    	String salableProductCode01 = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
-    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT)
-    			.setPropertiesPriceFromObject(new BigDecimal("100")).setProductIsStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
     	
-    	String salableProductCode03 = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode03).setCascadeOperationToMaster(Boolean.TRUE)
-    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT)
-    			.setPropertiesPriceFromObject(new BigDecimal("150")).setProductIsStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
+    	String salableProductStoreCode01 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(SalableProductStore.class,salableProductStoreCode01)
+    		.addCascadeOperationToMasterFieldNames(SalableProductStore.FIELD_PRODUCT_STORE,SalableProductStore.FIELD_SALABLE_PRODUCT_PROPERTIES)
+    		.addProductStoreCascadeOperationToMasterFieldNames(ProductStore.FIELD_PRODUCT,ProductStore.FIELD_STORE)
+    		.setProductStoreProductStockable(Boolean.TRUE).setProductStoreProductStockQuantityMovementCollectionInitialValueFromObject (10)
+    		.setSalableProductPropertiesPriceFromObject(100));
+    	
+    	String salableProductStoreCode03 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(SalableProductStore.class,salableProductStoreCode03)
+    		.addCascadeOperationToMasterFieldNames(SalableProductStore.FIELD_PRODUCT_STORE,SalableProductStore.FIELD_SALABLE_PRODUCT_PROPERTIES)
+    		.addProductStoreCascadeOperationToMasterFieldNames(ProductStore.FIELD_PRODUCT,ProductStore.FIELD_STORE)
+    		.setProductStoreProductStockable(Boolean.TRUE).setProductStoreProductStockQuantityMovementCollectionInitialValueFromObject (10)
+    		.setSalableProductPropertiesPriceFromObject(150));
     	
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
     	String saleCode = testCase.getRandomAlphabetic();
     	sale.setCode(saleCode);
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	
     	inject(SaleBusiness.class).computeChanges(sale);
-    	testCase.assertCost(sale.getSalableProductCollection().getCost(), "0", "0", "0", "0");
+    	testCase.assertCost(sale.getSalableProductStoreCollection().getCost(), "0", "0", "0", "0");
     	
-    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,salableProductCode01));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("2"));
-    	
-    	inject(SaleBusiness.class).computeChanges(sale);
-    	testCase.assertCost(sale.getSalableProductCollection().getCost(), "2","200","31","169");
-    	
-    	salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,salableProductCode03));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("1"));
+    	SalableProductStoreCollectionItem salableProductStoreCollectionItem = inject(SalableProductStoreCollectionItemBusiness.class).instanciateOne(sale.getSalableProductStoreCollection());
+    	salableProductStoreCollectionItem.setSalableProductStoreFromCode(salableProductStoreCode01);
+    	salableProductStoreCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("2"));
     	
     	inject(SaleBusiness.class).computeChanges(sale);
-    	testCase.assertCost(sale.getSalableProductCollection().getCost(),"3","350","54","296");
+    	testCase.assertCost(sale.getSalableProductStoreCollection().getCost(), "2","200","31","169");
+    	
+    	salableProductStoreCollectionItem = inject(SalableProductStoreCollectionItemBusiness.class).instanciateOne(sale.getSalableProductStoreCollection());
+    	salableProductStoreCollectionItem.setSalableProductStoreFromCode(salableProductStoreCode03);
+    	salableProductStoreCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("1"));
+    	
+    	inject(SaleBusiness.class).computeChanges(sale);
+    	testCase.assertCost(sale.getSalableProductStoreCollection().getCost(),"3","350","54","296");
     	
     	testCase.clean();
     	testCase.deleteAll(StockableProduct.class);
@@ -951,43 +967,46 @@ public class SaleIT extends AbstractBusinessIT {
     @Test
     public void crudSaleWithItemWithProductQuantityVariation(){
     	TestCase testCase = instanciateTestCase();
-    	String salableProductCode01 = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
-    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT)
-    			.setPropertiesPriceFromObject(new BigDecimal("100")).setProductIsStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
+    	
+    	String salableProductStoreCode01 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(SalableProductStore.class,salableProductStoreCode01)
+    		.addCascadeOperationToMasterFieldNames(SalableProductStore.FIELD_PRODUCT_STORE,SalableProductStore.FIELD_SALABLE_PRODUCT_PROPERTIES)
+    		.addProductStoreCascadeOperationToMasterFieldNames(ProductStore.FIELD_PRODUCT,ProductStore.FIELD_STORE)
+    		.setProductStoreProductStockable(Boolean.TRUE).setProductStoreProductStockQuantityMovementCollectionInitialValueFromObject (10)
+    		.setSalableProductPropertiesPriceFromObject(100));
     	
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
     	String saleCode = testCase.getRandomAlphabetic();
     	sale.setCode(saleCode);
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
-    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,salableProductCode01));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("4"));
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	SalableProductStoreCollectionItem salableProductStoreCollectionItem = inject(SalableProductStoreCollectionItemBusiness.class).instanciateOne(sale.getSalableProductStoreCollection());
+    	salableProductStoreCollectionItem.setSalableProductStoreFromCode(salableProductStoreCode01);
+    	salableProductStoreCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("4"));
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.create(sale);
-    	testCase.assertStockableProduct(salableProductCode01, "6");    	
-    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductCode01,STOCK_REGISTER), "6", "1");
+    	testCase.assertStockableProductStore(salableProductStoreCode01, "6");    	
+    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductStoreCode01,STOCK_REGISTER), "6", "1");
     	
     	sale = testCase.read(Sale.class, saleCode);
-    	sale.getSalableProductCollection().getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
-    	sale.getSalableProductCollection().getItems().getElements().iterator().next().getCost().setNumberOfProceedElements(new BigDecimal("3"));
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductStoreCollection().getItems().addMany(inject(SalableProductStoreCollectionItemDao.class).readByCollection(sale.getSalableProductStoreCollection()));
+    	sale.getSalableProductStoreCollection().getItems().getElements().iterator().next().getCost().setNumberOfProceedElements(new BigDecimal("3"));
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.update(sale);
-    	testCase.assertStockableProduct(salableProductCode01, "7");    	
-    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductCode01,STOCK_REGISTER), "7", "2");
+    	testCase.assertStockableProductStore(salableProductStoreCode01, "7");    	
+    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductStoreCode01,STOCK_REGISTER), "7", "2");
     	
     	sale = testCase.read(Sale.class, saleCode);
-    	sale.getSalableProductCollection().getItems().removeAll();
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductStoreCollection().getItems().removeAll();
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.update(sale);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, "0");
-    	testCase.assertStockableProduct(salableProductCode01, "10");    	
-    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductCode01,STOCK_REGISTER), "10", "3");
+    	testCase.assertCollection(SalableProductStoreCollection.class, SalableProductStoreCollectionItem.class, saleCode, "0");
+    	testCase.assertStockableProductStore(salableProductStoreCode01, "10");    	
+    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductStoreCode01,STOCK_REGISTER), "10", "3");
     	
     	testCase.clean();
     	
-    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductCode01,STOCK_REGISTER), "10", "3");
-    	testCase.assertMovements(RootConstant.Code.generate(salableProductCode01,STOCK_REGISTER)
+    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductStoreCode01,STOCK_REGISTER), "10", "3");
+    	testCase.assertMovements(RootConstant.Code.generate(salableProductStoreCode01,STOCK_REGISTER)
     		, new String[]{"0","-4","6","false"}
     		, new String[]{"1","1","7","true"}
     		, new String[]{"2","3","10","true"});
@@ -995,61 +1014,66 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.deleteAll(Movement.class,StockableProduct.class);
     	testCase.assertCountAll(SalableProductProperties.class);
     }
-    
+    /*
     @Test
     public void crudSaleWithItemWithBalanceVariation(){
     	TestCase testCase = instanciateTestCase();
-    	String salableProductCode01 = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
-    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT)
-    			.setPropertiesPriceFromObject(new BigDecimal("100")).setProductIsStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
+    	
+    	String salableProductStoreCode01 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(SalableProductStore.class,salableProductStoreCode01)
+    		.addCascadeOperationToMasterFieldNames(SalableProductStore.FIELD_PRODUCT_STORE,SalableProductStore.FIELD_SALABLE_PRODUCT_PROPERTIES)
+    		.addProductStoreCascadeOperationToMasterFieldNames(ProductStore.FIELD_PRODUCT,ProductStore.FIELD_STORE)
+    		.setProductStoreProductStockable(Boolean.TRUE).setProductStoreProductStockQuantityMovementCollectionInitialValueFromObject (10)
+    		.setSalableProductPropertiesPriceFromObject(100));
     	
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
     	String saleCode = testCase.getRandomAlphabetic();
     	sale.setCode(saleCode);
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
-    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,salableProductCode01));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("4"));
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	SalableProductStoreCollectionItem salableProductStoreCollectionItem = inject(SalableProductStoreCollectionItemBusiness.class).instanciateOne(sale.getSalableProductStoreCollection());
+    	salableProductStoreCollectionItem.setSalableProductStoreFromCode(salableProductStoreCode01);
+    	salableProductStoreCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("4"));
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.create(sale);
-    	testCase.assertStockableProduct(salableProductCode01, "6");    	
+    	testCase.assertStockableProductStore(salableProductStoreCode01, "6");    	
     	testCase.assertMovementCollection(RootConstant.Code.generate(saleCode,SALE_BALANCE), "400", "0");
     	
     	sale = testCase.read(Sale.class, saleCode);
-    	sale.getSalableProductCollection().getItems().addMany(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
-    	sale.getSalableProductCollection().getItems().getElements().iterator().next().getCost().setNumberOfProceedElements(new BigDecimal("3"));
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductStoreCollection().getItems().addMany(inject(SalableProductStoreCollectionItemDao.class).readByCollection(sale.getSalableProductStoreCollection()));
+    	sale.getSalableProductStoreCollection().getItems().getElements().iterator().next().getCost().setNumberOfProceedElements(new BigDecimal("3"));
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.update(sale);
-    	testCase.assertStockableProduct(salableProductCode01, "7");    	
-    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductCode01,STOCK_REGISTER), "7", "2");
+    	testCase.assertStockableProductStore(salableProductStoreCode01, "7");    	
+    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductStoreCode01,STOCK_REGISTER), "7", "2");
     	testCase.assertMovementCollection(RootConstant.Code.generate(saleCode,SALE_BALANCE), "300", "1");
     	
     	sale = testCase.read(Sale.class, saleCode);
-    	sale.getSalableProductCollection().getItems().removeAll();
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductStoreCollection().getItems().removeAll();
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.update(sale);
-    	testCase.assertCollection(SalableProductCollection.class, SalableProductCollectionItem.class, saleCode, "0");
-    	testCase.assertStockableProduct(salableProductCode01, "10");    	
-    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductCode01,STOCK_REGISTER), "10", "3");
+    	testCase.assertCollection(SalableProductStoreCollection.class, SalableProductStoreCollectionItem.class, saleCode, "0");
+    	testCase.assertStockableProductStore(salableProductStoreCode01, "10");    	
+    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductStoreCode01,STOCK_REGISTER), "10", "3");
     	testCase.assertMovementCollection(RootConstant.Code.generate(saleCode,SALE_BALANCE), "0", "2");
     	testCase.assertMovements(RootConstant.Code.generate(saleCode,SALE_BALANCE)
         		, new String[]{"0","-100","300","false"}
         		, new String[]{"1","-300","0","false"});
     	testCase.clean();
     	
-    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductCode01,STOCK_REGISTER), "10", "3");  	
+    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductStoreCode01,STOCK_REGISTER), "10", "3");  	
     	testCase.deleteAll(Movement.class,StockableProduct.class);
     	testCase.assertCountAll(SalableProductProperties.class);
     }
-    
+    /*
     @Test
     public void crudSaleWithItemWithBalanceVariationPayment(){
     	TestCase testCase = instanciateTestCase();
-    	String salableProductCode01 = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(SalableProduct.class).setCode(salableProductCode01).setCascadeOperationToMaster(Boolean.TRUE)
-    			.addCascadeOperationToMasterFieldNames(SalableProduct.FIELD_PRODUCT)
-    			.setPropertiesPriceFromObject(new BigDecimal("100")).setProductIsStockable(Boolean.TRUE).setProductStockQuantityMovementCollectionInitialValueFromObject(10));
+    	String salableProductStoreCode01 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(SalableProductStore.class,salableProductStoreCode01)
+    		.addCascadeOperationToMasterFieldNames(SalableProductStore.FIELD_PRODUCT_STORE,SalableProductStore.FIELD_SALABLE_PRODUCT_PROPERTIES)
+    		.addProductStoreCascadeOperationToMasterFieldNames(ProductStore.FIELD_PRODUCT,ProductStore.FIELD_STORE)
+    		.setProductStoreProductStockable(Boolean.TRUE).setProductStoreProductStockQuantityMovementCollectionInitialValueFromObject (10)
+    		.setSalableProductPropertiesPriceFromObject(100));
     	
     	String cashRegisterMovementCollectionCode = testCase.getRandomAlphabetic();
     	testCase.create(inject(MovementCollectionBusiness.class).instanciateOne(cashRegisterMovementCollectionCode).setValue(new BigDecimal("0")));
@@ -1057,13 +1081,13 @@ public class SaleIT extends AbstractBusinessIT {
     	Sale sale = inject(SaleBusiness.class).instanciateOne();
     	String saleCode = testCase.getRandomAlphabetic();
     	sale.setCode(saleCode);
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
-    	SalableProductCollectionItem salableProductCollectionItem = inject(SalableProductCollectionItemBusiness.class).instanciateOne(sale.getSalableProductCollection());
-    	salableProductCollectionItem.setSalableProduct(testCase.read(SalableProduct.class,salableProductCode01));
-    	salableProductCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("10"));
-    	sale.getSalableProductCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
+    	SalableProductStoreCollectionItem salableProductStoreCollectionItem = inject(SalableProductStoreCollectionItemBusiness.class).instanciateOne(sale.getSalableProductStoreCollection());
+    	salableProductStoreCollectionItem.setSalableProductStoreFromCode(salableProductStoreCode01);
+    	salableProductStoreCollectionItem.getCost().setNumberOfProceedElements(new BigDecimal("10"));
+    	sale.getSalableProductStoreCollection().getItems().setSynchonizationEnabled(Boolean.TRUE);
     	testCase.create(sale);
-    	testCase.assertStockableProduct(salableProductCode01, "0");    	
+    	testCase.assertStockableProductStore(salableProductStoreCode01, "0");    	
     	testCase.assertMovementCollection(RootConstant.Code.generate(saleCode,SALE_BALANCE), "1000", "0");
     	
     	IdentifiableCollection identifiableCollection = inject(IdentifiableCollectionBusiness.class).instanciateOne();
@@ -1129,7 +1153,7 @@ public class SaleIT extends AbstractBusinessIT {
         		, new String[]{"2","300","1000","true"}
         	);
     	
-    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductCode01,STOCK_REGISTER), "0", "1");
+    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductStoreCode01,STOCK_REGISTER), "0", "1");
     	testCase.assertMovements(RootConstant.Code.generate(saleCode,SALE_BALANCE)
         		, new String[]{"0","-200","800","false"}
         		, new String[]{"1","-500","300","false"}
@@ -1145,8 +1169,8 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.deleteByCode(Sale.class, saleCode);
 
     	testCase.assertNullByBusinessIdentifier(MovementCollection.class, RootConstant.Code.generate(saleCode,SALE_BALANCE));
-    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductCode01,STOCK_REGISTER), "10", "2");
-    	testCase.assertMovements(RootConstant.Code.generate(salableProductCode01,STOCK_REGISTER)
+    	testCase.assertMovementCollection(RootConstant.Code.generate(salableProductStoreCode01,STOCK_REGISTER), "10", "2");
+    	testCase.assertMovements(RootConstant.Code.generate(salableProductStoreCode01,STOCK_REGISTER)
         		, new String[]{"0","-10","0","false"}
         		, new String[]{"1","10","10","true"}
         	);
@@ -1162,7 +1186,7 @@ public class SaleIT extends AbstractBusinessIT {
     	testCase.assertCountAll(SalableProductProperties.class);
     	
     }
-    
+    */
     /* Exceptions */
     
 	@Test
@@ -1181,9 +1205,9 @@ public class SaleIT extends AbstractBusinessIT {
 		TestCase testCase = instanciateTestCase();
 		testCase.assertThrowable(new Runnable(testCase) {
 			private static final long serialVersionUID = 1L;
-			@Override protected void __run__() throws Throwable {create(instanciateOne(SalableProductCollectionItem.class));}
-    	}, FieldHelper.Field.get(SalableProductCollectionItem.class,SalableProductCollectionItem.FIELD_COLLECTION).getIdentifier(ConditionHelper.Condition.Builder.Null.class)
-				, "La valeur de l'attribut <<collection>> de l'entité <<élément de collection de produit vendable>> doit être non nulle.");
+			@Override protected void __run__() throws Throwable {create(instanciateOne(SalableProductStoreCollectionItem.class));}
+    	}, FieldHelper.Field.get(SalableProductStoreCollectionItem.class,SalableProductStoreCollectionItem.FIELD_COLLECTION).getIdentifier(ConditionHelper.Condition.Builder.Null.class)
+				, "La valeur de l'attribut <<collection>> de l'entité <<élément de collection de association de produit et magasin vendable>> doit être non nulle.");
     	testCase.clean();
 	}
 	

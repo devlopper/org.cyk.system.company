@@ -62,7 +62,7 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
     	registerNamedQuery(computeByCriteriaWhereCashRegisterMovementExists,queryStringBuilder);
     	*/
     	
-    	registerNamedQuery(readBySalableProductCollection,_select().where(Sale.FIELD_SALABLE_PRODUCT_COLLECTION));
+    	//registerNamedQuery(readBySalableProductCollection,_select().where(Sale.FIELD_SALABLE_PRODUCT_COLLECTION));
     }	
 	/*
 	private void whereSearchCriteria(QueryStringBuilder queryStringBuilder){
@@ -78,8 +78,8 @@ public class SaleDaoImpl extends AbstractTypedDao<Sale> implements SaleDao {
 	
 	@Override
 	public Sale readBySalableProductCollection(SalableProductCollection salableProductCollection) {
-		return namedQuery(readBySalableProductCollection).parameter(Sale.FIELD_SALABLE_PRODUCT_COLLECTION, salableProductCollection)
-				.ignoreThrowable(NoResultException.class).resultOne();
+		return null;//namedQuery(readBySalableProductCollection).parameter(Sale.FIELD_SALABLE_PRODUCT_COLLECTION, salableProductCollection)
+				//.ignoreThrowable(NoResultException.class).resultOne();
 	}
 	
 	@Override

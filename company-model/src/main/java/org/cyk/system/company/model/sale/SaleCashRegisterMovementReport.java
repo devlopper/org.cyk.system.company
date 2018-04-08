@@ -54,7 +54,7 @@ public class SaleCashRegisterMovementReport extends AbstractIdentifiableReport<S
 	public Balance getPreviousBalanceIdentifiable(){
 		if(previous==null){
 			Balance balance = new Balance();
-			balance.setValue(((Sale)sale.getSource()).getSalableProductCollection().getCost().getValue());
+			//balance.setValue(((Sale)sale.getSource()).getSalableProductCollection().getCost().getValue());
 			return balance;
 		}
 		return ((SaleCashRegisterMovement)previous.getSource()).getBalance();

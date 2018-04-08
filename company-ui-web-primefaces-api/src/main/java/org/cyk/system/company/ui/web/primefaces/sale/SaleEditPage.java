@@ -49,13 +49,13 @@ public class SaleEditPage extends AbstractSalableProductCollectionEditPage<Sale,
 	@Override
 	protected void afterInitialisation() {
 		super.afterInitialisation();
-		itemCollection = createItemCollection(Item.class, SalableProductCollectionItem.class,identifiable 
-				,new SalableProductCollectionItemAdapter(identifiable.getSalableProductCollection(),crud,form));
+		//itemCollection = createItemCollection(Item.class, SalableProductCollectionItem.class,identifiable 
+		//		,new SalableProductCollectionItemAdapter(identifiable.getSalableProductCollection(),crud,form));
 	}
 	
 	@Override
 	protected SalableProductCollection getSalableProductCollection() {
-		return identifiable.getSalableProductCollection();
+		return null;//identifiable.getSalableProductCollection();
 	}
 	
 	/**/
@@ -83,7 +83,7 @@ public class SaleEditPage extends AbstractSalableProductCollectionEditPage<Sale,
 
 		@Override
 		protected SalableProductCollection getSalableProductCollection() {
-			return identifiable.getSalableProductCollection();
+			return null;//identifiable.getSalableProductCollection();
 		}
 		
 		public static final String FIELD_CUSTOMER = "customer";

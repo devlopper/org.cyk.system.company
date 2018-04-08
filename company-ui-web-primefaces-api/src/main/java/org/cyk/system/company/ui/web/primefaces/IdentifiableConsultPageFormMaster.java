@@ -50,7 +50,7 @@ public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces
 		}else if(SalableProduct.class.equals(actionOnClass)){
 			SaleIdentifiableEditPageFormMaster.prepareSalableProduct(detail);
 		}else if(Sale.class.equals(actionOnClass)){
-			SaleIdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,Sale.FIELD_SALABLE_PRODUCT_COLLECTION,Boolean.TRUE);
+			SaleIdentifiableEditPageFormMaster.prepareSalableProductStoreCollection(detail,Sale.FIELD_SALABLE_PRODUCT_STORE_COLLECTION,Boolean.TRUE);
 			
 			MovementCollection movementCollection = inject(MovementCollectionBusiness.class)
 					.findByTypeByJoin(inject(MovementCollectionTypeDao.class).read(RootConstant.Code.MovementCollectionType.SALE_BALANCE), (Sale)getObject())

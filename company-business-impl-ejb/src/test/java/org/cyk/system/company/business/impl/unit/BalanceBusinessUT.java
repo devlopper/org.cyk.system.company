@@ -51,8 +51,8 @@ public class BalanceBusinessUT extends AbstractUnitTest {
 		SaleCashRegisterMovement saleCashRegisterMovement = new SaleCashRegisterMovement();
 		saleCashRegisterMovement.setCollection(new SaleCashRegisterMovementCollection());
 		
-		fieldHelper.set(saleCashRegisterMovement, new BigDecimal("10"), SaleCashRegisterMovement.FIELD_SALE, Sale.FIELD_SALABLE_PRODUCT_COLLECTION
-				,SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE);
+		//fieldHelper.set(saleCashRegisterMovement, new BigDecimal("10"), SaleCashRegisterMovement.FIELD_SALE, Sale.FIELD_SALABLE_PRODUCT_COLLECTION
+		//		,SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE);
 		
 		fieldHelper.set(saleCashRegisterMovement, SaleCashRegisterMovement.FIELD_COLLECTION, SaleCashRegisterMovementCollection.FIELD_CASH_REGISTER_MOVEMENT
 				,CashRegisterMovement.FIELD_MOVEMENT,Movement.FIELD_VALUE);

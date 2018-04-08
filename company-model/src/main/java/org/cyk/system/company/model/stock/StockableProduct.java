@@ -1,17 +1,14 @@
 package org.cyk.system.company.model.stock;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.root.model.AbstractIdentifiable;
-import org.cyk.system.root.model.mathematics.MovementCollection;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
@@ -27,9 +24,10 @@ public class StockableProduct extends AbstractIdentifiable implements Serializab
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne @JoinColumn(name=COLUMN_PRODUCT,unique=true) @NotNull private Product product;
+	//private BigDecimal quantityMovementCollectionInitialValueOfNewStockableProductStore;
 	
-	@Transient private MovementCollection quantityMovementCollection;
-	@Transient private BigDecimal quantityMovementCollectionInitialValue;
+	//@Transient private MovementCollection quantityMovementCollection;
+	//@Transient private BigDecimal quantityMovementCollectionInitialValue;
 	
 	/**/
 	
@@ -38,21 +36,8 @@ public class StockableProduct extends AbstractIdentifiable implements Serializab
 		return (StockableProduct) super.setCode(code);
 	}
 	
-	public StockableProduct setQuantityMovementCollectionValue(BigDecimal value){
-		if(quantityMovementCollection == null){
-			
-		}else
-			quantityMovementCollection.setValue(value);
-		return this;
-	}
-	
 	public StockableProduct setProductFromCode(String code){
 		product = getFromCode(Product.class, code);
-		return this;
-	}
-	
-	public StockableProduct setQuantityMovementCollectionInitialValueFromObject(Object object){
-		quantityMovementCollectionInitialValue = getNumberFromObject(BigDecimal.class, object);
 		return this;
 	}
 	

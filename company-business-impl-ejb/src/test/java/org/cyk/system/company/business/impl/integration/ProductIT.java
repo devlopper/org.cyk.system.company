@@ -14,7 +14,6 @@ import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.model.structure.Company;
-import org.cyk.system.company.persistence.api.stock.StockableProductDao;
 import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.RootConstant;
@@ -25,7 +24,6 @@ import org.cyk.system.root.model.party.BusinessRole;
 import org.cyk.system.root.model.party.Party;
 import org.cyk.system.root.model.store.Store;
 import org.cyk.system.root.model.store.StoreType;
-import org.cyk.system.root.persistence.api.mathematics.MovementCollectionIdentifiableGlobalIdentifierDao;
 import org.cyk.system.root.persistence.api.party.PartyIdentifiableGlobalIdentifierDao;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.FileHelper;
@@ -52,7 +50,6 @@ public class ProductIT extends AbstractBusinessIT {
     	TestCase testCase = instanciateTestCase(); 
     	String code = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(Product.class,code));
-    	testCase.assertNullByBusinessIdentifier(StockableProduct.class,code);
     	testCase.clean();
     }
     
@@ -62,39 +59,28 @@ public class ProductIT extends AbstractBusinessIT {
     	String code = testCase.getRandomAlphabetic();
     	FileHelper.File file = RandomHelper.getInstance().getFilePersonHeadOnly(Boolean.TRUE);
     	testCase.create(testCase.instanciateOne(Product.class,code).setImage(inject(FileBusiness.class).process(file.getBytes(), file.getName())));
-    	testCase.assertNullByBusinessIdentifier(StockableProduct.class,code);
     	testCase.clean();
     }
     
     @Test
-    public void crudOneProductWithStockQuantityMovementCollectionInitialValue(){
+    public void crudOneProductWichIsStockable(){
     	TestCase testCase = instanciateTestCase(); 
     	String code = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(Product.class,code).setStockable(Boolean.TRUE).setStockQuantityMovementCollectionInitialValueFromObject(10));
-    	testCase.assertNotNullByBusinessIdentifier(StockableProduct.class,code);
-    	Product product = testCase.getByIdentifierWhereValueUsageTypeIsBusiness(Product.class, code);
-    	StockableProduct stockableProduct = inject(StockableProductDao.class).readByProduct(product);
-    	MovementCollection movementCollection = inject(MovementCollectionIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(stockableProduct)
-    			.iterator().next().getMovementCollection();
-    	testCase.assertEqualsNumber(10, movementCollection.getInitialValue());
+    	testCase.countAll(MovementCollection.class);
+    	testCase.create(testCase.instanciateOne(Product.class,code).setStockable(Boolean.TRUE));
+    	testCase.assertNotNullByBusinessIdentifier(StockableProduct.class, code);
+    	testCase.assertCountAll(MovementCollection.class);
     	testCase.clean();
     }
     
     @Test
-    public void crudOneProductWichIsSalableAndStockable(){
+    public void crudOneProductWichIsSalable(){
     	TestCase testCase = instanciateTestCase(); 
     	String code = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(Product.class,code).setSalable(Boolean.TRUE).setSalableProductPropertiesPriceFromObject(100)
     			.setStockable(Boolean.TRUE).setStockQuantityMovementCollectionInitialValueFromObject(10));
     	SalableProduct salableProduct = testCase.getByIdentifierWhereValueUsageTypeIsBusiness(SalableProduct.class,code,Boolean.TRUE);
     	testCase.assertEqualsNumber(100, salableProduct.getProperties().getPrice());
-    	testCase.assertNotNullByBusinessIdentifier(StockableProduct.class,code);
-    	Product product = testCase.getByIdentifierWhereValueUsageTypeIsBusiness(Product.class, code);
-    	
-    	StockableProduct stockableProduct = inject(StockableProductDao.class).readByProduct(product);
-    	MovementCollection movementCollection = inject(MovementCollectionIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(stockableProduct)
-    			.iterator().next().getMovementCollection();
-    	testCase.assertEqualsNumber(10, movementCollection.getInitialValue());
     	
     	testCase.clean();
     }
@@ -143,7 +129,7 @@ public class ProductIT extends AbstractBusinessIT {
     	testCase.create(testCase.instanciateOne(Store.class,storeCode).setTypeFromCode(storeTypeCode));
     	
     	String productCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(Product.class,productCode).setStoreFromCode(storeCode));
+    	testCase.create(testCase.instanciateOne(Product.class,productCode).setStorable(Boolean.TRUE).addStoreFromCode(storeCode));
     	
     	testCase.assertNotNullByBusinessIdentifier(ProductStore.class, RootConstant.Code.generate(productCode,storeCode));
     	
@@ -152,7 +138,7 @@ public class ProductIT extends AbstractBusinessIT {
     }
     
     @Test
-    public void crudProductAndJoinProviderAndStock(){
+    public void crudProductAndJoinProvider(){
     	TestCase testCase = instanciateTestCase(); 
     	String productProviderCode = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(Company.class,productProviderCode));
@@ -160,10 +146,32 @@ public class ProductIT extends AbstractBusinessIT {
     	String productCode = RandomHelper.getInstance().getAlphabetic(5);
     	testCase.create(testCase.instanciateOne(Product.class,productCode).setStockable(Boolean.TRUE).setProviderPartyFromCode(productProviderCode));
     	
-    	testCase.assertNotNullByBusinessIdentifier(StockableProduct.class, productCode);
     	assertNotNull(inject(PartyIdentifiableGlobalIdentifierDao.class).readByPartyByIdentifiableGlobalIdentifierByRole(testCase.read(Company.class, productProviderCode)
     			, testCase.read(Product.class, productCode).getGlobalIdentifier(),testCase.read(BusinessRole.class, PROVIDER)));
     	
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudOneProductStoreBySetAllStore(){
+    	TestCase testCase = instanciateTestCase(); 
+    	
+    	String storeTypeCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(StoreType.class,storeTypeCode));
+    	
+    	String storeCode01 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Store.class,storeCode01).setTypeFromCode(storeTypeCode));
+    	
+    	String storeCode02 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Store.class,storeCode02).setTypeFromCode(storeTypeCode));
+    	
+    	String productCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Product.class,productCode).setStorable(Boolean.TRUE).addStoresAll());
+    	
+    	testCase.assertNotNullByBusinessIdentifier(ProductStore.class, RootConstant.Code.generate(productCode,storeCode01));
+    	testCase.assertNotNullByBusinessIdentifier(ProductStore.class, RootConstant.Code.generate(productCode,storeCode02));
+    	
+    	testCase.deleteAll(ProductStore.class);
     	testCase.clean();
     }
     

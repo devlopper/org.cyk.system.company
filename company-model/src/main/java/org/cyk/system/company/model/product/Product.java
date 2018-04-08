@@ -2,6 +2,7 @@ package org.cyk.system.company.model.product;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +19,8 @@ import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
 import org.cyk.utility.common.annotation.user.interfaces.Text;
+import org.cyk.utility.common.helper.CollectionHelper;
+import org.cyk.utility.common.helper.InstanceHelper;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,15 +44,15 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	private Boolean storable;
 	private Boolean providerable;
 	
-	@Transient private Store store;
+	@Transient private Collection<Store> stores;
 	@Transient private Party providerParty;
 	@Transient private MovementCollection stockQuantityMovementCollection;
 	
 	@Transient @Text(value="selling.price") private BigDecimal salableProductPropertiesPrice;
 	@Transient @Text(value="stock") private BigDecimal stockQuantityMovementCollectionInitialValue;
 	
-	public Product setStoreFromCode(String code){
-		store = getFromCode(Store.class, code);
+	public Product addStoreFromCode(String code){
+		addStores(getFromCode(Store.class, code));
 		return this;
 	}
 	
@@ -65,6 +68,21 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	
 	public Product setSalableProductPropertiesPriceFromObject(Object value){
 		salableProductPropertiesPrice = getNumberFromObject(BigDecimal.class, value);
+		return this;
+	}
+	
+	public Product addStores(Collection<Store> stores){
+		this.stores = CollectionHelper.getInstance().add(this.stores, Boolean.TRUE, stores);
+		return this;
+	}
+	
+	public Product addStores(Store...stores){
+		this.stores = CollectionHelper.getInstance().add(this.stores, Boolean.TRUE, stores);
+		return this;
+	}
+	
+	public Product addStoresAll(){
+		addStores(InstanceHelper.getInstance().get(Store.class));
 		return this;
 	}
 	

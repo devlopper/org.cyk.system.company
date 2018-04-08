@@ -24,7 +24,7 @@ public class SaleBusinessAdapter extends SaleBusinessImpl.Listener.Adapter imple
 			//No product selling while using gift card
 			//while( !sale.getSaleProducts().isEmpty()  )
 			//	inject(SaleBusiness.class).unselectProduct(sale, sale.getSaleProducts().iterator().next());
-			sale.getSalableProductCollection().getItems().getElements().clear();
+			//sale.getSalableProductCollection().getItems().getElements().clear();
 			
 			//change state to used
 			

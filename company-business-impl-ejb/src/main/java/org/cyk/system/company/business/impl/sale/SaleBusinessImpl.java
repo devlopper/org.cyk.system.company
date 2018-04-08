@@ -8,9 +8,11 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
+import org.cyk.system.company.business.api.sale.SalableProductStoreCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.sale.SalableProductCollection;
+import org.cyk.system.company.model.sale.SalableProductStoreCollection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
 import org.cyk.system.root.business.api.Crud;
@@ -41,12 +43,12 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	@Override
 	protected void computeChanges(Sale sale, LoggingHelper.Message.Builder logMessageBuilder) {
 		super.computeChanges(sale, logMessageBuilder);
-		if(sale.getSalableProductCollection()!=null)
-			inject(SalableProductCollectionBusiness.class).computeChanges(sale.getSalableProductCollection());
+		if(sale.getSalableProductStoreCollection()!=null)
+			inject(SalableProductStoreCollectionBusiness.class).computeChanges(sale.getSalableProductStoreCollection());
 		if(sale.getBalanceMovementCollection()!=null){
 			MovementCollection movementCollection = sale.getBalanceMovementCollection();
 			if(isNotIdentified(sale))
-				movementCollection.setValue(sale.getSalableProductCollection().getCost().getValue());
+				movementCollection.setValue(sale.getSalableProductStoreCollection().getCost().getValue());
 			if(StringHelper.getInstance().isBlank(movementCollection.getCode()) &&  StringHelper.getInstance().isNotBlank(sale.getCode()))
 				movementCollection.setCode(RootConstant.Code.generate(sale.getCode(),movementCollection.getType().getCode()));
 			if(StringHelper.getInstance().isBlank(movementCollection.getName()) && StringHelper.getInstance().isNotBlank(sale.getName()))
@@ -57,22 +59,17 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 	@Override
 	public Sale instanciateOne() {
 		Sale sale = super.instanciateOne();
-		
-		sale.setSalableProductCollection(new SalableProductCollection());
-		//sale.getSalableProductCollection().setAccountingPeriod(inject(AccountingPeriodBusiness.class).findCurrent());
-		//sale.getSalableProductCollection().setAutoComputeValueAddedTax(sale.getAccountingPeriod().getSaleConfiguration().getValueAddedTaxRate().signum()!=0);
-		
-		sale.setCascadeOperationToMaster(Boolean.TRUE);
-    	sale.setCascadeOperationToMasterFieldNames(Arrays.asList(Sale.FIELD_SALABLE_PRODUCT_COLLECTION));
-		sale.setSalableProductCollection(inject(SalableProductCollectionBusiness.class).instanciateOne());
+		sale.setSalableProductStoreCollection(inject(SalableProductStoreCollectionBusiness.class).instanciateOne().setIsBalanceMovementCollectionUpdatable(Boolean.TRUE)
+				.setIsStockMovementCollectionUpdatable(Boolean.TRUE));
 		sale.setBalanceMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne().setTypeFromCode(RootConstant.Code.MovementCollectionType.SALE_BALANCE)
-				.setValue(sale.getSalableProductCollection().getCost().getValue()));
+				.setValue(sale.getSalableProductStoreCollection().getCost().getValue()));		
+    	sale.addCascadeOperationToMasterFieldNames(Sale.FIELD_SALABLE_PRODUCT_STORE_COLLECTION);
 		return sale;
 	}
 	
 	@Override
 	public Collection<String> findRelatedInstanceFieldNames(Sale sale) {
-		return Arrays.asList(Sale.FIELD_SALABLE_PRODUCT_COLLECTION);
+		return Arrays.asList(Sale.FIELD_SALABLE_PRODUCT_STORE_COLLECTION);
 	}
 	
 	@Override
@@ -82,18 +79,37 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			
 		}else {
 			inject(MovementBusiness.class).create(sale, RootConstant.Code.MovementCollectionType.SALE_BALANCE, crud, sale
-				, FieldHelper.getInstance().buildPath(Sale.FIELD_SALABLE_PRODUCT_COLLECTION,SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE),Boolean.FALSE,null);
+				, FieldHelper.getInstance().buildPath(Sale.FIELD_SALABLE_PRODUCT_STORE_COLLECTION,SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE),Boolean.FALSE,null);
+			/*
+			inject(MovementBusiness.class).create(sale, RootConstant.Code.MovementCollectionType.SALE_BALANCE, crud, sale
+					, FieldHelper.getInstance().buildPath(Sale.FIELD_SALABLE_PRODUCT_STORE_COLLECTION,SalableProductStoreCollection.FIELD_COST,Cost.FIELD_VALUE),Boolean.FALSE,null);
+			*/
 		}
 	}
 	
 	@Override
-	protected void afterCreate(Sale sale) {
-		super.afterCreate(sale);
-		if(sale.getBalanceMovementCollection() != null){
-			//sale.setBalanceMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne(RootConstant.Code.MovementCollectionType.SALE_BALANCE
-			//	,sale.getSalableProductCollection().getCost().getValue(),sale));
-			inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).create(sale.getBalanceMovementCollection(), sale);
+	protected void afterCrud(Sale sale, Crud crud) {
+		super.afterCrud(sale, crud);
+		if(Crud.isCreateOrUpdate(crud)){
+			if(Crud.CREATE.equals(crud)){
+				if(sale.getBalanceMovementCollection() != null){
+					//sale.setBalanceMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne(RootConstant.Code.MovementCollectionType.SALE_BALANCE
+					//	,sale.getSalableProductCollection().getCost().getValue(),sale));
+					inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).create(sale.getBalanceMovementCollection(), sale);
+				}
+			}
+		}else if(Crud.DELETE.equals(crud)){
+			//if(sale.getSalableProductCollection()!=null)
+			//	inject(SalableProductCollectionBusiness.class).delete(sale.getSalableProductCollection());
+			//if(sale.getSalableProductStoreCollection()!=null)
+			//	inject(SalableProductStoreCollectionBusiness.class).delete(sale.getSalableProductStoreCollection());
 		}
+	}
+	
+	@Override
+	protected void afterDelete(Sale sale) {
+		super.afterDelete(sale);
+		//inject(SalableProductStoreCollectionBusiness.class).delete(sale.getSalableProductStoreCollection());
 	}
 			
 	/**/
@@ -134,7 +150,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 							cost.setTurnover(inject(AccountingPeriodBusiness.class).computeTurnover(sale.getAccountingPeriod(), cost.getValue(), cost.getTax()));
 							*/
 						//}
-						sale.getSalableProductCollection().setCode(sale.getCode());
+						sale.getSalableProductStoreCollection().setCode(sale.getCode());
 						//sale.getBalance().setValue(sale.getSalableProductCollection().getCost().getValue());
 						/*if(Boolean.TRUE.equals(ListenerUtils.getInstance().getBoolean(Listener.COLLECTION, new ListenerUtils.BooleanMethod<Listener>() {
 							@Override

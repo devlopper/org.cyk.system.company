@@ -22,7 +22,7 @@ public class AbstractSaleReport<MODEL> extends AbstractIdentifiableReport<MODEL>
 		super.setSource(source);
 		customer.setSource(((Sale)source).getCustomer());
 		//salableProductCollection.setSale(this);
-		salableProductCollection.setSource(((Sale)source).getSalableProductCollection());
+		//salableProductCollection.setSource(((Sale)source).getSalableProductCollection());
 		
 	}
 	

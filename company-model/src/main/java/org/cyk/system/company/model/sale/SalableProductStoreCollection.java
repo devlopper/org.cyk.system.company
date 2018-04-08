@@ -5,9 +5,11 @@ import java.util.Collection;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.root.model.AbstractCollection;
+import org.cyk.system.root.model.store.Store;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
@@ -24,6 +26,8 @@ public class SalableProductStoreCollection extends AbstractCollection<SalablePro
 
 	@Accessors(chain=true) private Boolean isStockMovementCollectionUpdatable;
 	@Accessors(chain=true) private Boolean isBalanceMovementCollectionUpdatable;
+	
+	@Transient private Store store;
 	
 	/**/
 	
@@ -44,5 +48,8 @@ public class SalableProductStoreCollection extends AbstractCollection<SalablePro
 	}
 	
 	public static final String FIELD_COST = "cost";
+	public static final String FIELD_IS_STOCK_MOVEMENT_COLLECTION_UPDATABLE = "isStockMovementCollectionUpdatable";
+	public static final String FIELD_IS_BALANCE_MOVEMENT_COLLECTION_UPDATABLE = "isBalanceMovementCollectionUpdatable";
+	public static final String FIELD_STORE = "store";
 	
 }

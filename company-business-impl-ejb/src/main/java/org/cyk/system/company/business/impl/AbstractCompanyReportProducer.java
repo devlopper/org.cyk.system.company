@@ -77,7 +77,7 @@ public abstract class AbstractCompanyReportProducer extends AbstractRootReportPr
 	}
 	
 	private SaleReportTemplateFile produceSaleReportTemplateFile(Sale sale) {
-		sale.getSalableProductCollection().getItems().setElements(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
+		//sale.getSalableProductCollection().getItems().setElements(inject(SalableProductCollectionItemDao.class).readByCollection(sale.getSalableProductCollection()));
 		//inject(SalableProductCollectionBusiness.class).computeDerivationsFromCost(sale.getSalableProductCollection());
 		SaleReportTemplateFile report = new SaleReportTemplateFile(sale);
 		
