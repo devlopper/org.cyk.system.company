@@ -444,27 +444,7 @@ public class CompanyBusinessTestHelper extends AbstractBusinessTestHelper implem
     	assertCost(sale.getSalableProductStoreCollection().getCost(), new ObjectFieldValues(Balance.class).set(Cost.FIELD_VALUE,costValue));
     	//assertBalance(sale.getBalance(), new ObjectFieldValues(Balance.class).set(Balance.FIELD_VALUE,balanceValue));
     }
-    
-    public void assertSaleCashRegisterMovementCollection(String code,String expectedCashRegisterValue,String expectedMovementValue,Boolean expectedIncrement
-    		,String expectedSupportingDocumentProvider,String expectedSupportingDocumentIdentifier,String expectedMovementCollectionValue){
-    	SaleCashRegisterMovementCollection saleCashRegisterMovementCollection = inject(SaleCashRegisterMovementCollectionDao.class).read(code);
-    	//assertSale(saleCashRegisterMovement.getSale(), expectedSaleCostValue, expectedSaleBalanceValue);
-    	assertCashRegisterMovement(saleCashRegisterMovementCollection.getCashRegisterMovement().getCode(), expectedCashRegisterValue, expectedMovementValue
-    			, expectedIncrement, expectedSupportingDocumentProvider, expectedSupportingDocumentIdentifier,expectedMovementCollectionValue);
-    	//assertCashRegisterMovementCollection(saleCashRegisterMovementCollection.getCollection().getCashRegisterMovement(), expectedCashRegisterValue);
-    }
-    
-    public void assertSaleCashRegisterMovement(SaleCashRegisterMovement saleCashRegisterMovement,String expectedBalance,String expectedSaleCostValue,String expectedSaleBalanceValue,String expectedCashRegisterValue){
-    	saleCashRegisterMovement = inject(SaleCashRegisterMovementBusiness.class).find(saleCashRegisterMovement.getIdentifier());
-    	assertSale(saleCashRegisterMovement.getSale(), expectedSaleCostValue, expectedSaleBalanceValue);
-    	assertBigDecimalEquals("Sale cash register movement balance", expectedBalance, saleCashRegisterMovement.getBalance().getValue());
-    	//assertCashRegisterMovement(saleCashRegisterMovement.getCollection().getCashRegisterMovement(), expectedCashRegisterValue);
-    }
-    
-    public void assertSaleCashRegisterMovement(String code,String expectedBalance,String expectedSaleCostValue,String expectedSaleBalanceValue,String expectedCashRegisterValue){
-    	assertSaleCashRegisterMovement(inject(SaleCashRegisterMovementDao.class).read(code),expectedBalance, expectedSaleCostValue, expectedSaleBalanceValue, expectedCashRegisterValue);
-    }
-    
+        
     @Deprecated   
     public void assertSale(String computedIdentifier,ObjectFieldValues expectedValues){
     	Sale sale = null;//saleDao.readByComputedIdentifier(computedIdentifier);

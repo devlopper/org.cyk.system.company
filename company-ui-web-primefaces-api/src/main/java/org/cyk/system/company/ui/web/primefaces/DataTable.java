@@ -6,10 +6,9 @@ import java.util.List;
 
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.company.model.sale.SalableProduct;
-import org.cyk.system.company.model.sale.SalableProductCollection;
-import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.company.model.sale.SalableProductProperties;
 import org.cyk.system.company.model.sale.SalableProductStore;
+import org.cyk.system.company.model.sale.SalableProductStoreCollection;
 import org.cyk.system.company.model.sale.SalableProductStoreCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
@@ -36,24 +35,12 @@ public class DataTable {
 			if(SalableProduct.class.equals(actionOnClass)){
 				fieldNames.add(SalableProduct.FIELD_PRODUCT);
 				fieldNames.add(SalableProduct.FIELD_PROPERTIES);
-			}else if(SalableProductCollection.class.equals(actionOnClass)){
+			}else if(SalableProductStoreCollection.class.equals(actionOnClass)){
 				
-			}else if(SalableProductCollectionItem.class.equals(actionOnClass)){
-				if(Constant.Action.isCreateOrUpdate((Action) dataTable.getPropertiesMap().getAction())){
-					fieldNames.removeAll(Arrays.asList(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE)
-							,FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME)));	
-				}
-				
-				//fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT));
-				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT,SalableProduct.FIELD_PROPERTIES,SalableProductProperties.FIELD_PRICE));
-				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS));
-				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_REDUCTION));
-				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_COST,Cost.FIELD_VALUE));
-				addExistencePeriodFromDate(dataTable, fieldNames);
 			}else if(SalableProductStoreCollectionItem.class.equals(actionOnClass)){
 				if(Constant.Action.isCreateOrUpdate((Action) dataTable.getPropertiesMap().getAction())){
-					fieldNames.removeAll(Arrays.asList(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE)
-							,FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME)));	
+					fieldNames.removeAll(Arrays.asList(FieldHelper.getInstance().buildPath(SalableProductStoreCollectionItem.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE)
+							,FieldHelper.getInstance().buildPath(SalableProductStoreCollectionItem.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME)));	
 				}
 				
 				//fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductCollectionItem.FIELD_SALABLE_PRODUCT));
@@ -61,14 +48,18 @@ public class DataTable {
 				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductStoreCollectionItem.FIELD_COST,Cost.FIELD_NUMBER_OF_PROCEED_ELEMENTS));
 				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductStoreCollectionItem.FIELD_COST,Cost.FIELD_REDUCTION));
 				fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductStoreCollectionItem.FIELD_COST,Cost.FIELD_VALUE));
+				if(dataTable.getPropertiesMap().getMaster() == null){
+					fieldNames.add(FieldHelper.getInstance().buildPath(SalableProductStoreCollectionItem.FIELD_SALABLE_PRODUCT_STORE,SalableProductStore.FIELD_PRODUCT_STORE));	
+				}
+
 				addExistencePeriodFromDate(dataTable, fieldNames);
 			}else if(Sale.class.equals(actionOnClass)){
 				fieldNames.remove(FieldHelper.getInstance().buildPath(Sale.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME));
-				fieldNames.add(FieldHelper.getInstance().buildPath(Sale.FIELD_SALABLE_PRODUCT_STORE_COLLECTION,SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE));
+				fieldNames.add(FieldHelper.getInstance().buildPath(Sale.FIELD_SALABLE_PRODUCT_STORE_COLLECTION,SalableProductStoreCollection.FIELD_COST,Cost.FIELD_VALUE));
 				//fieldNames.add(FieldHelper.getInstance().buildPath(Sale.FIELD_BALANCE_MOVEMENT_COLLECTION,MovementCollection.FIELD_VALUE));
 				addExistencePeriodFromDate(dataTable, fieldNames);
 			}else if(Movement.class.equals(actionOnClass)){
-				if(dataTable.getPropertiesMap().getMaster() instanceof SalableProductCollection || dataTable.getPropertiesMap().getMaster() instanceof Sale){
+				if(dataTable.getPropertiesMap().getMaster() instanceof SalableProductStoreCollection || dataTable.getPropertiesMap().getMaster() instanceof Sale){
 					fieldNames.remove(Movement.FIELD_COLLECTION);
 				}
 			}

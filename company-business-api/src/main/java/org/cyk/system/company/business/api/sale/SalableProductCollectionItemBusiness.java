@@ -6,7 +6,7 @@ import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductCollectionItem;
 import org.cyk.system.root.business.api.AbstractCollectionItemBusiness;
-
+@Deprecated
 public interface SalableProductCollectionItemBusiness extends AbstractCollectionItemBusiness<SalableProductCollectionItem,SalableProductCollection> {
     
 	@Deprecated

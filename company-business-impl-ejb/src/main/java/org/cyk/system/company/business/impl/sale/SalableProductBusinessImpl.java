@@ -35,16 +35,6 @@ public class SalableProductBusinessImpl extends AbstractEnumerationBusinessImpl<
 	}
 	
 	@Override
-	protected void createMaster(SalableProduct salableProduct,AbstractIdentifiable master) {
-		//if(master instanceof TangibleProduct){
-			//((TangibleProduct)master).setIsStockable(salableProduct.getIsProductStockable());
-			//((TangibleProduct)master).setStockQuantityMovementCollectionInitialValue(salableProduct.getProductStockQuantityMovementCollectionInitialValue());
-			//((TangibleProduct)master).setProviderParty(salableProduct.getProductProviderParty());
-		//}
-		super.createMaster(salableProduct,master);
-	}
-	
-	@Override
 	protected void computeChanges(SalableProduct salableProduct, Builder logMessageBuilder) {
 		super.computeChanges(salableProduct, logMessageBuilder);
 		

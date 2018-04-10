@@ -5,7 +5,6 @@ import java.io.Serializable;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.sale.SalableProduct;
-import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductStore;
 import org.cyk.system.company.model.sale.SalableProductStoreCollection;
 import org.cyk.system.company.model.sale.Sale;
@@ -43,8 +42,6 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 			SaleIdentifiableEditPageFormMaster.prepareSalableProduct(detail);
 		}else if(SalableProductStore.class.equals(actionOnClass)){
 			SaleIdentifiableEditPageFormMaster.prepareSalableProductStore(detail);
-		}else if(SalableProductCollection.class.equals(actionOnClass)){						
-			SaleIdentifiableEditPageFormMaster.prepareSalableProductCollection(detail,null,Boolean.FALSE);
 		}else if(SalableProductStoreCollection.class.equals(actionOnClass)){						
 			SaleIdentifiableEditPageFormMaster.prepareSalableProductStoreCollection(detail,null,Boolean.FALSE);
 		}else if(Sale.class.equals(actionOnClass)){

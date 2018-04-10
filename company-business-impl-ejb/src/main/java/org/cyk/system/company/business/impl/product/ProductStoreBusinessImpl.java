@@ -36,7 +36,6 @@ public class ProductStoreBusinessImpl extends AbstractTypedBusinessService<Produ
 					StockableProductStore stockableProductStore = inject(StockableProductStoreBusiness.class).instanciateOne().setProductStore(productStore)
 							.setQuantityMovementCollectionInitialValueFromObject(productStore.getProduct().getStockQuantityMovementCollectionInitialValue());
 					inject(StockableProductStoreBusiness.class).computeChanges(stockableProductStore);
-					//stockableProductStore.getQuantityMovementCollection().setCode("PS_"+stockableProductStore.getQuantityMovementCollection().getCode());
 					inject(StockableProductStoreBusiness.class).create(stockableProductStore);
 				}
 			}

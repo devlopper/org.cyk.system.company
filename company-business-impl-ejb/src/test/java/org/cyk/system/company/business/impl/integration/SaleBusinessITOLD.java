@@ -2,9 +2,9 @@ package org.cyk.system.company.business.impl.integration;
 
 import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
-import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollectionBusiness;
+import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.company.business.impl.iesa.IesaFakedDataProducer;
 import org.cyk.system.company.business.impl.integration.enterpriseresourceplanning.AbstractEnterpriseResourcePlanningBusinessIT;
 import org.cyk.system.company.model.CompanyConstant;
@@ -16,12 +16,11 @@ import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SaleCashRegisterMovementDao;
-import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.root.model.security.UserAccount;
 import org.cyk.system.root.persistence.api.security.UserAccountDao;
 import org.cyk.utility.common.generator.RandomDataProvider;
 import org.junit.Test;
-
+@Deprecated
 public class SaleBusinessITOLD extends AbstractEnterpriseResourcePlanningBusinessIT {
 
     private static final long serialVersionUID = -6691092648665798471L;
@@ -136,7 +135,7 @@ public class SaleBusinessITOLD extends AbstractEnterpriseResourcePlanningBusines
     	assertEquals(pay1Code+"_Sale002", saleCashRegisterMovement.getCode());
     	
     	assertEquals(2, inject(SaleCashRegisterMovementDao.class).readByCollection(saleCashRegisterMovementCollection).size());
-    	companyBusinessTestHelper.assertSaleCashRegisterMovementCollection(pay1Code, "1300", "1300", null, null, null, "1300");
+    	//companyBusinessTestHelper.assertSaleCashRegisterMovementCollection(pay1Code, "1300", "1300", null, null, null, "1300");
     	
     	//companyBusinessTestHelper.write(inject(FileIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(saleCashRegisterMovementCollection)
     	//		.iterator().next().getFile());

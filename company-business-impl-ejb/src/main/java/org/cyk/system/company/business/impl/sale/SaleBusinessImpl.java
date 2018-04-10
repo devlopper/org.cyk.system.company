@@ -7,11 +7,9 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
-import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductStoreCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
 import org.cyk.system.company.model.Cost;
-import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.SalableProductStoreCollection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.persistence.api.sale.SaleDao;
@@ -79,11 +77,7 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 			
 		}else {
 			inject(MovementBusiness.class).create(sale, RootConstant.Code.MovementCollectionType.SALE_BALANCE, crud, sale
-				, FieldHelper.getInstance().buildPath(Sale.FIELD_SALABLE_PRODUCT_STORE_COLLECTION,SalableProductCollection.FIELD_COST,Cost.FIELD_VALUE),Boolean.FALSE,null);
-			/*
-			inject(MovementBusiness.class).create(sale, RootConstant.Code.MovementCollectionType.SALE_BALANCE, crud, sale
-					, FieldHelper.getInstance().buildPath(Sale.FIELD_SALABLE_PRODUCT_STORE_COLLECTION,SalableProductStoreCollection.FIELD_COST,Cost.FIELD_VALUE),Boolean.FALSE,null);
-			*/
+				, FieldHelper.getInstance().buildPath(Sale.FIELD_SALABLE_PRODUCT_STORE_COLLECTION,SalableProductStoreCollection.FIELD_COST,Cost.FIELD_VALUE),Boolean.FALSE,null);
 		}
 	}
 	
@@ -99,19 +93,10 @@ public class SaleBusinessImpl extends AbstractTypedBusinessService<Sale, SaleDao
 				}
 			}
 		}else if(Crud.DELETE.equals(crud)){
-			//if(sale.getSalableProductCollection()!=null)
-			//	inject(SalableProductCollectionBusiness.class).delete(sale.getSalableProductCollection());
-			//if(sale.getSalableProductStoreCollection()!=null)
-			//	inject(SalableProductStoreCollectionBusiness.class).delete(sale.getSalableProductStoreCollection());
+			
 		}
 	}
-	
-	@Override
-	protected void afterDelete(Sale sale) {
-		super.afterDelete(sale);
-		//inject(SalableProductStoreCollectionBusiness.class).delete(sale.getSalableProductStoreCollection());
-	}
-			
+		
 	/**/
 	
 	public static interface Listener extends org.cyk.system.root.business.impl.AbstractIdentifiableBusinessServiceImpl.Listener<Sale>{

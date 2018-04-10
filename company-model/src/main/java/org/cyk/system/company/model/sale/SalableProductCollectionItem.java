@@ -30,7 +30,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity
-@ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE)
+@ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE) @Deprecated
 public class SalableProductCollectionItem extends AbstractCollectionItem<SalableProductCollection> implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 

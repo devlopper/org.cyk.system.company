@@ -19,7 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Getter @Setter @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE) @Accessors(chain=true)
+@Getter @Setter @Entity @ModelBean(crudStrategy=CrudStrategy.BUSINESS,genderType=GenderType.MALE) @Accessors(chain=true) @Deprecated
 public class SalableProductCollection extends AbstractCollection<SalableProductCollectionItem> implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
