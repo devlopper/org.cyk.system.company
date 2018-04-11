@@ -11,7 +11,7 @@ import org.cyk.system.company.model.sale.SalableProductCollection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
-import org.cyk.system.root.model.mathematics.Movement;
+import org.cyk.system.root.model.mathematics.movement.Movement;
 import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.test.unit.AbstractUnitTest;
 import org.junit.Test;

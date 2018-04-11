@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 import org.cyk.system.root.model.AbstractIdentifiable;
-import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.system.root.model.mathematics.movement.MovementCollection;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;

@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.root.business.impl.AbstractEnumerationDetails;
-import org.cyk.system.root.business.impl.mathematics.MovementCollectionDetails;
+import org.cyk.system.root.business.impl.mathematics.movement.MovementCollectionDetails;
 import org.cyk.utility.common.annotation.user.interfaces.IncludeInputs;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;

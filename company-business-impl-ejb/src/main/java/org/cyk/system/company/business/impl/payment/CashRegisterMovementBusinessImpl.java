@@ -22,14 +22,14 @@ import org.cyk.system.company.persistence.api.payment.CashRegisterMovementModeDa
 import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.api.generator.StringGeneratorBusiness;
 import org.cyk.system.root.business.api.mathematics.IntervalBusiness;
-import org.cyk.system.root.business.api.mathematics.MovementBusiness;
+import org.cyk.system.root.business.api.mathematics.movement.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.system.root.model.mathematics.Movement;
+import org.cyk.system.root.model.mathematics.movement.Movement;
 import org.cyk.system.root.model.party.person.Person;
 import org.cyk.system.root.model.security.UserAccount;
-import org.cyk.system.root.persistence.api.mathematics.MovementDao;
+import org.cyk.system.root.persistence.api.mathematics.movement.MovementDao;
 
 @Deprecated
 public class CashRegisterMovementBusinessImpl extends AbstractTypedBusinessService<CashRegisterMovement, CashRegisterMovementDao> implements CashRegisterMovementBusiness,Serializable {

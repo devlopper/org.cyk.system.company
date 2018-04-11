@@ -9,11 +9,11 @@ import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.ui.web.primefaces.product.ProductIdentifiableEditPageFormMaster;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleIdentifiableEditPageFormMaster;
-import org.cyk.system.root.business.api.mathematics.MovementCollectionBusiness;
+import org.cyk.system.root.business.api.mathematics.movement.MovementCollectionBusiness;
 import org.cyk.system.root.model.RootConstant;
-import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.system.root.model.mathematics.movement.MovementCollection;
 import org.cyk.system.root.model.party.PartyIdentifiableGlobalIdentifier;
-import org.cyk.system.root.persistence.api.mathematics.MovementCollectionTypeDao;
+import org.cyk.system.root.persistence.api.mathematics.movement.MovementCollectionTypeDao;
 import org.cyk.utility.common.userinterface.container.Form;
 
 public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces.IdentifiableConsultPageFormMaster implements Serializable {

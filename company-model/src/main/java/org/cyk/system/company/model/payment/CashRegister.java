@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 import org.cyk.system.company.model.structure.OwnedCompany;
 import org.cyk.system.root.model.AbstractEnumeration;
-import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.system.root.model.mathematics.movement.MovementCollection;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;

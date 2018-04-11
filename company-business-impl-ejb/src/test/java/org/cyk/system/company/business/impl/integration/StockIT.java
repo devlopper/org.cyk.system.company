@@ -13,7 +13,7 @@ import org.cyk.system.company.model.stock.StockableProductStore;
 import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.system.root.model.mathematics.Movement;
+import org.cyk.system.root.model.mathematics.movement.Movement;
 import org.cyk.system.root.model.store.Store;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.FieldHelper;

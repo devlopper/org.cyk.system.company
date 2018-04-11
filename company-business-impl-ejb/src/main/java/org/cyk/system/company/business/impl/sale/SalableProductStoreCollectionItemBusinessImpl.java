@@ -15,7 +15,7 @@ import org.cyk.system.company.model.stock.StockableProductStore;
 import org.cyk.system.company.persistence.api.sale.SalableProductStoreCollectionItemDao;
 import org.cyk.system.company.persistence.api.stock.StockableProductStoreDao;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.business.api.mathematics.MovementBusiness;
+import org.cyk.system.root.business.api.mathematics.movement.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractCollectionItemBusinessImpl;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;

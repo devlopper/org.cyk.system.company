@@ -25,7 +25,7 @@ import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractCollectionBusinessImpl;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.system.root.model.mathematics.Movement;
+import org.cyk.system.root.model.mathematics.movement.Movement;
 import org.cyk.system.root.model.security.UserAccount;
 
 public class SaleCashRegisterMovementCollectionBusinessImpl extends AbstractCollectionBusinessImpl<SaleCashRegisterMovementCollection,SaleCashRegisterMovement, SaleCashRegisterMovementCollectionDao,SaleCashRegisterMovementDao,SaleCashRegisterMovementBusiness> implements SaleCashRegisterMovementCollectionBusiness,Serializable {

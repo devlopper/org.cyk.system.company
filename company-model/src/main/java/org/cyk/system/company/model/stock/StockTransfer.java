@@ -23,7 +23,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Entity @ModelBean(genderType=GenderType.MALE,crudStrategy=CrudStrategy.BUSINESS) @Accessors(chain=true)
-public class StockableProductStore extends AbstractIdentifiable implements Serializable {
+public class StockTransfer extends AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = -4946585596435850782L;
 
 	@ManyToOne @JoinColumn(name=COLUMN_PRODUCT_STORE,unique=true) @NotNull private ProductStore productStore;
@@ -33,23 +33,7 @@ public class StockableProductStore extends AbstractIdentifiable implements Seria
 	
 	/**/
 	
-	public StockableProductStore setQuantityMovementCollectionValue(BigDecimal value){
-		if(quantityMovementCollection == null){
-			
-		}else
-			quantityMovementCollection.setValue(value);
-		return this;
-	}
 	
-	public StockableProductStore setProductStoreFromCode(String code){
-		productStore = getFromCode(ProductStore.class, code);
-		return this;
-	}
-	
-	public StockableProductStore setQuantityMovementCollectionInitialValueFromObject(Object object){
-		quantityMovementCollectionInitialValue = getNumberFromObject(BigDecimal.class, object);
-		return this;
-	}
 	
 	/**/
 	
@@ -62,7 +46,7 @@ public class StockableProductStore extends AbstractIdentifiable implements Seria
 	/**/
 	
 	@Getter @Setter
-	public static class Filter extends AbstractIdentifiable.Filter<StockableProductStore> implements Serializable {
+	public static class Filter extends AbstractIdentifiable.Filter<StockTransfer> implements Serializable {
 		private static final long serialVersionUID = -1498269103849317057L;
 
 	}

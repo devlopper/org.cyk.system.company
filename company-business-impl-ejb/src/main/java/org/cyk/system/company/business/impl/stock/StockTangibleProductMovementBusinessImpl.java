@@ -18,7 +18,7 @@ import org.cyk.system.company.model.stock.StockTangibleProductMovementSearchCrit
 import org.cyk.system.company.persistence.api.stock.StockTangibleProductMovementDao;
 import org.cyk.system.company.persistence.api.stock.StockableProductDao;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.business.api.mathematics.MovementBusiness;
+import org.cyk.system.root.business.api.mathematics.movement.MovementBusiness;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 @Deprecated
 public class StockTangibleProductMovementBusinessImpl extends AbstractTypedBusinessService<StockTangibleProductMovement, StockTangibleProductMovementDao> implements StockTangibleProductMovementBusiness,Serializable {

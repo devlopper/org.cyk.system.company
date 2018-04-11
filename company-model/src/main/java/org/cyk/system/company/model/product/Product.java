@@ -12,7 +12,7 @@ import javax.persistence.Transient;
 
 import org.cyk.system.root.model.AbstractEnumeration;
 import org.cyk.system.root.model.information.Tangibility;
-import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.system.root.model.mathematics.movement.MovementCollection;
 import org.cyk.system.root.model.party.Party;
 import org.cyk.system.root.model.store.Store;
 import org.cyk.utility.common.annotation.ModelBean;

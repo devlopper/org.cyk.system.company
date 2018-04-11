@@ -8,7 +8,7 @@ import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.root.business.api.AbstractCollectionItemBusiness;
-import org.cyk.system.root.model.mathematics.MovementAction;
+import org.cyk.system.root.model.mathematics.movement.MovementAction;
 import org.cyk.system.root.model.security.UserAccount;
 
 @Deprecated

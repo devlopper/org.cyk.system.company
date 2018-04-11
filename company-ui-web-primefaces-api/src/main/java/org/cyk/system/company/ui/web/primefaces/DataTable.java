@@ -12,7 +12,7 @@ import org.cyk.system.company.model.sale.SalableProductStoreCollection;
 import org.cyk.system.company.model.sale.SalableProductStoreCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.system.root.model.mathematics.Movement;
+import org.cyk.system.root.model.mathematics.movement.Movement;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.Constant.Action;
 import org.cyk.utility.common.helper.FieldHelper;

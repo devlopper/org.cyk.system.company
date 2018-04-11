@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovement;
 import org.cyk.system.company.model.sale.SaleCashRegisterMovementCollection;
 import org.cyk.system.root.business.impl.AbstractCollectionItemDetails;
-import org.cyk.system.root.business.impl.mathematics.MovementDetails;
+import org.cyk.system.root.business.impl.mathematics.movement.MovementDetails;
 import org.cyk.utility.common.annotation.user.interfaces.Input;
 import org.cyk.utility.common.annotation.user.interfaces.InputText;
 

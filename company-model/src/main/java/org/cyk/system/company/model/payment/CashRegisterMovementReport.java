@@ -9,7 +9,7 @@ import lombok.Setter;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.root.model.file.report.AbstractIdentifiableReport;
 import org.cyk.system.root.model.mathematics.IntervalReport;
-import org.cyk.system.root.model.mathematics.MovementReport;
+import org.cyk.system.root.model.mathematics.movement.MovementReport;
 
 @Getter @Setter @NoArgsConstructor @Deprecated
 public class CashRegisterMovementReport extends AbstractIdentifiableReport<CashRegisterMovementReport> implements Serializable {

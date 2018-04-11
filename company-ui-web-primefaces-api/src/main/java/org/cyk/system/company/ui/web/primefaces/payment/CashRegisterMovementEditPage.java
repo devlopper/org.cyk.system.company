@@ -12,7 +12,7 @@ import org.cyk.system.company.business.api.payment.CashRegisterMovementBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.payment.CashRegisterMovement;
 import org.cyk.system.root.business.api.Crud;
-import org.cyk.system.root.model.mathematics.MovementCollection;
+import org.cyk.system.root.model.mathematics.movement.MovementCollection;
 import org.cyk.utility.common.annotation.FieldOverride;
 
 @Named @ViewScoped @Getter @Setter
