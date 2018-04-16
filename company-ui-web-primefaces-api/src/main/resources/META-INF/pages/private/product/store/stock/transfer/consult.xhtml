@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+ 	<ui:decorate template="#{identifiableConsultPage.propertiesMap.template}">
+ 		<ui:param name="page" value="#{identifiableConsultPage}" />
+ 		<ui:define name="centerCenterContent">
+ 			
+ 			<ui:decorate template="#{identifiableConsultPage.form.propertiesMap.template}">
+				<ui:param name="form" value="#{identifiableConsultPage.form}" />
+			</ui:decorate>
+ 			
+ 		</ui:define>
+ 	</ui:decorate>
+ 	
+</html>

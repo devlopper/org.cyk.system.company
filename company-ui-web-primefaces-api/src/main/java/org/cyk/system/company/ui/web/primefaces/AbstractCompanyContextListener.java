@@ -10,7 +10,6 @@ import org.cyk.system.company.business.impl.payment.CashRegisterMovementModeDeta
 import org.cyk.system.company.business.impl.payment.CashRegisterMovementTermCollectionDetails;
 import org.cyk.system.company.business.impl.payment.CashRegisterMovementTermDetails;
 import org.cyk.system.company.business.impl.payment.CashierDetails;
-import org.cyk.system.company.business.impl.product.ProductCollectionDetails;
 import org.cyk.system.company.business.impl.sale.CustomerSalableProductDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductCollectionDetails;
 import org.cyk.system.company.business.impl.sale.SalableProductCollectionItemDetails;
@@ -51,7 +50,6 @@ import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementMode
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementTermCollectionEditPage;
 import org.cyk.system.company.ui.web.primefaces.payment.CashRegisterMovementTermEditPage;
 import org.cyk.system.company.ui.web.primefaces.payment.CashierEditPage;
-import org.cyk.system.company.ui.web.primefaces.product.ProductCollectionEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.CustomerSalableProductEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductCollectionEditPage;
 import org.cyk.system.company.ui.web.primefaces.sale.SalableProductCollectionItemEditPage;
@@ -109,7 +107,6 @@ public abstract class AbstractCompanyContextListener extends AbstractContextList
 	
 	protected void initializeProductModule(){
 		
-		uiManager.registerConfiguration(new IdentifiableConfiguration(ProductCollection.class, ProductCollectionEditPage.Form.class, ProductCollectionDetails.class,null,null,null));
 		uiManager.configBusinessIdentifiable(ProductCollection.class, null);
 		
 	}

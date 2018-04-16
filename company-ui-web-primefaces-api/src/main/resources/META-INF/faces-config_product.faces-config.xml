@@ -6,54 +6,23 @@
 	<navigation-rule>
 		<from-view-id>*</from-view-id>
 		<!-- ########################################### Private Navigations Cases ############################################### -->
-		<!--navigation-case>
-			<from-outcome>tangibleProductListView</from-outcome>
-			<to-view-id>/private/product/tangibleproduct/list.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
 		<navigation-case>
-			<from-outcome>tangibleProductEditView</from-outcome>
-			<to-view-id>/private/product/tangibleproduct/edit.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>tangibleProductConsultView</from-outcome>
-			<to-view-id>/private/product/tangibleproduct/consult.xhtml</to-view-id>
+			<from-outcome>productStoreStockTransferListView</from-outcome>
+			<to-view-id>/private/product/store/stock/transfer/list.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		
 		<navigation-case>
-			<from-outcome>intangibleProductListView</from-outcome>
-			<to-view-id>/private/product/intangibleproduct/list.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>intangibleProductEditView</from-outcome>
-			<to-view-id>/private/product/intangibleproduct/edit.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>intangibleProductConsultView</from-outcome>
-			<to-view-id>/private/product/intangibleproduct/consult.xhtml</to-view-id>
+			<from-outcome>productStoreStockTransferEditView</from-outcome>
+			<to-view-id>/private/product/store/stock/transfer/edit.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		
 		<navigation-case>
-			<from-outcome>productCollectionListView</from-outcome>
-			<to-view-id>/private/product/productcollection/list.xhtml</to-view-id>
+			<from-outcome>productStoreStockTransferConsultView</from-outcome>
+			<to-view-id>/private/product/store/stock/transfer/consult.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
-		<navigation-case>
-			<from-outcome>productCollectionEditView</from-outcome>
-			<to-view-id>/private/product/productcollection/edit.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>productCollectionConsultView</from-outcome>
-			<to-view-id>/private/product/productcollection/consult.xhtml</to-view-id>
-			<redirect />
-		</navigation-case-->
-		
 		
 	</navigation-rule>
 

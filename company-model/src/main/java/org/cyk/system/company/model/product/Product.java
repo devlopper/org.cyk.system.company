@@ -100,6 +100,7 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	public static final String FIELD_STORABLE = "storable";
 	public static final String FIELD_PROVIDERABLE = "providerable";
 	public static final String FIELD_SALABLE_PRODUCT_PROPERTIES_PRICE = "salableProductPropertiesPrice";
+	public static final String FIELD_STORES = "stores";
 	
 	
 	public static final String COLUMN_GROUP = COLUMN_NAME_UNKEYWORD+FIELD_GROUP;

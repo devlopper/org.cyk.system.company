@@ -9,6 +9,7 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.model.structure.Company;
+import org.cyk.utility.common.userinterface.command.Menu;
 
 public class MenuBuilder extends org.cyk.ui.web.primefaces.MenuBuilder implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -18,6 +19,13 @@ public class MenuBuilder extends org.cyk.ui.web.primefaces.MenuBuilder implement
 		super.populateNodeIdentifiablesManagePackageFromClass(packageFromClass);
 		packageFromClass.addAll(Arrays.asList(AccountingPeriod.class,Product.class
 				,Sale.class,StockableProduct.class,Company.class));
+	}
+	
+	@Override
+	protected void addNodeIdentifiablesManage(Menu menu) {
+		super.addNodeIdentifiablesManage(menu);
+		
+		menu.addNode("Custom").addNode("List of Transfer", "productStoreStockTransferListView");
 	}
 	
 }
