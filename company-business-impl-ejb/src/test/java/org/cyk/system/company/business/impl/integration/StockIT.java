@@ -10,11 +10,18 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.model.stock.StockableProductStore;
+import org.cyk.system.company.model.stock.StockableProductStoresTransfer;
+import org.cyk.system.company.model.stock.StockableProductStoresTransferAcknowledgement;
+import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.movement.Movement;
+import org.cyk.system.root.model.mathematics.movement.MovementCollectionValuesTransfer;
+import org.cyk.system.root.model.party.Party;
 import org.cyk.system.root.model.store.Store;
+import org.cyk.system.root.model.value.Value;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.FieldHelper;
 import org.junit.Test;
@@ -85,6 +92,50 @@ public class StockIT extends AbstractBusinessIT {
     	testCase.clean();
     }
     
+    @Test
+    public void crudStockableProductStoresTransfer(){
+    	TestCase testCase = instanciateTestCase(); 
+    	
+    	String company01Code = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Company.class, company01Code));
+    	
+    	String company02Code = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Company.class, company02Code));
+    	
+    	String store01Code = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Store.class, store01Code).setPartyCompanyFromCode(company01Code));
+    	
+    	String store02Code = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Store.class, store02Code).setPartyCompanyFromCode(company02Code));
+    	
+    	String stockableProductStoresTransferCode = testCase.getRandomAlphabetic();
+    	StockableProductStoresTransfer stockableProductStoresTransfer = testCase.instanciateOne(StockableProductStoresTransfer.class,stockableProductStoresTransferCode)
+    			.setSenderFromCode(store01Code).setReceiverFromCode(store02Code);
+    	testCase.create(stockableProductStoresTransfer);
+    	
+    	testCase.assertNotNullPartyIdentifiableGlobalIdentifier(company01Code, RootConstant.Code.BusinessRole.SENDER, MovementCollectionValuesTransfer.class, stockableProductStoresTransferCode);
+    	
+    	testCase.deleteAll(StockableProductStore.class);
+    	
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudStockableProductStoresTransferAcknowledgement(){
+    	TestCase testCase = instanciateTestCase(); 
+    	
+    	String stockableProductStoresTransferCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(StockableProductStoresTransfer.class,stockableProductStoresTransferCode));
+    	
+    	String stockableProductStoresTransferAcknowledgementCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(StockableProductStoresTransferAcknowledgement.class,stockableProductStoresTransferAcknowledgementCode)
+    			.setTransferFromCode(stockableProductStoresTransferCode));
+    	
+    	testCase.deleteAll(StockableProductStore.class);
+    	
+    	testCase.clean();
+    }
+    
     /**/
     
     @SuppressWarnings("unchecked")
@@ -94,7 +145,7 @@ public class StockIT extends AbstractBusinessIT {
 		@SuppressWarnings({ "rawtypes" })
 		@Override
 		public Collection getClasses() { 
-			return Arrays.asList(StockableProduct.class,Movement.class,Store.class);
+			return Arrays.asList(StockableProduct.class,Movement.class,Store.class,Value.class,Party.class);
 		}
 		
     }
