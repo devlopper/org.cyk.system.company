@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.cyk.system.root.model.AbstractIdentifiable;
@@ -20,6 +22,7 @@ import lombok.experimental.Accessors;
 
 @Getter @Setter @NoArgsConstructor @Entity 
 @ModelBean(crudStrategy=CrudStrategy.ENUMERATION,genderType=GenderType.FEMALE) @Accessors(chain=true)
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={ProductStore.FIELD_PRODUCT,ProductStore.FIELD_STORE})})
 public class ProductStore extends AbstractIdentifiable implements Serializable  {
 	private static final long serialVersionUID = -6128937819261060725L;
 	
@@ -68,5 +71,10 @@ public class ProductStore extends AbstractIdentifiable implements Serializable  
 	public static final String COLUMN_PRODUCT = FIELD_PRODUCT;
 	public static final String COLUMN_STORE = FIELD_STORE;
 	
+	@Getter @Setter
+	public static class Filter extends AbstractIdentifiable.Filter<ProductStore> implements Serializable {
+		private static final long serialVersionUID = -1498269103849317057L;
+
+	}
 	
 }

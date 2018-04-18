@@ -6,6 +6,7 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.stock.StockableProductStoreBusiness;
+import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.stock.StockableProductStore;
 import org.cyk.system.company.persistence.api.stock.StockableProductStoreDao;
 import org.cyk.system.root.business.api.mathematics.movement.MovementCollectionBusiness;
@@ -37,6 +38,11 @@ public class StockableProductStoreBusinessImpl extends AbstractTypedBusinessServ
 		stockableProductStore.setQuantityMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne()
 				.setTypeFromCode(RootConstant.Code.MovementCollectionType.STOCK_REGISTER));
 		return stockableProductStore;
+	}
+	
+	@Override
+	public StockableProductStore findByProductStore(ProductStore productStore) {
+		return dao.readByProductStore(productStore);
 	}
 	
 	@Override

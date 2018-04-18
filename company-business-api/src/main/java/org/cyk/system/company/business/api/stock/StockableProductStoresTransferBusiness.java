@@ -5,4 +5,6 @@ import org.cyk.system.root.business.api.TypedBusiness;
 
 public interface StockableProductStoresTransferBusiness extends TypedBusiness<StockableProductStoresTransfer> {
 
+	
+	
 }

@@ -13,7 +13,10 @@ import org.cyk.system.root.business.api.mathematics.movement.MovementCollectionV
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.business.impl.helper.FieldHelper;
 import org.cyk.system.root.model.AbstractIdentifiable;
+import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
+import org.cyk.system.root.model.party.BusinessRole;
+import org.cyk.system.root.model.party.PartyIdentifiableGlobalIdentifier;
 import org.cyk.system.root.persistence.api.party.PartyIdentifiableGlobalIdentifierDao;
 import org.cyk.utility.common.helper.CollectionHelper;
 import org.cyk.utility.common.helper.LoggingHelper;
@@ -40,8 +43,19 @@ public class StockableProductStoresTransferBusinessImpl extends AbstractTypedBus
 	protected void beforeCrud(StockableProductStoresTransfer stockableProductStoresTransfer, Crud crud) {
 		super.beforeCrud(stockableProductStoresTransfer, crud);
 		if(stockableProductStoresTransfer.getSender()!=null) {
-			inject(PartyIdentifiableGlobalIdentifierDao.class).readByIdentifiableGlobalIdentifier(stockableProductStoresTransfer);
-			//stockableProductStoresTransfer.getMovementCollectionValuesTransfer().setSender();
+			PartyIdentifiableGlobalIdentifier partyIdentifiableGlobalIdentifier = CollectionHelper.getInstance().getFirst(inject(PartyIdentifiableGlobalIdentifierDao.class)
+					.readByIdentifiableGlobalIdentifierByRole(stockableProductStoresTransfer.getSender().getGlobalIdentifier()
+					,read(BusinessRole.class, RootConstant.Code.BusinessRole.COMPANY)));
+			if(partyIdentifiableGlobalIdentifier!=null)
+				stockableProductStoresTransfer.getMovementCollectionValuesTransfer().setSender(partyIdentifiableGlobalIdentifier.getParty());
+		}
+		
+		if(stockableProductStoresTransfer.getReceiver()!=null) {
+			PartyIdentifiableGlobalIdentifier partyIdentifiableGlobalIdentifier = CollectionHelper.getInstance().getFirst(inject(PartyIdentifiableGlobalIdentifierDao.class)
+					.readByIdentifiableGlobalIdentifierByRole(stockableProductStoresTransfer.getReceiver().getGlobalIdentifier()
+					,read(BusinessRole.class, RootConstant.Code.BusinessRole.COMPANY)));
+			if(partyIdentifiableGlobalIdentifier!=null)
+				stockableProductStoresTransfer.getMovementCollectionValuesTransfer().setReceiver(partyIdentifiableGlobalIdentifier.getParty());
 		}
 	}
 	

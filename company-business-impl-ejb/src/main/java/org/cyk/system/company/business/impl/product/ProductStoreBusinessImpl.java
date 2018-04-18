@@ -8,12 +8,14 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.api.product.ProductStoreBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductStoreBusiness;
 import org.cyk.system.company.business.api.stock.StockableProductStoreBusiness;
+import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.stock.StockableProductStore;
 import org.cyk.system.company.persistence.api.product.ProductStoreDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
+import org.cyk.system.root.model.store.Store;
 import org.cyk.utility.common.helper.LoggingHelper;
 
 public class ProductStoreBusinessImpl extends AbstractTypedBusinessService<ProductStore, ProductStoreDao> implements ProductStoreBusiness,Serializable {
@@ -56,5 +58,8 @@ public class ProductStoreBusinessImpl extends AbstractTypedBusinessService<Produ
 		return super.getPropertyValueTokens(productStore, name);
 	}
 	
-	
+	@Override
+	public ProductStore findByProductByStore(Product product, Store store) {
+		return dao.readByProductByStore(product, store);
+	}
 }

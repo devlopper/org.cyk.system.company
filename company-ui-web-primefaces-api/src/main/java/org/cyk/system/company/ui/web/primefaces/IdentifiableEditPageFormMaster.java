@@ -10,14 +10,21 @@ import org.cyk.system.company.model.sale.SalableProductStoreCollection;
 import org.cyk.system.company.model.sale.Sale;
 import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.model.stock.StockableProductStore;
+import org.cyk.system.company.model.stock.StockableProductStoresTransfer;
+import org.cyk.system.company.model.stock.StockableProductStoresTransferAcknowledgement;
 import org.cyk.system.company.ui.web.primefaces.product.ProductIdentifiableEditPageFormMaster;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleIdentifiableEditPageFormMaster;
 import org.cyk.system.company.ui.web.primefaces.stock.StockIdentifiableEditPageFormMaster;
+import org.cyk.ui.web.primefaces.mathematics.movement.MovementIdentifiableEditPageFormMaster.PrepareMovementCollectionValuesTransferItemCollectionListener;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.userinterface.container.Form;
 
 public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.IdentifiableEditPageFormMaster implements Serializable {
 	private static final long serialVersionUID = -6211058744595898478L;
+	
+	static {
+		ClassHelper.getInstance().map(PrepareMovementCollectionValuesTransferItemCollectionListener.class, PrepareMovementCollectionValuesTransferItemCollectionAdapter.class);
+	}
 	
 	@Override
 	protected void ____addName____() {
@@ -51,6 +58,10 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 			StockIdentifiableEditPageFormMaster.prepareStockableProduct(detail);
 		}else if(StockableProductStore.class.equals(actionOnClass)){
 			StockIdentifiableEditPageFormMaster.prepareStockableProductStore(detail);
+		}else if(StockableProductStoresTransfer.class.equals(actionOnClass)){
+			StockIdentifiableEditPageFormMaster.prepareStockableProductStoresTransfer(detail, actionOnClass);
+		}else if(StockableProductStoresTransferAcknowledgement.class.equals(actionOnClass)){
+			StockIdentifiableEditPageFormMaster.prepareStockableProductStoresTransferAcknowledgement(detail, actionOnClass);
 		}
 	}
 	

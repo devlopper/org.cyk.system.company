@@ -18,11 +18,15 @@ import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.movement.Movement;
+import org.cyk.system.root.model.mathematics.movement.MovementCollection;
+import org.cyk.system.root.model.mathematics.movement.MovementCollectionIdentifiableGlobalIdentifier;
 import org.cyk.system.root.model.mathematics.movement.MovementCollectionValuesTransfer;
 import org.cyk.system.root.model.party.Party;
 import org.cyk.system.root.model.store.Store;
 import org.cyk.system.root.model.value.Value;
+import org.cyk.system.root.persistence.api.mathematics.movement.MovementCollectionIdentifiableGlobalIdentifierDao;
 import org.cyk.utility.common.helper.ClassHelper;
+import org.cyk.utility.common.helper.CollectionHelper;
 import org.cyk.utility.common.helper.FieldHelper;
 import org.junit.Test;
 
@@ -79,6 +83,8 @@ public class StockIT extends AbstractBusinessIT {
     public void crudStockableProductStoreBasedOnNoExistingProductStoreByJoin(){
     	TestCase testCase = instanciateTestCase(); 
     	
+    	testCase.countAll(MovementCollection.class);
+    	
     	String productStoreCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(ProductStore.class,productStoreCode).addCascadeOperationToMasterFieldNames(ProductStore.FIELD_PRODUCT
     			,ProductStore.FIELD_STORE).setProductStockable(Boolean.TRUE));
@@ -86,6 +92,17 @@ public class StockIT extends AbstractBusinessIT {
     	testCase.assertNotNullByBusinessIdentifier(Product.class, productStoreCode);
     	testCase.assertNotNullByBusinessIdentifier(Store.class, productStoreCode);
     	testCase.assertNotNullByBusinessIdentifier(StockableProductStore.class, productStoreCode);
+    	testCase.assertNotNullByBusinessIdentifier(MovementCollection.class, RootConstant.Code.generate(productStoreCode,RootConstant.Code.MovementCollectionType.STOCK_REGISTER));
+    	
+    	MovementCollection movementCollection = testCase.getByIdentifierWhereValueUsageTypeIsBusiness(MovementCollection.class, RootConstant.Code.generate(productStoreCode,RootConstant.Code.MovementCollectionType.STOCK_REGISTER));
+    	MovementCollectionIdentifiableGlobalIdentifier movementCollectionIdentifiableGlobalIdentifier = CollectionHelper.getInstance().getFirst(inject(MovementCollectionIdentifiableGlobalIdentifierDao.class)
+    			.readByMovementCollection(movementCollection));
+    	testCase.assertNotNull(movementCollectionIdentifiableGlobalIdentifier);
+    	
+    	StockableProductStore stockableProductStore = testCase.getByIdentifierWhereValueUsageTypeIsBusiness(StockableProductStore.class,productStoreCode);
+    	testCase.assertEquals(stockableProductStore.getGlobalIdentifier(),movementCollectionIdentifiableGlobalIdentifier.getIdentifiableGlobalIdentifier());
+    	
+    	testCase.assertCountAll(MovementCollection.class, 1);
     	
     	testCase.deleteAll(StockableProductStore.class);
     	
@@ -114,6 +131,7 @@ public class StockIT extends AbstractBusinessIT {
     	testCase.create(stockableProductStoresTransfer);
     	
     	testCase.assertNotNullPartyIdentifiableGlobalIdentifier(company01Code, RootConstant.Code.BusinessRole.SENDER, MovementCollectionValuesTransfer.class, stockableProductStoresTransferCode);
+    	testCase.assertNotNullPartyIdentifiableGlobalIdentifier(company02Code, RootConstant.Code.BusinessRole.RECEIVER, MovementCollectionValuesTransfer.class, stockableProductStoresTransferCode);
     	
     	testCase.deleteAll(StockableProductStore.class);
     	
