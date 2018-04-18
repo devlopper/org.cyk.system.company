@@ -25,7 +25,7 @@ import org.cyk.system.root.business.impl.AbstractEnumerationBusinessImpl;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.party.BusinessRole;
 import org.cyk.system.root.model.party.PartyIdentifiableGlobalIdentifier;
-import org.cyk.system.root.model.store.Store;
+import org.cyk.system.root.model.party.Store;
 import org.cyk.system.root.persistence.api.party.PartyIdentifiableGlobalIdentifierDao;
 import org.cyk.utility.common.helper.CollectionHelper;
 

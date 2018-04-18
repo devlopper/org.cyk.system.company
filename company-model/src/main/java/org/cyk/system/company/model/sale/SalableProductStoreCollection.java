@@ -9,7 +9,7 @@ import javax.persistence.Transient;
 
 import org.cyk.system.company.model.Cost;
 import org.cyk.system.root.model.AbstractCollection;
-import org.cyk.system.root.model.store.Store;
+import org.cyk.system.root.model.party.Store;
 import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;

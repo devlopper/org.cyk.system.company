@@ -5,7 +5,7 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.persistence.api.product.ProductStoreDao;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.system.root.model.store.Store;
+import org.cyk.system.root.model.party.Store;
 import org.cyk.system.root.persistence.impl.AbstractTypedDao;
 import org.cyk.system.root.persistence.impl.QueryWrapper;
 import org.cyk.utility.common.helper.CollectionHelper;

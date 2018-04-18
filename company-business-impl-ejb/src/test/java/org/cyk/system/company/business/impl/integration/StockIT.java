@@ -22,7 +22,7 @@ import org.cyk.system.root.model.mathematics.movement.MovementCollection;
 import org.cyk.system.root.model.mathematics.movement.MovementCollectionIdentifiableGlobalIdentifier;
 import org.cyk.system.root.model.mathematics.movement.MovementCollectionValuesTransfer;
 import org.cyk.system.root.model.party.Party;
-import org.cyk.system.root.model.store.Store;
+import org.cyk.system.root.model.party.Store;
 import org.cyk.system.root.model.value.Value;
 import org.cyk.system.root.persistence.api.mathematics.movement.MovementCollectionIdentifiableGlobalIdentifierDao;
 import org.cyk.utility.common.helper.ClassHelper;

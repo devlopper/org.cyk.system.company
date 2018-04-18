@@ -15,8 +15,8 @@ import org.cyk.system.root.model.mathematics.movement.MovementCollection;
 import org.cyk.system.root.model.mathematics.movement.MovementCollectionIdentifiableGlobalIdentifier;
 import org.cyk.system.root.model.party.Party;
 import org.cyk.system.root.model.party.PartyIdentifiableGlobalIdentifier;
-import org.cyk.system.root.model.store.Store;
-import org.cyk.system.root.persistence.api.store.StoreDao;
+import org.cyk.system.root.model.party.Store;
+import org.cyk.system.root.persistence.api.party.StoreDao;
 import org.cyk.ui.web.primefaces.mathematics.movement.MovementIdentifiableEditPageFormMaster.PrepareMovementCollectionValuesTransferItemCollectionListener;
 import org.cyk.utility.common.helper.CollectionHelper;
 

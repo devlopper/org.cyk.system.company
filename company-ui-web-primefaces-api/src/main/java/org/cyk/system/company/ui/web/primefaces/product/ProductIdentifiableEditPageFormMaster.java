@@ -19,7 +19,7 @@ public class ProductIdentifiableEditPageFormMaster implements Serializable {
 		detail.add(Product.FIELD_SALABLE_PRODUCT_PROPERTIES_PRICE).addBreak();
 		
 		detail.add(Product.FIELD_STORABLE).addBreak();
-		//detail.add(Product.FIELD_STORES).addBreak();
+		detail.add(Product.FIELD_STORES).addBreak();
 		
 		detail.add(Product.FIELD_STOCKABLE).addBreak();
 		detail.add(Product.FIELD_STOCK_QUANTITY_MOVEMENT_COLLECTION_INITIAL_VALUE).addBreak();

@@ -15,7 +15,7 @@ import org.cyk.system.company.persistence.api.product.ProductStoreDao;
 import org.cyk.system.root.business.api.Crud;
 import org.cyk.system.root.business.impl.AbstractTypedBusinessService;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.system.root.model.store.Store;
+import org.cyk.system.root.model.party.Store;
 import org.cyk.utility.common.helper.LoggingHelper;
 
 public class ProductStoreBusinessImpl extends AbstractTypedBusinessService<ProductStore, ProductStoreDao> implements ProductStoreBusiness,Serializable {
