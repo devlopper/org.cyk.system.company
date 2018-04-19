@@ -2,7 +2,9 @@ package org.cyk.system.company.model.product;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +21,7 @@ import org.cyk.utility.common.annotation.ModelBean;
 import org.cyk.utility.common.annotation.ModelBean.CrudStrategy;
 import org.cyk.utility.common.annotation.ModelBean.GenderType;
 import org.cyk.utility.common.annotation.user.interfaces.Text;
+import org.cyk.utility.common.helper.ArrayHelper;
 import org.cyk.utility.common.helper.CollectionHelper;
 import org.cyk.utility.common.helper.InstanceHelper;
 
@@ -44,7 +47,7 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	private Boolean storable;
 	private Boolean providerable;
 	
-	@Transient private Collection<Store> stores;
+	@Transient private List<Store> stores;
 	@Transient private Party providerParty;
 	@Transient private MovementCollection stockQuantityMovementCollection;
 	
@@ -72,17 +75,30 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	}
 	
 	public Product addStores(Collection<Store> stores){
-		this.stores = CollectionHelper.getInstance().add(this.stores, Boolean.TRUE, stores);
+		this.stores = (List<Store>) CollectionHelper.getInstance().add(this.stores, Boolean.TRUE, stores);
 		return this;
 	}
 	
 	public Product addStores(Store...stores){
-		this.stores = CollectionHelper.getInstance().add(this.stores, Boolean.TRUE, stores);
+		this.stores = (List<Store>) CollectionHelper.getInstance().add(this.stores, Boolean.TRUE, stores);
 		return this;
 	}
 	
 	public Product addStoresAll(){
 		addStores(InstanceHelper.getInstance().get(Store.class));
+		return this;
+	}
+	
+	public Product addStoresFromCode(Collection<String> codes){
+		if(CollectionHelper.getInstance().isNotEmpty(codes))
+			for(String index : codes)
+				addStores(getFromCode(Store.class, index));
+		return this;
+	}
+	
+	public Product addStoresFromCode(String...codes){
+		if(ArrayHelper.getInstance().isNotEmpty(codes))
+			return addStoresFromCode(Arrays.asList(codes));
 		return this;
 	}
 	

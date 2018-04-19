@@ -12,7 +12,9 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.sale.SalableProduct;
+import org.cyk.system.company.model.sale.SalableProductStore;
 import org.cyk.system.company.model.stock.StockableProduct;
+import org.cyk.system.company.model.stock.StockableProductStore;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.impl.__data__.DataSet;
@@ -23,7 +25,6 @@ import org.cyk.system.root.model.mathematics.movement.MovementCollection;
 import org.cyk.system.root.model.party.BusinessRole;
 import org.cyk.system.root.model.party.Party;
 import org.cyk.system.root.model.party.Store;
-import org.cyk.system.root.model.party.StoreType;
 import org.cyk.system.root.persistence.api.party.PartyIdentifiableGlobalIdentifierDao;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.FileHelper;
@@ -93,11 +94,8 @@ public class ProductIT extends AbstractBusinessIT {
     	String productCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(Product.class,productCode));
     	
-    	String storeTypeCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(StoreType.class,storeTypeCode));
-    	
     	String storeCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(Store.class,storeCode).setTypeFromCode(storeTypeCode));
+    	testCase.create(testCase.instanciateOne(Store.class,storeCode));
     	
     	String productStoreCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(ProductStore.class,productStoreCode).setProductFromCode(productCode).setStoreFromCode(storeCode));
@@ -122,11 +120,8 @@ public class ProductIT extends AbstractBusinessIT {
     public void crudOneProductStoreBySetStore(){
     	TestCase testCase = instanciateTestCase(); 
     	
-    	String storeTypeCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(StoreType.class,storeTypeCode));
-    	
     	String storeCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(Store.class,storeCode).setTypeFromCode(storeTypeCode));
+    	testCase.create(testCase.instanciateOne(Store.class,storeCode));
     	
     	String productCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(Product.class,productCode).setStorable(Boolean.TRUE).addStoreFromCode(storeCode));
@@ -156,14 +151,11 @@ public class ProductIT extends AbstractBusinessIT {
     public void crudOneProductStoreBySetAllStore(){
     	TestCase testCase = instanciateTestCase(); 
     	
-    	String storeTypeCode = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(StoreType.class,storeTypeCode));
-    	
     	String storeCode01 = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(Store.class,storeCode01).setTypeFromCode(storeTypeCode));
+    	testCase.create(testCase.instanciateOne(Store.class,storeCode01));
     	
     	String storeCode02 = testCase.getRandomAlphabetic();
-    	testCase.create(testCase.instanciateOne(Store.class,storeCode02).setTypeFromCode(storeTypeCode));
+    	testCase.create(testCase.instanciateOne(Store.class,storeCode02));
     	
     	String productCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(Product.class,productCode).setStorable(Boolean.TRUE).addStoresAll());
@@ -171,6 +163,29 @@ public class ProductIT extends AbstractBusinessIT {
     	testCase.assertNotNullByBusinessIdentifier(ProductStore.class, RootConstant.Code.generate(productCode,storeCode01));
     	testCase.assertNotNullByBusinessIdentifier(ProductStore.class, RootConstant.Code.generate(productCode,storeCode02));
     	
+    	testCase.deleteAll(ProductStore.class);
+    	testCase.clean();
+    }
+    
+    @Test
+    public void crudOneProductStoreBySetManyStore(){
+    	TestCase testCase = instanciateTestCase(); 
+    	
+    	String storeCode01 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Store.class,storeCode01).setHasPartyAsCompany(Boolean.TRUE));
+    	
+    	String storeCode02 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Store.class,storeCode02).setHasPartyAsCompany(Boolean.TRUE));
+    	
+    	String productCode = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Product.class,productCode).setStorable(Boolean.TRUE).addStoresFromCode(storeCode01,storeCode02)
+    			.setSalable(Boolean.TRUE).setStockable(Boolean.TRUE));
+    	
+    	testCase.assertNotNullByBusinessIdentifier(ProductStore.class, RootConstant.Code.generate(productCode,storeCode01));
+    	testCase.assertNotNullByBusinessIdentifier(ProductStore.class, RootConstant.Code.generate(productCode,storeCode02));
+    	
+    	testCase.deleteAll(SalableProductStore.class);
+    	testCase.deleteAll(StockableProductStore.class);
     	testCase.deleteAll(ProductStore.class);
     	testCase.clean();
     }

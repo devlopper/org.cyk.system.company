@@ -8,14 +8,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.cyk.system.company.business.api.product.ProductBusiness;
-import org.cyk.system.company.business.api.product.ProductStoreBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.stock.StockableProductBusiness;
-import org.cyk.system.company.business.api.stock.StockableProductStoreBusiness;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;
 import org.cyk.system.company.model.product.ProductStore;
-import org.cyk.system.company.model.stock.StockableProductStore;
 import org.cyk.system.company.persistence.api.product.ProductDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductDao;
 import org.cyk.system.company.persistence.api.stock.StockableProductDao;
@@ -67,12 +64,7 @@ public class ProductBusinessImpl extends AbstractEnumerationBusinessImpl<Product
 						private static final long serialVersionUID = 1L;
 
 						protected void __executeForEach__(Store store) {
-							ProductStore productStore = inject(ProductStoreBusiness.class).instanciateOne().setProduct(product).setStore(store);
-							product.addIdentifiables(productStore);
-							if(Boolean.TRUE.equals(product.getStockable())){
-								StockableProductStore stockableProductStore = inject(StockableProductStoreBusiness.class).instanciateOne().setProductStore(productStore);
-								product.addIdentifiables(stockableProductStore);	
-							}
+							product.addIdentifiables(instanciateOne(ProductStore.class).setProduct(product).setStore(store));
 						};
 					}.execute();		
 				}
@@ -90,6 +82,9 @@ public class ProductBusinessImpl extends AbstractEnumerationBusinessImpl<Product
 				}
 			}
 		}else if(Crud.DELETE.equals(crud)){
+			//inject(SalableProductStoreBusiness.class).delete(inject(SalableProductStoreDao.class).readByProduct(product));
+			//inject(StockableProductStoreBusiness.class).delete(inject(StockableProductStoreDao.class).readByProduct(product));
+			
 			inject(SalableProductBusiness.class).delete(inject(SalableProductDao.class).readByProduct(product));
 			inject(StockableProductBusiness.class).delete(inject(StockableProductDao.class).readByProduct(product));
 		}
