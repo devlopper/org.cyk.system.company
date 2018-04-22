@@ -11,10 +11,10 @@ import org.cyk.system.root.business.api.mathematics.movement.MovementCollectionI
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.mathematics.movement.MovementCollection;
 import org.cyk.system.root.model.mathematics.movement.MovementCollectionIdentifiableGlobalIdentifier;
-import org.cyk.ui.web.primefaces.mathematics.movement.MovementIdentifiableEditPageFormMaster.PrepareMovementCollectionValuesTransferItemCollectionListener;
+import org.cyk.ui.web.primefaces.mathematics.movement.MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareListener;
 import org.cyk.utility.common.helper.CollectionHelper;
 
-public class PrepareMovementCollectionValuesTransferItemCollectionAdapter extends PrepareMovementCollectionValuesTransferItemCollectionListener.Adapter.Default implements Serializable {
+public class MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareAdapter extends MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareListener.Adapter.Default implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Override

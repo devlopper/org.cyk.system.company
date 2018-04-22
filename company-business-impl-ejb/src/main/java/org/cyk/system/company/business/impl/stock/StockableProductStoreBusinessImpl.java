@@ -36,7 +36,7 @@ public class StockableProductStoreBusinessImpl extends AbstractTypedBusinessServ
 	public StockableProductStore instanciateOne() {
 		StockableProductStore stockableProductStore = super.instanciateOne();
 		stockableProductStore.setQuantityMovementCollection(inject(MovementCollectionBusiness.class).instanciateOne()
-				.setTypeFromCode(RootConstant.Code.MovementCollectionType.STOCK_REGISTER));
+				.setTypeFromCode(RootConstant.Code.MovementCollectionType.STOCK_REGISTER).setIsCreateBufferAutomatically(Boolean.TRUE));
 		return stockableProductStore;
 	}
 	

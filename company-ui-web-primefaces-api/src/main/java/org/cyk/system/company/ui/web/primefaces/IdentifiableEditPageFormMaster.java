@@ -15,7 +15,7 @@ import org.cyk.system.company.model.stock.StockableProductStoresTransferAcknowle
 import org.cyk.system.company.ui.web.primefaces.product.ProductIdentifiableEditPageFormMaster;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleIdentifiableEditPageFormMaster;
 import org.cyk.system.company.ui.web.primefaces.stock.StockIdentifiableEditPageFormMaster;
-import org.cyk.ui.web.primefaces.mathematics.movement.MovementIdentifiableEditPageFormMaster.PrepareMovementCollectionValuesTransferItemCollectionListener;
+import org.cyk.ui.web.primefaces.mathematics.movement.MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareListener;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.userinterface.container.Form;
 
@@ -23,7 +23,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 	private static final long serialVersionUID = -6211058744595898478L;
 	
 	static {
-		ClassHelper.getInstance().map(PrepareMovementCollectionValuesTransferItemCollectionListener.class, PrepareMovementCollectionValuesTransferItemCollectionAdapter.class);
+		ClassHelper.getInstance().map(MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareListener.class, MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareAdapter.class);
 	}
 	
 	@Override
