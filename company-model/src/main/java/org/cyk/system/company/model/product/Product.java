@@ -54,8 +54,18 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	@Transient @Text(value="selling.price") private BigDecimal salableProductPropertiesPrice;
 	@Transient @Text(value="stock") private BigDecimal stockQuantityMovementCollectionInitialValue;
 	
+	@Override
+	public Product setName(String name) {
+		return (Product) super.setName(name);
+	}
+	
 	public Product addStoreFromCode(String code){
 		addStores(getFromCode(Store.class, code));
+		return this;
+	}
+	
+	public Product setCategoryFromCode(String code){
+		category = getFromCode(ProductCategory.class, code);
 		return this;
 	}
 	

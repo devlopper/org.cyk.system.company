@@ -7,6 +7,10 @@ public interface CompanyConstant {
 	public static class Code implements Serializable {
 		private static final long serialVersionUID = 1L;
 		
+		public static interface Entity {
+			
+		}
+		
 		public static class File implements Serializable {
 			private static final long serialVersionUID = 1L;
 			
