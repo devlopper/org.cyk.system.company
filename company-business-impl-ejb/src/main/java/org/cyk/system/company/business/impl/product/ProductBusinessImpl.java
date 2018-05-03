@@ -96,7 +96,7 @@ public class ProductBusinessImpl extends AbstractEnumerationBusinessImpl<Product
     public Collection<Product> findByCategory(ProductCategory category) {
     	return dao.readByCategory(category);
     }
-    
+        
     /**/
     
     public static class BuilderOneDimensionArray extends AbstractEnumerationBusinessImpl.BuilderOneDimensionArray<Product> implements Serializable {

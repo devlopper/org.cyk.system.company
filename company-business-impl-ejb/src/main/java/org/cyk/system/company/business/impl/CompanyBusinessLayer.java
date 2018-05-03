@@ -94,9 +94,9 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	protected void initialisation() {
 		INSTANCE = this;
 		super.initialisation();
-		RootConstant.Code.setDefault(StoreType.class, RootConstant.Code.StoreType.PRODUCT);
-		RootConstant.Code.setDefault(SalableProductCollectionPropertiesType.class, CompanyConstant.Code.SalableProductCollectionPropertiesType.SALE);
-		//RootConstant.Code.setDefault(SalableProductCollectionProperties.class, CompanyConstant.Code.SalableProductCollectionProperties.SALE);
+		InstanceHelper.getInstance().setDefaultBusinessIdentifier(StoreType.class, RootConstant.Code.StoreType.PRODUCT);
+		InstanceHelper.getInstance().setDefaultBusinessIdentifier(SalableProductCollectionPropertiesType.class, CompanyConstant.Code.SalableProductCollectionPropertiesType.SALE);
+		//InstanceHelper.getInstance().setDefaultBusinessIdentifier(SalableProductCollectionProperties.class, CompanyConstant.Code.SalableProductCollectionProperties.SALE);
 		
 		PersistDataListener.COLLECTION.add(new PersistDataListener.Adapter.Default(){
 			private static final long serialVersionUID = -950053441831528010L;

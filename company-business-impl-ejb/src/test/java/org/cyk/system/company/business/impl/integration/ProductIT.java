@@ -19,7 +19,6 @@ import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.root.business.api.file.FileBusiness;
 import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.RootConstant;
-import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.information.Comment;
 import org.cyk.system.root.model.language.programming.Script;
 import org.cyk.system.root.model.mathematics.movement.Movement;
@@ -29,10 +28,8 @@ import org.cyk.system.root.model.metadata.EntityProperty;
 import org.cyk.system.root.model.party.BusinessRole;
 import org.cyk.system.root.model.party.Party;
 import org.cyk.system.root.model.party.Store;
-import org.cyk.system.root.persistence.api.metadata.EntityDao;
 import org.cyk.system.root.persistence.api.party.PartyIdentifiableGlobalIdentifierDao;
 import org.cyk.utility.common.helper.ClassHelper;
-import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.common.helper.FileHelper;
 import org.cyk.utility.common.helper.RandomHelper;
 import org.junit.Test;
@@ -65,8 +62,7 @@ public class ProductIT extends AbstractBusinessIT {
     	TestCase testCase = instanciateTestCase(); 
     	String code = testCase.getRandomAlphabetic();
     	FileHelper.File file = RandomHelper.getInstance().getFilePersonHeadOnly(Boolean.TRUE);
-    	testCase.create(testCase.instanciateOne(Product.class,code).addCascadeOperationToMasterFieldNames(FieldHelper.getInstance().buildPath(Product.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_IMAGE))
-    			.setImage(inject(FileBusiness.class).process(file.getBytes(), file.getName())));
+    	testCase.create(testCase.instanciateOne(Product.class,code).setImage(inject(FileBusiness.class).process(file.getBytes(), file.getName())));
     	testCase.clean();
     }
     
@@ -78,7 +74,6 @@ public class ProductIT extends AbstractBusinessIT {
     	testCase.create(testCase.instanciateOne(ProductCategory.class,productCategory01).setName("Métallique"));
     	String productCategory02 = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(ProductCategory.class,productCategory02).setName("Non Métallique"));
-    	System.out.println("ProductIT.crudOneProductWithCodeScript_nameTwoFirst_categoryTwoFirstLetter_orderNumber() : "+inject(EntityDao.class).readAll());
     	String scriptCode = testCase.getRandomAlphabetic();
     	testCase.create(testCase.instanciateOne(Script.class,scriptCode).setText("instance.name.substring(0,2).toUpperCase()+''+instance.category.name.substring(0,2).toUpperCase()"));
     	String entityPropertyCode = testCase.getRandomAlphabetic();
