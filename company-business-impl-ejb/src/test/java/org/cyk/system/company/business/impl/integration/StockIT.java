@@ -17,6 +17,7 @@ import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
+import org.cyk.system.root.model.mathematics.Interval;
 import org.cyk.system.root.model.mathematics.movement.Movement;
 import org.cyk.system.root.model.mathematics.movement.MovementCollection;
 import org.cyk.system.root.model.mathematics.movement.MovementCollectionIdentifiableGlobalIdentifier;
@@ -102,7 +103,7 @@ public class StockIT extends AbstractBusinessIT {
     	StockableProductStore stockableProductStore = testCase.getByIdentifierWhereValueUsageTypeIsBusiness(StockableProductStore.class,productStoreCode);
     	testCase.assertEquals(stockableProductStore.getGlobalIdentifier(),movementCollectionIdentifiableGlobalIdentifier.getIdentifiableGlobalIdentifier());
     	
-    	testCase.assertCountAll(MovementCollection.class, 1);
+    	testCase.assertCountAll(MovementCollection.class, 2);
     	
     	testCase.deleteAll(StockableProductStore.class);
     	
@@ -163,7 +164,7 @@ public class StockIT extends AbstractBusinessIT {
 		@SuppressWarnings({ "rawtypes" })
 		@Override
 		public Collection getClasses() { 
-			return Arrays.asList(StockableProduct.class,Movement.class,Store.class,Value.class,Party.class);
+			return Arrays.asList(StockableProduct.class,Movement.class,Interval.class,Store.class,Value.class,Party.class);
 		}
 		
     }

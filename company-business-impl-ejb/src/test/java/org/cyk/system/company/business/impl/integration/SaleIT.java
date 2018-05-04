@@ -35,23 +35,17 @@ import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.persistence.api.sale.SalableProductCollectionItemDao;
 import org.cyk.system.company.persistence.api.sale.SalableProductStoreCollectionItemDao;
 import org.cyk.system.root.business.api.file.FileBusiness;
-import org.cyk.system.root.business.api.information.IdentifiableCollectionBusiness;
-import org.cyk.system.root.business.api.information.IdentifiableCollectionItemBusiness;
-import org.cyk.system.root.business.api.mathematics.movement.MovementBusiness;
-import org.cyk.system.root.business.api.mathematics.movement.MovementCollectionBusiness;
 import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
-import org.cyk.system.root.model.information.IdentifiableCollection;
+import org.cyk.system.root.model.mathematics.Interval;
 import org.cyk.system.root.model.mathematics.movement.Movement;
 import org.cyk.system.root.model.mathematics.movement.MovementCollection;
-import org.cyk.system.root.model.mathematics.movement.MovementCollectionType;
 import org.cyk.system.root.model.party.BusinessRole;
 import org.cyk.system.root.model.party.Party;
 import org.cyk.system.root.model.party.Store;
 import org.cyk.system.root.model.party.StoreType;
-import org.cyk.system.root.persistence.api.mathematics.movement.MovementCollectionDao;
 import org.cyk.system.root.persistence.api.party.PartyIdentifiableGlobalIdentifierDao;
 import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.helper.ConditionHelper;
@@ -1224,7 +1218,7 @@ public class SaleIT extends AbstractBusinessIT {
 		@SuppressWarnings({ "rawtypes" })
 		@Override
 		public Collection getClasses() {
-			return Arrays.asList(Sale.class,Movement.class,Party.class,Store.class,StockableProduct.class);
+			return Arrays.asList(Sale.class,Movement.class,Interval.class,Party.class,Store.class,StockableProduct.class);
 		}
 		
     }

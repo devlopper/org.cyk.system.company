@@ -21,6 +21,7 @@ import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.information.Comment;
 import org.cyk.system.root.model.language.programming.Script;
+import org.cyk.system.root.model.mathematics.Interval;
 import org.cyk.system.root.model.mathematics.movement.Movement;
 import org.cyk.system.root.model.mathematics.movement.MovementCollection;
 import org.cyk.system.root.model.metadata.Entity;
@@ -221,7 +222,7 @@ public class ProductIT extends AbstractBusinessIT {
 		@SuppressWarnings({ "rawtypes" })
 		@Override
 		public Collection getClasses() {
-			return Arrays.asList(Product.class,Movement.class,Party.class,Comment.class,Entity.class,Script.class);
+			return Arrays.asList(Product.class,Movement.class,Interval.class,Party.class,Comment.class,Entity.class,Script.class);
 		}
 		
     }
