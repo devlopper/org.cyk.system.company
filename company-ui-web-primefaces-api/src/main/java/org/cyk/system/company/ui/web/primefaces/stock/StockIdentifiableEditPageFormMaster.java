@@ -6,12 +6,9 @@ import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.model.stock.StockableProductStore;
 import org.cyk.system.company.model.stock.StockableProductStoresTransfer;
 import org.cyk.system.company.model.stock.StockableProductStoresTransferAcknowledgement;
-import org.cyk.system.company.ui.web.primefaces.MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareAdapter;
 import org.cyk.system.root.model.mathematics.movement.MovementCollectionValuesTransfer;
 import org.cyk.system.root.model.mathematics.movement.MovementCollectionValuesTransferAcknowledgement;
-import org.cyk.ui.web.primefaces.mathematics.movement.MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareListener;
-import org.cyk.ui.web.primefaces.mathematics.movement.MovementIdentifiableEditPageFormMaster;
-import org.cyk.utility.common.helper.ClassHelper;
+import org.cyk.ui.web.primefaces.mathematics.movement.MovementIdentifiablePages;
 import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.common.userinterface.container.Form;
 
@@ -34,13 +31,13 @@ public class StockIdentifiableEditPageFormMaster implements Serializable {
 		
 		//ClassHelper.getInstance().map(MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareListener.class, MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareAdapter.class,Boolean.TRUE);
 		
-		MovementIdentifiableEditPageFormMaster.prepareMovementCollectionValuesTransferItemCollection(detail
+		MovementIdentifiablePages.prepareMovementCollectionValuesTransferItemCollectionEditFormMaster(detail
 				,FieldHelper.getInstance().buildPath(StockableProductStoresTransfer.FIELD_MOVEMENT_COLLECTION_VALUES_TRANSFER,MovementCollectionValuesTransfer.FIELD_ITEMS));
 	}
 	
 	public static void prepareStockableProductStoresTransferAcknowledgement(Form.Detail detail,Class<?> aClass){
 		detail.add(MovementCollectionValuesTransferAcknowledgement.FIELD_TRANSFER).addBreak();
-		MovementIdentifiableEditPageFormMaster.prepareMovementCollectionValuesTransferItemCollection(detail
+		MovementIdentifiablePages.prepareMovementCollectionValuesTransferItemCollectionEditFormMaster(detail
 				,FieldHelper.getInstance().buildPath(StockableProductStoresTransferAcknowledgement.FIELD_TRANSFER, MovementCollectionValuesTransferAcknowledgement.FIELD_ITEMS));
 	}
 	
