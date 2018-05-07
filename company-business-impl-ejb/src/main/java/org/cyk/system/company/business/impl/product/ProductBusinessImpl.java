@@ -7,6 +7,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cyk.system.company.business.api.product.ProductBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductBusiness;
 import org.cyk.system.company.business.api.stock.StockableProductBusiness;
@@ -24,6 +25,7 @@ import org.cyk.system.root.model.party.BusinessRole;
 import org.cyk.system.root.model.party.PartyIdentifiableGlobalIdentifier;
 import org.cyk.system.root.model.party.Store;
 import org.cyk.system.root.persistence.api.party.PartyIdentifiableGlobalIdentifierDao;
+import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.helper.CollectionHelper;
 
 public class ProductBusinessImpl extends AbstractEnumerationBusinessImpl<Product,ProductDao> implements ProductBusiness,Serializable  {
@@ -64,7 +66,9 @@ public class ProductBusinessImpl extends AbstractEnumerationBusinessImpl<Product
 						private static final long serialVersionUID = 1L;
 
 						protected void __executeForEach__(Store store) {
-							product.addIdentifiables(instanciateOne(ProductStore.class).setProduct(product).setStore(store));
+							product.addIdentifiables(instanciateOne(ProductStore.class)
+									.setCode(StringUtils.defaultIfBlank(StringUtils.defaultIfBlank(product.getCode(),Constant.EMPTY_STRING)+StringUtils.defaultIfBlank(store.getCode(),Constant.EMPTY_STRING),null))
+									.setProduct(product).setStore(store));
 						};
 					}.execute();		
 				}
