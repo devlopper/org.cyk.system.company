@@ -7,8 +7,6 @@ import java.util.Date;
 
 import javax.inject.Singleton;
 
-import lombok.Getter;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.business.impl.__data__.RealDataSet;
 import org.cyk.system.company.business.impl.payment.CashRegisterMovementBusinessImpl;
@@ -40,6 +38,7 @@ import org.cyk.system.root.business.impl.RootBusinessLayer;
 import org.cyk.system.root.business.impl.__data__.DataSet;
 import org.cyk.system.root.business.impl.file.report.AbstractReportRepository;
 import org.cyk.system.root.business.impl.file.report.AbstractRootReportProducer;
+import org.cyk.system.root.business.impl.mathematics.movement.MovementCollectionInventoryBusinessImpl;
 import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.ContentType;
 import org.cyk.system.root.model.RootConstant;
@@ -56,6 +55,8 @@ import org.cyk.utility.common.helper.InstanceHelper;
 import org.cyk.utility.common.helper.RandomHelper;
 import org.cyk.utility.common.helper.TimeHelper;
 import org.cyk.utility.common.test.TestCase;
+
+import lombok.Getter;
 
 @Singleton @Deployment(initialisationType=InitialisationType.EAGER,order=CompanyBusinessLayer.DEPLOYMENT_ORDER) @Getter
 public class CompanyBusinessLayer extends AbstractBusinessLayer implements Serializable {
@@ -94,6 +95,8 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 	protected void initialisation() {
 		INSTANCE = this;
 		super.initialisation();
+		//ClassHelper.getInstance().map(MovementCollectionInventoryBusinessImpl.Listener.class, MovementCollectionInventoryBusinessAdapter.class);
+		
 		InstanceHelper.getInstance().setDefaultBusinessIdentifier(StoreType.class, RootConstant.Code.StoreType.PRODUCT);
 		InstanceHelper.getInstance().setDefaultBusinessIdentifier(SalableProductCollectionPropertiesType.class, CompanyConstant.Code.SalableProductCollectionPropertiesType.SALE);
 		//InstanceHelper.getInstance().setDefaultBusinessIdentifier(SalableProductCollectionProperties.class, CompanyConstant.Code.SalableProductCollectionProperties.SALE);
@@ -199,7 +202,7 @@ public class CompanyBusinessLayer extends AbstractBusinessLayer implements Seria
 		
 		AbstractIdentifiableBusinessServiceImpl.addAutoSetPropertyValueClass(new String[]{"code","name"}, SalableProductCollectionItem.class,ProductStore.class);
 		
-		ClassHelper.getInstance().map(TestCase.class, CompanyBusinessTestHelper.TestCase.class);
+		ClassHelper.getInstance().map(TestCase.class, org.cyk.system.company.business.impl.__test__.TestCase.class);
 	}
 		
 	@Override

@@ -3,7 +3,7 @@ package org.cyk.system.company.business.impl.integration;
 import org.cyk.system.company.business.api.payment.CashRegisterBusiness;
 import org.cyk.system.company.business.api.structure.CompanyBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
+import org.cyk.system.company.business.impl.__test__.TestCase;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.model.structure.Company;
 import org.cyk.system.company.model.structure.OwnedCompany;

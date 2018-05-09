@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
 import org.cyk.system.company.business.impl.__data__.RealDataSet;
+import org.cyk.system.company.business.impl.__test__.TestCase;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.stock.StockableProduct;
@@ -151,6 +151,58 @@ public class StockIT extends AbstractBusinessIT {
     			.setTransferFromCode(stockableProductStoresTransferCode));
     	
     	testCase.deleteAll(StockableProductStore.class);
+    	
+    	testCase.clean();
+    }
+    
+    @Test
+    public void assertStockableProductStoreReadByProductStore(){
+    	TestCase testCase = instanciateTestCase();
+    	String storeCode01 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Store.class, storeCode01).setHasPartyAsCompany(Boolean.TRUE));
+    	
+    	String storeCode02 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Store.class, storeCode02).setHasPartyAsCompany(Boolean.TRUE));
+    	
+    	String storeCode03 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Store.class, storeCode03).setHasPartyAsCompany(Boolean.TRUE));
+    	
+    	String storeCode04 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Store.class, storeCode04).setHasPartyAsCompany(Boolean.TRUE));
+    	
+    	String storeCode05 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Store.class, storeCode05).setHasPartyAsCompany(Boolean.TRUE));
+    	
+    	String productCode01 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Product.class,productCode01).setStorable(Boolean.TRUE).addStoresFromCode(storeCode01,storeCode02,storeCode03,storeCode05)
+    			.setStockable(Boolean.TRUE));
+    	
+    	String productCode02 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Product.class,productCode02).setStorable(Boolean.TRUE).addStoresFromCode(storeCode01,storeCode02,storeCode03)
+    			.setStockable(Boolean.TRUE));
+    	
+    	String productCode03 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Product.class,productCode03).setStorable(Boolean.TRUE).addStoresFromCode(storeCode01,storeCode02,storeCode03,storeCode05)
+    			.setStockable(Boolean.TRUE));
+    	
+    	String productCode04 = testCase.getRandomAlphabetic();
+    	testCase.create(testCase.instanciateOne(Product.class,productCode04).setStorable(Boolean.TRUE).addStoresFromCode(storeCode01,storeCode02,storeCode03)
+    			.setStockable(Boolean.TRUE));
+    	
+    	testCase.assertCountAll(ProductStore.class, 14);
+    	
+    	testCase.assertNotNullStockableProductStoreReadByProductStore(productCode01, storeCode01);
+    	testCase.assertNullStockableProductStoreReadByProductStore(productCode01, storeCode04);
+    	testCase.assertEqualsStockableProductStoresByStoreCode(storeCode01, productCode01,productCode02,productCode03,productCode04);
+    	testCase.assertEqualsStockableProductStoresByStoreCode(storeCode02, productCode01,productCode02,productCode03,productCode04);
+    	testCase.assertEqualsStockableProductStoresByStoreCode(storeCode03, productCode01,productCode02,productCode03,productCode04);
+    	testCase.assertEqualsStockableProductStoresByStoreCode(storeCode04);
+    	testCase.assertEqualsStockableProductStoresByStoreCode(storeCode05, productCode01,productCode03);
+    	
+    	//testCase.deleteAll(MovementCollectionIdentifiableGlobalIdentifier.class);
+    	testCase.deleteAll(StockableProductStore.class);
+    	testCase.deleteAll(ProductStore.class);
+    	testCase.deleteAll(StockableProduct.class);
     	
     	testCase.clean();
     }

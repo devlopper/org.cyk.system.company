@@ -2,12 +2,22 @@ package org.cyk.system.company.ui.web.primefaces.enterpriseresourceplanning;
 
 import java.io.Serializable;
 
+import javax.servlet.ServletContextEvent;
+
 import org.cyk.system.company.ui.web.primefaces.ServletContextListener;
+import org.cyk.ui.web.primefaces.mathematics.movement.MovementCollectionInventoryEditFormMasterPrepareListener;
+import org.cyk.utility.common.helper.ClassHelper;
 import org.cyk.utility.common.security.Shiro;
 
 @javax.servlet.annotation.WebListener
 public class ContextListener extends ServletContextListener implements Serializable {
 	private static final long serialVersionUID = -9042005596731665575L;
+	
+	@Override
+	public void __contextInitialized__(ServletContextEvent event) {
+		super.__contextInitialized__(event);
+		ClassHelper.getInstance().map(MovementCollectionInventoryEditFormMasterPrepareListener.class, MovementCollectionInventoryEditFormMasterPrepareAdapter.class);
+	}
 	
 	/*@Override
 	public void __contextInitialized__(ServletContextEvent event) {

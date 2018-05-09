@@ -8,7 +8,7 @@ import org.cyk.system.company.business.api.sale.SalableProductCollectionBusiness
 import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementBusiness;
 import org.cyk.system.company.business.api.sale.SaleCashRegisterMovementCollectionBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
+import org.cyk.system.company.business.impl.__test__.TestCase;
 import org.cyk.system.company.business.impl.__data__.IesaFakedDataSet;
 import org.cyk.system.company.model.CompanyConstant;
 import org.cyk.system.company.model.sale.SalableProductCollection;

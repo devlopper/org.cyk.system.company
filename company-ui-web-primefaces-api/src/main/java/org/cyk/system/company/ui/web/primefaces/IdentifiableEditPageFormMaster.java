@@ -23,7 +23,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 	private static final long serialVersionUID = -6211058744595898478L;
 	
 	static {
-		ClassHelper.getInstance().map(MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareListener.class, MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareAdapter.class);
+		//ClassHelper.getInstance().map(MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareListener.class, MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareAdapter.class);
 	}
 	
 	@Override

@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
+import org.cyk.system.company.business.impl.__test__.TestCase;
 import org.cyk.system.company.business.impl.__data__.RealDataSet;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductCategory;

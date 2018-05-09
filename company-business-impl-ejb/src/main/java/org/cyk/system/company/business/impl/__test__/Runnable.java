@@ -1,6 +1,6 @@
 package org.cyk.system.company.business.impl.__test__;
 
-import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
+import org.cyk.system.company.business.impl.__test__.TestCase;
 import org.cyk.system.root.model.AbstractIdentifiable;
 
 public abstract class Runnable extends org.cyk.utility.common.test.BasedRunnable<TestCase> implements java.lang.Runnable {

@@ -17,8 +17,10 @@ import org.cyk.system.root.model.AbstractIdentifiable;
 import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.movement.MovementCollection;
+import org.cyk.system.root.model.party.Party;
 import org.cyk.system.root.persistence.api.mathematics.movement.MovementCollectionDao;
 import org.cyk.system.root.persistence.api.mathematics.movement.MovementCollectionTypeDao;
+import org.cyk.system.root.persistence.api.party.PartyDao;
 import org.cyk.utility.common.Constant;
 import org.cyk.utility.common.helper.CollectionHelper;
 import org.cyk.utility.common.helper.LoggingHelper.Message.Builder;
@@ -67,6 +69,15 @@ public class StockableProductStoreBusinessImpl extends AbstractTypedBusinessServ
 		if(stockableProductStore.getQuantityMovementCollection() != null){
 			stockableProductStore.getQuantityMovementCollection().setValue(stockableProductStore.getQuantityMovementCollectionInitialValue());
 			inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).create(stockableProductStore.getQuantityMovementCollection(), stockableProductStore);
+			
+			Party party = inject(PartyDao.class).readFirstByIdentifiableByBusinessRoleCode(stockableProductStore.getProductStore().getStore()
+					, RootConstant.Code.BusinessRole.COMPANY);
+			/*
+			 * Join to functionalities related to party
+			 */
+			if(party!=null){
+				inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class).create(stockableProductStore.getQuantityMovementCollection(), party);	
+			}
 		}
 	}
 	

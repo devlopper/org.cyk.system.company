@@ -14,7 +14,7 @@ import org.cyk.system.company.business.api.sale.SalableProductCollectionItemBusi
 import org.cyk.system.company.business.api.sale.SalableProductStoreCollectionBusiness;
 import org.cyk.system.company.business.api.sale.SalableProductStoreCollectionItemBusiness;
 import org.cyk.system.company.business.api.sale.SaleBusiness;
-import org.cyk.system.company.business.impl.CompanyBusinessTestHelper.TestCase;
+import org.cyk.system.company.business.impl.__test__.TestCase;
 import org.cyk.system.company.business.impl.__data__.RealDataSet;
 import org.cyk.system.company.business.impl.__test__.Runnable;
 import org.cyk.system.company.model.CompanyConstant;

@@ -17,6 +17,7 @@ import org.cyk.system.company.business.api.structure.EmployeeBusiness;
 import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.business.impl.CompanyBusinessLayer;
 import org.cyk.system.company.business.impl.CompanyBusinessTestHelper;
+import org.cyk.system.company.business.impl.__test__.TestCase;
 import org.cyk.system.company.model.accounting.AccountingPeriod;
 import org.cyk.system.company.persistence.api.accounting.AccountingPeriodProductDao;
 import org.cyk.system.company.persistence.api.product.ProductDao;
@@ -110,7 +111,7 @@ public abstract class AbstractBusinessIT extends AbstractIntegrationTestJpaBased
 		ClassHelper.getInstance().map(ApplicationBusinessImpl.Listener.class, ApplicationBusinessAdapter.class,Boolean.FALSE);
 	}
 	
-	protected CompanyBusinessTestHelper.TestCase instanciateTestCase(){
+	protected TestCase instanciateTestCase(){
 		return companyBusinessTestHelper.instanciateTestCase();
 	}
 	

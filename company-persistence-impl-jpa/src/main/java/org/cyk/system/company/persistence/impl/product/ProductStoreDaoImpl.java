@@ -1,5 +1,7 @@
 package org.cyk.system.company.persistence.impl.product;
 
+import java.util.Collection;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductStore;
@@ -18,7 +20,21 @@ public class ProductStoreDaoImpl extends AbstractTypedDao<ProductStore> implemen
 
 	@Override
 	public ProductStore readByProductByStore(Product product, Store store) {
+		if(product == null || store == null)
+			return null;
 		return CollectionHelper.getInstance().getFirst(readByFilter(new ProductStore.Filter().addMaster(product).addMaster(store)));
+	}
+	
+	@Override
+	public ProductStore readByProductCodeByStoreCode(String productCode, String storeCode) {
+		return readByProductByStore(read(Product.class,productCode),read(Store.class,storeCode));
+	}
+	
+	@Override
+	public Collection<ProductStore> readByStore(Store store) {
+		if(store == null)
+			return null;
+		return readByFilter(new ProductStore.Filter().addMaster(store));
 	}
 	
 	@Override
@@ -40,5 +56,7 @@ public class ProductStoreDaoImpl extends AbstractTypedDao<ProductStore> implemen
 			queryWrapper.parameterInIdentifiers(filter.filterMasters(Store.class),ProductStore.FIELD_STORE,GlobalIdentifier.FIELD_IDENTIFIER);
 		}
 	}
+
+	
 	
 }

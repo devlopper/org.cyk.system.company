@@ -7,6 +7,7 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.root.business.api.GenericBusiness;
 import org.cyk.system.root.business.api.party.StoreBusiness;
 import org.cyk.system.root.business.impl.party.ApplicationBusinessImpl;
+import org.cyk.system.root.model.party.Store;
 import org.cyk.system.root.model.security.Installation;
 import org.cyk.utility.common.helper.ClassHelper;
 
@@ -19,8 +20,12 @@ public class ApplicationSetupBusinessIT extends AbstractBusinessIT {
     
     @Override
     protected void businesses() {
-    	for(Object[] store : new Object[][]{{"ENTREPOT","Entrepot"},{"BCOC","Boutique Cocody"},{"BYOP","Boutique yopougon"}}){
-    		inject(GenericBusiness.class).create(inject(StoreBusiness.class).instanciateOne().setCode((String)store[0]).setName((String)store[1]));
+    	for(Object[] array : new Object[][]{{"ENTREPOT","Entrepot"},{"BCOC","Boutique Cocody"},{"BYOP","Boutique yopougon"}}){
+    		Store store = inject(StoreBusiness.class).instanciateOne();
+    		store.setCode((String)array[0]);
+    		store.setName((String)array[1]);
+    		store.setHasPartyAsCompany(Boolean.TRUE);
+    		inject(GenericBusiness.class).create(store);
     	}
     	
 		for(Object[] array : new Object[][]{{"OMO","Omo",75},{"JAV","Javel",100},{"SAC","Sac",725}}){
