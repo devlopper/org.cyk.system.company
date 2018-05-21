@@ -13,7 +13,7 @@ import org.cyk.system.root.model.mathematics.movement.MovementCollection;
 import org.cyk.system.root.model.mathematics.movement.MovementCollectionIdentifiableGlobalIdentifier;
 import org.cyk.ui.web.primefaces.mathematics.movement.MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareListener;
 import org.cyk.utility.common.helper.CollectionHelper;
-import org.cyk.utility.common.userinterface.container.Form;
+import org.cyk.utility.common.userinterface.container.form.FormDetail;
 
 public class MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareAdapter extends MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareListener.Adapter.Default implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -27,7 +27,7 @@ public class MovementCollectionValuesTransferItemCollectionEditFormMasterPrepare
 	}
 	
 	@Override
-	public MovementCollection getDestinationMovementCollection(Form.Detail detail,EndPoint sender,EndPoint receiver,MovementCollection source,AbstractIdentifiable sourceIdentifiableJoined) {
+	public MovementCollection getDestinationMovementCollection(FormDetail detail,EndPoint sender,EndPoint receiver,MovementCollection source,AbstractIdentifiable sourceIdentifiableJoined) {
 		if(sender!=null && receiver!=null && source!=null){
 			if(sourceIdentifiableJoined!=null){
 				ProductStore receiverProductStore = inject(ProductStoreBusiness.class).findByProductByStore(((StockableProductStore) sourceIdentifiableJoined).getProductStore()

@@ -12,8 +12,6 @@ import org.cyk.system.company.business.api.structure.OwnedCompanyBusiness;
 import org.cyk.system.company.model.payment.CashRegister;
 import org.cyk.system.company.persistence.api.payment.CashRegisterDao;
 import org.cyk.system.root.business.impl.AbstractEnumerationBusinessImpl;
-import org.cyk.system.root.model.AbstractIdentifiable;
-import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.party.person.Person;
 
 @Deprecated
@@ -62,15 +60,6 @@ public class CashRegisterBusinessImpl extends AbstractEnumerationBusinessImpl<Ca
 		cashRegister.getMovementCollection().getDecrementAction().getInterval().getLow().setValue(BigDecimal.ZERO);
 		*/
 		return cashRegister;
-	}
-	
-	@Override
-	protected CashRegister __instanciateOne__(String[] values,InstanciateOneListener<CashRegister> listener) {
-		super.__instanciateOne__(values, listener);
-		set(listener.getSetListener(), AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_CODE);
-		set(listener.getSetListener(), AbstractIdentifiable.FIELD_GLOBAL_IDENTIFIER,GlobalIdentifier.FIELD_NAME);
-		set(listener.getSetListener(), CashRegister.FIELD_MOVEMENT_COLLECTION);
-		return listener.getInstance();
 	}
 	
 	public static class BuilderOneDimensionArray extends AbstractEnumerationBusinessImpl.BuilderOneDimensionArray<CashRegister> implements Serializable {

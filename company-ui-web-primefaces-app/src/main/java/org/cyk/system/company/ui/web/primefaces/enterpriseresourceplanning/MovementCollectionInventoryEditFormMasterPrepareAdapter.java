@@ -10,10 +10,12 @@ import org.cyk.system.root.model.mathematics.movement.MovementCollection;
 import org.cyk.system.root.model.mathematics.movement.MovementCollectionIdentifiableGlobalIdentifier;
 import org.cyk.system.root.model.mathematics.movement.MovementCollectionInventoryItem;
 import org.cyk.ui.web.primefaces.mathematics.movement.MovementCollectionInventoryEditFormMasterPrepareListener;
-import org.cyk.utility.common.helper.CollectionHelper;
 import org.cyk.utility.common.helper.FieldHelper;
 import org.cyk.utility.common.helper.StringHelper;
+import org.cyk.utility.common.userinterface.collection.Cell;
+import org.cyk.utility.common.userinterface.collection.Column;
 import org.cyk.utility.common.userinterface.collection.DataTable;
+import org.cyk.utility.common.userinterface.collection.Row;
 import org.cyk.utility.common.userinterface.input.choice.InputChoice;
 import org.cyk.utility.common.userinterface.output.OutputText;
 
@@ -72,8 +74,8 @@ public class MovementCollectionInventoryEditFormMasterPrepareAdapter extends Mov
 	public static class ItemsDataTableCellAdapter extends MovementCollectionInventoryEditFormMasterPrepareListener.ItemsDataTableCellAdapter implements Serializable {
 		private static final long serialVersionUID = 1L;
 		
-		public DataTable.Cell instanciateOne(DataTable.Column column, DataTable.Row row) {
-			final DataTable.Cell cell = super.instanciateOne(column, row);
+		public Cell instanciateOne(Column column, Row row) {
+			final Cell cell = super.instanciateOne(column, row);
 			if( ((DataTable)column.getPropertiesMap().getDataTable()).getChoiceValueClassMasterFieldName().equals(column.getPropertiesMap().getFieldName())) {
 				Collection<MovementCollectionIdentifiableGlobalIdentifier> l = inject(MovementCollectionIdentifiableGlobalIdentifierBusiness.class)
 						.findByMovementCollection(((MovementCollectionInventoryItem)row.getPropertiesMap().getValue()).getMovementCollection());

@@ -14,7 +14,7 @@ import org.cyk.system.root.model.RootConstant;
 import org.cyk.system.root.model.mathematics.movement.MovementCollection;
 import org.cyk.system.root.model.party.PartyIdentifiableGlobalIdentifier;
 import org.cyk.system.root.persistence.api.mathematics.movement.MovementCollectionTypeDao;
-import org.cyk.utility.common.userinterface.container.Form;
+import org.cyk.utility.common.userinterface.container.form.FormDetail;
 
 public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces.IdentifiableConsultPageFormMaster implements Serializable {
 	private static final long serialVersionUID = -6211058744595898478L;
@@ -35,7 +35,7 @@ public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces
 	protected void __prepare__() {
 		super.__prepare__();
 		Class<?> actionOnClass = (Class<?>) getPropertiesMap().getActionOnClass();
-		Form.Detail detail = getDetail();
+		FormDetail detail = getDetail();
 		detail.setFieldsObjectFromMaster();
 		
 		if(Product.class.equals(actionOnClass)){

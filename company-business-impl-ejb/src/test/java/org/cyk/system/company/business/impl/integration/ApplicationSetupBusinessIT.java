@@ -28,7 +28,7 @@ public class ApplicationSetupBusinessIT extends AbstractBusinessIT {
     		inject(GenericBusiness.class).create(store);
     	}
     	
-		for(Object[] array : new Object[][]{{"OMO","Omo",75},{"JAV","Javel",100},{"SAC","Sac",725}}){
+		for(Object[] array : new Object[][]{{"WONM001","BATIK DE WOODIN",1845},{"WONM002","REVOLUTION DE WOODIN",1845},{"WOM001","TRESOR DE WOODIN",3810}}){
 			Product product = inject(ProductBusiness.class).instanciateOne();
 			product.setCode((String)array[0]);
 			product.setName((String)array[1]);

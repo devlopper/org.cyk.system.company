@@ -16,8 +16,13 @@ public class ContextListener extends ServletContextListener implements Serializa
 	@Override
 	public void __contextInitialized__(ServletContextEvent event) {
 		super.__contextInitialized__(event);
-		ClassHelper.getInstance().map(MovementCollectionInventoryEditFormMasterPrepareListener.class, MovementCollectionInventoryEditFormMasterPrepareAdapter.class);
+		//ClassHelper.getInstance().map(MovementCollectionInventoryEditFormMasterPrepareListener.class, MovementCollectionInventoryEditFormMasterPrepareAdapter.class);
 	}
+	/*
+	@Override
+	protected Class<?> __getMenuBuilderClass__() {
+		return MenuBuilder.class;
+	}*/
 	
 	/*@Override
 	public void __contextInitialized__(ServletContextEvent event) {

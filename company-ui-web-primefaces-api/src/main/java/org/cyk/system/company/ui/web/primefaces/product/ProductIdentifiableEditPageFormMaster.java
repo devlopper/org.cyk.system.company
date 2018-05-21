@@ -5,12 +5,12 @@ import java.io.Serializable;
 import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.ui.web.primefaces.IdentifiableEditPageFormMaster;
-import org.cyk.utility.common.userinterface.container.Form;
+import org.cyk.utility.common.userinterface.container.form.FormDetail;
 
 public class ProductIdentifiableEditPageFormMaster implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	public static void prepareProduct(Form.Detail detail,Class<?> aClass){
+	public static void prepareProduct(FormDetail detail,Class<?> aClass){
 		detail.add(Product.FIELD_TANGIBILITY).addBreak();
 		//detail.add(Product.FIELD_GROUP).addBreak();
 		detail.add(Product.FIELD_CATEGORY).addBreak();
@@ -29,7 +29,7 @@ public class ProductIdentifiableEditPageFormMaster implements Serializable {
 		IdentifiableEditPageFormMaster.addDescription(detail);
 	}
 	
-	public static void prepareProductStore(Form.Detail detail,Class<?> aClass){
+	public static void prepareProductStore(FormDetail detail,Class<?> aClass){
 		detail.add(ProductStore.FIELD_PRODUCT).addBreak();
 		detail.add(ProductStore.FIELD_STORE).addBreak();
 	}

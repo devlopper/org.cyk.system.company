@@ -15,9 +15,8 @@ import org.cyk.system.company.model.stock.StockableProductStoresTransferAcknowle
 import org.cyk.system.company.ui.web.primefaces.product.ProductIdentifiableEditPageFormMaster;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleIdentifiableEditPageFormMaster;
 import org.cyk.system.company.ui.web.primefaces.stock.StockIdentifiableEditPageFormMaster;
-import org.cyk.ui.web.primefaces.mathematics.movement.MovementCollectionValuesTransferItemCollectionEditFormMasterPrepareListener;
 import org.cyk.utility.common.helper.ClassHelper;
-import org.cyk.utility.common.userinterface.container.Form;
+import org.cyk.utility.common.userinterface.container.form.FormDetail;
 
 public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.IdentifiableEditPageFormMaster implements Serializable {
 	private static final long serialVersionUID = -6211058744595898478L;
@@ -37,7 +36,7 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 	@Override
 	protected void __prepare__() {
 		super.__prepare__();
-		Form.Detail detail = getDetail();
+		FormDetail detail = getDetail();
 		Class<?> actionOnClass = (Class<?>) getPropertiesMap().getActionOnClass();
 		detail.setFieldsObjectFromMaster();
 		
