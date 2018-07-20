@@ -12,7 +12,7 @@ import org.cyk.system.company.model.stock.StockableProduct;
 import org.cyk.system.company.model.stock.StockableProductStore;
 import org.cyk.system.company.model.stock.StockableProductStoresTransfer;
 import org.cyk.system.company.model.stock.StockableProductStoresTransferAcknowledgement;
-import org.cyk.system.company.ui.web.primefaces.product.ProductIdentifiableEditPageFormMaster;
+import org.cyk.system.company.ui.web.primefaces.product.ProductIdentifiablePages;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleIdentifiableEditPageFormMaster;
 import org.cyk.system.company.ui.web.primefaces.stock.StockIdentifiableEditPageFormMaster;
 import org.cyk.utility.common.helper.ClassHelper;
@@ -41,9 +41,9 @@ public class IdentifiableEditPageFormMaster extends org.cyk.ui.web.primefaces.Id
 		detail.setFieldsObjectFromMaster();
 		
 		if(ClassHelper.getInstance().isInstanceOf(Product.class, actionOnClass)){
-			ProductIdentifiableEditPageFormMaster.prepareProduct(detail,actionOnClass);
+			ProductIdentifiablePages.prepareProductEditFormMaster(detail,actionOnClass);
 		}else if(ProductStore.class.equals(actionOnClass)){
-			ProductIdentifiableEditPageFormMaster.prepareProductStore(detail,actionOnClass);
+			ProductIdentifiablePages.prepareProductStoreEditFormMaster(detail,actionOnClass);
 		}else if(SalableProduct.class.equals(actionOnClass)){
 			SaleIdentifiableEditPageFormMaster.prepareSalableProduct(detail);
 		}else if(SalableProductStore.class.equals(actionOnClass)){

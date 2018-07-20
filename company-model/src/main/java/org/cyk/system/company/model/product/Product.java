@@ -39,6 +39,8 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	@ManyToOne @JoinColumn(name=COLUMN_GROUP) private ProductGroup group;
 	@ManyToOne @JoinColumn(name=COLUMN_CATEGORY) private ProductCategory category;
 	@ManyToOne @JoinColumn(name=COLUMN_TYPE) private ProductType type;
+	@ManyToOne @JoinColumn(name=COLUMN_FAMILY) private ProductFamily family;
+	@ManyToOne @JoinColumn(name=COLUMN_SIZE) private ProductSize size;
 	@Column(precision=10,scale=FLOAT_SCALE) @Text(value="buying.price") private BigDecimal price;
 	
 	/* Derived */
@@ -64,8 +66,23 @@ public class Product extends AbstractEnumeration implements Serializable  {
 		return this;
 	}
 	
+	public Product setTypeFromCode(String code){
+		type = getFromCode(ProductType.class, code);
+		return this;
+	}
+	
 	public Product setCategoryFromCode(String code){
 		category = getFromCode(ProductCategory.class, code);
+		return this;
+	}
+	
+	public Product setFamilyFromCode(String code){
+		family = getFromCode(ProductFamily.class, code);
+		return this;
+	}
+	
+	public Product setSizeFromCode(String code){
+		size = getFromCode(ProductSize.class, code);
 		return this;
 	}
 	
@@ -115,6 +132,8 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	public static final String FIELD_GROUP = "group";
 	public static final String FIELD_TANGIBILITY = "tangibility";
 	public static final String FIELD_CATEGORY = "category";
+	public static final String FIELD_FAMILY = "family";
+	public static final String FIELD_SIZE = "size";
 	public static final String FIELD_TYPE = "type";
 	public static final String FIELD_PRICE = "price";
 	public static final String FIELD_PROVIDER_PARTY = "providerParty";
@@ -133,5 +152,7 @@ public class Product extends AbstractEnumeration implements Serializable  {
 	public static final String COLUMN_TANGIBILITY = FIELD_TANGIBILITY;
 	public static final String COLUMN_CATEGORY = FIELD_CATEGORY;
 	public static final String COLUMN_TYPE = FIELD_TYPE;
+	public static final String COLUMN_FAMILY = FIELD_FAMILY;
+	public static final String COLUMN_SIZE = FIELD_SIZE;
 	
 }

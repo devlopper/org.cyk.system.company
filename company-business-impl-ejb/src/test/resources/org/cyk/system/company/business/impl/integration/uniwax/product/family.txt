@@ -1,0 +1,34 @@
+PANTALON	PANTALON
+CHEMISE MANCHE COURTE	CHEMISE MANCHE COURTE
+POLO	POLO
+CULOTTE	CULOTTE
+Tee-Shirts Homme	Tee-Shirts Homme
+CHEMISE MANCHE LONGUE	CHEMISE MANCHE LONGUE
+Catalogue	Catalogue
+Wax Block Collection Uniwax	Wax Block Collection Uniwax
+Wax Print Uniwax	Wax Print Uniwax
+Wax Block Classic Uniwax	Wax Block Classic Uniwax
+Super-Wax Past Fit Vlisco	Super-Wax Past Fit Vlisco
+Super-Wax Vlisco	Super-Wax Vlisco
+Wax Block Collection Vlisco 	Wax Block Collection Vlisco 
+Wax Print Vlisco	Wax Print Vlisco
+Wax Block Classique Vlisco 	Wax Block Classique Vlisco 
+Wax Block Regravure Vlisco 	Wax Block Regravure Vlisco 
+Wax Block Past Fit Vlisco	Wax Block Past Fit Vlisco
+Wax Block Gaufré Uniwax	Wax Block Gaufré Uniwax
+Wax Gaufré Uni Uniwax	Wax Gaufré Uni Uniwax
+Java Vlisco	Java Vlisco
+Java Uni Teint Vlisco	Java Uni Teint Vlisco
+Woodin Metallique	Woodin Metallique
+Woodin non Metallique	Woodin non Metallique
+Woodin Uni Teint	Woodin Uni Teint
+SAC	SAC
+CEINTURE	CEINTURE
+Echarpes	Echarpes
+SAC A MAIN	SAC A MAIN
+Wax Gaufré Sepic Uniwax	Wax Gaufré Sepic Uniwax
+MONTRE	MONTRE
+BIJOU	BIJOU
+Wax Fancy Vlisco	Wax Fancy Vlisco
+PAC-DEAL	PAC-DEAL
+CHAINE	CHAINE

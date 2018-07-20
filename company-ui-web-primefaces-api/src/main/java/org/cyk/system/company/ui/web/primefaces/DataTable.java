@@ -5,12 +5,14 @@ import java.util.Collection;
 import java.util.List;
 
 import org.cyk.system.company.model.Cost;
+import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.SalableProductProperties;
 import org.cyk.system.company.model.sale.SalableProductStore;
 import org.cyk.system.company.model.sale.SalableProductStoreCollection;
 import org.cyk.system.company.model.sale.SalableProductStoreCollectionItem;
 import org.cyk.system.company.model.sale.Sale;
+import org.cyk.system.company.ui.web.primefaces.product.ProductIdentifiablePages;
 import org.cyk.system.root.model.globalidentification.GlobalIdentifier;
 import org.cyk.system.root.model.mathematics.movement.Movement;
 import org.cyk.utility.common.Constant;
@@ -32,7 +34,9 @@ public class DataTable {
 		public void processColumnsFieldNames(org.cyk.utility.common.userinterface.collection.DataTable dataTable,Collection<String> fieldNames) {
 			super.processColumnsFieldNames(dataTable, fieldNames);
 			Class<?> actionOnClass = (Class<?>) dataTable.getPropertiesMap().getActionOnClass();
-			if(SalableProduct.class.equals(actionOnClass)){
+			if(Product.class.equals(actionOnClass)){
+				ProductIdentifiablePages.processProductColumnsFieldNames(dataTable, fieldNames);
+			}else if(SalableProduct.class.equals(actionOnClass)){
 				fieldNames.add(SalableProduct.FIELD_PRODUCT);
 				fieldNames.add(SalableProduct.FIELD_PROPERTIES);
 			}else if(SalableProductStoreCollection.class.equals(actionOnClass)){

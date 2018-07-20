@@ -7,7 +7,7 @@ import org.cyk.system.company.model.product.Product;
 import org.cyk.system.company.model.product.ProductStore;
 import org.cyk.system.company.model.sale.SalableProduct;
 import org.cyk.system.company.model.sale.Sale;
-import org.cyk.system.company.ui.web.primefaces.product.ProductIdentifiableEditPageFormMaster;
+import org.cyk.system.company.ui.web.primefaces.product.ProductIdentifiablePages;
 import org.cyk.system.company.ui.web.primefaces.sale.SaleIdentifiableEditPageFormMaster;
 import org.cyk.system.root.business.api.mathematics.movement.MovementCollectionBusiness;
 import org.cyk.system.root.model.RootConstant;
@@ -40,10 +40,10 @@ public class IdentifiableConsultPageFormMaster extends org.cyk.ui.web.primefaces
 		
 		if(Product.class.equals(actionOnClass)){
 			inject(ProductBusiness.class).setProviderParty((Product) getObject());
-			ProductIdentifiableEditPageFormMaster.prepareProduct(detail, actionOnClass);
+			ProductIdentifiablePages.prepareProductEditFormMaster(detail, actionOnClass);
 			addDataTableJoinGlobalIdentifier(PartyIdentifiableGlobalIdentifier.class);			
 		}else if(ProductStore.class.equals(actionOnClass)){
-			ProductIdentifiableEditPageFormMaster.prepareProductStore(detail,actionOnClass);
+			ProductIdentifiablePages.prepareProductStoreEditFormMaster(detail,actionOnClass);
 		}else if(SalableProduct.class.equals(actionOnClass)){
 			SaleIdentifiableEditPageFormMaster.prepareSalableProduct(detail);
 		}else if(Sale.class.equals(actionOnClass)){
